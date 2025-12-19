@@ -458,14 +458,23 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 		Add("Keywords", core.Keywords);
 		Add("LastModifiedBy", core.LastModifiedBy);
 		Add("Revision", core.Revision);
-		Add("Created", core.Created?.ToString("u"));
-		Add("Modified", core.Modified?.ToString("u"));
+		Add("Created", FormatDateUtc(core.Created));
+		Add("Modified", FormatDateUtc(core.Modified));
 
 		foreach (var line in lines)
 			_writer.WriteLine(line);
 
 		if (lines.Count > 0)
 			_writer.WriteLine();
+	}
+
+	static string? FormatDateUtc(DateTime? value)
+	{
+		if (value == null)
+			return null;
+
+		// PackageProperties returns local times; normalize to UTC to avoid timezone-dependent output.
+		return value.Value.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss'Z'");
 	}
 
 	static string HtmlAttr(string s) =>
