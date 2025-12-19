@@ -1,0 +1,102 @@
+name: Publish NuGet Packages
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Package version (e.g. 1.2.3 or 1.2.3-beta)"
+        required: true
+        type: string
+  release:
+    types: [published]
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+
+jobs:
+  pack-and-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine package version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            TAG="${{ github.event.release.tag_name }}"
+            VERSION="${TAG#v}"
+          else
+            VERSION="${{ github.event.inputs.version }}"
+            VERSION="${VERSION#v}"
+          fi
+          if [ -z "$VERSION" ]; then
+            echo "Unable to determine version" >&2
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Update files for release
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          for pkg in DocxportNet; do
+            sed -i 's/Include="'"$pkg"'" Version="[^"]*"/Include="'"$pkg"'" Version="'"$VERSION"'"/' README.md
+          done
+          sed -i 's/<Version>.*<\/Version>/<Version>'"$VERSION"'<\/Version>/' Directory.Build.props
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore DocxportNet.sln
+
+      - name: Build
+        run: dotnet build DocxportNet.sln --configuration Release --no-restore -p:Version=${{ steps.version.outputs.version }}
+
+      - name: Clean package output
+        run: |
+          if [ -d artifacts/packages ]; then
+            rm -rf artifacts/packages
+          fi
+
+      - name: Pack
+        run: dotnet pack DocxportNet.sln --configuration Release --no-build -p:Version=${{ steps.version.outputs.version }} -o artifacts/packages
+
+      - name: Push packages to NuGet
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          if [ -z "$NUGET_API_KEY" ]; then
+            echo 'NUGET_API_KEY secret is not set.' >&2
+            exit 1
+          fi
+          dotnet nuget push artifacts/packages/*.nupkg --source https://api.nuget.org/v3/index.json --api-key "$NUGET_API_KEY" --skip-duplicate
+
+      - name: Restore default local version
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          sed -i 's/<Version>.*<\/Version>/<Version>'"$VERSION"'-local<\/Version>/' Directory.Build.props
+
+      - name: Commit version bump
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet; then
+            echo "No changes to commit."
+          else
+            git add README.md Directory.Build.props
+            git commit -m "Release $VERSION"
+            git push origin HEAD:main
+          fi

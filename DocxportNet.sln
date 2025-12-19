@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36804.6 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocxportNet", "DocxportNet\DocxportNet.csproj", "{CDEFE340-6333-4A51-9D1E-DE65B37D2E14}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocxportNet.Tests", "DocxportNet.Tests\DocxportNet.Tests.csproj", "{E958B717-902E-40AB-B2E8-0A00FD631174}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CDEFE340-6333-4A51-9D1E-DE65B37D2E14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDEFE340-6333-4A51-9D1E-DE65B37D2E14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDEFE340-6333-4A51-9D1E-DE65B37D2E14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDEFE340-6333-4A51-9D1E-DE65B37D2E14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E958B717-902E-40AB-B2E8-0A00FD631174}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E958B717-902E-40AB-B2E8-0A00FD631174}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E958B717-902E-40AB-B2E8-0A00FD631174}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E958B717-902E-40AB-B2E8-0A00FD631174}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2EBD4CFE-6D0D-4C97-BAD5-2A44C2E47271}
+	EndGlobalSection
+EndGlobal
