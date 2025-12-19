@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using DocxportNet.walker;
+using DocxportNet.symbols;
 
 namespace DocxportNet.visitors;
 
@@ -1171,7 +1172,8 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 				return marker;
 
 			string inner = StripTags(marker).Trim();
-			var translatedSpan = TryTranslateSymbolFont(inner);
+			var font = ExtractFontFamily(marker);
+			var translatedSpan = TryTranslateSymbolFont(inner, font);
 			if (!string.IsNullOrEmpty(translatedSpan))
 				return translatedSpan!;
 			return inner;
@@ -1217,15 +1219,68 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 		return Regex.Replace(input, "<.*?>", string.Empty);
 	}
 
-	private static string? TryTranslateSymbolFont(string marker)
+	private static string? ExtractFontFamily(string marker)
 	{
-		// marker may be a single char in Symbol or ZapfDingbats encoding. If not, return null.
+		var m = Regex.Match(marker, "font-family\\s*:\\s*([^;\">]+)", RegexOptions.IgnoreCase);
+		if (!m.Success)
+			return null;
+		var font = m.Groups[1].Value.Trim();
+		return font.Trim('"', '\'');
+	}
+
+	private static bool FontEquals(string? font, string target)
+		=> !string.IsNullOrEmpty(font) && string.Equals(font, target, StringComparison.OrdinalIgnoreCase);
+
+	private static string? TryTranslateSymbolFont(string marker, string? fontFamily = null)
+	{
+		// marker may be a single char in Symbol/ZapfDingbats/Webdings/Wingdings encoding. If not, return null.
 		if (string.IsNullOrEmpty(marker))
 			return null;
 
 		if (marker.Length == 1)
 		{
 			var ch = marker[0];
+
+			if (!string.IsNullOrEmpty(fontFamily))
+			{
+				var code = (byte)ch;
+
+				if (FontEquals(fontFamily, "Symbol"))
+				{
+					if (SymbolEncoding.Map.TryGetValue(code, out var symCodepoints) && symCodepoints.Length > 0)
+						return char.ConvertFromUtf32(symCodepoints[0]);
+				}
+				else if (FontEquals(fontFamily, "ZapfDingbats") || FontEquals(fontFamily, "Zapf Dingbats"))
+				{
+					if (ZapfDingbatsEncoding.Map.TryGetValue(code, out var zapfCodepoints) && zapfCodepoints.Length > 0)
+						return char.ConvertFromUtf32(zapfCodepoints[0]);
+				}
+				else if (FontEquals(fontFamily, "Webdings"))
+				{
+					var webd = WebdingsEncoding.ToUnicode(code);
+					if (!string.IsNullOrEmpty(webd))
+						return webd;
+				}
+				else if (FontEquals(fontFamily, "Wingdings"))
+				{
+					var wd1 = WingdingsEncoding.ToUnicode(code);
+					if (!string.IsNullOrEmpty(wd1))
+						return wd1;
+				}
+				else if (FontEquals(fontFamily, "Wingdings 2"))
+				{
+					var wd2 = Wingdings2Map.ToUnicode(code);
+					if (!string.IsNullOrEmpty(wd2))
+						return wd2;
+				}
+				else if (FontEquals(fontFamily, "Wingdings 3"))
+				{
+					var wd3 = Wingdings3Encoding.ToUnicode(code);
+					if (!string.IsNullOrEmpty(wd3))
+						return wd3;
+				}
+			}
+
 			// Symbol font encoding maps directly via SymbolEncoding
 			if (SymbolEncoding.Map.TryGetValue((byte)ch, out var codepoints) && codepoints.Length > 0)
 				return char.ConvertFromUtf32(codepoints[0]);
