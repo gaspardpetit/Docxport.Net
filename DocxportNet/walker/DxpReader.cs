@@ -1,5 +1,4 @@
-
-namespace l3ia.lapi.services.documents.docx.convert;
+namespace DocxportNet.walker;
 
 public class DxpReader
 {

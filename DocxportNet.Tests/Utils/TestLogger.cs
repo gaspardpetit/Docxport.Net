@@ -21,7 +21,7 @@ internal sealed class TestLogger : ILogger
 		_categoryName = categoryName;
 	}
 
-	public IDisposable BeginScope<TState>(TState state) => NullScope.Instance;
+	public IDisposable? BeginScope<TState>(TState state) where TState : notnull => NullScope.Instance;
 	public bool IsEnabled(LogLevel logLevel) => logLevel >= LogLevel.Information;
 
 	public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)

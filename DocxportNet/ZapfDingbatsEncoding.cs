@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-public static class ZapfDingbatsEncoding
+﻿public static class ZapfDingbatsEncoding
 {
 	// Key: Zapf Dingbats encoding byte (0x00-0xFF)
 	// Value: one or more Unicode scalar values (int) as per Adobe/Unicode mapping.

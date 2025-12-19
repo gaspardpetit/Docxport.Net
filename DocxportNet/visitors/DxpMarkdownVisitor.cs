@@ -1,15 +1,14 @@
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentFormat.OpenXml.Packaging;
-using DocxportNet;
 using DocxportNet.api;
-using DocxportNet.visitors;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
+using DocxportNet.walker;
 
-namespace l3ia.lapi.services.documents.docx.convert.walkers;
+namespace DocxportNet.visitors;
 
 public sealed record DxpMarkdownVisitorConfig
 {
@@ -244,7 +243,7 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 
 		if (!EmitUnreferencedBookmarks)
 		{
-			if (string.IsNullOrEmpty(name) || (_referencedAnchors != null && !_referencedAnchors.Contains(name)))
+			if (string.IsNullOrEmpty(name) || _referencedAnchors != null && !_referencedAnchors.Contains(name!))
 				return;
 		}
 
@@ -373,7 +372,7 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 				return "";
 
 			int n = (int)Math.Round(startPt / spacePt, MidpointRounding.AwayFromZero);
-			n = n < 0 ? 0 : (n > maxSpaces ? maxSpaces : n);
+			n = n < 0 ? 0 : n > maxSpaces ? maxSpaces : n;
 
 
 			if (n == 0)
@@ -905,7 +904,7 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 		if (string.IsNullOrEmpty(color) || string.Equals(color, "auto", StringComparison.OrdinalIgnoreCase))
 			color = "#000000";
 		else
-			color = ToCssColor(color);
+			color = ToCssColor(color!);
 
 		return pt.ToString("0.###", CultureInfo.InvariantCulture) + "pt solid " + color;
 	}
@@ -1334,7 +1333,7 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 			if (margin.Right != null)
 				_marginRightInches = TwipsToInches((int)margin.Right.Value);
 			if (margin.Top != null)
-				_marginTopInches = TwipsToInches((int)margin.Top.Value);
+				_marginTopInches = TwipsToInches(margin.Top.Value);
 		}
 	}
 
@@ -1354,7 +1353,7 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 	{
 		if (string.IsNullOrEmpty(instr))
 			return false;
-		return instr.IndexOf("PAGE", StringComparison.OrdinalIgnoreCase) >= 0
+		return instr!.IndexOf("PAGE", StringComparison.OrdinalIgnoreCase) >= 0
 			|| instr.IndexOf("NUMPAGES", StringComparison.OrdinalIgnoreCase) >= 0
 			|| instr.IndexOf("SECTIONPAGES", StringComparison.OrdinalIgnoreCase) >= 0;
 	}

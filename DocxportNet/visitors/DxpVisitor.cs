@@ -3,10 +3,9 @@ using DocumentFormat.OpenXml.Office2010.Word;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.api;
-using l3ia.lapi.services.documents.docx.convert;
+using DocxportNet.walker;
 using Microsoft.Extensions.Logging;
-using static l3ia.lapi.services.documents.docx.convert.DxpWalker;
-using static System.Net.WebRequestMethods;
+using static DocxportNet.walker.DxpWalker;
 
 namespace DocxportNet.visitors;
 

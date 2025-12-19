@@ -2,7 +2,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.api;
 using System.Globalization;
 
-namespace l3ia.lapi.services.documents.docx.convert;
+namespace DocxportNet.walker;
 
 public class DxpTables
 {
@@ -106,7 +106,7 @@ public class DxpTables
 
 				int span = GetGridSpan(tc);
 				var maxSpan = colCount - c;
-				span = span < 1 ? 1 : (span > maxSpan ? maxSpan : span);
+				span = span < 1 ? 1 : span > maxSpan ? maxSpan : span;
 
 				var cm = new DxpCellModel {
 					Cell = tc,

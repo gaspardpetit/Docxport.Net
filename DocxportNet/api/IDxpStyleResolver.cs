@@ -1,5 +1,5 @@
 using DocumentFormat.OpenXml.Wordprocessing;
-using l3ia.lapi.services.documents.docx.convert;
+using DocxportNet.walker;
 
 namespace DocxportNet.api;
 

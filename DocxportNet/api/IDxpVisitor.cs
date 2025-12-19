@@ -2,8 +2,8 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Office2010.Word;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
-using l3ia.lapi.services.documents.docx.convert;
-using static l3ia.lapi.services.documents.docx.convert.DxpWalker;
+using DocxportNet.walker;
+using static DocxportNet.walker.DxpWalker;
 
 namespace DocxportNet.api;
 

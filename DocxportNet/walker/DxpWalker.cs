@@ -1,12 +1,11 @@
 using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.CustomProperties;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.api;
 using System.Xml.Linq;
 
-namespace l3ia.lapi.services.documents.docx.convert;
+namespace DocxportNet.walker;
 
 public sealed class SectionLayout
 {
@@ -64,7 +63,7 @@ public class DxpWalker
 		if (doc.MainDocumentPart == null)
 			return;
 
-		if (v is l3ia.lapi.services.documents.docx.convert.walkers.DxpMarkdownVisitor mdv)
+		if (v is visitors.DxpMarkdownVisitor mdv)
 			mdv.SetReferencedAnchors(_referencedAnchors);
 
 		_main = doc.MainDocumentPart;
@@ -170,7 +169,8 @@ public class DxpWalker
 		var lastSectPr = body.Descendants<SectionProperties>().LastOrDefault();
 		var firstSectPr = body.Descendants<SectionProperties>().FirstOrDefault();
 
-		if (firstSectPr != null && v is l3ia.lapi.services.documents.docx.convert.walkers.DxpMarkdownVisitor mdv)
+
+		if (firstSectPr != null && v is visitors.DxpMarkdownVisitor mdv)
 		{
 			mdv.SetDefaultSectionLayout(CreateSectionLayout(firstSectPr));
 		}
@@ -201,10 +201,11 @@ public class DxpWalker
 				case BookmarkStart bs:
 					{
 						var name = bs.Name?.Value;
-						if (v is l3ia.lapi.services.documents.docx.convert.walkers.DxpMarkdownVisitor mdv &&
+
+						if (v is visitors.DxpMarkdownVisitor mdv &&
 							!mdv.EmitUnreferencedBookmarks &&
 							!string.IsNullOrEmpty(name) &&
-							!_referencedAnchors.Contains(name))
+							!_referencedAnchors.Contains(name!))
 						{
 							_style.ResetStyle(v);
 							return;
@@ -337,7 +338,8 @@ public class DxpWalker
 		if (!isLastSection)
 			v.VisitSectionLayout(sp, layout, s);
 
-		bool emitSectionContent = v is l3ia.lapi.services.documents.docx.convert.walkers.DxpMarkdownVisitor mdv
+
+		bool emitSectionContent = v is visitors.DxpMarkdownVisitor mdv
 			? mdv.EmitSectionHeadersFooters
 			: true;
 
@@ -1268,7 +1270,7 @@ public class DxpWalker
 			if (smartTagPr != null)
 			{
 				// Surface attributes/properties to the visitor
-				var attrs = smartTagPr.Elements<DocumentFormat.OpenXml.Wordprocessing.CustomXmlAttribute>().ToList();
+				var attrs = smartTagPr.Elements<CustomXmlAttribute>().ToList();
 				v.VisitSmartTagProperties(smartTagPr, attrs, s);
 			}
 
@@ -2253,7 +2255,7 @@ public class DxpWalker
 		// Anchor links are direct
 		if (!string.IsNullOrEmpty(link.Anchor?.Value))
 		{
-			_referencedAnchors.Add(link.Anchor!.Value);
+			_referencedAnchors.Add(link.Anchor!.Value!);
 			return "#" + link.Anchor!.Value;
 		}
 
@@ -2275,7 +2277,7 @@ public class DxpWalker
 		if (string.IsNullOrWhiteSpace(val))
 			return Array.Empty<string>();
 
-		char[]? NullSeparator = (char[])null!;
+		char[]? NullSeparator = null!;
 		return val!.Split(NullSeparator, StringSplitOptions.RemoveEmptyEntries);
 	}
 
@@ -2388,7 +2390,7 @@ public class DxpWalker
 			if (txbx == null)
 				return;
 
-			var content = txbx.GetFirstChild<DocumentFormat.OpenXml.Wordprocessing.TextBoxContent>(); // w:txbxContent
+			var content = txbx.GetFirstChild<TextBoxContent>(); // w:txbxContent
 			if (content == null)
 				return;
 
@@ -2407,7 +2409,7 @@ public class DxpWalker
 			if (vmlTxbx == null)
 				return;
 
-			var content = vmlTxbx.GetFirstChild<DocumentFormat.OpenXml.Wordprocessing.TextBoxContent>(); // w:txbxContent
+			var content = vmlTxbx.GetFirstChild<TextBoxContent>(); // w:txbxContent
 			if (content == null)
 				return;
 

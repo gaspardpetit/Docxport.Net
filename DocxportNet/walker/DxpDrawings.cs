@@ -2,7 +2,7 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.api;
 
-namespace l3ia.lapi.services.documents.docx.convert;
+namespace DocxportNet.walker;
 
 
 public class DxpDrawings

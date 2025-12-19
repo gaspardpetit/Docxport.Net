@@ -1,6 +1,6 @@
 using DocxportNet.Tests.Utils;
-using l3ia.lapi.services.documents.docx.convert;
-using l3ia.lapi.services.documents.docx.convert.walkers;
+using DocxportNet.visitors;
+using DocxportNet.walker;
 using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
 using Xunit.Sdk;

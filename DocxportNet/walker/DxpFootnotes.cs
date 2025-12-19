@@ -1,7 +1,7 @@
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 
-namespace l3ia.lapi.services.documents.docx.convert;
+namespace DocxportNet.walker;
 
 internal class DxpFootnotes
 {

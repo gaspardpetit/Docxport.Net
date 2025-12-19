@@ -5,7 +5,7 @@ using DocxportNet.api;
 using DocxportNet;
 using System.Globalization;
 
-namespace l3ia.lapi.services.documents.docx.convert;
+namespace DocxportNet.walker;
 
 
 public struct DxpEffectiveRunStyleBuilder

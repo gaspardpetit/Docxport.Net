@@ -3,7 +3,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.api;
 using System.Globalization;
 
-namespace l3ia.lapi.services.documents.docx.convert;
+namespace DocxportNet.walker;
 
 
 public sealed class DxpNumberingResolver
