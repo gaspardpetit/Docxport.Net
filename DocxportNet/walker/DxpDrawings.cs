@@ -7,9 +7,9 @@ namespace DocxportNet.walker;
 
 public class DxpDrawings
 {
-	public (string dataUri, string contentType)? TryBuildImageDataUri(MainDocumentPart? _main, Drawing d)
+	public (string dataUri, string contentType)? TryBuildImageDataUri(OpenXmlPart? hostPart, Drawing d)
 	{
-		if (_main == null)
+		if (hostPart == null)
 			return null;
 
 		var blip = d.Descendants<DocumentFormat.OpenXml.Drawing.Blip>().FirstOrDefault();
@@ -18,7 +18,7 @@ public class DxpDrawings
 		if (string.IsNullOrEmpty(relId))
 			return null; // not an embedded raster image (could be chart/SmartArt/etc.)
 
-		if (_main.GetPartById(relId!) is not ImagePart imgPart)
+		if (hostPart.GetPartById(relId!) is not ImagePart imgPart)
 			return null;
 
 		byte[] bytes;
@@ -36,9 +36,9 @@ public class DxpDrawings
 		return (dataUri, contentType);
 	}
 
-	public DxpDrawingInfo? TryResolveDrawingInfo(MainDocumentPart? _main, Drawing d)
+	public DxpDrawingInfo? TryResolveDrawingInfo(OpenXmlPart? hostPart, Drawing d)
 	{
-		if (_main == null)
+		if (hostPart == null)
 			return null;
 
 		var docPr = d.Descendants<DocumentFormat.OpenXml.Drawing.Wordprocessing.DocProperties>()
@@ -56,7 +56,7 @@ public class DxpDrawings
 		{
 			try
 			{
-				var part = _main.GetPartById(relId!);
+				var part = hostPart.GetPartById(relId!);
 				contentType = part.ContentType;
 				fileName = part.Uri?.ToString();
 

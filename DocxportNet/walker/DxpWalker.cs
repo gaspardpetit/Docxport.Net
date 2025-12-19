@@ -25,6 +25,7 @@ public sealed class SectionLayout
 public class DxpWalker
 {
 	private MainDocumentPart? _main;
+	private OpenXmlPart? _currentPart;
 
 	private long? _CurrentFootnoteId = null; // null => not inside a note
 
@@ -67,6 +68,7 @@ public class DxpWalker
 			mdv.SetReferencedAnchors(_referencedAnchors);
 
 		_main = doc.MainDocumentPart;
+		_currentPart = _main;
 
 		_lists.Init(doc);
 		_footnotes.Init(doc.MainDocumentPart);
@@ -118,6 +120,7 @@ public class DxpWalker
 
 		VisitBibliographyIfPresent(doc, s, v);
 
+		_currentPart = null;
 		_main = null;
 	}
 
@@ -242,10 +245,13 @@ public class DxpWalker
 
 				// Anchors / permissions / proofing
 				case CommentRangeStart crs:
-					v.VisitCommentRangeStart(crs, s);
+				{
+					string id = crs.Id?.Value ?? string.Empty;
+					TryEmitInlineComment(id, s, v);
 					break;
-				case CommentRangeEnd cre:
-					v.VisitCommentRangeEnd(cre, s);
+				}
+				case CommentRangeEnd:
+					// nothing to do for inline-at-start policy
 					break;
 				case PermStart ps:
 					v.VisitPermStart(ps, s);
@@ -355,6 +361,7 @@ public class DxpWalker
 				if (doc.MainDocumentPart?.GetPartById(relId!) is HeaderPart part && part.Header is Header hdr)
 				{
 					var kind = hr.Type?.Value ?? HeaderFooterValues.Default;
+					using (PushCurrentPart(part))
 					using (v.VisitSectionHeaderBegin(hdr, kind, s))
 					{
 						foreach (var child in hdr.ChildElements)
@@ -374,6 +381,7 @@ public class DxpWalker
 				if (doc.MainDocumentPart?.GetPartById(relId!) is FooterPart part && part.Footer is Footer ftr)
 				{
 					var kind = fr.Type?.Value ?? HeaderFooterValues.Default;
+					using (PushCurrentPart(part))
 					using (v.VisitSectionFooterBegin(ftr, kind, s))
 					{
 						foreach (var child in ftr.ChildElements)
@@ -462,7 +470,6 @@ public class DxpWalker
 						v.VisitCommentRangeStart(crs, s);
 						break;
 					case CommentRangeEnd cre:
-						v.VisitCommentRangeEnd(cre, s);
 						break;
 					case PermStart ps:
 						v.VisitPermStart(ps, s);
@@ -623,7 +630,6 @@ public class DxpWalker
 						v.VisitCommentRangeStart(crs, s);
 						break;
 					case CommentRangeEnd cre:
-						v.VisitCommentRangeEnd(cre, s);
 						break;
 					case PermStart ps:
 						v.VisitPermStart(ps, s);
@@ -756,7 +762,6 @@ public class DxpWalker
 					case CommentRangeEnd:
 						// nothing to do for inline-at-start policy
 						break;
-
 
 						case CustomXmlRun cxr:
 							WalkCustomXmlRun(cxr, s, v);
@@ -992,7 +997,6 @@ public class DxpWalker
 						v.VisitCommentRangeStart(crs, s);
 						break;
 					case CommentRangeEnd cre:
-						v.VisitCommentRangeEnd(cre, s);
 						break;
 					case PermStart ps:
 						v.VisitPermStart(ps, s);
@@ -1146,7 +1150,6 @@ public class DxpWalker
 						v.VisitCommentRangeStart(crs, s);
 						break;
 					case CommentRangeEnd cre:
-						v.VisitCommentRangeEnd(cre, s);
 						break;
 					case PermStart ps:
 						v.VisitPermStart(ps, s);
@@ -1318,7 +1321,6 @@ public class DxpWalker
 						v.VisitCommentRangeStart(crs, s);
 						break;
 					case CommentRangeEnd cre:
-						v.VisitCommentRangeEnd(cre, s);
 						break;
 					case PermStart ps:
 						v.VisitPermStart(ps, s);
@@ -1437,7 +1439,6 @@ public class DxpWalker
 								v.VisitCommentRangeStart(crs, s);
 								break;
 							case CommentRangeEnd cre:
-								v.VisitCommentRangeEnd(cre, s);
 								break;
 							case PermStart ps:
 								v.VisitPermStart(ps, s);
@@ -1589,7 +1590,6 @@ public class DxpWalker
 						v.VisitCommentRangeStart(crs, s);
 						break;
 					case CommentRangeEnd cre:
-						v.VisitCommentRangeEnd(cre, s);
 						break;
 					case PermStart ps:
 						v.VisitPermStart(ps, s);
@@ -1715,7 +1715,6 @@ public class DxpWalker
 						v.VisitCommentRangeStart(crs, s);
 						break;
 					case CommentRangeEnd cre:
-						v.VisitCommentRangeEnd(cre, s);
 						break;
 
 					// ---- Permissions ----
@@ -1821,10 +1820,41 @@ public class DxpWalker
 
 	private void TryEmitInlineComment(string id, IDxpStyleResolver s, IDxpVisitor v)
 	{
-		string? text = _comments.GetComment(id);
-		if (!string.IsNullOrWhiteSpace(text))
-			v.VisitCommentInline(id, text!, s);
+		var thread = _comments.GetThreadForAnchor(id);
+		if (thread == null || thread.Comments.Count == 0)
+			return;
+
+		if (v is visitors.DxpMarkdownVisitor mdv)
+		{
+			mdv.VisitCommentThread(id, thread, s, info => WalkCommentContent(info, s, v));
+			return;
+		}
+
+		v.VisitCommentThread(id, thread, s);
 	}
+
+	private void WalkCommentContent(DxpCommentInfo info, IDxpStyleResolver s, IDxpVisitor v)
+	{
+		using (PushCurrentPart(info.Part ?? _currentPart))
+		{
+			if (info.Blocks != null && info.Blocks.Count > 0)
+			{
+				foreach (var block in info.Blocks)
+					WalkBlock(block, s, v);
+
+				_style.ResetStyle(v);
+				return;
+			}
+
+			if (string.IsNullOrEmpty(info.Text))
+				return;
+
+			var paragraph = new Paragraph(new Run(new Text(info.Text)));
+			WalkBlock(paragraph, s, v);
+			_style.ResetStyle(v);
+		}
+	}
+
 
 
 	private void WalkDeletedRun(DeletedRun dr, IDxpStyleResolver s, IDxpVisitor v)
@@ -1871,7 +1901,6 @@ public class DxpWalker
 						v.VisitCommentRangeStart(crs, s);
 						break;
 					case CommentRangeEnd cre:
-						v.VisitCommentRangeEnd(cre, s);
 						break;
 					case PermStart ps:
 						v.VisitPermStart(ps, s);
@@ -2003,7 +2032,6 @@ public class DxpWalker
 						v.VisitCommentRangeStart(crs, s);
 						break;
 					case CommentRangeEnd cre:
-						v.VisitCommentRangeEnd(cre, s);
 						break;
 					case PermStart ps:
 						v.VisitPermStart(ps, s);
@@ -2131,7 +2159,6 @@ public class DxpWalker
 						v.VisitCommentRangeStart(crs, s);
 						break;
 					case CommentRangeEnd cre:
-						v.VisitCommentRangeEnd(cre, s);
 						break;
 					case PermStart ps:
 						v.VisitPermStart(ps, s);
@@ -2260,10 +2287,11 @@ public class DxpWalker
 		}
 
 		var relId = link.Id?.Value;
-		if (string.IsNullOrEmpty(relId) || _main == null)
+		var part = _currentPart ?? _main;
+		if (string.IsNullOrEmpty(relId) || part == null)
 			return null;
 
-		var rel = _main.HyperlinkRelationships.FirstOrDefault(r => r.Id == relId);
+		var rel = part.HyperlinkRelationships.FirstOrDefault(r => r.Id == relId);
 		if (rel == null)
 			return null;
 
@@ -2379,7 +2407,7 @@ public class DxpWalker
 
 	private void TryWalkDrawingTextBox(Drawing d, IDxpStyleResolver s, IDxpVisitor v)
 	{
-		var info = _drawings.TryResolveDrawingInfo(_main, d);
+		var info = _drawings.TryResolveDrawingInfo(_currentPart ?? _main, d);
 		using (v.VisitDrawingBegin(d, info, s))
 		{
 			// Look for Office 2010 Wordprocessing shape textbox: <wps:txbx>
@@ -2846,6 +2874,7 @@ public class DxpWalker
 		_CurrentFootnoteId = id;
 		try
 		{
+			using (PushCurrentPart(_main?.EndnotesPart))
 			using (v.VisitEndnoteBegin(fn, id, index, s))
 			{
 				foreach (var child in fn.ChildElements)
@@ -2888,7 +2917,6 @@ public class DxpWalker
 							v.VisitCommentRangeStart(crs, s);
 							break;
 						case CommentRangeEnd cre:
-							v.VisitCommentRangeEnd(cre, s);
 							break;
 
 						// Permissions & proofing
@@ -2967,6 +2995,7 @@ public class DxpWalker
 		_CurrentFootnoteId = id;
 		try
 		{
+			using (PushCurrentPart(_main?.FootnotesPart))
 			using (v.VisitFootnoteBegin(fn, id, index, s))
 			{
 				foreach (var child in fn.ChildElements)
@@ -3009,7 +3038,6 @@ public class DxpWalker
 							v.VisitCommentRangeStart(crs, s);
 							break;
 						case CommentRangeEnd cre:
-							v.VisitCommentRangeEnd(cre, s);
 							break;
 
 						// Permissions & proofing
@@ -3128,7 +3156,6 @@ public class DxpWalker
 						v.VisitCommentRangeStart(crs, s);
 						break;
 					case CommentRangeEnd cre:
-						v.VisitCommentRangeEnd(cre, s);
 						break;
 
 					// ---- Permissions & proofing anchors ----
@@ -3236,6 +3263,15 @@ public class DxpWalker
 				}
 			}
 		}
+	}
+
+
+	private IDisposable PushCurrentPart(OpenXmlPart? part)
+	{
+		var previous = _currentPart;
+		if (part != null)
+			_currentPart = part;
+		return Disposable.Create(() => _currentPart = previous);
 	}
 
 
