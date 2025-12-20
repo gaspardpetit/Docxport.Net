@@ -1,12 +1,274 @@
-﻿using System.Text;
+using System.Text;
 
 namespace DocxportNet.symbols;
 
 public static class Wingdings2Map
 {
-	// Key = Wingdings 2 code (byte 0x00..0xFF as used by the Wingdings 2 font)
-	// Value = Unicode string (encode with UTF-8 as needed)
-	public static readonly Dictionary<byte, string> Wingdings2ToUnicode = new() {
+
+	public static readonly string[] Table = [
+        "\u0000", // 0x00
+        "\u0001", // 0x01
+        "\u0002", // 0x02
+        "\u0003", // 0x03
+        "\u0004", // 0x04
+        "\u0005", // 0x05
+        "\u0006", // 0x06
+        "\u0007", // 0x07
+        "\u0008", // 0x08
+        "\u0009", // 0x09
+        "\u000A", // 0x0A
+        "\u000B", // 0x0B
+        "\u000C", // 0x0C
+        "\u000D", // 0x0D
+        "\u000E", // 0x0E
+        "\u000F", // 0x0F
+        "\u0010", // 0x10
+        "\u0011", // 0x11
+        "\u0012", // 0x12
+        "\u0013", // 0x13
+        "\u0014", // 0x14
+        "\u0015", // 0x15
+        "\u0016", // 0x16
+        "\u0017", // 0x17
+        "\u0018", // 0x18
+        "\u0019", // 0x19
+        "\u001A", // 0x1A
+        "\u001B", // 0x1B
+        "\u001C", // 0x1C
+        "\u001D", // 0x1D
+        "\u001E", // 0x1E
+        "\u001F", // 0x1F
+        " ", // 0x20
+        "🖊", // 0x21
+        "🖋", // 0x22
+        "🖌", // 0x23
+        "🖍", // 0x24
+        "✄", // 0x25
+        "✀", // 0x26
+        "🕾", // 0x27
+        "🕽", // 0x28
+        "🗅", // 0x29
+        "🗆", // 0x2A
+        "🗇", // 0x2B
+        "🗈", // 0x2C
+        "🗉", // 0x2D
+        "🗊", // 0x2E
+        "🗋", // 0x2F
+        "🗌", // 0x30
+        "🗍", // 0x31
+        "📋", // 0x32
+        "🗑", // 0x33
+        "🗔", // 0x34
+        "🖵", // 0x35
+        "🖶", // 0x36
+        "🖷", // 0x37
+        "🖸", // 0x38
+        "🖭", // 0x39
+        "🖯", // 0x3A
+        "🖱", // 0x3B
+        "🖒", // 0x3C
+        "🖓", // 0x3D
+        "🖘", // 0x3E
+        "🖙", // 0x3F
+        "🖚", // 0x40
+        "🖛", // 0x41
+        "👈", // 0x42
+        "👉", // 0x43
+        "🖜", // 0x44
+        "🖝", // 0x45
+        "🖞", // 0x46
+        "🖟", // 0x47
+        "🖠", // 0x48
+        "🖡", // 0x49
+        "👆", // 0x4A
+        "👇", // 0x4B
+        "🖢", // 0x4C
+        "🖣", // 0x4D
+        "🖑", // 0x4E
+        "🗴", // 0x4F
+        "✓", // 0x50
+        "🗵", // 0x51
+        "☑", // 0x52
+        "☒", // 0x53
+        "☒", // 0x54
+        "⮾", // 0x55
+        "⮿", // 0x56
+        "⦸", // 0x57
+        "⦸", // 0x58
+        "🙱", // 0x59
+        "🙴", // 0x5A
+        "🙲", // 0x5B
+        "🙳", // 0x5C
+        "‽", // 0x5D
+        "🙹", // 0x5E
+        "🙺", // 0x5F
+        "🙻", // 0x60
+        "🙦", // 0x61
+        "🙤", // 0x62
+        "🙥", // 0x63
+        "🙧", // 0x64
+        "🙚", // 0x65
+        "🙘", // 0x66
+        "🙙", // 0x67
+        "🙛", // 0x68
+        "⓪", // 0x69
+        "①", // 0x6A
+        "②", // 0x6B
+        "③", // 0x6C
+        "④", // 0x6D
+        "⑤", // 0x6E
+        "⑥", // 0x6F
+        "⑦", // 0x70
+        "⑧", // 0x71
+        "⑨", // 0x72
+        "⑩", // 0x73
+        "⓿", // 0x74
+        "❶", // 0x75
+        "❷", // 0x76
+        "❸", // 0x77
+        "❹", // 0x78
+        "❺", // 0x79
+        "❻", // 0x7A
+        "❼", // 0x7B
+        "❽", // 0x7C
+        "❾", // 0x7D
+        "❿", // 0x7E
+        "\u007F", // 0x7F
+        "☉", // 0x80
+        "🌕", // 0x81
+        "☽", // 0x82
+        "☾", // 0x83
+        "⸿", // 0x84
+        "✝", // 0x85
+        "🕇", // 0x86
+        "🕜", // 0x87
+        "🕝", // 0x88
+        "🕞", // 0x89
+        "🕟", // 0x8A
+        "🕠", // 0x8B
+        "🕡", // 0x8C
+        "🕢", // 0x8D
+        "🕣", // 0x8E
+        "🕤", // 0x8F
+        "🕥", // 0x90
+        "🕦", // 0x91
+        "🕧", // 0x92
+        "🙨", // 0x93
+        "🙩", // 0x94
+        "•", // 0x95
+        "●", // 0x96
+        "⚫", // 0x97
+        "⬤", // 0x98
+        "🞅", // 0x99
+        "🞆", // 0x9A
+        "🞇", // 0x9B
+        "🞈", // 0x9C
+        "🞊", // 0x9D
+        "⦿", // 0x9E
+        "◾", // 0x9F
+        "■", // 0xA0
+        "◼", // 0xA1
+        "⬛", // 0xA2
+        "⬜", // 0xA3
+        "🞑", // 0xA4
+        "🞒", // 0xA5
+        "🞓", // 0xA6
+        "🞔", // 0xA7
+        "▣", // 0xA8
+        "🞕", // 0xA9
+        "🞖", // 0xAA
+        "🞗", // 0xAB
+        "⬩", // 0xAC
+        "⬥", // 0xAD
+        "◆", // 0xAE
+        "◇", // 0xAF
+        "🞚", // 0xB0
+        "◈", // 0xB1
+        "🞛", // 0xB2
+        "🞜", // 0xB3
+        "🞝", // 0xB4
+        "⬪", // 0xB5
+        "⬧", // 0xB6
+        "⧫", // 0xB7
+        "◊", // 0xB8
+        "🞠", // 0xB9
+        "◖", // 0xBA
+        "◗", // 0xBB
+        "⯊", // 0xBC
+        "⯋", // 0xBD
+        "◼", // 0xBE
+        "⬥", // 0xBF
+        "⬟", // 0xC0
+        "⯂", // 0xC1
+        "⬣", // 0xC2
+        "⬢", // 0xC3
+        "⯃", // 0xC4
+        "⯄", // 0xC5
+        "🞡", // 0xC6
+        "🞢", // 0xC7
+        "🞣", // 0xC8
+        "🞤", // 0xC9
+        "🞥", // 0xCA
+        "🞦", // 0xCB
+        "🞧", // 0xCC
+        "🞨", // 0xCD
+        "🞩", // 0xCE
+        "🞪", // 0xCF
+        "🞫", // 0xD0
+        "🞬", // 0xD1
+        "🞭", // 0xD2
+        "🞮", // 0xD3
+        "🞯", // 0xD4
+        "🞰", // 0xD5
+        "🞱", // 0xD6
+        "🞲", // 0xD7
+        "🞳", // 0xD8
+        "🞴", // 0xD9
+        "🞵", // 0xDA
+        "🞶", // 0xDB
+        "🞷", // 0xDC
+        "🞸", // 0xDD
+        "🞹", // 0xDE
+        "🞺", // 0xDF
+        "🞻", // 0xE0
+        "🞼", // 0xE1
+        "🞽", // 0xE2
+        "🞾", // 0xE3
+        "🞿", // 0xE4
+        "🟀", // 0xE5
+        "🟂", // 0xE6
+        "🟄", // 0xE7
+        "✦", // 0xE8
+        "🟉", // 0xE9
+        "★", // 0xEA
+        "✶", // 0xEB
+        "🟋", // 0xEC
+        "✷", // 0xED
+        "🟏", // 0xEE
+        "🟒", // 0xEF
+        "✹", // 0xF0
+        "🟃", // 0xF1
+        "🟇", // 0xF2
+        "✯", // 0xF3
+        "🟍", // 0xF4
+        "🟔", // 0xF5
+        "⯌", // 0xF6
+        "⯍", // 0xF7
+        "※", // 0xF8
+        "⁂", // 0xF9
+        "\uF8FA", // 0xFA
+        "\uF8FB", // 0xFB
+        "\uF8FC", // 0xFC
+        "\uF8FD", // 0xFD
+        "\uF8FE", // 0xFE
+        "ÿ" // 0xFF
+    ];
+
+
+
+// Key = Wingdings 2 code (byte 0x00..0xFF as used by the Wingdings 2 font)
+// Value = Unicode string (encode with UTF-8 as needed)
+public static readonly Dictionary<byte, string> Wingdings2ToUnicode = new() {
 		[0x20] = "\u0020",       // Space U+0020 :contentReference[oaicite:1]{index=1}
 		[0x21] = "\U0001F58A",   // 🖊 U+1F58A :contentReference[oaicite:2]{index=2}
 		[0x22] = "\U0001F58B",   // 🖋 U+1F58B :contentReference[oaicite:3]{index=3}
@@ -238,12 +500,14 @@ public static class Wingdings2Map
 		[0xF9] = "\u2042",       // ⁂ U+2042 :contentReference[oaicite:217]{index=217}
 	};
 
-	public static string? ToUnicode(byte wingdings2Code)
-		=> Wingdings2ToUnicode.TryGetValue(wingdings2Code, out var s) ? s : null;
-
-	public static byte[]? ToUtf8Bytes(byte wingdings2Code)
+	public static string? ToUnicode(byte symbolCode)
 	{
-		var s = ToUnicode(wingdings2Code);
+		return Table[symbolCode];
+	}
+
+	public static byte[]? ToUtf8Bytes(byte symbolCode)
+	{
+		var s = ToUnicode(symbolCode);
 		return s is null ? null : Encoding.UTF8.GetBytes(s);
 	}
 }

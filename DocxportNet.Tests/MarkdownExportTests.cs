@@ -16,11 +16,25 @@ public class MarkdownExportTests
 		_logger = new TestLogger(output, nameof(MarkdownExportTests));
 	}
 
-	public sealed record Sample(string DocxPath)
+	public sealed record Sample : IXunitSerializable
 	{
+		public Sample()
+		{
+			DocxPath = string.Empty;
+		}
+
+		public Sample(string docxPath)
+		{
+			DocxPath = docxPath;
+		}
+
+		public string DocxPath { get; private set; }
 		public string FileName => Path.GetFileName(DocxPath);
 		public string ExpectedMarkdownPath => Path.ChangeExtension(DocxPath, ".md");
 		public string TestOutputPath => Path.Combine(Path.GetDirectoryName(DocxPath)!, $"{Path.GetFileNameWithoutExtension(DocxPath)}.test.md");
+
+		public void Serialize(IXunitSerializationInfo info) => info.AddValue(nameof(DocxPath), DocxPath);
+		public void Deserialize(IXunitSerializationInfo info) => DocxPath = info.GetValue<string>(nameof(DocxPath));
 
 		public override string ToString() => FileName; // keep theory display concise
 	}
@@ -31,18 +45,19 @@ public class MarkdownExportTests
 	public static IEnumerable<object[]> SampleDocs()
 	{
 		return Directory.EnumerateFiles(SamplesDirectory, "*.docx", SearchOption.TopDirectoryOnly)
+			.OrderBy(Path.GetFileName) // deterministic ordering for discovery
 			.Select(path => new object[] { new Sample(path) });
 	}
 
 	[Theory]
-	[MemberData(nameof(SampleDocs), DisableDiscoveryEnumeration = true)]
+	[MemberData(nameof(SampleDocs))]
 	public void TestDocxToMarkdown_Rich(Sample sample)
 	{
 		VerifyAgainstFixture(sample, DxpMarkdownVisitorConfig.RICH, ".md", ".test.md");
 	}
 
 	[Theory]
-	[MemberData(nameof(SampleDocs), DisableDiscoveryEnumeration = true)]
+	[MemberData(nameof(SampleDocs))]
 	public void TestDocxToMarkdown_Plain(Sample sample)
 	{
 		VerifyAgainstFixture(sample, DxpMarkdownVisitorConfig.PLAIN, ".plain.md", ".plain.test.md");
