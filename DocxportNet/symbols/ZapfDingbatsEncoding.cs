@@ -1,4 +1,6 @@
-﻿public static class ZapfDingbatsEncoding
+﻿using System.Text;
+
+public static class ZapfDingbatsEncoding
 {
 	// Key: Zapf Dingbats encoding byte (0x00-0xFF)
 	// Value: one or more Unicode scalar values (int) as per Adobe/Unicode mapping.
@@ -207,4 +209,18 @@
 			[0xFD] = new[] { 0x27BD },
 			[0xFE] = new[] { 0x27BE },
 		};
+
+	public static string? ToUnicode(byte dingbatCode)
+	{
+		if (!Map.TryGetValue(dingbatCode, out var cps) || cps.Length == 0)
+			return null;
+
+		return char.ConvertFromUtf32(cps[0]);
+	}
+
+	public static byte[]? ToUtf8Bytes(byte dingbatCode)
+	{
+		var s = ToUnicode(dingbatCode);
+		return s is null ? null : Encoding.UTF8.GetBytes(s);
+	}
 }

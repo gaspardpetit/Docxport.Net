@@ -1,4 +1,6 @@
-﻿public static class SymbolEncoding
+﻿using System.Text;
+
+public static class SymbolEncoding
 {
 	// Key: Symbol Encoding code point (byte)
 	// Value: one or more Unicode scalar values (int)
@@ -207,12 +209,17 @@
 			[0xFE] = new[] { 0xF8FE }, // RIGHT CURLY BRACKET BOTTOM (CUS)
 		};
 
-	public static string ToUnicodeString(byte symbolCode, Func<int[], int>? pick = null)
+	public static string? ToUnicode(byte symbolCode)
 	{
 		if (!Map.TryGetValue(symbolCode, out var cps) || cps.Length == 0)
-			return string.Empty;
+			return null;
 
-		var chosen = pick != null ? pick(cps) : cps[0];
-		return char.ConvertFromUtf32(chosen);
+		return char.ConvertFromUtf32(cps[0]);
+	}
+
+	public static byte[]? ToUtf8Bytes(byte symbolCode)
+	{
+		var s = ToUnicode(symbolCode);
+		return s is null ? null : Encoding.UTF8.GetBytes(s);
 	}
 }
