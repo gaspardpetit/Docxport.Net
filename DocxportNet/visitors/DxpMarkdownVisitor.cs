@@ -80,6 +80,7 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 	private double? _marginLeftPoints;
 	private readonly Stack<bool> _fieldSuppressStack = new();
 	private int _suppressFieldDepth;
+	private bool _sectionBodyOpen;
 
 	public DxpMarkdownVisitor(TextWriter writer, DxpMarkdownVisitorConfig config, ILogger? logger)
 		: base(logger)
@@ -302,8 +303,9 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 
 	public override void VisitSectionProperties(SectionProperties sp, IDxpStyleResolver s)
 	{
-		// Example: write a boundary marker
-		_writer.Write("\n<!-- SECTION BREAK -->\n");
+		_writer.WriteLine();
+		_writer.WriteLine("<hr />");
+		_writer.WriteLine();
 	}
 
 	static double TwipsToPt(int twips) => twips / 20.0;
@@ -1446,7 +1448,7 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 		if (_bodyContainerOpen)
 			return;
 
-		var style = new StringBuilder("color:#000000;");
+		var style = new StringBuilder("color:#000000;display:flex;flex-direction:column;position:relative;");
 		if (_pageWidthInches != null && _pageHeightInches != null)
 		{
 			style.Append("width:").Append(_pageWidthInches.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
@@ -1455,8 +1457,6 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 		if (_marginLeftInches != null || _marginRightInches != null || _marginTopInches != null)
 		{
 			style.Append("box-sizing:border-box;");
-			if (_marginTopInches != null)
-				style.Append("padding-top:").Append(_marginTopInches.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
 			if (_marginLeftInches != null)
 				style.Append("padding-left:").Append(_marginLeftInches.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
 			if (_marginRightInches != null)
@@ -1480,8 +1480,32 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 	{
 		if (!_bodyContainerOpen)
 			return;
+		EndSectionBody();
 		_writer.Write("</div>\n");
 		_bodyContainerOpen = false;
+	}
+
+	public void BeginSectionBody()
+	{
+		if (!_config.EmitDocumentColors)
+			return;
+		if (_sectionBodyOpen)
+			return;
+
+		var style = new StringBuilder("flex:1 0 auto;");
+		if (_marginTopInches != null)
+			style.Append("padding-top:").Append(_marginTopInches.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+
+		_writer.Write($"""<div style="{style}">""" + "\n");
+		_sectionBodyOpen = true;
+	}
+
+	public void EndSectionBody()
+	{
+		if (!_sectionBodyOpen)
+			return;
+		_writer.WriteLine("</div>");
+		_sectionBodyOpen = false;
 	}
 
 	private void UpdatePageDimensions(SectionLayout layout)
@@ -1537,7 +1561,20 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 		// Strip comments and empty paragraphs
 		string cleaned = Regex.Replace(html, @"<!--.*?-->", string.Empty, RegexOptions.Singleline);
 		cleaned = Regex.Replace(cleaned, @"<p[^>]*>\s*</p>", string.Empty, RegexOptions.IgnoreCase);
-		return !string.IsNullOrWhiteSpace(cleaned);
+		cleaned = Regex.Replace(cleaned, @"&nbsp;", " ", RegexOptions.IgnoreCase);
+
+		// Remove tags to inspect visible text
+		string textOnly = Regex.Replace(cleaned, "<[^>]+>", string.Empty);
+		textOnly = textOnly.Replace("\u00A0", " ").Trim();
+
+		if (string.IsNullOrWhiteSpace(textOnly))
+			return false;
+
+		// Consider pure page-number content as non-visible for header/footer emission.
+		if (Regex.IsMatch(textOnly, @"^[0-9]+$", RegexOptions.CultureInvariant))
+			return false;
+
+		return true;
 	}
 
 	IDisposable IDxpVisitor.VisitDrawingBegin(Drawing d, DxpDrawingInfo? info, IDxpStyleResolver s)
