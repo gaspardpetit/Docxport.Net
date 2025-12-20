@@ -47,4 +47,18 @@ public class DxpFontSymbolsTests
 		var arrows = DxpFontSymbols.Substitute("Wingdings 3", "\u0030\u0031");
 		Assert.Equal("⭽⭤", arrows);
 	}
+
+	[Fact]
+	public void Non_printable_can_use_replacement()
+	{
+		var replaced = DxpFontSymbols.Substitute("Symbol", "\u0001\u00B7", '?');
+		Assert.Equal("?•", replaced);
+	}
+
+	[Fact]
+	public void Private_use_bullet_maps_via_low_byte()
+	{
+		var bullet = DxpFontSymbols.Substitute("Symbol", '\uF0B7');
+		Assert.Equal("•", bullet);
+	}
 }
