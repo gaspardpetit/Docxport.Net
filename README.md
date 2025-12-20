@@ -18,7 +18,7 @@ Use `DxpFontSymbols` when you encounter text that was encoded with a symbol font
 ```csharp
 // Convert a whole string using the font hint.
 // 0x41 ('A') -> ✌, 0x42 ('B') -> 👌 in the Wingdings table.
-var text = DxpFontSymbols.Substitute("Wingdings", "\u0041\u0042"); // => "✌👌"
+string text = DxpFontSymbols.Substitute("Wingdings", "\u0041\u0042"); // => "✌👌"
 ```
 
 ```csharp
@@ -33,3 +33,5 @@ Unknown characters are returned unchanged; the helper also tries a Symbol/Zapf D
 - Symbol bullet: `DxpFontSymbols.Substitute("Symbol", (char)0xB7)` → `•`
 - Webdings cat: `DxpFontSymbols.Substitute("Webdings", (char)0xF6)` → `🐈`
 - Wingdings peace/ok: `DxpFontSymbols.Substitute("Wingdings", "\u0041\u0042")` → `✌👌`
+- Wingdings 2 left point: `DxpFontSymbols.Substitute("Wingdings 2", (char)0x42)` → `👈`
+- Wingdings 3 arrows: `DxpFontSymbols.Substitute("Wingdings 3", "\u0030\u0031")` → `⭽⭤`
