@@ -44,10 +44,6 @@ public static class DxpFontSymbols
 	/// </summary>
 	public static string Substitute(string? fontName, char ch, char? replacementForNonPrintable = null)
 	{
-		// Outside 8-bit code pages the font mappings do not apply.
-		if (ch > byte.MaxValue)
-			return ch.ToString();
-
 		DxpFontSymbolConverter? converter = GetSymbolConverter(fontName);
 		if (converter == null)
 			return ch.ToString();
