@@ -1,11 +1,14 @@
 ﻿namespace DocxportNet.Tests.Utils;
 
-internal class TestCompare
-{
-	public static string Normalize(string text)
+	internal class TestCompare
 	{
-		return text.Replace("\r\n", "\n").Replace("\r", "\n");
-	}
+		public static string Normalize(string text)
+		{
+			return text
+				.Replace("\r\n", "\n")
+				.Replace("\r", "\n")
+				.TrimEnd();
+		}
 
 	public static string DescribeDifference(string expected, string actual)
 	{

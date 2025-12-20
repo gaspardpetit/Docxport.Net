@@ -162,10 +162,12 @@ public class DxpVisitor : DxpStyleVisitor, IDxpVisitor
 		return Disposable.Empty;
 	}
 
-	public virtual void VisitFootnoteReferenceMark(FootnoteReferenceMark m, long? footnoteId, int index, IDxpStyleResolver s) => Ignored(nameof(VisitFootnoteReferenceMark), m);
-	public virtual void VisitCommentInline(string id, string text, IDxpStyleResolver s) => _logger?.LogInformation($"{nameof(DxpVisitor)}: ignored {nameof(VisitCommentInline)} (id='{id}')");
+		public virtual void VisitFootnoteReferenceMark(FootnoteReferenceMark m, long? footnoteId, int index, IDxpStyleResolver s) => Ignored(nameof(VisitFootnoteReferenceMark), m);
+	public virtual void VisitCommentThread(string anchorId, DxpCommentThread thread, IDxpStyleResolver s)
+		=> _logger?.LogInformation($"{nameof(DxpVisitor)}: ignored {nameof(VisitCommentThread)} (anchorId='{anchorId}', count={thread.Comments.Count})");
 
 	// Visitor defaults log ignored and return Disposable.Empty when needed
+
 
 	public virtual void VisitDayShort(DayShort ds, IDxpStyleResolver s) => Ignored(nameof(VisitDayShort), ds);
 	public virtual void VisitMonthShort(MonthShort ms, IDxpStyleResolver s) => Ignored(nameof(VisitMonthShort), ms);

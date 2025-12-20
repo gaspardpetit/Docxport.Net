@@ -94,11 +94,12 @@ public interface IDxpVisitor : IDxpStyleVisitor, IDxpFieldVisitor
 	IDisposable VisitBlockBegin(OpenXmlElement child, IDxpStyleResolver s);
 	void VisitTableRowProperties(TableRowProperties trp, IDxpStyleResolver s);
 	IDisposable VisitDrawingBegin(Drawing d, DxpDrawingInfo? info, IDxpStyleResolver s);
-	void VisitFootnoteReference(FootnoteReference fr, long id, int index, IDxpStyleResolver s);
+		void VisitFootnoteReference(FootnoteReference fr, long id, int index, IDxpStyleResolver s);
 	IDisposable VisitFootnoteBegin(Footnote fn, long id, int index, IDxpStyleResolver s);
 	void VisitFootnoteReferenceMark(FootnoteReferenceMark m, long? footnoteId, int index, IDxpStyleResolver s);
-	void VisitCommentInline(string id, string text, IDxpStyleResolver s);
+	void VisitCommentThread(string anchorId, DxpCommentThread thread, IDxpStyleResolver s);
 	void VisitDayShort(DayShort ds, IDxpStyleResolver s);
+
 	void VisitMonthShort(MonthShort ms, IDxpStyleResolver s);
 	void VisitYearShort(YearShort ys, IDxpStyleResolver s);
 	void VisitDayLong(DayLong dl, IDxpStyleResolver s);

@@ -27,6 +27,7 @@ public sealed record DxpMarkdownVisitorConfig
 	public bool EmitSectionHeadersFooters = true;
 	public bool EmitUnreferencedBookmarks = true;
 	public bool EmitPageNumbers = false;
+	public bool UsePlainComments = false;
 
 	public static DxpMarkdownVisitorConfig RICH = new();
 	public static DxpMarkdownVisitorConfig PLAIN = new()
@@ -44,7 +45,8 @@ public sealed record DxpMarkdownVisitorConfig
 		UseMarkdownInlineStyles = false,
 		EmitSectionHeadersFooters = true,
 		EmitUnreferencedBookmarks = false,
-		EmitPageNumbers = false
+		EmitPageNumbers = false,
+		UsePlainComments = true
 	};
 
 	public static DxpMarkdownVisitorConfig DEFAULT = RICH;
@@ -78,6 +80,7 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 	private double? _marginLeftPoints;
 	private readonly Stack<bool> _fieldSuppressStack = new();
 	private int _suppressFieldDepth;
+	private bool _sectionBodyOpen;
 
 	public DxpMarkdownVisitor(TextWriter writer, DxpMarkdownVisitorConfig config, ILogger? logger)
 		: base(logger)
@@ -300,8 +303,9 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 
 	public override void VisitSectionProperties(SectionProperties sp, IDxpStyleResolver s)
 	{
-		// Example: write a boundary marker
-		_writer.Write("\n<!-- SECTION BREAK -->\n");
+		_writer.WriteLine();
+		_writer.WriteLine("<hr />");
+		_writer.WriteLine();
 	}
 
 	static double TwipsToPt(int twips) => twips / 20.0;
@@ -389,7 +393,10 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 	public override void VisitDrawingBegin(Drawing d, DxpDrawingInfo? info, IDxpStyleResolver s)
 	{
 		if (_config.EmitImages == false)
+		{
+			_writer.Write("[IMAGE]");
 			return;
+		}
 		
 		var alt = HtmlAttr(info?.AltText ?? "image");
 		var dataUri = info?.DataUri;
@@ -1055,7 +1062,7 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 		}
 	}
 
-	public override void VisitTableRowProperties(TableRowProperties trp, IDxpStyleResolver s)
+		public override void VisitTableRowProperties(TableRowProperties trp, IDxpStyleResolver s)
 	{
 		// properties are applied in VisitTableRowBegin
 	}
@@ -1066,12 +1073,123 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 		return Disposable.Empty;
 	}
 
-	public override void VisitCommentInline(string id, string text, IDxpStyleResolver s)
+	public void VisitCommentThread(string anchorId, DxpCommentThread thread, IDxpStyleResolver s, Action<DxpCommentInfo>? renderContent)
 	{
-		_writer.WriteLine($"<comment>{text}</comment>");
+		if (thread.Comments == null || thread.Comments.Count == 0)
+			return;
+
+		if (_config.UsePlainComments)
+		{
+			EmitPlainCommentThread(thread, renderContent);
+			return;
+		}
+
+		var commentsStyle = "background:#fff8c6;border:1px solid #e6c44a;border-radius:6px;padding:8px;margin:8px 0 8px 12px;float:right;max-width:45%;";
+		var commentStyle = "background:#fffcf0;border:1px solid #d9b200;border-radius:4px;padding:6px;margin-bottom:6px;";
+
+		_writer.Write("<div class=\"comments\"");
+		_writer.Write($" style=\"{commentsStyle}\"");
+		_writer.WriteLine(">");
+
+		foreach (var c in thread.Comments)
+		{
+			var label = BuildCommentLabel(c);
+			if (!string.IsNullOrEmpty(label))
+				_writer.WriteLine("  " + label);
+
+			_writer.Write("  <div class=\"comment\"");
+			_writer.Write($" style=\"{commentStyle}\"");
+			_writer.WriteLine(">");
+			_writer.WriteLine();
+
+			if (renderContent != null)
+			{
+				renderContent(c);
+			}
+			else
+			{
+				_writer.WriteLine(c.Text);
+			}
+
+			_writer.WriteLine("  </div>");
+			_writer.WriteLine();
+		}
+
+		_writer.WriteLine("</div>");
+		_writer.WriteLine();
+	}
+
+	private void EmitPlainCommentThread(DxpCommentThread thread, Action<DxpCommentInfo>? renderContent)
+	{
+		_writer.WriteLine("<!--");
+		_writer.WriteLine();
+
+		foreach (var c in thread.Comments)
+		{
+			var label = c.IsReply ? "REPLY BY" : "COMMENT BY";
+			var who = !string.IsNullOrEmpty(c.Author)
+				? c.Author!
+				: (!string.IsNullOrEmpty(c.Initials) ? c.Initials! : "Unknown");
+			var when = c.DateUtc?.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss'Z'");
+
+			if (!string.IsNullOrEmpty(when))
+				_writer.WriteLine($"  {label} {who} ON {when}");
+			else
+				_writer.WriteLine($"  {label} {who}");
+
+			_writer.WriteLine();
+
+			string content = c.Text ?? string.Empty;
+			if (renderContent != null)
+			{
+				var buffer = new StringWriter();
+				var prev = _writer;
+				_writer = buffer;
+				renderContent(c);
+				_writer = prev;
+				content = buffer.ToString();
+			}
+
+			var lines = content.Split('\n');
+			foreach (var line in lines)
+			{
+				if (line.Length == 0)
+				{
+					_writer.WriteLine();
+				}
+				else
+				{
+					_writer.WriteLine("  " + line.TrimEnd());
+				}
+			}
+
+			_writer.WriteLine();
+		}
+
+		_writer.WriteLine("-->");
+		_writer.WriteLine();
+	}
+
+	private string BuildCommentLabel(DxpCommentInfo c)
+	{
+		var who = !string.IsNullOrEmpty(c.Author)
+			? c.Author!
+			: (!string.IsNullOrEmpty(c.Initials) ? c.Initials! : "Unknown");
+		var when = c.DateUtc?.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss'Z'") ?? string.Empty;
+
+		if (string.IsNullOrEmpty(who) && string.IsNullOrEmpty(when))
+			return string.Empty;
+
+		return $"<span style=\"font-size:small\">{HtmlAttr(who)} | {HtmlAttr(when)}</span>";
+	}
+
+	public override void VisitCommentThread(string anchorId, DxpCommentThread thread, IDxpStyleResolver s)
+	{
+		VisitCommentThread(anchorId, thread, s, null);
 	}
 
 	public override void VisitBreak(Break br, IDxpStyleResolver s)
+
 	{
 		if (ShouldSuppressOutput())
 			return;
@@ -1330,7 +1448,7 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 		if (_bodyContainerOpen)
 			return;
 
-		var style = new StringBuilder("color:#000000;");
+		var style = new StringBuilder("color:#000000;display:flex;flex-direction:column;position:relative;");
 		if (_pageWidthInches != null && _pageHeightInches != null)
 		{
 			style.Append("width:").Append(_pageWidthInches.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
@@ -1339,8 +1457,6 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 		if (_marginLeftInches != null || _marginRightInches != null || _marginTopInches != null)
 		{
 			style.Append("box-sizing:border-box;");
-			if (_marginTopInches != null)
-				style.Append("padding-top:").Append(_marginTopInches.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
 			if (_marginLeftInches != null)
 				style.Append("padding-left:").Append(_marginLeftInches.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
 			if (_marginRightInches != null)
@@ -1364,8 +1480,32 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 	{
 		if (!_bodyContainerOpen)
 			return;
+		EndSectionBody();
 		_writer.Write("</div>\n");
 		_bodyContainerOpen = false;
+	}
+
+	public void BeginSectionBody()
+	{
+		if (!_config.EmitDocumentColors)
+			return;
+		if (_sectionBodyOpen)
+			return;
+
+		var style = new StringBuilder("flex:1 0 auto;");
+		if (_marginTopInches != null)
+			style.Append("padding-top:").Append(_marginTopInches.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+
+		_writer.Write($"""<div style="{style}">""" + "\n");
+		_sectionBodyOpen = true;
+	}
+
+	public void EndSectionBody()
+	{
+		if (!_sectionBodyOpen)
+			return;
+		_writer.WriteLine("</div>");
+		_sectionBodyOpen = false;
 	}
 
 	private void UpdatePageDimensions(SectionLayout layout)
@@ -1421,7 +1561,20 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 		// Strip comments and empty paragraphs
 		string cleaned = Regex.Replace(html, @"<!--.*?-->", string.Empty, RegexOptions.Singleline);
 		cleaned = Regex.Replace(cleaned, @"<p[^>]*>\s*</p>", string.Empty, RegexOptions.IgnoreCase);
-		return !string.IsNullOrWhiteSpace(cleaned);
+		cleaned = Regex.Replace(cleaned, @"&nbsp;", " ", RegexOptions.IgnoreCase);
+
+		// Remove tags to inspect visible text
+		string textOnly = Regex.Replace(cleaned, "<[^>]+>", string.Empty);
+		textOnly = textOnly.Replace("\u00A0", " ").Trim();
+
+		if (string.IsNullOrWhiteSpace(textOnly))
+			return false;
+
+		// Consider pure page-number content as non-visible for header/footer emission.
+		if (Regex.IsMatch(textOnly, @"^[0-9]+$", RegexOptions.CultureInvariant))
+			return false;
+
+		return true;
 	}
 
 	IDisposable IDxpVisitor.VisitDrawingBegin(Drawing d, DxpDrawingInfo? info, IDxpStyleResolver s)
@@ -1433,7 +1586,10 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 	public new void VisitLegacyPictureBegin(Picture pict, IDxpStyleResolver s)
 	{
 		if (_config.EmitImages == false)
+		{
+			_writer.Write("[IMAGE]");
 			return;
+		}
 
 		var alt = "image";
 		_writer.Write($"[PICTURE: {alt}]");
