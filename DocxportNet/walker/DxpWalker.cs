@@ -172,6 +172,7 @@ public class DxpWalker
 		var lastSectPr = body.Descendants<SectionProperties>().LastOrDefault();
 		var firstSectPr = body.Descendants<SectionProperties>().FirstOrDefault();
 
+		var sections = BuildSections(body);
 
 		if (firstSectPr != null && v is visitors.DxpMarkdownVisitor mdv)
 		{
@@ -180,10 +181,121 @@ public class DxpWalker
 
 		using (v.VisitBodyBegin(body, s))
 		{
-			foreach (var child in body.ChildElements)
+			if (sections.Count == 0)
 			{
-				WalkBlock(child, s, v, lastSectPr);
+				foreach (var child in body.ChildElements)
+				{
+					WalkBlock(child, s, v, lastSectPr);
+				}
+				return;
 			}
+
+			foreach (var section in sections)
+			{
+				bool isLast = ReferenceEquals(section.Properties, lastSectPr);
+				EmitSectionStart(section.Properties, s, v, isLast);
+
+				foreach (var child in section.Blocks)
+				{
+					WalkBlock(child, s, v, lastSectPr);
+				}
+
+				EmitSectionEnd(section.Properties, s, v, isLast);
+			}
+		}
+	}
+
+	private sealed record SectionSlice(SectionProperties Properties, IReadOnlyList<OpenXmlElement> Blocks);
+
+	private static SectionProperties? ExtractSectionProperties(OpenXmlElement block, out bool includeBlock)
+	{
+		includeBlock = true;
+
+		if (block is SectionProperties sp)
+		{
+			includeBlock = false;
+			return sp;
+		}
+
+		if (block is Paragraph p)
+		{
+			var pp = p.GetFirstChild<ParagraphProperties>();
+			var paragraphSectPr = pp?.GetFirstChild<SectionProperties>();
+			return paragraphSectPr;
+		}
+
+		return null;
+	}
+
+	private List<SectionSlice> BuildSections(Body body)
+	{
+		var sections = new List<SectionSlice>();
+		var sectPrs = body.Descendants<SectionProperties>().ToList();
+		if (sectPrs.Count == 0)
+			return sections;
+
+		int sectIndex = 0;
+		var currentSectPr = sectPrs[sectIndex];
+		var currentBlocks = new List<OpenXmlElement>();
+
+		foreach (var child in body.ChildElements)
+		{
+			bool include = true;
+			var sp = ExtractSectionProperties(child, out include);
+
+			if (include)
+				currentBlocks.Add(child);
+
+			if (sp != null)
+			{
+				var props = currentSectPr ?? sp;
+				sections.Add(new SectionSlice(props, currentBlocks.ToList()));
+				currentBlocks.Clear();
+
+				sectIndex++;
+				currentSectPr = sectIndex < sectPrs.Count ? sectPrs[sectIndex] : null;
+			}
+		}
+
+		if (currentBlocks.Count > 0 && currentSectPr != null)
+			sections.Add(new SectionSlice(currentSectPr, currentBlocks));
+
+		return sections;
+	}
+
+	private void EmitSectionStart(SectionProperties sp, IDxpStyleResolver s, IDxpVisitor v, bool isLastSection)
+	{
+		bool emitSectionContent = v is visitors.DxpMarkdownVisitor mdv
+			? mdv.EmitSectionHeadersFooters
+			: true;
+
+		if (emitSectionContent)
+		{
+			RenderSectionHeaders(sp, s, v);
+			if (v is visitors.DxpMarkdownVisitor mdv2)
+				mdv2.BeginSectionBody();
+		}
+	}
+
+	private void EmitSectionEnd(SectionProperties sp, IDxpStyleResolver s, IDxpVisitor v, bool isLastSection)
+	{
+		bool emitSectionContent = v is visitors.DxpMarkdownVisitor mdv
+			? mdv.EmitSectionHeadersFooters
+			: true;
+
+		if (emitSectionContent)
+		{
+			if (v is visitors.DxpMarkdownVisitor mdv2)
+				mdv2.EndSectionBody();
+			RenderSectionFooters(sp, s, v);
+		}
+
+		if (!isLastSection)
+		{
+			v.VisitSectionProperties(sp, s);
+
+			var layout = CreateSectionLayout(sp);
+			v.VisitSectionLayout(sp, layout, s);
 		}
 	}
 
@@ -351,45 +463,102 @@ public class DxpWalker
 
 		if (emitSectionContent)
 		{
-			// 2) Headers for this section
-			foreach (var hr in sp.Elements<HeaderReference>())
+			RenderSectionHeaders(sp, s, v);
+			RenderSectionFooters(sp, s, v);
+		}
+	}
+
+	private void RenderSectionHeaders(SectionProperties sp, IDxpStyleResolver s, IDxpVisitor v)
+	{
+		var headerRef = PickHeaderFooterReference(sp.Elements<HeaderReference>(), sp, preferFirst: true);
+		if (headerRef == null)
+			return;
+
+		RenderHeaderReference(headerRef, s, v);
+	}
+
+	private void RenderSectionFooters(SectionProperties sp, IDxpStyleResolver s, IDxpVisitor v)
+	{
+		var footerRef = PickHeaderFooterReference(sp.Elements<FooterReference>(), sp, preferFirst: false);
+		if (footerRef == null)
+			return;
+
+		RenderFooterReference(footerRef, s, v);
+	}
+
+	private HeaderReference? PickHeaderFooterReference(IEnumerable<HeaderReference> refs, SectionProperties sp, bool preferFirst)
+	{
+		return PickReference(refs, sp, preferFirst, r => r.Type?.Value);
+	}
+
+	private FooterReference? PickHeaderFooterReference(IEnumerable<FooterReference> refs, SectionProperties sp, bool preferFirst)
+	{
+		return PickReference(refs, sp, preferFirst, r => r.Type?.Value);
+	}
+
+	private T? PickReference<T>(IEnumerable<T> refs, SectionProperties sp, bool preferFirst, Func<T, HeaderFooterValues?> typeSelector)
+		where T : class
+	{
+		var list = refs?.ToList();
+		if (list == null || list.Count == 0)
+			return null;
+
+		bool useFirst = preferFirst && sp.GetFirstChild<TitlePage>() != null;
+
+		var ordered = useFirst
+			? new[] { HeaderFooterValues.First, HeaderFooterValues.Default, HeaderFooterValues.Even }
+			: new[] { HeaderFooterValues.Default, HeaderFooterValues.First, HeaderFooterValues.Even };
+
+		foreach (var target in ordered)
+		{
+			var match = list.FirstOrDefault(r => NormalizeHeaderFooterType(typeSelector(r)) == target);
+			if (match != null)
+				return match;
+		}
+
+		return list.FirstOrDefault();
+	}
+
+	private static HeaderFooterValues NormalizeHeaderFooterType(HeaderFooterValues? type)
+	{
+		return type ?? HeaderFooterValues.Default;
+	}
+
+	private void RenderHeaderReference(HeaderReference hr, IDxpStyleResolver s, IDxpVisitor v)
+	{
+		var relId = hr.Id?.Value;
+		if (string.IsNullOrEmpty(relId))
+			return;
+
+		if (_main?.GetPartById(relId!) is HeaderPart part && part.Header is Header hdr)
+		{
+			var kind = hr.Type?.Value ?? HeaderFooterValues.Default;
+			using (PushCurrentPart(part))
+			using (v.VisitSectionHeaderBegin(hdr, kind, s))
 			{
-				var relId = hr.Id?.Value;
-				if (string.IsNullOrEmpty(relId))
-					continue;
-
-				if (doc.MainDocumentPart?.GetPartById(relId!) is HeaderPart part && part.Header is Header hdr)
-				{
-					var kind = hr.Type?.Value ?? HeaderFooterValues.Default;
-					using (PushCurrentPart(part))
-					using (v.VisitSectionHeaderBegin(hdr, kind, s))
-					{
-						foreach (var child in hdr.ChildElements)
-							WalkBlock(child, s, v);
-					}
-					_style.ResetStyle(v);
-				}
+				foreach (var child in hdr.ChildElements)
+					WalkBlock(child, s, v);
 			}
+			_style.ResetStyle(v);
+		}
+	}
 
-			// 3) Footers for this section
-			foreach (var fr in sp.Elements<FooterReference>())
+	private void RenderFooterReference(FooterReference fr, IDxpStyleResolver s, IDxpVisitor v)
+	{
+		var relId = fr.Id?.Value;
+		if (string.IsNullOrEmpty(relId))
+			return;
+
+		if (_main?.GetPartById(relId!) is FooterPart part && part.Footer is Footer ftr)
+		{
+			var kind = fr.Type?.Value ?? HeaderFooterValues.Default;
+			using (PushCurrentPart(part))
+			using (v.VisitSectionFooterBegin(ftr, kind, s))
 			{
-				var relId = fr.Id?.Value;
-				if (string.IsNullOrEmpty(relId))
-					continue;
-
-				if (doc.MainDocumentPart?.GetPartById(relId!) is FooterPart part && part.Footer is Footer ftr)
-				{
-					var kind = fr.Type?.Value ?? HeaderFooterValues.Default;
-					using (PushCurrentPart(part))
-					using (v.VisitSectionFooterBegin(ftr, kind, s))
-					{
-						foreach (var child in ftr.ChildElements)
-							WalkBlock(child, s, v);
-					}
-					_style.ResetStyle(v);
-				}
+				foreach (var child in ftr.ChildElements)
+					WalkBlock(child, s, v);
 			}
+			_style.ResetStyle(v);
 		}
 	}
 
