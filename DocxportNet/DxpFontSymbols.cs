@@ -88,10 +88,7 @@ public class DxpFontSymbolConverter
 	/// </summary>
 	public string Substitute(char ch, char? replacementForNonPrintable)
 	{
-		// Outside 8-bit code pages the font mappings do not apply.
-		if (ch > byte.MaxValue)
-			return ch.ToString();
-
+		// Map using the low byte so private-use/codepage escapes (e.g., U+F0B7) still resolve.
 		string sub = _table[(byte)ch];
 
 		if (replacementForNonPrintable != null && IsPrintable(sub) == false)
