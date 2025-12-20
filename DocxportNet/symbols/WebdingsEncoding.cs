@@ -4,7 +4,7 @@ namespace DocxportNet.symbols;
 
 public static class WebdingsEncoding
 {
-	public static readonly string?[] Table = [
+	public static readonly string[] Table = [
 	    "\u0000", // 0x00
         "\u0001", // 0x01
         "\u0002", // 0x02

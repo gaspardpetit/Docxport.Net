@@ -26,7 +26,12 @@ string text = DxpFontSymbols.Substitute("Wingdings", "\u0041\u0042"); // => "✌
 string bullet = DxpFontSymbols.Substitute("Symbol", (char)0xB7); // → "•"
 ```
 
-Unknown characters are returned unchanged; the helper also tries a Symbol/Zapf Dingbats fallback when no font name is provided.
+Unknown characters are returned unchanged. You can optionally supply a replacement character for non-printable glyphs:
+
+```csharp
+// Replace non-printable/control entries with '?'
+string safe = DxpFontSymbols.Substitute("Symbol", "\u0001\u00B7", '?'); // => "?•"
+```
 
 ### Common mappings
 
