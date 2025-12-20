@@ -28,9 +28,14 @@ public static class DxpFontSymbols
 		if (string.IsNullOrEmpty(text))
 			return string.Empty;
 
+		DxpFontSymbolConverter? converter = GetSymbolConverter(fontName);
+		if (converter == null)
+			return text!;
+
 		var sb = new StringBuilder(text!.Length);
 		foreach (char ch in text)
-			sb.Append(Substitute(fontName, ch, replacementForNonPrintable));
+			sb.Append(converter.Substitute(ch, replacementForNonPrintable));
+
 		return sb.ToString();
 	}
 
@@ -43,13 +48,51 @@ public static class DxpFontSymbols
 		if (ch > byte.MaxValue)
 			return ch.ToString();
 
+		DxpFontSymbolConverter? converter = GetSymbolConverter(fontName);
+		if (converter == null)
+			return ch.ToString();
+
+		return converter.Substitute(ch, replacementForNonPrintable);
+	}
+
+	/// <summary>
+	/// Get a converter for the given symbol font, or null if the font is not supported.
+	/// Useful for reusing the lookup without re-validating the font name each call.
+	/// </summary>
+	public static DxpFontSymbolConverter? GetSymbolConverter(string? fontName)
+	{
 		if (string.IsNullOrEmpty(fontName))
+			return null;
+
+		if (_fontTables.TryGetValue(fontName!.Trim(), out string[]? table) == false)
+			return null;
+
+		return new DxpFontSymbolConverter(table);
+	}
+}
+
+public class DxpFontSymbolConverter
+{
+	private string[] _table;
+
+	/// <summary>
+	/// Create a converter bound to a specific symbol font table. Preferred when reusing many lookups.
+	/// </summary>
+	public DxpFontSymbolConverter(string[] table)
+	{
+		_table = table;
+	}
+
+	/// <summary>
+	/// Translate a single symbol-font encoded character into Unicode, optionally replacing non-printable glyphs.
+	/// </summary>
+	public string Substitute(char ch, char? replacementForNonPrintable)
+	{
+		// Outside 8-bit code pages the font mappings do not apply.
+		if (ch > byte.MaxValue)
 			return ch.ToString();
 
-		if (_fontTables.TryGetValue(fontName!.Trim(), out var table) == false)
-			return ch.ToString();
-
-		string sub = table[(byte)ch];
+		string sub = _table[(byte)ch];
 
 		if (replacementForNonPrintable != null && IsPrintable(sub) == false)
 			return replacementForNonPrintable.ToString()!;
@@ -57,7 +100,10 @@ public static class DxpFontSymbols
 		return sub;
 	}
 
-	private static bool IsPrintable(string value)
+	/// <summary>
+	/// Determine whether a string consists only of printable (non-control/non-private) Unicode characters.
+	/// </summary>
+	public static bool IsPrintable(string value)
 	{
 		for (int i = 0; i < value.Length; i++)
 		{

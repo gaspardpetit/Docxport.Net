@@ -33,6 +33,19 @@ Unknown characters are returned unchanged. You can optionally supply a replaceme
 string safe = DxpFontSymbols.Substitute("Symbol", "\u0001\u00B7", '?'); // => "?•"
 ```
 
+### Reusing a converter
+
+If you need to translate many strings from the same font or probe whether a font is supported, reuse a converter instance:
+
+```csharp
+var converter = DxpFontSymbols.GetSymbolConverter("Webdings");
+if (converter != null)
+{
+    string cat = converter.Substitute((char)0xF6, '?'); // 🐈
+    string arrows = converter.Substitute((char)0x3C);   // ↔
+}
+```
+
 ### Common mappings
 
 - Symbol bullet: `DxpFontSymbols.Substitute("Symbol", (char)0xB7)` → `•`
