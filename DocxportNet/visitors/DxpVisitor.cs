@@ -450,7 +450,7 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 		return Disposable.Empty;
 	}
 
-	public virtual void VisitDocumentProperties(IPackageProperties core, IReadOnlyList<CustomFileProperty> custom)
+	public virtual void VisitDocumentProperties(IPackageProperties core, IReadOnlyList<CustomFileProperty> custom, IReadOnlyList<DxpTimelineEvent> timeline)
 	{
 		Ignored("IDocxVisitor.VisitDocumentProperties", core);
 	}

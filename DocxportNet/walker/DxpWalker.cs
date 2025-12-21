@@ -55,7 +55,9 @@ public class DxpWalker
 				: new List<CustomFileProperty>();
 
 			documentContext.CustomProperties = customList;
-			v.VisitDocumentProperties(core, customList);
+			var timeline = DxpTimeline.BuildTimeline(doc);
+			documentContext.Timeline = timeline;
+			v.VisitDocumentProperties(core, customList, timeline);
 
 			var body = doc.MainDocumentPart?.Document?.Body
 				?? throw new InvalidOperationException("DOCX has no main document body.");
