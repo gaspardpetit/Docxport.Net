@@ -72,8 +72,6 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 		return Disposable.Empty;
 	}
 
-	public virtual void VisitTableRowProperties(TableRowProperties trp, DxpIDocumentContext d) => Ignored(nameof(VisitTableRowProperties), trp);
-
 	public virtual IDisposable VisitDocumentBodyBegin(Body body, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitDocumentBodyBegin), body);
@@ -108,13 +106,12 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 	public virtual void VisitLastRenderedPageBreak(LastRenderedPageBreak pb, DxpIDocumentContext d) => Ignored(nameof(VisitLastRenderedPageBreak), pb);
 	public virtual void VisitNoBreakHyphen(NoBreakHyphen h, DxpIDocumentContext d) => Ignored(nameof(VisitNoBreakHyphen), h);
 
-	public virtual IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpMarker? marker, DxpStyleEffectiveIndentTwips indent)
+	public virtual IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
 	{
 		Ignored(nameof(VisitParagraphBegin), p);
 		return Disposable.Empty;
 	}
 
-	public virtual void VisitParagraphProperties(ParagraphProperties pp, DxpIDocumentContext d) => Ignored(nameof(VisitParagraphProperties), pp);
 	public virtual void VisitProofError(ProofError pe, DxpIDocumentContext d) => Ignored(nameof(VisitProofError), pe);
 
 	public virtual IDisposable VisitRunBegin(Run r, DxpIDocumentContext d)
@@ -122,9 +119,6 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 		Ignored(nameof(VisitRunBegin), r);
 		return Disposable.Empty;
 	}
-
-	public virtual void VisitRunProperties(RunProperties rp, DxpIDocumentContext d) => Ignored(nameof(VisitRunProperties), rp);
-	public virtual void VisitSectionProperties(SectionProperties sp, DxpIDocumentContext d) => Ignored(nameof(VisitSectionProperties), sp);
 	public virtual void VisitTab(TabChar tab, DxpIDocumentContext d) => Ignored(nameof(VisitTab), tab);
 
 	public virtual IDisposable VisitTableBegin(Table t, DxpTableModel model, DxpIDocumentContext d, DxpITableContext table)
@@ -138,8 +132,6 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 		Ignored(nameof(VisitTableCellBegin), tc);
 		return Disposable.Empty;
 	}
-
-	public virtual void VisitTableGrid(TableGrid tg, DxpIDocumentContext d) => Ignored(nameof(VisitTableGrid), tg);
 
 	public virtual IDisposable VisitTableRowBegin(TableRow tr, DxpITableRowContext row, DxpIDocumentContext d)
 	{
@@ -198,8 +190,6 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 	public virtual void VisitEmbeddedObject(EmbeddedObject obj, DxpIDocumentContext d) => Ignored(nameof(VisitEmbeddedObject), obj);
 
 	public virtual void VisitLegacyPictureBegin(Picture pict, DxpIDocumentContext d) => Ignored(nameof(VisitLegacyPictureBegin), pict);
-	public virtual void VisitRubyProperties(RubyProperties pr, DxpIDocumentContext d) => Ignored(nameof(VisitRubyProperties), pr);
-
 	public virtual IDisposable VisitRubyContentBegin(RubyContentType rc, bool isBase, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitRubyContentBegin), rc);
@@ -234,7 +224,7 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 
 	public virtual void VisitInsertedParagraphMark(Inserted ins, ParagraphProperties pPr2, Paragraph? p, DxpIDocumentContext d) => Ignored(nameof(VisitInsertedParagraphMark), ins);
 
-	public virtual void VisitInsertedNumberingProperties(Inserted ins, NumberingProperties numPr, ParagraphProperties? pPr, Paragraph? p, DxpIDocumentContext d) => Ignored(nameof(VisitInsertedNumberingProperties), ins);
+	public virtual void VisitInsertedNumbering(Inserted ins, DxpMarker? marker, DxpStyleEffectiveIndentTwips indent, Paragraph? p, DxpIDocumentContext d) => Ignored(nameof(VisitInsertedNumbering), ins);
 
 	public virtual void VisitInsertedTableRowMark(Inserted ins, TableRowProperties trPr, TableRow? tr, DxpIDocumentContext d) => Ignored(nameof(VisitInsertedTableRowMark), ins);
 
@@ -264,15 +254,11 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 
 	public virtual void VisitAltChunk(AltChunk ac, DxpIDocumentContext d) => Ignored(nameof(VisitAltChunk), ac);
 
-	public virtual void VisitSdtProperties(SdtProperties pr, DxpIDocumentContext d) => Ignored(nameof(VisitSdtProperties), pr);
-
 	public virtual IDisposable VisitSdtContentBlockBegin(SdtContentBlock content, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitSdtContentBlockBegin), content);
 		return Disposable.Empty;
 	}
-
-	public virtual void VisitCustomXmlProperties(CustomXmlProperties pr, DxpIDocumentContext d) => Ignored(nameof(VisitCustomXmlProperties), pr);
 
 	public virtual void VisitCustomXmlConflictInsertionRangeStart(CustomXmlConflictInsertionRangeStart cxCis, DxpIDocumentContext d) => Ignored(nameof(VisitCustomXmlConflictInsertionRangeStart), cxCis);
 	public virtual void VisitCustomXmlConflictInsertionRangeEnd(CustomXmlConflictInsertionRangeEnd cxCie, DxpIDocumentContext d) => Ignored(nameof(VisitCustomXmlConflictInsertionRangeEnd), cxCie);
@@ -339,8 +325,6 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 	public virtual void VisitOMathElement(DocumentFormat.OpenXml.Math.SubSuperscript mSubSup, DxpIDocumentContext d) => Ignored(nameof(VisitOMathElement), mSubSup);
 	public virtual void VisitOMathElement(DocumentFormat.OpenXml.Math.Superscript mSup, DxpIDocumentContext d) => Ignored(nameof(VisitOMathElement), mSup);
 
-	public virtual void VisitSdtEndCharProperties(SdtEndCharProperties endPr, DxpIDocumentContext d) => Ignored(nameof(VisitSdtEndCharProperties), endPr);
-
 	public virtual IDisposable VisitSdtContentRunBegin(SdtContentRun content, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitSdtContentRunBegin), content);
@@ -405,8 +389,6 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 		return Disposable.Empty;
 	}
 
-	public virtual void VisitSmartTagProperties(OpenXmlUnknownElement smartTagPr, List<CustomXmlAttribute> attrs, DxpIDocumentContext d) => Ignored(nameof(VisitSmartTagProperties), smartTagPr);
-
 	public virtual IDisposable VisitAlternateContentBegin(AlternateContent ac, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitAlternateContentBegin), ac);
@@ -456,11 +438,6 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 		return Disposable.Empty;
 	}
 
-	public virtual void VisitDocumentSettings(Settings settings, DxpIDocumentContext d)
-	{
-		Ignored("IDocxVisitor.VisitDocumentSettings", settings);
-	}
-
 	public virtual IDisposable VisitSectionHeaderBegin(Header hdr, object value, DxpIDocumentContext d)
 	{
 		Ignored("IDocxVisitor.VisitSectionHeaderBegin", hdr);
@@ -473,14 +450,9 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 		return Disposable.Empty;
 	}
 
-	public virtual void VisitCoreFileProperties(IPackageProperties core)
+	public virtual void VisitDocumentProperties(IPackageProperties core, IReadOnlyList<CustomFileProperty> custom)
 	{
-		Ignored("IDocxVisitor.VisitCoreFileProperties", core);
-	}
-
-	public virtual void VisitCustomFileProperties(IEnumerable<CustomFileProperty> custom)
-	{
-		Ignored("IDocxVisitor.VisitCoreFileProperties", custom);
+		Ignored("IDocxVisitor.VisitDocumentProperties", core);
 	}
 
 	public virtual void VisitBibliographySources(CustomXmlPart bibliographyPart, XDocument bib)

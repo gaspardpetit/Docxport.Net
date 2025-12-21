@@ -40,8 +40,8 @@ public interface DxpIStyleResolver
 	DxpStyleEffectiveNumPr? ResolveEffectiveNumPr(Paragraph p);
 	DxpStyleEffectiveIndentTwips GetIndentation(Paragraph p, DxpNumberingResolver? num);
 	DxpStyleEffectiveRunStyle ResolveRunStyle(Paragraph paragraph, Run r);
+	string? ResolveRunLanguage(Paragraph paragraph, Run r);
 	int? GetHeadingLevel(Paragraph p);
 	IReadOnlyList<DxpStyleInfo> GetParagraphStyleChain(Paragraph p);
 	DxpStyleEffectiveRunStyle GetDefaultRunStyle();
 }
-

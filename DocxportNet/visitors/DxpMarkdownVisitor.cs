@@ -42,6 +42,7 @@ public sealed record DxpMarkdownVisitorConfig
 	public bool EmitUnreferencedBookmarks = true;
 	public bool EmitPageNumbers = false;
 	public bool UsePlainComments = false;
+	public bool EmitCustomProperties = false;
 
 	public static DxpMarkdownVisitorConfig RICH = new();
 	public static DxpMarkdownVisitorConfig PLAIN = new() {
@@ -280,10 +281,6 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 		_writer.Write("-");
 	}
 
-	public override void VisitSectionProperties(SectionProperties sp, DxpIDocumentContext d)
-	{
-	}
-
 	public override void VisitDrawingBegin(Drawing drw, DxpDrawingInfo? info, DxpIDocumentContext d)
 	{
 		if (_config.EmitImages == false)
@@ -311,12 +308,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 		}
 	}
 
-	public override void VisitDocumentSettings(Settings settings, DxpIDocumentContext d)
-	{
-		// no-op for now
-	}
-
-	public override void VisitCoreFileProperties(IPackageProperties core)
+	public override void VisitDocumentProperties(IPackageProperties core, IReadOnlyList<CustomFileProperty> custom)
 	{
 		var lines = new List<string>();
 
@@ -336,6 +328,15 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 		Add("Revision", core.Revision);
 		Add("Created", FormatDateUtc(core.Created));
 		Add("Modified", FormatDateUtc(core.Modified));
+
+		if (custom != null && _config.EmitCustomProperties)
+		{
+			foreach (var prop in custom)
+			{
+				if (prop.Value != null)
+					lines.Add($"<!-- {prop.Name}: {prop.Value} -->");
+			}
+		}
 
 		foreach (var line in lines)
 			_writer.WriteLine(line);
@@ -357,8 +358,10 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 		s.Replace("&", "&amp;").Replace("\"", "&quot;").Replace("<", "&lt;").Replace(">", "&gt;");
 
 
-	public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpMarker? marker, DxpStyleEffectiveIndentTwips indent)
+	public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
 	{
+		var marker = paragraph.Marker;
+		var indent = paragraph.Indent;
 		string innerText = p.InnerText;
 
 		if (string.IsNullOrWhiteSpace(innerText))
@@ -699,16 +702,6 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 		});
 	}
 
-	public override void VisitParagraphProperties(ParagraphProperties pp, DxpIDocumentContext d)
-	{
-		// handled in VisitParagraphBegin
-	}
-
-	public override void VisitTableGrid(TableGrid tg, DxpIDocumentContext d)
-	{
-		// ignore for "simple HTML"
-	}
-
 	private static string? BuildCellStyle(TableCellBorders? borders)
 	{
 		if (borders == null)
@@ -796,11 +789,6 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 		}
 
 		return null;
-	}
-
-	public override void VisitTableRowProperties(TableRowProperties trp, DxpIDocumentContext d)
-	{
-		// properties are applied in VisitTableRowBegin
 	}
 
 	public override IDisposable VisitBlockBegin(OpenXmlElement child, DxpIDocumentContext d)
@@ -924,11 +912,6 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 
 		_writer.Write($"<span style=\"{style}\">");
 		return Disposable.Create(() => _writer.Write("</span>"));
-	}
-
-	public override void VisitRunProperties(RunProperties rp, DxpIDocumentContext d)
-	{
-		// handled in VisitRunBegin
 	}
 
 	private string BuildRunStyle(RunProperties? rp)
