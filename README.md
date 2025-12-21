@@ -1,3 +1,6 @@
+![NuGet Version](https://img.shields.io/nuget/v/DocxportNet)
+[![Build & Tests](https://github.com/gaspardpetit/Docxport.Net/actions/workflows/run-tests.yml/badge.svg)](https://github.com/gaspardpetit/Docxport.Net/actions/workflows/run-tests.yml)
+
 # Docxport.Net
 
 Docxport.Net is a .NET library for walking DOCX documents and exporting them to friendly formats. Today it focuses on Markdown (rich and plain), with full handling of:
