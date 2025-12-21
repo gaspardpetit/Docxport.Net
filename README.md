@@ -1,6 +1,16 @@
 # Docxport.Net
 
-Docxport.Net is a .NET library for walking DOCX documents and emitting friendly formats. It also ships a small utility that translates legacy “symbol fonts” (Symbol, Zapf Dingbats, Webdings, Wingdings) into modern Unicode.
+Docxport.Net is a .NET library for walking DOCX documents and exporting them to friendly formats. Today it focuses on Markdown (rich and plain), with full handling of:
+
+- Tracked changes (accept/reject/inline views)
+- Lists with proper markers and indentation
+- Tables
+- Comments and threaded replies
+- Headers and footers
+- Images/drawings
+- Bookmarks, hyperlinks, fields, and more
+
+It also ships a small utility that translates legacy “symbol fonts” (Symbol, Zapf Dingbats, Webdings, Wingdings) into modern Unicode.
 
 ## Supported symbol fonts
 
