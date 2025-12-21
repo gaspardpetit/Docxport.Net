@@ -149,7 +149,8 @@ public interface DxpIDocumentContext
 
 public interface DxpIParagraphContext
 {
-	DxpMarker Marker { get; }
+	DxpMarker MarkerAccept { get; }
+	DxpMarker MarkerReject { get; }
 	DxpStyleEffectiveIndentTwips Indent { get; }
 	ParagraphProperties? Properties { get; }
 }

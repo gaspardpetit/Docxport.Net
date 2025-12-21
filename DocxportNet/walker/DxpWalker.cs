@@ -660,226 +660,17 @@ public class DxpWalker
 		if (!DxpParagraphs.HasRenderableParagraphContent(p))
 			return;
 
-		using (d.PushParagraph(p, out DxpParagraphContext paragraphContext))
+		bool isDeletedParagraph =
+			p.ParagraphProperties?.GetFirstChild<Deleted>() != null ||
+			p.ParagraphProperties?.ParagraphMarkRunProperties?.GetFirstChild<Deleted>() != null;
+		bool isInsertedParagraph =
+			p.ParagraphProperties?.ParagraphMarkRunProperties?.GetFirstChild<Inserted>() != null;
+
+		using (d.PushParagraph(p, out DxpParagraphContext paragraphContext, advanceAccept: !isDeletedParagraph, advanceReject: !isInsertedParagraph))
 		using (v.VisitParagraphBegin(p, d, paragraphContext))
 		{
 			foreach (var child in p.ChildElements)
-			{
-				switch (child)
-				{
-					case ProofError pe:
-						v.VisitProofError(pe, d);
-						break;
-
-					case DeletedRun dr:
-						WalkDeletedRun(dr, d, v);
-						break;
-
-					case InsertedRun ir:
-						WalkInsertedRun(ir, d, v);
-						break;
-
-					case ParagraphProperties:
-						// Paragraph properties are already surfaced via the paragraph context.
-						break;
-
-					case BookmarkStart bs:
-						v.VisitBookmarkStart(bs, d);
-						break;
-
-					case BookmarkEnd be:
-						v.VisitBookmarkEnd(be, d);
-						break;
-
-					case Run r:
-						WalkRun(r, d, v);
-						break;
-
-					case Hyperlink link:
-						WalkHyperlink(link, d, v);
-						break;
-
-					case CommentRangeStart crs:
-						WalkCommentRangeStart(crs, d, v);
-						break;
-					case CommentReference cref:
-						WalkCommentReference(cref, d, v);
-						break;
-					case CommentRangeEnd:
-						// nothing to do for inline-at-start policy
-						break;
-
-					case CustomXmlRun cxr:
-						WalkCustomXmlRun(cxr, d, v);
-						break; // w:customXml (inline custom XML container).
-
-					case SimpleField fld:
-						WalkSimpleField(fld, d, v);
-						break; // w:fldSimple (simple field; contains runs/hyperlinks).
-
-					case SdtRun sdtRun:
-						WalkSdtRun(sdtRun, d, v);
-						break; // w:sdt (run-level SDT).
-
-					case PermStart ps:
-						v.VisitPermStart(ps, d);
-						break; // w:permStart (editing permission range start).
-					case PermEnd pe:
-						v.VisitPermEnd(pe, d);
-						break; // w:permEnd (editing permission range end).
-
-					case MoveFromRangeStart mfrs:
-						v.VisitMoveFromRangeStart(mfrs, d);
-						break; // w:moveFromRangeStart (tracked move-out start).
-					case MoveFromRangeEnd mfre:
-						v.VisitMoveFromRangeEnd(mfre, d);
-						break; // w:moveFromRangeEnd (tracked move-out end).
-					case MoveToRangeStart mtrs:
-						v.VisitMoveToRangeStart(mtrs, d);
-						break; // w:moveToRangeStart (tracked move-in start).
-					case MoveToRangeEnd mtre:
-						v.VisitMoveToRangeEnd(mtre, d);
-						break; // w:moveToRangeEnd (tracked move-in end).
-
-					case CustomXmlInsRangeStart cxInsS:
-						v.VisitCustomXmlInsRangeStart(cxInsS, d);
-						break; // w:customXmlInsRangeStart (customXml insert range start).
-					case CustomXmlInsRangeEnd cxInsE:
-						v.VisitCustomXmlInsRangeEnd(cxInsE, d);
-						break; // w:customXmlInsRangeEnd (customXml insert range end).
-					case CustomXmlDelRangeStart cxDelS:
-						v.VisitCustomXmlDelRangeStart(cxDelS, d);
-						break; // w:customXmlDelRangeStart (customXml delete range start).
-					case CustomXmlDelRangeEnd cxDelE:
-						v.VisitCustomXmlDelRangeEnd(cxDelE, d);
-						break; // w:customXmlDelRangeEnd (customXml delete range end).
-					case CustomXmlMoveFromRangeStart cxMfS:
-						v.VisitCustomXmlMoveFromRangeStart(cxMfS, d);
-						break; // w:customXmlMoveFromRangeStart (customXml move-from start).
-					case CustomXmlMoveFromRangeEnd cxMfE:
-						v.VisitCustomXmlMoveFromRangeEnd(cxMfE, d);
-						break; // w:customXmlMoveFromRangeEnd (customXml move-from end).
-					case CustomXmlMoveToRangeStart cxMtS:
-						v.VisitCustomXmlMoveToRangeStart(cxMtS, d);
-						break; // w:customXmlMoveToRangeStart (customXml move-to start).
-					case CustomXmlMoveToRangeEnd cxMtE:
-						v.VisitCustomXmlMoveToRangeEnd(cxMtE, d);
-						break; // w:customXmlMoveToRangeEnd (customXml move-to end).
-
-					case DocumentFormat.OpenXml.Office2010.Word.CustomXmlConflictInsertionRangeStart cxCis:
-						v.VisitCustomXmlConflictInsertionRangeStart(cxCis, d);
-						break; // w14:customXmlConflictInsRangeStart (Office 2010 conflict insert start).
-					case DocumentFormat.OpenXml.Office2010.Word.CustomXmlConflictInsertionRangeEnd cxCie:
-						v.VisitCustomXmlConflictInsertionRangeEnd(cxCie, d);
-						break; // w14:customXmlConflictInsRangeEnd (Office 2010 conflict insert end).
-					case DocumentFormat.OpenXml.Office2010.Word.CustomXmlConflictDeletionRangeStart cxCds:
-						v.VisitCustomXmlConflictDeletionRangeStart(cxCds, d);
-						break; // w14:customXmlConflictDelRangeStart (Office 2010 conflict delete start).
-					case DocumentFormat.OpenXml.Office2010.Word.CustomXmlConflictDeletionRangeEnd cxCde:
-						v.VisitCustomXmlConflictDeletionRangeEnd(cxCde, d);
-						break; // w14:customXmlConflictDelRangeEnd (Office 2010 conflict delete end).
-
-					case MoveFromRun mfr:
-						v.VisitMoveFromRun(mfr, d);
-						break; // w:moveFrom (run container for moved-out text).
-					case MoveToRun mtr:
-						v.VisitMoveToRun(mtr, d);
-						break; // w:moveTo (run container for moved-in text).
-
-					case ContentPart cp:
-						v.VisitContentPart(cp, d);
-						break; // w:contentPart (external content reference; Office 2010+).
-
-					case DocumentFormat.OpenXml.Math.Paragraph oMathPara:
-						v.VisitOMathParagraph(oMathPara, d);
-						break; // m:oMathPara (display math paragraph).
-					case DocumentFormat.OpenXml.Math.OfficeMath oMath:
-						v.VisitOMath(oMath, d);
-						break; // m:oMath (inline math object).
-
-					case DocumentFormat.OpenXml.Math.Accent mAccent:
-						v.VisitOMathElement(mAccent, d);
-						break; // m:acc (math accent – direct child allowed).
-					case DocumentFormat.OpenXml.Math.Bar mBar:
-						v.VisitOMathElement(mBar, d);
-						break; // m:bar (math bar).
-					case DocumentFormat.OpenXml.Math.Box mBox:
-						v.VisitOMathElement(mBox, d);
-						break; // m:box (math box).
-					case DocumentFormat.OpenXml.Math.BorderBox mBorderBox:
-						v.VisitOMathElement(mBorderBox, d);
-						break; // m:borderBox (math border box).
-					case DocumentFormat.OpenXml.Math.Delimiter mDelim:
-						v.VisitOMathElement(mDelim, d);
-						break; // m:d (delimiter).
-					case DocumentFormat.OpenXml.Math.EquationArray mEqArr:
-						v.VisitOMathElement(mEqArr, d);
-						break; // m:eqArr (equation array).
-					case DocumentFormat.OpenXml.Math.Fraction mFrac:
-						v.VisitOMathElement(mFrac, d);
-						break; // m:f (fraction).
-					case DocumentFormat.OpenXml.Math.MathFunction mFunc:
-						v.VisitOMathElement(mFunc, d);
-						break; // m:func (function).
-					case DocumentFormat.OpenXml.Math.GroupChar mGroupChr:
-						v.VisitOMathElement(mGroupChr, d);
-						break; // m:groupChr (group character).
-					case DocumentFormat.OpenXml.Math.LimitLower mLimLow:
-						v.VisitOMathElement(mLimLow, d);
-						break; // m:limLow (lower limit).
-					case DocumentFormat.OpenXml.Math.LimitUpper mLimUpp:
-						v.VisitOMathElement(mLimUpp, d);
-						break; // m:limUpp (upper limit).
-					case DocumentFormat.OpenXml.Math.Matrix mMat:
-						v.VisitOMathElement(mMat, d);
-						break; // m:m (matrix).
-					case DocumentFormat.OpenXml.Math.Nary mNary:
-						v.VisitOMathElement(mNary, d);
-						break; // m:nary (n-ary operator).
-					case DocumentFormat.OpenXml.Math.Phantom mPhant:
-						v.VisitOMathElement(mPhant, d);
-						break; // m:phantom (phantom).
-					case DocumentFormat.OpenXml.Math.Radical mRad:
-						v.VisitOMathElement(mRad, d);
-						break; // m:rad (radical).
-					case DocumentFormat.OpenXml.Math.PreSubSuper mPreSubSup:
-						v.VisitOMathElement(mPreSubSup, d);
-						break; // m:preSubSup (presub/superscript).
-					case DocumentFormat.OpenXml.Math.Subscript mSub:
-						v.VisitOMathElement(mSub, d);
-						break; // m:s (subscript).
-					case DocumentFormat.OpenXml.Math.SubSuperscript mSubSup:
-						v.VisitOMathElement(mSubSup, d);
-						break; // m:sSub (sub-superscript).
-					case DocumentFormat.OpenXml.Math.Superscript mSup:
-						v.VisitOMathElement(mSup, d);
-						break; // m:sup (superscript).
-					case DocumentFormat.OpenXml.Math.Run mMathRun:
-						v.VisitOMathRun(mMathRun, d);
-						break; // m:r (math run).
-
-					case BidirectionalOverride bdo:
-						WalkBidirectionalOverride(bdo, d, v);
-						break; // w:bdo (Bidi override; Office 2010+).
-					case BidirectionalEmbedding bdi:
-						WalkBidirectionalEmbedding(bdi, d, v);
-						break; // w:dir (Bidi embedding; Office 2010+).
-
-					case SubDocumentReference subDoc:
-						v.VisitSubDocumentReference(subDoc, d);
-						break; // w:subDoc (subdocument anchor).
-
-					case AlternateContent ac:
-						WalkAlternateContent(ac, d, v);
-						break; // mc:AlternateContent (compat wrapper around inline kids). (MC allows it here)
-
-					// Comment anchors / tracked change containers will show up as elements too.
-					// These currently throw to surface unhandled cases.
-					default:
-						WalkUnknown("Paragraph", child, d, v);
-						break;
-				}
-			}
+				WalkParagraphChild(child, d, v);
 
 			d.StyleTracker.ResetStyle(d, v);
 		}
@@ -2684,27 +2475,57 @@ public class DxpWalker
 		using (v.VisitDeletedBegin(del, d))
 		{
 
-			// Case 1: table row deletion (w:trPr/w:del)
-			if (del.Parent is TableRowProperties trPr)
-			{
-				var tr = trPr.Parent as TableRow; // usually non-null when in a live tree
-				v.VisitDeletedTableRowMark(del, trPr, tr, d); // tell visitor: the row is marked deleted
-				return;
-			}
-
-			// Case 2: paragraph mark deletion (w:pPr/w:rPr/w:del)
-			// This marks the *paragraph mark* deleted (contents merged with next para per spec).
-			if (del.Parent is RunProperties rPr && rPr.Parent is ParagraphProperties pPr)
-			{
-				var p = pPr.Parent as Paragraph;
-				v.VisitDeletedParagraphMark(del, pPr, p, d); // tell visitor: paragraph mark is deleted
-				return;
-			}
-
-			// Anything else is unexpected for w:del (schema lists trPr and rPr parents).
-			WalkUnknown("Deleted", del, d, v);
+		// Case 1: table row deletion (w:trPr/w:del)
+		if (del.Parent is TableRowProperties trPr)
+		{
+			var tr = trPr.Parent as TableRow; // usually non-null when in a live tree
+			v.VisitDeletedTableRowMark(del, trPr, tr, d); // tell visitor: the row is marked deleted
 			return;
 		}
+
+		// Case 2: paragraph mark deletion (w:pPr/w:rPr/w:del)
+		// This marks the *paragraph mark* deleted (contents merged with next para per spec).
+		if (del.Parent is RunProperties rPr && rPr.Parent is ParagraphProperties pPr)
+		{
+			var p = pPr.Parent as Paragraph;
+			v.VisitDeletedParagraphMark(del, pPr, p, d); // tell visitor: paragraph mark is deleted
+			return;
+		}
+
+		// Fallback: if the deleted element contains block/inline content, walk it so visitors can render it.
+		if (del.ChildElements != null && del.ChildElements.Count > 0)
+		{
+			foreach (var child in del.ChildElements)
+			{
+				switch (child)
+				{
+					case Paragraph p:
+						using (d.PushParagraph(p, out DxpParagraphContext paragraphContext, advanceAccept: false, advanceReject: true))
+						using (v.VisitParagraphBegin(p, d, paragraphContext))
+						{
+							foreach (var innerChild in p.ChildElements)
+								WalkParagraphChild(innerChild, d, v);
+							d.StyleTracker.ResetStyle(d, v);
+						}
+						break;
+					case Table t:
+						WalkTable(t, d, v);
+						break;
+					case AltChunk ac:
+						v.VisitAltChunk(ac, d);
+						break;
+					default:
+						WalkParagraphChild(child, d, v);
+						break;
+				}
+			}
+			return;
+		}
+
+		// Anything else is unexpected for w:del (schema lists trPr and rPr parents).
+		WalkUnknown("Deleted", del, d, v);
+		return;
+	}
 	}
 
 
@@ -2731,8 +2552,8 @@ public class DxpWalker
 				var p = pPr?.Parent as Paragraph;
 				if (p != null)
 				{
-					var marker = d.Lists.MaterializeMarker(p, d.Styles);
-					var indent = d.Lists.GetIndentation(p, d.Styles);
+					var marker = d.AcceptLists.MaterializeMarker(p, d.Styles);
+					var indent = d.AcceptLists.GetIndentation(p, d.Styles);
 					v.VisitInsertedNumbering(ins, marker, indent, p, d);
 				}
 				else
@@ -3267,4 +3088,224 @@ public class DxpWalker
 			Properties = properties;
 		}
 	}
+
+	private void WalkParagraphChild(OpenXmlElement child, DxpDocumentContext d, DxpIVisitor v)
+	{
+		switch (child)
+		{
+			case ProofError pe:
+				v.VisitProofError(pe, d);
+				break;
+
+			case DeletedRun dr:
+				WalkDeletedRun(dr, d, v);
+				break;
+			case Deleted del:
+				WalkDeleted(del, d, v);
+				break;
+
+			case InsertedRun ir:
+				WalkInsertedRun(ir, d, v);
+				break;
+
+			case ParagraphProperties:
+				// Paragraph properties are already surfaced via the paragraph context.
+				break;
+
+			case BookmarkStart bs:
+				v.VisitBookmarkStart(bs, d);
+				break;
+
+			case BookmarkEnd be:
+				v.VisitBookmarkEnd(be, d);
+				break;
+
+			case Run r:
+				WalkRun(r, d, v);
+				break;
+
+			case Hyperlink link:
+				WalkHyperlink(link, d, v);
+				break;
+
+			case CommentRangeStart crs:
+				WalkCommentRangeStart(crs, d, v);
+				break;
+			case CommentReference cref:
+				WalkCommentReference(cref, d, v);
+				break;
+			case CommentRangeEnd:
+				// nothing to do for inline-at-start policy
+				break;
+
+			case CustomXmlRun cxr:
+				WalkCustomXmlRun(cxr, d, v);
+				break; // w:customXml (inline custom XML container).
+
+			case SimpleField fld:
+				WalkSimpleField(fld, d, v);
+				break; // w:fldSimple (simple field; contains runs/hyperlinks).
+
+			case SdtRun sdtRun:
+				WalkSdtRun(sdtRun, d, v);
+				break; // w:sdt (run-level SDT).
+
+			case PermStart ps:
+				v.VisitPermStart(ps, d);
+				break; // w:permStart (editing permission range start).
+			case PermEnd pe:
+				v.VisitPermEnd(pe, d);
+				break; // w:permEnd (editing permission range end).
+
+			case MoveFromRangeStart mfrs:
+				v.VisitMoveFromRangeStart(mfrs, d);
+				break; // w:moveFromRangeStart (tracked move-out start).
+			case MoveFromRangeEnd mfre:
+				v.VisitMoveFromRangeEnd(mfre, d);
+				break; // w:moveFromRangeEnd (tracked move-out end).
+			case MoveToRangeStart mtrs:
+				v.VisitMoveToRangeStart(mtrs, d);
+				break; // w:moveToRangeStart (tracked move-in start).
+			case MoveToRangeEnd mtre:
+				v.VisitMoveToRangeEnd(mtre, d);
+				break; // w:moveToRangeEnd (tracked move-in end).
+
+			case CustomXmlInsRangeStart cxInsS:
+				v.VisitCustomXmlInsRangeStart(cxInsS, d);
+				break; // w:customXmlInsRangeStart (customXml insert range start).
+			case CustomXmlInsRangeEnd cxInsE:
+				v.VisitCustomXmlInsRangeEnd(cxInsE, d);
+				break; // w:customXmlInsRangeEnd (customXml insert range end).
+			case CustomXmlDelRangeStart cxDelS:
+				v.VisitCustomXmlDelRangeStart(cxDelS, d);
+				break; // w:customXmlDelRangeStart (customXml delete range start).
+			case CustomXmlDelRangeEnd cxDelE:
+				v.VisitCustomXmlDelRangeEnd(cxDelE, d);
+				break; // w:customXmlDelRangeEnd (customXml delete range end).
+			case CustomXmlMoveFromRangeStart cxMfS:
+				v.VisitCustomXmlMoveFromRangeStart(cxMfS, d);
+				break; // w:customXmlMoveFromRangeStart (customXml move-from start).
+			case CustomXmlMoveFromRangeEnd cxMfE:
+				v.VisitCustomXmlMoveFromRangeEnd(cxMfE, d);
+				break; // w:customXmlMoveFromRangeEnd (customXml move-from end).
+			case CustomXmlMoveToRangeStart cxMtS:
+				v.VisitCustomXmlMoveToRangeStart(cxMtS, d);
+				break; // w:customXmlMoveToRangeStart (customXml move-to start).
+			case CustomXmlMoveToRangeEnd cxMtE:
+				v.VisitCustomXmlMoveToRangeEnd(cxMtE, d);
+				break; // w:customXmlMoveToRangeEnd (customXml move-to end).
+
+			case DocumentFormat.OpenXml.Office2010.Word.CustomXmlConflictInsertionRangeStart cxCis:
+				v.VisitCustomXmlConflictInsertionRangeStart(cxCis, d);
+				break; // w14:customXmlConflictInsRangeStart (Office 2010 conflict insert start).
+			case DocumentFormat.OpenXml.Office2010.Word.CustomXmlConflictInsertionRangeEnd cxCie:
+				v.VisitCustomXmlConflictInsertionRangeEnd(cxCie, d);
+				break; // w14:customXmlConflictInsRangeEnd (Office 2010 conflict insert end).
+			case DocumentFormat.OpenXml.Office2010.Word.CustomXmlConflictDeletionRangeStart cxCds:
+				v.VisitCustomXmlConflictDeletionRangeStart(cxCds, d);
+				break; // w14:customXmlConflictDelRangeStart (Office 2010 conflict delete start).
+			case DocumentFormat.OpenXml.Office2010.Word.CustomXmlConflictDeletionRangeEnd cxCde:
+				v.VisitCustomXmlConflictDeletionRangeEnd(cxCde, d);
+				break; // w14:customXmlConflictDelRangeEnd (Office 2010 conflict delete end).
+
+			case MoveFromRun mfr:
+				v.VisitMoveFromRun(mfr, d);
+				break; // w:moveFrom (run container for moved-out text).
+			case MoveToRun mtr:
+				v.VisitMoveToRun(mtr, d);
+				break; // w:moveTo (run container for moved-in text).
+
+			case ContentPart cp:
+				v.VisitContentPart(cp, d);
+				break; // w:contentPart (external content reference; Office 2010+).
+
+			case DocumentFormat.OpenXml.Math.Paragraph oMathPara:
+				v.VisitOMathParagraph(oMathPara, d);
+				break; // m:oMathPara (display math paragraph).
+			case DocumentFormat.OpenXml.Math.OfficeMath oMath:
+				v.VisitOMath(oMath, d);
+				break; // m:oMath (inline math object).
+
+			case DocumentFormat.OpenXml.Math.Accent mAccent:
+				v.VisitOMathElement(mAccent, d);
+				break; // m:acc (math accent – direct child allowed).
+			case DocumentFormat.OpenXml.Math.Bar mBar:
+				v.VisitOMathElement(mBar, d);
+				break; // m:bar (math bar).
+			case DocumentFormat.OpenXml.Math.Box mBox:
+				v.VisitOMathElement(mBox, d);
+				break; // m:box (math box).
+			case DocumentFormat.OpenXml.Math.BorderBox mBorderBox:
+				v.VisitOMathElement(mBorderBox, d);
+				break; // m:borderBox (math border box).
+			case DocumentFormat.OpenXml.Math.Delimiter mDelim:
+				v.VisitOMathElement(mDelim, d);
+				break; // m:d (delimiter).
+			case DocumentFormat.OpenXml.Math.EquationArray mEqArr:
+				v.VisitOMathElement(mEqArr, d);
+				break; // m:eqArr (equation array).
+			case DocumentFormat.OpenXml.Math.Fraction mFrac:
+				v.VisitOMathElement(mFrac, d);
+				break; // m:f (fraction).
+			case DocumentFormat.OpenXml.Math.MathFunction mFunc:
+				v.VisitOMathElement(mFunc, d);
+				break; // m:func (function).
+			case DocumentFormat.OpenXml.Math.GroupChar mGroupChr:
+				v.VisitOMathElement(mGroupChr, d);
+				break; // m:groupChr (group character).
+			case DocumentFormat.OpenXml.Math.LimitLower mLimLow:
+				v.VisitOMathElement(mLimLow, d);
+				break; // m:limLow (lower limit).
+			case DocumentFormat.OpenXml.Math.LimitUpper mLimUpp:
+				v.VisitOMathElement(mLimUpp, d);
+				break; // m:limUpp (upper limit).
+			case DocumentFormat.OpenXml.Math.Matrix mMat:
+				v.VisitOMathElement(mMat, d);
+				break; // m:m (matrix).
+			case DocumentFormat.OpenXml.Math.Nary mNary:
+				v.VisitOMathElement(mNary, d);
+				break; // m:nary (n-ary operator).
+			case DocumentFormat.OpenXml.Math.Phantom mPhant:
+				v.VisitOMathElement(mPhant, d);
+				break; // m:phantom (phantom).
+			case DocumentFormat.OpenXml.Math.Radical mRad:
+				v.VisitOMathElement(mRad, d);
+				break; // m:rad (radical).
+			case DocumentFormat.OpenXml.Math.PreSubSuper mPreSubSup:
+				v.VisitOMathElement(mPreSubSup, d);
+				break; // m:preSubSup (presub/superscript).
+			case DocumentFormat.OpenXml.Math.Subscript mSub:
+				v.VisitOMathElement(mSub, d);
+				break; // m:s (subscript).
+			case DocumentFormat.OpenXml.Math.SubSuperscript mSubSup:
+				v.VisitOMathElement(mSubSup, d);
+				break; // m:sSub (sub-superscript).
+			case DocumentFormat.OpenXml.Math.Superscript mSup:
+				v.VisitOMathElement(mSup, d);
+				break; // m:sup (superscript).
+			case DocumentFormat.OpenXml.Math.Run mMathRun:
+				v.VisitOMathRun(mMathRun, d);
+				break; // m:r (math run).
+
+			case BidirectionalOverride bdo:
+				WalkBidirectionalOverride(bdo, d, v);
+				break; // w:bdo (Bidi override; Office 2010+).
+			case BidirectionalEmbedding bdi:
+				WalkBidirectionalEmbedding(bdi, d, v);
+				break; // w:dir (Bidi embedding; Office 2010+).
+
+			case SubDocumentReference subDoc:
+				v.VisitSubDocumentReference(subDoc, d);
+				break; // w:subDoc (subdocument anchor).
+
+			case AlternateContent ac:
+				WalkAlternateContent(ac, d, v);
+				break; // mc:AlternateContent (compat wrapper around inline kids). (MC allows it here)
+
+			default:
+				WalkUnknown("Paragraph", child, d, v);
+				break;
+		}
+	}
+
 }

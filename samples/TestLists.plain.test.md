@@ -1,8 +1,8 @@
 <!-- Author: Gaspard Petit -->
 <!-- LastModifiedBy: Gaspard Petit -->
-<!-- Revision: 7 -->
+<!-- Revision: 8 -->
 <!-- Created: 2025-12-19 13:22:00Z -->
-<!-- Modified: 2025-12-19 13:53:00Z -->
+<!-- Modified: 2025-12-21 07:40:00Z -->
 
 • default list level 1
 
@@ -213,3 +213,19 @@ i) Multi level (i)
 
 
 <p style="margin-left:90pt;">i. Multi level i.</p>
+
+
+<br/>
+1:  Original 1
+
+2:  Original 2
+
+3:  Original 3
+
+4:  Added 5
+
+5:  Original 6
+
+6:  Added 7
+
+7:  Original 9

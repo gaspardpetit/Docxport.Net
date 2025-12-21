@@ -222,10 +222,14 @@ i) Multi level (i)
 
 3:  Original 3
 
-4:  Added 5
+<del>4:</del> <del> Deleted 4</del>
+
+<u>4:</u> <u> Added 5</u>
 
 5:  Original 6
 
-6:  Added 7
+<u>6:</u> <u> Added 7</u>
+
+<del>6:</del> <del> Delete 8</del>
 
 7:  Original 9
