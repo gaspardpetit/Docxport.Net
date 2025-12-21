@@ -36,26 +36,26 @@ public class DxpWalker
 
 			var settings = doc.MainDocumentPart.DocumentSettingsPart?.Settings;
 			if (settings != null)
-				v.VisitDocumentSettings(settings, documentContext);
+				documentContext.DocumentSettings = settings;
 
 			var core = doc.PackageProperties;
-			v.VisitCoreFileProperties(core);
+			documentContext.CoreProperties = core;
 
 			var customPart = doc.CustomFilePropertiesPart;
 			var props = customPart?.Properties;
 
-			if (props != null)
-			{
-				IEnumerable<CustomFileProperty> custom = props
-					.Elements<CustomDocumentProperty>()
+			var customList = props != null
+				? props.Elements<CustomDocumentProperty>()
 					.Select(p => new CustomFileProperty(
 						p.Name?.Value ?? string.Empty,
 						p.FirstChild?.LocalName,  // e.g., "vt:lpwstr", "vt:bool", "vt:filetime", etc.
 						p.FirstChild?.InnerText   // the string form of the value
-					));
+					))
+					.ToList()
+				: new List<CustomFileProperty>();
 
-				v.VisitCustomFileProperties(custom);
-			}
+			documentContext.CustomProperties = customList;
+			v.VisitDocumentProperties(core, customList);
 
 			var body = doc.MainDocumentPart?.Document?.Body
 				?? throw new InvalidOperationException("DOCX has no main document body.");
@@ -184,8 +184,8 @@ public class DxpWalker
 					d.StyleTracker.ResetStyle(d, v);
 					return;
 
-				case SectionProperties sp:
-					v.VisitSectionProperties(sp, d);
+				case SectionProperties:
+					// Section properties are already surfaced via section contexts (VisitSectionBegin/VisitSectionBodyBegin).
 					break;
 
 				case SdtBlock sdt:
@@ -355,7 +355,6 @@ public class DxpWalker
 						break;
 					case TableGrid grid:
 						tableContext.SetGrid(grid);
-						v.VisitTableGrid(grid, d); // columns & default widths
 						break;
 
 					case TableRow tr:
@@ -465,8 +464,8 @@ public class DxpWalker
 						columnIndex++;
 						break;
 
-					case TableRowProperties trp:
-						v.VisitTableRowProperties(trp, d);
+					case TableRowProperties:
+						// Row properties are surfaced via the row context; skip to avoid unknown handler.
 						break;
 
 					case SdtCell sdtCell:
@@ -660,7 +659,7 @@ public class DxpWalker
 			return;
 
 		using (d.PushParagraph(p, out DxpParagraphContext paragraphContext))
-		using (v.VisitParagraphBegin(p, d, paragraphContext.Marker, paragraphContext.Indent))
+		using (v.VisitParagraphBegin(p, d, paragraphContext))
 		{
 			foreach (var child in p.ChildElements)
 			{
@@ -678,8 +677,8 @@ public class DxpWalker
 						WalkInsertedRun(ir, d, v);
 						break;
 
-					case ParagraphProperties pp:
-						v.VisitParagraphProperties(pp, d);
+					case ParagraphProperties:
+						// Paragraph properties are already surfaced via the paragraph context.
 						break;
 
 					case BookmarkStart bs:
@@ -1190,19 +1189,16 @@ public class DxpWalker
 		string elementName = smart.GetAttribute("element", wNs).Value ?? string.Empty;
 		string elementUri = smart.GetAttribute("uri", wNs).Value ?? string.Empty;
 
+		// Optional properties child: <w:smartTagPr> with <w:attr> entries
+		// SDK class for <w:attr> is Wordprocessing.CustomXmlAttribute (yes, despite the name).
+		var smartTagPr = smart.ChildElements
+			.OfType<OpenXmlUnknownElement>()
+			.FirstOrDefault(e => e.LocalName == "smartTagPr" && e.NamespaceUri == wNs);
+		var attrs = smartTagPr != null ? smartTagPr.Elements<CustomXmlAttribute>().ToList() : new List<CustomXmlAttribute>();
+
+			using (d.PushSmartTag(smart, elementName, elementUri, attrs, out _))
 			using (v.VisitSmartTagRunBegin(smart, elementName, elementUri, d))
 			{
-				// Optional properties child: <w:smartTagPr> with <w:attr> entries
-				// SDK class for <w:attr> is Wordprocessing.CustomXmlAttribute (yes, despite the name).
-			var smartTagPr = smart.ChildElements
-				.OfType<OpenXmlUnknownElement>()
-				.FirstOrDefault(e => e.LocalName == "smartTagPr" && e.NamespaceUri == wNs);
-			if (smartTagPr != null)
-			{
-				// Surface attributes/properties to the visitor
-				var attrs = smartTagPr.Elements<CustomXmlAttribute>().ToList();
-				v.VisitSmartTagProperties(smartTagPr, attrs, d);
-			}
 
 			// Walk run-level content (everything except <w:smartTagPr>)
 			foreach (var child in smart.ChildElements)
@@ -1321,13 +1317,15 @@ public class DxpWalker
 		{
 			// (1) Properties (optional)
 			var pr = sdtRun.SdtProperties;
-			if (pr != null)
-				v.VisitSdtProperties(pr, d);
 
-			// (2) Content (optional per schema — do NOT throw if missing)
+			// (2) End tag properties (optional)
+			var endPr = sdtRun.SdtEndCharProperties;
+
+			// (3) Content (optional per schema — do NOT throw if missing)
 			var content = sdtRun.SdtContentRun;
 			if (content != null)
 			{
+				using (d.PushSdt(sdtRun, pr, endPr, out _))
 				using (v.VisitSdtContentRunBegin(content, d))
 				{
 					foreach (var child in content.ChildElements)
@@ -1469,10 +1467,6 @@ public class DxpWalker
 				}
 			}
 
-			// (3) End-char run properties (optional) — still visit even if content was absent
-			var endPr = sdtRun.SdtEndCharProperties;
-			if (endPr != null)
-				v.VisitSdtEndCharProperties(endPr, d);
 		}
 	}
 
@@ -1603,13 +1597,11 @@ public class DxpWalker
 
 	private void WalkCustomXmlRun(CustomXmlRun cxr, DxpDocumentContext d, DxpIVisitor v)
 	{
+		var pr = cxr.CustomXmlProperties;
+		using (d.PushCustomXml(cxr, pr, out _))
 		using (v.VisitCustomXmlRunBegin(cxr, d))
 		{
 			// Properties <w:customXmlPr> (element name/namespace, optional data binding metadata)
-			var pr = cxr.CustomXmlProperties;
-			if (pr != null)
-				v.VisitCustomXmlProperties(pr, d);
-
 			foreach (var child in cxr.ChildElements)
 			{
 				switch (child)
@@ -2359,17 +2351,20 @@ public class DxpWalker
 
 	private void WalkRun(Run r, DxpDocumentContext d, DxpIVisitor v)
 	{
+		var para = r.Ancestors<Paragraph>().FirstOrDefault();
+		var style = para != null ? d.Styles.ResolveRunStyle(para, r) : d.DefaultRunStyle;
+		var language = para != null ? d.Styles.ResolveRunLanguage(para, r) : null;
+
+		using (d.PushRun(r, style, language, out var runContext))
 		using (v.VisitRunBegin(r, d))
 		{
 			// Resolve style only if we can find a paragraph context.
-			var para = r.Ancestors<Paragraph>().FirstOrDefault();
 			bool hasRenderable = r.ChildElements.Any(child =>
 				child is Text or DeletedText or NoBreakHyphen or TabChar or Break or CarriageReturn or Drawing);
 			if (para != null)
 			{
 				if (hasRenderable)
 				{
-					DxpStyleEffectiveRunStyle style = d.Styles.ResolveRunStyle(para, r);
 					d.StyleTracker.ApplyStyle(style, d, v);
 				}
 			}
@@ -2392,7 +2387,7 @@ public class DxpWalker
 						break;
 
 					case RunProperties rp:
-						v.VisitRunProperties(rp, d);
+						// Run properties already materialized into the run context/style.
 						break;
 
 					case DeletedText dt:
@@ -2586,14 +2581,13 @@ public class DxpWalker
 	private void WalkRuby(Ruby ruby, DxpDocumentContext d, DxpIVisitor v)
 	{
 		// Begin ruby scope (visitor can choose how to render a ruby run)
+		var pr = ruby.GetFirstChild<RubyProperties>(); // SDK class for <w:rubyPr>
+		using (d.PushRuby(ruby, pr, out var rubyCtx))
 		using (v.VisitRubyBegin(ruby, d))
 		{
 			// --- Properties: <w:rubyPr> controls alignment/size/raise/lang of the ruby text ---
-				var pr = ruby.GetFirstChild<RubyProperties>(); // SDK class for <w:rubyPr>
-				if (pr != null)
-					v.VisitRubyProperties(pr, d); // exposes rubyAlign, hps, hpsRaise, hpsBaseText, lid, dirty
-												  // Spec: rubyPr is required. We log if missing, but don’t throw to be resilient.
-												  // (Phonetic Guide Properties per CT_RubyPr.)  // ISO/IEC 29500 Part 1: w:rubyPr.
+				// Spec: rubyPr is required. We log if missing, but don’t throw to be resilient.
+				// (Phonetic Guide Properties per CT_RubyPr.)  // ISO/IEC 29500 Part 1: w:rubyPr.
 
 				// --- Ruby text: <w:rt> holds phonetic text in a required single <w:r> ---
 				RubyContent? rt = ruby.GetFirstChild<RubyContent>(); // SDK: RubyContent for <w:rt>
@@ -2733,7 +2727,16 @@ public class DxpWalker
 			{
 				var pPr = numPr.Parent as ParagraphProperties;
 				var p = pPr?.Parent as Paragraph;
-				v.VisitInsertedNumberingProperties(ins, numPr, pPr, p, d);
+				if (p != null)
+				{
+					var marker = d.Lists.MaterializeMarker(p, d.Styles);
+					var indent = d.Lists.GetIndentation(p, d.Styles);
+					v.VisitInsertedNumbering(ins, marker, indent, p, d);
+				}
+				else
+				{
+					v.VisitInsertedNumbering(ins, null, new DxpStyleEffectiveIndentTwips(null, null, null, null), null, d);
+				}
 				return;
 			}
 
@@ -2984,13 +2987,11 @@ public class DxpWalker
 
 	private void WalkCustomXmlBlock(CustomXmlBlock cx, DxpDocumentContext d, DxpIVisitor v)
 	{
+		var pr = cx.CustomXmlProperties;
+		using (d.PushCustomXml(cx, pr, out _))
 		using (v.VisitCustomXmlBlockBegin(cx, d))
 		{
 			// Properties (<w:customXmlPr>) carry element name/namespace and optional data binding metadata.
-			var pr = cx.CustomXmlProperties;
-			if (pr != null)
-				v.VisitCustomXmlProperties(pr, d);
-
 			foreach (var child in cx.ChildElements)
 			{
 				switch (child)
@@ -3117,10 +3118,11 @@ public class DxpWalker
 		{
 			// (1) Properties (optional)
 			var pr = sdt.GetFirstChild<SdtProperties>();
-			if (pr != null)
-				v.VisitSdtProperties(pr, d);
 
-			// (2) Content (optional per schema — do NOT throw if missing)
+			// (2) End-char properties (optional)
+			var endPr = sdt.GetFirstChild<SdtEndCharProperties>();
+
+			// (3) Content (optional per schema — do NOT throw if missing)
 			var content = sdt.SdtContentBlock;
 			if (content == null)
 			{
@@ -3128,6 +3130,7 @@ public class DxpWalker
 				return;
 			}
 
+			using (d.PushSdt(sdt, pr, endPr, out _))
 			using (v.VisitSdtContentBlockBegin(content, d))
 			{
 				foreach (var child in content.ChildElements)

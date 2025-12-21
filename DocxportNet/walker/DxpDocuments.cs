@@ -21,9 +21,22 @@ public class DxpDocumentContext : DxpIDocumentContext
 	public DxpIStyleResolver Styles { get; }
 	public DocumentBackground? Background { get; }
 	public DxpStyleEffectiveRunStyle DefaultRunStyle { get; }
+	public Settings? DocumentSettings { get; internal set; }
+	public IPackageProperties? CoreProperties { get; internal set; }
+	public IReadOnlyList<CustomFileProperty>? CustomProperties { get; internal set; }
 	public OpenXmlPart? CurrentPart { get; internal set; }
 	public DxpParagraphContext CurrentParagraph { get; internal set; } = DxpParagraphContext.INVALID;
 	DxpIParagraphContext DxpIDocumentContext.CurrentParagraph => CurrentParagraph;
+	public DxpRubyContext? CurrentRuby { get; internal set; }
+	DxpIRubyContext? DxpIDocumentContext.CurrentRuby => CurrentRuby;
+	public DxpSmartTagContext? CurrentSmartTag { get; internal set; }
+	DxpISmartTagContext? DxpIDocumentContext.CurrentSmartTag => CurrentSmartTag;
+	public DxpCustomXmlContext? CurrentCustomXml { get; internal set; }
+	DxpICustomXmlContext? DxpIDocumentContext.CurrentCustomXml => CurrentCustomXml;
+	public DxpSdtContext? CurrentSdt { get; internal set; }
+	DxpISdtContext? DxpIDocumentContext.CurrentSdt => CurrentSdt;
+	public DxpRunContext? CurrentRun { get; internal set; }
+	DxpIRunContext? DxpIDocumentContext.CurrentRun => CurrentRun;
 	public DxpFootnoteContext CurrentFootnote { get; internal set; } = DxpFootnoteContext.INVALID;
 	public DxpSectionContext CurrentSection { get; private set; }
 	DxpISectionContext DxpIDocumentContext.CurrentSection => CurrentSection;
@@ -39,6 +52,8 @@ public class DxpDocumentContext : DxpIDocumentContext
 		Styles = new DxpStyleResolver(doc);
 		DefaultRunStyle = Styles.GetDefaultRunStyle();
 
+		CoreProperties = doc.PackageProperties;
+
 		Background = doc.MainDocumentPart.Document?.DocumentBackground;
 	}
 
@@ -46,7 +61,7 @@ public class DxpDocumentContext : DxpIDocumentContext
 	{
 		DxpMarker marker = Lists.MaterializeMarker(p, Styles);
 		DxpStyleEffectiveIndentTwips indent = Lists.GetIndentation(p, Styles);
-		return new DxpParagraphContext(marker, indent);
+		return new DxpParagraphContext(marker, indent, p.ParagraphProperties);
 	}
 
 	public IDisposable PushParagraph(Paragraph p, out DxpParagraphContext ctx)
@@ -56,6 +71,51 @@ public class DxpDocumentContext : DxpIDocumentContext
 		ctx = paragraphContext;
 		CurrentParagraph = paragraphContext;
 		return Disposable.Create(() => CurrentParagraph = prev);
+	}
+
+	public IDisposable PushRun(Run r, DxpStyleEffectiveRunStyle style, string? language, out DxpRunContext ctx)
+	{
+		var prev = CurrentRun;
+		var runCtx = new DxpRunContext(r, r.RunProperties, style, language);
+		ctx = runCtx;
+		CurrentRun = runCtx;
+		return Disposable.Create(() => CurrentRun = prev);
+	}
+
+	public IDisposable PushRuby(Ruby ruby, RubyProperties? properties, out DxpRubyContext ctx)
+	{
+		var prev = CurrentRuby;
+		var rubyCtx = new DxpRubyContext(ruby, properties);
+		ctx = rubyCtx;
+		CurrentRuby = rubyCtx;
+		return Disposable.Create(() => CurrentRuby = prev);
+	}
+
+	public IDisposable PushSmartTag(OpenXmlUnknownElement smart, string elementName, string elementUri, IReadOnlyList<CustomXmlAttribute> attrs, out DxpSmartTagContext ctx)
+	{
+		var prev = CurrentSmartTag;
+		var smartCtx = new DxpSmartTagContext(smart, elementName, elementUri, attrs);
+		ctx = smartCtx;
+		CurrentSmartTag = smartCtx;
+		return Disposable.Create(() => CurrentSmartTag = prev);
+	}
+
+	public IDisposable PushSdt(SdtElement sdt, SdtProperties? properties, SdtEndCharProperties? endCharProperties, out DxpSdtContext ctx)
+	{
+		var prev = CurrentSdt;
+		var sdtCtx = new DxpSdtContext(sdt, properties, endCharProperties);
+		ctx = sdtCtx;
+		CurrentSdt = sdtCtx;
+		return Disposable.Create(() => CurrentSdt = prev);
+	}
+
+	public IDisposable PushCustomXml(OpenXmlElement element, CustomXmlProperties? properties, out DxpCustomXmlContext ctx)
+	{
+		var prev = CurrentCustomXml;
+		var cCtx = new DxpCustomXmlContext(element, properties);
+		ctx = cCtx;
+		CurrentCustomXml = cCtx;
+		return Disposable.Create(() => CurrentCustomXml = prev);
 	}
 
 	public IDisposable PushFootnote(long id, int index, out DxpFootnoteContext ctx)

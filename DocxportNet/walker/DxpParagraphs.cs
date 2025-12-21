@@ -8,14 +8,16 @@ public class DxpParagraphContext : DxpIParagraphContext
 {
 	public DxpMarker Marker { get; internal set; }
 	public DxpStyleEffectiveIndentTwips Indent { get; internal set; }
+	public ParagraphProperties? Properties { get; internal set; }
 
-	public DxpParagraphContext(DxpMarker marker, DxpStyleEffectiveIndentTwips indent)
+	public DxpParagraphContext(DxpMarker marker, DxpStyleEffectiveIndentTwips indent, ParagraphProperties? properties)
 	{
 		Marker = marker;
 		Indent = indent;
+		Properties = properties;
 	}
 
-	public static DxpParagraphContext INVALID => new DxpParagraphContext(null!, null!);
+	public static DxpParagraphContext INVALID => new DxpParagraphContext(null!, null!, null);
 }
 
 
