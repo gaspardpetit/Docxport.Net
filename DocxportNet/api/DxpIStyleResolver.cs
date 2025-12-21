@@ -1,7 +1,7 @@
 using DocumentFormat.OpenXml.Wordprocessing;
-using DocxportNet.walker;
+using DocxportNet.Walker;
 
-namespace DocxportNet.api;
+namespace DocxportNet.API;
 
 
 public sealed record DxpStyleInfo(
@@ -34,7 +34,8 @@ public sealed record DxpStyleEffectiveIndentTwips(
 );
 
 public sealed record DxpStyleEffectiveNumPr(int NumId, int Ilvl);
-public interface IDxpStyleResolver
+
+public interface DxpIStyleResolver
 {
 	DxpStyleEffectiveNumPr? ResolveEffectiveNumPr(Paragraph p);
 	DxpStyleEffectiveIndentTwips GetIndentation(Paragraph p, DxpNumberingResolver? num);
@@ -43,3 +44,4 @@ public interface IDxpStyleResolver
 	IReadOnlyList<DxpStyleInfo> GetParagraphStyleChain(Paragraph p);
 	DxpStyleEffectiveRunStyle GetDefaultRunStyle();
 }
+

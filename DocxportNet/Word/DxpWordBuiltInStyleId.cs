@@ -1,8 +1,8 @@
-﻿namespace DocxportNet;
+namespace DocxportNet.Word;
 
 // Word built-in styleIds (WordprocessingML w:styleId) corresponding to WdBuiltinStyle constants.
 // Note: these are the canonical, non-localized style IDs that appear in styles.xml.
-public static class WordBuiltInStyleId
+public static class DxpWordBuiltInStyleId
 {
 	// Block Text.
 	public const string wdStyleBlockQuotation = "BlockQuotation";

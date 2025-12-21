@@ -2,9 +2,9 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentFormat.OpenXml.Office2013.Word;
-using DocxportNet.api;
+using DocxportNet.API;
 
-namespace DocxportNet.walker;
+namespace DocxportNet.Walker;
 
 public class DxpComments
 {

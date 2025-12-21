@@ -1,6 +1,6 @@
 using System.Globalization;
 using System.Text;
-using DocxportNet.symbols;
+using DocxportNet.Symbols;
 
 namespace DocxportNet;
 
@@ -11,13 +11,13 @@ namespace DocxportNet;
 public static class DxpFontSymbols
 {
 	private static readonly Dictionary<string, string[]> _fontTables = new(StringComparer.OrdinalIgnoreCase) {
-		["Symbol"] = SymbolEncoding.Table,
-		["ZapfDingbats"] = ZapfDingbatsEncoding.Table,
-		["Zapf Dingbats"] = ZapfDingbatsEncoding.Table,
-		["Webdings"] = WebdingsEncoding.Table,
-		["Wingdings"] = WingdingsEncoding.Table,
-		["Wingdings 2"] = Wingdings2Map.Table,
-		["Wingdings 3"] = Wingdings3Encoding.Table,
+		["Symbol"] = DxpSymbolEncoding.Table,
+		["ZapfDingbats"] = DxpZapfDingbatsEncoding.Table,
+		["Zapf Dingbats"] = DxpZapfDingbatsEncoding.Table,
+		["Webdings"] = DxpWebdingsEncoding.Table,
+		["Wingdings"] = DxpWingdingsEncoding.Table,
+		["Wingdings 2"] = DxpWingdings2Encoding.Table,
+		["Wingdings 3"] = DxpWingdings3Encoding.Table,
 	};
 
 	/// <summary>
@@ -84,8 +84,16 @@ public class DxpFontSymbolConverter
 	/// </summary>
 	public string Substitute(char ch, char? replacementForNonPrintable)
 	{
+		return Substitute((byte)ch, replacementForNonPrintable);
+	}
+
+	/// <summary>
+	/// Translate a single symbol-font encoded character into Unicode, optionally replacing non-printable glyphs.
+	/// </summary>
+	private string Substitute(byte b, char? replacementForNonPrintable)
+	{
 		// Map using the low byte so private-use/codepage escapes (e.g., U+F0B7) still resolve.
-		string sub = _table[(byte)ch];
+		string sub = _table[b];
 
 		if (replacementForNonPrintable != null && IsPrintable(sub) == false)
 			return replacementForNonPrintable.ToString()!;

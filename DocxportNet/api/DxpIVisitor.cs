@@ -1,0 +1,318 @@
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Office2010.Word;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
+using System.Collections.Generic;
+using System.Linq;
+using System.Xml.Linq;
+
+namespace DocxportNet.API;
+
+public sealed record FieldFrame
+{
+	public bool SeenSeparate;
+	public IDisposable? ResultScope;
+	public bool InResult;
+	public bool SuppressResult;
+}
+
+public class DxpFieldFrameContext
+{
+	public readonly Stack<FieldFrame> FieldStack = new();
+
+	public FieldFrame? Current => FieldStack.Count > 0 ? FieldStack.Peek() : null;
+
+	public bool IsSuppressed => FieldStack.Any(f => f.InResult && f.SuppressResult);
+}
+
+
+public sealed class SectionLayout
+{
+	public PageSize? PageSize;
+	public PageMargin? PageMargin;
+	public Columns? Columns;
+	public DocGrid? DocGrid;
+	public PageBorders? PageBorders;
+	public LineNumberType? LineNumbers;
+	public TextDirection? TextDirection;            // w:textDirection (if used)
+	public VerticalTextAlignment? VerticalJustification;
+	public FootnoteProperties? FootnoteProperties;
+	public EndnoteProperties? EndnoteProperties;
+}
+
+public sealed class DxpSectionLayout
+{
+	public DxpTwipValue? PageWidth { get; set; }
+	public DxpTwipValue? PageHeight { get; set; }
+
+	public DxpTwipValue? MarginLeft { get; set; }
+	public DxpTwipValue? MarginRight { get; set; }
+	public DxpTwipValue? MarginTop { get; set; }
+	public DxpTwipValue? MarginBottom { get; set; }
+	public DxpTwipValue? MarginHeader { get; set; }
+	public DxpTwipValue? MarginFooter { get; set; }
+	public DxpTwipValue? MarginGutter { get; set; }
+
+	public int? ColumnCount { get; set; }
+	public DxpTwipValue? ColumnSpace { get; set; }
+}
+
+
+public interface DxpIFootnoteContext
+{
+	public long? Id { get; }
+	int? Index { get; }
+}
+
+public sealed record DxpMarker(string? marker, int? numId, int? iLvl);
+
+public sealed record DxpLinkAnchor(string? internalRef, string uri);
+
+public sealed record CustomFileProperty(string Name, string? Type, object? Value);
+
+public interface DxpITableContext
+{
+	Table Table { get; }
+	TableProperties? Properties { get; }
+	TableGrid? Grid { get; }
+}
+
+public interface DxpITableRowContext
+{
+	DxpITableContext Table { get; }
+	bool IsHeader { get; }
+	int Index { get; }
+}
+
+public interface DxpITableCellContext
+{
+	DxpITableRowContext Row { get; }
+	int RowIndex { get; }
+	int ColumnIndex { get; }
+	int RowSpan { get; }
+	int ColSpan { get; }
+	TableCellProperties? Properties { get; }
+}
+
+public interface DxpIDocumentContext
+{
+	DxpIStyleResolver Styles { get; }
+	HashSet<string> ReferencedBookmarkAnchors { get; }
+	DxpIParagraphContext CurrentParagraph { get; }
+	DxpISectionContext CurrentSection { get; }
+	DocumentBackground? Background { get; }
+	DxpStyleEffectiveRunStyle DefaultRunStyle { get; }
+	DxpFieldFrameContext CurrentFields { get; }
+}
+
+public interface DxpIParagraphContext
+{}
+
+public interface DxpISectionContext
+{
+	SectionProperties? SectionProperties { get; }
+	DxpSectionLayout? Layout { get; }
+	SectionLayout? LayoutRaw { get; }
+	bool IsLast { get; }
+}
+
+
+
+public interface DxpIFieldVisitor
+{
+	// Called when a complex field begins (w:fldChar type="begin")
+	void VisitComplexFieldBegin(FieldChar begin, DxpIDocumentContext d);
+
+	// Called for each w:instrText node (FieldCode in SDK); 'text' is the instruction content.
+	void VisitComplexFieldInstruction(FieldCode instr, string text, DxpIDocumentContext d);
+
+	// Called when the field hits the SEPARATE marker (w:fldChar type="separate")
+	void VisitComplexFieldSeparate(FieldChar separate, DxpIDocumentContext d);
+
+	// Called exactly once when entering the "result" portion (after SEPARATE, before END).
+	// Return a scope (may be a no-op) that will be disposed when the field ends.
+	IDisposable VisitComplexFieldResultBegin(DxpIDocumentContext d);
+
+	// Called when the field ends (w:fldChar type="end")
+	void VisitComplexFieldEnd(FieldChar end, DxpIDocumentContext d);
+}
+
+
+public interface DxpIStyleVisitor
+{
+	void StyleBoldBegin(DxpIDocumentContext d);
+	void StyleBoldEnd(DxpIDocumentContext d);
+
+	void StyleItalicBegin(DxpIDocumentContext d);
+	void StyleItalicEnd(DxpIDocumentContext d);
+
+	void StyleUnderlineBegin(DxpIDocumentContext d);
+	void StyleUnderlineEnd(DxpIDocumentContext d);
+
+	void StyleStrikeBegin(DxpIDocumentContext d);
+	void StyleStrikeEnd(DxpIDocumentContext d);
+
+	void StyleDoubleStrikeBegin(DxpIDocumentContext d);
+	void StyleDoubleStrikeEnd(DxpIDocumentContext d);
+
+	void StyleSuperscriptBegin(DxpIDocumentContext d);
+	void StyleSuperscriptEnd(DxpIDocumentContext d);
+
+	void StyleSubscriptBegin(DxpIDocumentContext d);
+	void StyleSubscriptEnd(DxpIDocumentContext d);
+
+	void StyleSmallCapsBegin(DxpIDocumentContext d);
+	void StyleSmallCapsEnd(DxpIDocumentContext d);
+
+	void StyleAllCapsBegin(DxpIDocumentContext d);
+	void StyleAllCapsEnd(DxpIDocumentContext d);
+
+	void StyleFontBegin(string? fontName, int? fontSizeHalfPoints, DxpIDocumentContext d);
+	void StyleFontEnd(DxpIDocumentContext d);
+}
+
+
+
+
+public interface DxpIVisitor : DxpIStyleVisitor, DxpIFieldVisitor
+{
+	void VisitParagraphProperties(ParagraphProperties pp, DxpIDocumentContext d);
+	void VisitBookmarkStart(BookmarkStart bs, DxpIDocumentContext d);
+	void VisitBookmarkEnd(BookmarkEnd be, DxpIDocumentContext d);
+	IDisposable VisitRunBegin(Run r, DxpIDocumentContext d);
+	IDisposable VisitHyperlinkBegin(Hyperlink link, DxpLinkAnchor? target, DxpIDocumentContext d);
+	IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpMarker? marker, DxpStyleEffectiveIndentTwips indent);
+	IDisposable VisitTableBegin(Table t, DxpTableModel model, DxpIDocumentContext d, DxpITableContext table);
+	IDisposable VisitTableRowBegin(TableRow tr, DxpITableRowContext row, DxpIDocumentContext d);
+	IDisposable VisitTableCellBegin(TableCell tc, DxpITableCellContext cell, DxpIDocumentContext d);
+	void VisitTableGrid(TableGrid tg, DxpIDocumentContext d);
+	IDisposable VisitDeletedRunBegin(DeletedRun dr, DxpIDocumentContext d);
+	IDisposable VisitInsertedRunBegin(InsertedRun ir, DxpIDocumentContext d);
+	void VisitLastRenderedPageBreak(LastRenderedPageBreak pb, DxpIDocumentContext d);
+	void VisitRunProperties(RunProperties rp, DxpIDocumentContext d);
+	void VisitDeletedText(DeletedText dt, DxpIDocumentContext d);
+	void VisitText(Text t, DxpIDocumentContext d);
+	void VisitTab(TabChar tab, DxpIDocumentContext d);
+	void VisitBreak(Break br, DxpIDocumentContext d);
+	void VisitCarriageReturn(CarriageReturn cr, DxpIDocumentContext d);
+	void VisitProofError(ProofError pe, DxpIDocumentContext d);
+	void VisitNoBreakHyphen(NoBreakHyphen h, DxpIDocumentContext d);
+	void VisitSectionProperties(SectionProperties sp, DxpIDocumentContext d);
+	IDisposable VisitDocumentBodyBegin(Body body, DxpIDocumentContext d);
+	IDisposable VisitBlockBegin(OpenXmlElement child, DxpIDocumentContext d);
+	void VisitTableRowProperties(TableRowProperties trp, DxpIDocumentContext d);
+	IDisposable VisitDrawingBegin(Drawing drw, DxpDrawingInfo? info, DxpIDocumentContext d);
+	void VisitFootnoteReference(FootnoteReference fr, DxpIFootnoteContext footnote, DxpIDocumentContext d);
+	IDisposable VisitFootnoteBegin(Footnote fn, DxpIFootnoteContext footnote, DxpIDocumentContext d);
+	void VisitFootnoteReferenceMark(FootnoteReferenceMark m, DxpIFootnoteContext footnote, DxpIDocumentContext d);
+	IDisposable VisitCommentThreadBegin(string anchorId, DxpCommentThread thread, DxpIDocumentContext d);
+	void VisitDayShort(DayShort ds, DxpIDocumentContext d);
+
+	void VisitMonthShort(MonthShort ms, DxpIDocumentContext d);
+	void VisitYearShort(YearShort ys, DxpIDocumentContext d);
+	void VisitDayLong(DayLong dl, DxpIDocumentContext d);
+	void VisitMonthLong(MonthLong ml, DxpIDocumentContext d);
+	void VisitYearLong(YearLong yl, DxpIDocumentContext d);
+	void VisitPageNumber(PageNumber pn, DxpIDocumentContext d);
+	void VisitAnnotationReference(AnnotationReferenceMark arm, DxpIDocumentContext d);
+	void VisitEndnoteReferenceMark(EndnoteReferenceMark erm, DxpIDocumentContext d);
+	void VisitEndnoteReference(EndnoteReference enr, DxpIDocumentContext d);
+	void VisitSeparatorMark(SeparatorMark sep, DxpIDocumentContext d);
+	void VisitContinuationSeparatorMark(ContinuationSeparatorMark csep, DxpIDocumentContext d);
+	void VisitSoftHyphen(SoftHyphen sh, DxpIDocumentContext d);
+	void VisitSymbol(SymbolChar sym, DxpIDocumentContext d);
+	void VisitPositionalTab(PositionalTab ptab, DxpIDocumentContext d);
+	IDisposable VisitRubyBegin(Ruby ruby, DxpIDocumentContext d);
+	void VisitDeletedFieldCode(DeletedFieldCode dfc, DxpIDocumentContext d);
+	void VisitEmbeddedObject(EmbeddedObject obj, DxpIDocumentContext d);
+	IDisposable VisitLegacyPictureBegin(Picture pict, DxpIDocumentContext d);
+	void VisitRubyProperties(RubyProperties pr, DxpIDocumentContext d);
+	IDisposable VisitRubyContentBegin(RubyContentType rc, bool isBase, DxpIDocumentContext d);
+	void VisitPermStart(PermStart ps, DxpIDocumentContext d);
+	void VisitPermEnd(PermEnd pe2, DxpIDocumentContext d);
+	void VisitMoveFromRangeStart(MoveFromRangeStart mfrs, DxpIDocumentContext d);
+	void VisitMoveFromRangeEnd(MoveFromRangeEnd mfre, DxpIDocumentContext d);
+	void VisitMoveToRangeStart(MoveToRangeStart mtrs, DxpIDocumentContext d);
+	void VisitMoveToRangeEnd(MoveToRangeEnd mtre, DxpIDocumentContext d);
+	IDisposable VisitInsertedBegin(Inserted ins, DxpIDocumentContext d);
+	IDisposable VisitDeletedBegin(Deleted del, DxpIDocumentContext d);
+	void VisitOMathParagraph(DocumentFormat.OpenXml.Math.Paragraph oMathPara, DxpIDocumentContext d);
+	void VisitOMath(DocumentFormat.OpenXml.Math.OfficeMath oMath, DxpIDocumentContext d);
+	void VisitDeletedTableRowMark(Deleted del, TableRowProperties trPr, TableRow? tr, DxpIDocumentContext d);
+	void VisitDeletedParagraphMark(Deleted del, ParagraphProperties pPr, Paragraph? p, DxpIDocumentContext d);
+	void VisitInsertedParagraphMark(Inserted ins, ParagraphProperties pPr2, Paragraph? p, DxpIDocumentContext d);
+	void VisitInsertedNumberingProperties(Inserted ins, NumberingProperties numPr, ParagraphProperties? pPr, Paragraph? p, DxpIDocumentContext d);
+	void VisitInsertedTableRowMark(Inserted ins, TableRowProperties trPr, TableRow? tr, DxpIDocumentContext d);
+	void VisitCustomXmlInsRangeStart(CustomXmlInsRangeStart cins, DxpIDocumentContext d);
+	void VisitCustomXmlInsRangeEnd(CustomXmlInsRangeEnd cine, DxpIDocumentContext d);
+	void VisitCustomXmlDelRangeStart(CustomXmlDelRangeStart cdls, DxpIDocumentContext d);
+	void VisitCustomXmlDelRangeEnd(CustomXmlDelRangeEnd cdle, DxpIDocumentContext d);
+	void VisitCustomXmlMoveFromRangeStart(CustomXmlMoveFromRangeStart cmfs, DxpIDocumentContext d);
+	void VisitCustomXmlMoveFromRangeEnd(CustomXmlMoveFromRangeEnd cmfe, DxpIDocumentContext d);
+	void VisitCustomXmlMoveToRangeStart(CustomXmlMoveToRangeStart cmts, DxpIDocumentContext d);
+	void VisitCustomXmlMoveToRangeEnd(CustomXmlMoveToRangeEnd cmte, DxpIDocumentContext d);
+	IDisposable VisitSdtBlockBegin(SdtBlock sdt, DxpIDocumentContext d);
+	IDisposable VisitCustomXmlBlockBegin(CustomXmlBlock cx, DxpIDocumentContext d);
+	void VisitAltChunk(AltChunk ac, DxpIDocumentContext d);
+	void VisitSdtProperties(SdtProperties pr, DxpIDocumentContext d);
+	IDisposable VisitSdtContentBlockBegin(SdtContentBlock content, DxpIDocumentContext d);
+	void VisitCustomXmlProperties(CustomXmlProperties pr, DxpIDocumentContext d);
+	void VisitCustomXmlConflictInsertionRangeStart(CustomXmlConflictInsertionRangeStart cxCis, DxpIDocumentContext d);
+	void VisitCustomXmlConflictInsertionRangeEnd(CustomXmlConflictInsertionRangeEnd cxCie, DxpIDocumentContext d);
+	void VisitCustomXmlConflictDeletionRangeStart(CustomXmlConflictDeletionRangeStart cxCds, DxpIDocumentContext d);
+	void VisitCustomXmlConflictDeletionRangeEnd(CustomXmlConflictDeletionRangeEnd cxCde, DxpIDocumentContext d);
+	void VisitMoveFromRun(MoveFromRun mfr, DxpIDocumentContext d);
+	void VisitMoveToRun(MoveToRun mtr, DxpIDocumentContext d);
+	void VisitContentPart(DocumentFormat.OpenXml.Wordprocessing.ContentPart cp, DxpIDocumentContext d);
+	IDisposable VisitCustomXmlRunBegin(CustomXmlRun cxr, DxpIDocumentContext d);
+	IDisposable VisitSimpleFieldBegin(SimpleField fld, DxpIDocumentContext d);
+	IDisposable VisitSdtRunBegin(SdtRun sdtRun, DxpIDocumentContext d);
+	void VisitOMathElement(DocumentFormat.OpenXml.Math.Accent mAccent, DxpIDocumentContext d);
+	void VisitOMathElement(DocumentFormat.OpenXml.Math.Bar mBar, DxpIDocumentContext d);
+	void VisitOMathElement(DocumentFormat.OpenXml.Math.Box mBox, DxpIDocumentContext d);
+	void VisitOMathRun(DocumentFormat.OpenXml.Math.Run mMathRun, DxpIDocumentContext d);
+	IDisposable VisitBidirectionalOverrideBegin(BidirectionalOverride bdo, DxpIDocumentContext d);
+	IDisposable VisitBidirectionalEmbeddingBegin(BidirectionalEmbedding bdi, DxpIDocumentContext d);
+	void VisitSubDocumentReference(SubDocumentReference subDoc, DxpIDocumentContext d);
+	void VisitOMathElement(DocumentFormat.OpenXml.Math.BorderBox mBorderBox, DxpIDocumentContext d);
+	void VisitOMathElement(DocumentFormat.OpenXml.Math.Delimiter mDelim, DxpIDocumentContext d);
+	void VisitOMathElement(DocumentFormat.OpenXml.Math.EquationArray mEqArr, DxpIDocumentContext d);
+	void VisitOMathElement(DocumentFormat.OpenXml.Math.Fraction mFrac, DxpIDocumentContext d);
+	void VisitOMathElement(DocumentFormat.OpenXml.Math.MathFunction mFunc, DxpIDocumentContext d);
+	void VisitOMathElement(DocumentFormat.OpenXml.Math.GroupChar mGroupChr, DxpIDocumentContext d);
+	void VisitOMathElement(DocumentFormat.OpenXml.Math.LimitLower mLimLow, DxpIDocumentContext d);
+	void VisitOMathElement(DocumentFormat.OpenXml.Math.LimitUpper mLimUpp, DxpIDocumentContext d);
+	void VisitOMathElement(DocumentFormat.OpenXml.Math.Matrix mMat, DxpIDocumentContext d);
+	void VisitOMathElement(DocumentFormat.OpenXml.Math.Nary mNary, DxpIDocumentContext d);
+	void VisitOMathElement(DocumentFormat.OpenXml.Math.Phantom mPhant, DxpIDocumentContext d);
+	void VisitOMathElement(DocumentFormat.OpenXml.Math.Radical mRad, DxpIDocumentContext d);
+	void VisitOMathElement(DocumentFormat.OpenXml.Math.PreSubSuper mPreSubSup, DxpIDocumentContext d);
+	void VisitOMathElement(DocumentFormat.OpenXml.Math.Subscript mSub, DxpIDocumentContext d);
+	void VisitOMathElement(DocumentFormat.OpenXml.Math.SubSuperscript mSubSup, DxpIDocumentContext d);
+	void VisitOMathElement(DocumentFormat.OpenXml.Math.Superscript mSup, DxpIDocumentContext d);
+	void VisitSdtEndCharProperties(SdtEndCharProperties endPr, DxpIDocumentContext d);
+	IDisposable VisitSdtContentRunBegin(SdtContentRun content, DxpIDocumentContext d);
+	void VisitFieldData(FieldData data, DxpIDocumentContext d);
+	void VisitConflictInsertion(ConflictInsertion cIns, DxpIDocumentContext d);
+	void VisitConflictDeletion(ConflictDeletion cDel, DxpIDocumentContext d);
+	IDisposable VisitSdtRowBegin(SdtRow sdtRow, DxpIDocumentContext d);
+	IDisposable VisitCustomXmlRowBegin(CustomXmlRow cxRow, DxpIDocumentContext d);
+	bool AcceptAlternateContentChoice(AlternateContentChoice choice, IReadOnlyList<string> required, DxpIDocumentContext d);
+	IDisposable VisitEndnoteBegin(Endnote item1, long item3, int item2, DxpIDocumentContext d);
+	IDisposable VisitTextBoxContentBegin(TextBoxContent txbx, DxpIDocumentContext d);
+	IDisposable VisitSmartTagRunBegin(OpenXmlUnknownElement smart, string elementName, string elementUri, DxpIDocumentContext d);
+	void VisitSmartTagProperties(OpenXmlUnknownElement smartTagPr, List<CustomXmlAttribute> attrs, DxpIDocumentContext d);
+	IDisposable VisitAlternateContentBegin(AlternateContent ac, DxpIDocumentContext d);
+	void VisitUnknown(string context, OpenXmlElement el, DxpIDocumentContext d);
+	IDisposable VisitSdtCellBegin(SdtCell sdtCell, DxpIDocumentContext d);
+	IDisposable VisitCustomXmlCellBegin(CustomXmlCell cxCell, DxpIDocumentContext d);
+	void VisitDocumentSettings(Settings settings, DxpIDocumentContext d);
+	IDisposable VisitSectionHeaderBegin(Header hdr, object value, DxpIDocumentContext d);
+	IDisposable VisitSectionFooterBegin(Footer ftr, object value, DxpIDocumentContext d);
+	void VisitCoreFileProperties(IPackageProperties core);
+	void VisitCustomFileProperties(IEnumerable<CustomFileProperty> custom);
+	void VisitBibliographySources(CustomXmlPart bibliographyPart, XDocument bib);
+	IDisposable VisitSectionBegin(SectionProperties properties, SectionLayout layout, DxpIDocumentContext d);
+	IDisposable VisitSectionBodyBegin(SectionProperties properties, DxpIDocumentContext d);
+	IDisposable VisitCommentBegin(DxpCommentInfo c, DxpCommentThread thread, DxpIDocumentContext d);
+}

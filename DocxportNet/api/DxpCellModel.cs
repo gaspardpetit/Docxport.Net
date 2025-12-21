@@ -1,6 +1,6 @@
 using DocumentFormat.OpenXml.Wordprocessing;
 
-namespace DocxportNet.api;
+namespace DocxportNet.API;
 
 public sealed class DxpCellModel
 {

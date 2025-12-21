@@ -1,4 +1,4 @@
-namespace DocxportNet;
+namespace DocxportNet.Core;
 
 public static class Disposable
 {

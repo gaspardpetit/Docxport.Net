@@ -1,6 +1,6 @@
-using DocxportNet.api;
+using DocxportNet.API;
 
-public sealed class DxpStyleTracker : IDxpStyleTracker
+public sealed class DxpStyleTracker : DxpIStyleTracker
 {
 	private DxpStyleEffectiveRunStyle? _current;
 
@@ -27,31 +27,31 @@ public sealed class DxpStyleTracker : IDxpStyleTracker
 	private string? _fontName;
 	private int? _fontSizeHp;
 
-	public void ApplyStyle(DxpStyleEffectiveRunStyle next, IDxpVisitor v)
+	public void ApplyStyle(DxpStyleEffectiveRunStyle next, DxpIDocumentContext d, DxpIVisitor v)
 	{
 		// 0) Ensure font wrapper exists and is outermost
-		EnsureFontOutermost(next, v);
+		EnsureFontOutermost(next, d, v);
 
 		// 1) Compute desired inner set from next
 		var desired = DesiredInner(next);
 
 		// 2) Apply inner delta with proper nesting and minimal operations
-		ApplyInnerDelta(desired, v);
+		ApplyInnerDelta(desired, d, v);
 
 		_current = next;
 	}
 
-	public void ResetStyle(IDxpVisitor v)
+	public void ResetStyle(DxpIDocumentContext d, DxpIVisitor v)
 	{
 		// Close inner styles (top->bottom)
 		for (int i = _open.Count - 1; i >= 0; i--)
-			End(_open[i], v);
+			End(_open[i], d, v);
 		_open.Clear();
 
 		// Close font wrapper last (outermost)
 		if (_fontOpen)
 		{
-			v.StyleFontEnd();
+			v.StyleFontEnd(d);
 			_fontOpen = false;
 		}
 
@@ -62,7 +62,7 @@ public sealed class DxpStyleTracker : IDxpStyleTracker
 
 	// ---------------- Font handling (always outermost) ----------------
 
-	private void EnsureFontOutermost(DxpStyleEffectiveRunStyle next, IDxpVisitor v)
+	private void EnsureFontOutermost(DxpStyleEffectiveRunStyle next, DxpIDocumentContext d, DxpIVisitor v)
 	{
 		bool fontChanged =
 			!_fontOpen ||
@@ -71,7 +71,7 @@ public sealed class DxpStyleTracker : IDxpStyleTracker
 
 		if (!_fontOpen)
 		{
-			v.StyleFontBegin(next.FontName, next.FontSizeHalfPoints);
+			v.StyleFontBegin(next.FontName, next.FontSizeHalfPoints, d);
 			_fontOpen = true;
 			_fontName = next.FontName;
 			_fontSizeHp = next.FontSizeHalfPoints;
@@ -83,12 +83,12 @@ public sealed class DxpStyleTracker : IDxpStyleTracker
 
 		// Close all inner tags so font stays outward
 		for (int i = _open.Count - 1; i >= 0; i--)
-			End(_open[i], v);
+			End(_open[i], d, v);
 		_open.Clear();
 
 		// Switch font wrapper
-		v.StyleFontEnd();
-		v.StyleFontBegin(next.FontName, next.FontSizeHalfPoints);
+		v.StyleFontEnd(d);
+		v.StyleFontBegin(next.FontName, next.FontSizeHalfPoints, d);
 
 		_fontName = next.FontName;
 		_fontSizeHp = next.FontSizeHalfPoints;
@@ -134,7 +134,7 @@ public sealed class DxpStyleTracker : IDxpStyleTracker
 		return set;
 	}
 
-	private void ApplyInnerDelta(HashSet<K> desired, IDxpVisitor v)
+	private void ApplyInnerDelta(HashSet<K> desired, DxpIDocumentContext d, DxpIVisitor v)
 	{
 			// Strategy:
 			// - Find the longest prefix of currently-open styles (in canonical order) that remains desired.
@@ -150,7 +150,7 @@ public sealed class DxpStyleTracker : IDxpStyleTracker
 		// Close from top down to "keep"
 		for (int i = _open.Count - 1; i >= keep; i--)
 		{
-			End(_open[i], v);
+			End(_open[i], d, v);
 			_open.RemoveAt(i);
 		}
 
@@ -162,77 +162,77 @@ public sealed class DxpStyleTracker : IDxpStyleTracker
 			if (_open.Contains(k))
 				continue; // should only be in the kept prefix, but safe
 
-			Begin(k, v);
+			Begin(k, d, v);
 			_open.Add(k);
 		}
 	}
 
-	private static void Begin(K k, IDxpVisitor v)
+	private static void Begin(K k, DxpIDocumentContext d, DxpIVisitor v)
 	{
 		switch (k)
 		{
 			case K.Bold:
-				v.StyleBoldBegin();
+				v.StyleBoldBegin(d);
 				break;
 			case K.Italic:
-				v.StyleItalicBegin();
+				v.StyleItalicBegin(d);
 				break;
 			case K.Underline:
-				v.StyleUnderlineBegin();
+				v.StyleUnderlineBegin(d);
 				break;
 			case K.Strike:
-				v.StyleStrikeBegin();
+				v.StyleStrikeBegin(d);
 				break;
 			case K.DoubleStrike:
-				v.StyleDoubleStrikeBegin();
+				v.StyleDoubleStrikeBegin(d);
 				break;
 			case K.Superscript:
-				v.StyleSuperscriptBegin();
+				v.StyleSuperscriptBegin(d);
 				break;
 			case K.Subscript:
-				v.StyleSubscriptBegin();
+				v.StyleSubscriptBegin(d);
 				break;
 			case K.AllCaps:
-				v.StyleAllCapsBegin();
+				v.StyleAllCapsBegin(d);
 				break;
 			case K.SmallCaps:
-				v.StyleSmallCapsBegin();
+				v.StyleSmallCapsBegin(d);
 				break;
 			default:
 				throw new ArgumentOutOfRangeException(nameof(k));
 		}
 	}
 
-	private static void End(K k, IDxpVisitor v)
+	private static void End(K k, DxpIDocumentContext d, DxpIVisitor v)
 	{
 		switch (k)
 		{
 			case K.Bold:
-				v.StyleBoldEnd();
+				v.StyleBoldEnd(d);
 				break;
 			case K.Italic:
-				v.StyleItalicEnd();
+				v.StyleItalicEnd(d);
 				break;
 			case K.Underline:
-				v.StyleUnderlineEnd();
+				v.StyleUnderlineEnd(d);
 				break;
 			case K.Strike:
-				v.StyleStrikeEnd();
+				v.StyleStrikeEnd(d);
 				break;
 			case K.DoubleStrike:
-				v.StyleDoubleStrikeEnd();
+				v.StyleDoubleStrikeEnd(d);
 				break;
 			case K.Superscript:
-				v.StyleSuperscriptEnd();
+				v.StyleSuperscriptEnd(d);
 				break;
 			case K.Subscript:
-				v.StyleSubscriptEnd();
+				v.StyleSubscriptEnd(d);
 				break;
 			case K.AllCaps:
-				v.StyleAllCapsEnd();
+				v.StyleAllCapsEnd(d);
 				break;
 			case K.SmallCaps:
-				v.StyleSmallCapsEnd();
+				v.StyleSmallCapsEnd(d);
 				break;
 			default:
 				throw new ArgumentOutOfRangeException(nameof(k));
