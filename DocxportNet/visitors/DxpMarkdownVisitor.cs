@@ -23,6 +23,28 @@ internal sealed class DxpMarkdownVisitorState
 	public bool FontSpanOpen { get; set; }
 	public bool AllCaps { get; set; }
 	public bool IsFirstSection { get; set; } = true;
+	public int SuppressDepth { get; set; }
+	public Stack<StringBuilder> DeletedCaptures { get; } = new();
+	public Stack<DxpChangeStream> ChangeStreams { get; } = new();
+	public TextWriter PrevAcceptWriter = TextWriter.Null;
+	public TextWriter PrevRejectWriter = TextWriter.Null;
+	public TextWriter PrevUnchangedWriter = TextWriter.Null;
+	public bool SawTrackedChange { get; set; }
+}
+
+public enum DxpTrackedChangeMode
+{
+	AcceptChanges,
+	RejectChanges,
+	InlineChanges,
+	SplitChanges
+}
+
+internal enum DxpChangeStream
+{
+	Unchanged,
+	Inserted,
+	Deleted
 }
 
 public sealed record DxpMarkdownVisitorConfig
@@ -44,6 +66,7 @@ public sealed record DxpMarkdownVisitorConfig
 	public bool UsePlainComments = false;
 	public bool EmitCustomProperties = true;
 	public bool EmitTimeline = false;
+	public DxpTrackedChangeMode TrackedChangeMode = DxpTrackedChangeMode.InlineChanges;
 
 	public static DxpMarkdownVisitorConfig RICH = new();
 	public static DxpMarkdownVisitorConfig PLAIN = new() {
@@ -73,14 +96,261 @@ public sealed record DxpMarkdownVisitorConfig
 public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 {
 	private TextWriter _writer;
+	private readonly TextWriter _sinkWriter;
+	private TextWriter _acceptWriter;
+	private TextWriter _rejectWriter;
+	private TextWriter _unchangedWriter;
 	private DxpMarkdownVisitorConfig _config;
 	private DxpMarkdownVisitorState _state = new();
+	private bool AcceptMode => _config.TrackedChangeMode == DxpTrackedChangeMode.AcceptChanges;
+	private bool RejectMode => _config.TrackedChangeMode == DxpTrackedChangeMode.RejectChanges;
+	private bool InlineMode => _config.TrackedChangeMode == DxpTrackedChangeMode.InlineChanges;
+	private bool SplitMode => _config.TrackedChangeMode == DxpTrackedChangeMode.SplitChanges;
 
 	public DxpMarkdownVisitor(TextWriter writer, DxpMarkdownVisitorConfig config, ILogger? logger)
 		: base(logger)
 	{
 		_config = config;
-		_writer = writer;
+		_sinkWriter = writer;
+		_acceptWriter = writer;
+		_rejectWriter = writer;
+		_unchangedWriter = writer;
+		_writer = new RoutingWriter(this);
+		_state.ChangeStreams.Push(DxpChangeStream.Unchanged);
+	}
+
+	private IDisposable SuppressOutputScope()
+	{
+		_state.SuppressDepth++;
+		return Disposable.Create(() => _state.SuppressDepth--);
+	}
+
+	private IDisposable PushChangeStream(DxpChangeStream stream)
+	{
+		if (stream != DxpChangeStream.Unchanged)
+			_state.SawTrackedChange = true;
+		_state.ChangeStreams.Push(stream);
+		return Disposable.Create(() => _state.ChangeStreams.Pop());
+	}
+
+	private IDisposable BeginSplitParagraphBuffers(out StringWriter left, out StringWriter right)
+	{
+		left = new StringWriter(new StringBuilder());
+		right = new StringWriter(new StringBuilder());
+
+		_state.PrevAcceptWriter = _acceptWriter;
+		_state.PrevRejectWriter = _rejectWriter;
+		_state.PrevUnchangedWriter = _unchangedWriter;
+
+		_acceptWriter = right;
+		_rejectWriter = left;
+		_unchangedWriter = new MultiWriter(left, right);
+
+		return Disposable.Create(() => {
+			_acceptWriter = _state.PrevAcceptWriter;
+			_rejectWriter = _state.PrevRejectWriter;
+			_unchangedWriter = _state.PrevUnchangedWriter;
+		});
+	}
+
+	private static IDisposable Combine(IDisposable first, IDisposable second)
+	{
+		return Disposable.Create(() => {
+			second.Dispose();
+			first.Dispose();
+		});
+	}
+
+	private IDisposable WriteInsertedWrapper()
+	{
+		if (_config.RichTables && _config.EmitRunColor)
+		{
+			_writer.Write("""<span style="color:blue;text-decoration:underline;">""");
+			return Disposable.Create(() => _writer.Write("</span>"));
+		}
+
+		_writer.Write("<u>");
+		return Disposable.Create(() => _writer.Write("</u>"));
+	}
+
+	private bool IsCapturingDeleted() => _state.DeletedCaptures.Count > 0;
+	private void CaptureDeleted(string text)
+	{
+		if (_state.DeletedCaptures.Count > 0)
+			_state.DeletedCaptures.Peek().Append(text);
+	}
+
+	private IDisposable BeginDeletedCapture()
+	{
+		var sb = new StringBuilder();
+		_state.DeletedCaptures.Push(sb);
+		return Disposable.Create(() => {
+			var captured = _state.DeletedCaptures.Pop().ToString();
+			WriteInlineDeleted(captured);
+		});
+	}
+
+	private void WriteInlineDeleted(string text)
+	{
+		string trimmed = text.Trim();
+		bool isShort = trimmed.Length > 0 && trimmed.Length <= 3;
+
+		if (isShort)
+		{
+			string payload = $"[[{trimmed}]]";
+			if (_config.RichTables && _config.EmitRunColor)
+			{
+				_writer.Write($"""<span style="color:red;">{payload}</span>""");
+			}
+			else
+			{
+				_writer.Write(payload);
+			}
+			return;
+		}
+
+		if (_config.RichTables && _config.EmitRunColor)
+		{
+			_writer.Write($"""<span style="color:red;text-decoration:line-through;">{text}</span>""");
+		}
+		else
+		{
+			_writer.Write("<del>");
+			_writer.Write(text);
+			_writer.Write("</del>");
+		}
+	}
+
+	private void EmitSplitRow(string left, string right)
+	{
+		if (string.Equals(left, right, StringComparison.Ordinal))
+		{
+			_sinkWriter.Write(left);
+			if (!left.EndsWith("\n"))
+				_sinkWriter.WriteLine();
+			_sinkWriter.WriteLine();
+			return;
+		}
+
+		// Prefer HTML table for consistent width in rich mode; fall back to markdown table otherwise.
+		if (_config.RichTables)
+		{
+			_sinkWriter.WriteLine("<table style=\"width:100%;table-layout:fixed;\"><tr>");
+			_sinkWriter.WriteLine($"""<td style="vertical-align:top;padding:4px;border:1px solid #ccc;width:50%;">{left}</td>""");
+			_sinkWriter.WriteLine($"""<td style="vertical-align:top;padding:4px;border:1px solid #ccc;width:50%;">{right}</td>""");
+			_sinkWriter.WriteLine("</tr></table>");
+			_sinkWriter.WriteLine();
+		}
+		else
+		{
+			_sinkWriter.WriteLine("| Accepted | Rejected |");
+			_sinkWriter.WriteLine("| --- | --- |");
+			_sinkWriter.WriteLine($"| {SanitizeCell(left)} | {SanitizeCell(right)} |");
+			_sinkWriter.WriteLine();
+		}
+	}
+
+	private string SanitizeCell(string value)
+	{
+		return value.Replace("\n", "<br/>");
+	}
+
+	private void WriteSplitMarkers(DxpMarker? acceptMarker, DxpMarker? rejectMarker, bool isDeletedParagraph, bool isInsertedParagraph, bool needsParagraphWrapper)
+	{
+		// In split mode, common content goes to both sides; emit the appropriate marker to each side.
+		if (isInsertedParagraph)
+		{
+			// Only the accept side should get a marker.
+			if (acceptMarker?.marker != null)
+			{
+				var mk = NormalizeMarker(acceptMarker.marker);
+				if (!needsParagraphWrapper && LooksLikeOrderedListMarker(mk))
+					mk = EscapeOrderedListMarker(mk);
+				_acceptWriter.Write(mk + " ");
+			}
+			return;
+		}
+
+		if (isDeletedParagraph)
+		{
+			// Only the reject side should get a marker.
+			if (rejectMarker?.marker != null)
+			{
+				var mk = NormalizeMarker(rejectMarker.marker);
+				if (!needsParagraphWrapper && LooksLikeOrderedListMarker(mk))
+					mk = EscapeOrderedListMarker(mk);
+				_rejectWriter.Write(mk + " ");
+			}
+			return;
+		}
+
+		// Normal paragraph: send to both sides (using their respective markers).
+		if (acceptMarker?.marker != null)
+		{
+			var mk = NormalizeMarker(acceptMarker.marker);
+			if (!needsParagraphWrapper && LooksLikeOrderedListMarker(mk))
+				mk = EscapeOrderedListMarker(mk);
+			_acceptWriter.Write(mk + " ");
+		}
+		if (rejectMarker?.marker != null)
+		{
+			var mk = NormalizeMarker(rejectMarker.marker);
+			if (!needsParagraphWrapper && LooksLikeOrderedListMarker(mk))
+				mk = EscapeOrderedListMarker(mk);
+			_rejectWriter.Write(mk + " ");
+		}
+	}
+
+	private TextWriter GetWriterFor(DxpChangeStream stream)
+	{
+		return stream switch {
+			DxpChangeStream.Inserted => _acceptWriter,
+			DxpChangeStream.Deleted => _rejectWriter,
+			_ => _unchangedWriter
+		};
+	}
+
+	private DxpChangeStream CurrentStream => _state.ChangeStreams.Count > 0 ? _state.ChangeStreams.Peek() : DxpChangeStream.Unchanged;
+
+	private sealed class RoutingWriter : TextWriter
+	{
+		private readonly DxpMarkdownVisitor _owner;
+		public RoutingWriter(DxpMarkdownVisitor owner)
+		{
+			_owner = owner;
+		}
+
+		public override Encoding Encoding => Encoding.UTF8;
+
+		private TextWriter Target => _owner.GetWriterFor(_owner.CurrentStream);
+
+		public override void Write(char value) => Target.Write(value);
+		public override void Write(char[] buffer, int index, int count) => Target.Write(buffer, index, count);
+		public override void Write(string? value) => Target.Write(value);
+		public override void WriteLine() => Target.WriteLine();
+		public override void WriteLine(string? value) => Target.WriteLine(value);
+		public override void WriteLine(char value) => Target.WriteLine(value);
+		public override void WriteLine(char[] buffer, int index, int count) => Target.WriteLine(buffer, index, count);
+	}
+
+	private sealed class MultiWriter : TextWriter
+	{
+		private readonly TextWriter _left;
+		private readonly TextWriter _right;
+		public MultiWriter(TextWriter left, TextWriter right)
+		{
+			_left = left;
+			_right = right;
+		}
+		public override Encoding Encoding => Encoding.UTF8;
+
+		public override void Write(char value) { _left.Write(value); _right.Write(value); }
+		public override void Write(char[] buffer, int index, int count) { _left.Write(buffer, index, count); _right.Write(buffer, index, count); }
+		public override void Write(string? value) { _left.Write(value); _right.Write(value); }
+		public override void WriteLine() { _left.WriteLine(); _right.WriteLine(); }
+		public override void WriteLine(string? value) { _left.WriteLine(value); _right.WriteLine(value); }
+		public override void WriteLine(char value) { _left.WriteLine(value); _right.WriteLine(value); }
+		public override void WriteLine(char[] buffer, int index, int count) { _left.WriteLine(buffer, index, count); _right.WriteLine(buffer, index, count); }
 	}
 
 	public override void VisitText(Text t, DxpIDocumentContext d)
@@ -88,6 +358,11 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 		if (ShouldSuppressOutput(d))
 			return;
 		string text = t.Text;
+		if (InlineMode && IsCapturingDeleted())
+		{
+			CaptureDeleted(text);
+			return;
+		}
 		if (_state.AllCaps)
 		{
 			var culture = CultureInfo.InvariantCulture;
@@ -256,16 +531,70 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 		return name;
 	}
 
-	public override IDisposable VisitDeletedRunBegin(DeletedRun dr, DxpIDocumentContext d)
+	public override IDisposable VisitInsertedBegin(Inserted ins, DxpIDocumentContext d)
 	{
+		if (AcceptMode)
+			return Disposable.Empty;
+		if (RejectMode)
+			return SuppressOutputScope();
+		if (SplitMode)
+			return PushChangeStream(DxpChangeStream.Inserted);
+		if (InlineMode)
+			return Combine(PushChangeStream(DxpChangeStream.Inserted), WriteInsertedWrapper());
+
+		return PushChangeStream(DxpChangeStream.Inserted);
+	}
+
+	public override IDisposable VisitDeletedBegin(Deleted del, DxpIDocumentContext d)
+	{
+		if (AcceptMode)
+			return SuppressOutputScope();
+		if (RejectMode)
+			return Disposable.Empty;
+		if (SplitMode)
+			return PushChangeStream(DxpChangeStream.Deleted);
+		if (InlineMode)
+			return Combine(PushChangeStream(DxpChangeStream.Deleted), BeginDeletedCapture());
+
 		_writer.Write("<edit-delete>");
 		return Disposable.Create(() => {
 			_writer.Write("</edit-delete>");
 		});
 	}
 
+	public override IDisposable VisitDeletedRunBegin(DeletedRun dr, DxpIDocumentContext d)
+	{
+		if (AcceptMode)
+			return SuppressOutputScope();
+		if (RejectMode)
+			return Disposable.Empty;
+		if (SplitMode)
+			return PushChangeStream(DxpChangeStream.Deleted);
+		if (InlineMode)
+			return Combine(PushChangeStream(DxpChangeStream.Deleted), BeginDeletedCapture());
+
+		_writer.Write("<edit-delete>");
+		return Disposable.Create(() => {
+			_writer.Write("</edit-delete>");
+		});
+	}
+
+	public override void VisitDeletedParagraphMark(Deleted del, ParagraphProperties pPr, Paragraph? p, DxpIDocumentContext d)
+	{
+		// Paragraph mark deletions carry no inline content; outer VisitDeletedBegin wrapper is enough.
+	}
+
 	public override IDisposable VisitInsertedRunBegin(InsertedRun ir, DxpIDocumentContext d)
 	{
+		if (AcceptMode)
+			return Disposable.Empty;
+		if (RejectMode)
+			return SuppressOutputScope();
+		if (SplitMode)
+			return PushChangeStream(DxpChangeStream.Inserted);
+		if (InlineMode)
+			return Combine(PushChangeStream(DxpChangeStream.Inserted), WriteInsertedWrapper());
+
 		_writer.Write("<edit-insert>");
 		return Disposable.Create(() => {
 			_writer.Write("</edit-insert>");
@@ -274,6 +603,13 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 
 	public override void VisitDeletedText(DeletedText dt, DxpIDocumentContext d)
 	{
+		if (ShouldSuppressOutput(d))
+			return;
+		if (InlineMode && IsCapturingDeleted())
+		{
+			CaptureDeleted(dt.Text);
+			return;
+		}
 		_writer.Write(dt.Text);
 	}
 
@@ -281,6 +617,11 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 	{
 		if (ShouldSuppressOutput(d))
 			return;
+		if (InlineMode && IsCapturingDeleted())
+		{
+			CaptureDeleted("-");
+			return;
+		}
 		_writer.Write("-");
 	}
 
@@ -389,8 +730,56 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 
 	public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
 	{
-		var marker = paragraph.Marker;
+		if (ShouldSuppressOutput(d))
+			return Disposable.Empty;
+
+		bool splitMode = _config.TrackedChangeMode == DxpTrackedChangeMode.SplitChanges
+			&& CurrentStream == DxpChangeStream.Unchanged
+			&& _state.SawTrackedChange
+			&& !SplitMode; // paragraph-level split only when not capturing the whole body
+		IDisposable splitScope = Disposable.Empty;
+		StringWriter? splitLeft = null;
+		StringWriter? splitRight = null;
+		if (splitMode)
+			splitScope = BeginSplitParagraphBuffers(out splitLeft, out splitRight);
+
+		bool isDeletedParagraph =
+			paragraph.Properties?.GetFirstChild<Deleted>() != null ||
+			paragraph.Properties?.ParagraphMarkRunProperties?.GetFirstChild<Deleted>() != null;
+		bool isInsertedParagraph =
+			paragraph.Properties?.ParagraphMarkRunProperties?.GetFirstChild<Inserted>() != null;
+		var marker =
+			RejectMode ? paragraph.MarkerReject :
+			(InlineMode && isDeletedParagraph ? paragraph.MarkerReject : paragraph.MarkerAccept);
 		var indent = paragraph.Indent;
+		if (InlineMode && isDeletedParagraph && marker?.marker != null)
+		{
+			if (_config.RichTables && _config.EmitRunColor)
+				marker = new DxpMarker($"""<span style="color:red;text-decoration:line-through;">{marker.marker}</span>""", marker.numId, marker.iLvl);
+			else
+				marker = new DxpMarker($"<del>{marker.marker}</del>", marker.numId, marker.iLvl);
+		}
+		else if (InlineMode && isInsertedParagraph && marker?.marker != null)
+		{
+			if (_config.RichTables && _config.EmitRunColor)
+				marker = new DxpMarker($"""<span style="color:blue;text-decoration:underline;">{marker.marker}</span>""", marker.numId, marker.iLvl);
+			else
+				marker = new DxpMarker($"<u>{marker.marker}</u>", marker.numId, marker.iLvl);
+		}
+
+		if (AcceptMode && isDeletedParagraph)
+			return SuppressOutputScope();
+		if (RejectMode && isInsertedParagraph)
+			return SuppressOutputScope();
+
+		// Avoid splitting paragraphs with no tracked content; stick to normal rendering to prevent duplication.
+		if (splitMode && !isDeletedParagraph && !isInsertedParagraph && CurrentStream == DxpChangeStream.Unchanged)
+		{
+			splitScope.Dispose();
+			splitScope = Disposable.Empty;
+			splitMode = false;
+		}
+
 		string innerText = p.InnerText;
 
 		if (string.IsNullOrWhiteSpace(innerText))
@@ -490,7 +879,11 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 		if (isCode)
 			marker = null;
 
-		if (marker?.marker != null)
+		if (_config.TrackedChangeMode == DxpTrackedChangeMode.SplitChanges)
+		{
+			WriteSplitMarkers(paragraph.MarkerAccept, paragraph.MarkerReject, isDeletedParagraph, isInsertedParagraph, needsParagraphWrapper);
+		}
+		else if (marker?.marker != null)
 		{
 			var normalizedMarker = NormalizeMarker(marker.marker);
 			if (!needsParagraphWrapper && LooksLikeOrderedListMarker(normalizedMarker))
@@ -526,7 +919,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 			_writer.Write("<figcaption>");
 		}
 
-		return Disposable.Create(() => {
+		var baseDispose = Disposable.Create(() => {
 			if (isCaption && !_config.UsePlainCodeBlocks && !isHeading && !isBlockQuote)
 			{
 				_writer.Write("</figcaption>");
@@ -550,6 +943,15 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 			int newlines = 2;
 			for (int i = 0; i < newlines; i++)
 				_writer.WriteLine();
+		});
+		if (!splitMode)
+			return baseDispose;
+
+		return Disposable.Create(() => {
+			baseDispose.Dispose();
+			if (splitLeft != null && splitRight != null)
+				EmitSplitRow(splitLeft.ToString(), splitRight.ToString());
+			splitScope.Dispose();
 		});
 
 	}
@@ -928,6 +1330,11 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 	{
 		if (ShouldSuppressOutput(d))
 			return;
+		if (InlineMode && IsCapturingDeleted())
+		{
+			CaptureDeleted("\t");
+			return;
+		}
 		_writer.Write("&#9;"); // or &nbsp; spacing
 	}
 
@@ -1101,8 +1508,38 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 
 	public override IDisposable VisitDocumentBodyBegin(Body body, DxpIDocumentContext d)
 	{
-		if (!_config.EmitDocumentColors)
-			return Disposable.Empty;
+		if (SplitMode)
+		{
+			// Capture entire body into accept/reject buffers; emit at end.
+			var prevAccept = _acceptWriter;
+			var prevReject = _rejectWriter;
+			var prevUnchanged = _unchangedWriter;
+
+			var left = new StringWriter(new StringBuilder());
+			var right = new StringWriter(new StringBuilder());
+
+			_acceptWriter = right;   // accept path
+			_rejectWriter = left;    // reject path
+			_unchangedWriter = new MultiWriter(left, right);
+
+			return Disposable.Create(() => {
+				var leftText = left.ToString();
+				var rightText = right.ToString();
+
+				_acceptWriter = prevAccept;
+				_rejectWriter = prevReject;
+				_unchangedWriter = prevUnchanged;
+
+				if (string.Equals(leftText, rightText, StringComparison.Ordinal))
+				{
+					_sinkWriter.Write(leftText);
+				}
+				else
+				{
+					EmitSplitRow(leftText, rightText);
+				}
+			});
+		}
 
 		return Disposable.Empty;
 	}
@@ -1121,7 +1558,13 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 		return adjusted;
 	}
 
-	private bool ShouldSuppressOutput(DxpIDocumentContext d) => !_config.EmitPageNumbers && d.CurrentFields.IsSuppressed;
+	private bool ShouldSuppressOutput(DxpIDocumentContext d)
+	{
+		if (_state.SuppressDepth > 0)
+			return true;
+
+		return !_config.EmitPageNumbers && d.CurrentFields.IsSuppressed;
+	}
 
 	private static bool LooksLikePageField(string? instr)
 	{

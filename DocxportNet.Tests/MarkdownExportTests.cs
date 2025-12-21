@@ -63,12 +63,40 @@ public class MarkdownExportTests
 		VerifyAgainstFixture(sample, DxpMarkdownVisitorConfig.PLAIN, ".plain.md", ".plain.test.md");
 	}
 
+	[Theory]
+	[MemberData(nameof(SampleDocs))]
+	public void TestDocxToMarkdown_Rich_Reject(Sample sample)
+	{
+		VerifyVariant(sample, DxpMarkdownVisitorConfig.RICH, ".reject.test.md", DxpTrackedChangeMode.RejectChanges);
+	}
+
+	[Theory]
+	[MemberData(nameof(SampleDocs))]
+	public void TestDocxToMarkdown_Rich_Inline(Sample sample)
+	{
+		VerifyVariant(sample, DxpMarkdownVisitorConfig.RICH, ".inline.test.md", DxpTrackedChangeMode.InlineChanges);
+	}
+
+	[Theory]
+	[MemberData(nameof(SampleDocs))]
+	public void TestDocxToMarkdown_Plain_Reject(Sample sample)
+	{
+		VerifyVariant(sample, DxpMarkdownVisitorConfig.PLAIN, ".plain.reject.test.md", DxpTrackedChangeMode.RejectChanges);
+	}
+
+	[Theory]
+	[MemberData(nameof(SampleDocs))]
+	public void TestDocxToMarkdown_Plain_Inline(Sample sample)
+	{
+		VerifyVariant(sample, DxpMarkdownVisitorConfig.PLAIN, ".plain.inline.test.md", DxpTrackedChangeMode.InlineChanges);
+	}
+
 	private void VerifyAgainstFixture(Sample sample, DxpMarkdownVisitorConfig config, string expectedExt, string actualSuffix)
 	{
 		string expectedPath = Path.ChangeExtension(sample.DocxPath, expectedExt);
 		string actualPath = Path.Combine(Path.GetDirectoryName(sample.DocxPath)!, $"{Path.GetFileNameWithoutExtension(sample.DocxPath)}{actualSuffix}");
 
-		string actualMarkdown = TestCompare.Normalize(ToMarkdown(sample.DocxPath, config));
+		string actualMarkdown = TestCompare.Normalize(ToMarkdown(sample.DocxPath, CloneConfig(config, DxpTrackedChangeMode.AcceptChanges)));
 		File.WriteAllText(actualPath, actualMarkdown);
 
 		if (!File.Exists(expectedPath))
@@ -83,6 +111,23 @@ public class MarkdownExportTests
 			string diff = TestCompare.DescribeDifference(expectedMarkdown, actualMarkdown);
 			throw new XunitException($"Mismatch for {sample.FileName}: {diff}. Expected: {expectedPath}. Actual: {actualPath}.");
 		}
+
+		// Emit additional tracked-change variants for inspection.
+		WriteVariant(sample, config, DxpTrackedChangeMode.RejectChanges, actualSuffix.Replace(".test", ".reject.test"));
+		WriteVariant(sample, config, DxpTrackedChangeMode.InlineChanges, actualSuffix.Replace(".test", ".inline.test"));
+	}
+
+	private void VerifyVariant(Sample sample, DxpMarkdownVisitorConfig config, string suffix, DxpTrackedChangeMode mode)
+	{
+		WriteVariant(sample, config, mode, suffix);
+	}
+
+	private void WriteVariant(Sample sample, DxpMarkdownVisitorConfig baseConfig, DxpTrackedChangeMode mode, string suffix)
+	{
+		var cfg = CloneConfig(baseConfig, mode);
+		string path = Path.Combine(Path.GetDirectoryName(sample.DocxPath)!, $"{Path.GetFileNameWithoutExtension(sample.DocxPath)}{suffix}");
+		string markdown = TestCompare.Normalize(ToMarkdown(sample.DocxPath, cfg));
+		File.WriteAllText(path, markdown);
 	}
 
 	private string ToMarkdown(string docxPath, DxpMarkdownVisitorConfig config)
@@ -93,5 +138,29 @@ public class MarkdownExportTests
 
 		walker.Accept(docxPath, visitor);
 		return writer.ToString();
+	}
+
+	private DxpMarkdownVisitorConfig CloneConfig(DxpMarkdownVisitorConfig source, DxpTrackedChangeMode mode)
+	{
+		return new DxpMarkdownVisitorConfig {
+			EmitImages = source.EmitImages,
+			EmitStyleFont = source.EmitStyleFont,
+			EmitRunColor = source.EmitRunColor,
+			EmitRunBackground = source.EmitRunBackground,
+			EmitTableBorders = source.EmitTableBorders,
+			EmitDocumentColors = source.EmitDocumentColors,
+			EmitParagraphAlignment = source.EmitParagraphAlignment,
+			PreserveListSymbols = source.PreserveListSymbols,
+			RichTables = source.RichTables,
+			UsePlainCodeBlocks = source.UsePlainCodeBlocks,
+			UseMarkdownInlineStyles = source.UseMarkdownInlineStyles,
+			EmitSectionHeadersFooters = source.EmitSectionHeadersFooters,
+			EmitUnreferencedBookmarks = source.EmitUnreferencedBookmarks,
+			EmitPageNumbers = source.EmitPageNumbers,
+			UsePlainComments = source.UsePlainComments,
+			EmitCustomProperties = source.EmitCustomProperties,
+			EmitTimeline = source.EmitTimeline,
+			TrackedChangeMode = mode
+		};
 	}
 }

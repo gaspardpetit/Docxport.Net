@@ -16,7 +16,8 @@ public class DxpDocumentContext : DxpIDocumentContext
 	public DxpTables Tables { get; } = new DxpTables();
 	public DxpFootnotes Footnotes { get; } = new DxpFootnotes();
 	public DocxEndnotes Endnotes { get; } = new DocxEndnotes();
-	public DxpLists Lists { get; } = new DxpLists();
+	public DxpLists AcceptLists { get; } = new DxpLists();
+	public DxpLists RejectLists { get; } = new DxpLists();
 	public HashSet<string> ReferencedBookmarkAnchors { get; } = new HashSet<string>(StringComparer.Ordinal);
 	public DxpIStyleResolver Styles { get; }
 	public DocumentBackground? Background { get; }
@@ -49,7 +50,8 @@ public class DxpDocumentContext : DxpIDocumentContext
 		Footnotes.Init(doc.MainDocumentPart);
 		Endnotes.Init(doc.MainDocumentPart);
 		Comments.Init(doc.MainDocumentPart);
-		Lists.Init(doc);
+		AcceptLists.Init(doc);
+		RejectLists.Init(doc);
 		Styles = new DxpStyleResolver(doc);
 		DefaultRunStyle = Styles.GetDefaultRunStyle();
 
@@ -58,17 +60,18 @@ public class DxpDocumentContext : DxpIDocumentContext
 		Background = doc.MainDocumentPart.Document?.DocumentBackground;
 	}
 
-	public DxpParagraphContext CreateParagraphContext(Paragraph p)
+	public DxpParagraphContext CreateParagraphContext(Paragraph p, bool advanceAccept = true, bool advanceReject = true)
 	{
-		DxpMarker marker = Lists.MaterializeMarker(p, Styles);
-		DxpStyleEffectiveIndentTwips indent = Lists.GetIndentation(p, Styles);
-		return new DxpParagraphContext(marker, indent, p.ParagraphProperties);
+		DxpMarker acceptMarker = advanceAccept ? AcceptLists.MaterializeMarker(p, Styles) : new DxpMarker(null, null, null);
+		DxpMarker rejectMarker = advanceReject ? RejectLists.MaterializeMarker(p, Styles) : new DxpMarker(null, null, null);
+		DxpStyleEffectiveIndentTwips indent = AcceptLists.GetIndentation(p, Styles);
+		return new DxpParagraphContext(acceptMarker, rejectMarker, indent, p.ParagraphProperties);
 	}
 
-	public IDisposable PushParagraph(Paragraph p, out DxpParagraphContext ctx)
+	public IDisposable PushParagraph(Paragraph p, out DxpParagraphContext ctx, bool advanceAccept = true, bool advanceReject = true)
 	{
 		var prev = CurrentParagraph;
-		DxpParagraphContext paragraphContext = CreateParagraphContext(p);
+		DxpParagraphContext paragraphContext = CreateParagraphContext(p, advanceAccept, advanceReject);
 		ctx = paragraphContext;
 		CurrentParagraph = paragraphContext;
 		return Disposable.Create(() => CurrentParagraph = prev);
