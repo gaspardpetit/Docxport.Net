@@ -139,8 +139,12 @@ public interface DxpIDocumentContext
 	DxpIRunContext? CurrentRun { get; }
 	DxpISectionContext CurrentSection { get; }
 	DocumentBackground? Background { get; }
+	IReadOnlyList<DxpTimelineEvent> Timeline { get; }
 	DxpStyleEffectiveRunStyle DefaultRunStyle { get; }
 	DxpFieldFrameContext CurrentFields { get; }
+	Settings? DocumentSettings { get; }
+	IPackageProperties? CoreProperties { get; }
+	IReadOnlyList<CustomFileProperty>? CustomProperties { get; }
 }
 
 public interface DxpIParagraphContext
@@ -340,7 +344,7 @@ public interface DxpIVisitor : DxpIStyleVisitor, DxpIFieldVisitor
 	IDisposable VisitCustomXmlCellBegin(CustomXmlCell cxCell, DxpIDocumentContext d);
 	IDisposable VisitSectionHeaderBegin(Header hdr, object value, DxpIDocumentContext d);
 	IDisposable VisitSectionFooterBegin(Footer ftr, object value, DxpIDocumentContext d);
-	void VisitDocumentProperties(IPackageProperties core, IReadOnlyList<CustomFileProperty> custom);
+	void VisitDocumentProperties(IPackageProperties core, IReadOnlyList<CustomFileProperty> custom, IReadOnlyList<DxpTimelineEvent> timeline);
 	void VisitBibliographySources(CustomXmlPart bibliographyPart, XDocument bib);
 	IDisposable VisitSectionBegin(SectionProperties properties, SectionLayout layout, DxpIDocumentContext d);
 	IDisposable VisitSectionBodyBegin(SectionProperties properties, DxpIDocumentContext d);

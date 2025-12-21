@@ -42,7 +42,8 @@ public sealed record DxpMarkdownVisitorConfig
 	public bool EmitUnreferencedBookmarks = true;
 	public bool EmitPageNumbers = false;
 	public bool UsePlainComments = false;
-	public bool EmitCustomProperties = false;
+	public bool EmitCustomProperties = true;
+	public bool EmitTimeline = false;
 
 	public static DxpMarkdownVisitorConfig RICH = new();
 	public static DxpMarkdownVisitorConfig PLAIN = new() {
@@ -60,7 +61,9 @@ public sealed record DxpMarkdownVisitorConfig
 		EmitSectionHeadersFooters = true,
 		EmitUnreferencedBookmarks = false,
 		EmitPageNumbers = false,
-		UsePlainComments = true
+		UsePlainComments = true,
+		EmitCustomProperties = true,
+		EmitTimeline = false
 	};
 
 	public static DxpMarkdownVisitorConfig DEFAULT = RICH;
@@ -308,7 +311,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 		}
 	}
 
-	public override void VisitDocumentProperties(IPackageProperties core, IReadOnlyList<CustomFileProperty> custom)
+	public override void VisitDocumentProperties(IPackageProperties core, IReadOnlyList<CustomFileProperty> custom, IReadOnlyList<DxpTimelineEvent> timeline)
 	{
 		var lines = new List<string>();
 
@@ -329,12 +332,23 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 		Add("Created", FormatDateUtc(core.Created));
 		Add("Modified", FormatDateUtc(core.Modified));
 
+		if (_config.EmitTimeline && _config.RichTables == false && timeline != null && timeline.Count > 0)
+		{
+			foreach (var ev in timeline)
+			{
+				var date = ev.DateUtc?.ToString("yyyy-MM-ddTHH:mm:ss'Z'") ?? "unknown";
+				var who = string.IsNullOrWhiteSpace(ev.Author) ? "unknown" : ev.Author;
+				var detail = string.IsNullOrWhiteSpace(ev.Detail) ? "" : $" ({ev.Detail})";
+				lines.Add($"<!-- Timeline: {date} - {ev.Kind} by {who}{detail} -->");
+			}
+		}
+
 		if (custom != null && _config.EmitCustomProperties)
 		{
 			foreach (var prop in custom)
 			{
 				if (prop.Value != null)
-					lines.Add($"<!-- {prop.Name}: {prop.Value} -->");
+				lines.Add($"<!-- {prop.Name}: {prop.Value} -->");
 			}
 		}
 
@@ -343,6 +357,21 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 
 		if (lines.Count > 0)
 			_writer.WriteLine();
+
+		if (_config.EmitTimeline && _config.RichTables && timeline != null && timeline.Count > 0)
+		{
+			_writer.WriteLine();
+			_writer.WriteLine("| Date | Event |");
+			_writer.WriteLine("| --- | --- |");
+			foreach (var ev in timeline)
+			{
+				var date = ev.DateUtc?.ToString("yyyy-MM-dd HH:mm:ss 'UTC'") ?? "unknown";
+				var who = string.IsNullOrWhiteSpace(ev.Author) ? "unknown" : ev.Author;
+				var detail = string.IsNullOrWhiteSpace(ev.Detail) ? "" : $" ({ev.Detail})";
+				_writer.WriteLine($"| {date} | {ev.Kind} by {who}{detail} |");
+			}
+			_writer.WriteLine();
+		}
 	}
 
 	static string? FormatDateUtc(DateTime? value)

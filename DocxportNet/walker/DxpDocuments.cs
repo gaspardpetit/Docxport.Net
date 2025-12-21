@@ -24,6 +24,7 @@ public class DxpDocumentContext : DxpIDocumentContext
 	public Settings? DocumentSettings { get; internal set; }
 	public IPackageProperties? CoreProperties { get; internal set; }
 	public IReadOnlyList<CustomFileProperty>? CustomProperties { get; internal set; }
+	public IReadOnlyList<DxpTimelineEvent> Timeline { get; internal set; } = Array.Empty<DxpTimelineEvent>();
 	public OpenXmlPart? CurrentPart { get; internal set; }
 	public DxpParagraphContext CurrentParagraph { get; internal set; } = DxpParagraphContext.INVALID;
 	DxpIParagraphContext DxpIDocumentContext.CurrentParagraph => CurrentParagraph;
