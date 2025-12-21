@@ -1,8 +1,8 @@
 <!-- Revision: 0 -->
 <!-- Created: 2017-08-02 11:09:18Z -->
 
-<div style="color:#000000;display:flex;flex-direction:column;position:relative;width:8.268in;min-height:11.693in;box-sizing:border-box;padding-left:0.788in;padding-right:0.788in;background-color:#FFFFFF;font-family:Liberation Serif;Times New Roman;font-size:12pt;">
-<div style="flex:1 0 auto;padding-top:0.788in;">
+<div class="section" style="color:#000000;display:flex;flex-direction:column;position:relative;width:8.268in;min-height:11.693in;box-sizing:border-box;padding-left:0.788in;padding-right:0.788in;background-color:#FFFFFF;font-family:Liberation Serif;Times New Roman;font-size:12pt;">
+<div class="body" style="flex:1 0 auto;padding-top:0.788in;">
 <h1 style="text-align:center;"><span style="font-family: Liberation Sans;Arial; font-size: 28pt;">Lorem ipsum </span></h1>
 
 <span style="font-family: Liberation Sans;Arial; font-size: 18pt;"><b>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ac faucibus odio. </b></span>

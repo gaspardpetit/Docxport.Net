@@ -1,9 +1,9 @@
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
-using DocxportNet.api;
+using DocxportNet.API;
 using System.Globalization;
 
-namespace DocxportNet.walker;
+namespace DocxportNet.Walker;
 
 
 public sealed class DxpNumberingResolver
@@ -341,7 +341,6 @@ public static class DxpListMarkerFormatter
 	}
 }
 
-
 public class DxpLists
 {
 	private DxpNumberingResolver? _num;
@@ -356,7 +355,7 @@ public class DxpLists
 		_num = new DxpNumberingResolver(doc);
 	}
 
-	internal (string? marker, int? numId, int? iLvl) MaterializeMarker(Paragraph p, IDxpStyleResolver s)
+	internal DxpMarker MaterializeMarker(Paragraph p, DxpIStyleResolver s)
 	{
 		string? marker = null;
 		int? numId = null;
@@ -372,10 +371,10 @@ public class DxpLists
 				iLvl = numPr.Ilvl;
 			}
 		}
-		return (marker, numId, iLvl);
+		return new DxpMarker(marker, numId, iLvl);
 	}
 
-	public DxpStyleEffectiveIndentTwips GetIndentation(Paragraph p, IDxpStyleResolver s)
+	public DxpStyleEffectiveIndentTwips GetIndentation(Paragraph p, DxpIStyleResolver s)
 	{
 		DxpStyleEffectiveIndentTwips indent = s.GetIndentation(p, _num);
 		return indent;

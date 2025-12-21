@@ -1,4 +1,4 @@
-namespace DocxportNet.api;
+namespace DocxportNet.API;
 
 public sealed record DxpTableModel(
 	int ColumnCount,

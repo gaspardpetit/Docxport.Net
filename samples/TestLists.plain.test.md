@@ -8,7 +8,7 @@
 
 next line, no bullet
 
-ο default list level 2
+o default list level 2
 
 next line no bullet
 
@@ -24,7 +24,7 @@ next line no bullet
 <p style="margin-left:72pt;">next line no bullet</p>
 
 
-<p style="margin-left:108pt;">ο default list level 5</p>
+<p style="margin-left:108pt;">o default list level 5</p>
 
 
 <p style="margin-left:108pt;">next line no bullet</p>
@@ -42,7 +42,7 @@ next line no bullet
 <p style="margin-left:180pt;">next line no bullet</p>
 
 
-<p style="margin-left:216pt;">ο default list level 8</p>
+<p style="margin-left:216pt;">o default list level 8</p>
 
 
 <p style="margin-left:216pt;">next line no bullet</p>
@@ -54,7 +54,7 @@ next line no bullet
 <p style="margin-left:252pt;">next line no bullet</p>
 
 
-<p style="margin-left:216pt;">ο default list level 8</p>
+<p style="margin-left:216pt;">o default list level 8</p>
 
 
 <p style="margin-left:180pt;">• default list level 7</p>
@@ -63,7 +63,7 @@ next line no bullet
 <p style="margin-left:144pt;">▪ default list level 6</p>
 
 
-<p style="margin-left:108pt;">ο default list level 5</p>
+<p style="margin-left:108pt;">o default list level 5</p>
 
 
 <p style="margin-left:72pt;">• default list level 4</p>
@@ -72,7 +72,7 @@ next line no bullet
 <p style="margin-left:36pt;">▪ default list level 3</p>
 
 
-ο default list level 2
+o default list level 2
 
 • default list level 1
 

@@ -1,6 +1,6 @@
 using DocxportNet.Tests.Utils;
-using DocxportNet.visitors;
-using DocxportNet.walker;
+using DocxportNet.Visitors;
+using DocxportNet.Walker;
 using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
 using Xunit.Sdk;

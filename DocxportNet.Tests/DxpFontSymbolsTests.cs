@@ -1,6 +1,3 @@
-using DocxportNet;
-using Xunit;
-
 namespace DocxportNet.Tests;
 
 public class DxpFontSymbolsTests

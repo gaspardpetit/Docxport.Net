@@ -1,8 +1,8 @@
 using DocumentFormat.OpenXml.Wordprocessing;
-using DocxportNet.api;
+using DocxportNet.API;
 using System.Globalization;
 
-namespace DocxportNet.walker;
+namespace DocxportNet.Walker;
 
 public class DxpTables
 {

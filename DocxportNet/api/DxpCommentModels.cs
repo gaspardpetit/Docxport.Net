@@ -1,9 +1,7 @@
-using System;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
-using System.Collections.Generic;
 
-namespace DocxportNet.api;
+namespace DocxportNet.API;
 
 public sealed record DxpCommentInfo
 {

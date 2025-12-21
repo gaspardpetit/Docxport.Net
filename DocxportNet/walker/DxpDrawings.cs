@@ -1,18 +1,18 @@
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
-using DocxportNet.api;
+using DocxportNet.API;
 
-namespace DocxportNet.walker;
+namespace DocxportNet.Walker;
 
 
 public class DxpDrawings
 {
-	public (string dataUri, string contentType)? TryBuildImageDataUri(OpenXmlPart? hostPart, Drawing d)
+	public (string dataUri, string contentType)? TryBuildImageDataUri(OpenXmlPart? hostPart, Drawing drw)
 	{
 		if (hostPart == null)
 			return null;
 
-		var blip = d.Descendants<DocumentFormat.OpenXml.Drawing.Blip>().FirstOrDefault();
+		var blip = drw.Descendants<DocumentFormat.OpenXml.Drawing.Blip>().FirstOrDefault();
 		var relId = blip?.Embed?.Value;
 
 		if (string.IsNullOrEmpty(relId))
@@ -36,16 +36,16 @@ public class DxpDrawings
 		return (dataUri, contentType);
 	}
 
-	public DxpDrawingInfo? TryResolveDrawingInfo(OpenXmlPart? hostPart, Drawing d)
+	public DxpDrawingInfo? TryResolveDrawingInfo(OpenXmlPart? hostPart, Drawing drw)
 	{
 		if (hostPart == null)
 			return null;
 
-		var docPr = d.Descendants<DocumentFormat.OpenXml.Drawing.Wordprocessing.DocProperties>()
+		var docPr = drw.Descendants<DocumentFormat.OpenXml.Drawing.Wordprocessing.DocProperties>()
 					 .FirstOrDefault();
 		string? altText = docPr?.Description?.Value ?? docPr?.Title?.Value;
 
-		var blip = d.Descendants<DocumentFormat.OpenXml.Drawing.Blip>().FirstOrDefault();
+		var blip = drw.Descendants<DocumentFormat.OpenXml.Drawing.Blip>().FirstOrDefault();
 		var relId = blip?.Embed?.Value;
 
 		string? contentType = null;

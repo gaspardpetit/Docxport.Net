@@ -1,11 +1,11 @@
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
-using DocxportNet.api;
-using DocxportNet;
+using DocxportNet.API;
+using DocxportNet.Word;
 using System.Globalization;
 
-namespace DocxportNet.walker;
+namespace DocxportNet.Walker;
 
 
 public struct DxpEffectiveRunStyleBuilder
@@ -133,7 +133,7 @@ public struct DxpEffectiveRunStyleBuilder
 }
 
 
-public sealed class DxpStyleResolver : IDxpStyleResolver
+public sealed class DxpStyleResolver : DxpIStyleResolver
 {
 	private readonly Styles? _styles;
 	private readonly Dictionary<string, Style> _byId;
@@ -395,26 +395,26 @@ public sealed class DxpStyleResolver : IDxpStyleResolver
 			if (string.IsNullOrWhiteSpace(x))
 				return null;
 
-			if (x!.Equals(WordBuiltInStyleId.wdStyleTitle, StringComparison.OrdinalIgnoreCase))
+			if (x!.Equals(DxpWordBuiltInStyleId.wdStyleTitle, StringComparison.OrdinalIgnoreCase))
 				return 1;
 
-			if (x.Equals(WordBuiltInStyleId.wdStyleHeading1, StringComparison.OrdinalIgnoreCase))
+			if (x.Equals(DxpWordBuiltInStyleId.wdStyleHeading1, StringComparison.OrdinalIgnoreCase))
 				return 2;
-			if (x.Equals(WordBuiltInStyleId.wdStyleHeading2, StringComparison.OrdinalIgnoreCase))
+			if (x.Equals(DxpWordBuiltInStyleId.wdStyleHeading2, StringComparison.OrdinalIgnoreCase))
 				return 3;
-			if (x.Equals(WordBuiltInStyleId.wdStyleHeading3, StringComparison.OrdinalIgnoreCase))
+			if (x.Equals(DxpWordBuiltInStyleId.wdStyleHeading3, StringComparison.OrdinalIgnoreCase))
 				return 4;
-			if (x.Equals(WordBuiltInStyleId.wdStyleHeading4, StringComparison.OrdinalIgnoreCase))
+			if (x.Equals(DxpWordBuiltInStyleId.wdStyleHeading4, StringComparison.OrdinalIgnoreCase))
 				return 5;
-			if (x.Equals(WordBuiltInStyleId.wdStyleHeading5, StringComparison.OrdinalIgnoreCase))
+			if (x.Equals(DxpWordBuiltInStyleId.wdStyleHeading5, StringComparison.OrdinalIgnoreCase))
 				return 6;
-			if (x.Equals(WordBuiltInStyleId.wdStyleHeading6, StringComparison.OrdinalIgnoreCase))
+			if (x.Equals(DxpWordBuiltInStyleId.wdStyleHeading6, StringComparison.OrdinalIgnoreCase))
 				return 7;
-			if (x.Equals(WordBuiltInStyleId.wdStyleHeading7, StringComparison.OrdinalIgnoreCase))
+			if (x.Equals(DxpWordBuiltInStyleId.wdStyleHeading7, StringComparison.OrdinalIgnoreCase))
 				return 8;
-			if (x.Equals(WordBuiltInStyleId.wdStyleHeading8, StringComparison.OrdinalIgnoreCase))
+			if (x.Equals(DxpWordBuiltInStyleId.wdStyleHeading8, StringComparison.OrdinalIgnoreCase))
 				return 9;
-			if (x.Equals(WordBuiltInStyleId.wdStyleHeading9, StringComparison.OrdinalIgnoreCase))
+			if (x.Equals(DxpWordBuiltInStyleId.wdStyleHeading9, StringComparison.OrdinalIgnoreCase))
 				return 10;
 
 			if (x.StartsWith("Heading ", StringComparison.OrdinalIgnoreCase) &&
@@ -445,7 +445,7 @@ public sealed class DxpStyleResolver : IDxpStyleResolver
 	public DxpStyleEffectiveRunStyle GetDefaultRunStyle()
 	{
 		var acc = DxpEffectiveRunStyleBuilder.FromDefaults(_docDefaultRunProps);
-		ApplyParagraphStyleChainRunProps(WordBuiltInStyleId.wdStyleNormal, ref acc);
+		ApplyParagraphStyleChainRunProps(DxpWordBuiltInStyleId.wdStyleNormal, ref acc);
 		return acc.ToImmutable();
 	}
 

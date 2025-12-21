@@ -1,7 +1,7 @@
 <!-- Revision: 0 -->
 <!-- Created: 2017-08-02 11:09:18Z -->
 
-# Lorem ipsum 
+# Lorem ipsum
 
 <b>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ac faucibus odio. </b>
 
@@ -15,16 +15,16 @@ Maecenas mauris lectus, lobortis et purus mattis, blandit dictum tellus.
 
 • <u>Aenean congue fringilla justo ut aliquam. </u>
 
-• <a href="https://products.office.com/en-us/word"><u>Mauris id ex erat. </u></a>Nunc vulputate neque vitae justo facilisis, non condimentum ante sagittis. 
+• <a href="https://products.office.com/en-us/word"><u>Mauris id ex erat. </u></a>Nunc vulputate neque vitae justo facilisis, non condimentum ante sagittis.
 
-• Morbi viverra semper lorem nec molestie. 
+• Morbi viverra semper lorem nec molestie.
 
 • Maecenas tincidunt est efficitur ligula euismod, sit amet ornare est vulputate.
 
 [IMAGE]
 In non mauris justo. Duis vehicula mi vel mi pretium, a viverra erat efficitur. Cras aliquam est ac eros varius, id iaculis dui auctor. Duis pretium neque ligula, et pulvinar mi placerat et. Nulla nec nunc sit amet nunc posuere vestibulum. Ut id neque eget tortor mattis tristique. Donec ante est, blandit sit amet tristique vel, lacinia pulvinar arcu. Pellentesque scelerisque fermentum erat, id posuere justo pulvinar ut. Cras id eros sed enim aliquam lobortis. Sed lobortis nisl ut eros efficitur tincidunt. Cras justo mi, porttitor quis mattis vel, ultricies ut purus. Ut facilisis et lacus eu cursus.
 
-In eleifend velit vitae libero sollicitudin euismod. Fusce vitae vestibulum velit. Pellentesque vulputate lectus quis pellentesque commodo. Aliquam erat volutpat. Vestibulum in egestas velit. Pellentesque fermentum nisl vitae fringilla venenatis. Etiam id mauris vitae orci maximus ultricies. 
+In eleifend velit vitae libero sollicitudin euismod. Fusce vitae vestibulum velit. Pellentesque vulputate lectus quis pellentesque commodo. Aliquam erat volutpat. Vestibulum in egestas velit. Pellentesque fermentum nisl vitae fringilla venenatis. Etiam id mauris vitae orci maximus ultricies.
 
 <b>Cras fringilla ipsum magna, in fringilla dui commodo a.</b>
 

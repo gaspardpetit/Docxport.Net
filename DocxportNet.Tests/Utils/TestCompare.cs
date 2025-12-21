@@ -4,10 +4,16 @@
 	{
 		public static string Normalize(string text)
 		{
-			return text
+			var normalizedNewlines = text
 				.Replace("\r\n", "\n")
-				.Replace("\r", "\n")
-				.TrimEnd();
+				.Replace("\r", "\n");
+
+			// Trim trailing whitespace on each line to avoid platform-specific spacing differences
+			var lines = normalizedNewlines.Split('\n');
+			for (int i = 0; i < lines.Length; i++)
+				lines[i] = lines[i].TrimEnd();
+
+			return string.Join("\n", lines).TrimEnd();
 		}
 
 	public static string DescribeDifference(string expected, string actual)

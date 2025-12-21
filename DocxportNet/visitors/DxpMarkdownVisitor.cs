@@ -1,15 +1,29 @@
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentFormat.OpenXml.Packaging;
-using DocxportNet.api;
+using DocxportNet.API;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
-using DocxportNet.walker;
-using DocxportNet.symbols;
+using DocxportNet.Core;
+using DocxportNet.Word;
+using DocxportNet.Markdown;
 
-namespace DocxportNet.visitors;
+namespace DocxportNet.Visitors;
+
+/// <summary>
+/// Mutable state specific to DxpMarkdownVisitor; separated for clarity of intent.
+/// Currently empty—fields should be added here instead of on the visitor itself.
+/// </summary>
+internal sealed class DxpMarkdownVisitorState
+{
+	public DxpContextStack<MarkdownTableBuilder> MarkdownTables { get; } = new DxpContextStack<MarkdownTableBuilder>("markdown-table");
+	public bool InHeading { get; set; }
+	public bool FontSpanOpen { get; set; }
+	public bool AllCaps { get; set; }
+	public bool IsFirstSection { get; set; } = true;
+}
 
 public sealed record DxpMarkdownVisitorConfig
 {
@@ -30,8 +44,7 @@ public sealed record DxpMarkdownVisitorConfig
 	public bool UsePlainComments = false;
 
 	public static DxpMarkdownVisitorConfig RICH = new();
-	public static DxpMarkdownVisitorConfig PLAIN = new()
-	{
+	public static DxpMarkdownVisitorConfig PLAIN = new() {
 		EmitImages = false,
 		EmitStyleFont = false,
 		EmitRunColor = false,
@@ -53,34 +66,11 @@ public sealed record DxpMarkdownVisitorConfig
 }
 
 
-public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
+public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 {
 	private TextWriter _writer;
 	private DxpMarkdownVisitorConfig _config;
-	private bool _currentRowIsHeader;
-	private string? _pageBackground;
-	private bool _hasBackgroundColor;
-	private (int rowSpan, int colSpan)? _pendingCellSpan;
-	private string? _currentTableStyle;
-	private string? _currentTableCellBorder;
-	private string? _pendingCellStyle;
-	private MarkdownTableBuilder? _mdTable;
-	private int _headingDepth;
-	private ISet<string>? _referencedAnchors;
-	private string? _normalFontName;
-	private int? _normalFontSizeHp;
-	private bool _fontSpanOpen;
-	private bool _capturedNormal;
-	private double? _pageWidthInches;
-	private double? _pageHeightInches;
-	private bool _bodyContainerOpen;
-	private double? _marginLeftInches;
-	private double? _marginRightInches;
-	private double? _marginTopInches;
-	private double? _marginLeftPoints;
-	private readonly Stack<bool> _fieldSuppressStack = new();
-	private int _suppressFieldDepth;
-	private bool _sectionBodyOpen;
+	private DxpMarkdownVisitorState _state = new();
 
 	public DxpMarkdownVisitor(TextWriter writer, DxpMarkdownVisitorConfig config, ILogger? logger)
 		: base(logger)
@@ -89,165 +79,154 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 		_writer = writer;
 	}
 
-	public bool EmitSectionHeadersFooters => _config.EmitSectionHeadersFooters;
-	public bool EmitUnreferencedBookmarks => _config.EmitUnreferencedBookmarks;
-	public void SetReferencedAnchors(ISet<string> anchors) => _referencedAnchors = anchors;
-	public void SetDefaultSectionLayout(SectionLayout layout)
+	public override void VisitText(Text t, DxpIDocumentContext d)
 	{
-		UpdatePageDimensions(layout);
-	}
-
-	public override void VisitText(Text t, IDxpStyleResolver s)
-	{
-			if (ShouldSuppressOutput())
-				return;
-			string text = t.Text;
-			if (_allcaps)
-			{
-				var culture = CultureInfo.InvariantCulture;
-				text = text.ToUpper(culture);
-			}
-
-			_writer.Write(text);
+		if (ShouldSuppressOutput(d))
+			return;
+		string text = t.Text;
+		if (_state.AllCaps)
+		{
+			var culture = CultureInfo.InvariantCulture;
+			text = text.ToUpper(culture);
 		}
 
-	private bool _allcaps = false;
-
-	public override void StyleAllCapsEnd()
-	{
-		_allcaps = false;
+		_writer.Write(text);
 	}
 
-	public override void StyleAllCapsBegin()
+	public override void StyleAllCapsEnd(DxpIDocumentContext d)
 	{
-		_allcaps = true;
+		_state.AllCaps = false;
 	}
 
-	public override void StyleSmallCapsEnd()
+	public override void StyleAllCapsBegin(DxpIDocumentContext d)
 	{
-		_allcaps = false;
+		_state.AllCaps = true;
 	}
 
-	public override void StyleSmallCapsBegin()
+	public override void StyleSmallCapsEnd(DxpIDocumentContext d)
 	{
-		_allcaps = true;
+		_state.AllCaps = false;
 	}
 
-	public override void StyleBoldBegin()
+	public override void StyleSmallCapsBegin(DxpIDocumentContext d)
 	{
-		if (_headingDepth > 0)
+		_state.AllCaps = true;
+	}
+
+	public override void StyleBoldBegin(DxpIDocumentContext d)
+	{
+		if (_state.InHeading)
 			return;
 		_writer.Write("<b>");
 	}
-	public override void StyleBoldEnd()
+	public override void StyleBoldEnd(DxpIDocumentContext d)
 	{
-		if (_headingDepth > 0)
+		if (_state.InHeading)
 			return;
 		_writer.Write("</b>");
 	}
 
 
-	public override void StyleItalicBegin()
+	public override void StyleItalicBegin(DxpIDocumentContext d)
 	{
 		_writer.Write("<i>");
 	}
-	public override void StyleItalicEnd()
+	public override void StyleItalicEnd(DxpIDocumentContext d)
 	{
 		_writer.Write("</i>");
 	}
 
-	public override void StyleUnderlineBegin()
+	public override void StyleUnderlineBegin(DxpIDocumentContext d)
 	{
 		_writer.Write("<u>");
 	}
-	public override void StyleUnderlineEnd()
+	public override void StyleUnderlineEnd(DxpIDocumentContext d)
 	{
 		_writer.Write("</u>");
 	}
 
-	public override void StyleStrikeBegin()
+	public override void StyleStrikeBegin(DxpIDocumentContext d)
 	{
 		_writer.Write("<del>");
 	}
-	public override void StyleStrikeEnd()
+	public override void StyleStrikeEnd(DxpIDocumentContext d)
 	{
 		_writer.Write("</del>");
 	}
 
-	public override void StyleDoubleStrikeBegin()
+	public override void StyleDoubleStrikeBegin(DxpIDocumentContext d)
 	{
 		_writer.Write("<del>");
 	}
-	public override void StyleDoubleStrikeEnd()
+	public override void StyleDoubleStrikeEnd(DxpIDocumentContext d)
 	{
 		_writer.Write("</del>");
 	}
 
-	public override void StyleSuperscriptBegin()
+	public override void StyleSuperscriptBegin(DxpIDocumentContext d)
 	{
 		_writer.Write("<sup>");
 	}
-	public override void StyleSuperscriptEnd()
+	public override void StyleSuperscriptEnd(DxpIDocumentContext d)
 	{
 		_writer.Write("</sup>");
 	}
 
-	public override void StyleSubscriptBegin()
+	public override void StyleSubscriptBegin(DxpIDocumentContext d)
 	{
 		_writer.Write("<sub>");
 	}
-	public override void StyleSubscriptEnd()
+	public override void StyleSubscriptEnd(DxpIDocumentContext d)
 	{
 		_writer.Write("</sub>");
 	}
 
-	public override void StyleFontBegin(string? fontName, int? fontSizeHalfPoints)
+	public override void StyleFontBegin(string? fontName, int? fontSizeHalfPoints, DxpIDocumentContext d)
 	{
 		if (_config.EmitStyleFont == false)
 			return;
-		
-		if (IsDefaultFont(fontName, fontSizeHalfPoints))
+
+		if (IsDefaultFont(fontName, fontSizeHalfPoints, d))
 		{
-			_fontSpanOpen = false;
+			_state.FontSpanOpen = false;
 			return;
 		}
 
-		_fontSpanOpen = true;
-		_writer.Write($"""<span style="font-family: {fontName}; font-size: {fontSizeHalfPoints/2.0}pt;">""");
+		_state.FontSpanOpen = true;
+		_writer.Write($"""<span style="font-family: {fontName}; font-size: {fontSizeHalfPoints / 2.0}pt;">""");
 	}
 
-	public override void StyleFontEnd()
+	public override void StyleFontEnd(DxpIDocumentContext d)
 	{
 		if (_config.EmitStyleFont == false)
 			return;
-		
-		if (_fontSpanOpen)
+
+		if (_state.FontSpanOpen)
 		{
 			_writer.Write("</span>");
-			_fontSpanOpen = false;
+			_state.FontSpanOpen = false;
 		}
 	}
 
-	private bool IsDefaultFont(string? fontName, int? fontSizeHalfPoints)
+	private bool IsDefaultFont(string? fontName, int? fontSizeHalfPoints, DxpIDocumentContext d)
 	{
-		if (_normalFontName == null && _normalFontSizeHp == null)
+		if (d.DefaultRunStyle.FontName == null && d.DefaultRunStyle.FontSizeHalfPoints == null)
 			return false;
 
-		bool nameMatch = _normalFontName == null || string.Equals(_normalFontName, fontName, StringComparison.OrdinalIgnoreCase);
-		bool sizeMatch = _normalFontSizeHp == null || _normalFontSizeHp == fontSizeHalfPoints;
+		bool nameMatch = d.DefaultRunStyle.FontName == null || string.Equals(d.DefaultRunStyle.FontName, fontName, StringComparison.OrdinalIgnoreCase);
+		bool sizeMatch = d.DefaultRunStyle.FontSizeHalfPoints == null || d.DefaultRunStyle.FontSizeHalfPoints == fontSizeHalfPoints;
 		return nameMatch && sizeMatch;
 	}
 
-
-
-	public override void VisitBookmarkStart(BookmarkStart bs, IDxpStyleResolver s)
+	public override void VisitBookmarkStart(BookmarkStart bs, DxpIDocumentContext d)
 	{
-		var name = bs.Name?.Value;
-		var id = bs.Id?.Value;
+		string? name = bs.Name?.Value;
+		string? id = bs.Id?.Value;
 
-		if (!EmitUnreferencedBookmarks)
+		if (_config.EmitUnreferencedBookmarks == false)
 		{
-			if (string.IsNullOrEmpty(name) || _referencedAnchors != null && !_referencedAnchors.Contains(name!))
+			if (!string.IsNullOrEmpty(name) && !d.ReferencedBookmarkAnchors.Contains(name!))
+				// skip unreferenced links
 				return;
 		}
 
@@ -256,14 +235,14 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 			_writer.Write($"<a id=\"{Escape(name!)}\" data-bookmark-id=\"{id}\"></a>");
 	}
 
-	public override void VisitBookmarkEnd(BookmarkEnd be, IDxpStyleResolver s)
+	public override void VisitBookmarkEnd(BookmarkEnd be, DxpIDocumentContext d)
 	{
 		// Usually nothing to emit; it just closes the range.
 	}
 
-	public override IDisposable VisitHyperlinkBegin(Hyperlink link, string? target, IDxpStyleResolver s)
+	public override IDisposable VisitHyperlinkBegin(Hyperlink link, DxpLinkAnchor? target, DxpIDocumentContext d)
 	{
-		string? href = target;
+		string? href = target?.uri;
 		_writer.Write(href != null ? $"<a href=\"{HtmlAttr(href)}\">" : "<a>");
 		return Disposable.Create(() => _writer.Write("</a>"));
 	}
@@ -273,7 +252,7 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 		return name;
 	}
 
-	public override IDisposable VisitDeletedRunBegin(DeletedRun dr, IDxpStyleResolver s)
+	public override IDisposable VisitDeletedRunBegin(DeletedRun dr, DxpIDocumentContext d)
 	{
 		_writer.Write("<edit-delete>");
 		return Disposable.Create(() => {
@@ -281,7 +260,7 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 		});
 	}
 
-	public override IDisposable VisitInsertedRunBegin(InsertedRun ir, IDxpStyleResolver s)
+	public override IDisposable VisitInsertedRunBegin(InsertedRun ir, DxpIDocumentContext d)
 	{
 		_writer.Write("<edit-insert>");
 		return Disposable.Create(() => {
@@ -289,115 +268,30 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 		});
 	}
 
-	public override void VisitDeletedText(DeletedText dt, IDxpStyleResolver s)
+	public override void VisitDeletedText(DeletedText dt, DxpIDocumentContext d)
 	{
 		_writer.Write(dt.Text);
 	}
 
-	public override void VisitNoBreakHyphen(NoBreakHyphen h, IDxpStyleResolver s)
+	public override void VisitNoBreakHyphen(NoBreakHyphen h, DxpIDocumentContext d)
 	{
-		if (ShouldSuppressOutput())
+		if (ShouldSuppressOutput(d))
 			return;
 		_writer.Write("-");
 	}
 
-	public override void VisitSectionProperties(SectionProperties sp, IDxpStyleResolver s)
+	public override void VisitSectionProperties(SectionProperties sp, DxpIDocumentContext d)
 	{
-		_writer.WriteLine();
-		_writer.WriteLine("<hr />");
-		_writer.WriteLine();
 	}
 
-	static double TwipsToPt(int twips) => twips / 20.0;
-
-
-	static string BuildParagraphSpanStart(DxpStyleEffectiveIndentTwips ind, int? level)
-	{
-		var sb = new StringBuilder();
-		sb.Append("<p style=\"");
-
-		if (ind.Left is int l)
-			sb.Append("margin-left:").Append(TwipsToPt(l).ToString("0.###", CultureInfo.InvariantCulture)).Append("pt;");
-
-		sb.Append("\"");
-
-		if (level != null && level != 0)
-		{
-			sb.Append($" list-level=\"{level}\"");
-		}
-
-		sb.Append(">");
-		sb.AppendLine();
-		return sb.ToString();
-	}
-
-
-	public static class NbspIndent
-	{
-		// Typical space width is often ~0.25em–0.33em in proportional fonts.
-		// Pick one and be consistent; 0.28 is a decent default for Calibri-ish docs.
-		public static string BuildIndentNbsp(
-			DxpStyleEffectiveIndentTwips ind,
-			bool isFirstLine,
-			double fontSizePt,
-			double spaceWidthEm = 0.28,
-			int maxSpaces = 200)
-		{
-			if (fontSizePt <= 0)
-				fontSizePt = 12; // fallback
-
-			// Compute desired start position in twips
-			int left = ind.Left ?? 0;
-
-			int startTwips = left;
-
-			if (ind.Hanging is int h && h != 0)
-			{
-				// Hanging: first line starts left - hanging; others at left.
-				if (isFirstLine)
-					startTwips = left - h;
-			}
-			else if (ind.FirstLine is int f && f != 0)
-			{
-				// FirstLine: first line starts left + firstLine; others at left.
-				if (isFirstLine)
-					startTwips = left + f;
-			}
-
-			// If negative, don't emit negative spaces.
-			if (startTwips <= 0)
-				return "";
-
-			// Convert twips to points (1 pt = 20 twips)
-			double startPt = startTwips / 20.0;
-
-			// Approximate width of one space in points
-			double spacePt = fontSizePt * spaceWidthEm;
-			if (spacePt <= 0.01)
-				return "";
-
-			int n = (int)Math.Round(startPt / spacePt, MidpointRounding.AwayFromZero);
-			n = n < 0 ? 0 : n > maxSpaces ? maxSpaces : n;
-
-
-			if (n == 0)
-				return "";
-
-			var sb = new StringBuilder(n * 6);
-			for (int i = 0; i < n; i++)
-				sb.Append('\u00A0'); // nbsp
-			return sb.ToString();
-		}
-	}
-
-	public override void VisitDrawingBegin(Drawing d, DxpDrawingInfo? info, IDxpStyleResolver s)
+	public override void VisitDrawingBegin(Drawing drw, DxpDrawingInfo? info, DxpIDocumentContext d)
 	{
 		if (_config.EmitImages == false)
 		{
 			_writer.Write("[IMAGE]");
 			return;
 		}
-		
+
 		var alt = HtmlAttr(info?.AltText ?? "image");
 		var dataUri = info?.DataUri;
 		var contentType = info?.ContentType ?? "";
@@ -417,34 +311,9 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 		}
 	}
 
-	public override void VisitDocumentSettings(Settings settings, IDxpStyleResolver s)
+	public override void VisitDocumentSettings(Settings settings, DxpIDocumentContext d)
 	{
 		// no-op for now
-	}
-
-	public override void VisitDocumentBackground(object background, IDxpStyleResolver s)
-	{
-		if (background is DocumentBackground db)
-		{
-			var color = db.Color?.Value;
-			if (!string.IsNullOrEmpty(color) && !string.Equals(color, "auto", StringComparison.OrdinalIgnoreCase))
-			{
-				_pageBackground = ToCssColor(color!);
-				_hasBackgroundColor = true;
-			}
-		}
-	}
-
-	public override void VisitSectionLayout(SectionProperties sp, SectionLayout layout, IDxpStyleResolver s)
-	{
-		if (!_config.EmitDocumentColors)
-			return;
-
-		UpdatePageDimensions(layout);
-
-		_writer.Write("\n<!-- SECTION LAYOUT -->\n");
-		CloseBodyContainer();
-		EmitBodyContainerStart();
 	}
 
 	public override void VisitCoreFileProperties(IPackageProperties core)
@@ -488,7 +357,7 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 		s.Replace("&", "&amp;").Replace("\"", "&quot;").Replace("<", "&lt;").Replace(">", "&gt;");
 
 
-	public override IDisposable VisitParagraphBegin(Paragraph p, IDxpStyleResolver s, string? marker, int? numId, int? iLvl, DxpStyleEffectiveIndentTwips indent)
+	public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpMarker? marker, DxpStyleEffectiveIndentTwips indent)
 	{
 		string innerText = p.InnerText;
 
@@ -500,7 +369,7 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 		}
 
 
-		var styleChain = s.GetParagraphStyleChain(p);
+		var styleChain = d.Styles.GetParagraphStyleChain(p);
 
 		var justification = _config.EmitParagraphAlignment
 			? p.ParagraphProperties?.Justification?.Val?.Value
@@ -513,34 +382,34 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 		else if (justification == JustificationValues.Both || justification == JustificationValues.Distribute)
 			justify = "justify";
 
-		var headingLevel = s.GetHeadingLevel(p);
-		bool hasNumbering = numId != null;
+		var headingLevel = d.Styles.GetHeadingLevel(p);
+		bool hasNumbering = marker?.numId != null;
 		bool isHeading = headingLevel != null && !hasNumbering;
 		var paragraphStyleId = p.ParagraphProperties?.ParagraphStyleId?.Val?.Value;
 
 		// Subtitle -> treat as a sub heading if not already a heading
-		if (!isHeading && !hasNumbering && styleChain.Any(sc => string.Equals(sc.StyleId, WordBuiltInStyleId.wdStyleSubtitle, StringComparison.OrdinalIgnoreCase)))
+		if (!isHeading && !hasNumbering && styleChain.Any(sc => string.Equals(sc.StyleId, DxpWordBuiltInStyleId.wdStyleSubtitle, StringComparison.OrdinalIgnoreCase)))
 		{
 			headingLevel = 2;
 			isHeading = true;
 		}
 
-		if (!_config.EmitPageNumbers && styleChain.Any(sc => string.Equals(sc.StyleId, WordBuiltInStyleId.wdStylePageNumber, StringComparison.OrdinalIgnoreCase)))
+		if (!_config.EmitPageNumbers && styleChain.Any(sc => string.Equals(sc.StyleId, DxpWordBuiltInStyleId.wdStylePageNumber, StringComparison.OrdinalIgnoreCase)))
 		{
 			return Disposable.Empty;
 		}
 
 		bool isBlockQuote = styleChain.Any(sc =>
-			string.Equals(sc.StyleId, WordBuiltInStyleId.wdStyleQuote, StringComparison.OrdinalIgnoreCase) ||
-			string.Equals(sc.StyleId, WordBuiltInStyleId.wdStyleIntenseQuote, StringComparison.OrdinalIgnoreCase) ||
-			string.Equals(sc.StyleId, WordBuiltInStyleId.wdStyleBlockQuotation, StringComparison.OrdinalIgnoreCase));
+			string.Equals(sc.StyleId, DxpWordBuiltInStyleId.wdStyleQuote, StringComparison.OrdinalIgnoreCase) ||
+			string.Equals(sc.StyleId, DxpWordBuiltInStyleId.wdStyleIntenseQuote, StringComparison.OrdinalIgnoreCase) ||
+			string.Equals(sc.StyleId, DxpWordBuiltInStyleId.wdStyleBlockQuotation, StringComparison.OrdinalIgnoreCase));
 
 		bool isCaption = styleChain.Any(sc =>
-			string.Equals(sc.StyleId, WordBuiltInStyleId.wdStyleCaption, StringComparison.OrdinalIgnoreCase));
+			string.Equals(sc.StyleId, DxpWordBuiltInStyleId.wdStyleCaption, StringComparison.OrdinalIgnoreCase));
 
 		bool isCode = styleChain.Any(sc =>
-			string.Equals(sc.StyleId, WordBuiltInStyleId.wdStyleHtmlPre, StringComparison.OrdinalIgnoreCase) ||
-			string.Equals(sc.StyleId, WordBuiltInStyleId.wdStyleHtmlCode, StringComparison.OrdinalIgnoreCase) ||
+			string.Equals(sc.StyleId, DxpWordBuiltInStyleId.wdStyleHtmlPre, StringComparison.OrdinalIgnoreCase) ||
+			string.Equals(sc.StyleId, DxpWordBuiltInStyleId.wdStyleHtmlCode, StringComparison.OrdinalIgnoreCase) ||
 			string.Equals(sc.StyleId, "Code", StringComparison.OrdinalIgnoreCase));
 
 		string? headingStyle = null;
@@ -564,7 +433,7 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 			}
 		}
 
-		double adjustedMargin = indent.Left.HasValue ? AdjustMarginLeft(TwipsToPt(indent.Left.Value)) : 0.0;
+		double adjustedMargin = indent.Left.HasValue ? AdjustMarginLeft(DxpTwipValue.ToPoints(indent.Left.Value), d) : 0.0;
 		bool hasMargin = adjustedMargin > 0.0001;
 
 		bool needsParagraphWrapper = !isHeading && (hasMargin || justify != null);
@@ -589,15 +458,16 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 		if (isCode)
 			marker = null;
 
-		if (marker != null)
+		if (marker?.marker != null)
 		{
-			var normalizedMarker = NormalizeMarker(marker);
+			var normalizedMarker = NormalizeMarker(marker.marker);
 			if (!needsParagraphWrapper && LooksLikeOrderedListMarker(normalizedMarker))
 				normalizedMarker = EscapeOrderedListMarker(normalizedMarker);
 			_writer.Write($"""{normalizedMarker} """);
 		}
+		bool previousHeading = _state.InHeading;
 		if (isHeading)
-			_headingDepth++;
+			_state.InHeading = true;
 
 		if (isBlockQuote)
 		{
@@ -629,8 +499,7 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 			{
 				_writer.Write("</figcaption>");
 			}
-			if (isHeading && _headingDepth > 0)
-				_headingDepth--;
+			_state.InHeading = previousHeading;
 			if (isCode)
 			{
 				if (_config.UsePlainCodeBlocks)
@@ -653,24 +522,26 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 
 	}
 
-	public override void VisitFootnoteReference(FootnoteReference fr, long id, int index, IDxpStyleResolver s)
+	public override void VisitFootnoteReference(FootnoteReference fr, DxpIFootnoteContext footnote, DxpIDocumentContext d)
 	{
-		_writer.Write($"<a href=\"#fn-{id}\" id=\"fnref-{id}\">[{index}]</a>");
+		_writer.Write($"<a href=\"#fn-{footnote.Id}\" id=\"fnref-{footnote.Id}\">[{footnote.Index}]</a>");
 	}
 
-	public override IDisposable VisitSectionHeaderBegin(Header hdr, object kind, IDxpStyleResolver s)
+	public override IDisposable VisitSectionHeaderBegin(Header hdr, object kind, DxpIDocumentContext d)
 	{
+		if (_config.EmitSectionHeadersFooters == false)
+			return Disposable.Empty;
+
 		// Capture header content; if anything was rendered, wrap it with a bottom border.
 		var buffer = new StringWriter();
 		var previous = _writer;
 		_writer = buffer;
-		return Disposable.Create(() =>
-		{
+		return Disposable.Create(() => {
 			_writer = previous;
 			var content = buffer.ToString();
 			if (HasVisibleContent(content))
 			{
-				_writer.Write("<div style=\"border-bottom:1px solid #000;\">\n");
+				_writer.WriteLine("""<div class="header" style="border-bottom:1px solid #000;">""");
 				_writer.Write(content);
 				if (!content.EndsWith("\n"))
 					_writer.WriteLine();
@@ -679,19 +550,18 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 		});
 	}
 
-	public override IDisposable VisitSectionFooterBegin(Footer ftr, object kind, IDxpStyleResolver s)
+	public override IDisposable VisitSectionFooterBegin(Footer ftr, object kind, DxpIDocumentContext d)
 	{
 		// Capture footer content; if anything was rendered, wrap it with a top border.
 		var buffer = new StringWriter();
 		var previous = _writer;
 		_writer = buffer;
-		return Disposable.Create(() =>
-		{
+		return Disposable.Create(() => {
 			_writer = previous;
 			var content = buffer.ToString();
 			if (HasVisibleContent(content))
 			{
-				_writer.Write("<div style=\"border-top:1px solid #000;\">\n");
+				_writer.WriteLine("""<div class="footer" style="border-top:1px solid #000;">""");
 				_writer.Write(content);
 				if (!content.EndsWith("\n"))
 					_writer.WriteLine();
@@ -700,144 +570,126 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 		});
 	}
 
-	public override void VisitPageNumber(PageNumber pn, IDxpStyleResolver s)
+	public override void VisitPageNumber(PageNumber pn, DxpIDocumentContext d)
 	{
 		// Rendered via field result; we suppress field output when EmitPageNumbers is false.
 	}
 
-	public override void VisitComplexFieldBegin(FieldChar begin, IDxpStyleResolver s)
+	public override void VisitComplexFieldBegin(FieldChar begin, DxpIDocumentContext d)
 	{
-		_fieldSuppressStack.Push(false);
 	}
 
-	public override void VisitComplexFieldInstruction(FieldCode instr, string text, IDxpStyleResolver s)
+	public override void VisitComplexFieldInstruction(FieldCode instr, string text, DxpIDocumentContext d)
 	{
-		if (_fieldSuppressStack.Count > 0 && !_config.EmitPageNumbers && LooksLikePageField(text))
-		{
-			_fieldSuppressStack.Pop();
-			_fieldSuppressStack.Push(true);
-		}
+		if (!_config.EmitPageNumbers && LooksLikePageField(text) && d.CurrentFields.Current != null)
+			d.CurrentFields.Current.SuppressResult = true;
 	}
 
-	public override IDisposable VisitComplexFieldResultBegin(IDxpStyleResolver s)
+	public override IDisposable VisitComplexFieldResultBegin(DxpIDocumentContext d)
 	{
-		bool suppress = !_config.EmitPageNumbers && _fieldSuppressStack.Count > 0 && _fieldSuppressStack.Peek();
-		if (suppress)
-		{
-			_suppressFieldDepth++;
-			return Disposable.Create(() => _suppressFieldDepth--);
-		}
 		return Disposable.Empty;
 	}
 
-	public override void VisitComplexFieldEnd(FieldChar end, IDxpStyleResolver s)
+	public override void VisitComplexFieldEnd(FieldChar end, DxpIDocumentContext d)
 	{
-		if (_fieldSuppressStack.Count > 0)
-			_fieldSuppressStack.Pop();
 	}
 
-	public override IDisposable VisitSimpleFieldBegin(SimpleField fld, IDxpStyleResolver s)
+	public override IDisposable VisitSimpleFieldBegin(SimpleField fld, DxpIDocumentContext d)
 	{
 		var instr = fld.Instruction?.Value;
 		bool suppress = !_config.EmitPageNumbers && LooksLikePageField(instr);
-		if (suppress)
-		{
-			_suppressFieldDepth++;
-			return Disposable.Create(() => _suppressFieldDepth--);
-		}
+		if (suppress && d.CurrentFields.Current != null)
+			d.CurrentFields.Current.SuppressResult = true;
 		return Disposable.Empty;
 	}
 
-	public override IDisposable VisitFootnoteBegin(Footnote fn, long id, int index, IDxpStyleResolver s)
+	public override IDisposable VisitFootnoteBegin(Footnote fn, DxpIFootnoteContext footnote, DxpIDocumentContext d)
 	{
-		_writer.Write($"\n<div class=\"footnote\" id=\"fn-{id}\">\n\n");
+		_writer.Write($"""\n<div class="footnote" id="fn-{footnote.Id}">\n\n""");
 		return Disposable.Create(() => _writer.Write("</div>\n"));
 	}
 
-	public override void VisitFootnoteReferenceMark(FootnoteReferenceMark m, long? footnoteId, int index, IDxpStyleResolver s)
+	public override void VisitFootnoteReferenceMark(FootnoteReferenceMark m, DxpIFootnoteContext footnote, DxpIDocumentContext d)
 	{
-		if (footnoteId != null)
-			_writer.Write($"{index}");
+		if (footnote.Index != null)
+			_writer.Write($"{footnote.Index}");
 	}
 
 
-	public override IDisposable VisitTableBegin(Table t, DxpTableModel model, IDxpStyleResolver s)
+	public override IDisposable VisitTableBegin(Table t, DxpTableModel model, DxpIDocumentContext d, DxpITableContext table)
 	{
+		var styles = _config.EmitTableBorders && table.Properties != null
+			? BuildTableStyle(table.Properties)
+			: (null, null);
+
 		if (!_config.RichTables)
 		{
-			_mdTable = new MarkdownTableBuilder();
-			return Disposable.Create(() =>
-			{
-				_mdTable?.Render(_writer);
-				_mdTable = null;
+			var mdTable = new MarkdownTableBuilder();
+			var mdScope = _state.MarkdownTables.Push(mdTable);
+			return Disposable.Create(() => {
+				mdTable.Render(_writer);
+				mdScope.Dispose();
 			});
 		}
 
-		var style = _currentTableStyle;
-		_currentTableStyle = null;
-		var previousCellBorder = _currentTableCellBorder;
+		var currentStyle = styles.tableStyle;
 
 		_writer.Write("<table");
-		if (!string.IsNullOrEmpty(style))
-			_writer.Write($" style=\"{style}\"");
+		if (!string.IsNullOrEmpty(currentStyle))
+			_writer.Write($" style=\"{currentStyle}\"");
 		_writer.WriteLine(">");
 		return Disposable.Create(() => {
 			_writer.WriteLine("</table>");
-			_currentTableCellBorder = previousCellBorder; // restore for outer table if nested
 		});
 	}
 
-	public override IDisposable VisitTableRowBegin(TableRow tr, IDxpStyleResolver s)
+	public override IDisposable VisitTableRowBegin(TableRow tr, DxpITableRowContext row, DxpIDocumentContext d)
 	{
-		var header = tr.TableRowProperties?.GetFirstChild<TableHeader>();
-		_currentRowIsHeader = header != null;
+		var isHeader = row.IsHeader;
 
-		if (_mdTable != null)
+		var mdTable = _state.MarkdownTables.Current;
+		if (mdTable != null)
 		{
-			_mdTable.BeginRow(_currentRowIsHeader);
-			return Disposable.Create(() => _mdTable.EndRow());
+			mdTable.BeginRow(isHeader);
+			return Disposable.Create(() => mdTable.EndRow());
 		}
 
-		if (_currentRowIsHeader)
+		if (isHeader)
 			_writer.WriteLine("  <tr class=\"header-row\">");
 		else
 			_writer.WriteLine("  <tr>");
 		return Disposable.Create(() => _writer.WriteLine("  </tr>"));
 	}
 
-	public override void VisitTableCellLayout(TableCell tc, int row, int col, int rowSpan, int colSpan)
+	public override IDisposable VisitTableCellBegin(TableCell tc, DxpITableCellContext cell, DxpIDocumentContext d)
 	{
-		_pendingCellSpan = (rowSpan, colSpan);
-	}
-
-	public override IDisposable VisitTableCellBegin(TableCell tc, IDxpStyleResolver s)
-	{
-		if (_mdTable != null)
+		var mdTable = _state.MarkdownTables.Current;
+		if (mdTable != null)
 		{
 			var cellWriter = new StringWriter();
 			var previous = _writer;
 			_writer = cellWriter;
-			return Disposable.Create(() =>
-			{
+			return Disposable.Create(() => {
 				_writer = previous;
-				_mdTable!.AddCell(cellWriter.ToString());
+				mdTable.AddCell(cellWriter.ToString());
 			});
 		}
 
-		var spans = _pendingCellSpan;
-		_pendingCellSpan = null;
-		var cellStyle = _pendingCellStyle;
-		_pendingCellStyle = null;
+		var spans = (cell.RowSpan, cell.ColSpan);
+		var cellBorders = cell.Properties?.TableCellBorders;
+		var cellStyle = _config.EmitTableBorders ? BuildCellStyle(cellBorders) : null;
 
 		_writer.Write("    <td");
-		if (spans.HasValue)
+		if (spans.Item1 > 1)
+			_writer.Write($" rowspan=\"{spans.Item1}\"");
+		if (spans.Item2 > 1)
+			_writer.Write($" colspan=\"{spans.Item2}\"");
+		string? borderCss = null;
+		if (_config.EmitTableBorders && cell.Row.Table.Properties != null)
 		{
-			if (spans.Value.rowSpan > 1)
-				_writer.Write($" rowspan=\"{spans.Value.rowSpan}\"");
-			if (spans.Value.colSpan > 1)
-				_writer.Write($" colspan=\"{spans.Value.colSpan}\"");
+			borderCss = BuildTableStyle(cell.Row.Table.Properties).cellBorderStyle;
 		}
-		var effectiveCellStyle = cellStyle ?? (_currentTableCellBorder != null ? $"border:{_currentTableCellBorder};" : null);
+		var effectiveCellStyle = cellStyle ?? (borderCss != null ? $"border:{borderCss};" : null);
 		if (!string.IsNullOrEmpty(effectiveCellStyle))
 			_writer.Write($" style=\"{effectiveCellStyle}\"");
 		_writer.Write(">");
@@ -847,24 +699,12 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 		});
 	}
 
-	public override void VisitTableCellProperties(TableCellProperties tcp, IDxpStyleResolver s)
-	{
-		_pendingCellStyle = _config.EmitTableBorders ? BuildCellStyle(tcp.TableCellBorders) : null;
-	}
-
-	public override void VisitParagraphProperties(ParagraphProperties pp, IDxpStyleResolver s)
+	public override void VisitParagraphProperties(ParagraphProperties pp, DxpIDocumentContext d)
 	{
 		// handled in VisitParagraphBegin
 	}
 
-	public override void VisitTableProperties(TableProperties tp, IDxpStyleResolver s)
-	{
-		var styles = _config.EmitTableBorders ? BuildTableStyle(tp) : (null, null);
-		_currentTableStyle = styles.tableStyle;
-		_currentTableCellBorder = styles.cellBorderStyle;
-	}
-
-	public override void VisitTableGrid(TableGrid tg, IDxpStyleResolver s)
+	public override void VisitTableGrid(TableGrid tg, DxpIDocumentContext d)
 	{
 		// ignore for "simple HTML"
 	}
@@ -958,173 +798,20 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 		return null;
 	}
 
-	private bool IsSimpleTable(Table t, DxpTableModel model)
-	{
-		// No colspan/rowspan
-		for (int r = 0; r < model.RowCount; r++)
-		{
-			for (int c = 0; c < model.ColumnCount; c++)
-			{
-				var cell = model.Cells[r, c];
-				if (cell == null || cell.IsCovered)
-					continue;
-
-				if (cell.ColSpan > 1 || cell.RowSpan > 1)
-					return false;
-			}
-		}
-
-		return true;
-	}
-
-	private void RenderCapturedTable()
-	{
-		if (_mdTable == null)
-			return;
-		_mdTable.Render(_writer);
-	}
-
-	private sealed class MarkdownTableBuilder
-	{
-		private readonly List<Row> _rows = new();
-		private Row? _current;
-
-		public void BeginRow(bool isHeader)
-		{
-			_current = new Row(isHeader);
-		}
-
-		public void AddCell(string content)
-		{
-			_current?.Cells.Add(content);
-		}
-
-		public void EndRow()
-		{
-			if (_current != null)
-				_rows.Add(_current);
-			_current = null;
-		}
-
-		public void Render(TextWriter writer)
-		{
-			if (_rows.Count == 0)
-				return;
-
-			writer.WriteLine();
-			int headerIndex = _rows.FindIndex(r => r.IsHeader);
-			if (headerIndex < 0)
-				headerIndex = 0;
-
-			WriteRow(writer, _rows[headerIndex]);
-			WriteSeparator(writer, _rows[headerIndex].Cells.Count);
-
-			for (int i = 0; i < _rows.Count; i++)
-			{
-				if (i == headerIndex)
-					continue;
-				WriteRow(writer, _rows[i]);
-			}
-
-			writer.WriteLine();
-		}
-
-		private static void WriteRow(TextWriter writer, Row row)
-		{
-			writer.Write("|");
-			foreach (var cell in row.Cells)
-			{
-				var text = NormalizeCell(cell);
-				writer.Write(" ");
-				writer.Write(text);
-				writer.Write(" |");
-			}
-			writer.WriteLine();
-		}
-
-		private static void WriteSeparator(TextWriter writer, int count)
-		{
-			writer.Write("|");
-			for (int i = 0; i < count; i++)
-				writer.Write(" --- |");
-			writer.WriteLine();
-		}
-
-		private static string NormalizeCell(string cell)
-		{
-			var text = cell.Replace("\r\n", " ").Replace("\r", " ").Replace("\n", " ").Trim();
-			return text.Replace("|", "\\|");
-		}
-
-		private sealed record Row(bool IsHeader)
-		{
-			public List<string> Cells { get; } = new();
-		}
-	}
-
-		public override void VisitTableRowProperties(TableRowProperties trp, IDxpStyleResolver s)
+	public override void VisitTableRowProperties(TableRowProperties trp, DxpIDocumentContext d)
 	{
 		// properties are applied in VisitTableRowBegin
 	}
 
-	public override IDisposable VisitBlockBegin(OpenXmlElement child, IDxpStyleResolver s)
+	public override IDisposable VisitBlockBegin(OpenXmlElement child, DxpIDocumentContext d)
 	{
 		// optional: do nothing
 		return Disposable.Empty;
 	}
 
-	public void VisitCommentThread(string anchorId, DxpCommentThread thread, IDxpStyleResolver s, Action<DxpCommentInfo>? renderContent)
+	public override IDisposable VisitCommentBegin(DxpCommentInfo c, DxpCommentThread thread, DxpIDocumentContext d)
 	{
-		if (thread.Comments == null || thread.Comments.Count == 0)
-			return;
-
 		if (_config.UsePlainComments)
-		{
-			EmitPlainCommentThread(thread, renderContent);
-			return;
-		}
-
-		var commentsStyle = "background:#fff8c6;border:1px solid #e6c44a;border-radius:6px;padding:8px;margin:8px 0 8px 12px;float:right;max-width:45%;";
-		var commentStyle = "background:#fffcf0;border:1px solid #d9b200;border-radius:4px;padding:6px;margin-bottom:6px;";
-
-		_writer.Write("<div class=\"comments\"");
-		_writer.Write($" style=\"{commentsStyle}\"");
-		_writer.WriteLine(">");
-
-		foreach (var c in thread.Comments)
-		{
-			var label = BuildCommentLabel(c);
-			if (!string.IsNullOrEmpty(label))
-				_writer.WriteLine("  " + label);
-
-			_writer.Write("  <div class=\"comment\"");
-			_writer.Write($" style=\"{commentStyle}\"");
-			_writer.WriteLine(">");
-			_writer.WriteLine();
-
-			if (renderContent != null)
-			{
-				renderContent(c);
-			}
-			else
-			{
-				_writer.WriteLine(c.Text);
-			}
-
-			_writer.WriteLine("  </div>");
-			_writer.WriteLine();
-		}
-
-		_writer.WriteLine("</div>");
-		_writer.WriteLine();
-	}
-
-	private void EmitPlainCommentThread(DxpCommentThread thread, Action<DxpCommentInfo>? renderContent)
-	{
-		_writer.WriteLine("<!--");
-		_writer.WriteLine();
-
-		foreach (var c in thread.Comments)
 		{
 			var label = c.IsReply ? "REPLY BY" : "COMMENT BY";
 			var who = !string.IsNullOrEmpty(c.Author)
@@ -1139,35 +826,57 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 
 			_writer.WriteLine();
 
-			string content = c.Text ?? string.Empty;
-			if (renderContent != null)
-			{
-				var buffer = new StringWriter();
-				var prev = _writer;
-				_writer = buffer;
-				renderContent(c);
-				_writer = prev;
-				content = buffer.ToString();
-			}
+			return Disposable.Create(() => {
+				_writer.WriteLine();
+			});
+		}
+		else
+		{
+			var commentStyle = "background:#fffcf0;border:1px solid #d9b200;border-radius:4px;padding:6px;margin-bottom:6px;";
 
-			var lines = content.Split('\n');
-			foreach (var line in lines)
-			{
-				if (line.Length == 0)
-				{
-					_writer.WriteLine();
-				}
-				else
-				{
-					_writer.WriteLine("  " + line.TrimEnd());
-				}
-			}
+			var label = BuildCommentLabel(c);
+			if (!string.IsNullOrEmpty(label))
+				_writer.WriteLine("  " + label);
 
+			_writer.Write($"""  <div class="comment" style="{commentStyle}">""");
 			_writer.WriteLine();
+
+			return Disposable.Create(() => {
+				_writer.WriteLine("  </div>");
+				_writer.WriteLine();
+			});
+		}
+	}
+
+	public override IDisposable VisitCommentThreadBegin(string anchorId, DxpCommentThread thread, DxpIDocumentContext d)
+	{
+		if (thread.Comments == null || thread.Comments.Count == 0)
+			return Disposable.Empty;
+
+		if (_config.UsePlainComments)
+		{
+			return EmitPlainCommentThread(thread);
 		}
 
-		_writer.WriteLine("-->");
+		var commentsStyle = "background:#fff8c6;border:1px solid #e6c44a;border-radius:6px;padding:8px;margin:8px 0 8px 12px;float:right;max-width:45%;";
+
+		_writer.Write($"""<div class="comments" style="{commentsStyle}">""");
+
+		return Disposable.Create(() => {
+			_writer.WriteLine("</div>");
+			_writer.WriteLine();
+		});
+	}
+
+	private IDisposable EmitPlainCommentThread(DxpCommentThread thread)
+	{
+		_writer.WriteLine("<!--");
 		_writer.WriteLine();
+
+		return Disposable.Create(() => {
+			_writer.WriteLine("-->");
+			_writer.WriteLine();
+		});
 	}
 
 	private string BuildCommentLabel(DxpCommentInfo c)
@@ -1183,34 +892,29 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 		return $"<span style=\"font-size:small\">{HtmlAttr(who)} | {HtmlAttr(when)}</span>";
 	}
 
-	public override void VisitCommentThread(string anchorId, DxpCommentThread thread, IDxpStyleResolver s)
-	{
-		VisitCommentThread(anchorId, thread, s, null);
-	}
-
-	public override void VisitBreak(Break br, IDxpStyleResolver s)
+	public override void VisitBreak(Break br, DxpIDocumentContext d)
 
 	{
-		if (ShouldSuppressOutput())
-			return;
-			_writer.Write("<br/>");
-	}
-
-	public override void VisitCarriageReturn(CarriageReturn cr, IDxpStyleResolver s)
-	{
-		if (ShouldSuppressOutput())
+		if (ShouldSuppressOutput(d))
 			return;
 		_writer.Write("<br/>");
 	}
 
-	public override void VisitTab(TabChar tab, IDxpStyleResolver s)
+	public override void VisitCarriageReturn(CarriageReturn cr, DxpIDocumentContext d)
 	{
-		if (ShouldSuppressOutput())
+		if (ShouldSuppressOutput(d))
+			return;
+		_writer.Write("<br/>");
+	}
+
+	public override void VisitTab(TabChar tab, DxpIDocumentContext d)
+	{
+		if (ShouldSuppressOutput(d))
 			return;
 		_writer.Write("&#9;"); // or &nbsp; spacing
 	}
 
-	public override IDisposable VisitRunBegin(Run r, IDxpStyleResolver s)
+	public override IDisposable VisitRunBegin(Run r, DxpIDocumentContext d)
 	{
 		var style = BuildRunStyle(r.RunProperties);
 		bool hasText = r.ChildElements.OfType<Text>().Any(t => !string.IsNullOrEmpty(t.Text));
@@ -1222,7 +926,7 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 		return Disposable.Create(() => _writer.Write("</span>"));
 	}
 
-	public override void VisitRunProperties(RunProperties rp, IDxpStyleResolver s)
+	public override void VisitRunProperties(RunProperties rp, DxpIDocumentContext d)
 	{
 		// handled in VisitRunBegin
 	}
@@ -1253,21 +957,36 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 	private static string? HighlightToColor(EnumValue<HighlightColorValues>? highlight)
 	{
 		var value = highlight?.Value;
-		if (value == HighlightColorValues.Yellow) return "#ffff00";
-		if (value == HighlightColorValues.Green) return "#00ff00";
-		if (value == HighlightColorValues.Cyan) return "#00ffff";
-		if (value == HighlightColorValues.Magenta) return "#ff00ff";
-		if (value == HighlightColorValues.Blue) return "#0000ff";
-		if (value == HighlightColorValues.Red) return "#ff0000";
-		if (value == HighlightColorValues.DarkBlue) return "#000080";
-		if (value == HighlightColorValues.DarkCyan) return "#008080";
-		if (value == HighlightColorValues.DarkGreen) return "#008000";
-		if (value == HighlightColorValues.DarkMagenta) return "#800080";
-		if (value == HighlightColorValues.DarkRed) return "#800000";
-		if (value == HighlightColorValues.DarkYellow) return "#808000";
-		if (value == HighlightColorValues.LightGray) return "#d3d3d3";
-		if (value == HighlightColorValues.DarkGray) return "#a9a9a9";
-		if (value == HighlightColorValues.Black) return "#000000";
+		if (value == HighlightColorValues.Yellow)
+			return "#ffff00";
+		if (value == HighlightColorValues.Green)
+			return "#00ff00";
+		if (value == HighlightColorValues.Cyan)
+			return "#00ffff";
+		if (value == HighlightColorValues.Magenta)
+			return "#ff00ff";
+		if (value == HighlightColorValues.Blue)
+			return "#0000ff";
+		if (value == HighlightColorValues.Red)
+			return "#ff0000";
+		if (value == HighlightColorValues.DarkBlue)
+			return "#000080";
+		if (value == HighlightColorValues.DarkCyan)
+			return "#008080";
+		if (value == HighlightColorValues.DarkGreen)
+			return "#008000";
+		if (value == HighlightColorValues.DarkMagenta)
+			return "#800080";
+		if (value == HighlightColorValues.DarkRed)
+			return "#800000";
+		if (value == HighlightColorValues.DarkYellow)
+			return "#808000";
+		if (value == HighlightColorValues.LightGray)
+			return "#d3d3d3";
+		if (value == HighlightColorValues.DarkGray)
+			return "#a9a9a9";
+		if (value == HighlightColorValues.Black)
+			return "#000000";
 		return null;
 	}
 
@@ -1352,197 +1071,45 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 	private static string? TryTranslateSymbolFont(string marker, string? fontFamily = null)
 	{
 		// marker may be a single char in Symbol/ZapfDingbats/Webdings/Wingdings encoding. If not, return null.
-		if (string.IsNullOrEmpty(marker))
+		if (string.IsNullOrEmpty(marker) || marker.Length != 1)
 			return null;
 
-		if (marker.Length == 1)
+		var ch = marker[0];
+
+		var converter = DxpFontSymbols.GetSymbolConverter(fontFamily);
+		if (converter != null)
 		{
-			var ch = marker[0];
-
-			if (!string.IsNullOrEmpty(fontFamily))
-			{
-				var code = (byte)ch;
-
-				if (FontEquals(fontFamily, "Symbol"))
-				{
-					if (SymbolEncoding.Map.TryGetValue(code, out var symCodepoints) && symCodepoints.Length > 0)
-						return char.ConvertFromUtf32(symCodepoints[0]);
-				}
-				else if (FontEquals(fontFamily, "ZapfDingbats") || FontEquals(fontFamily, "Zapf Dingbats"))
-				{
-					if (ZapfDingbatsEncoding.Map.TryGetValue(code, out var zapfCodepoints) && zapfCodepoints.Length > 0)
-						return char.ConvertFromUtf32(zapfCodepoints[0]);
-				}
-				else if (FontEquals(fontFamily, "Webdings"))
-				{
-					var webd = WebdingsEncoding.ToUnicode(code);
-					if (!string.IsNullOrEmpty(webd))
-						return webd;
-				}
-				else if (FontEquals(fontFamily, "Wingdings"))
-				{
-					var wd1 = WingdingsEncoding.ToUnicode(code);
-					if (!string.IsNullOrEmpty(wd1))
-						return wd1;
-				}
-				else if (FontEquals(fontFamily, "Wingdings 2"))
-				{
-					var wd2 = Wingdings2Map.ToUnicode(code);
-					if (!string.IsNullOrEmpty(wd2))
-						return wd2;
-				}
-				else if (FontEquals(fontFamily, "Wingdings 3"))
-				{
-					var wd3 = Wingdings3Encoding.ToUnicode(code);
-					if (!string.IsNullOrEmpty(wd3))
-						return wd3;
-				}
-			}
-
-			// Symbol font encoding maps directly via SymbolEncoding
-			if (SymbolEncoding.Map.TryGetValue((byte)ch, out var codepoints) && codepoints.Length > 0)
-				return char.ConvertFromUtf32(codepoints[0]);
-			if (ZapfDingbatsEncoding.Map.TryGetValue((byte)ch, out var zcodepoints) && zcodepoints.Length > 0)
-				return char.ConvertFromUtf32(zcodepoints[0]);
+			var translated = converter.Substitute(ch, null);
+			if (!string.IsNullOrEmpty(translated) && !string.Equals(translated, marker, StringComparison.Ordinal))
+				return translated;
 		}
 
 		return null;
 	}
 
-	public override IDisposable VisitBodyBegin(Body body, IDxpStyleResolver s)
+	public override IDisposable VisitDocumentBodyBegin(Body body, DxpIDocumentContext d)
 	{
 		if (!_config.EmitDocumentColors)
 			return Disposable.Empty;
 
-		CaptureNormalStyle(s);
-
-		if (!_hasBackgroundColor)
-			_pageBackground = "#ffffff"; // default to white when no document background is set
-		EmitBodyContainerStart();
-
-		return Disposable.Create(() =>
-		{
-			CloseBodyContainer();
-		});
+		return Disposable.Empty;
 	}
 
-	private void CaptureNormalStyle(IDxpStyleResolver s)
+	private double AdjustMarginLeft(double marginPt, DxpIDocumentContext d)
 	{
-		if (_capturedNormal)
-			return;
+		var marginLeftPoints = d.CurrentSection.Layout?.MarginLeft?.Inches is double inches
+			? inches * 72.0
+			: (double?)null;
 
-		_capturedNormal = true;
-
-		if (s is DxpStyleResolver resolver)
-		{
-			var normal = resolver.GetDefaultRunStyle();
-			_normalFontName = normal.FontName;
-			_normalFontSizeHp = normal.FontSizeHalfPoints;
-		}
-	}
-
-	private static double TwipsToInches(int twips) => twips / 1440.0;
-
-	private void EmitBodyContainerStart()
-	{
-		if (_bodyContainerOpen)
-			return;
-
-		var style = new StringBuilder("color:#000000;display:flex;flex-direction:column;position:relative;");
-		if (_pageWidthInches != null && _pageHeightInches != null)
-		{
-			style.Append("width:").Append(_pageWidthInches.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
-			style.Append("min-height:").Append(_pageHeightInches.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
-		}
-		if (_marginLeftInches != null || _marginRightInches != null || _marginTopInches != null)
-		{
-			style.Append("box-sizing:border-box;");
-			if (_marginLeftInches != null)
-				style.Append("padding-left:").Append(_marginLeftInches.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
-			if (_marginRightInches != null)
-				style.Append("padding-right:").Append(_marginRightInches.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
-		}
-		if (!string.IsNullOrEmpty(_pageBackground))
-			style.Append("background-color:").Append(_pageBackground).Append(';');
-		if (_config.EmitStyleFont)
-		{
-			if (!string.IsNullOrEmpty(_normalFontName))
-				style.Append("font-family:").Append(_normalFontName).Append(';');
-			if (_normalFontSizeHp != null)
-				style.Append("font-size:").Append((_normalFontSizeHp.Value / 2.0).ToString("0.###", CultureInfo.InvariantCulture)).Append("pt;");
-		}
-
-		_writer.Write($"""<div style="{style}">""" + "\n");
-		_bodyContainerOpen = true;
-	}
-
-	private void CloseBodyContainer()
-	{
-		if (!_bodyContainerOpen)
-			return;
-		EndSectionBody();
-		_writer.Write("</div>\n");
-		_bodyContainerOpen = false;
-	}
-
-	public void BeginSectionBody()
-	{
-		if (!_config.EmitDocumentColors)
-			return;
-		if (_sectionBodyOpen)
-			return;
-
-		var style = new StringBuilder("flex:1 0 auto;");
-		if (_marginTopInches != null)
-			style.Append("padding-top:").Append(_marginTopInches.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
-
-		_writer.Write($"""<div style="{style}">""" + "\n");
-		_sectionBodyOpen = true;
-	}
-
-	public void EndSectionBody()
-	{
-		if (!_sectionBodyOpen)
-			return;
-		_writer.WriteLine("</div>");
-		_sectionBodyOpen = false;
-	}
-
-	private void UpdatePageDimensions(SectionLayout layout)
-	{
-		var pg = layout.PageSize;
-		if (pg?.Width != null && pg.Height != null)
-		{
-			_pageWidthInches = TwipsToInches((int)pg.Width.Value);
-			_pageHeightInches = TwipsToInches((int)pg.Height.Value);
-		}
-
-		var margin = layout.PageMargin;
-		if (margin != null)
-		{
-			if (margin.Left != null)
-			{
-				_marginLeftInches = TwipsToInches((int)margin.Left.Value);
-				_marginLeftPoints = _marginLeftInches * 72.0;
-			}
-			if (margin.Right != null)
-				_marginRightInches = TwipsToInches((int)margin.Right.Value);
-			if (margin.Top != null)
-				_marginTopInches = TwipsToInches(margin.Top.Value);
-		}
-	}
-
-	private double AdjustMarginLeft(double marginPt)
-	{
-		if (_marginLeftPoints == null)
+		if (marginLeftPoints == null)
 			return marginPt;
-		var adjusted = marginPt - _marginLeftPoints.Value;
+		var adjusted = marginPt - marginLeftPoints.Value;
 		if (adjusted < 0)
 			adjusted = 0;
 		return adjusted;
 	}
 
-	private bool ShouldSuppressOutput() => !_config.EmitPageNumbers && _suppressFieldDepth > 0;
+	private bool ShouldSuppressOutput(DxpIDocumentContext d) => !_config.EmitPageNumbers && d.CurrentFields.IsSuppressed;
 
 	private static bool LooksLikePageField(string? instr)
 	{
@@ -1577,13 +1144,13 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 		return true;
 	}
 
-	IDisposable IDxpVisitor.VisitDrawingBegin(Drawing d, DxpDrawingInfo? info, IDxpStyleResolver s)
+	IDisposable DxpIVisitor.VisitDrawingBegin(Drawing drw, DxpDrawingInfo? info, DxpIDocumentContext d)
 	{
-		VisitDrawingBegin(d, info, s);
+		VisitDrawingBegin(drw, info, d);
 		return Disposable.Empty;
 	}
 
-	public new void VisitLegacyPictureBegin(Picture pict, IDxpStyleResolver s)
+	public new void VisitLegacyPictureBegin(Picture pict, DxpIDocumentContext d)
 	{
 		if (_config.EmitImages == false)
 		{
@@ -1595,9 +1162,90 @@ public class DxpMarkdownVisitor : DxpVisitor, IDxpVisitor
 		_writer.Write($"[PICTURE: {alt}]");
 	}
 
-	IDisposable IDxpVisitor.VisitLegacyPictureBegin(Picture pict, IDxpStyleResolver s)
+	IDisposable DxpIVisitor.VisitLegacyPictureBegin(Picture pict, DxpIDocumentContext d)
 	{
-		VisitLegacyPictureBegin(pict, s);
+		VisitLegacyPictureBegin(pict, d);
 		return Disposable.Empty;
+	}
+
+	public override IDisposable VisitSectionBodyBegin(SectionProperties properties, DxpIDocumentContext d)
+	{
+		if (!_config.EmitDocumentColors)
+			return Disposable.Empty;
+
+		var style = new StringBuilder("flex:1 0 auto;");
+
+		double? marginTopInches = d.CurrentSection.Layout?.MarginTop?.Inches;
+		if (marginTopInches != null)
+			style.Append("padding-top:").Append(marginTopInches.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+
+		_writer.Write($"""<div class="body" style="{style}">""" + "\n");
+
+		return Disposable.Create(() => {
+			_writer.WriteLine("</div>");
+		});
+	}
+
+	public override IDisposable VisitSectionBegin(SectionProperties properties, SectionLayout layout, DxpIDocumentContext d)
+	{
+
+		if (!_config.EmitDocumentColors)
+			return Disposable.Empty;
+
+		if (_state.IsFirstSection)
+		{
+			_state.IsFirstSection = false;
+		}
+		else
+		{
+			_writer.WriteLine();
+			_writer.WriteLine("<hr />");
+			_writer.WriteLine();
+		}
+
+		var style = new StringBuilder("color:#000000;display:flex;flex-direction:column;position:relative;");
+		double? pageWidthInches = d.CurrentSection.Layout?.PageWidth?.Inches;
+		double? pageHeightInches = d.CurrentSection.Layout?.PageHeight?.Inches;
+		if (pageWidthInches != null && pageHeightInches != null)
+		{
+			style.Append("width:").Append(pageWidthInches.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+			style.Append("min-height:").Append(pageHeightInches.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+		}
+		double? marginLeftInches = d.CurrentSection.Layout?.MarginLeft?.Inches;
+		double? marginRightInches = d.CurrentSection.Layout?.MarginRight?.Inches;
+		double? marginTopInches = d.CurrentSection.Layout?.MarginTop?.Inches;
+		if (marginLeftInches != null || marginRightInches != null || marginTopInches != null)
+		{
+			style.Append("box-sizing:border-box;");
+			if (marginLeftInches != null)
+				style.Append("padding-left:").Append(marginLeftInches.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+			if (marginRightInches != null)
+				style.Append("padding-right:").Append(marginRightInches.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+		}
+
+
+		string pageBackground = "#ffffff"; // default to white when no document background is set
+		string? color = d.Background?.Color?.Value;
+		if (!string.IsNullOrEmpty(color) && !string.Equals(color, "auto", StringComparison.OrdinalIgnoreCase))
+		{
+			pageBackground = ToCssColor(color!);
+		}
+		style.Append("background-color:").Append(pageBackground).Append(';');
+
+
+
+		if (_config.EmitStyleFont)
+		{
+			if (!string.IsNullOrEmpty(d.DefaultRunStyle.FontName))
+				style.Append("font-family:").Append(d.DefaultRunStyle.FontName).Append(';');
+			if (d.DefaultRunStyle.FontSizeHalfPoints != null)
+				style.Append("font-size:").Append((d.DefaultRunStyle.FontSizeHalfPoints.Value / 2.0).ToString("0.###", CultureInfo.InvariantCulture)).Append("pt;");
+		}
+
+		_writer.Write($"""<div class="section" style="{style}">""" + "\n");
+
+		return Disposable.Create(() => {
+			_writer.WriteLine("</div>");
+		});
 	}
 }

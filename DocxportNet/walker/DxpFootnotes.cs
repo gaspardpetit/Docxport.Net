@@ -1,9 +1,26 @@
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using DocxportNet.API;
 
-namespace DocxportNet.walker;
+namespace DocxportNet.Walker;
 
-internal class DxpFootnotes
+public class DxpFootnoteContext : DxpIFootnoteContext
+{
+	public DxpFootnoteContext(long? id, int? index)
+	{
+		Id = id;
+		Index = index;
+	}
+
+	public long? Id { get; internal set; }
+	public int? Index { get; internal set; }
+
+	public static DxpFootnoteContext INVALID => new DxpFootnoteContext(null!, null!);
+
+}
+
+
+public class DxpFootnotes
 {
 	private readonly Dictionary<long, (int, Footnote)> _footnotesById = new();
 	private readonly HashSet<long> _emittedFootnotes = new(); // avoid duplicates
@@ -67,7 +84,7 @@ internal class DxpFootnotes
 }
 
 
-internal class DocxEndnotes
+public class DocxEndnotes
 {
 	private readonly Dictionary<long, (int, Endnote)> _endnotesById = new();
 	private readonly HashSet<long> _emittedEndnotes = new(); // avoid duplicates
