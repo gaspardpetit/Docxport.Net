@@ -119,7 +119,22 @@ public class MarkdownExportTests
 
 	private void VerifyVariant(Sample sample, DxpMarkdownVisitorConfig config, string suffix, DxpTrackedChangeMode mode)
 	{
-		WriteVariant(sample, config, mode, suffix);
+		string expectedPath = Path.Combine(Path.GetDirectoryName(sample.DocxPath)!, $"{Path.GetFileNameWithoutExtension(sample.DocxPath)}{suffix.Replace(".test", string.Empty)}");
+		string actualPath = Path.Combine(Path.GetDirectoryName(sample.DocxPath)!, $"{Path.GetFileNameWithoutExtension(sample.DocxPath)}{suffix}");
+
+		var cfg = CloneConfig(config, mode);
+		string markdown = TestCompare.Normalize(ToMarkdown(sample.DocxPath, cfg));
+		File.WriteAllText(actualPath, markdown);
+
+		if (!File.Exists(expectedPath))
+			throw new XunitException($"Expected markdown file missing for {sample.FileName} ({mode}). Add {expectedPath}. Actual output saved to {actualPath}.");
+
+		string expectedMarkdown = TestCompare.Normalize(File.ReadAllText(expectedPath));
+		if (!string.Equals(expectedMarkdown, markdown, StringComparison.Ordinal))
+		{
+			string diff = TestCompare.DescribeDifference(expectedMarkdown, markdown);
+			throw new XunitException($"Mismatch for {sample.FileName} ({mode}): {diff}. Expected: {expectedPath}. Actual: {actualPath}.");
+		}
 	}
 
 	private void WriteVariant(Sample sample, DxpMarkdownVisitorConfig baseConfig, DxpTrackedChangeMode mode, string suffix)
