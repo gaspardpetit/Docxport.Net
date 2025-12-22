@@ -291,16 +291,18 @@ body.dxp-root {
 		_sinkWriter.WriteLine("<head>");
 		_sinkWriter.WriteLine("  <meta charset=\"utf-8\" />");
 
-		IPackageProperties core = d.DocumentProperties.core;
+		IPackageProperties? core = d.DocumentProperties.PackageProperties;
+		string? title = core?.Title;
 
-		if (!string.IsNullOrWhiteSpace(core.Title))
-			_sinkWriter.WriteLine($"  <title>{WebUtility.HtmlEncode(core.Title)}</title>");
+		if (!string.IsNullOrWhiteSpace(title))
+			_sinkWriter.WriteLine($"  <title>{WebUtility.HtmlEncode(title)}</title>");
 		else
 			_sinkWriter.WriteLine("  <title>Document</title>");
 
-		if (!string.IsNullOrEmpty(_config.StylesheetHref))
+		string? stylesheetHref = _config.StylesheetHref;
+		if (!string.IsNullOrEmpty(stylesheetHref))
 		{
-			_sinkWriter.WriteLine($"  <link rel=\"stylesheet\" href=\"{HtmlAttr(_config.StylesheetHref)}\" />");
+			_sinkWriter.WriteLine($"  <link rel=\"stylesheet\" href=\"{HtmlAttr(stylesheetHref!)}\" />");
 		}
 		else if (_config.EmbedDefaultStylesheet)
 		{
