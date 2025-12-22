@@ -153,10 +153,10 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor
 		return DxpDisposable.Empty;
 	}
 
-	public override void VisitDocumentProperties(IPackageProperties core, IReadOnlyList<CustomFileProperty> custom, IReadOnlyList<DxpTimelineEvent> timeline, DxpIDocumentContext d)
+	public override IDisposable VisitDocumentBegin(WordprocessingDocument doc, DxpIDocumentContext d)
 	{
 		if (!_config.EmitDocumentProperties || _state.SuppressDepth > 0)
-			return;
+			return DxpDisposable.Empty;
 
 		var lines = new List<string>();
 
@@ -165,6 +165,8 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor
 			if (!string.IsNullOrWhiteSpace(value))
 				lines.Add($"{label}: {value}");
 		}
+
+		IPackageProperties core = d.DocumentProperties.core;
 
 		Add("Title", core.Title);
 		Add("Subject", core.Subject);
@@ -177,6 +179,7 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor
 		Add("Created", FormatDateUtc(core.Created));
 		Add("Modified", FormatDateUtc(core.Modified));
 
+		IReadOnlyList<CustomFileProperty> custom = d.DocumentProperties.custom;
 		if (custom != null && _config.EmitCustomProperties)
 		{
 			foreach (var prop in custom)
@@ -191,6 +194,8 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor
 
 		if (lines.Count > 0)
 			WriteDirectLine(string.Empty);
+
+		return DxpDisposable.Empty;
 	}
 
 	static string? FormatDateUtc(DateTime? value)

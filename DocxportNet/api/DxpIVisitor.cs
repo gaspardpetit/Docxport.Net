@@ -4,6 +4,7 @@ using DocumentFormat.OpenXml.Office2010.Word;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.Xml.Linq;
+using DocxportNet.Walker;
 
 namespace DocxportNet.API;
 
@@ -128,8 +129,15 @@ public interface DxpIRunContext
 	string? Language { get; }
 }
 
+public record DxpDocumentProperties(
+	IPackageProperties? core,
+	IReadOnlyList<CustomFileProperty>? custom,
+	IReadOnlyList<DxpTimelineEvent>? Timeline
+);
+
 public interface DxpIDocumentContext
 {
+	DxpDocumentProperties DocumentProperties { get; }
 	DxpIStyleResolver Styles { get; }
 	HashSet<string> ReferencedBookmarkAnchors { get; }
 	DxpIParagraphContext CurrentParagraph { get; }
@@ -140,7 +148,6 @@ public interface DxpIDocumentContext
 	DxpIRunContext? CurrentRun { get; }
 	DxpISectionContext CurrentSection { get; }
 	DocumentBackground? Background { get; }
-	IReadOnlyList<DxpTimelineEvent> Timeline { get; }
 	DxpStyleEffectiveRunStyle DefaultRunStyle { get; }
 	DxpFieldFrameContext CurrentFields { get; }
 	Settings? DocumentSettings { get; }
@@ -274,7 +281,7 @@ public interface DxpIVisitor : DxpIStyleVisitor, DxpIFieldVisitor
 	void VisitDeletedTableRowMark(Deleted del, TableRowProperties trPr, TableRow? tr, DxpIDocumentContext d);
 	void VisitDeletedText(DeletedText dt, DxpIDocumentContext d);
 	IDisposable VisitDocumentBodyBegin(Body body, DxpIDocumentContext d);
-	void VisitDocumentProperties(IPackageProperties core, IReadOnlyList<CustomFileProperty> custom, IReadOnlyList<DxpTimelineEvent> timeline, DxpIDocumentContext d);
+	IDisposable VisitDocumentBegin(WordprocessingDocument doc, DxpIDocumentContext documentContext);
 	IDisposable VisitDrawingBegin(Drawing drw, DxpDrawingInfo? info, DxpIDocumentContext d);
 	void VisitEmbeddedObject(EmbeddedObject obj, DxpIDocumentContext d);
 	IDisposable VisitEndnoteBegin(Endnote item1, long item3, int item2, DxpIDocumentContext d);

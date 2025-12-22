@@ -7,6 +7,7 @@ using DocxportNet.API;
 using DocxportNet.Core;
 using Microsoft.Extensions.Logging;
 using System.Xml.Linq;
+using DocxportNet.Walker;
 
 namespace DocxportNet.Visitors;
 
@@ -458,9 +459,10 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 		return DxpDisposable.Empty;
 	}
 
-	public virtual void VisitDocumentProperties(IPackageProperties core, IReadOnlyList<CustomFileProperty> custom, IReadOnlyList<DxpTimelineEvent> timeline, DxpIDocumentContext d)
+	public virtual IDisposable VisitDocumentBegin(WordprocessingDocument doc, DxpIDocumentContext documentContext)
 	{
-		Ignored("IDocxVisitor.VisitDocumentProperties", core);
+		Ignored("IDocxVisitor.VisitDocumentBegin", doc);
+		return DxpDisposable.Empty;
 	}
 
 	public virtual void VisitBibliographySources(CustomXmlPart bibliographyPart, XDocument bib, DxpIDocumentContext d)

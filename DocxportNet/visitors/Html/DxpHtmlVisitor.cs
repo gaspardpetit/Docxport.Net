@@ -10,7 +10,6 @@ using System.Text;
 using DocxportNet.Core;
 using System.Net;
 using DocxportNet.Visitors.Markdown;
-using DocxportNet.Visitors.Markdown;
 
 namespace DocxportNet.Visitors.Html;
 
@@ -88,8 +87,6 @@ public sealed class DxpHtmlVisitor : DxpVisitor, DxpITextVisitor
 	private readonly DxpHtmlVisitorConfig _config;
 	private DxpHtmlVisitorState _state = new();
 
-	private bool _wroteHead;
-
 	public DxpHtmlVisitor(TextWriter writer, DxpHtmlVisitorConfig config, ILogger? logger)
 		: base(logger)
 	{
@@ -111,7 +108,6 @@ public sealed class DxpHtmlVisitor : DxpVisitor, DxpITextVisitor
 		_rejectBufferedWriter = new DxpBufferedTextWriter();
 		_acceptBufferedWriter = new DxpBufferedTextWriter();
 		_state = new DxpHtmlVisitorState();
-		_wroteHead = false;
 		ConfigureWriters();
 	}
 
@@ -288,15 +284,14 @@ body.dxp-root {
 }
 """;
 
-	public override void VisitDocumentProperties(IPackageProperties core, IReadOnlyList<CustomFileProperty> custom, IReadOnlyList<DxpTimelineEvent> timeline, DxpIDocumentContext d)
+	public override IDisposable VisitDocumentBegin(WordprocessingDocument doc, DxpIDocumentContext d)
 	{
-		if (_wroteHead)
-			return;
-
 		_sinkWriter.WriteLine("<!DOCTYPE html>");
 		_sinkWriter.WriteLine("<html lang=\"en\">");
 		_sinkWriter.WriteLine("<head>");
 		_sinkWriter.WriteLine("  <meta charset=\"utf-8\" />");
+
+		IPackageProperties core = d.DocumentProperties.core;
 
 		if (!string.IsNullOrWhiteSpace(core.Title))
 			_sinkWriter.WriteLine($"  <title>{WebUtility.HtmlEncode(core.Title)}</title>");
@@ -317,7 +312,11 @@ body.dxp-root {
 		_sinkWriter.WriteLine("</head>");
 		_sinkWriter.WriteLine($"<body class=\"{_config.RootCssClass}\">");
 
-		_wroteHead = true;
+		return DxpDisposable.Create(() => {
+			_sinkWriter.WriteLine("</body>");
+			_sinkWriter.WriteLine("</html>");
+			_sinkWriter.Flush();
+		});
 	}
 
 	public override IDisposable VisitDocumentBodyBegin(Body body, DxpIDocumentContext d)
@@ -325,8 +324,6 @@ body.dxp-root {
 		WriteLine(d, $"""<div class="dxp-document">""");
 		return DxpDisposable.Create(() => {
 			WriteLine(d, "</div>");
-			_sinkWriter.WriteLine("</body>");
-			_sinkWriter.WriteLine("</html>");
 		});
 	}
 
@@ -706,8 +703,8 @@ body.dxp-root {
 
 	public override IDisposable VisitFootnoteBegin(Footnote fn, DxpIFootnoteContext footnote, DxpIDocumentContext d)
 	{
-		Write(d, $"""\n<div class="dxp-footnote" id="fn-{footnote.Id}">\n""");
-		return DxpDisposable.Create(() => Write(d, "</div>\n"));
+		WriteLine(d, $"""<div class="dxp-footnote" id="fn-{footnote.Id}">""");
+		return DxpDisposable.Create(() => WriteLine(d, "</div>"));
 	}
 
 	public override void VisitFootnoteReferenceMark(FootnoteReferenceMark m, DxpIFootnoteContext footnote, DxpIDocumentContext d)

@@ -34,7 +34,6 @@ public class DxpWalker
 		documentContext.MainDocumentPart = doc.MainDocumentPart;
 		using (documentContext.PushCurrentPart(doc.MainDocumentPart))
 		{
-
 			var settings = doc.MainDocumentPart.DocumentSettingsPart?.Settings;
 			if (settings != null)
 				documentContext.DocumentSettings = settings;
@@ -56,38 +55,41 @@ public class DxpWalker
 				: new List<CustomFileProperty>();
 
 			documentContext.CustomProperties = customList;
-			var timeline = DxpTimeline.BuildTimeline(doc);
-			documentContext.Timeline = timeline;
-			v.VisitDocumentProperties(core, customList, timeline, documentContext);
+			IReadOnlyList<DxpTimelineEvent> timeline = DxpTimeline.BuildTimeline(doc);
 
-			var body = doc.MainDocumentPart?.Document?.Body
-				?? throw new InvalidOperationException("DOCX has no main document body.");
+			documentContext.DocumentProperties = new DxpDocumentProperties(core, customList, timeline);
 
-			// Walk the main story then section-anchored headers/footers (see #2)
-			WalkDocumentBody(body, documentContext, v);
-			// Remove the global “walk all headers/footers” to avoid duplicates (see #2)
-
-			// Footnotes/Endnotes
-			foreach (var fn in documentContext.Footnotes.GetFootnotes())
-				WalkFootnote(fn.Item1, fn.Item2, fn.Item3, documentContext, v);
-			foreach (var en in documentContext.Endnotes.GetEndnotes())
-				WalkEndnote(en.Item1, en.Item2, en.Item3, documentContext, v);
-
-			WalkBibliography(doc, documentContext, v);
-
-			// Global cleanup: dispose any unterminated complex field result scopes
-			if (documentContext.CurrentFields.FieldStack.Count > 0)
+			using (v.VisitDocumentBegin(doc, documentContext))
 			{
-				int leaked = documentContext.CurrentFields.FieldStack.Count;
-				_logger?.LogWarning("Detected {LeakedFields} unterminated complex field(s) at end of document; disposing result scopes defensively.", leaked);
-				while (documentContext.CurrentFields.FieldStack.Count > 0)
-				{
-					var frame = documentContext.CurrentFields.FieldStack.Pop();
-					frame.ResultScope?.Dispose();
-				}
-			}
+				var body = doc.MainDocumentPart?.Document?.Body
+					?? throw new InvalidOperationException("DOCX has no main document body.");
 
-			documentContext.CurrentPart = null;
+				// Walk the main story then section-anchored headers/footers (see #2)
+				WalkDocumentBody(body, documentContext, v);
+				// Remove the global “walk all headers/footers” to avoid duplicates (see #2)
+
+				// Footnotes/Endnotes
+				foreach (var fn in documentContext.Footnotes.GetFootnotes())
+					WalkFootnote(fn.Item1, fn.Item2, fn.Item3, documentContext, v);
+				foreach (var en in documentContext.Endnotes.GetEndnotes())
+					WalkEndnote(en.Item1, en.Item2, en.Item3, documentContext, v);
+
+				WalkBibliography(doc, documentContext, v);
+
+				// Global cleanup: dispose any unterminated complex field result scopes
+				if (documentContext.CurrentFields.FieldStack.Count > 0)
+				{
+					int leaked = documentContext.CurrentFields.FieldStack.Count;
+					_logger?.LogWarning("Detected {LeakedFields} unterminated complex field(s) at end of document; disposing result scopes defensively.", leaked);
+					while (documentContext.CurrentFields.FieldStack.Count > 0)
+					{
+						var frame = documentContext.CurrentFields.FieldStack.Pop();
+						frame.ResultScope?.Dispose();
+					}
+				}
+
+				documentContext.CurrentPart = null;
+			}
 		}
 	}
 
