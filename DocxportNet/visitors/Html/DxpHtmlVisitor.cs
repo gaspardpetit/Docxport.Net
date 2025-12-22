@@ -79,27 +79,46 @@ public sealed record DxpHtmlVisitorConfig
 	public static DxpHtmlVisitorConfig DEFAULT = RICH;
 }
 
-public sealed class DxpHtmlVisitor : DxpVisitor, DxpIVisitor
+public sealed class DxpHtmlVisitor : DxpVisitor, DxpITextVisitor
 {
-	private readonly TextWriter _sinkWriter;
-	private readonly DxpBufferedTextWriter _rejectBufferedWriter;
-	private readonly DxpBufferedTextWriter _acceptBufferedWriter;
+	private TextWriter _sinkWriter;
+	private DxpBufferedTextWriter _rejectBufferedWriter;
+	private DxpBufferedTextWriter _acceptBufferedWriter;
 
 	private readonly DxpHtmlVisitorConfig _config;
-	private readonly DxpHtmlVisitorState _state = new();
+	private DxpHtmlVisitorState _state = new();
 
 	private bool _wroteHead;
 
 	public DxpHtmlVisitor(TextWriter writer, DxpHtmlVisitorConfig config, ILogger? logger)
 		: base(logger)
 	{
-		_sinkWriter = writer;
 		_config = config;
-
+		_sinkWriter = writer;
 		_rejectBufferedWriter = new DxpBufferedTextWriter();
 		_acceptBufferedWriter = new DxpBufferedTextWriter();
-
 		ConfigureWriters();
+	}
+
+	public DxpHtmlVisitor(DxpHtmlVisitorConfig config, ILogger? logger = null)
+		: this(TextWriter.Null, config, logger)
+	{
+	}
+
+	public void SetOutput(TextWriter writer)
+	{
+		_sinkWriter = writer ?? throw new ArgumentNullException(nameof(writer));
+		_rejectBufferedWriter = new DxpBufferedTextWriter();
+		_acceptBufferedWriter = new DxpBufferedTextWriter();
+		_state = new DxpHtmlVisitorState();
+		_wroteHead = false;
+		ConfigureWriters();
+	}
+
+	public override void SetOutput(Stream stream)
+	{
+		var writer = new StreamWriter(stream, Encoding.UTF8, bufferSize: 1024, leaveOpen: true);
+		SetOutput(writer);
 	}
 
 	private void ConfigureWriters()

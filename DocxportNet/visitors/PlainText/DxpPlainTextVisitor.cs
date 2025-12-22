@@ -27,11 +27,11 @@ public sealed record DxpPlainTextVisitorConfig
 	public static readonly DxpPlainTextVisitorConfig REJECT = new() { TrackedChangeMode = DxpPlainTextTrackedChangeMode.RejectChanges };
 }
 
-public sealed class DxpPlainTextVisitor : DxpVisitor, DxpIVisitor
+public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor
 {
-	private readonly TextWriter _sinkWriter;
+	private TextWriter _sinkWriter;
 	private readonly DxpPlainTextVisitorConfig _config;
-	private readonly DxpPlainTextVisitorState _state = new();
+	private DxpPlainTextVisitorState _state = new();
 
 	public DxpPlainTextVisitor(TextWriter writer, DxpPlainTextVisitorConfig config, ILogger? logger)
 		: base(logger)
@@ -45,6 +45,24 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpIVisitor
 		{
 			throw new ArgumentOutOfRangeException(nameof(config), "Plain text visitor only supports accept or reject tracked changes.");
 		}
+	}
+
+	public DxpPlainTextVisitor(DxpPlainTextVisitorConfig config, ILogger? logger = null)
+		: this(TextWriter.Null, config, logger)
+	{
+	}
+
+	public void SetOutput(TextWriter writer)
+	{
+		_sinkWriter = writer ?? throw new ArgumentNullException(nameof(writer));
+		_state = new DxpPlainTextVisitorState();
+		_state.WriterStack.Push(_sinkWriter);
+	}
+
+	public override void SetOutput(Stream stream)
+	{
+		var writer = new StreamWriter(stream, Encoding.UTF8, bufferSize: 1024, leaveOpen: true);
+		SetOutput(writer);
 	}
 
 	private TextWriter CurrentWriter => _state.WriterStack.Peek();

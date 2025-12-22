@@ -1,3 +1,4 @@
+using System.IO;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Office2010.Word;
 using DocumentFormat.OpenXml.Packaging;
@@ -51,6 +52,8 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 	{
 		_logger = logger;
 	}
+
+	public virtual void SetOutput(Stream stream) { }
 
 
 	private void Ignored(string method, object? element = null)

@@ -13,7 +13,94 @@ Docxport.Net is a .NET library for walking DOCX documents and exporting them to 
 - Images/drawings
 - Bookmarks, hyperlinks, fields, and more
 
+## Why this exists
+
+Most DOCX “save as text” pipelines lose important fidelity: strikethroughs and deletions disappear, list markers collapse to bullets or vanish (pandoc), comments/track changes are missing, images are dropped, and tools like LibreOffice/Interop require UI or platform-specific installs. Docxport.Net walks the OOXML directly, headlessly, and emits Markdown/HTML/plain text while preserving tracked changes, comments, list markers, images, headers/footers, and other semantics.
+
+## Quick start: DOCX → Markdown
+
+```csharp
+using DocxportNet;
+using DocxportNet.Visitors.Markdown;
+
+string docxPath = "my-doc.docx";
+var visitor = new DxpMarkdownVisitor(DxpMarkdownVisitorConfig.RICH);
+string markdown = DxpExport.ExportToString(docxPath, visitor);
+
+File.WriteAllText(Path.ChangeExtension(docxPath, ".md"), markdown);
+```
+
+## Tracked changes
+
+Visitors can emit different views of tracked changes:
+
+- Accept changes (default): `DxpTrackedChangeMode.AcceptChanges`
+- Reject changes: `DxpTrackedChangeMode.RejectChanges`
+- Inline markup (insert/delete): `DxpTrackedChangeMode.InlineChanges`
+- Split accept/reject panes: `DxpTrackedChangeMode.SplitChanges`
+
+Pick the mode on the visitor config, e.g.:
+
+```csharp
+var config = DxpMarkdownVisitorConfig.RICH with { TrackedChangeMode = DxpTrackedChangeMode.RejectChanges };
+var rejectVisitor = new DxpMarkdownVisitor(config);
+string rejected = DxpExport.ExportToString(docxPath, rejectVisitor);
+```
+
+## Visitors and options
+
+**Markdown**  
+- Presets: `DxpMarkdownVisitorConfig.RICH` (styled) and `PLAIN` (minimal).  
+- Options cover images, inline styling, rich tables, comments formatting, custom properties, and tracked change mode.
+
+**HTML**  
+- Preset: `DxpHtmlVisitorConfig.RICH`.  
+- Options cover inline styles, colors/backgrounds, table borders, document colors, headers/footers, comments mode, custom properties, timeline, and tracked change mode.
+
+**Plain text**  
+- Presets: `DxpPlainTextVisitorConfig.ACCEPT` and `REJECT` (choose tracked change handling).  
+- Focused on readable text output with list markers, comments, and basic structure.
+
+`DxpExport` has overloads for DOCX file paths, in-memory bytes, or an already-open `WordprocessingDocument`, and can return a `string`, a `byte[]`, write straight to a file path, or just drive a visitor that collects data.
+
+## Custom visitors
+
+You can write your own `DxpIVisitor` to extract specific content. Example: collect all comments.
+
+```csharp
+using DocxportNet.API;
+using DocxportNet.Visitors;
+using DocumentFormat.OpenXml.Wordprocessing;
+
+public sealed class CommentCollector : DxpVisitor
+{
+	public List<(string Author, string Text)> Comments { get; } = new();
+
+	public override void VisitComment(Comment c, DxpIDocumentContext d)
+	{
+		Comments.Add((c.Author?.Value ?? "Unknown", c.InnerText));
+	}
+}
+
+var collector = new CommentCollector();
+DxpExport.Export("my-doc.docx", collector);
+foreach (var (author, text) in collector.Comments)
+	Console.WriteLine($"{author}: {text}");
+```
+
 It also ships a small utility that translates legacy “symbol fonts” (Symbol, Zapf Dingbats, Webdings, Wingdings) into modern Unicode.
+
+## Gaps and contributions welcome
+
+| Area | Current gap |
+| --- | --- |
+| List markers | Word supports exotic textual markers (“forty-two” in various languages); current formatter covers numeric/roman/alpha/symbol bullets but not full textual spell-outs. |
+| Shapes/SmartArt | Complex shapes/SmartArt/OLE rely on preview images if present; true vector or OLE rendering is not implemented. |
+| Charts | Charts are emitted via available previews or placeholders; data-driven re-rendering is not implemented. |
+| Math/Fields | Core visits are present, but fidelity for complex math/field result rendering isn’t deeply covered by fixtures. |
+| Tables (complex) | Merged/nested table edge cases beyond supplied samples may need additional handling. |
+
+Contributions that improve any of these areas are very welcome.
 
 ## Supported symbol fonts
 

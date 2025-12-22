@@ -97,9 +97,9 @@ public sealed record DxpMarkdownVisitorConfig
 }
 
 
-public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
+public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor
 {
-	private readonly TextWriter _sinkWriter;
+	private TextWriter _sinkWriter;
 	private DxpBufferedTextWriter _rejectBufferedWriter;
 	private DxpBufferedTextWriter _acceptBufferedWriter;
 
@@ -113,8 +113,27 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 		_sinkWriter = writer;
 		_rejectBufferedWriter = new DxpBufferedTextWriter();
 		_acceptBufferedWriter = new DxpBufferedTextWriter();
-
 		ConfigureWriters();
+	}
+
+	public DxpMarkdownVisitor(DxpMarkdownVisitorConfig config, ILogger? logger = null)
+		: this(TextWriter.Null, config, logger)
+	{
+	}
+
+	public void SetOutput(TextWriter writer)
+	{
+		_sinkWriter = writer ?? throw new ArgumentNullException(nameof(writer));
+		_rejectBufferedWriter = new DxpBufferedTextWriter();
+		_acceptBufferedWriter = new DxpBufferedTextWriter();
+		_state = new DxpMarkdownVisitorState();
+		ConfigureWriters();
+	}
+
+	public override void SetOutput(Stream stream)
+	{
+		var writer = new StreamWriter(stream, Encoding.UTF8, bufferSize: 1024, leaveOpen: true);
+		SetOutput(writer);
 	}
 
 	private void ConfigureWriters()
