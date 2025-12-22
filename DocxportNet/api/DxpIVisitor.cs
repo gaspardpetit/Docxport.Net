@@ -2,6 +2,7 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Office2010.Word;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using System;
 using System.Xml.Linq;
 
 namespace DocxportNet.API;
@@ -11,7 +12,7 @@ public sealed record FieldFrame
 	public bool SeenSeparate;
 	public IDisposable? ResultScope;
 	public bool InResult;
-	public bool SuppressResult;
+	public string? InstructionText;
 }
 
 public class DxpFieldFrameContext
@@ -19,8 +20,6 @@ public class DxpFieldFrameContext
 	public readonly Stack<FieldFrame> FieldStack = new();
 
 	public FieldFrame? Current => FieldStack.Count > 0 ? FieldStack.Peek() : null;
-
-	public bool IsSuppressed => FieldStack.Any(f => f.InResult && f.SuppressResult);
 }
 
 
@@ -67,6 +66,8 @@ public sealed record DxpMarker(string? marker, int? numId, int? iLvl);
 public sealed record DxpLinkAnchor(string? internalRef, string uri);
 
 public sealed record CustomFileProperty(string Name, string? Type, object? Value);
+
+public sealed record DxpChangeInfo(string? Author, DateTime? Date);
 
 public interface DxpITableContext
 {
@@ -145,6 +146,9 @@ public interface DxpIDocumentContext
 	Settings? DocumentSettings { get; }
 	IPackageProperties? CoreProperties { get; }
 	IReadOnlyList<CustomFileProperty>? CustomProperties { get; }
+	bool KeepAccept { get; }
+	bool KeepReject { get; }
+	DxpChangeInfo CurrentChangeInfo { get; }
 }
 
 public interface DxpIParagraphContext
@@ -179,6 +183,9 @@ public interface DxpIFieldVisitor
 	// Called exactly once when entering the "result" portion (after SEPARATE, before END).
 	// Return a scope (may be a no-op) that will be disposed when the field ends.
 	IDisposable VisitComplexFieldResultBegin(DxpIDocumentContext d);
+
+	// Called for the cached field result text while inside the result portion.
+	void VisitComplexFieldCachedResultText(string text, DxpIDocumentContext d);
 
 	// Called when the field ends (w:fldChar type="end")
 	void VisitComplexFieldEnd(FieldChar end, DxpIDocumentContext d);
@@ -345,8 +352,8 @@ public interface DxpIVisitor : DxpIStyleVisitor, DxpIFieldVisitor
 	IDisposable VisitCustomXmlCellBegin(CustomXmlCell cxCell, DxpIDocumentContext d);
 	IDisposable VisitSectionHeaderBegin(Header hdr, object value, DxpIDocumentContext d);
 	IDisposable VisitSectionFooterBegin(Footer ftr, object value, DxpIDocumentContext d);
-	void VisitDocumentProperties(IPackageProperties core, IReadOnlyList<CustomFileProperty> custom, IReadOnlyList<DxpTimelineEvent> timeline);
-	void VisitBibliographySources(CustomXmlPart bibliographyPart, XDocument bib);
+	void VisitDocumentProperties(IPackageProperties core, IReadOnlyList<CustomFileProperty> custom, IReadOnlyList<DxpTimelineEvent> timeline, DxpIDocumentContext d);
+	void VisitBibliographySources(CustomXmlPart bibliographyPart, XDocument bib, DxpIDocumentContext d);
 	IDisposable VisitSectionBegin(SectionProperties properties, SectionLayout layout, DxpIDocumentContext d);
 	IDisposable VisitSectionBodyBegin(SectionProperties properties, DxpIDocumentContext d);
 	IDisposable VisitCommentBegin(DxpCommentInfo c, DxpCommentThread thread, DxpIDocumentContext d);

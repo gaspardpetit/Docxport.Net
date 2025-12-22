@@ -43,7 +43,7 @@ public class DxpFootnotes
 		}
 	}
 
-	internal void Init(MainDocumentPart mainPart)
+	internal void Init(MainDocumentPart? mainPart)
 	{
 		var footnotes = mainPart?.FootnotesPart?.Footnotes;
 		if (footnotes != null)
@@ -107,7 +107,7 @@ public class DocxEndnotes
 		}
 	}
 
-	internal void Init(MainDocumentPart mainPart)
+	internal void Init(MainDocumentPart? mainPart)
 	{
 		var endnotes = mainPart?.EndnotesPart?.Endnotes;
 		if (endnotes != null)

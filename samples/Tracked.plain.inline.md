@@ -12,14 +12,14 @@ original text<del>, deleted text</del><u>, added text</u>, original text
 
 3:  Original 3
 
-<del>4:</del> <del> Deleted 4</del>
+<del>4:  Deleted 4</del><del>
 
-<u>4:</u> <u> Added 5</u>
+</del><u>4:  Added 5</u><u>
 
-5:  Original 6
+</u>5:  Original 6
 
-<u>6:</u> <u> Added 7</u>
+<u>6:  Added 7</u><u>
 
-<del>6:</del> <del> Delete 8</del>
+</u><del>6:  Delete 8</del><del>
 
-7:  Original 9
+</del>7:  Original 9

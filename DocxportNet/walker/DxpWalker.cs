@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml.CustomProperties;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
+using DocxportNet.Core;
 using Microsoft.Extensions.Logging;
 using System.Xml.Linq;
 
@@ -57,7 +58,7 @@ public class DxpWalker
 			documentContext.CustomProperties = customList;
 			var timeline = DxpTimeline.BuildTimeline(doc);
 			documentContext.Timeline = timeline;
-			v.VisitDocumentProperties(core, customList, timeline);
+			v.VisitDocumentProperties(core, customList, timeline, documentContext);
 
 			var body = doc.MainDocumentPart?.Document?.Body
 				?? throw new InvalidOperationException("DOCX has no main document body.");
@@ -108,7 +109,7 @@ public class DxpWalker
 				sourcesXml = XDocument.Load(strm); // root is b:Sources (OOXML bibliography)
 
 			// Visitor can accept the CustomXmlPart and/or XDocument for bibliography sources.
-			v.VisitBibliographySources(bibPart, sourcesXml);
+			v.VisitBibliographySources(bibPart, sourcesXml, d);
 		}
 	}
 
@@ -660,12 +661,20 @@ public class DxpWalker
 		if (!DxpParagraphs.HasRenderableParagraphContent(p))
 			return;
 
-		bool isDeletedParagraph =
-			p.ParagraphProperties?.GetFirstChild<Deleted>() != null ||
-			p.ParagraphProperties?.ParagraphMarkRunProperties?.GetFirstChild<Deleted>() != null;
-		bool isInsertedParagraph =
-			p.ParagraphProperties?.ParagraphMarkRunProperties?.GetFirstChild<Inserted>() != null;
+		Deleted? deletedParagraph =
+			p.ParagraphProperties?.GetFirstChild<Deleted>() ??
+			p.ParagraphProperties?.ParagraphMarkRunProperties?.GetFirstChild<Deleted>();
+		Inserted? insertedParagraph =
+			p.ParagraphProperties?.ParagraphMarkRunProperties?.GetFirstChild<Inserted>();
+		bool isDeletedParagraph = deletedParagraph != null;
+		bool isInsertedParagraph = insertedParagraph != null;
+		var paragraphChangeScope = isDeletedParagraph
+			? d.PushChangeScope(keepAccept: false, keepReject: true, changeInfo: ResolveChangeInfo(deletedParagraph!, d))
+			: isInsertedParagraph
+				? d.PushChangeScope(keepAccept: true, keepReject: false, changeInfo: ResolveChangeInfo(insertedParagraph!, d))
+				: Disposable.Empty;
 
+		using (paragraphChangeScope)
 		using (d.PushParagraph(p, out DxpParagraphContext paragraphContext, advanceAccept: !isDeletedParagraph, advanceReject: !isInsertedParagraph))
 		using (v.VisitParagraphBegin(p, d, paragraphContext))
 		{
@@ -1267,7 +1276,10 @@ public class DxpWalker
 	{
 		// w:fldSimple – simple field whose result is represented by its child content
 		// Attributes: w:instr (field code), w:dirty, w:fldLock. Behavior: children are the current field result.
-		var frame = new FieldFrame { SeenSeparate = true, InResult = true, SuppressResult = false };
+		var frame = new FieldFrame { SeenSeparate = true, InResult = true };
+		var instruction = fld.Instruction?.Value;
+		if (!string.IsNullOrEmpty(instruction))
+			frame.InstructionText = instruction;
 		d.CurrentFields.FieldStack.Push(frame);
 		using (v.VisitSimpleFieldBegin(fld, d))
 		{
@@ -1545,6 +1557,7 @@ public class DxpWalker
 
 	private void WalkDeletedRun(DeletedRun dr, DxpDocumentContext d, DxpIVisitor v)
 	{
+		using (d.PushChangeScope(keepAccept: false, keepReject: true, changeInfo: ResolveChangeInfo(dr, d)))
 		using (v.VisitDeletedRunBegin(dr, d))
 		{
 			foreach (var child in dr.ChildElements)
@@ -1680,6 +1693,7 @@ public class DxpWalker
 
 	private void WalkInsertedRun(InsertedRun ir, DxpDocumentContext d, DxpIVisitor v)
 	{
+		using (d.PushChangeScope(keepAccept: true, keepReject: false, changeInfo: ResolveChangeInfo(ir, d)))
 		using (v.VisitInsertedRunBegin(ir, d))
 		{
 			foreach (var child in ir.ChildElements)
@@ -2188,7 +2202,10 @@ public class DxpWalker
 						break;
 
 					case Text t:
-						v.VisitText(t, d);
+						if (d.CurrentFields.Current?.InResult == true)
+							v.VisitComplexFieldCachedResultText(t.Text, d);
+						else
+							v.VisitText(t, d);
 						break;
 
 					case TabChar tab:
@@ -2213,7 +2230,7 @@ public class DxpWalker
 
 						if (t == FieldCharValues.Begin)
 						{
-							var frame = new FieldFrame { SeenSeparate = false, ResultScope = null, InResult = false, SuppressResult = false };
+							var frame = new FieldFrame { SeenSeparate = false, ResultScope = null, InResult = false };
 							d.CurrentFields.FieldStack.Push(frame);
 							v.VisitComplexFieldBegin(fc, d);
 						}
@@ -2261,6 +2278,13 @@ public class DxpWalker
 					{
 						// FieldCode.Text can be null; InnerText is a safe fallback
 						var instr = code.Text ?? code.InnerText ?? string.Empty;
+						if (!string.IsNullOrEmpty(instr) && d.CurrentFields.Current != null)
+						{
+							var current = d.CurrentFields.Current;
+							current.InstructionText = current.InstructionText == null
+								? instr
+								: current.InstructionText + instr;
+						}
 						v.VisitComplexFieldInstruction(code, instr, d);
 						// Do not emit as visible text; instruction is not the result.
 						break;
@@ -2315,8 +2339,10 @@ public class DxpWalker
 						v.VisitAnnotationReference(arm, d);
 						break;
 					case FootnoteReferenceMark frm:
-						if (d.Footnotes.Resolve(d.CurrentFootnote?.Id ?? 0, out int index))
-							v.VisitFootnoteReferenceMark(frm, new DxpFootnoteContext(d.CurrentFootnote.Id, index), d);
+						var currentFootnote = d.CurrentFootnote;
+						long currentFootnoteId = currentFootnote.Id ?? 0;
+						if (d.Footnotes.Resolve(currentFootnoteId, out int index))
+							v.VisitFootnoteReferenceMark(frm, new DxpFootnoteContext(currentFootnoteId, index), d);
 						break;
 					case EndnoteReferenceMark erm:
 						v.VisitEndnoteReferenceMark(erm, d);
@@ -2472,6 +2498,7 @@ public class DxpWalker
 	// w:del under pPr/rPr = deleted paragraph mark. No children to walk.
 	private void WalkDeleted(Deleted del, DxpDocumentContext d, DxpIVisitor v)
 	{
+		using (d.PushChangeScope(keepAccept: false, keepReject: true, changeInfo: ResolveChangeInfo(del, d)))
 		using (v.VisitDeletedBegin(del, d))
 		{
 
@@ -2493,8 +2520,8 @@ public class DxpWalker
 		}
 
 		// Fallback: if the deleted element contains block/inline content, walk it so visitors can render it.
-		if (del.ChildElements != null && del.ChildElements.Count > 0)
-		{
+			if (del.ChildElements.Count > 0)
+			{
 			foreach (var child in del.ChildElements)
 			{
 				switch (child)
@@ -2533,6 +2560,7 @@ public class DxpWalker
 	// It has no children; we only need to determine the parent scope and notify the visitor.  Spec: w:ins under trPr / numPr / (pPr/rPr).
 	private void WalkInserted(Inserted ins, DxpDocumentContext d, DxpIVisitor v)
 	{
+		using (d.PushChangeScope(keepAccept: true, keepReject: false, changeInfo: ResolveChangeInfo(ins, d)))
 		using (v.VisitInsertedBegin(ins, d))
 		{
 			// (1) Inserted table row: <w:trPr><w:ins .../></w:trPr>  ⇒ the row itself is marked as inserted.
@@ -3034,6 +3062,27 @@ public class DxpWalker
 				WalkCommentContent(info, thread, d, v);
 			}
 		}
+	}
+
+	private static DxpChangeInfo ResolveChangeInfo(OpenXmlElement change, DxpDocumentContext d)
+	{
+		var current = d.CurrentChangeInfo;
+		string? author = null;
+		DateTime? date = null;
+
+		switch (change)
+		{
+			case TrackChangeType track:
+				author = track.Author?.Value;
+				date = track.Date?.Value;
+				break;
+			case RunTrackChangeType runTrack:
+				author = runTrack.Author?.Value;
+				date = runTrack.Date?.Value;
+				break;
+		}
+
+		return new DxpChangeInfo(author ?? current.Author, date ?? current.Date);
 	}
 
 	private sealed class DxpTableContext : DxpITableContext

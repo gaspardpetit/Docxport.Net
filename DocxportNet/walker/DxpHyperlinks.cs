@@ -6,7 +6,7 @@ namespace DocxportNet.Walker;
 
 public class DxpHyperlinks
 {
-	public static DxpLinkAnchor? ResolveHyperlinkTarget(Hyperlink link, OpenXmlPart currentPart)
+	public static DxpLinkAnchor? ResolveHyperlinkTarget(Hyperlink link, OpenXmlPart? currentPart)
 	{
 		// Anchor links are direct
 		if (!string.IsNullOrEmpty(link.Anchor?.Value))
@@ -15,7 +15,7 @@ public class DxpHyperlinks
 		}
 
 		string? relId = link.Id?.Value;
-		OpenXmlPart part = currentPart;
+		OpenXmlPart? part = currentPart;
 		if (string.IsNullOrEmpty(relId) || part == null)
 			return null;
 

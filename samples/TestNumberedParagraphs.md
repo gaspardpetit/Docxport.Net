@@ -34,4 +34,13 @@ no marker level 1
 4\. Item 4
 
 </div>
+<div class="footer" style="border-top:1px solid #000;">
+<p style="text-align:center;">
+
+`PAGE   \* MERGEFORMAT`
+
+</p>
+
+
+</div>
 </div>
