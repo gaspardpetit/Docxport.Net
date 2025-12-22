@@ -4,3 +4,4 @@
 .vscode
 artifacts
 .nuget
+DocxportNet.Cli/Properties/launchSettings.json

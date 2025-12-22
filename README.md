@@ -19,6 +19,21 @@ Most DOCX “save as text” pipelines lose important fidelity: strikethroughs a
 
 ## Quick start: DOCX → Markdown
 
+### Command line
+
+```bash
+# From release artifacts (self-contained binary):
+./docxport my-doc.docx --format=markdown --tracked=accept
+
+# From source:
+git clone https://github.com/gaspardpetit/Docxport.Net.git
+dotnet run --project DocxportNet.Cli -- my-doc.docx --format=markdown --tracked=accept
+```
+
+### NuGet + code
+
+Install: `dotnet add package DocxportNet`
+
 ```csharp
 using DocxportNet;
 using DocxportNet.Visitors.Markdown;
@@ -63,6 +78,18 @@ string rejected = DxpExport.ExportToString(docxPath, rejectVisitor);
 
 `DxpExport` has overloads for DOCX file paths, in-memory bytes, or an already-open `WordprocessingDocument`, and can return a `string`, a `byte[]`, write straight to a file path, or just drive a visitor that collects data.
 
+### CLI
+
+A ready-to-use console app lives in `DocxportNet.Cli` (not published on NuGet). Example:
+
+```bash
+dotnet run --project DocxportNet.Cli -- my.docx --format=markdown --tracked=accept
+# or, when using release artifacts:
+./docxport my.docx --format=html --tracked=inline
+```
+
+Options: `--format=markdown|html|text`, `--tracked=accept|reject|inline|split` (text uses accept/reject), `--plain` (plain markdown), `--output=path`.
+
 ## Custom visitors
 
 You can write your own `DxpIVisitor` to extract specific content. Example: collect all comments.
@@ -103,6 +130,8 @@ It also ships a small utility that translates legacy “symbol fonts” (Symbol,
 Contributions that improve any of these areas are very welcome.
 
 ## Supported symbol fonts
+
+Symbols typically used in list markers are automatically converted to their unicode equivalent. Supported fonts include:
 
 - Symbol
 - Zapf Dingbats
