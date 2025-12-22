@@ -67,12 +67,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: docxport-cli-${{ matrix.runtime }}
-          path: ${{ coalesce(steps.archive-unix.outputs.path, steps.archive-win.outputs.path) }}
+          path: ${{ steps.archive-unix.outputs.path || steps.archive-win.outputs.path }}
 
       - name: Attach to GitHub Release
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v1
         with:
-          files: ${{ coalesce(steps.archive-unix.outputs.path, steps.archive-win.outputs.path) }}
+          files: ${{ steps.archive-unix.outputs.path || steps.archive-win.outputs.path }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
