@@ -71,7 +71,7 @@ public sealed class DxpStyleTracker : DxpIStyleTracker
 
 		if (!_fontOpen)
 		{
-			v.StyleFontBegin(next.FontName, next.FontSizeHalfPoints, d);
+			v.StyleFontBegin(new DxpFont(next.FontName, next.FontSizeHalfPoints), d);
 			_fontOpen = true;
 			_fontName = next.FontName;
 			_fontSizeHp = next.FontSizeHalfPoints;
@@ -88,7 +88,7 @@ public sealed class DxpStyleTracker : DxpIStyleTracker
 
 		// Switch font wrapper
 		v.StyleFontEnd(d);
-		v.StyleFontBegin(next.FontName, next.FontSizeHalfPoints, d);
+		v.StyleFontBegin(new DxpFont(next.FontName, next.FontSizeHalfPoints), d);
 
 		_fontName = next.FontName;
 		_fontSizeHp = next.FontSizeHalfPoints;

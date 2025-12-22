@@ -93,7 +93,7 @@ public class DxpDocumentContext : DxpIDocumentContext
 		DxpParagraphContext paragraphContext = CreateParagraphContext(p, advanceAccept, advanceReject);
 		ctx = paragraphContext;
 		CurrentParagraph = paragraphContext;
-		return Disposable.Create(() => CurrentParagraph = prev);
+		return DxpDisposable.Create(() => CurrentParagraph = prev);
 	}
 
 	public IDisposable PushRun(Run r, DxpStyleEffectiveRunStyle style, string? language, out DxpRunContext ctx)
@@ -102,7 +102,7 @@ public class DxpDocumentContext : DxpIDocumentContext
 		var runCtx = new DxpRunContext(r, r.RunProperties, style, language);
 		ctx = runCtx;
 		CurrentRun = runCtx;
-		return Disposable.Create(() => CurrentRun = prev);
+		return DxpDisposable.Create(() => CurrentRun = prev);
 	}
 
 	public IDisposable PushRuby(Ruby ruby, RubyProperties? properties, out DxpRubyContext ctx)
@@ -111,7 +111,7 @@ public class DxpDocumentContext : DxpIDocumentContext
 		var rubyCtx = new DxpRubyContext(ruby, properties);
 		ctx = rubyCtx;
 		CurrentRuby = rubyCtx;
-		return Disposable.Create(() => CurrentRuby = prev);
+		return DxpDisposable.Create(() => CurrentRuby = prev);
 	}
 
 	public IDisposable PushSmartTag(OpenXmlUnknownElement smart, string elementName, string elementUri, IReadOnlyList<CustomXmlAttribute> attrs, out DxpSmartTagContext ctx)
@@ -120,7 +120,7 @@ public class DxpDocumentContext : DxpIDocumentContext
 		var smartCtx = new DxpSmartTagContext(smart, elementName, elementUri, attrs);
 		ctx = smartCtx;
 		CurrentSmartTag = smartCtx;
-		return Disposable.Create(() => CurrentSmartTag = prev);
+		return DxpDisposable.Create(() => CurrentSmartTag = prev);
 	}
 
 	public IDisposable PushSdt(SdtElement sdt, SdtProperties? properties, SdtEndCharProperties? endCharProperties, out DxpSdtContext ctx)
@@ -129,7 +129,7 @@ public class DxpDocumentContext : DxpIDocumentContext
 		var sdtCtx = new DxpSdtContext(sdt, properties, endCharProperties);
 		ctx = sdtCtx;
 		CurrentSdt = sdtCtx;
-		return Disposable.Create(() => CurrentSdt = prev);
+		return DxpDisposable.Create(() => CurrentSdt = prev);
 	}
 
 	public IDisposable PushCustomXml(OpenXmlElement element, CustomXmlProperties? properties, out DxpCustomXmlContext ctx)
@@ -138,7 +138,7 @@ public class DxpDocumentContext : DxpIDocumentContext
 		var cCtx = new DxpCustomXmlContext(element, properties);
 		ctx = cCtx;
 		CurrentCustomXml = cCtx;
-		return Disposable.Create(() => CurrentCustomXml = prev);
+		return DxpDisposable.Create(() => CurrentCustomXml = prev);
 	}
 
 	public IDisposable PushFootnote(long id, int index, out DxpFootnoteContext ctx)
@@ -147,7 +147,7 @@ public class DxpDocumentContext : DxpIDocumentContext
 		DxpFootnoteContext footnoteContext = CreateFootnoteContext(id, index);
 		ctx = footnoteContext;
 		CurrentFootnote = footnoteContext;
-		return Disposable.Create(() => CurrentFootnote = prev);
+		return DxpDisposable.Create(() => CurrentFootnote = prev);
 	}
 
 	private DxpFootnoteContext CreateFootnoteContext(long id, int index)
@@ -252,12 +252,12 @@ public class DxpDocumentContext : DxpIDocumentContext
 		var previous = CurrentPart;
 		if (part != null)
 			CurrentPart = part;
-		return Disposable.Create(() => CurrentPart = previous);
+		return DxpDisposable.Create(() => CurrentPart = previous);
 	}
 
 	public IDisposable PushChangeScope(bool keepAccept, bool keepReject, DxpChangeInfo changeInfo)
 	{
 		_editStateStack.Push(new DxpEditState(keepAccept, keepReject, changeInfo));
-		return Disposable.Create(() => _editStateStack.Pop());
+		return DxpDisposable.Create(() => _editStateStack.Pop());
 	}
 }
