@@ -1,6 +1,6 @@
 namespace DocxportNet.Markdown;
 
-public class MarkdownTableBuilder
+public class DxpMarkdownTableBuilder
 {
 	private readonly List<Row> _rows = new();
 	private Row? _current;

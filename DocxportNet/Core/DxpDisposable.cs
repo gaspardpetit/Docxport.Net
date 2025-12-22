@@ -1,6 +1,6 @@
 namespace DocxportNet.Core;
 
-public static class Disposable
+public static class DxpDisposable
 {
 	public static IDisposable Empty { get; } = new EmptyDisposable();
 	private sealed class EmptyDisposable : IDisposable

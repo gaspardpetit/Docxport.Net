@@ -1,16 +1,16 @@
 using System.Text;
 
 
-namespace DocxportNet.Visitors;
+namespace DocxportNet.Core;
 
 
-public sealed class BufferedTextWriter : TextWriter
+public sealed class DxpBufferedTextWriter : TextWriter
 {
 	private readonly StringBuilder _sb = new();
 	private readonly object _lock = new();
 	private readonly int? _maxChars;
 
-	public BufferedTextWriter(int? maxChars = null, Encoding? encoding = null)
+	public DxpBufferedTextWriter(int? maxChars = null, Encoding? encoding = null)
 	{
 		_maxChars = maxChars;
 		Encoding = encoding ?? Encoding.UTF8;

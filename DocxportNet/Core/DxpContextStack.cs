@@ -17,7 +17,7 @@ internal sealed class DxpContextStack<T> where T : class
 	public IDisposable Push(T item)
 	{
 		_items.Add(item);
-		return Disposable.Create(() => Pop(item));
+		return DxpDisposable.Create(() => Pop(item));
 	}
 
 	private void Pop(T expected)

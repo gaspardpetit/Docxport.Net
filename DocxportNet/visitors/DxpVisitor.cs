@@ -38,7 +38,7 @@ public class DxpStyleVisitor : DxpIStyleVisitor
 	public virtual void StyleAllCapsBegin(DxpIDocumentContext d) { }
 	public virtual void StyleAllCapsEnd(DxpIDocumentContext d) { }
 
-	public virtual void StyleFontBegin(string? fontName, int? fontSizeHalfPoints, DxpIDocumentContext d) { }
+	public virtual void StyleFontBegin(DxpFont font, DxpIDocumentContext d) { }
 	public virtual void StyleFontEnd(DxpIDocumentContext d) { }
 }
 
@@ -69,13 +69,13 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 	public virtual IDisposable VisitBlockBegin(OpenXmlElement child, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitBlockBegin), child);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual IDisposable VisitDocumentBodyBegin(Body body, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitDocumentBodyBegin), body);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual void VisitBookmarkEnd(BookmarkEnd be, DxpIDocumentContext d) => Ignored(nameof(VisitBookmarkEnd), be);
@@ -86,7 +86,7 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 	public virtual IDisposable VisitDeletedRunBegin(DeletedRun dr, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitDeletedRunBegin), dr);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual void VisitDeletedText(DeletedText dt, DxpIDocumentContext d) => Ignored(nameof(VisitDeletedText), dt);
@@ -94,13 +94,13 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 	public virtual IDisposable VisitHyperlinkBegin(Hyperlink link, DxpLinkAnchor? target, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitHyperlinkBegin), link);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual IDisposable VisitInsertedRunBegin(InsertedRun ir, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitInsertedRunBegin), ir);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual void VisitLastRenderedPageBreak(LastRenderedPageBreak pb, DxpIDocumentContext d) => Ignored(nameof(VisitLastRenderedPageBreak), pb);
@@ -109,7 +109,7 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 	public virtual IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
 	{
 		Ignored(nameof(VisitParagraphBegin), p);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual void VisitProofError(ProofError pe, DxpIDocumentContext d) => Ignored(nameof(VisitProofError), pe);
@@ -117,26 +117,26 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 	public virtual IDisposable VisitRunBegin(Run r, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitRunBegin), r);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 	public virtual void VisitTab(TabChar tab, DxpIDocumentContext d) => Ignored(nameof(VisitTab), tab);
 
 	public virtual IDisposable VisitTableBegin(Table t, DxpTableModel model, DxpIDocumentContext d, DxpITableContext table)
 	{
 		Ignored(nameof(VisitTableBegin), t);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual IDisposable VisitTableCellBegin(TableCell tc, DxpITableCellContext cell, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitTableCellBegin), tc);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual IDisposable VisitTableRowBegin(TableRow tr, DxpITableRowContext row, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitTableRowBegin), tr);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual void VisitText(Text t, DxpIDocumentContext d) => Ignored(nameof(VisitText), t);
@@ -148,7 +148,7 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 	public virtual IDisposable VisitFootnoteBegin(Footnote fn, DxpIFootnoteContext footnote, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitFootnoteBegin), fn);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual void VisitFootnoteReferenceMark(FootnoteReferenceMark m, DxpIFootnoteContext footnote, DxpIDocumentContext d) => Ignored(nameof(VisitFootnoteReferenceMark), m);
@@ -156,7 +156,7 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 	public virtual IDisposable VisitCommentThreadBegin(string anchorId, DxpCommentThread thread, DxpIDocumentContext d)
 	{
 		Ignored($"{nameof(DxpVisitor)}: ignored {nameof(VisitCommentThreadBegin)} (anchorId='{anchorId}', count={thread.Comments.Count})");
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual void VisitDayShort(DayShort ds, DxpIDocumentContext d) => Ignored(nameof(VisitDayShort), ds);
@@ -183,7 +183,7 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 	public virtual IDisposable VisitRubyBegin(Ruby ruby, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitRubyBegin), ruby);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual void VisitDeletedFieldCode(DeletedFieldCode dfc, DxpIDocumentContext d) => Ignored(nameof(VisitDeletedFieldCode), dfc);
@@ -193,7 +193,7 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 	public virtual IDisposable VisitRubyContentBegin(RubyContentType rc, bool isBase, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitRubyContentBegin), rc);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual void VisitPermStart(PermStart ps, DxpIDocumentContext d) => Ignored(nameof(VisitPermStart), ps);
@@ -207,13 +207,13 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 	public virtual IDisposable VisitInsertedBegin(Inserted ins, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitInsertedBegin), ins);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual IDisposable VisitDeletedBegin(Deleted del, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitDeletedBegin), del);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual void VisitOMathParagraph(DocumentFormat.OpenXml.Math.Paragraph oMathPara, DxpIDocumentContext d) => Ignored(nameof(VisitOMathParagraph), oMathPara);
@@ -243,13 +243,13 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 	public virtual IDisposable VisitSdtBlockBegin(SdtBlock sdt, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitSdtBlockBegin), sdt);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual IDisposable VisitCustomXmlBlockBegin(CustomXmlBlock cx, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitCustomXmlBlockBegin), cx);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual void VisitAltChunk(AltChunk ac, DxpIDocumentContext d) => Ignored(nameof(VisitAltChunk), ac);
@@ -257,7 +257,7 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 	public virtual IDisposable VisitSdtContentBlockBegin(SdtContentBlock content, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitSdtContentBlockBegin), content);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual void VisitCustomXmlConflictInsertionRangeStart(CustomXmlConflictInsertionRangeStart cxCis, DxpIDocumentContext d) => Ignored(nameof(VisitCustomXmlConflictInsertionRangeStart), cxCis);
@@ -274,19 +274,19 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 	public virtual IDisposable VisitCustomXmlRunBegin(CustomXmlRun cxr, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitCustomXmlRunBegin), cxr);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual IDisposable VisitSimpleFieldBegin(SimpleField fld, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitSimpleFieldBegin), fld);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual IDisposable VisitSdtRunBegin(SdtRun sdtRun, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitSdtRunBegin), sdtRun);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual void VisitOMathElement(DocumentFormat.OpenXml.Math.Accent mAccent, DxpIDocumentContext d) => Ignored(nameof(VisitOMathElement), mAccent);
@@ -297,13 +297,13 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 	public virtual IDisposable VisitBidirectionalOverrideBegin(BidirectionalOverride bdo, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitBidirectionalOverrideBegin), bdo);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual IDisposable VisitBidirectionalEmbeddingBegin(BidirectionalEmbedding bdi, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitBidirectionalEmbeddingBegin), bdi);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual void VisitSubDocumentReference(SubDocumentReference subDoc, DxpIDocumentContext d) => Ignored(nameof(VisitSubDocumentReference), subDoc);
@@ -328,7 +328,7 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 	public virtual IDisposable VisitSdtContentRunBegin(SdtContentRun content, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitSdtContentRunBegin), content);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual void VisitFieldData(FieldData data, DxpIDocumentContext d) => Ignored(nameof(VisitFieldData), data);
@@ -338,13 +338,13 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 	public virtual IDisposable VisitSdtRowBegin(SdtRow sdtRow, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitSdtRowBegin), sdtRow);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual IDisposable VisitCustomXmlRowBegin(CustomXmlRow cxRow, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitCustomXmlRowBegin), cxRow);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public bool AcceptAlternateContentChoice(AlternateContentChoice choice, IReadOnlyList<string> required, DxpIDocumentContext d)
@@ -356,43 +356,43 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 	public virtual IDisposable VisitEndnoteBegin(Endnote item1, long item3, int item2, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitEndnoteBegin), item1);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	IDisposable DxpIVisitor.VisitDrawingBegin(Drawing drw, DxpDrawingInfo? info, DxpIDocumentContext d)
 	{
 		Ignored("IDocxVisitor.VisitDrawingBegin", drw);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	IDisposable DxpIVisitor.VisitLegacyPictureBegin(Picture pict, DxpIDocumentContext d)
 	{
 		Ignored("IDocxVisitor.VisitLegacyPictureBegin", pict);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual IDisposable VisitSmartTagRunBegin(OpenXmlUnknownElement smart, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitSmartTagRunBegin), smart);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual IDisposable VisitTextBoxContentBegin(TextBoxContent txbx, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitTextBoxContentBegin), txbx);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual IDisposable VisitSmartTagRunBegin(OpenXmlUnknownElement smart, string elementName, string elementUri, DxpIDocumentContext d)
 	{
 		_logger?.LogInformation($"{nameof(DxpVisitor)}: ignored {nameof(VisitSmartTagRunBegin)} (elementName='{elementName}', elementUri='{elementUri}')");
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual IDisposable VisitAlternateContentBegin(AlternateContent ac, DxpIDocumentContext d)
 	{
 		Ignored(nameof(VisitAlternateContentBegin), ac);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual void VisitUnknown(string context, OpenXmlElement el, DxpIDocumentContext d)
@@ -418,7 +418,7 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 	public virtual IDisposable VisitComplexFieldResultBegin(DxpIDocumentContext d)
 	{
 		Ignored("IDocxVisitor.VisitComplexFieldResultBegin");
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual void VisitComplexFieldCachedResultText(string text, DxpIDocumentContext d)
@@ -434,25 +434,25 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 	public virtual IDisposable VisitSdtCellBegin(SdtCell sdtCell, DxpIDocumentContext d)
 	{
 		Ignored("IDocxVisitor.VisitSdtCellBegin", sdtCell);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual IDisposable VisitCustomXmlCellBegin(CustomXmlCell cxCell, DxpIDocumentContext d)
 	{
 		Ignored("IDocxVisitor.VisitCustomXmlCellBegin", cxCell);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual IDisposable VisitSectionHeaderBegin(Header hdr, object value, DxpIDocumentContext d)
 	{
 		Ignored("IDocxVisitor.VisitSectionHeaderBegin", hdr);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual IDisposable VisitSectionFooterBegin(Footer ftr, object value, DxpIDocumentContext d)
 	{
 		Ignored("IDocxVisitor.VisitSectionFooterBegin", ftr);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual void VisitDocumentProperties(IPackageProperties core, IReadOnlyList<CustomFileProperty> custom, IReadOnlyList<DxpTimelineEvent> timeline, DxpIDocumentContext d)
@@ -468,18 +468,18 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 	public virtual IDisposable VisitSectionBegin(SectionProperties properties, SectionLayout layout, DxpIDocumentContext d)
 	{
 		Ignored("IDocxVisitor.VisitSectionBegin", properties);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual IDisposable VisitSectionBodyBegin(SectionProperties properties, DxpIDocumentContext d)
 	{
 		Ignored("IDocxVisitor.VisitSectionBodyBegin", properties);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public virtual IDisposable VisitCommentBegin(DxpCommentInfo c, DxpCommentThread thread, DxpIDocumentContext d)
 	{
 		Ignored("IDocxVisitor.VisitCommentBegin", c);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 }

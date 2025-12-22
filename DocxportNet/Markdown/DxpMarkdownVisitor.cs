@@ -5,12 +5,12 @@ using DocxportNet.API;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using DocxportNet.Core;
 using DocxportNet.Word;
-using DocxportNet.Markdown;
 using System.Text;
+using DocxportNet.Visitors;
+using DocxportNet.Core;
 
-namespace DocxportNet.Visitors;
+namespace DocxportNet.Markdown;
 
 
 /// <summary>
@@ -26,7 +26,7 @@ internal sealed class DxpMarkdownVisitorState
 		Deleted
 	}
 
-	public DxpContextStack<MarkdownTableBuilder> MarkdownTables { get; } = new DxpContextStack<MarkdownTableBuilder>("markdown-table");
+	public DxpContextStack<DxpMarkdownTableBuilder> MarkdownTables { get; } = new DxpContextStack<DxpMarkdownTableBuilder>("markdown-table");
 	public bool InHeading { get; set; }
 	public bool FontSpanOpen { get; set; }
 	public bool AllCaps { get; set; }
@@ -102,8 +102,8 @@ public sealed record DxpMarkdownVisitorConfig
 public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 {
 	private readonly TextWriter _sinkWriter;
-	private BufferedTextWriter _rejectBufferedWriter;
-	private BufferedTextWriter _acceptBufferedWriter;
+	private DxpBufferedTextWriter _rejectBufferedWriter;
+	private DxpBufferedTextWriter _acceptBufferedWriter;
 
 	private DxpMarkdownVisitorConfig _config;
 	private DxpMarkdownVisitorState _state = new();
@@ -113,8 +113,8 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 	{
 		_config = config;
 		_sinkWriter = writer;
-		_rejectBufferedWriter = new BufferedTextWriter();
-		_acceptBufferedWriter = new BufferedTextWriter();
+		_rejectBufferedWriter = new DxpBufferedTextWriter();
+		_acceptBufferedWriter = new DxpBufferedTextWriter();
 
 		ConfigureWriters();
 	}
@@ -131,7 +131,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 			case DxpTrackedChangeMode.SplitChanges:
 				_state.DeletedTextWriter = _rejectBufferedWriter;
 				_state.InsertedTextWriter = _acceptBufferedWriter;
-				_state.UnchangedTextWriter = new MultiTextWriter(true, _rejectBufferedWriter, _acceptBufferedWriter);
+				_state.UnchangedTextWriter = new DxpMultiTextWriter(true, _rejectBufferedWriter, _acceptBufferedWriter);
 				break;
 			case DxpTrackedChangeMode.AcceptChanges:
 				_state.DeletedTextWriter = TextWriter.Null;
@@ -245,19 +245,19 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 		Write(d, "</sub>");
 	}
 
-	public override void StyleFontBegin(string? fontName, int? fontSizeHalfPoints, DxpIDocumentContext d)
+	public override void StyleFontBegin(DxpFont font, DxpIDocumentContext d)
 	{
 		if (_config.EmitStyleFont == false)
 			return;
 
-		if (IsDefaultFont(fontName, fontSizeHalfPoints, d))
+		if (IsDefaultFont(font.fontName, font.fontSizeHalfPoints, d))
 		{
 			_state.FontSpanOpen = false;
 			return;
 		}
 
 		_state.FontSpanOpen = true;
-		Write(d, $"""<span style="font-family: {fontName}; font-size: {fontSizeHalfPoints / 2.0}pt;">""");
+		Write(d, $"""<span style="font-family: {font.fontName}; font-size: {font.fontSizeHalfPoints / 2.0}pt;">""");
 	}
 
 	public override void StyleFontEnd(DxpIDocumentContext d)
@@ -308,7 +308,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 	{
 		string? href = target?.uri;
 		Write(d, href != null ? $"<a href=\"{HtmlAttr(href)}\">" : "<a>");
-		return Disposable.Create(() => Write(d, "</a>"));
+		return DxpDisposable.Create(() => Write(d, "</a>"));
 	}
 
 	public string Escape(string name)
@@ -318,17 +318,17 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 
 	public override IDisposable VisitInsertedBegin(Inserted ins, DxpIDocumentContext d)
 	{
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public override IDisposable VisitDeletedBegin(Deleted del, DxpIDocumentContext d)
 	{
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public override IDisposable VisitDeletedRunBegin(DeletedRun dr, DxpIDocumentContext d)
 	{
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public override void VisitDeletedParagraphMark(Deleted del, ParagraphProperties pPr, Paragraph? p, DxpIDocumentContext d)
@@ -338,7 +338,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 
 	public override IDisposable VisitInsertedRunBegin(InsertedRun ir, DxpIDocumentContext d)
 	{
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public override void VisitDeletedText(DeletedText dt, DxpIDocumentContext d)
@@ -474,7 +474,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 
 		if (string.IsNullOrWhiteSpace(innerText))
 		{
-			return Disposable.Create(() => {
+			return DxpDisposable.Create(() => {
 				WriteLine(d);
 			});
 		}
@@ -507,7 +507,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 
 		if (!_config.EmitPageNumbers && styleChain.Any(sc => string.Equals(sc.StyleId, DxpWordBuiltInStyleId.wdStylePageNumber, StringComparison.OrdinalIgnoreCase)))
 		{
-			return Disposable.Empty;
+			return DxpDisposable.Empty;
 		}
 
 		bool isBlockQuote = styleChain.Any(sc =>
@@ -606,7 +606,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 			Write(d, "<figcaption>");
 		}
 
-		var baseDispose = Disposable.Create(() => {
+		var baseDispose = DxpDisposable.Create(() => {
 			if (_config.TrackedChangeMode == DxpTrackedChangeMode.InlineChanges)
 				SetInlineChangeMode(DxpMarkdownVisitorState.InlineChangeMode.Unchanged);
 
@@ -638,7 +638,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 				EmitSplitBuffersIfNeeded();
 		});
 
-		return Disposable.Create(() => {
+		return DxpDisposable.Create(() => {
 			baseDispose.Dispose();
 		});
 
@@ -652,11 +652,11 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 	public override IDisposable VisitSectionHeaderBegin(Header hdr, object kind, DxpIDocumentContext d)
 	{
 		if (_config.EmitSectionHeadersFooters == false)
-			return Disposable.Empty;
+			return DxpDisposable.Empty;
 
 		WriteLine(d, """<div class="header" style="border-bottom:1px solid #000;">""");
 
-		return Disposable.Create(() => {
+		return DxpDisposable.Create(() => {
 			WriteLine(d, "</div>");
 		});
 	}
@@ -665,7 +665,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 	{
 		WriteLine(d, """<div class="footer" style="border-top:1px solid #000;">""");
 
-		return Disposable.Create(() => {
+		return DxpDisposable.Create(() => {
 				WriteLine(d, "</div>");
 		});
 	}
@@ -686,7 +686,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 
 	public override IDisposable VisitComplexFieldResultBegin(DxpIDocumentContext d)
 	{
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public override void VisitComplexFieldCachedResultText(string text, DxpIDocumentContext d)
@@ -709,13 +709,13 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 		var instr = fld.Instruction?.Value;
 		if (instr != null)
 			EmitFieldInstruction(d, instr);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public override IDisposable VisitFootnoteBegin(Footnote fn, DxpIFootnoteContext footnote, DxpIDocumentContext d)
 	{
 		Write(d, $"""\n<div class="footnote" id="fn-{footnote.Id}">\n\n""");
-		return Disposable.Create(() => Write(d, "</div>\n"));
+		return DxpDisposable.Create(() => Write(d, "</div>\n"));
 	}
 
 	public override void VisitFootnoteReferenceMark(FootnoteReferenceMark m, DxpIFootnoteContext footnote, DxpIDocumentContext d)
@@ -747,7 +747,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 		if (!string.IsNullOrEmpty(currentStyle))
 			Write(d, $" style=\"{currentStyle}\"");
 		WriteLine(d, ">");
-		return Disposable.Create(() => {
+		return DxpDisposable.Create(() => {
 			WriteLine(d, "</table>");
 		});
 	}
@@ -760,14 +760,14 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 		if (mdTable != null)
 		{
 			mdTable.BeginRow(isHeader);
-			return Disposable.Create(() => mdTable.EndRow());
+			return DxpDisposable.Create(() => mdTable.EndRow());
 		}
 
 		if (isHeader)
 			WriteLine(d, "  <tr class=\"header-row\">");
 		else
 			WriteLine(d, "  <tr>");
-		return Disposable.Create(() => WriteLine(d, "  </tr>"));
+		return DxpDisposable.Create(() => WriteLine(d, "  </tr>"));
 	}
 
 	public override IDisposable VisitTableCellBegin(TableCell tc, DxpITableCellContext cell, DxpIDocumentContext d)
@@ -776,7 +776,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 		if (mdTable != null)
 		{
 			var cellWriter = new StringWriter();
-			return Disposable.Create(() => {
+			return DxpDisposable.Create(() => {
 				mdTable.AddCell(cellWriter.ToString());
 			});
 		}
@@ -800,7 +800,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 			Write(d, $" style=\"{effectiveCellStyle}\"");
 		Write(d, ">");
 
-		return Disposable.Create(() => {
+		return DxpDisposable.Create(() => {
 			WriteLine(d, "</td>");
 		});
 	}
@@ -897,7 +897,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 	public override IDisposable VisitBlockBegin(OpenXmlElement child, DxpIDocumentContext d)
 	{
 		// optional: do nothing
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public override IDisposable VisitCommentBegin(DxpCommentInfo c, DxpCommentThread thread, DxpIDocumentContext d)
@@ -907,7 +907,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 			var label = c.IsReply ? "REPLY BY" : "COMMENT BY";
 			var who = !string.IsNullOrEmpty(c.Author)
 				? c.Author!
-				: (!string.IsNullOrEmpty(c.Initials) ? c.Initials! : "Unknown");
+				: !string.IsNullOrEmpty(c.Initials) ? c.Initials! : "Unknown";
 			var when = c.DateUtc?.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss'Z'");
 
 			if (!string.IsNullOrEmpty(when))
@@ -917,7 +917,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 
 			WriteLine(d);
 
-			return Disposable.Create(() => {
+			return DxpDisposable.Create(() => {
 				WriteLine(d);
 			});
 		}
@@ -932,7 +932,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 			Write(d, $"""  <div class="comment" style="{commentStyle}">""");
 			WriteLine(d);
 
-			return Disposable.Create(() => {
+			return DxpDisposable.Create(() => {
 				WriteLine(d, "  </div>");
 				WriteLine(d);
 			});
@@ -942,7 +942,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 	public override IDisposable VisitCommentThreadBegin(string anchorId, DxpCommentThread thread, DxpIDocumentContext d)
 	{
 		if (thread.Comments == null || thread.Comments.Count == 0)
-			return Disposable.Empty;
+			return DxpDisposable.Empty;
 
 		if (_config.UsePlainComments)
 		{
@@ -953,7 +953,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 
 		Write(d, $"""<div class="comments" style="{commentsStyle}">""");
 
-		return Disposable.Create(() => {
+		return DxpDisposable.Create(() => {
 			WriteLine(d, "</div>");
 			WriteLine(d);
 		});
@@ -964,7 +964,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 		WriteLine(d, "<!--");
 		WriteLine(d);
 
-		return Disposable.Create(() => {
+		return DxpDisposable.Create(() => {
 			WriteLine(d, "-->");
 			WriteLine(d);
 		});
@@ -974,7 +974,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 	{
 		var who = !string.IsNullOrEmpty(c.Author)
 			? c.Author!
-			: (!string.IsNullOrEmpty(c.Initials) ? c.Initials! : "Unknown");
+			: !string.IsNullOrEmpty(c.Initials) ? c.Initials! : "Unknown";
 		var when = c.DateUtc?.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss'Z'") ?? string.Empty;
 
 		if (string.IsNullOrEmpty(who) && string.IsNullOrEmpty(when))
@@ -1004,10 +1004,10 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 		bool hasText = r.ChildElements.OfType<Text>().Any(t => !string.IsNullOrEmpty(t.Text));
 
 		if (string.IsNullOrEmpty(style) || !hasText)
-			return Disposable.Empty;
+			return DxpDisposable.Empty;
 
 		Write(d, $"<span style=\"{style}\">");
-		return Disposable.Create(() => Write(d, "</span>"));
+		return DxpDisposable.Create(() => Write(d, "</span>"));
 	}
 
 	private string BuildRunStyle(RunProperties? rp)
@@ -1165,7 +1165,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 
 	public override IDisposable VisitDocumentBodyBegin(Body body, DxpIDocumentContext d)
 	{
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	private double AdjustMarginLeft(double marginPt, DxpIDocumentContext d)
@@ -1194,7 +1194,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 	IDisposable DxpIVisitor.VisitDrawingBegin(Drawing drw, DxpDrawingInfo? info, DxpIDocumentContext d)
 	{
 		VisitDrawingBegin(drw, info, d);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public new void VisitLegacyPictureBegin(Picture pict, DxpIDocumentContext d)
@@ -1212,13 +1212,13 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 	IDisposable DxpIVisitor.VisitLegacyPictureBegin(Picture pict, DxpIDocumentContext d)
 	{
 		VisitLegacyPictureBegin(pict, d);
-		return Disposable.Empty;
+		return DxpDisposable.Empty;
 	}
 
 	public override IDisposable VisitSectionBodyBegin(SectionProperties properties, DxpIDocumentContext d)
 	{
 		if (!_config.EmitDocumentColors)
-			return Disposable.Empty;
+			return DxpDisposable.Empty;
 
 		var style = new StringBuilder("flex:1 0 auto;");
 
@@ -1228,7 +1228,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 
 		Write(d, $"""<div class="body" style="{style}">""" + "\n");
 
-		return Disposable.Create(() => {
+		return DxpDisposable.Create(() => {
 			WriteLine(d, "</div>");
 		});
 	}
@@ -1237,7 +1237,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 	{
 
 		if (!_config.EmitDocumentColors)
-			return Disposable.Empty;
+			return DxpDisposable.Empty;
 
 		if (_state.IsFirstSection)
 		{
@@ -1291,7 +1291,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 
 		Write(d, $"""<div class="section" style="{style}">""" + "\n");
 
-		return Disposable.Create(() => {
+		return DxpDisposable.Create(() => {
 			WriteLine(d, "</div>");
 		});
 	}

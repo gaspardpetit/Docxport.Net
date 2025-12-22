@@ -6,3 +6,4 @@ public sealed record DxpTableModel(
 	IReadOnlyList<int?> GridColTwips, // from tblGrid if present
 	DxpCellModel?[,] Cells               // rectangular matrix
 );
+

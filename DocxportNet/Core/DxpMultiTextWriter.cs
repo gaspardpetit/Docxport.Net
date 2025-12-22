@@ -1,20 +1,20 @@
 using System.Text;
 
-namespace DocxportNet.Visitors;
+namespace DocxportNet.Core;
 
-public sealed class MultiTextWriter : TextWriter
+public sealed class DxpMultiTextWriter : TextWriter
 {
 	private readonly TextWriter[] _writers;
 	private readonly bool _leaveOpen;
 	private readonly object _lock = new();
 
-	public MultiTextWriter(bool leaveOpen, params TextWriter[] writers)
+	public DxpMultiTextWriter(bool leaveOpen, params TextWriter[] writers)
 	{
 		_leaveOpen = leaveOpen;
 		_writers = Normalize(writers);
 	}
 
-	public MultiTextWriter(params TextWriter[] writers) : this(leaveOpen: false, writers) { }
+	public DxpMultiTextWriter(params TextWriter[] writers) : this(leaveOpen: false, writers) { }
 
 	private static TextWriter[] Normalize(TextWriter[] writers)
 	{

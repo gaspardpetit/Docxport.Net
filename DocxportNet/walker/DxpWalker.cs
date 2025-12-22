@@ -672,7 +672,7 @@ public class DxpWalker
 			? d.PushChangeScope(keepAccept: false, keepReject: true, changeInfo: ResolveChangeInfo(deletedParagraph!, d))
 			: isInsertedParagraph
 				? d.PushChangeScope(keepAccept: true, keepReject: false, changeInfo: ResolveChangeInfo(insertedParagraph!, d))
-				: Disposable.Empty;
+				: DxpDisposable.Empty;
 
 		using (paragraphChangeScope)
 		using (d.PushParagraph(p, out DxpParagraphContext paragraphContext, advanceAccept: !isDeletedParagraph, advanceReject: !isInsertedParagraph))
