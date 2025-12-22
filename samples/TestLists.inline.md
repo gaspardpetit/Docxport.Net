@@ -224,17 +224,17 @@ i) Multi level (i)
 
 3:  Original 3
 
-<span style="color:red;text-decoration:line-through;">4:</span> <span style="color:red;text-decoration:line-through;"> Deleted 4</span>
+<del style="color:red;">4:  Deleted 4</del><del style="color:red;">
 
-<span style="color:blue;text-decoration:underline;">4:</span> <span style="color:blue;text-decoration:underline;"> Added 5</span>
+</del><u style="color:blue;">4:  Added 5</u><u style="color:blue;">
 
-5:  Original 6
+</u>5:  Original 6
 
-<span style="color:blue;text-decoration:underline;">6:</span> <span style="color:blue;text-decoration:underline;"> Added 7</span>
+<u style="color:blue;">6:  Added 7</u><u style="color:blue;">
 
-<span style="color:red;text-decoration:line-through;">6:</span> <span style="color:red;text-decoration:line-through;"> Delete 8</span>
+</u><del style="color:red;">6:  Delete 8</del><del style="color:red;">
 
-7:  Original 9
+</del>7:  Original 9
 
 </div>
 </div>

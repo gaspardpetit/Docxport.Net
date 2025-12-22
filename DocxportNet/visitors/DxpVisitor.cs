@@ -421,6 +421,11 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 		return Disposable.Empty;
 	}
 
+	public virtual void VisitComplexFieldCachedResultText(string text, DxpIDocumentContext d)
+	{
+		Ignored("IDocxVisitor.VisitComplexFieldCachedResultText");
+	}
+
 	public virtual void VisitComplexFieldEnd(FieldChar end, DxpIDocumentContext d)
 	{
 		Ignored("IDocxVisitor.VisitComplexFieldEnd", end);
@@ -450,12 +455,12 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 		return Disposable.Empty;
 	}
 
-	public virtual void VisitDocumentProperties(IPackageProperties core, IReadOnlyList<CustomFileProperty> custom, IReadOnlyList<DxpTimelineEvent> timeline)
+	public virtual void VisitDocumentProperties(IPackageProperties core, IReadOnlyList<CustomFileProperty> custom, IReadOnlyList<DxpTimelineEvent> timeline, DxpIDocumentContext d)
 	{
 		Ignored("IDocxVisitor.VisitDocumentProperties", core);
 	}
 
-	public virtual void VisitBibliographySources(CustomXmlPart bibliographyPart, XDocument bib)
+	public virtual void VisitBibliographySources(CustomXmlPart bibliographyPart, XDocument bib, DxpIDocumentContext d)
 	{
 		Ignored("IDocxVisitor.VisitBibliographySources", bibliographyPart);
 	}

@@ -30,3 +30,12 @@ no marker level 1
 3\. Item 3
 
 4\. Item 4
+
+<div class="footer" style="border-top:1px solid #000;">
+
+
+`PAGE   \* MERGEFORMAT`
+
+
+
+</div>

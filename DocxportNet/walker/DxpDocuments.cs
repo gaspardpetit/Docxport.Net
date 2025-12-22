@@ -8,6 +8,8 @@ namespace DocxportNet.Walker;
 
 public class DxpDocumentContext : DxpIDocumentContext
 {
+	private sealed record DxpEditState(bool KeepAccept, bool KeepReject, DxpChangeInfo ChangeInfo);
+
 	public DxpFieldFrameContext CurrentFields { get; }
 	public MainDocumentPart? MainDocumentPart { get; internal set; }
 	public DxpStyleTracker StyleTracker { get; } = new DxpStyleTracker();
@@ -27,6 +29,11 @@ public class DxpDocumentContext : DxpIDocumentContext
 	public IReadOnlyList<CustomFileProperty>? CustomProperties { get; internal set; }
 	public IReadOnlyList<DxpTimelineEvent> Timeline { get; internal set; } = Array.Empty<DxpTimelineEvent>();
 	public OpenXmlPart? CurrentPart { get; internal set; }
+	private readonly DxpEditState _defaultEditState;
+	private readonly Stack<DxpEditState> _editStateStack = new();
+	public bool KeepAccept => (_editStateStack.Count == 0 ? _defaultEditState : _editStateStack.Peek()).KeepAccept;
+	public bool KeepReject => (_editStateStack.Count == 0 ? _defaultEditState : _editStateStack.Peek()).KeepReject;
+	public DxpChangeInfo CurrentChangeInfo => (_editStateStack.Count == 0 ? _defaultEditState : _editStateStack.Peek()).ChangeInfo;
 	public DxpParagraphContext CurrentParagraph { get; internal set; } = DxpParagraphContext.INVALID;
 	DxpIParagraphContext DxpIDocumentContext.CurrentParagraph => CurrentParagraph;
 	public DxpRubyContext? CurrentRuby { get; internal set; }
@@ -40,24 +47,36 @@ public class DxpDocumentContext : DxpIDocumentContext
 	public DxpRunContext? CurrentRun { get; internal set; }
 	DxpIRunContext? DxpIDocumentContext.CurrentRun => CurrentRun;
 	public DxpFootnoteContext CurrentFootnote { get; internal set; } = DxpFootnoteContext.INVALID;
-	public DxpSectionContext CurrentSection { get; private set; }
+	public DxpSectionContext CurrentSection { get; private set; } = DxpSectionContext.INVALID;
 	DxpISectionContext DxpIDocumentContext.CurrentSection => CurrentSection;
 
 	public DxpDocumentContext(WordprocessingDocument doc)
 	{
 		CurrentFields = new();
 		ReferencedBookmarkAnchors = CollectReferencedAnchors(doc);
-		Footnotes.Init(doc.MainDocumentPart);
-		Endnotes.Init(doc.MainDocumentPart);
-		Comments.Init(doc.MainDocumentPart);
+		var mainPart = doc.MainDocumentPart;
+		if (mainPart != null)
+		{
+			MainDocumentPart = mainPart;
+			Footnotes.Init(mainPart);
+			Endnotes.Init(mainPart);
+			Comments.Init(mainPart);
+			Background = mainPart.Document?.DocumentBackground;
+		}
+		else
+		{
+			Comments.Init(null);
+		}
 		AcceptLists.Init(doc);
 		RejectLists.Init(doc);
 		Styles = new DxpStyleResolver(doc);
 		DefaultRunStyle = Styles.GetDefaultRunStyle();
 
 		CoreProperties = doc.PackageProperties;
-
-		Background = doc.MainDocumentPart.Document?.DocumentBackground;
+		_defaultEditState = new DxpEditState(
+			KeepAccept: true,
+			KeepReject: true,
+			ChangeInfo: new DxpChangeInfo(CoreProperties?.LastModifiedBy, CoreProperties?.Modified));
 	}
 
 	public DxpParagraphContext CreateParagraphContext(Paragraph p, bool advanceAccept = true, bool advanceReject = true)
@@ -234,5 +253,11 @@ public class DxpDocumentContext : DxpIDocumentContext
 		if (part != null)
 			CurrentPart = part;
 		return Disposable.Create(() => CurrentPart = previous);
+	}
+
+	public IDisposable PushChangeScope(bool keepAccept, bool keepReject, DxpChangeInfo changeInfo)
+	{
+		_editStateStack.Push(new DxpEditState(keepAccept, keepReject, changeInfo));
+		return Disposable.Create(() => _editStateStack.Pop());
 	}
 }
