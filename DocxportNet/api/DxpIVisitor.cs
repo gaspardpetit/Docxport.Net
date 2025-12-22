@@ -1,3 +1,4 @@
+using System.IO;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Office2010.Word;
 using DocumentFormat.OpenXml.Packaging;
@@ -227,6 +228,9 @@ public interface DxpIStyleVisitor
 
 public interface DxpIVisitor : DxpIStyleVisitor, DxpIFieldVisitor
 {
+	// Assign a binary sink (e.g., a Stream) when the visitor produces bytes.
+	void SetOutput(Stream stream);
+
 	bool AcceptAlternateContentChoice(AlternateContentChoice choice, IReadOnlyList<string> required, DxpIDocumentContext d);
 	IDisposable VisitAlternateContentBegin(AlternateContent ac, DxpIDocumentContext d);
 	void VisitAltChunk(AltChunk ac, DxpIDocumentContext d);
@@ -353,4 +357,10 @@ public interface DxpIVisitor : DxpIStyleVisitor, DxpIFieldVisitor
 	void VisitUnknown(string context, OpenXmlElement el, DxpIDocumentContext d);
 	void VisitYearLong(YearLong yl, DxpIDocumentContext d);
 	void VisitYearShort(YearShort ys, DxpIDocumentContext d);
+}
+
+public interface DxpITextVisitor : DxpIVisitor
+{
+	// Assign a text sink; common for Markdown/HTML/plain text visitors.
+	void SetOutput(TextWriter writer);
 }
