@@ -27,7 +27,6 @@ public class DxpDocumentContext : DxpIDocumentContext
 	public Settings? DocumentSettings { get; internal set; }
 	public IPackageProperties? CoreProperties { get; internal set; }
 	public IReadOnlyList<CustomFileProperty>? CustomProperties { get; internal set; }
-	public IReadOnlyList<DxpTimelineEvent> Timeline { get; internal set; } = Array.Empty<DxpTimelineEvent>();
 	public OpenXmlPart? CurrentPart { get; internal set; }
 	private readonly DxpEditState _defaultEditState;
 	private readonly Stack<DxpEditState> _editStateStack = new();
@@ -50,9 +49,12 @@ public class DxpDocumentContext : DxpIDocumentContext
 	public DxpSectionContext CurrentSection { get; private set; } = DxpSectionContext.INVALID;
 	DxpISectionContext DxpIDocumentContext.CurrentSection => CurrentSection;
 
+	public DxpDocumentProperties DocumentProperties { get; internal set; }
+
 	public DxpDocumentContext(WordprocessingDocument doc)
 	{
 		CurrentFields = new();
+		DocumentProperties = new(null, null, null);
 		ReferencedBookmarkAnchors = CollectReferencedAnchors(doc);
 		var mainPart = doc.MainDocumentPart;
 		if (mainPart != null)

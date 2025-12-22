@@ -21,8 +21,15 @@ public static class DxpExport
 	{
 		using var writer = new StringWriter();
 		visitor.SetOutput(writer);
-		RunWalker(docxPath, visitor, logger);
-		return writer.ToString();
+		try
+		{
+			RunWalker(docxPath, visitor, logger);
+			return writer.ToString();
+		}
+		finally
+		{
+			DisposeVisitor(visitor);
+		}
 	}
 
 	/// <summary>
@@ -31,7 +38,14 @@ public static class DxpExport
 	public static void Export(string docxPath, DxpIVisitor visitor, ILogger? logger = null)
 	{
 		visitor.SetOutput(Stream.Null);
-		RunWalker(docxPath, visitor, logger);
+		try
+		{
+			RunWalker(docxPath, visitor, logger);
+		}
+		finally
+		{
+			DisposeVisitor(visitor);
+		}
 	}
 
 	/// <summary>
@@ -42,8 +56,15 @@ public static class DxpExport
 	{
 		using var writer = new StringWriter();
 		visitor.SetOutput(writer);
-		RunWalker(document, visitor, logger);
-		return writer.ToString();
+		try
+		{
+			RunWalker(document, visitor, logger);
+			return writer.ToString();
+		}
+		finally
+		{
+			DisposeVisitor(visitor);
+		}
 	}
 
 	/// <summary>
@@ -63,8 +84,15 @@ public static class DxpExport
 	{
 		using var ms = new MemoryStream();
 		visitor.SetOutput(ms);
-		RunWalker(docxPath, visitor, logger);
-		return ms.ToArray();
+		try
+		{
+			RunWalker(docxPath, visitor, logger);
+			return ms.ToArray();
+		}
+		finally
+		{
+			DisposeVisitor(visitor);
+		}
 	}
 
 	/// <summary>
@@ -74,8 +102,15 @@ public static class DxpExport
 	{
 		using var ms = new MemoryStream();
 		visitor.SetOutput(ms);
-		RunWalker(document, visitor, logger);
-		return ms.ToArray();
+		try
+		{
+			RunWalker(document, visitor, logger);
+			return ms.ToArray();
+		}
+		finally
+		{
+			DisposeVisitor(visitor);
+		}
 	}
 
 	/// <summary>
@@ -97,9 +132,16 @@ public static class DxpExport
 
 		using var fileStream = File.Create(outputPath);
 		visitor.SetOutput(fileStream);
-		RunWalker(docxPath, visitor, logger);
-		fileStream.Flush();
-		return outputPath;
+		try
+		{
+			RunWalker(docxPath, visitor, logger);
+			fileStream.Flush();
+			return outputPath;
+		}
+		finally
+		{
+			DisposeVisitor(visitor);
+		}
 	}
 
 	/// <summary>
@@ -122,9 +164,16 @@ public static class DxpExport
 
 		using var fileStream = File.Create(outputPath);
 		visitor.SetOutput(fileStream);
-		RunWalker(document, visitor, logger);
-		fileStream.Flush();
-		return outputPath;
+		try
+		{
+			RunWalker(document, visitor, logger);
+			fileStream.Flush();
+			return outputPath;
+		}
+		finally
+		{
+			DisposeVisitor(visitor);
+		}
 	}
 
 	private static void CreateParentDirectory(string path)
@@ -144,5 +193,11 @@ public static class DxpExport
 	{
 		var walker = new DxpWalker(logger);
 		walker.Accept(document, visitor);
+	}
+
+	private static void DisposeVisitor(DxpIVisitor visitor)
+	{
+		if (visitor is IDisposable disposable)
+			disposable.Dispose();
 	}
 }

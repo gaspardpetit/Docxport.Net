@@ -395,7 +395,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor
 		}
 	}
 
-	public override void VisitDocumentProperties(IPackageProperties core, IReadOnlyList<CustomFileProperty> custom, IReadOnlyList<DxpTimelineEvent> timeline, DxpIDocumentContext d)
+	public override IDisposable VisitDocumentBegin(WordprocessingDocument doc, DxpIDocumentContext d)
 	{
 		var lines = new List<string>();
 
@@ -404,6 +404,8 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor
 			if (!string.IsNullOrWhiteSpace(value))
 				lines.Add($"<!-- {label}: {value} -->");
 		}
+
+		IPackageProperties core = d.DocumentProperties.core;
 
 		Add("Title", core.Title);
 		Add("Subject", core.Subject);
@@ -416,6 +418,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor
 		Add("Created", FormatDateUtc(core.Created));
 		Add("Modified", FormatDateUtc(core.Modified));
 
+		IReadOnlyList<DxpTimelineEvent>? timeline = d.DocumentProperties.Timeline;
 		if (_config.EmitTimeline && _config.RichTables == false && timeline != null && timeline.Count > 0)
 		{
 			foreach (var ev in timeline)
@@ -427,6 +430,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor
 			}
 		}
 
+		IReadOnlyList<CustomFileProperty> custom = d.DocumentProperties.custom;
 		if (custom != null && _config.EmitCustomProperties)
 		{
 			foreach (var prop in custom)
@@ -456,6 +460,8 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor
 			}
 			WriteLine(d);
 		}
+
+		return DxpDisposable.Empty;
 	}
 
 
@@ -731,8 +737,8 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor
 
 	public override IDisposable VisitFootnoteBegin(Footnote fn, DxpIFootnoteContext footnote, DxpIDocumentContext d)
 	{
-		Write(d, $"""\n<div class="footnote" id="fn-{footnote.Id}">\n\n""");
-		return DxpDisposable.Create(() => Write(d, "</div>\n"));
+		WriteLine(d, $"""<div class="footnote" id="fn-{footnote.Id}">""");
+		return DxpDisposable.Create(() => WriteLine(d, "</div>"));
 	}
 
 	public override void VisitFootnoteReferenceMark(FootnoteReferenceMark m, DxpIFootnoteContext footnote, DxpIDocumentContext d)
