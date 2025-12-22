@@ -113,6 +113,8 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 	{
 		_config = config;
 		_sinkWriter = writer;
+		_rejectBufferedWriter = new BufferedTextWriter();
+		_acceptBufferedWriter = new BufferedTextWriter();
 
 		ConfigureWriters();
 	}
@@ -455,6 +457,13 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 
 	public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
 	{
+		if (_config.TrackedChangeMode == DxpTrackedChangeMode.SplitChanges)
+		{
+			EmitSplitBuffersIfNeeded();
+			_rejectBufferedWriter.Clear();
+			_acceptBufferedWriter.Clear();
+		}
+
 		var marker =
 			d.KeepAccept
 			? paragraph.MarkerAccept
@@ -624,6 +633,9 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 			int newlines = 2;
 			for (int i = 0; i < newlines; i++)
 				WriteLine(d);
+
+			if (_config.TrackedChangeMode == DxpTrackedChangeMode.SplitChanges)
+				EmitSplitBuffersIfNeeded();
 		});
 
 		return Disposable.Create(() => {
@@ -1371,6 +1383,33 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 			WriteRouted(DxpMarkdownVisitorState.InlineChangeMode.Unchanged, InlineDeletedTag());
 
 		_state.CurrentInlineMode = mode;
+	}
+
+	private void EmitSplitBuffersIfNeeded()
+	{
+		var rejected = _rejectBufferedWriter.Drain();
+		var accepted = _acceptBufferedWriter.Drain();
+
+		if (string.IsNullOrEmpty(rejected) && string.IsNullOrEmpty(accepted))
+			return;
+
+		if (string.Equals(rejected, accepted, StringComparison.Ordinal))
+		{
+			_sinkWriter.Write(rejected);
+		}
+		else
+		{
+			const string border = "1px solid #ccc";
+			_sinkWriter.Write($"<table style=\"width:100%;border-collapse:collapse;border:{border};\">");
+			_sinkWriter.Write("<tr>");
+			_sinkWriter.Write($"<td style=\"width:50%;vertical-align:top;padding:8px;border:{border};\">");
+			_sinkWriter.Write(rejected);
+			_sinkWriter.Write("</td>");
+			_sinkWriter.Write($"<td style=\"width:50%;vertical-align:top;padding:8px;border:{border};\">");
+			_sinkWriter.Write(accepted);
+			_sinkWriter.Write("</td>");
+			_sinkWriter.Write("</tr></table>");
+		}
 	}
 
 	private string InlineInsertedTag()

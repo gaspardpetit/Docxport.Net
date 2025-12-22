@@ -79,10 +79,25 @@ public class MarkdownExportTests
 
 	[Theory]
 	[MemberData(nameof(SampleDocs))]
+	public void TestDocxToMarkdown_Rich_Split(Sample sample)
+	{
+		VerifyVariant(sample, DxpMarkdownVisitorConfig.RICH, ".split.test.md", DxpTrackedChangeMode.SplitChanges);
+	}
+
+	[Theory]
+	[MemberData(nameof(SampleDocs))]
 	public void TestDocxToMarkdown_Plain_Reject(Sample sample)
 	{
 		VerifyVariant(sample, DxpMarkdownVisitorConfig.PLAIN, ".plain.reject.test.md", DxpTrackedChangeMode.RejectChanges);
 	}
+
+	[Theory]
+	[MemberData(nameof(SampleDocs))]
+	public void TestDocxToMarkdown_Plain_Split(Sample sample)
+	{
+		VerifyVariant(sample, DxpMarkdownVisitorConfig.PLAIN, ".plain.split.test.md", DxpTrackedChangeMode.SplitChanges);
+	}
+
 
 	[Theory]
 	[MemberData(nameof(SampleDocs))]
