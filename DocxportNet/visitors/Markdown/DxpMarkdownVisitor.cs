@@ -7,10 +7,9 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using DocxportNet.Word;
 using System.Text;
-using DocxportNet.Visitors;
 using DocxportNet.Core;
 
-namespace DocxportNet.Markdown;
+namespace DocxportNet.Visitors.Markdown;
 
 
 /// <summary>
@@ -26,7 +25,6 @@ internal sealed class DxpMarkdownVisitorState
 		Deleted
 	}
 
-	public DxpContextStack<DxpMarkdownTableBuilder> MarkdownTables { get; } = new DxpContextStack<DxpMarkdownTableBuilder>("markdown-table");
 	public bool InHeading { get; set; }
 	public bool FontSpanOpen { get; set; }
 	public bool AllCaps { get; set; }
@@ -731,16 +729,6 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 			? BuildTableStyle(table.Properties)
 			: (null, null);
 
-		//if (!_config.RichTables)
-		//{
-		//	var mdTable = new MarkdownTableBuilder();
-		//	var mdScope = _state.MarkdownTables.Push(mdTable);
-		//	return Disposable.Create(() => {
-		//		mdTable.Render(_sinkWriter);
-		//		mdScope.Dispose();
-		//	});
-		//}
-
 		var currentStyle = styles.tableStyle;
 
 		Write(d, "<table");
@@ -756,13 +744,6 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 	{
 		var isHeader = row.IsHeader;
 
-		var mdTable = _state.MarkdownTables.Current;
-		if (mdTable != null)
-		{
-			mdTable.BeginRow(isHeader);
-			return DxpDisposable.Create(() => mdTable.EndRow());
-		}
-
 		if (isHeader)
 			WriteLine(d, "  <tr class=\"header-row\">");
 		else
@@ -772,15 +753,6 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpIVisitor
 
 	public override IDisposable VisitTableCellBegin(TableCell tc, DxpITableCellContext cell, DxpIDocumentContext d)
 	{
-		var mdTable = _state.MarkdownTables.Current;
-		if (mdTable != null)
-		{
-			var cellWriter = new StringWriter();
-			return DxpDisposable.Create(() => {
-				mdTable.AddCell(cellWriter.ToString());
-			});
-		}
-
 		var spans = (cell.RowSpan, cell.ColSpan);
 		var cellBorders = cell.Properties?.TableCellBorders;
 		var cellStyle = _config.EmitTableBorders ? BuildCellStyle(cellBorders) : null;
