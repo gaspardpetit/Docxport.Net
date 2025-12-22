@@ -405,20 +405,22 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor
 				lines.Add($"<!-- {label}: {value} -->");
 		}
 
-		IPackageProperties core = d.DocumentProperties.core;
+		IPackageProperties? core = d.DocumentProperties.PackageProperties;
+		if (core != null)
+		{
+			Add("Title", core.Title);
+			Add("Subject", core.Subject);
+			Add("Author", core.Creator);
+			Add("Description", core.Description);
+			Add("Category", core.Category);
+			Add("Keywords", core.Keywords);
+			Add("LastModifiedBy", core.LastModifiedBy);
+			Add("Revision", core.Revision);
+			Add("Created", FormatDateUtc(core.Created));
+			Add("Modified", FormatDateUtc(core.Modified));
+		}
 
-		Add("Title", core.Title);
-		Add("Subject", core.Subject);
-		Add("Author", core.Creator);
-		Add("Description", core.Description);
-		Add("Category", core.Category);
-		Add("Keywords", core.Keywords);
-		Add("LastModifiedBy", core.LastModifiedBy);
-		Add("Revision", core.Revision);
-		Add("Created", FormatDateUtc(core.Created));
-		Add("Modified", FormatDateUtc(core.Modified));
-
-		IReadOnlyList<DxpTimelineEvent>? timeline = d.DocumentProperties.Timeline;
+		IReadOnlyList<DxpTimelineEvent>? timeline = d.DocumentProperties.TimelineEvents;
 		if (_config.EmitTimeline && _config.RichTables == false && timeline != null && timeline.Count > 0)
 		{
 			foreach (var ev in timeline)
@@ -430,13 +432,13 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor
 			}
 		}
 
-		IReadOnlyList<CustomFileProperty> custom = d.DocumentProperties.custom;
+		IReadOnlyList<CustomFileProperty>? custom = d.DocumentProperties.CustomFileProperties;
 		if (custom != null && _config.EmitCustomProperties)
 		{
 			foreach (var prop in custom)
 			{
 				if (prop.Value != null)
-				lines.Add($"<!-- {prop.Name}: {prop.Value} -->");
+					lines.Add($"<!-- {prop.Name}: {prop.Value} -->");
 			}
 		}
 

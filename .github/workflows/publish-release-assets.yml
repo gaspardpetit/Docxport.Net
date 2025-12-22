@@ -60,8 +60,8 @@ jobs:
         run: |
           $archive = "docxport-cli-${{ matrix.runtime }}.zip"
           $source = "artifacts/cli/${{ matrix.runtime }}"
-          Compress-Archive -Path "$source\*" -DestinationPath "artifacts\$archive"
-          "path=${{ github.workspace }}\artifacts\$archive" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          Compress-Archive -Path "$source\*" -DestinationPath "artifacts/$archive"
+          "path=${{ github.workspace }}/artifacts/$archive" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

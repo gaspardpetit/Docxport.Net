@@ -130,9 +130,9 @@ public interface DxpIRunContext
 }
 
 public record DxpDocumentProperties(
-	IPackageProperties? core,
-	IReadOnlyList<CustomFileProperty>? custom,
-	IReadOnlyList<DxpTimelineEvent>? Timeline
+	IPackageProperties? PackageProperties,
+	IReadOnlyList<CustomFileProperty>? CustomFileProperties,
+	IReadOnlyList<DxpTimelineEvent>? TimelineEvents
 );
 
 public interface DxpIDocumentContext
