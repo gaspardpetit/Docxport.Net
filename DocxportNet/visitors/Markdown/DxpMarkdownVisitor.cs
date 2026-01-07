@@ -72,8 +72,8 @@ public sealed record DxpMarkdownVisitorConfig
 	public bool EmitTimeline = false;
 	public DxpTrackedChangeMode TrackedChangeMode = DxpTrackedChangeMode.InlineChanges;
 
-	public static DxpMarkdownVisitorConfig RICH = new();
-	public static DxpMarkdownVisitorConfig PLAIN = new() {
+	public static DxpMarkdownVisitorConfig CreateRichConfig() => new();
+	public static DxpMarkdownVisitorConfig CreatePlainConfig() => new() {
 		EmitImages = false,
 		EmitStyleFont = false,
 		EmitRunColor = false,
@@ -93,7 +93,7 @@ public sealed record DxpMarkdownVisitorConfig
 		EmitTimeline = false
 	};
 
-	public static DxpMarkdownVisitorConfig DEFAULT = RICH;
+	public static DxpMarkdownVisitorConfig CreateConfig() => CreateRichConfig();
 }
 
 

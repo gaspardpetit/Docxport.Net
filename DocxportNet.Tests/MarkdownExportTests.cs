@@ -53,49 +53,49 @@ public class MarkdownExportTests
 	[MemberData(nameof(SampleDocs))]
 	public void TestDocxToMarkdown_Rich(Sample sample)
 	{
-		VerifyAgainstFixture(sample, DxpMarkdownVisitorConfig.RICH, ".md", ".test.md");
+		VerifyAgainstFixture(sample, DxpMarkdownVisitorConfig.CreateRichConfig(), ".md", ".test.md");
 	}
 
 	[Theory]
 	[MemberData(nameof(SampleDocs))]
 	public void TestDocxToMarkdown_Plain(Sample sample)
 	{
-		VerifyAgainstFixture(sample, DxpMarkdownVisitorConfig.PLAIN, ".plain.md", ".plain.test.md");
+		VerifyAgainstFixture(sample, DxpMarkdownVisitorConfig.CreatePlainConfig(), ".plain.md", ".plain.test.md");
 	}
 
 	[Theory]
 	[MemberData(nameof(SampleDocs))]
 	public void TestDocxToMarkdown_Rich_Reject(Sample sample)
 	{
-		VerifyVariant(sample, DxpMarkdownVisitorConfig.RICH, ".reject.test.md", DxpTrackedChangeMode.RejectChanges);
+		VerifyVariant(sample, DxpMarkdownVisitorConfig.CreateRichConfig(), ".reject.test.md", DxpTrackedChangeMode.RejectChanges);
 	}
 
 	[Theory]
 	[MemberData(nameof(SampleDocs))]
 	public void TestDocxToMarkdown_Rich_Inline(Sample sample)
 	{
-		VerifyVariant(sample, DxpMarkdownVisitorConfig.RICH, ".inline.test.md", DxpTrackedChangeMode.InlineChanges);
+		VerifyVariant(sample, DxpMarkdownVisitorConfig.CreateRichConfig(), ".inline.test.md", DxpTrackedChangeMode.InlineChanges);
 	}
 
 	[Theory]
 	[MemberData(nameof(SampleDocs))]
 	public void TestDocxToMarkdown_Rich_Split(Sample sample)
 	{
-		VerifyVariant(sample, DxpMarkdownVisitorConfig.RICH, ".split.test.md", DxpTrackedChangeMode.SplitChanges);
+		VerifyVariant(sample, DxpMarkdownVisitorConfig.CreateRichConfig(), ".split.test.md", DxpTrackedChangeMode.SplitChanges);
 	}
 
 	[Theory]
 	[MemberData(nameof(SampleDocs))]
 	public void TestDocxToMarkdown_Plain_Reject(Sample sample)
 	{
-		VerifyVariant(sample, DxpMarkdownVisitorConfig.PLAIN, ".plain.reject.test.md", DxpTrackedChangeMode.RejectChanges);
+		VerifyVariant(sample, DxpMarkdownVisitorConfig.CreatePlainConfig(), ".plain.reject.test.md", DxpTrackedChangeMode.RejectChanges);
 	}
 
 	[Theory]
 	[MemberData(nameof(SampleDocs))]
 	public void TestDocxToMarkdown_Plain_Split(Sample sample)
 	{
-		VerifyVariant(sample, DxpMarkdownVisitorConfig.PLAIN, ".plain.split.test.md", DxpTrackedChangeMode.SplitChanges);
+		VerifyVariant(sample, DxpMarkdownVisitorConfig.CreatePlainConfig(), ".plain.split.test.md", DxpTrackedChangeMode.SplitChanges);
 	}
 
 
@@ -103,7 +103,7 @@ public class MarkdownExportTests
 	[MemberData(nameof(SampleDocs))]
 	public void TestDocxToMarkdown_Plain_Inline(Sample sample)
 	{
-		VerifyVariant(sample, DxpMarkdownVisitorConfig.PLAIN, ".plain.inline.test.md", DxpTrackedChangeMode.InlineChanges);
+		VerifyVariant(sample, DxpMarkdownVisitorConfig.CreatePlainConfig(), ".plain.inline.test.md", DxpTrackedChangeMode.InlineChanges);
 	}
 
 	private void VerifyAgainstFixture(Sample sample, DxpMarkdownVisitorConfig config, string expectedExt, string actualSuffix)
