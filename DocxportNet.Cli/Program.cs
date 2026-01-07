@@ -72,7 +72,7 @@ switch (format.ToLowerInvariant())
 
 static void ExportMarkdown(string inputPath, string? outputPath, DxpTrackedChangeMode trackedMode, bool plainMarkdown)
 {
-	var config = plainMarkdown ? DxpMarkdownVisitorConfig.PLAIN : DxpMarkdownVisitorConfig.RICH;
+	var config = plainMarkdown ? DxpMarkdownVisitorConfig.CreatePlainConfig(): DxpMarkdownVisitorConfig.CreateRichConfig();
 	config = config with { TrackedChangeMode = trackedMode };
 
 	string output = outputPath ?? Path.ChangeExtension(inputPath, plainMarkdown ? ".plain.md" : ".md");
