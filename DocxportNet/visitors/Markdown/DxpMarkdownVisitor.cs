@@ -97,9 +97,10 @@ public sealed record DxpMarkdownVisitorConfig
 }
 
 
-public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor
+public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposable
 {
 	private TextWriter _sinkWriter;
+	private StreamWriter? _ownedStreamWriter;
 	private DxpBufferedTextWriter _rejectBufferedWriter;
 	private DxpBufferedTextWriter _acceptBufferedWriter;
 
@@ -123,6 +124,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor
 
 	public void SetOutput(TextWriter writer)
 	{
+		ReleaseOwnedWriter();
 		_sinkWriter = writer ?? throw new ArgumentNullException(nameof(writer));
 		_rejectBufferedWriter = new DxpBufferedTextWriter();
 		_acceptBufferedWriter = new DxpBufferedTextWriter();
@@ -132,9 +134,26 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor
 
 	public override void SetOutput(Stream stream)
 	{
-		var writer = new StreamWriter(stream, Encoding.UTF8, bufferSize: 1024, leaveOpen: true);
+		ReleaseOwnedWriter();
+		_ownedStreamWriter = new StreamWriter(stream, Encoding.UTF8, bufferSize: 1024, leaveOpen: true)
+		{
+			AutoFlush = true
+		};
+		var writer = _ownedStreamWriter;
 		SetOutput(writer);
 	}
+
+	private void ReleaseOwnedWriter()
+	{
+		if (_ownedStreamWriter == null)
+			return;
+
+		_ownedStreamWriter.Flush();
+		_ownedStreamWriter.Dispose();
+		_ownedStreamWriter = null;
+	}
+
+	public void Dispose() => ReleaseOwnedWriter();
 
 	private void ConfigureWriters()
 	{

@@ -51,7 +51,12 @@ public class DxpSections
 		var sections = new List<SectionSlice>();
 		var sectPrs = body.Descendants<SectionProperties>().ToList();
 		if (sectPrs.Count == 0)
+		{
+			// Some minimal/hand-crafted DOCX packages omit a final w:sectPr.
+			// Word treats such documents as having an implicit default section.
+			sections.Add(new SectionSlice(new SectionProperties(), body.ChildElements.ToList()));
 			return sections;
+		}
 
 		int sectIndex = 0;
 		var currentSectPr = sectPrs[sectIndex];
@@ -78,6 +83,8 @@ public class DxpSections
 
 		if (currentBlocks.Count > 0 && currentSectPr != null)
 			sections.Add(new SectionSlice(currentSectPr, currentBlocks));
+		else if (currentBlocks.Count > 0)
+			sections.Add(new SectionSlice(sectPrs.LastOrDefault() ?? new SectionProperties(), currentBlocks));
 
 		return sections;
 	}
@@ -136,5 +143,3 @@ public class DxpSections
 		};
 	}
 }
-
-

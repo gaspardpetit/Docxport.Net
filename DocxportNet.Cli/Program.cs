@@ -83,7 +83,7 @@ static void ExportMarkdown(string inputPath, string? outputPath, DxpTrackedChang
 
 static void ExportHtml(string inputPath, string? outputPath, DxpTrackedChangeMode trackedMode)
 {
-	var config = DxpHtmlVisitorConfig.RICH with { TrackedChangeMode = trackedMode };
+	var config = DxpHtmlVisitorConfig.CreateRichConfig() with { TrackedChangeMode = trackedMode };
 	string output = outputPath ?? Path.ChangeExtension(inputPath, trackedMode == DxpTrackedChangeMode.RejectChanges ? ".reject.html" : ".html");
 	var visitor = new DxpHtmlVisitor(config);
 	DxpExport.ExportToFile(inputPath, visitor, output);

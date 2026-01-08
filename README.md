@@ -65,15 +65,15 @@ string rejected = DxpExport.ExportToString(docxPath, rejectVisitor);
 ## Visitors and options
 
 **Markdown**  
-- Presets: `DxpMarkdownVisitorConfig.RICH` (styled) and `PLAIN` (minimal).  
+- Presets: `DxpMarkdownVisitorConfig.CreateRichConfig()` (styled) and `CreatePlainConfig()` (minimal).  
 - Options cover images, inline styling, rich tables, comments formatting, custom properties, and tracked change mode.
 
 **HTML**  
-- Preset: `DxpHtmlVisitorConfig.RICH`.  
+- Preset: `DxpHtmlVisitorConfig.CreateRichConfig()` (styled) and `CreatePlainConfig()` (minimal).
 - Options cover inline styles, colors/backgrounds, table borders, document colors, headers/footers, comments mode, custom properties, timeline, and tracked change mode.
 
 **Plain text**  
-- Presets: `DxpPlainTextVisitorConfig.ACCEPT` and `REJECT` (choose tracked change handling).  
+- Presets: `DxpPlainTextVisitorConfig.CreateAcceptConfig()` and `CreateRejectConfig()` (choose tracked change handling).  
 - Focused on readable text output with list markers, comments, and basic structure.
 
 `DxpExport` has overloads for DOCX file paths, in-memory bytes, or an already-open `WordprocessingDocument`, and can return a `string`, a `byte[]`, write straight to a file path, or just drive a visitor that collects data.

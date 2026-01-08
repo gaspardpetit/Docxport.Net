@@ -23,13 +23,14 @@ public sealed record DxpPlainTextVisitorConfig
 	public string ImagePlaceholder = "[IMAGE]";
 	public bool EmitDocumentProperties = true;
 	public bool EmitCustomProperties = true;
-	public static readonly DxpPlainTextVisitorConfig ACCEPT = new();
-	public static readonly DxpPlainTextVisitorConfig REJECT = new() { TrackedChangeMode = DxpPlainTextTrackedChangeMode.RejectChanges };
+	public static DxpPlainTextVisitorConfig CreateAcceptConfig() => new();
+	public static DxpPlainTextVisitorConfig CreateRejectConfig() => new() { TrackedChangeMode = DxpPlainTextTrackedChangeMode.RejectChanges };
 }
 
-public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor
+public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor, IDisposable
 {
 	private TextWriter _sinkWriter;
+	private StreamWriter? _ownedStreamWriter;
 	private readonly DxpPlainTextVisitorConfig _config;
 	private DxpPlainTextVisitorState _state = new();
 
@@ -54,6 +55,7 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor
 
 	public void SetOutput(TextWriter writer)
 	{
+		ReleaseOwnedWriter();
 		_sinkWriter = writer ?? throw new ArgumentNullException(nameof(writer));
 		_state = new DxpPlainTextVisitorState();
 		_state.WriterStack.Push(_sinkWriter);
@@ -61,11 +63,28 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor
 
 	public override void SetOutput(Stream stream)
 	{
-		var writer = new StreamWriter(stream, Encoding.UTF8, bufferSize: 1024, leaveOpen: true);
+		ReleaseOwnedWriter();
+		_ownedStreamWriter = new StreamWriter(stream, Encoding.UTF8, bufferSize: 1024, leaveOpen: true)
+		{
+			AutoFlush = true
+		};
+		var writer = _ownedStreamWriter;
 		SetOutput(writer);
 	}
 
 	private TextWriter CurrentWriter => _state.WriterStack.Peek();
+
+	private void ReleaseOwnedWriter()
+	{
+		if (_ownedStreamWriter == null)
+			return;
+
+		_ownedStreamWriter.Flush();
+		_ownedStreamWriter.Dispose();
+		_ownedStreamWriter = null;
+	}
+
+	public void Dispose() => ReleaseOwnedWriter();
 
 	private bool ShouldEmit(DxpIDocumentContext d)
 	{
@@ -272,6 +291,7 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor
 	private void FlushParagraph(ParagraphBuffer paragraph)
 	{
 		_state.CurrentParagraph = null;
+
 		if (_state.SuppressDepth > 0)
 			return;
 		if (!paragraph.Emit)
