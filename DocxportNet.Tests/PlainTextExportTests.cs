@@ -56,14 +56,14 @@ public class PlainTextExportTests
 	[MemberData(nameof(SampleDocs))]
 	public void AcceptMatchesFixture(Sample sample)
 	{
-		Verify(sample, DxpPlainTextVisitorConfig.ACCEPT, ".test.txt");
+		Verify(sample, DxpPlainTextVisitorConfig.CreateAcceptConfig(), ".test.txt");
 	}
 
 	[Theory]
 	[MemberData(nameof(SampleDocs))]
 	public void RejectMatchesFixture(Sample sample)
 	{
-		Verify(sample, DxpPlainTextVisitorConfig.REJECT, ".reject.test.txt");
+		Verify(sample, DxpPlainTextVisitorConfig.CreateRejectConfig(), ".reject.test.txt");
 	}
 
 	private void Verify(Sample sample, DxpPlainTextVisitorConfig config, string actualSuffix)

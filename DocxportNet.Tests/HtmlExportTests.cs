@@ -52,14 +52,14 @@ public class HtmlExportTests
 	[MemberData(nameof(SampleDocs))]
 	public void TestDocxToHtml_Accept(Sample sample)
 	{
-		VerifyAgainstFixture(sample, DxpHtmlVisitorConfig.RICH, ".html", ".test.html", DxpTrackedChangeMode.AcceptChanges);
+		VerifyAgainstFixture(sample, DxpHtmlVisitorConfig.CreateRichConfig(), ".html", ".test.html", DxpTrackedChangeMode.AcceptChanges);
 	}
 
 	[Theory]
 	[MemberData(nameof(SampleDocs))]
 	public void TestDocxToHtml_Reject(Sample sample)
 	{
-		VerifyAgainstFixture(sample, DxpHtmlVisitorConfig.RICH, ".reject.html", ".reject.test.html", DxpTrackedChangeMode.RejectChanges);
+		VerifyAgainstFixture(sample, DxpHtmlVisitorConfig.CreateRichConfig(), ".reject.html", ".reject.test.html", DxpTrackedChangeMode.RejectChanges);
 	}
 
 	private void VerifyAgainstFixture(Sample sample, DxpHtmlVisitorConfig baseConfig, string expectedExt, string actualSuffix, DxpTrackedChangeMode mode)

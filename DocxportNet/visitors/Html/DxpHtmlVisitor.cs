@@ -56,8 +56,8 @@ public sealed record DxpHtmlVisitorConfig
 	public string RootCssClass = "dxp-root";
 	public DxpTrackedChangeMode TrackedChangeMode = DxpTrackedChangeMode.InlineChanges;
 
-	public static DxpHtmlVisitorConfig RICH = new();
-	public static DxpHtmlVisitorConfig PLAIN = new() {
+	public static DxpHtmlVisitorConfig CreateRichConfig() => new();
+	public static DxpHtmlVisitorConfig CreatePlainConfig() => new() {
 		EmitImages = false,
 		EmitStyleFont = false,
 		EmitRunColor = false,
@@ -75,12 +75,13 @@ public sealed record DxpHtmlVisitorConfig
 		EmitTimeline = false
 	};
 
-	public static DxpHtmlVisitorConfig DEFAULT = RICH;
+	public static DxpHtmlVisitorConfig CreateConfig() => CreateRichConfig();
 }
 
-public sealed class DxpHtmlVisitor : DxpVisitor, DxpITextVisitor
+public sealed class DxpHtmlVisitor : DxpVisitor, DxpITextVisitor, IDisposable
 {
 	private TextWriter _sinkWriter;
+	private StreamWriter? _ownedStreamWriter;
 	private DxpBufferedTextWriter _rejectBufferedWriter;
 	private DxpBufferedTextWriter _acceptBufferedWriter;
 
@@ -104,6 +105,7 @@ public sealed class DxpHtmlVisitor : DxpVisitor, DxpITextVisitor
 
 	public void SetOutput(TextWriter writer)
 	{
+		ReleaseOwnedWriter();
 		_sinkWriter = writer ?? throw new ArgumentNullException(nameof(writer));
 		_rejectBufferedWriter = new DxpBufferedTextWriter();
 		_acceptBufferedWriter = new DxpBufferedTextWriter();
@@ -113,9 +115,26 @@ public sealed class DxpHtmlVisitor : DxpVisitor, DxpITextVisitor
 
 	public override void SetOutput(Stream stream)
 	{
-		var writer = new StreamWriter(stream, Encoding.UTF8, bufferSize: 1024, leaveOpen: true);
+		ReleaseOwnedWriter();
+		_ownedStreamWriter = new StreamWriter(stream, Encoding.UTF8, bufferSize: 1024, leaveOpen: true)
+		{
+			AutoFlush = true
+		};
+		var writer = _ownedStreamWriter;
 		SetOutput(writer);
 	}
+
+	private void ReleaseOwnedWriter()
+	{
+		if (_ownedStreamWriter == null)
+			return;
+
+		_ownedStreamWriter.Flush();
+		_ownedStreamWriter.Dispose();
+		_ownedStreamWriter = null;
+	}
+
+	public void Dispose() => ReleaseOwnedWriter();
 
 	private void ConfigureWriters()
 	{
