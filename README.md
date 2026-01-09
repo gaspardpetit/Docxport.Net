@@ -38,11 +38,11 @@ Most DOCX “save as text” pipelines lose important fidelity: strikethroughs a
 
 ```bash
 # From release artifacts (self-contained binary):
-./docxport my-doc.docx --format=markdown --tracked=accept
+./docxport my-doc.docx -o my-doc.md --tracked=accept
 
 # From source:
 git clone https://github.com/gaspardpetit/Docxport.Net.git
-dotnet run --project DocxportNet.Cli -- my-doc.docx --format=markdown --tracked=accept
+dotnet run --project DocxportNet.Cli -- my-doc.docx -o my-doc.md --tracked=accept
 ```
 
 ### NuGet + code
@@ -98,12 +98,12 @@ string rejected = DxpExport.ExportToString(docxPath, rejectVisitor);
 A ready-to-use console app lives in `DocxportNet.Cli` (not published on NuGet). Example:
 
 ```bash
-dotnet run --project DocxportNet.Cli -- my.docx --format=markdown --tracked=accept
+dotnet run --project DocxportNet.Cli -- my.docx -o my.md --tracked=accept
 # or, when using release artifacts:
 ./docxport my.docx --format=html --tracked=inline
 ```
 
-Options: `--format=markdown|html|text`, `--tracked=accept|reject|inline|split` (text uses accept/reject), `--plain` (plain markdown), `--output=path`.
+Options: `--format=markdown|html|text`, `--tracked=accept|reject|inline|split` (text uses accept/reject), `--plain` (plain markdown), `-o, --output=path` (infers format from extension when `--format` is omitted).
 
 ## Custom visitors
 

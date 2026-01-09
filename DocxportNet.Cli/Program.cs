@@ -21,17 +21,62 @@ string? outputPath = null;
 string format = "markdown";
 string tracked = "accept";
 bool plainMarkdown = false;
+bool formatExplicit = false;
 
-foreach (string arg in args)
+for (int i = 0; i < args.Length; i++)
 {
+	string arg = args[i];
+
 	if (arg.StartsWith("--format=", StringComparison.OrdinalIgnoreCase))
+	{
 		format = arg[(arg.IndexOf('=') + 1)..];
+		formatExplicit = true;
+	}
+	else if (arg.Equals("--format", StringComparison.OrdinalIgnoreCase))
+	{
+		if (i + 1 >= args.Length)
+		{
+			Console.Error.WriteLine("--format requires a value.");
+			return;
+		}
+		format = args[++i];
+		formatExplicit = true;
+	}
 	else if (arg.StartsWith("--tracked=", StringComparison.OrdinalIgnoreCase))
 		tracked = arg[(arg.IndexOf('=') + 1)..];
+	else if (arg.Equals("--tracked", StringComparison.OrdinalIgnoreCase))
+	{
+		if (i + 1 >= args.Length)
+		{
+			Console.Error.WriteLine("--tracked requires a value.");
+			return;
+		}
+		tracked = args[++i];
+	}
 	else if (arg.Equals("--plain", StringComparison.OrdinalIgnoreCase))
 		plainMarkdown = true;
 	else if (arg.StartsWith("--output=", StringComparison.OrdinalIgnoreCase))
 		outputPath = arg[(arg.IndexOf('=') + 1)..];
+	else if (arg.Equals("--output", StringComparison.OrdinalIgnoreCase))
+	{
+		if (i + 1 >= args.Length)
+		{
+			Console.Error.WriteLine("--output requires a value.");
+			return;
+		}
+		outputPath = args[++i];
+	}
+	else if (arg.StartsWith("-o=", StringComparison.OrdinalIgnoreCase))
+		outputPath = arg[(arg.IndexOf('=') + 1)..];
+	else if (arg.Equals("-o", StringComparison.OrdinalIgnoreCase))
+	{
+		if (i + 1 >= args.Length)
+		{
+			Console.Error.WriteLine("-o requires a value.");
+			return;
+		}
+		outputPath = args[++i];
+	}
 	else if (inputPath is null)
 		inputPath = arg;
 }
@@ -51,6 +96,17 @@ if (!File.Exists(inputPath))
 
 DxpTrackedChangeMode trackedMode = ParseTrackedChangeMode(tracked);
 
+if (!formatExplicit && !string.IsNullOrWhiteSpace(outputPath))
+{
+	string ext = Path.GetExtension(outputPath).ToLowerInvariant();
+	if (ext is ".html" or ".htm")
+		format = "html";
+	else if (ext is ".md" or ".markdown")
+		format = "markdown";
+	else if (ext is ".txt")
+		format = "text";
+}
+
 switch (format.ToLowerInvariant())
 {
 	case "markdown":
@@ -58,10 +114,14 @@ switch (format.ToLowerInvariant())
 		ExportMarkdown(inputPath, outputPath, trackedMode, plainMarkdown);
 		break;
 	case "html":
+		if (plainMarkdown)
+			Console.Error.WriteLine("Warning: --plain is only supported for markdown; ignoring.");
 		ExportHtml(inputPath, outputPath, trackedMode);
 		break;
 	case "text":
 	case "txt":
+		if (plainMarkdown)
+			Console.Error.WriteLine("Warning: --plain is only supported for markdown; ignoring.");
 		ExportPlainText(inputPath, outputPath, trackedMode);
 		break;
 	default:
@@ -118,13 +178,14 @@ static void PrintHelp()
 {
 	Console.WriteLine($"""
 docxport ({GetVersion()})
-Usage: docxport <input.docx> [--format=markdown|html|text] [--tracked=accept|reject|inline|split] [--plain] [--output=path]
+Usage: docxport <input.docx> [--format=markdown|html|text] [--tracked=accept|reject|inline|split] [--plain] [-o|--output=path]
 
 Options:
   --format=...   Output format (default: markdown)
+                If --format is omitted, the format is inferred from -o/--output extension (.md/.html/.txt).
   --tracked=...  Tracked change mode (accept, reject, inline, split). Plain text supports accept/reject.
 	--plain        Plain Markdown (only for markdown format)
-	--output=...   Output file path (default: swaps extension)
+  -o, --output=...  Output file path (default: swaps extension)
   -v, --version  Show CLI version
   -h, --help     Show this help
 """);
