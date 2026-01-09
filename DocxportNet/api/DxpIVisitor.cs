@@ -75,6 +75,7 @@ public interface DxpITableContext
 	Table Table { get; }
 	TableProperties? Properties { get; }
 	TableGrid? Grid { get; }
+	DxpComputedTableStyle ComputedStyle { get; }
 }
 
 public interface DxpITableRowContext
@@ -93,6 +94,7 @@ public interface DxpITableCellContext
 	int RowSpan { get; }
 	int ColSpan { get; }
 	TableCellProperties? Properties { get; }
+	DxpComputedTableCellStyle ComputedStyle { get; }
 }
 
 public interface DxpIRubyContext
