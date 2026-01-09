@@ -10,16 +10,18 @@ public class DxpParagraphContext : DxpIParagraphContext
 	public DxpMarker MarkerReject { get; internal set; }
 	public DxpStyleEffectiveIndentTwips Indent { get; internal set; }
 	public ParagraphProperties? Properties { get; internal set; }
+	public DxpComputedParagraphStyle ComputedStyle { get; internal set; }
 
-	public DxpParagraphContext(DxpMarker markerAccept, DxpMarker markerReject, DxpStyleEffectiveIndentTwips indent, ParagraphProperties? properties)
+	public DxpParagraphContext(DxpMarker markerAccept, DxpMarker markerReject, DxpStyleEffectiveIndentTwips indent, ParagraphProperties? properties, DxpComputedParagraphStyle computedStyle)
 	{
 		MarkerAccept = markerAccept;
 		MarkerReject = markerReject;
 		Indent = indent;
 		Properties = properties;
+		ComputedStyle = computedStyle;
 	}
 
-	public static DxpParagraphContext INVALID => new DxpParagraphContext(null!, null!, null!, null);
+	public static DxpParagraphContext INVALID => new DxpParagraphContext(null!, null!, null!, null, new DxpComputedParagraphStyle(null, null, null, null));
 }
 
 

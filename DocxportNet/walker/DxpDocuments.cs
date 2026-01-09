@@ -88,7 +88,8 @@ public class DxpDocumentContext : DxpIDocumentContext
 		DxpMarker acceptMarker = advanceAccept ? AcceptLists.MaterializeMarker(p, Styles) : new DxpMarker(null, null, null);
 		DxpMarker rejectMarker = advanceReject ? RejectLists.MaterializeMarker(p, Styles) : new DxpMarker(null, null, null);
 		DxpStyleEffectiveIndentTwips indent = AcceptLists.GetIndentation(p, Styles);
-		return new DxpParagraphContext(acceptMarker, rejectMarker, indent, p.ParagraphProperties);
+		var computed = DxpParagraphStyleComputer.ComputeParagraphStyle(p, indent, this);
+		return new DxpParagraphContext(acceptMarker, rejectMarker, indent, p.ParagraphProperties, computed);
 	}
 
 	public IDisposable PushParagraph(Paragraph p, out DxpParagraphContext ctx, bool advanceAccept = true, bool advanceReject = true)
