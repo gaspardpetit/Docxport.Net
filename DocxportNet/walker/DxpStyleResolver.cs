@@ -4,6 +4,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
 using DocxportNet.Word;
 using System.Globalization;
+using System.Xml.Linq;
 
 namespace DocxportNet.Walker;
 
@@ -36,14 +37,14 @@ public struct DxpEffectiveRunStyleBuilder
 		FontSizeHalfPoints
 	);
 
-	public static DxpEffectiveRunStyleBuilder FromDefaults(RunPropertiesBaseStyle? defaults)
+	public static DxpEffectiveRunStyleBuilder FromDefaults(RunPropertiesBaseStyle? defaults, Func<string, string?>? themeFontResolver = null)
 	{
 		var acc = new DxpEffectiveRunStyleBuilder();
-		ApplyRunPropertiesBaseStyle(defaults, ref acc);
+		ApplyRunPropertiesBaseStyle(defaults, themeFontResolver, ref acc);
 		return acc;
 	}
 
-	public static void ApplyStyleRunProperties(StyleRunProperties? rp, ref DxpEffectiveRunStyleBuilder acc)
+	public static void ApplyStyleRunProperties(StyleRunProperties? rp, Func<string, string?>? themeFontResolver, ref DxpEffectiveRunStyleBuilder acc)
 	{
 		if (rp == null)
 			return;
@@ -52,11 +53,12 @@ public struct DxpEffectiveRunStyleBuilder
 			rp.Bold, rp.Italic, rp.Underline, rp.Strike, rp.DoubleStrike,
 			rp.VerticalTextAlignment, rp.RunFonts, rp.FontSize,
 			rp.Caps, rp.SmallCaps,
+			themeFontResolver,
 			ref acc
 		);
 	}
 
-	public static void ApplyRunPropertiesBaseStyle(RunPropertiesBaseStyle? rp, ref DxpEffectiveRunStyleBuilder acc)
+	public static void ApplyRunPropertiesBaseStyle(RunPropertiesBaseStyle? rp, Func<string, string?>? themeFontResolver, ref DxpEffectiveRunStyleBuilder acc)
 	{
 		if (rp == null)
 			return;
@@ -65,11 +67,12 @@ public struct DxpEffectiveRunStyleBuilder
 			rp.Bold, rp.Italic, rp.Underline, rp.Strike, rp.DoubleStrike,
 			rp.VerticalTextAlignment, rp.RunFonts, rp.FontSize,
 			rp.Caps, rp.SmallCaps,
+			themeFontResolver,
 			ref acc
 		);
 	}
 
-	public static void ApplyRunProperties(RunProperties? rp, ref DxpEffectiveRunStyleBuilder acc)
+	public static void ApplyRunProperties(RunProperties? rp, Func<string, string?>? themeFontResolver, ref DxpEffectiveRunStyleBuilder acc)
 	{
 		if (rp == null)
 			return;
@@ -78,6 +81,7 @@ public struct DxpEffectiveRunStyleBuilder
 			rp.Bold, rp.Italic, rp.Underline, rp.Strike, rp.DoubleStrike,
 			rp.VerticalTextAlignment, rp.RunFonts, rp.FontSize,
 			rp.Caps, rp.SmallCaps,
+			themeFontResolver,
 			ref acc
 		);
 	}
@@ -94,6 +98,7 @@ public struct DxpEffectiveRunStyleBuilder
 		FontSize? fontSize,
 		Caps? caps,
 		SmallCaps? smallCaps,
+		Func<string, string?>? themeFontResolver,
 	ref DxpEffectiveRunStyleBuilder acc)
 	{
 		if (bold != null)
@@ -121,10 +126,36 @@ public struct DxpEffectiveRunStyleBuilder
 		if (smallCaps != null)
 			acc.SmallCaps = IsOn(smallCaps.Val);
 
-		if (fonts?.Ascii?.Value != null)
-			acc.FontName = fonts.Ascii.Value;
+		if (fonts != null)
+		{
+			// Read raw attributes (covers SDK differences across target frameworks).
+			string? asciiTheme = null;
+			string? highAnsiTheme = null;
+			foreach (var attr in fonts.GetAttributes())
+			{
+				if (asciiTheme == null && string.Equals(attr.LocalName, "asciiTheme", StringComparison.OrdinalIgnoreCase))
+					asciiTheme = attr.Value;
+				else if (highAnsiTheme == null && string.Equals(attr.LocalName, "hAnsiTheme", StringComparison.OrdinalIgnoreCase))
+					highAnsiTheme = attr.Value;
+			}
+
+			string? resolvedFont =
+				fonts.Ascii?.Value
+				?? fonts.HighAnsi?.Value
+				?? TryResolveThemeFont(asciiTheme, themeFontResolver)
+				?? TryResolveThemeFont(highAnsiTheme, themeFontResolver);
+			if (!string.IsNullOrWhiteSpace(resolvedFont))
+				acc.FontName = resolvedFont;
+		}
 		if (fontSize?.Val?.Value != null && int.TryParse(fontSize.Val.Value, out var hp))
 			acc.FontSizeHalfPoints = hp;
+	}
+
+	private static string? TryResolveThemeFont(string? theme, Func<string, string?>? themeFontResolver)
+	{
+		if (string.IsNullOrWhiteSpace(theme) || themeFontResolver == null)
+			return null;
+		return themeFontResolver(theme!);
 	}
 
 
@@ -140,6 +171,8 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
 
 	private readonly RunPropertiesBaseStyle? _docDefaultRunProps;
 	private readonly ParagraphPropertiesBaseStyle? _docDefaultParaProps;
+	private readonly string? _themeMajorLatinFont;
+	private readonly string? _themeMinorLatinFont;
 
 	public DxpStyleEffectiveIndentTwips GetIndentation(
 	Paragraph p,
@@ -235,6 +268,50 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
 		var docDefaults = _styles?.DocDefaults;
 		_docDefaultRunProps = docDefaults?.RunPropertiesDefault?.RunPropertiesBaseStyle;
 		_docDefaultParaProps = docDefaults?.ParagraphPropertiesDefault?.ParagraphPropertiesBaseStyle;
+
+		(_themeMajorLatinFont, _themeMinorLatinFont) = TryGetThemeLatinFonts(doc);
+	}
+
+	private static (string? majorLatin, string? minorLatin) TryGetThemeLatinFonts(WordprocessingDocument doc)
+	{
+		try
+		{
+			var themePart = doc.MainDocumentPart?.ThemePart;
+			if (themePart == null)
+				return (null, null);
+
+			using var s = themePart.GetStream(FileMode.Open, FileAccess.Read);
+			var xdoc = XDocument.Load(s);
+
+			XNamespace a = "http://schemas.openxmlformats.org/drawingml/2006/main";
+			var fontScheme = xdoc.Descendants(a + "fontScheme").FirstOrDefault();
+			if (fontScheme == null)
+				return (null, null);
+
+			static string? LatinTypeface(XNamespace a, XElement? font)
+				=> font?.Element(a + "latin")?.Attribute("typeface")?.Value;
+
+			var majorLatin = LatinTypeface(a, fontScheme.Element(a + "majorFont"));
+			var minorLatin = LatinTypeface(a, fontScheme.Element(a + "minorFont"));
+			return (majorLatin, minorLatin);
+		}
+		catch
+		{
+			return (null, null);
+		}
+	}
+
+	private string? ResolveThemeFont(string themeRef)
+	{
+		if (string.IsNullOrWhiteSpace(themeRef))
+			return null;
+
+		if (themeRef.StartsWith("minor", StringComparison.OrdinalIgnoreCase))
+			return string.IsNullOrWhiteSpace(_themeMinorLatinFont) ? null : _themeMinorLatinFont;
+		if (themeRef.StartsWith("major", StringComparison.OrdinalIgnoreCase))
+			return string.IsNullOrWhiteSpace(_themeMajorLatinFont) ? null : _themeMajorLatinFont;
+
+		return null;
 	}
 
 	public DxpStyleInfo? GetStyleInfo(string? styleId)
@@ -281,7 +358,7 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
 	public DxpStyleEffectiveRunStyle ResolveRunStyle(Paragraph p, Run r)
 	{
 		// 1) Start with doc defaults
-		var acc = DxpEffectiveRunStyleBuilder.FromDefaults(_docDefaultRunProps);
+		var acc = DxpEffectiveRunStyleBuilder.FromDefaults(_docDefaultRunProps, ResolveThemeFont);
 
 		// 2) Apply paragraph style chain (paragraph style's rPr affects runs)
 		var pStyleId = p.ParagraphProperties?.ParagraphStyleId?.Val?.Value;
@@ -292,7 +369,7 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
 		ApplyCharacterStyleChainRunProps(rStyleId, ref acc);
 
 		// 4) Apply direct run formatting (highest precedence)
-		DxpEffectiveRunStyleBuilder.ApplyRunProperties(r.RunProperties, ref acc);
+		DxpEffectiveRunStyleBuilder.ApplyRunProperties(r.RunProperties, ResolveThemeFont, ref acc);
 
 		return acc.ToImmutable();
 	}
@@ -339,16 +416,16 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
 	{
 		foreach (var style in EnumerateStyleChain(styleId).Reverse())
 		{
-			DxpEffectiveRunStyleBuilder.ApplyStyleRunProperties(style.StyleRunProperties, ref acc);
+			DxpEffectiveRunStyleBuilder.ApplyStyleRunProperties(style.StyleRunProperties, ResolveThemeFont, ref acc);
 			var rp = style.StyleParagraphProperties?.GetFirstChild<RunProperties>();
-			DxpEffectiveRunStyleBuilder.ApplyRunProperties(rp, ref acc);
+			DxpEffectiveRunStyleBuilder.ApplyRunProperties(rp, ResolveThemeFont, ref acc);
 		}
 	}
 
 	private void ApplyCharacterStyleChainRunProps(string? styleId, ref DxpEffectiveRunStyleBuilder acc)
 	{
 		foreach (var style in EnumerateStyleChain(styleId).Reverse())
-			DxpEffectiveRunStyleBuilder.ApplyStyleRunProperties(style.StyleRunProperties, ref acc);
+			DxpEffectiveRunStyleBuilder.ApplyStyleRunProperties(style.StyleRunProperties, ResolveThemeFont, ref acc);
 	}
 
 	private IEnumerable<Style> EnumerateStyleChain(string? styleId)
@@ -482,7 +559,7 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
 
 	public DxpStyleEffectiveRunStyle GetDefaultRunStyle()
 	{
-		var acc = DxpEffectiveRunStyleBuilder.FromDefaults(_docDefaultRunProps);
+		var acc = DxpEffectiveRunStyleBuilder.FromDefaults(_docDefaultRunProps, ResolveThemeFont);
 		ApplyParagraphStyleChainRunProps(DxpWordBuiltInStyleId.wdStyleNormal, ref acc);
 		return acc.ToImmutable();
 	}

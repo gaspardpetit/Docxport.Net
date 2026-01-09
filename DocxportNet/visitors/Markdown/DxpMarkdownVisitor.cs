@@ -292,8 +292,20 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 			return;
 		}
 
+		var style = new StringBuilder();
+		if (!string.IsNullOrWhiteSpace(font.fontName))
+			style.Append("font-family: ").Append(font.fontName).Append(';');
+		if (font.fontSizeHalfPoints != null)
+			style.Append(" font-size: ").Append(font.fontSizeHalfPoints.Value / 2.0).Append("pt;");
+
+		if (style.Length == 0)
+		{
+			_state.FontSpanOpen = false;
+			return;
+		}
+
 		_state.FontSpanOpen = true;
-		Write(d, $"""<span style="font-family: {font.fontName}; font-size: {font.fontSizeHalfPoints / 2.0}pt;">""");
+		Write(d, $"""<span style="{style}">""");
 	}
 
 	public override void StyleFontEnd(DxpIDocumentContext d)
