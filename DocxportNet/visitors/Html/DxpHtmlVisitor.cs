@@ -247,7 +247,6 @@ body.dxp-root {
   margin: 0.5em 0;
 }
 .dxp-table td, .dxp-table th {
-  border: 1px solid var(--dxp-border);
   padding: 4px 6px;
   vertical-align: top;
 }
