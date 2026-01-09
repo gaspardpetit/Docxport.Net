@@ -537,17 +537,17 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
 
 		var styleChain = d.Styles.GetParagraphStyleChain(p);
-
-		var justification = _config.EmitParagraphAlignment
-			? p.ParagraphProperties?.Justification?.Val?.Value
-			: null;
 		string? justify = null;
-		if (justification == JustificationValues.Center)
-			justify = "center";
-		else if (justification == JustificationValues.Right)
-			justify = "right";
-		else if (justification == JustificationValues.Both || justification == JustificationValues.Distribute)
-			justify = "justify";
+		if (_config.EmitParagraphAlignment && paragraph.ComputedStyle.TextAlign != null)
+		{
+			justify = paragraph.ComputedStyle.TextAlign.Value switch
+			{
+				DxpComputedTextAlign.Center => "center",
+				DxpComputedTextAlign.Right => "right",
+				DxpComputedTextAlign.Justify => "justify",
+				_ => null
+			};
+		}
 
 		var headingLevel = d.Styles.GetHeadingLevel(p);
 		bool hasNumbering = marker?.numId != null;
@@ -581,9 +581,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
 		string? headingStyle = null;
 		if (isHeading && justify != null && _config.EmitParagraphAlignment && _config.EmitStyleFont)
-		{
 			headingStyle = $" style=\"text-align:{justify};\"";
-		}
 
 		if (isHeading)
 		{
@@ -600,20 +598,11 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 			}
 		}
 
-		double adjustedMargin = indent.Left.HasValue ? AdjustMarginLeft(DxpTwipValue.ToPoints(indent.Left.Value), d) : 0.0;
-		bool hasMargin = adjustedMargin > 0.0001;
-
-		bool needsParagraphWrapper = !isHeading && (hasMargin || justify != null);
+		var paraCss = paragraph.ComputedStyle.ToCss(includeTextAlign: _config.EmitParagraphAlignment);
+		bool needsParagraphWrapper = !isHeading && !string.IsNullOrEmpty(paraCss);
 		if (needsParagraphWrapper)
 		{
-			var para = new StringBuilder();
-			para.Append("<p style=\"");
-			if (hasMargin)
-				para.Append("margin-left:").Append(adjustedMargin.ToString("0.###", CultureInfo.InvariantCulture)).Append("pt;");
-			if (justify != null)
-				para.Append("text-align:").Append(justify).Append(';');
-			para.Append("\">");
-			Write(d, para.ToString());
+			Write(d, $"<p style=\"{paraCss}\">");
 		}
 
 		if (isHeading)

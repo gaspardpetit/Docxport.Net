@@ -543,16 +543,17 @@ body.dxp-root {
 		}
 
 		var styleChain = d.Styles.GetParagraphStyleChain(p);
-		var justification = _config.EmitParagraphAlignment
-			? p.ParagraphProperties?.Justification?.Val?.Value
-			: null;
 		string? justify = null;
-		if (justification == JustificationValues.Center)
-			justify = "center";
-		else if (justification == JustificationValues.Right)
-			justify = "right";
-		else if (justification == JustificationValues.Both || justification == JustificationValues.Distribute)
-			justify = "justify";
+		if (_config.EmitParagraphAlignment && paragraph.ComputedStyle.TextAlign != null)
+		{
+			justify = paragraph.ComputedStyle.TextAlign.Value switch
+			{
+				DxpComputedTextAlign.Center => "center",
+				DxpComputedTextAlign.Right => "right",
+				DxpComputedTextAlign.Justify => "justify",
+				_ => null
+			};
+		}
 
 		var headingLevel = d.Styles.GetHeadingLevel(p);
 		bool hasNumbering = marker?.numId != null;
@@ -583,8 +584,9 @@ body.dxp-root {
 			string.Equals(sc.StyleId, DxpWordBuiltInStyleId.wdStyleHtmlCode, StringComparison.OrdinalIgnoreCase) ||
 			string.Equals(sc.StyleId, "Code", StringComparison.OrdinalIgnoreCase));
 
-		double adjustedMargin = indent.Left.HasValue ? AdjustMarginLeft(DxpTwipValue.ToPoints(indent.Left.Value), d) : 0.0;
-		bool hasMargin = adjustedMargin > 0.0001;
+		// Margin/borders are precomputed in the walker; keep alignment as classes for existing output shape.
+		var computedParaCss = paragraph.ComputedStyle.ToCss(includeTextAlign: false);
+		bool hasComputedCss = !string.IsNullOrEmpty(computedParaCss);
 
 		if (isHeading)
 			marker = null;
@@ -621,8 +623,8 @@ body.dxp-root {
 			paraClasses.Add($"align-{justify}");
 
 		var style = new StringBuilder();
-		if (hasMargin)
-			style.Append("margin-left:").Append(adjustedMargin.ToString("0.###", CultureInfo.InvariantCulture)).Append("pt;");
+		if (hasComputedCss)
+			style.Append(computedParaCss);
 
 		bool previousHeading = _state.InHeading;
 		if (isHeading)

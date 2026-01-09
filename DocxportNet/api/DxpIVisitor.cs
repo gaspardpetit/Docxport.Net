@@ -167,6 +167,7 @@ public interface DxpIParagraphContext
 	DxpMarker MarkerReject { get; }
 	DxpStyleEffectiveIndentTwips Indent { get; }
 	ParagraphProperties? Properties { get; }
+	DxpComputedParagraphStyle ComputedStyle { get; }
 }
 
 public interface DxpISectionContext
