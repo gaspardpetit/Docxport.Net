@@ -12,6 +12,7 @@ public class DxpDocumentContext : DxpIDocumentContext
 
 	public DxpFieldFrameContext CurrentFields { get; }
 	public MainDocumentPart? MainDocumentPart { get; internal set; }
+	internal DxpNumberingResolver NumberingResolver { get; }
 	public DxpStyleTracker StyleTracker { get; } = new DxpStyleTracker();
 	public DxpComments Comments { get; } = new DxpComments();
 	public DxpDrawings Drawings { get; } = new DxpDrawings();
@@ -55,6 +56,7 @@ public class DxpDocumentContext : DxpIDocumentContext
 	public DxpDocumentContext(WordprocessingDocument doc)
 	{
 		CurrentFields = new();
+		NumberingResolver = new DxpNumberingResolver(doc);
 		TableStyleResolver = new DxpTableStyleResolver(doc);
 		DocumentProperties = new(null, null, null);
 		ReferencedBookmarkAnchors = CollectReferencedAnchors(doc);

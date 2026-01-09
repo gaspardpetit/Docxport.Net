@@ -833,7 +833,8 @@ body.dxp-root {
 		if (marker?.marker != null)
 		{
 			var normalizedMarker = NormalizeMarker(marker.marker);
-			Write(d, BuildMarkerHtml(normalizedMarker));
+			var markerCss = TryBuildMarkerCss(marker, d);
+			Write(d, BuildMarkerHtml(normalizedMarker, markerCss));
 		}
 
 		if (isCode)
@@ -1301,14 +1302,15 @@ body.dxp-root {
 
 	private static bool LooksLikeOrderedListMarker(string marker) => Regex.IsMatch(marker, @"^\d+[.)]$");
 
-	private static string BuildMarkerHtml(string marker)
+	private static string BuildMarkerHtml(string marker, string? markerCss)
 	{
 		if (string.IsNullOrEmpty(marker))
 			return string.Empty;
 
 		bool markerIsHtml = marker.IndexOf('<') >= 0 && marker.IndexOf('>') > marker.IndexOf('<');
 		var inner = markerIsHtml ? marker : WebUtility.HtmlEncode(marker);
-		return $"""<span class="dxp-marker">{inner}</span> """;
+		var cssAttr = !string.IsNullOrEmpty(markerCss) ? " style=\"" + HtmlAttr(markerCss!) + "\"" : "";
+		return $"""<span class="dxp-marker"{cssAttr}>{inner}</span> """;
 	}
 
 	private static string StripTags(string input) => Regex.Replace(input, "<.*?>", string.Empty);
@@ -1339,6 +1341,44 @@ body.dxp-root {
 
 		return null;
 	}
+
+	private static string? TryBuildMarkerCss(DxpMarker marker, DxpIDocumentContext d)
+	{
+		if (marker.numId == null || marker.iLvl == null)
+			return null;
+
+		if (d is not DocxportNet.Walker.DxpDocumentContext docCtx)
+			return null;
+
+		var resolved = docCtx.NumberingResolver.ResolveLevel(marker.numId.Value, marker.iLvl.Value);
+		if (resolved == null)
+			return null;
+
+		var rpr = resolved.Value.lvl.NumberingSymbolRunProperties;
+		if (rpr == null)
+			return null;
+
+		var decorations = new List<string>();
+		var parts = new List<string>();
+
+		if (rpr.Bold != null && IsOn(rpr.Bold.Val))
+			parts.Add("font-weight:bold");
+		if (rpr.Italic != null && IsOn(rpr.Italic.Val))
+			parts.Add("font-style:italic");
+		if (rpr.Underline?.Val != null && rpr.Underline.Val.Value != UnderlineValues.None)
+			decorations.Add("underline");
+		if (rpr.Strike != null && IsOn(rpr.Strike.Val))
+			decorations.Add("line-through");
+		if (rpr.DoubleStrike != null && IsOn(rpr.DoubleStrike.Val))
+			decorations.Add("line-through");
+
+		if (decorations.Count > 0)
+			parts.Add("text-decoration:" + string.Join(" ", decorations.Distinct(StringComparer.Ordinal)));
+
+		return parts.Count == 0 ? null : string.Join(";", parts);
+	}
+
+	private static bool IsOn(OnOffValue? v) => v == null || v.Value;
 
 	public override IDisposable VisitSectionBodyBegin(SectionProperties properties, DxpIDocumentContext d)
 	{
