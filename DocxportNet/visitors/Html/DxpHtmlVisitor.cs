@@ -27,6 +27,18 @@ internal sealed class DxpHtmlVisitorState
 	public bool AllCaps { get; set; }
 	public bool IsFirstSection { get; set; } = true;
 	public InlineChangeMode CurrentInlineMode { get; set; } = InlineChangeMode.Unchanged;
+	public int TabIndex { get; set; }
+	public int UnderlineDepth { get; set; }
+	public bool InParagraph { get; set; }
+	public double CurrentLineXPt { get; set; }
+	public double CurrentFontSizePt { get; set; } = 12.0;
+	public Stack<double> FontSizeStack { get; } = new();
+	public DxpComputedTabStopKind? PendingAlignedTabKind { get; set; }
+	public double PendingAlignedTabStopPosPt { get; set; }
+	public double PendingAlignedTabStartXPt { get; set; }
+	public double PendingAlignedTabSegmentWidthPt { get; set; }
+	public bool PendingAlignedTabUnderline { get; set; }
+	public StringBuilder PendingAlignedTabBuffer { get; } = new();
 
 	public TextWriter DeletedTextWriter = TextWriter.Null;
 	public TextWriter InsertedTextWriter = TextWriter.Null;
@@ -356,7 +368,41 @@ body.dxp-root {
 			text = text.ToUpper(culture);
 		}
 
+		if (_state.PendingAlignedTabKind != null)
+			_state.PendingAlignedTabSegmentWidthPt += EstimateTextWidthPt(text, _state.CurrentFontSizePt);
+		else if (_state.InParagraph)
+			_state.CurrentLineXPt += EstimateTextWidthPt(text, _state.CurrentFontSizePt);
+
 		Write(d, WebUtility.HtmlEncode(text));
+	}
+
+	private static double EstimateTextWidthPt(string text, double fontSizePt)
+	{
+		if (string.IsNullOrEmpty(text))
+			return 0.0;
+
+		double width = 0.0;
+		foreach (var ch in text)
+		{
+			if (ch == '\n' || ch == '\r')
+				continue;
+
+			if (ch == ' ' || ch == '\u00A0')
+			{
+				width += fontSizePt * 0.33;
+				continue;
+			}
+
+			if ("ilI.,:;|!".IndexOf(ch) >= 0)
+			{
+				width += fontSizePt * 0.25;
+				continue;
+			}
+
+			width += fontSizePt * 0.5;
+		}
+
+		return width;
 	}
 
 	public override void StyleAllCapsEnd(DxpIDocumentContext d) => _state.AllCaps = false;
@@ -380,8 +426,18 @@ body.dxp-root {
 	public override void StyleItalicBegin(DxpIDocumentContext d) => Write(d, "<em class=\"dxp-italic\">");
 	public override void StyleItalicEnd(DxpIDocumentContext d) => Write(d, "</em>");
 
-	public override void StyleUnderlineBegin(DxpIDocumentContext d) => Write(d, "<span class=\"dxp-underline\">");
-	public override void StyleUnderlineEnd(DxpIDocumentContext d) => Write(d, "</span>");
+	public override void StyleUnderlineBegin(DxpIDocumentContext d)
+	{
+		_state.UnderlineDepth++;
+		Write(d, "<span class=\"dxp-underline\">");
+	}
+
+	public override void StyleUnderlineEnd(DxpIDocumentContext d)
+	{
+		if (_state.UnderlineDepth > 0)
+			_state.UnderlineDepth--;
+		Write(d, "</span>");
+	}
 
 	public override void StyleStrikeBegin(DxpIDocumentContext d) => Write(d, "<span class=\"dxp-strike\">");
 	public override void StyleStrikeEnd(DxpIDocumentContext d) => Write(d, "</span>");
@@ -396,6 +452,10 @@ body.dxp-root {
 
 	public override void StyleFontBegin(DxpFont font, DxpIDocumentContext d)
 	{
+		_state.FontSizeStack.Push(_state.CurrentFontSizePt);
+		if (font.fontSizeHalfPoints != null)
+			_state.CurrentFontSizePt = font.fontSizeHalfPoints.Value / 2.0;
+
 		if (_config.EmitStyleFont == false)
 			return;
 
@@ -423,6 +483,9 @@ body.dxp-root {
 
 	public override void StyleFontEnd(DxpIDocumentContext d)
 	{
+		if (_state.FontSizeStack.Count > 0)
+			_state.CurrentFontSizePt = _state.FontSizeStack.Pop();
+
 		if (_config.EmitStyleFont == false)
 			return;
 
@@ -522,6 +585,14 @@ body.dxp-root {
 
 	public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
 	{
+		_state.TabIndex = 0;
+		_state.CurrentLineXPt = 0.0;
+		_state.InParagraph = true;
+		_state.PendingAlignedTabKind = null;
+		_state.PendingAlignedTabBuffer.Clear();
+		_state.PendingAlignedTabSegmentWidthPt = 0.0;
+		_state.PendingAlignedTabUnderline = false;
+
 		if (_config.TrackedChangeMode == DxpTrackedChangeMode.SplitChanges)
 		{
 			EmitSplitBuffersIfNeeded();
@@ -651,6 +722,8 @@ body.dxp-root {
 			Write(d, "<code>");
 
 		var baseDispose = DxpDisposable.Create(() => {
+			FlushPendingAlignedTab(d);
+
 			if (_config.TrackedChangeMode == DxpTrackedChangeMode.InlineChanges)
 				SetInlineChangeMode(DxpHtmlVisitorState.InlineChangeMode.Unchanged);
 
@@ -668,11 +741,108 @@ body.dxp-root {
 
 			if (_config.TrackedChangeMode == DxpTrackedChangeMode.SplitChanges)
 				EmitSplitBuffersIfNeeded();
+			_state.InParagraph = false;
 		});
 
 		return DxpDisposable.Create(() => {
 			baseDispose.Dispose();
 		});
+	}
+
+	private void WriteTab(DxpIDocumentContext d)
+	{
+		var layout = d.CurrentParagraph.Layout;
+		var stops = layout?.TabStops;
+		if (stops == null || stops.Count == 0)
+		{
+			// Best-effort fallback.
+			Write(d, "&#9;");
+			return;
+		}
+
+		// Basic heuristic: treat tab n as advancing to tab stop n, but shrink based on preceding text width
+		// (prevents large fixed tab widths from wrapping to the next line).
+		FlushPendingAlignedTab(d);
+
+		var index = _state.TabIndex++;
+		var stop = index < stops.Count ? stops[index] : null;
+		var kind = stop?.Kind ?? DxpComputedTabStopKind.Left;
+		double stopPos = stop?.PositionPt ?? (_state.CurrentLineXPt + 36.0);
+
+		// For Right/Center tabs, the following segment is aligned to the stop, so we must buffer that segment
+		// to estimate its width before emitting the spacer.
+		if (kind == DxpComputedTabStopKind.Right || kind == DxpComputedTabStopKind.Center)
+		{
+			_state.PendingAlignedTabKind = kind;
+			_state.PendingAlignedTabStopPosPt = stopPos;
+			_state.PendingAlignedTabStartXPt = _state.CurrentLineXPt;
+			_state.PendingAlignedTabSegmentWidthPt = 0.0;
+			_state.PendingAlignedTabUnderline = _state.UnderlineDepth > 0;
+			_state.PendingAlignedTabBuffer.Clear();
+			return;
+		}
+
+		double width = stopPos - _state.CurrentLineXPt;
+		if (width < 0) width = 0;
+		_state.CurrentLineXPt = stopPos;
+
+		var cls = kind switch
+		{
+			DxpComputedTabStopKind.Right => "dxp-tab dxp-tab-right",
+			DxpComputedTabStopKind.Center => "dxp-tab dxp-tab-center",
+			DxpComputedTabStopKind.Decimal => "dxp-tab dxp-tab-decimal",
+			_ => "dxp-tab"
+		};
+
+		// Common Word pattern: an underlined run with only a tab should render as an underline up to the next tab stop.
+		// Text-decoration doesn't paint for empty spans, so render a border-bottom when underline is active.
+		var extraCss = _state.UnderlineDepth > 0 ? "height:1em;border-bottom:1px solid currentColor;" : "";
+		Write(d, $"<span class=\"{cls}\" style=\"display:inline-block;width:{width.ToString("0.###", CultureInfo.InvariantCulture)}pt;{extraCss}\"></span>");
+	}
+
+	private void FlushPendingAlignedTab(DxpIDocumentContext d)
+	{
+		if (_state.PendingAlignedTabKind == null)
+			return;
+
+		var kind = _state.PendingAlignedTabKind.Value;
+		double stopPos = _state.PendingAlignedTabStopPosPt;
+		double segmentWidth = _state.PendingAlignedTabSegmentWidthPt;
+		double startX = _state.PendingAlignedTabStartXPt;
+
+		double alignedStart = kind switch
+		{
+			DxpComputedTabStopKind.Right => stopPos - segmentWidth,
+			DxpComputedTabStopKind.Center => stopPos - (segmentWidth / 2.0),
+			_ => stopPos
+		};
+
+		if (alignedStart < startX)
+			alignedStart = startX;
+
+		double spacerWidth = alignedStart - startX;
+		if (spacerWidth < 0) spacerWidth = 0;
+
+		var cls = kind switch
+		{
+			DxpComputedTabStopKind.Right => "dxp-tab dxp-tab-right",
+			DxpComputedTabStopKind.Center => "dxp-tab dxp-tab-center",
+			_ => "dxp-tab"
+		};
+
+		var extraCss = _state.PendingAlignedTabUnderline ? "height:1em;border-bottom:1px solid currentColor;" : "";
+
+		_state.PendingAlignedTabKind = null;
+		_state.PendingAlignedTabUnderline = false;
+		var buffered = _state.PendingAlignedTabBuffer.ToString();
+		_state.PendingAlignedTabBuffer.Clear();
+		_state.PendingAlignedTabSegmentWidthPt = 0.0;
+
+		Write(d, $"<span class=\"{cls}\" style=\"display:inline-block;width:{spacerWidth.ToString("0.###", CultureInfo.InvariantCulture)}pt;{extraCss}\"></span>");
+		if (buffered.Length > 0)
+			Write(d, buffered);
+
+		_state.CurrentLineXPt = alignedStart + segmentWidth;
 	}
 
 	public override void VisitFootnoteReference(FootnoteReference fr, DxpIFootnoteContext footnote, DxpIDocumentContext d)
@@ -875,9 +1045,28 @@ body.dxp-root {
 		return $"<span style=\"font-size:small\">{HtmlAttr(who)} | {HtmlAttr(when)}</span>";
 	}
 
-	public override void VisitBreak(Break br, DxpIDocumentContext d) => Write(d, "<br/>");
-	public override void VisitCarriageReturn(CarriageReturn cr, DxpIDocumentContext d) => Write(d, "<br/>");
-	public override void VisitTab(TabChar tab, DxpIDocumentContext d) => Write(d, "&#9;");
+	public override void VisitBreak(Break br, DxpIDocumentContext d)
+	{
+		FlushPendingAlignedTab(d);
+		if (_state.InParagraph)
+		{
+			_state.CurrentLineXPt = 0.0;
+			_state.TabIndex = 0;
+		}
+		Write(d, "<br/>");
+	}
+
+	public override void VisitCarriageReturn(CarriageReturn cr, DxpIDocumentContext d)
+	{
+		FlushPendingAlignedTab(d);
+		if (_state.InParagraph)
+		{
+			_state.CurrentLineXPt = 0.0;
+			_state.TabIndex = 0;
+		}
+		Write(d, "<br/>");
+	}
+	public override void VisitTab(TabChar tab, DxpIDocumentContext d) => WriteTab(d);
 
 	public override IDisposable VisitRunBegin(Run r, DxpIDocumentContext d)
 	{
@@ -1140,6 +1329,12 @@ body.dxp-root {
 
 	private void WriteRouted(DxpHtmlVisitorState.InlineChangeMode mode, string str)
 	{
+		if (_state.PendingAlignedTabKind != null)
+		{
+			_state.PendingAlignedTabBuffer.Append(str);
+			return;
+		}
+
 		if (mode == DxpHtmlVisitorState.InlineChangeMode.Inserted)
 			_state.InsertedTextWriter.Write(str);
 		else if (mode == DxpHtmlVisitorState.InlineChangeMode.Deleted)

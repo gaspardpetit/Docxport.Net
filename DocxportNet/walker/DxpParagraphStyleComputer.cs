@@ -26,6 +26,8 @@ internal static class DxpParagraphStyleComputer
 
 		DxpComputedTextAlign? align = null;
 		var justification = p.ParagraphProperties?.Justification?.Val?.Value;
+		if (justification == null && d.Styles is DxpStyleResolver resolver)
+			justification = resolver.GetJustification(p);
 		if (justification == JustificationValues.Center)
 			align = DxpComputedTextAlign.Center;
 		else if (justification == JustificationValues.Right)
@@ -34,7 +36,13 @@ internal static class DxpParagraphStyleComputer
 			align = DxpComputedTextAlign.Justify;
 
 		var borders = ComputeBorders(p.ParagraphProperties?.ParagraphBorders);
-		var background = ComputeBackground(p.ParagraphProperties?.Shading);
+		var shd = p.ParagraphProperties?.Shading;
+		if (d.Styles is DxpStyleResolver r)
+		{
+			borders = ComputeBorders(r.GetParagraphBorders(p));
+			shd = r.GetParagraphShading(p);
+		}
+		var background = ComputeBackground(shd);
 
 		return new DxpComputedParagraphStyle(
 			MarginLeftPt: marginLeftPt,
@@ -43,7 +51,7 @@ internal static class DxpParagraphStyleComputer
 			BackgroundColorCss: background);
 	}
 
-	private static DxpComputedBoxBorders? ComputeBorders(ParagraphBorders? bdr)
+	internal static DxpComputedBoxBorders? ComputeBorders(ParagraphBorders? bdr)
 	{
 		if (bdr == null)
 			return null;
@@ -67,7 +75,7 @@ internal static class DxpParagraphStyleComputer
 		return ToCssColor(fill!);
 	}
 
-	private static DxpComputedBorder? ToComputedBorder(BorderType? b)
+	internal static DxpComputedBorder? ToComputedBorder(BorderType? b)
 	{
 		if (b == null)
 			return null;

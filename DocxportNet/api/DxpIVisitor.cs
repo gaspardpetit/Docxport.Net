@@ -168,6 +168,7 @@ public interface DxpIParagraphContext
 	DxpStyleEffectiveIndentTwips Indent { get; }
 	ParagraphProperties? Properties { get; }
 	DxpComputedParagraphStyle ComputedStyle { get; }
+	DxpComputedParagraphLayout? Layout { get; }
 }
 
 public interface DxpISectionContext
