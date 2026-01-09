@@ -406,8 +406,20 @@ body.dxp-root {
 			return;
 		}
 
+		var style = new StringBuilder();
+		if (!string.IsNullOrWhiteSpace(font.fontName))
+			style.Append("font-family:").Append(WebUtility.HtmlEncode(font.fontName)).Append(';');
+		if (font.fontSizeHalfPoints != null)
+			style.Append("font-size:").Append(font.fontSizeHalfPoints.Value / 2.0).Append("pt;");
+
+		if (style.Length == 0)
+		{
+			_state.FontSpanOpen = false;
+			return;
+		}
+
 		_state.FontSpanOpen = true;
-		Write(d, $"""<span class="dxp-font" style="font-family:{WebUtility.HtmlEncode(font.fontName ?? string.Empty)};font-size:{font.fontSizeHalfPoints / 2.0}pt;">""");
+		Write(d, $"""<span class="dxp-font" style="{style}">""");
 	}
 
 	public override void StyleFontEnd(DxpIDocumentContext d)
