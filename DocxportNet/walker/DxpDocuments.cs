@@ -89,7 +89,38 @@ public class DxpDocumentContext : DxpIDocumentContext
 		DxpMarker rejectMarker = advanceReject ? RejectLists.MaterializeMarker(p, Styles) : new DxpMarker(null, null, null);
 		DxpStyleEffectiveIndentTwips indent = AcceptLists.GetIndentation(p, Styles);
 		var computed = DxpParagraphStyleComputer.ComputeParagraphStyle(p, indent, this);
-		return new DxpParagraphContext(acceptMarker, rejectMarker, indent, p.ParagraphProperties, computed);
+
+		// Word treats consecutive paragraphs with identical borders as a single bordered block:
+		// - top border shows only on the first paragraph in the block
+		// - bottom border shows only on the last paragraph in the block
+		// This avoids "double" borders between adjacent paragraphs.
+		if (computed.Borders != null && Styles is DxpStyleResolver resolver)
+		{
+			var prev = p.PreviousSibling<Paragraph>();
+			var next = p.NextSibling<Paragraph>();
+
+			var prevBorders = prev != null ? DxpParagraphStyleComputer.ComputeBorders(resolver.GetParagraphBorders(prev)) : null;
+			var nextBorders = next != null ? DxpParagraphStyleComputer.ComputeBorders(resolver.GetParagraphBorders(next)) : null;
+
+			bool suppressTop = computed.Borders.Top != null && prevBorders?.Top != null && computed.Borders.Top == prevBorders.Top;
+			bool suppressBottom = computed.Borders.Bottom != null && nextBorders?.Bottom != null && computed.Borders.Bottom == nextBorders.Bottom;
+
+			if (suppressTop || suppressBottom)
+			{
+				computed = computed with
+				{
+					Borders = new DxpComputedBoxBorders(
+						Top: suppressTop ? null : computed.Borders.Top,
+						Right: computed.Borders.Right,
+						Bottom: suppressBottom ? null : computed.Borders.Bottom,
+						Left: computed.Borders.Left
+					)
+				};
+			}
+		}
+
+		var layout = DxpParagraphLayoutComputer.ComputeLayout(p, this);
+		return new DxpParagraphContext(acceptMarker, rejectMarker, indent, p.ParagraphProperties, computed, layout);
 	}
 
 	public IDisposable PushParagraph(Paragraph p, out DxpParagraphContext ctx, bool advanceAccept = true, bool advanceReject = true)

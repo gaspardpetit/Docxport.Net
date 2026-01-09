@@ -481,6 +481,121 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
 		return null;
 	}
 
+	public JustificationValues? GetJustification(Paragraph p)
+	{
+		// Direct formatting on the paragraph (highest precedence)
+		var direct = p.ParagraphProperties?.Justification?.Val?.Value;
+		if (direct != null)
+			return direct;
+
+		// From style chain
+		var pStyleId = p.ParagraphProperties?.ParagraphStyleId?.Val?.Value;
+		foreach (var s in EnumerateStyleChainRaw(pStyleId))
+		{
+			var jc = s.StyleParagraphProperties?.Justification?.Val?.Value;
+			if (jc != null)
+				return jc;
+		}
+
+		// Document defaults
+		return _docDefaultParaProps?.Justification?.Val?.Value;
+	}
+
+	public ParagraphBorders? GetParagraphBorders(Paragraph p)
+	{
+		var direct = p.ParagraphProperties?.ParagraphBorders;
+
+		// Resolve per-side, so partially-defined borders in styles/base styles still apply.
+		var pStyleId = p.ParagraphProperties?.ParagraphStyleId?.Val?.Value;
+
+		TopBorder? top = ResolveBorderSide(direct, pStyleId, b => b.TopBorder);
+		RightBorder? right = ResolveBorderSide(direct, pStyleId, b => b.RightBorder);
+		BottomBorder? bottom = ResolveBorderSide(direct, pStyleId, b => b.BottomBorder);
+		LeftBorder? left = ResolveBorderSide(direct, pStyleId, b => b.LeftBorder);
+
+		if (top == null && right == null && bottom == null && left == null)
+			return null;
+
+		return new ParagraphBorders
+		{
+			TopBorder = top,
+			RightBorder = right,
+			BottomBorder = bottom,
+			LeftBorder = left
+		};
+	}
+
+	public Shading? GetParagraphShading(Paragraph p)
+	{
+		var direct = p.ParagraphProperties?.Shading;
+		if (HasMeaningfulShadingFill(direct))
+			return direct;
+
+		var pStyleId = p.ParagraphProperties?.ParagraphStyleId?.Val?.Value;
+		foreach (var s in EnumerateStyleChainRaw(pStyleId))
+		{
+			var shd = s.StyleParagraphProperties?.Shading;
+			if (HasMeaningfulShadingFill(shd))
+				return shd;
+		}
+
+		var defaults = _docDefaultParaProps?.Shading;
+		return HasMeaningfulShadingFill(defaults) ? defaults : null;
+	}
+
+	public Tabs? GetParagraphTabs(Paragraph p)
+	{
+		var direct = p.ParagraphProperties?.Tabs;
+		if (direct != null)
+			return direct;
+
+		var pStyleId = p.ParagraphProperties?.ParagraphStyleId?.Val?.Value;
+		foreach (var s in EnumerateStyleChainRaw(pStyleId))
+		{
+			var tabs = s.StyleParagraphProperties?.Tabs;
+			if (tabs != null)
+				return tabs;
+		}
+
+		return _docDefaultParaProps?.Tabs;
+	}
+
+	private static bool HasMeaningfulShadingFill(Shading? shd)
+	{
+		var fill = shd?.Fill?.Value;
+		if (string.IsNullOrWhiteSpace(fill))
+			return false;
+		if (string.Equals(fill, "auto", StringComparison.OrdinalIgnoreCase))
+			return false;
+		return true;
+	}
+
+	private TBorder? ResolveBorderSide<TBorder>(
+		ParagraphBorders? direct,
+		string? pStyleId,
+		Func<ParagraphBorders, TBorder?> selector)
+		where TBorder : OpenXmlElement
+	{
+		var directSide = direct != null ? selector(direct) : null;
+		if (directSide != null)
+			return (TBorder)directSide.CloneNode(true);
+
+		foreach (var s in EnumerateStyleChainRaw(pStyleId))
+		{
+			var b = s.StyleParagraphProperties?.ParagraphBorders;
+			if (b == null)
+				continue;
+
+			var side = selector(b);
+			if (side != null)
+				return (TBorder)side.CloneNode(true);
+		}
+
+		var def = _docDefaultParaProps?.ParagraphBorders;
+		var defSide = def != null ? selector(def) : null;
+		return defSide != null ? (TBorder)defSide.CloneNode(true) : null;
+	}
+
 		// helper: raw style chain (same logic as EnumerateStyleChain)
 	private IEnumerable<Style> EnumerateStyleChainRaw(string? styleId)
 	{
