@@ -37,10 +37,15 @@ Most DOCX “save as text” pipelines lose important fidelity: strikethroughs a
 ### Command line
 
 ```bash
-# From release artifacts (self-contained binary):
+# Option A: Install the CLI as a .NET tool (recommended)
+dotnet tool install -g DocxportNet.Cli
+docxport my-doc.docx -o my-doc.md --tracked=accept
+
+# Option B: Download a self-contained binary from GitHub Releases
+# (pick your OS/arch zip, extract it, then run):
 ./docxport my-doc.docx -o my-doc.md --tracked=accept
 
-# From source:
+# From source (development):
 git clone https://github.com/gaspardpetit/Docxport.Net.git
 dotnet run --project DocxportNet.Cli -- my-doc.docx -o my-doc.md --tracked=accept
 ```
@@ -95,11 +100,18 @@ string rejected = DxpExport.ExportToString(docxPath, rejectVisitor);
 
 ### CLI
 
-A ready-to-use console app lives in `DocxportNet.Cli` (not published on NuGet). Example:
+A ready-to-use console app lives in `DocxportNet.Cli` and is published as a .NET tool. Example:
+
+```bash
+dotnet tool install -g DocxportNet.Cli
+docxport my.docx -o my.md --tracked=accept
+```
+
+Self-contained binaries for Windows/Linux/macOS are also published on GitHub Releases.
 
 ```bash
 dotnet run --project DocxportNet.Cli -- my.docx -o my.md --tracked=accept
-# or, when using release artifacts:
+# or, using a self-contained binary:
 ./docxport my.docx --format=html --tracked=inline
 ```
 
