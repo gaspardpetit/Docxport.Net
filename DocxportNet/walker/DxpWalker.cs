@@ -345,7 +345,9 @@ public class DxpWalker
 	{
 
 		DxpTableModel model = d.Tables.BuildTableModel(tbl);
-		var tableContext = new DxpTableContext(tbl, tbl.GetFirstChild<TableProperties>(), tbl.GetFirstChild<TableGrid>());
+		var tblPr = tbl.GetFirstChild<TableProperties>();
+		var tableResolvedStyle = d.TableStyleResolver.ResolveTableStyle(tblPr, model.RowCount, model.ColumnCount);
+		var tableContext = new DxpTableContext(tbl, tblPr, tbl.GetFirstChild<TableGrid>(), tableResolvedStyle);
 		int rowIndex = 0;
 
 		using (v.VisitTableBegin(tbl, model, d, tableContext))
@@ -3144,13 +3146,15 @@ public class DxpWalker
 		public TableProperties? Properties { get; private set; }
 		public TableGrid? Grid { get; private set; }
 		public DxpComputedTableStyle ComputedStyle { get; }
+		internal DxpTableStyleResolver.DxpResolvedTableStyle ResolvedStyle { get; }
 
-		public DxpTableContext(Table table, TableProperties? properties, TableGrid? grid)
+		public DxpTableContext(Table table, TableProperties? properties, TableGrid? grid, DxpTableStyleResolver.DxpResolvedTableStyle resolvedStyle)
 		{
 			Table = table;
 			Properties = properties;
 			Grid = grid;
-			ComputedStyle = DxpTableStyleResolver.ComputeTableStyle(properties);
+			ResolvedStyle = resolvedStyle;
+			ComputedStyle = resolvedStyle.ComputedTableStyle;
 		}
 
 		public void SetGrid(TableGrid grid)
@@ -3161,14 +3165,15 @@ public class DxpWalker
 
 	private sealed class DxpTableRowContext : DxpITableRowContext
 	{
-		public DxpITableContext Table { get; }
+		public DxpTableContext TableContext { get; }
+		public DxpITableContext Table => TableContext;
 		public bool IsHeader { get; }
 		public int Index { get; }
 		public TableRowProperties? Properties { get; }
 
-		public DxpTableRowContext(DxpITableContext table, int index, bool isHeader, TableRowProperties? properties)
+		public DxpTableRowContext(DxpTableContext table, int index, bool isHeader, TableRowProperties? properties)
 		{
-			Table = table;
+			TableContext = table;
 			Index = index;
 			IsHeader = isHeader;
 			Properties = properties;
@@ -3177,7 +3182,8 @@ public class DxpWalker
 
 	private sealed class DxpTableCellContext : DxpITableCellContext
 	{
-		public DxpITableRowContext Row { get; }
+		public DxpTableRowContext RowContext { get; }
+		public DxpITableRowContext Row => RowContext;
 		public int RowIndex { get; }
 		public int ColumnIndex { get; }
 		public int RowSpan { get; }
@@ -3185,15 +3191,15 @@ public class DxpWalker
 		public TableCellProperties? Properties { get; }
 		public DxpComputedTableCellStyle ComputedStyle { get; }
 
-		public DxpTableCellContext(DxpITableRowContext row, int rowIndex, int columnIndex, int rowSpan, int colSpan, TableCellProperties? properties)
+		public DxpTableCellContext(DxpTableRowContext row, int rowIndex, int columnIndex, int rowSpan, int colSpan, TableCellProperties? properties)
 		{
-			Row = row;
+			RowContext = row;
 			RowIndex = rowIndex;
 			ColumnIndex = columnIndex;
 			RowSpan = rowSpan;
 			ColSpan = colSpan;
 			Properties = properties;
-			ComputedStyle = DxpTableStyleResolver.ComputeCellStyle(properties, row.Table.ComputedStyle);
+			ComputedStyle = DxpTableStyleResolver.ComputeCellStyle(row.TableContext.ResolvedStyle, properties, rowIndex, columnIndex);
 		}
 	}
 

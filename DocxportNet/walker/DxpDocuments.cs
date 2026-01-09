@@ -16,6 +16,7 @@ public class DxpDocumentContext : DxpIDocumentContext
 	public DxpComments Comments { get; } = new DxpComments();
 	public DxpDrawings Drawings { get; } = new DxpDrawings();
 	public DxpTables Tables { get; } = new DxpTables();
+	internal DxpTableStyleResolver TableStyleResolver { get; }
 	public DxpFootnotes Footnotes { get; } = new DxpFootnotes();
 	public DocxEndnotes Endnotes { get; } = new DocxEndnotes();
 	public DxpLists AcceptLists { get; } = new DxpLists();
@@ -54,6 +55,7 @@ public class DxpDocumentContext : DxpIDocumentContext
 	public DxpDocumentContext(WordprocessingDocument doc)
 	{
 		CurrentFields = new();
+		TableStyleResolver = new DxpTableStyleResolver(doc);
 		DocumentProperties = new(null, null, null);
 		ReferencedBookmarkAnchors = CollectReferencedAnchors(doc);
 		var mainPart = doc.MainDocumentPart;

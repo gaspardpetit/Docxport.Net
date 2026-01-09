@@ -11,6 +11,13 @@ public sealed record DxpComputedBorder(
 	string ColorCss
 );
 
+public enum DxpComputedVerticalAlign
+{
+	Top,
+	Middle,
+	Bottom
+}
+
 public sealed record DxpComputedTableStyle(
 	DxpComputedBorder? TableBorder,
 	bool BorderCollapse,
@@ -18,5 +25,7 @@ public sealed record DxpComputedTableStyle(
 );
 
 public sealed record DxpComputedTableCellStyle(
-	DxpComputedBorder? Border
+	DxpComputedBorder? Border,
+	string? BackgroundColorCss,
+	DxpComputedVerticalAlign? VerticalAlign
 );
