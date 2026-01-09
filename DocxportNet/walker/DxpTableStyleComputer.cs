@@ -1,6 +1,5 @@
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
-using System.Globalization;
 
 namespace DocxportNet.Walker;
 
@@ -21,9 +20,34 @@ internal static class DxpTableStyleComputer
 
 	public static DxpComputedTableCellStyle ComputeCellStyle(TableCellProperties? cellProperties, DxpComputedTableStyle tableStyle)
 	{
+		var direct = ComputeDirectCellStyle(cellProperties);
+		var border = direct.Border ?? tableStyle.DefaultCellBorder;
+		return new DxpComputedTableCellStyle(Border: border, BackgroundColorCss: direct.BackgroundColorCss, VerticalAlign: direct.VerticalAlign);
+	}
+
+	public static DxpComputedTableCellStyle ComputeDirectCellStyle(TableCellProperties? cellProperties)
+	{
 		var b = PickBorder(cellProperties?.TableCellBorders);
-		var border = ToComputedBorder(b) ?? tableStyle.DefaultCellBorder;
-		return new DxpComputedTableCellStyle(Border: border);
+		var border = ToComputedBorder(b);
+
+		string? background = null;
+		var fill = cellProperties?.Shading?.Fill?.Value;
+		if (!string.IsNullOrWhiteSpace(fill) && !string.Equals(fill, "auto", StringComparison.OrdinalIgnoreCase))
+			background = ToCssColor(fill!);
+
+		DxpComputedVerticalAlign? verticalAlign = null;
+		var v = cellProperties?.TableCellVerticalAlignment?.Val?.Value;
+		if (v != null)
+		{
+			if (v == TableVerticalAlignmentValues.Top)
+				verticalAlign = DxpComputedVerticalAlign.Top;
+			else if (v == TableVerticalAlignmentValues.Center)
+				verticalAlign = DxpComputedVerticalAlign.Middle;
+			else if (v == TableVerticalAlignmentValues.Bottom)
+				verticalAlign = DxpComputedVerticalAlign.Bottom;
+		}
+
+		return new DxpComputedTableCellStyle(Border: border, BackgroundColorCss: background, VerticalAlign: verticalAlign);
 	}
 
 	private static DxpComputedBorder? ToComputedBorder(BorderType? b)
