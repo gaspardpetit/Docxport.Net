@@ -50,6 +50,7 @@ jobs:
             sed -i 's/Include="'"$pkg"'" Version="[^"]*"/Include="'"$pkg"'" Version="'"$VERSION"'"/' README.md
           done
           sed -i 's/<Version>.*<\/Version>/<Version>'"$VERSION"'<\/Version>/' Directory.Build.props
+          sed -i 's/<DxpCliFallbackVersion>.*<\/DxpCliFallbackVersion>/<DxpCliFallbackVersion>'"$VERSION"'<\/DxpCliFallbackVersion>/' Directory.Build.targets
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -86,6 +87,7 @@ jobs:
           VERSION: ${{ steps.version.outputs.version }}
         run: |
           sed -i 's/<Version>.*<\/Version>/<Version>'"$VERSION"'-local<\/Version>/' Directory.Build.props
+          sed -i 's/<DxpCliFallbackVersion>.*<\/DxpCliFallbackVersion>/<DxpCliFallbackVersion>'"$VERSION"'-local<\/DxpCliFallbackVersion>/' Directory.Build.targets
 
       - name: Commit version bump
         env:
@@ -96,7 +98,7 @@ jobs:
           if git diff --quiet; then
             echo "No changes to commit."
           else
-            git add README.md Directory.Build.props
+            git add README.md Directory.Build.props Directory.Build.targets
             git commit -m "Release $VERSION"
             git push origin HEAD:main
           fi

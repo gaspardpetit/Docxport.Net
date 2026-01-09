@@ -1,0 +1,13 @@
+<Project>
+  <!--
+    The .NET SDK defaults $(Version) to 1.0.0 (even for non-pack builds like the CLI).
+    Override that late in evaluation so the CLI reports a useful version unless explicitly set.
+  -->
+  <PropertyGroup>
+    <DxpCliFallbackVersion>1.1.7-local</DxpCliFallbackVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Version)' == '' Or '$(Version)' == '1.0.0'">
+    <Version>$(DxpCliFallbackVersion)</Version>
+  </PropertyGroup>
+</Project>

@@ -40,8 +40,35 @@ jobs:
       - name: Restore
         run: dotnet restore DocxportNet.sln
 
-      - name: Publish CLI
-        run: dotnet publish DocxportNet.Cli/DocxportNet.Cli.csproj --configuration Release -r ${{ matrix.runtime }} --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true -o artifacts/cli/${{ matrix.runtime }}
+      - name: Publish CLI (Unix)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          VERSION=""
+          if [ "${{ github.event_name }}" = "release" ]; then
+            TAG="${{ github.event.release.tag_name }}"
+            VERSION="${TAG#v}"
+          fi
+          if [ -n "$VERSION" ]; then
+            dotnet publish DocxportNet.Cli/DocxportNet.Cli.csproj --configuration Release -r ${{ matrix.runtime }} --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true -p:Version="$VERSION" -o artifacts/cli/${{ matrix.runtime }}
+          else
+            dotnet publish DocxportNet.Cli/DocxportNet.Cli.csproj --configuration Release -r ${{ matrix.runtime }} --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true -o artifacts/cli/${{ matrix.runtime }}
+          fi
+
+      - name: Publish CLI (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $version = ""
+          if ("${{ github.event_name }}" -eq "release") {
+            $tag = "${{ github.event.release.tag_name }}"
+            $version = $tag -replace '^v',''
+          }
+          if ($version) {
+            dotnet publish DocxportNet.Cli/DocxportNet.Cli.csproj --configuration Release -r ${{ matrix.runtime }} --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true -p:Version=$version -o artifacts/cli/${{ matrix.runtime }}
+          } else {
+            dotnet publish DocxportNet.Cli/DocxportNet.Cli.csproj --configuration Release -r ${{ matrix.runtime }} --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true -o artifacts/cli/${{ matrix.runtime }}
+          }
 
       - name: Create archive (Unix)
         if: runner.os != 'Windows'
