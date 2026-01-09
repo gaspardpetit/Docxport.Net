@@ -1,8 +1,8 @@
 <!-- Author: Petit, Gaspard -->
 <!-- LastModifiedBy: Petit, Gaspard -->
-<!-- Revision: 4 -->
+<!-- Revision: 6 -->
 <!-- Created: 2026-01-09 02:37:00Z -->
-<!-- Modified: 2026-01-09 02:50:00Z -->
+<!-- Modified: 2026-01-09 05:06:00Z -->
 
 Normal
 
@@ -107,7 +107,7 @@ Row Span
 </td>
   </tr>
 </table>
-Row Span
+Col + Row Span
 
 <table>
   <tr>

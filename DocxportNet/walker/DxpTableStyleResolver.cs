@@ -39,12 +39,13 @@ internal sealed class DxpTableStyleResolver
 		return new DxpResolvedTableStyle(styleId, look, rowCount, colCount, styleChain, baseTableStyle, baseCell);
 	}
 
-	public static DxpComputedTableCellStyle ComputeCellStyle(DxpResolvedTableStyle resolved, TableCellProperties? cellProperties, int rowIndex, int colIndex)
+	public static DxpComputedTableCellStyle ComputeCellStyle(DxpResolvedTableStyle resolved, TableCellProperties? cellProperties, int rowIndex, int colIndex, int rowSpan, int colSpan)
 	{
 		var tableStyle = resolved.ComputedTableStyle;
 		var baseCell = resolved.BaseCellStyle;
 
-		var computedBorder = baseCell.Border ?? tableStyle.DefaultCellBorder;
+		var computedBorders = ResolveInitialBorders(resolved, baseCell, tableStyle, rowIndex, colIndex, rowSpan, colSpan);
+		var computedBorder = CollapseToSingleBorder(computedBorders) ?? baseCell.Border ?? tableStyle.DefaultCellBorder;
 		var computedBackground = baseCell.BackgroundColorCss;
 		var computedVAlign = baseCell.VerticalAlign;
 
@@ -52,8 +53,16 @@ internal sealed class DxpTableStyleResolver
 		foreach (var type in resolved.GetApplicableConditionalTypes(rowIndex, colIndex))
 		{
 			var ov = ComputeConditionalOverride(resolved.StyleChain, type);
-			if (ov.BorderSet)
-				computedBorder = ov.Border ?? tableStyle.DefaultCellBorder;
+			if (ov.BordersSet && ov.Borders != null)
+			{
+				computedBorders = ApplyBorderOverride(computedBorders, ov.Borders);
+				computedBorder = CollapseToSingleBorder(computedBorders) ?? computedBorder;
+			}
+			else if (ov.BorderSet && ov.Border != null)
+			{
+				computedBorders = new DxpComputedBoxBorders(ov.Border, ov.Border, ov.Border, ov.Border);
+				computedBorder = ov.Border;
+			}
 			if (ov.BackgroundSet)
 				computedBackground = ov.BackgroundColorCss;
 			if (ov.VerticalAlignSet)
@@ -62,14 +71,26 @@ internal sealed class DxpTableStyleResolver
 
 		// Direct cell formatting always wins.
 		var direct = DxpTableStyleComputer.ComputeDirectCellStyle(cellProperties);
-		if (direct.Border != null)
+		var directBorders = ComputeDirectCellBorders(cellProperties);
+		if (directBorders != null)
+		{
+			computedBorders = ApplyBorderOverride(computedBorders, directBorders);
+			computedBorder = CollapseToSingleBorder(computedBorders) ?? computedBorder;
+		}
+		else if (direct.Border != null)
+		{
+			computedBorders = new DxpComputedBoxBorders(direct.Border, direct.Border, direct.Border, direct.Border);
 			computedBorder = direct.Border;
+		}
 		if (direct.BackgroundColorCss != null)
 			computedBackground = direct.BackgroundColorCss;
 		if (direct.VerticalAlign != null)
 			computedVAlign = direct.VerticalAlign;
 
-		return new DxpComputedTableCellStyle(Border: computedBorder, BackgroundColorCss: computedBackground, VerticalAlign: computedVAlign);
+		return new DxpComputedTableCellStyle(Border: computedBorder, BackgroundColorCss: computedBackground, VerticalAlign: computedVAlign)
+		{
+			Borders = computedBorders
+		};
 	}
 
 	private static DxpComputedTableStyle ComputeBaseTableStyle(IReadOnlyList<Style> styleChain, TableProperties? directTableProperties)
@@ -84,15 +105,27 @@ internal sealed class DxpTableStyleResolver
 		}
 		merged.Apply(directTableProperties?.TableBorders);
 
-		var border = PickComputedBorder(merged).Border;
-		if (border == null)
-			return new DxpComputedTableStyle(TableBorder: null, BorderCollapse: false, DefaultCellBorder: null);
+		var tableBorders = ComputeTableBoxBorders(merged, out var anyTableBorderSpecified);
+		var tableBorder = PickComputedBorder(merged).Border;
 
-		// DefaultCellBorder may be overridden by style tcPr later, but keeps the prior "same border everywhere" fallback.
-		return new DxpComputedTableStyle(
-			TableBorder: border,
-			BorderCollapse: true,
-			DefaultCellBorder: border);
+		// Default cell borders: use insideH/insideV when available, otherwise fall back to the single-border behavior.
+		var defaultCellBorders = ComputeDefaultCellBoxBordersFromTable(merged, tableBorder);
+		var defaultCellBorder = tableBorder;
+
+		bool collapse = anyTableBorderSpecified && (
+			HasVisibleBorder(tableBorders) ||
+			HasVisibleBorder(defaultCellBorders) ||
+			(tableBorder != null && tableBorder.LineStyle != DxpComputedBorderLineStyle.None));
+		var result = new DxpComputedTableStyle(
+			TableBorder: tableBorder,
+			BorderCollapse: collapse,
+			DefaultCellBorder: defaultCellBorder)
+		{
+			TableBorders = tableBorders,
+			DefaultCellBorders = defaultCellBorders
+		};
+
+		return result;
 	}
 
 	private static DxpComputedTableCellStyle ComputeBaseCellStyleFromStyles(IReadOnlyList<Style> styleChain, DxpComputedTableStyle tableStyle)
@@ -110,21 +143,23 @@ internal sealed class DxpTableStyleResolver
 			mergedOverrides.ApplyCellProperties(stcp);
 		}
 
-		var border = PickComputedBorder(mergedBorders);
-		var effectiveBorder = border.BorderSet ? border.Border : (tableStyle.DefaultCellBorder ?? tableStyle.TableBorder);
+		var styleBox = ComputeCellBoxBordersFromMerged(mergedBorders);
+		var border = styleBox != null ? CollapseToSingleBorder(styleBox) : null;
 
 		return new DxpComputedTableCellStyle(
-			Border: effectiveBorder,
+			Border: border,
 			BackgroundColorCss: mergedOverrides.BackgroundSet ? mergedOverrides.BackgroundColorCss : null,
-			VerticalAlign: mergedOverrides.VerticalAlignSet ? mergedOverrides.VerticalAlign : null);
+			VerticalAlign: mergedOverrides.VerticalAlignSet ? mergedOverrides.VerticalAlign : null)
+		{
+			Borders = styleBox
+		};
 	}
 
 	private static ResolvedOverride ComputeConditionalOverride(IReadOnlyList<Style> styleChain, string type)
 	{
 		ResolvedOverride result = default;
 		var mergedBorders = new MergedCellBorders();
-		DxpComputedBorder? computedBorder = null;
-		bool borderSet = false;
+		DxpComputedBoxBorders? rawMerged = null;
 
 		foreach (var s in styleChain)
 		{
@@ -148,24 +183,31 @@ internal sealed class DxpTableStyleResolver
 					mergedBorders.Apply(tcPr.GetFirstChild<TableCellBorders>());
 					result.ApplyCellProperties(tcPr);
 
-					// Fallback: parse borders from raw XML if they were not materialized into TableCellBorders/BorderType.
 					var tcBorders = FindFirstChildByLocalName(tcPr, "tcBorders");
 					if (tcBorders != null)
 					{
-						var b = PickFirstBorderCandidateFromRaw(tcBorders);
-						borderSet = true;
-						if (computedBorder == null)
-							computedBorder = b;
+						var raw = ParseBoxBordersFromRaw(tcBorders);
+						if (raw != null)
+							rawMerged = rawMerged == null ? raw : ApplyBorderOverride(rawMerged, raw);
 					}
 				}
 			}
 		}
 
-		var border = PickComputedBorder(mergedBorders);
-		if (border.BorderSet || borderSet)
+		var styleBox = ComputeCellBoxBordersFromMerged(mergedBorders);
+		if (styleBox == null)
+			styleBox = rawMerged;
+		else if (rawMerged != null)
+			styleBox = ApplyBorderOverride(styleBox, rawMerged);
+
+		result.BordersSet = styleBox != null;
+		result.Borders = styleBox;
+
+		var single = styleBox != null ? CollapseToSingleBorder(styleBox) : null;
+		if (single != null)
 		{
 			result.BorderSet = true;
-			result.Border = border.Border ?? computedBorder;
+			result.Border = single;
 		}
 
 		return result;
@@ -251,34 +293,52 @@ internal sealed class DxpTableStyleResolver
 		return null;
 	}
 
-	private static DxpComputedBorder? PickFirstBorderCandidateFromRaw(OpenXmlElement tcBorders)
+	private static DxpComputedBoxBorders? ParseBoxBordersFromRaw(OpenXmlElement tcBorders)
 	{
-		// Mirrors the existing "pick first non-null border" behavior.
-		foreach (var name in new[] { "top", "left", "bottom", "right", "insideH", "insideV" })
-		{
-			var b = FindFirstChildByLocalName(tcBorders, name);
-			if (b == null)
-				continue;
+		DxpComputedBorder? top = ParseBorderFromRaw(tcBorders, "top");
+		DxpComputedBorder? right = ParseBorderFromRaw(tcBorders, "right");
+		DxpComputedBorder? bottom = ParseBorderFromRaw(tcBorders, "bottom");
+		DxpComputedBorder? left = ParseBorderFromRaw(tcBorders, "left");
 
-			var val = GetAttributeValue(b, "val");
-			if (string.Equals(val, "none", StringComparison.OrdinalIgnoreCase) || string.Equals(val, "nil", StringComparison.OrdinalIgnoreCase))
-				continue;
+		if (top == null && right == null && bottom == null && left == null)
+			return null;
 
-			var sz = GetAttributeValue(b, "sz");
-			if (string.IsNullOrWhiteSpace(sz) || !int.TryParse(sz, out int sizeEighthPoints) || sizeEighthPoints <= 0)
-				continue;
+		return new DxpComputedBoxBorders(top, right, bottom, left);
+	}
 
-			double pt = sizeEighthPoints / 8.0;
-			string? color = GetAttributeValue(b, "color");
-			if (string.IsNullOrEmpty(color) || string.Equals(color, "auto", StringComparison.OrdinalIgnoreCase))
-				color = "#000000";
-			else
-				color = ToCssColor(color!);
+	private static DxpComputedBorder? ParseBorderFromRaw(OpenXmlElement tcBorders, string sideLocalName)
+	{
+		var b = FindFirstChildByLocalName(tcBorders, sideLocalName);
+		if (b == null)
+			return null;
 
-			return new DxpComputedBorder(WidthPt: pt, LineStyle: DxpComputedBorderLineStyle.Solid, ColorCss: color);
-		}
+		var val = GetAttributeValue(b, "val");
+		if (string.Equals(val, "none", StringComparison.OrdinalIgnoreCase) || string.Equals(val, "nil", StringComparison.OrdinalIgnoreCase))
+			return new DxpComputedBorder(WidthPt: 0, LineStyle: DxpComputedBorderLineStyle.None, ColorCss: "#000000");
 
-		return null;
+		var sz = GetAttributeValue(b, "sz");
+		if (string.IsNullOrWhiteSpace(sz) || !int.TryParse(sz, out int sizeEighthPoints) || sizeEighthPoints <= 0)
+			return null;
+
+		double pt = sizeEighthPoints / 8.0;
+		DxpComputedBorderLineStyle line = DxpComputedBorderLineStyle.Solid;
+		if (string.Equals(val, "dotted", StringComparison.OrdinalIgnoreCase))
+			line = DxpComputedBorderLineStyle.Dotted;
+		else if (string.Equals(val, "dashed", StringComparison.OrdinalIgnoreCase) ||
+		         string.Equals(val, "dashSmallGap", StringComparison.OrdinalIgnoreCase) ||
+		         string.Equals(val, "dotDash", StringComparison.OrdinalIgnoreCase) ||
+		         string.Equals(val, "dotDotDash", StringComparison.OrdinalIgnoreCase))
+			line = DxpComputedBorderLineStyle.Dashed;
+		else if (string.Equals(val, "double", StringComparison.OrdinalIgnoreCase))
+			line = DxpComputedBorderLineStyle.Double;
+
+		string? color = GetAttributeValue(b, "color");
+		if (string.IsNullOrEmpty(color) || string.Equals(color, "auto", StringComparison.OrdinalIgnoreCase))
+			color = "#000000";
+		else
+			color = ToCssColor(color!);
+
+		return new DxpComputedBorder(WidthPt: pt, LineStyle: line, ColorCss: color);
 	}
 
 	private static (bool BorderSet, DxpComputedBorder? Border) PickComputedBorder(MergedTableBorders merged)
@@ -310,13 +370,14 @@ internal sealed class DxpTableStyleResolver
 
 		var val = b.Val?.Value;
 		if (val == BorderValues.None || val == BorderValues.Nil)
-			return null;
+			return new DxpComputedBorder(WidthPt: 0, LineStyle: DxpComputedBorderLineStyle.None, ColorCss: "#000000");
 
 		int sizeEighthPoints = b.Size != null ? (int)b.Size.Value : 0;
 		if (sizeEighthPoints <= 0)
 			return null;
 
 		double pt = sizeEighthPoints / 8.0;
+		var line = MapLineStyle(val);
 		string? color = b.Color?.Value;
 		if (string.IsNullOrEmpty(color) || string.Equals(color, "auto", StringComparison.OrdinalIgnoreCase))
 			color = "#000000";
@@ -325,8 +386,19 @@ internal sealed class DxpTableStyleResolver
 
 		return new DxpComputedBorder(
 			WidthPt: pt,
-			LineStyle: DxpComputedBorderLineStyle.Solid,
+			LineStyle: line,
 			ColorCss: color);
+	}
+
+	private static DxpComputedBorderLineStyle MapLineStyle(BorderValues? val)
+	{
+		if (val == BorderValues.Dotted)
+			return DxpComputedBorderLineStyle.Dotted;
+		if (val == BorderValues.DashSmallGap || val == BorderValues.Dashed || val == BorderValues.DotDash || val == BorderValues.DotDotDash)
+			return DxpComputedBorderLineStyle.Dashed;
+		if (val == BorderValues.Double)
+			return DxpComputedBorderLineStyle.Double;
+		return DxpComputedBorderLineStyle.Solid;
 	}
 
 	private static string ToCssColor(string color)
@@ -410,6 +482,8 @@ internal sealed class DxpTableStyleResolver
 	{
 		public bool BorderSet;
 		public DxpComputedBorder? Border;
+		public bool BordersSet;
+		public DxpComputedBoxBorders? Borders;
 		public bool BackgroundSet;
 		public string? BackgroundColorCss;
 		public bool VerticalAlignSet;
@@ -453,6 +527,142 @@ internal sealed class DxpTableStyleResolver
 					VerticalAlign = null;
 			}
 		}
+	}
+
+	private static DxpComputedBoxBorders ResolveInitialBorders(DxpResolvedTableStyle resolved, DxpComputedTableCellStyle baseCell, DxpComputedTableStyle tableStyle, int rowIndex, int colIndex, int rowSpan, int colSpan)
+	{
+		// Start from the position-based table defaults (outer vs inside borders),
+		// then apply style-level defaults (tcPr), then conditional, then direct tcPr.
+		var borders = ComputePositionBasedTableCellBorders(resolved, tableStyle, rowIndex, colIndex, rowSpan, colSpan);
+
+		if (baseCell.Border != null)
+			borders = new DxpComputedBoxBorders(baseCell.Border, baseCell.Border, baseCell.Border, baseCell.Border);
+		if (baseCell.Borders != null)
+			borders = ApplyBorderOverride(borders, baseCell.Borders);
+
+		return borders;
+	}
+
+	private static DxpComputedBoxBorders ComputePositionBasedTableCellBorders(DxpResolvedTableStyle resolved, DxpComputedTableStyle tableStyle, int rowIndex, int colIndex, int rowSpan, int colSpan)
+	{
+		var inside = tableStyle.DefaultCellBorders;
+		var outer = tableStyle.TableBorders;
+		DxpComputedBorder? insideAll = tableStyle.DefaultCellBorder ?? tableStyle.TableBorder;
+		DxpComputedBorder? outerAll = tableStyle.TableBorder;
+
+		bool isTopEdge = rowIndex == 0;
+		bool isBottomEdge = (resolved.RowCount > 0) && (rowIndex + Math.Max(1, rowSpan) - 1) == (resolved.RowCount - 1);
+		bool isLeftEdge = colIndex == 0;
+		bool isRightEdge = (resolved.ColCount > 0) && (colIndex + Math.Max(1, colSpan) - 1) == (resolved.ColCount - 1);
+
+		var top = isTopEdge ? (outer?.Top ?? outerAll) : (inside?.Top ?? insideAll);
+		var bottom = isBottomEdge ? (outer?.Bottom ?? outerAll) : (inside?.Bottom ?? insideAll);
+		var left = isLeftEdge ? (outer?.Left ?? outerAll) : (inside?.Left ?? insideAll);
+		var right = isRightEdge ? (outer?.Right ?? outerAll) : (inside?.Right ?? insideAll);
+
+		// Final fallback: if anything is still missing, use the best global fallback.
+		var fallback = insideAll ?? outerAll;
+		top ??= fallback;
+		right ??= fallback;
+		bottom ??= fallback;
+		left ??= fallback;
+
+		return new DxpComputedBoxBorders(top, right, bottom, left);
+	}
+
+	private static DxpComputedBoxBorders ApplyBorderOverride(DxpComputedBoxBorders current, DxpComputedBoxBorders ov)
+	{
+		return new DxpComputedBoxBorders(
+			Top: ov.Top ?? current.Top,
+			Right: ov.Right ?? current.Right,
+			Bottom: ov.Bottom ?? current.Bottom,
+			Left: ov.Left ?? current.Left);
+	}
+
+	private static DxpComputedBorder? CollapseToSingleBorder(DxpComputedBoxBorders borders)
+	{
+		if (borders.Top == null)
+			return null;
+		if (!Equals(borders.Top, borders.Right) || !Equals(borders.Top, borders.Bottom) || !Equals(borders.Top, borders.Left))
+			return null;
+		return borders.Top;
+	}
+
+	private static bool HasVisibleBorder(DxpComputedBoxBorders? borders)
+	{
+		if (borders == null)
+			return false;
+
+		foreach (var b in new[] { borders.Top, borders.Right, borders.Bottom, borders.Left })
+		{
+			if (b != null && b.LineStyle != DxpComputedBorderLineStyle.None)
+				return true;
+		}
+		return false;
+	}
+
+	private static DxpComputedBoxBorders? ComputeDirectCellBorders(TableCellProperties? cellProperties)
+	{
+		var borders = cellProperties?.TableCellBorders;
+		if (borders == null)
+			return null;
+
+		// Only treat explicitly-specified sides as overrides; null means "fall back".
+		var top = ToComputedBorder(borders.TopBorder);
+		var right = ToComputedBorder(borders.RightBorder);
+		var bottom = ToComputedBorder(borders.BottomBorder);
+		var left = ToComputedBorder(borders.LeftBorder);
+
+		if (top == null && right == null && bottom == null && left == null)
+			return null;
+
+		return new DxpComputedBoxBorders(top, right, bottom, left);
+	}
+
+	private static DxpComputedBoxBorders? ComputeTableBoxBorders(MergedTableBorders borders, out bool anySpecified)
+	{
+		anySpecified = borders.AnySpecified;
+		if (!borders.AnySpecified)
+			return null;
+
+		var top = ToComputedBorder(borders.Top);
+		var right = ToComputedBorder(borders.Right);
+		var bottom = ToComputedBorder(borders.Bottom);
+		var left = ToComputedBorder(borders.Left);
+
+		return new DxpComputedBoxBorders(top, right, bottom, left);
+	}
+
+	private static DxpComputedBoxBorders? ComputeDefaultCellBoxBordersFromTable(MergedTableBorders borders, DxpComputedBorder? fallback)
+	{
+		if (!borders.AnySpecified)
+			return null;
+
+		var insideH = ToComputedBorder(borders.InsideH);
+		var insideV = ToComputedBorder(borders.InsideV);
+
+		var topBottom = insideH ?? fallback;
+		var leftRight = insideV ?? fallback;
+		if (topBottom == null && leftRight == null)
+			return null;
+
+		return new DxpComputedBoxBorders(Top: topBottom, Right: leftRight, Bottom: topBottom, Left: leftRight);
+	}
+
+	private static DxpComputedBoxBorders? ComputeCellBoxBordersFromMerged(MergedCellBorders borders)
+	{
+		if (!borders.AnySpecified)
+			return null;
+
+		var top = ToComputedBorder(borders.Top);
+		var right = ToComputedBorder(borders.Right);
+		var bottom = ToComputedBorder(borders.Bottom);
+		var left = ToComputedBorder(borders.Left);
+
+		if (top == null && right == null && bottom == null && left == null)
+			return null;
+
+		return new DxpComputedBoxBorders(top, right, bottom, left);
 	}
 
 	private sealed class MergedTableBorders

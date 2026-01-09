@@ -3199,7 +3199,7 @@ public class DxpWalker
 			RowSpan = rowSpan;
 			ColSpan = colSpan;
 			Properties = properties;
-			ComputedStyle = DxpTableStyleResolver.ComputeCellStyle(row.TableContext.ResolvedStyle, properties, rowIndex, columnIndex);
+			ComputedStyle = DxpTableStyleResolver.ComputeCellStyle(row.TableContext.ResolvedStyle, properties, rowIndex, columnIndex, rowSpan, colSpan);
 		}
 	}
 
