@@ -55,11 +55,16 @@ internal static class DxpTableStyleComputer
 		if (b == null)
 			return null;
 
+		var val = b.Val?.Value;
+		if (val == BorderValues.None || val == BorderValues.Nil)
+			return new DxpComputedBorder(WidthPt: 0, LineStyle: DxpComputedBorderLineStyle.None, ColorCss: "#000000");
+
 		int sizeEighthPoints = b.Size != null ? (int)b.Size.Value : 0;
 		if (sizeEighthPoints <= 0)
 			return null;
 
 		double pt = sizeEighthPoints / 8.0;
+		var line = MapLineStyle(val);
 		string? color = b.Color?.Value;
 		if (string.IsNullOrEmpty(color) || string.Equals(color, "auto", StringComparison.OrdinalIgnoreCase))
 			color = "#000000";
@@ -68,8 +73,19 @@ internal static class DxpTableStyleComputer
 
 		return new DxpComputedBorder(
 			WidthPt: pt,
-			LineStyle: DxpComputedBorderLineStyle.Solid,
+			LineStyle: line,
 			ColorCss: color);
+	}
+
+	private static DxpComputedBorderLineStyle MapLineStyle(BorderValues? val)
+	{
+		if (val == BorderValues.Dotted)
+			return DxpComputedBorderLineStyle.Dotted;
+		if (val == BorderValues.DashSmallGap || val == BorderValues.Dashed || val == BorderValues.DotDash || val == BorderValues.DotDotDash)
+			return DxpComputedBorderLineStyle.Dashed;
+		if (val == BorderValues.Double)
+			return DxpComputedBorderLineStyle.Double;
+		return DxpComputedBorderLineStyle.Solid;
 	}
 
 	private static BorderType? PickBorder(TableBorders? borders)
