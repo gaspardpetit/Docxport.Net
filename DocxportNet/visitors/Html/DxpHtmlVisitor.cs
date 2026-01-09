@@ -218,15 +218,16 @@ body.dxp-root {
 }
 
 .dxp-heading {
-  margin: 0.2em 0 0.4em;
+  margin: 0;
   font-weight: 600;
+  line-height: 1.2;
 }
-.dxp-heading-1 { font-size: 1.8em; }
-.dxp-heading-2 { font-size: 1.5em; }
-.dxp-heading-3 { font-size: 1.3em; }
-.dxp-heading-4 { font-size: 1.15em; }
-.dxp-heading-5 { font-size: 1.05em; }
-.dxp-heading-6 { font-size: 1em; }
+.dxp-heading-1 { font-size: inherit; }
+.dxp-heading-2 { font-size: inherit; }
+.dxp-heading-3 { font-size: inherit; }
+.dxp-heading-4 { font-size: inherit; }
+.dxp-heading-5 { font-size: inherit; }
+.dxp-heading-6 { font-size: inherit; }
 
 .dxp-paragraph {
   margin: 0 0 0.6em;

@@ -560,6 +560,42 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
 		return _docDefaultParaProps?.Tabs;
 	}
 
+	public SpacingBetweenLines? GetParagraphSpacing(Paragraph p)
+	{
+		var direct = p.ParagraphProperties?.SpacingBetweenLines;
+		if (direct != null)
+			return direct;
+
+		var pStyleId = p.ParagraphProperties?.ParagraphStyleId?.Val?.Value;
+		foreach (var s in EnumerateStyleChainRaw(pStyleId))
+		{
+			var spacing = s.StyleParagraphProperties?.SpacingBetweenLines;
+			if (spacing != null)
+				return spacing;
+		}
+
+		// Do not apply document defaults here; most output already has sensible CSS defaults and
+		// surfacing doc defaults would introduce pervasive wrappers in "plain" visitors.
+		return null;
+	}
+
+	public bool GetContextualSpacing(Paragraph p)
+	{
+		var direct = p.ParagraphProperties?.ContextualSpacing;
+		if (direct != null)
+			return direct.Val == null || direct.Val.Value;
+
+		var pStyleId = p.ParagraphProperties?.ParagraphStyleId?.Val?.Value;
+		foreach (var s in EnumerateStyleChainRaw(pStyleId))
+		{
+			var cs = s.StyleParagraphProperties?.ContextualSpacing;
+			if (cs != null)
+				return cs.Val == null || cs.Val.Value;
+		}
+
+		return false;
+	}
+
 	private static bool HasMeaningfulShadingFill(Shading? shd)
 	{
 		var fill = shd?.Fill?.Value;

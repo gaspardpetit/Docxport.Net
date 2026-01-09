@@ -6,16 +6,22 @@
 
 original text, added text, original text
 
-1:  Original 1
+<p style="margin-bottom:0pt;">1:  Original 1</p>
 
-2:  Original 2
 
-3:  Original 3
+<p style="margin-top:0pt;margin-bottom:0pt;">2:  Original 2</p>
 
-4:  Added 5
 
-5:  Original 6
+<p style="margin-top:0pt;margin-bottom:0pt;">3:  Original 3</p>
 
-6:  Added 7
 
-7:  Original 9
+<p style="margin-top:0pt;margin-bottom:0pt;">4:  Added 5</p>
+
+
+<p style="margin-top:0pt;margin-bottom:0pt;">5:  Original 6</p>
+
+
+<p style="margin-top:0pt;margin-bottom:0pt;">6:  Added 7</p>
+
+
+<p style="margin-top:0pt;">7:  Original 9</p>

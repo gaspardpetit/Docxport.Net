@@ -6,20 +6,28 @@
 
 original text<del>, deleted text</del><u>, added text</u>, original text
 
-1:  Original 1
+<p style="margin-bottom:0pt;">1:  Original 1</p>
 
-2:  Original 2
 
-3:  Original 3
+<p style="margin-top:0pt;margin-bottom:0pt;">2:  Original 2</p>
 
-<del>4:  Deleted 4</del><del>
 
-</del><u>4:  Added 5</u><u>
+<p style="margin-top:0pt;margin-bottom:0pt;">3:  Original 3</p>
 
-</u>5:  Original 6
 
-<u>6:  Added 7</u><u>
+<del><p style="margin-top:0pt;margin-bottom:0pt;">4:  Deleted 4</del><del></p>
 
-</u><del>6:  Delete 8</del><del>
 
-</del>7:  Original 9
+</del><u><p style="margin-top:0pt;margin-bottom:0pt;">4:  Added 5</u><u></p>
+
+
+</u><p style="margin-top:0pt;margin-bottom:0pt;">5:  Original 6</p>
+
+
+<u><p style="margin-top:0pt;margin-bottom:0pt;">6:  Added 7</u><u></p>
+
+
+</u><del><p style="margin-top:0pt;margin-bottom:0pt;">6:  Delete 8</del><del></p>
+
+
+</del><p style="margin-top:0pt;">7:  Original 9</p>

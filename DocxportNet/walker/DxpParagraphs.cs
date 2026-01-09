@@ -23,7 +23,20 @@ public class DxpParagraphContext : DxpIParagraphContext
 		Layout = layout;
 	}
 
-	public static DxpParagraphContext INVALID => new DxpParagraphContext(null!, null!, null!, null, new DxpComputedParagraphStyle(null, null, null, null), null);
+	public static DxpParagraphContext INVALID => new DxpParagraphContext(
+		null!,
+		null!,
+		null!,
+		null,
+		new DxpComputedParagraphStyle(
+			MarginLeftPt: null,
+			MarginTopPt: null,
+			MarginBottomPt: null,
+			TextAlign: null,
+			LineHeightCss: null,
+			Borders: null,
+			BackgroundColorCss: null),
+		null);
 }
 
 

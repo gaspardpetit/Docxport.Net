@@ -37,18 +37,61 @@ internal static class DxpParagraphStyleComputer
 
 		var borders = ComputeBorders(p.ParagraphProperties?.ParagraphBorders);
 		var shd = p.ParagraphProperties?.Shading;
+		var spacing = p.ParagraphProperties?.SpacingBetweenLines;
 		if (d.Styles is DxpStyleResolver r)
 		{
 			borders = ComputeBorders(r.GetParagraphBorders(p));
 			shd = r.GetParagraphShading(p);
+			spacing = r.GetParagraphSpacing(p);
 		}
 		var background = ComputeBackground(shd);
+		var (marginTopPt, marginBottomPt, lineHeightCss) = ComputeSpacing(spacing);
 
 		return new DxpComputedParagraphStyle(
 			MarginLeftPt: marginLeftPt,
+			MarginTopPt: marginTopPt,
+			MarginBottomPt: marginBottomPt,
 			TextAlign: align,
+			LineHeightCss: lineHeightCss,
 			Borders: borders,
 			BackgroundColorCss: background);
+	}
+
+		private static (double? marginTopPt, double? marginBottomPt, string? lineHeightCss) ComputeSpacing(SpacingBetweenLines? spacing)
+		{
+			if (spacing == null)
+				return (null, null, null);
+
+		double? mt = null;
+			double? mb = null;
+
+			// before/after are in twips.
+			if (spacing.Before?.Value != null && int.TryParse(spacing.Before.Value, out int beforeTwips))
+				mt = DxpTwipValue.ToPoints(beforeTwips);
+			if (spacing.After?.Value != null && int.TryParse(spacing.After.Value, out int afterTwips))
+				mb = DxpTwipValue.ToPoints(afterTwips);
+
+			string? lineHeightCss = null;
+			if (spacing.Line?.Value != null && int.TryParse(spacing.Line.Value, out int lineTwips))
+			{
+				if (lineTwips > 0)
+				{
+					var rule = spacing.LineRule?.Value;
+					if (rule == LineSpacingRuleValues.Exact || rule == LineSpacingRuleValues.AtLeast)
+				{
+					double pt = DxpTwipValue.ToPoints(lineTwips);
+					lineHeightCss = pt.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture) + "pt";
+				}
+				else
+				{
+					// Auto: 240 twips is "single" (12pt at 10pt font historically); map to a CSS multiplier.
+					double mult = lineTwips / 240.0;
+					lineHeightCss = mult.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture);
+				}
+			}
+		}
+
+		return (mt, mb, lineHeightCss);
 	}
 
 	internal static DxpComputedBoxBorders? ComputeBorders(ParagraphBorders? bdr)

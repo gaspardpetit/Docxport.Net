@@ -6,7 +6,8 @@
 
 <div class="section" style="color:#000000;display:flex;flex-direction:column;position:relative;width:8.5in;min-height:11in;box-sizing:border-box;padding-left:1in;padding-right:1in;background-color:#ffffff;font-family:Aptos;font-size:12pt;">
 <div class="header" style="border-bottom:1px solid #000;">
-First Header
+<p style="margin-bottom:0pt;line-height:1;">First Header</p>
+
 
 </div>
 <div class="body" style="flex:1 0 auto;padding-top:1in;">
@@ -14,7 +15,8 @@ First Section
 
 </div>
 <div class="footer" style="border-top:1px solid #000;">
-First Footer
+<p style="margin-bottom:0pt;line-height:1;">First Footer</p>
+
 
 </div>
 </div>
@@ -23,7 +25,8 @@ First Footer
 
 <div class="section" style="color:#000000;display:flex;flex-direction:column;position:relative;width:8.5in;min-height:11in;box-sizing:border-box;padding-left:1in;padding-right:1in;background-color:#ffffff;font-family:Aptos;font-size:12pt;">
 <div class="header" style="border-bottom:1px solid #000;">
-Second Header
+<p style="margin-bottom:0pt;line-height:1;">Second Header</p>
+
 
 </div>
 <div class="body" style="flex:1 0 auto;padding-top:1in;">
@@ -31,7 +34,8 @@ Second Section
 
 </div>
 <div class="footer" style="border-top:1px solid #000;">
-Second Footer
+<p style="margin-bottom:0pt;line-height:1;">Second Footer</p>
+
 
 </div>
 </div>
@@ -40,7 +44,8 @@ Second Footer
 
 <div class="section" style="color:#000000;display:flex;flex-direction:column;position:relative;width:8.5in;min-height:11in;box-sizing:border-box;padding-left:1in;padding-right:1in;background-color:#ffffff;font-family:Aptos;font-size:12pt;">
 <div class="header" style="border-bottom:1px solid #000;">
-Third Header (First Page)
+<p style="margin-bottom:0pt;line-height:1;">Third Header (First Page)</p>
+
 
 </div>
 <div class="body" style="flex:1 0 auto;padding-top:1in;">
@@ -51,4 +56,4 @@ Third Section (Second Page)
 
 </div>
 <div class="footer" style="border-top:1px solid #000;">
-Third Footer (Second Page)
+<p style="margin-bottom:0pt;line-height:1;">Third Footer (Second Page)</p>
