@@ -1,8 +1,8 @@
 <!-- Author: Petit, Gaspard -->
 <!-- LastModifiedBy: Petit, Gaspard -->
-<!-- Revision: 1 -->
+<!-- Revision: 4 -->
 <!-- Created: 2026-01-09 02:37:00Z -->
-<!-- Modified: 2026-01-09 02:42:00Z -->
+<!-- Modified: 2026-01-09 02:50:00Z -->
 
 <div class="section" style="color:#000000;display:flex;flex-direction:column;position:relative;width:8.5in;min-height:11in;box-sizing:border-box;padding-left:1in;padding-right:1in;background-color:#ffffff;font-family:Aptos;font-size:12pt;">
 <div class="body" style="flex:1 0 auto;padding-top:1in;">
@@ -45,63 +45,107 @@ Col Span
 
 <table style="border:0.5pt solid #000000;border-collapse:collapse;">
   <tr>
-    <td style="border:0.5pt solid #000000;">1,1
+    <td style="border:0.5pt solid #000000;"><p style="text-align:right;">1,1</p>
+
 
 </td>
-    <td style="border:0.5pt solid #000000;">1,2
+    <td style="border:0.5pt solid #000000;"><p style="text-align:right;">1,2</p>
+
 
 </td>
-    <td style="border:0.5pt solid #000000;">1,3
+    <td style="border:0.5pt solid #000000;"><p style="text-align:right;">1,3</p>
 
-</td>
-  </tr>
-  <tr>
-    <td colspan="2" style="border:0.5pt solid #000000;">2,1-2,2
-
-</td>
-    <td style="border:0.5pt solid #000000;">2,3
 
 </td>
   </tr>
   <tr>
-    <td style="border:0.5pt solid #000000;">3,1
+    <td colspan="2" style="border:0.5pt solid #000000;"><p style="text-align:right;">2,1-2,2</p>
+
 
 </td>
-    <td style="border:0.5pt solid #000000;">3,2
+    <td style="border:0.5pt solid #000000;"><p style="text-align:right;">2,3</p>
+
 
 </td>
-    <td style="border:0.5pt solid #000000;">3,3
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p style="text-align:right;">3,1</p>
+
+
+</td>
+    <td style="border:0.5pt solid #000000;"><p style="text-align:right;">3,2</p>
+
+
+</td>
+    <td style="border:0.5pt solid #000000;"><p style="text-align:right;">3,3</p>
+
 
 </td>
   </tr>
 </table>
 Row Span
 
-<table style="border:0.5pt solid #000000;border-collapse:collapse;">
+<table>
   <tr>
-    <td style="border:0.5pt solid #000000;">1,1
+    <td><p style="text-align:center;">1,1</p>
+
 
 </td>
-    <td style="border:0.5pt solid #000000;">1,2
+    <td><p style="text-align:center;">1,2</p>
+
 
 </td>
-    <td style="border:0.5pt solid #000000;">1,3
+    <td><p style="text-align:center;">1,3</p>
+
 
 </td>
   </tr>
   <tr>
-    <td style="border:0.5pt solid #000000;">2,1-
+    <td><p style="text-align:center;">2,1-</p>
+
 
 </td>
-    <td rowspan="2" style="border:0.5pt solid #000000;">2,2 + 3,2
+    <td rowspan="2"><p style="text-align:center;">2,2 + 3,2</p>
+
 
 </td>
-    <td style="border:0.5pt solid #000000;">2,3
+    <td><p style="text-align:center;">2,3</p>
+
 
 </td>
   </tr>
   <tr>
-    <td style="border:0.5pt solid #000000;">3,1
+    <td><p style="text-align:center;">3,1</p>
+
 
 </td>
-    <td style="border:0.5pt solid #000000;">3,3
+    <td><p style="text-align:center;">3,3</p>
+
+
+</td>
+  </tr>
+</table>
+Row Span
+
+<table>
+  <tr>
+    <td>1,1
+
+</td>
+    <td>1,2
+
+</td>
+    <td>1,3
+
+</td>
+  </tr>
+  <tr>
+    <td>2,1-
+
+</td>
+    <td rowspan="2" colspan="2">2,2 + 3,2 + 2,3 + 3,3
+
+</td>
+  </tr>
+  <tr>
+    <td>3,1
