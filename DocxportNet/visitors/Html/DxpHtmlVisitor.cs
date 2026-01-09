@@ -556,7 +556,9 @@ body.dxp-root {
 
 		if (!string.IsNullOrEmpty(dataUri) && contentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
 		{
-			Write(d, $"<img class=\"dxp-image\" src=\"{dataUri}\" alt=\"{alt}\" />");
+			var style = BuildDrawingImageStyle(drw);
+			var styleAttr = string.IsNullOrEmpty(style) ? "" : $" style=\"{style}\"";
+			Write(d, $"<img class=\"dxp-image\" src=\"{dataUri}\" alt=\"{alt}\"{styleAttr} />");
 		}
 		else if (!string.IsNullOrEmpty(dataUri))
 		{
@@ -568,6 +570,121 @@ body.dxp-root {
 			Write(d, $"<span class=\"dxp-image\">[DRAWING: {alt}{meta}]</span>");
 		}
 	}
+
+	private static string? BuildDrawingImageStyle(Drawing drw)
+	{
+		var sb = new StringBuilder();
+
+		static void Append(StringBuilder sb, string css)
+		{
+			if (string.IsNullOrEmpty(css))
+				return;
+			if (sb.Length > 0 && sb[sb.Length - 1] != ';')
+				sb.Append(';');
+			sb.Append(css);
+			if (sb.Length > 0 && sb[sb.Length - 1] != ';')
+				sb.Append(';');
+		}
+
+		// Sizing: use wp:extent when available (EMU units).
+		var extent = drw.Descendants<DocumentFormat.OpenXml.Drawing.Wordprocessing.Extent>().FirstOrDefault();
+		if (extent?.Cx != null && extent?.Cy != null)
+		{
+			var widthPt = EmuToPoints(extent.Cx.Value);
+			var heightPt = EmuToPoints(extent.Cy.Value);
+			if (widthPt > 0.01)
+				Append(sb, $"width:{widthPt.ToString("0.###", CultureInfo.InvariantCulture)}pt");
+			if (heightPt > 0.01)
+				Append(sb, $"height:{heightPt.ToString("0.###", CultureInfo.InvariantCulture)}pt");
+			// If we have explicit dimensions, don't let global max-width force scaling.
+			Append(sb, "max-width:none");
+		}
+
+		// Positioning: for floating drawings (wp:anchor), surface a basic absolute positioning approximation.
+		// This is intentionally minimal, but helps for headers/footers that use anchored images.
+		var anchor = drw.Descendants<DocumentFormat.OpenXml.Drawing.Wordprocessing.Anchor>().FirstOrDefault();
+		if (anchor != null)
+		{
+			var positionCss = TryBuildAnchorPositionCss(anchor);
+			if (!string.IsNullOrEmpty(positionCss))
+			{
+				Append(sb, "position:absolute");
+				Append(sb, "display:block");
+				Append(sb, "z-index:1");
+				Append(sb, positionCss!);
+			}
+		}
+
+		return sb.Length == 0 ? null : sb.ToString();
+	}
+
+	private static string? TryBuildAnchorPositionCss(DocumentFormat.OpenXml.Drawing.Wordprocessing.Anchor anchor)
+	{
+		// We use local-name based parsing to stay robust across SDK differences.
+		OpenXmlElement? posH = anchor.ChildElements.FirstOrDefault(e => e.LocalName == "positionH");
+		OpenXmlElement? posV = anchor.ChildElements.FirstOrDefault(e => e.LocalName == "positionV");
+
+		string? transform = null;
+		var sb = new StringBuilder();
+
+		void Append(string name, string value)
+		{
+			if (sb.Length > 0 && sb[sb.Length - 1] != ';')
+				sb.Append(';');
+			sb.Append(name).Append(':').Append(value).Append(';');
+		}
+
+		if (posH != null)
+		{
+			var align = posH.ChildElements.FirstOrDefault(e => e.LocalName == "align")?.InnerText?.Trim().ToLowerInvariant();
+			var offset = posH.ChildElements.FirstOrDefault(e => e.LocalName == "posOffset")?.InnerText?.Trim();
+			long.TryParse(offset, out var offsetEmu);
+			var offsetIn = EmuToInches(offsetEmu);
+
+			if (align == "right")
+				Append("right", offsetIn.ToString("0.###", CultureInfo.InvariantCulture) + "in");
+			else if (align == "center")
+			{
+				Append("left", "50%");
+				transform = AppendTransform(transform, "translateX(-50%)");
+			}
+			else if (align == "left")
+				Append("left", offsetIn.ToString("0.###", CultureInfo.InvariantCulture) + "in");
+			else if (!string.IsNullOrEmpty(offset))
+				Append("left", offsetIn.ToString("0.###", CultureInfo.InvariantCulture) + "in");
+		}
+
+		if (posV != null)
+		{
+			var align = posV.ChildElements.FirstOrDefault(e => e.LocalName == "align")?.InnerText?.Trim().ToLowerInvariant();
+			var offset = posV.ChildElements.FirstOrDefault(e => e.LocalName == "posOffset")?.InnerText?.Trim();
+			long.TryParse(offset, out var offsetEmu);
+			var offsetIn = EmuToInches(offsetEmu);
+
+			if (align == "bottom")
+				Append("bottom", offsetIn.ToString("0.###", CultureInfo.InvariantCulture) + "in");
+			else if (align == "center")
+			{
+				Append("top", "50%");
+				transform = AppendTransform(transform, "translateY(-50%)");
+			}
+			else if (align == "top")
+				Append("top", offsetIn.ToString("0.###", CultureInfo.InvariantCulture) + "in");
+			else if (!string.IsNullOrEmpty(offset))
+				Append("top", offsetIn.ToString("0.###", CultureInfo.InvariantCulture) + "in");
+		}
+
+		if (!string.IsNullOrEmpty(transform))
+			Append("transform", transform!);
+
+		return sb.Length == 0 ? null : sb.ToString();
+	}
+
+	private static string AppendTransform(string? existing, string addition)
+		=> string.IsNullOrEmpty(existing) ? addition : existing + " " + addition;
+
+	private static double EmuToPoints(long emu) => emu / 12700.0;
+	private static double EmuToInches(long emu) => emu / 914400.0;
 
 	public new void VisitLegacyPictureBegin(Picture pict, DxpIDocumentContext d)
 	{
