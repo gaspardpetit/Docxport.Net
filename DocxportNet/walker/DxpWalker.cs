@@ -2165,7 +2165,6 @@ public class DxpWalker
 		var language = para != null ? d.Styles.ResolveRunLanguage(para, r) : null;
 
 		using (d.PushRun(r, style, language, out var runContext))
-		using (v.VisitRunBegin(r, d))
 		{
 			// Resolve style only if we can find a paragraph context.
 			bool hasRenderable = r.ChildElements.Any(child =>
@@ -2183,135 +2182,137 @@ public class DxpWalker
 				WalkUnknown("Run (no Paragraph ancestor)", r, d, v);
 			}
 
-			foreach (var child in r.ChildElements)
+			using (v.VisitRunBegin(r, d))
 			{
-				switch (child)
+				foreach (var child in r.ChildElements)
 				{
-					case NoBreakHyphen h:
-						v.VisitNoBreakHyphen(h, d);
-						break;
-
-					case LastRenderedPageBreak pb:
-						v.VisitLastRenderedPageBreak(pb, d);
-						break;
-
-					case RunProperties rp:
-						// Run properties already materialized into the run context/style.
-						break;
-
-					case DeletedText dt:
-						v.VisitDeletedText(dt, d);
-						break;
-
-					case Text t:
-						if (d.CurrentFields.Current?.InResult == true)
-							v.VisitComplexFieldCachedResultText(t.Text, d);
-						else
-							v.VisitText(t, d);
-						break;
-
-					case TabChar tab:
-						v.VisitTab(tab, d);
-						break;
-
-					case Break br:
-						v.VisitBreak(br, d);
-						break;
-
-					case CarriageReturn cr:
-						v.VisitCarriageReturn(cr, d);
-						break;
-
-					case Drawing drw:
-						WalkDrawingTextBox(drw, d, v);
-						break;
-
-					case FieldChar fc:
+					switch (child)
 					{
-						var t = fc.FieldCharType?.Value;
+						case NoBreakHyphen h:
+							v.VisitNoBreakHyphen(h, d);
+							break;
 
-						if (t == FieldCharValues.Begin)
+						case LastRenderedPageBreak pb:
+							v.VisitLastRenderedPageBreak(pb, d);
+							break;
+
+						case RunProperties rp:
+							// Run properties already materialized into the run context/style.
+							break;
+
+						case DeletedText dt:
+							v.VisitDeletedText(dt, d);
+							break;
+
+						case Text t:
+							if (d.CurrentFields.Current?.InResult == true)
+								v.VisitComplexFieldCachedResultText(t.Text, d);
+							else
+								v.VisitText(t, d);
+							break;
+
+						case TabChar tab:
+							v.VisitTab(tab, d);
+							break;
+
+						case Break br:
+							v.VisitBreak(br, d);
+							break;
+
+						case CarriageReturn cr:
+							v.VisitCarriageReturn(cr, d);
+							break;
+
+						case Drawing drw:
+							WalkDrawingTextBox(drw, d, v);
+							break;
+
+						case FieldChar fc:
 						{
-							var frame = new FieldFrame { SeenSeparate = false, ResultScope = null, InResult = false };
-							d.CurrentFields.FieldStack.Push(frame);
-							v.VisitComplexFieldBegin(fc, d);
-						}
-						else if (t == FieldCharValues.Separate)
-						{
-							if (d.CurrentFields.FieldStack.Count > 0)
+							var t = fc.FieldCharType?.Value;
+
+							if (t == FieldCharValues.Begin)
 							{
-								var top = d.CurrentFields.FieldStack.Pop();
-								if (!top.SeenSeparate)
+								var frame = new FieldFrame { SeenSeparate = false, ResultScope = null, InResult = false };
+								d.CurrentFields.FieldStack.Push(frame);
+								v.VisitComplexFieldBegin(fc, d);
+							}
+							else if (t == FieldCharValues.Separate)
+							{
+								if (d.CurrentFields.FieldStack.Count > 0)
 								{
-									v.VisitComplexFieldSeparate(fc, d);
-									top.SeenSeparate = true;
-									top.InResult = true;
-									if (top.ResultScope == null)
-										top.ResultScope = v.VisitComplexFieldResultBegin(d);
+									var top = d.CurrentFields.FieldStack.Pop();
+									if (!top.SeenSeparate)
+									{
+										v.VisitComplexFieldSeparate(fc, d);
+										top.SeenSeparate = true;
+										top.InResult = true;
+										if (top.ResultScope == null)
+											top.ResultScope = v.VisitComplexFieldResultBegin(d);
+									}
+									d.CurrentFields.FieldStack.Push(top);
 								}
-								d.CurrentFields.FieldStack.Push(top);
+								else
+								{
+									// stray separate; surface but don’t crash
+									v.VisitComplexFieldSeparate(fc, d);
+								}
 							}
-							else
+							else if (t == FieldCharValues.End)
 							{
-								// stray separate; surface but don’t crash
-								v.VisitComplexFieldSeparate(fc, d);
+								if (d.CurrentFields.FieldStack.Count > 0)
+								{
+									var top = d.CurrentFields.FieldStack.Pop();
+									top.InResult = false;
+									top.ResultScope?.Dispose();
+									v.VisitComplexFieldEnd(fc, d);
+								}
+								else
+								{
+									// stray end; surface but don’t crash
+									v.VisitComplexFieldEnd(fc, d);
+								}
 							}
+							// Other FieldChar types (rare) — ignore.
+							break;
 						}
-						else if (t == FieldCharValues.End)
+
+						case FieldCode code:
 						{
-							if (d.CurrentFields.FieldStack.Count > 0)
+							// FieldCode.Text can be null; InnerText is a safe fallback
+							var instr = code.Text ?? code.InnerText ?? string.Empty;
+							if (!string.IsNullOrEmpty(instr) && d.CurrentFields.Current != null)
 							{
-								var top = d.CurrentFields.FieldStack.Pop();
-								top.InResult = false;
-								top.ResultScope?.Dispose();
-								v.VisitComplexFieldEnd(fc, d);
+								var current = d.CurrentFields.Current;
+								current.InstructionText = current.InstructionText == null
+									? instr
+									: current.InstructionText + instr;
 							}
-							else
-							{
-								// stray end; surface but don’t crash
-								v.VisitComplexFieldEnd(fc, d);
-							}
+							v.VisitComplexFieldInstruction(code, instr, d);
+							// Do not emit as visible text; instruction is not the result.
+							break;
 						}
-						// Other FieldChar types (rare) — ignore.
-						break;
-					}
 
-					case FieldCode code:
-					{
-						// FieldCode.Text can be null; InnerText is a safe fallback
-						var instr = code.Text ?? code.InnerText ?? string.Empty;
-						if (!string.IsNullOrEmpty(instr) && d.CurrentFields.Current != null)
+						case FootnoteReference fr:
 						{
-							var current = d.CurrentFields.Current;
-							current.InstructionText = current.InstructionText == null
-								? instr
-								: current.InstructionText + instr;
+							long fnId = fr.Id?.Value ?? 0;
+							if (d.Footnotes.Resolve(fnId, out int fnIndex))
+								v.VisitFootnoteReference(fr, new DxpFootnoteContext(fnId, fnIndex), d);
+							break;
 						}
-						v.VisitComplexFieldInstruction(code, instr, d);
-						// Do not emit as visible text; instruction is not the result.
-						break;
-					}
 
-					case FootnoteReference fr:
-					{
-						long fnId = fr.Id?.Value ?? 0;
-						if (d.Footnotes.Resolve(fnId, out int fnIndex))
-							v.VisitFootnoteReference(fr, new DxpFootnoteContext(fnId, fnIndex), d);
-						break;
-					}
+						case CommentRangeStart crs:
+							WalkCommentRangeStart(crs, d, v);
+							break;
+						case CommentReference cref:
+							WalkCommentReference(cref, d, v);
+							break;
+						case CommentRangeEnd cre:
+							break;
 
-					case CommentRangeStart crs:
-						WalkCommentRangeStart(crs, d, v);
-						break;
-					case CommentReference cref:
-						WalkCommentReference(cref, d, v);
-						break;
-					case CommentRangeEnd cre:
-						break;
-
-					case AlternateContent ac:
-						WalkAlternateContent(ac, d, v);
-						break;
+						case AlternateContent ac:
+							WalkAlternateContent(ac, d, v);
+							break;
 
 					// Legacy DATE/PAGENUM-style blocks (non-editable placeholders)
 					case DayShort ds:
@@ -2395,6 +2396,7 @@ public class DxpWalker
 						break;
 				}
 			}
+		}
 		}
 	}
 
