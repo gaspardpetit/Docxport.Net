@@ -3150,7 +3150,7 @@ public class DxpWalker
 			Table = table;
 			Properties = properties;
 			Grid = grid;
-			ComputedStyle = DxpTableStyleComputer.ComputeTableStyle(properties);
+			ComputedStyle = DxpTableStyleResolver.ComputeTableStyle(properties);
 		}
 
 		public void SetGrid(TableGrid grid)
@@ -3193,7 +3193,7 @@ public class DxpWalker
 			RowSpan = rowSpan;
 			ColSpan = colSpan;
 			Properties = properties;
-			ComputedStyle = DxpTableStyleComputer.ComputeCellStyle(properties, row.Table.ComputedStyle);
+			ComputedStyle = DxpTableStyleResolver.ComputeCellStyle(properties, row.Table.ComputedStyle);
 		}
 	}
 

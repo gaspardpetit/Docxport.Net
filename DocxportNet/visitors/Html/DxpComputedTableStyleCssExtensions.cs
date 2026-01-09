@@ -5,6 +5,13 @@ namespace DocxportNet.API;
 
 public static class DxpComputedTableStyleCssExtensions
 {
+	private static void AppendCssProperty(StringBuilder sb, string name, string value)
+	{
+		if (sb.Length > 0 && sb[sb.Length - 1] != ';')
+			sb.Append(';');
+		sb.Append(name).Append(':').Append(value).Append(';');
+	}
+
 	public static string? ToCss(this DxpComputedTableStyle style)
 	{
 		if (style.TableBorder == null && style.BorderCollapse == false)
@@ -12,9 +19,9 @@ public static class DxpComputedTableStyleCssExtensions
 
 		var sb = new StringBuilder();
 		if (style.TableBorder != null)
-			sb.Append("border:").Append(style.TableBorder.ToCssValue()).Append(';');
+			AppendCssProperty(sb, "border", style.TableBorder.ToCssValue());
 		if (style.BorderCollapse)
-			sb.Append("border-collapse:collapse;");
+			AppendCssProperty(sb, "border-collapse", "collapse");
 		return sb.Length == 0 ? null : sb.ToString();
 	}
 
@@ -22,7 +29,9 @@ public static class DxpComputedTableStyleCssExtensions
 	{
 		if (style.Border == null)
 			return null;
-		return "border:" + style.Border.ToCssValue() + ";";
+		var sb = new StringBuilder();
+		AppendCssProperty(sb, "border", style.Border.ToCssValue());
+		return sb.ToString();
 	}
 
 	public static string ToCssValue(this DxpComputedBorder border)
@@ -36,4 +45,3 @@ public static class DxpComputedTableStyleCssExtensions
 		return pt + " " + line + " " + border.ColorCss;
 	}
 }
-
