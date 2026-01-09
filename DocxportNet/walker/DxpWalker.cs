@@ -455,7 +455,7 @@ public class DxpWalker
 	private void WalkTableRow(TableRow tr, DxpDocumentContext d, DxpIVisitor v, DxpTableContext tableContext, DxpTableModel model, int rowIndex)
 	{
 		bool isHeader = tr.TableRowProperties?.GetFirstChild<TableHeader>() != null;
-		var rowContext = new DxpTableRowContext(tableContext, rowIndex, isHeader);
+		var rowContext = new DxpTableRowContext(tableContext, rowIndex, isHeader, tr.TableRowProperties);
 
 		using (v.VisitTableRowBegin(tr, rowContext, d))
 		{
@@ -3162,12 +3162,14 @@ public class DxpWalker
 		public DxpITableContext Table { get; }
 		public bool IsHeader { get; }
 		public int Index { get; }
+		public TableRowProperties? Properties { get; }
 
-		public DxpTableRowContext(DxpITableContext table, int index, bool isHeader)
+		public DxpTableRowContext(DxpITableContext table, int index, bool isHeader, TableRowProperties? properties)
 		{
 			Table = table;
 			Index = index;
 			IsHeader = isHeader;
+			Properties = properties;
 		}
 	}
 

@@ -82,6 +82,7 @@ public interface DxpITableRowContext
 	DxpITableContext Table { get; }
 	bool IsHeader { get; }
 	int Index { get; }
+	TableRowProperties? Properties { get; }
 }
 
 public interface DxpITableCellContext
