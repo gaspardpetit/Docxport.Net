@@ -783,11 +783,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
 	public override IDisposable VisitTableBegin(Table t, DxpTableModel model, DxpIDocumentContext d, DxpITableContext table)
 	{
-		var styles = _config.EmitTableBorders && table.Properties != null
-			? BuildTableStyle(table.Properties)
-			: (null, null);
-
-		var currentStyle = styles.tableStyle;
+		var currentStyle = _config.EmitTableBorders ? table.ComputedStyle.ToCss() : null;
 
 		Write(d, "<table");
 		if (!string.IsNullOrEmpty(currentStyle))
@@ -812,116 +808,20 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 	public override IDisposable VisitTableCellBegin(TableCell tc, DxpITableCellContext cell, DxpIDocumentContext d)
 	{
 		var spans = (cell.RowSpan, cell.ColSpan);
-		var cellBorders = cell.Properties?.TableCellBorders;
-		var cellStyle = _config.EmitTableBorders ? BuildCellStyle(cellBorders) : null;
+		var cellStyle = _config.EmitTableBorders ? cell.ComputedStyle.ToCss() : null;
 
 		Write(d, "    <td");
 		if (spans.Item1 > 1)
 			Write(d, $" rowspan=\"{spans.Item1}\"");
 		if (spans.Item2 > 1)
 			Write(d, $" colspan=\"{spans.Item2}\"");
-		string? borderCss = null;
-		if (_config.EmitTableBorders && cell.Row.Table.Properties != null)
-		{
-			borderCss = BuildTableStyle(cell.Row.Table.Properties).cellBorderStyle;
-		}
-		var effectiveCellStyle = cellStyle ?? (borderCss != null ? $"border:{borderCss};" : null);
-		if (!string.IsNullOrEmpty(effectiveCellStyle))
-			Write(d, $" style=\"{effectiveCellStyle}\"");
+		if (!string.IsNullOrEmpty(cellStyle))
+			Write(d, $" style=\"{cellStyle}\"");
 		Write(d, ">");
 
 		return DxpDisposable.Create(() => {
 			WriteLine(d, "</td>");
 		});
-	}
-
-	private static string? BuildCellStyle(TableCellBorders? borders)
-	{
-		if (borders == null)
-			return null;
-
-		var b = PickBorder(borders);
-		if (b == null)
-			return null;
-
-		string? css = BuildBorderCss(b);
-		return css != null ? $"border:{css};" : null;
-	}
-
-	private static (string? tableStyle, string? cellBorderStyle) BuildTableStyle(TableProperties tp)
-	{
-		var b = PickBorder(tp.TableBorders);
-		if (b == null)
-			return (null, null);
-
-		string? borderCss = BuildBorderCss(b);
-		if (borderCss == null)
-			return (null, null);
-
-		var sb = new StringBuilder();
-		sb.Append("border:").Append(borderCss).Append(";");
-		sb.Append("border-collapse:collapse;");
-		return (sb.ToString(), borderCss);
-	}
-
-	private static string? BuildBorderCss(BorderType? b)
-	{
-		if (b == null)
-			return null;
-
-		int sizeEighthPoints = b.Size != null ? (int)b.Size.Value : 0;
-		if (sizeEighthPoints <= 0)
-			return null;
-
-		double pt = sizeEighthPoints / 8.0;
-		string? color = b.Color?.Value;
-		if (string.IsNullOrEmpty(color) || string.Equals(color, "auto", StringComparison.OrdinalIgnoreCase))
-			color = "#000000";
-		else
-			color = ToCssColor(color!);
-
-		return pt.ToString("0.###", CultureInfo.InvariantCulture) + "pt solid " + color;
-	}
-
-	private static BorderType? PickBorder(TableBorders? borders)
-	{
-		if (borders == null)
-			return null;
-
-		foreach (var b in new BorderType?[]
-			{
-				borders.TopBorder,
-				borders.LeftBorder,
-				borders.BottomBorder,
-				borders.RightBorder,
-				borders.InsideHorizontalBorder,
-				borders.InsideVerticalBorder
-			})
-		{
-			if (b != null)
-				return b;
-		}
-
-		return null;
-	}
-
-	private static BorderType? PickBorder(TableCellBorders borders)
-	{
-		foreach (var b in new BorderType?[]
-			{
-				borders.TopBorder,
-				borders.LeftBorder,
-				borders.BottomBorder,
-				borders.RightBorder,
-				borders.InsideHorizontalBorder,
-				borders.InsideVerticalBorder
-			})
-		{
-			if (b != null)
-				return b;
-		}
-
-		return null;
 	}
 
 	public override IDisposable VisitBlockBegin(OpenXmlElement child, DxpIDocumentContext d)

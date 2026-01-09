@@ -3143,12 +3143,14 @@ public class DxpWalker
 		public Table Table { get; }
 		public TableProperties? Properties { get; private set; }
 		public TableGrid? Grid { get; private set; }
+		public DxpComputedTableStyle ComputedStyle { get; }
 
 		public DxpTableContext(Table table, TableProperties? properties, TableGrid? grid)
 		{
 			Table = table;
 			Properties = properties;
 			Grid = grid;
+			ComputedStyle = DxpTableStyleComputer.ComputeTableStyle(properties);
 		}
 
 		public void SetGrid(TableGrid grid)
@@ -3181,6 +3183,7 @@ public class DxpWalker
 		public int RowSpan { get; }
 		public int ColSpan { get; }
 		public TableCellProperties? Properties { get; }
+		public DxpComputedTableCellStyle ComputedStyle { get; }
 
 		public DxpTableCellContext(DxpITableRowContext row, int rowIndex, int columnIndex, int rowSpan, int colSpan, TableCellProperties? properties)
 		{
@@ -3190,6 +3193,7 @@ public class DxpWalker
 			RowSpan = rowSpan;
 			ColSpan = colSpan;
 			Properties = properties;
+			ComputedStyle = DxpTableStyleComputer.ComputeCellStyle(properties, row.Table.ComputedStyle);
 		}
 	}
 
