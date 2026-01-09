@@ -8,23 +8,32 @@
 <div class="body" style="flex:1 0 auto;padding-top:1in;">
 original text<del style="color:red;">, deleted text</del><u style="color:blue;">, added text</u>, original text
 
-1:  Original 1
+<p style="margin-bottom:0pt;">1:  Original 1</p>
 
-2:  Original 2
 
-3:  Original 3
+<p style="margin-top:0pt;margin-bottom:0pt;">2:  Original 2</p>
 
-<del style="color:red;">4:  Deleted 4</del><del style="color:red;">
 
-</del><u style="color:blue;">4:  Added 5</u><u style="color:blue;">
+<p style="margin-top:0pt;margin-bottom:0pt;">3:  Original 3</p>
 
-</u>5:  Original 6
 
-<u style="color:blue;">6:  Added 7</u><u style="color:blue;">
+<del style="color:red;"><p style="margin-top:0pt;margin-bottom:0pt;">4:  Deleted 4</del><del style="color:red;"></p>
 
-</u><del style="color:red;">6:  Delete 8</del><del style="color:red;">
 
-</del>7:  Original 9
+</del><u style="color:blue;"><p style="margin-top:0pt;margin-bottom:0pt;">4:  Added 5</u><u style="color:blue;"></p>
+
+
+</u><p style="margin-top:0pt;margin-bottom:0pt;">5:  Original 6</p>
+
+
+<u style="color:blue;"><p style="margin-top:0pt;margin-bottom:0pt;">6:  Added 7</u><u style="color:blue;"></p>
+
+
+</u><del style="color:red;"><p style="margin-top:0pt;margin-bottom:0pt;">6:  Delete 8</del><del style="color:red;"></p>
+
+
+</del><p style="margin-top:0pt;">7:  Original 9</p>
+
 
 </div>
 </div>

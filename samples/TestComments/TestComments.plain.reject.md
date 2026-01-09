@@ -10,33 +10,41 @@ Before Comment
 
   COMMENT BY Gaspard Petit ON 2025-12-19T14:52:00Z
 
-Comment 1
+<p style="line-height:1;">Comment 1</p>
 
-
-  REPLY BY Gaspard Petit ON 2025-12-19T14:53:00Z
-
-First Reply
 
 
   REPLY BY Gaspard Petit ON 2025-12-19T14:53:00Z
 
-Comment with image [IMAGE]
+<p style="line-height:1;">First Reply</p>
 
 
-  REPLY BY Gaspard Petit ON 2025-12-19T14:54:00Z
 
-Comment with list
+  REPLY BY Gaspard Petit ON 2025-12-19T14:53:00Z
 
-• Point 1
+<p style="line-height:1;">Comment with image [IMAGE]</p>
 
-• Point 2
-
-• Point 3
 
 
   REPLY BY Gaspard Petit ON 2025-12-19T14:54:00Z
 
-Comment with url: <a href="https://example.com/"><u>Example Domain</u></a>
+<p style="line-height:1;">Comment with list</p>
+
+
+<p style="line-height:1;">• Point 1</p>
+
+
+<p style="line-height:1;">• Point 2</p>
+
+
+<p style="line-height:1;">• Point 3</p>
+
+
+
+  REPLY BY Gaspard Petit ON 2025-12-19T14:54:00Z
+
+<p style="line-height:1;">Comment with url: <a href="https://example.com/"><u>Example Domain</u></a> </p>
+
 
 
 -->
@@ -49,7 +57,8 @@ After Comment
 
   COMMENT BY Gaspard Petit ON 2025-12-19T14:55:00Z
 
-Another Comment
+<p style="line-height:1;">Another Comment</p>
+
 
 
 -->

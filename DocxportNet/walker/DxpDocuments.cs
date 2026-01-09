@@ -119,6 +119,43 @@ public class DxpDocumentContext : DxpIDocumentContext
 			}
 		}
 
+		// Word contextualSpacing: don't add space between paragraphs of the same style.
+		// Approximation: when contextualSpacing is enabled on either paragraph, suppress the shared boundary by
+		// removing the bottom margin on the first and top margin on the second.
+		if (Styles is DxpStyleResolver styleResolver)
+		{
+			var prev = p.PreviousSibling<Paragraph>();
+			var next = p.NextSibling<Paragraph>();
+			var styleId = p.ParagraphProperties?.ParagraphStyleId?.Val?.Value;
+
+			if (!string.IsNullOrEmpty(styleId))
+			{
+				var contextual = styleResolver.GetContextualSpacing(p);
+
+				if (prev != null)
+				{
+					var prevStyleId = prev.ParagraphProperties?.ParagraphStyleId?.Val?.Value;
+					if (string.Equals(styleId, prevStyleId, StringComparison.Ordinal))
+					{
+						var prevCtx = styleResolver.GetContextualSpacing(prev);
+						if (contextual || prevCtx)
+							computed = computed with { MarginTopPt = 0.0 };
+					}
+				}
+
+				if (next != null)
+				{
+					var nextStyleId = next.ParagraphProperties?.ParagraphStyleId?.Val?.Value;
+					if (string.Equals(styleId, nextStyleId, StringComparison.Ordinal))
+					{
+						var nextCtx = styleResolver.GetContextualSpacing(next);
+						if (contextual || nextCtx)
+							computed = computed with { MarginBottomPt = 0.0 };
+					}
+				}
+			}
+		}
+
 		var layout = DxpParagraphLayoutComputer.ComputeLayout(p, this);
 		return new DxpParagraphContext(acceptMarker, rejectMarker, indent, p.ParagraphProperties, computed, layout);
 	}
