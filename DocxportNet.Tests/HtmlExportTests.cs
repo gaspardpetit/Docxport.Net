@@ -44,6 +44,7 @@ public class HtmlExportTests
 	public static IEnumerable<object[]> SampleDocs()
 	{
 		return Directory.EnumerateFiles(SamplesDirectory, "*.docx", SearchOption.TopDirectoryOnly)
+			.Where(path => !Path.GetFileName(path).StartsWith("~$", StringComparison.Ordinal))
 			.OrderBy(Path.GetFileName)
 			.Select(path => new object[] { new Sample(path) });
 	}
@@ -64,8 +65,8 @@ public class HtmlExportTests
 
 	private void VerifyAgainstFixture(Sample sample, DxpHtmlVisitorConfig baseConfig, string expectedExt, string actualSuffix, DxpTrackedChangeMode mode)
 	{
-		string expectedPath = Path.ChangeExtension(sample.DocxPath, expectedExt);
-		string actualPath = Path.Combine(Path.GetDirectoryName(sample.DocxPath)!, $"{Path.GetFileNameWithoutExtension(sample.DocxPath)}{actualSuffix}");
+		string expectedPath = TestPaths.GetSampleOutputPath(sample.DocxPath, expectedExt);
+		string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, actualSuffix);
 
 		var config = CloneConfig(baseConfig, mode);
 		string html = TestCompare.Normalize(ToHtml(sample.DocxPath, config));

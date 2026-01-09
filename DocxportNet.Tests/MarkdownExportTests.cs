@@ -31,7 +31,7 @@ public class MarkdownExportTests
 		public string DocxPath { get; private set; }
 		public string FileName => Path.GetFileName(DocxPath);
 		public string ExpectedMarkdownPath => Path.ChangeExtension(DocxPath, ".md");
-		public string TestOutputPath => Path.Combine(Path.GetDirectoryName(DocxPath)!, $"{Path.GetFileNameWithoutExtension(DocxPath)}.test.md");
+		public string TestOutputPath => TestPaths.GetSampleOutputPath(DocxPath, ".test.md");
 
 		public void Serialize(IXunitSerializationInfo info) => info.AddValue(nameof(DocxPath), DocxPath);
 		public void Deserialize(IXunitSerializationInfo info) => DocxPath = info.GetValue<string>(nameof(DocxPath));
@@ -45,6 +45,7 @@ public class MarkdownExportTests
 	public static IEnumerable<object[]> SampleDocs()
 	{
 		return Directory.EnumerateFiles(SamplesDirectory, "*.docx", SearchOption.TopDirectoryOnly)
+			.Where(path => !Path.GetFileName(path).StartsWith("~$", StringComparison.Ordinal))
 			.OrderBy(Path.GetFileName) // deterministic ordering for discovery
 			.Select(path => new object[] { new Sample(path) });
 	}
@@ -108,8 +109,8 @@ public class MarkdownExportTests
 
 	private void VerifyAgainstFixture(Sample sample, DxpMarkdownVisitorConfig config, string expectedExt, string actualSuffix)
 	{
-		string expectedPath = Path.ChangeExtension(sample.DocxPath, expectedExt);
-		string actualPath = Path.Combine(Path.GetDirectoryName(sample.DocxPath)!, $"{Path.GetFileNameWithoutExtension(sample.DocxPath)}{actualSuffix}");
+		string expectedPath = TestPaths.GetSampleOutputPath(sample.DocxPath, expectedExt);
+		string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, actualSuffix);
 
 		string actualMarkdown = TestCompare.Normalize(ToMarkdown(sample.DocxPath, CloneConfig(config, DxpTrackedChangeMode.AcceptChanges)));
 		File.WriteAllText(actualPath, actualMarkdown);
@@ -134,8 +135,8 @@ public class MarkdownExportTests
 
 	private void VerifyVariant(Sample sample, DxpMarkdownVisitorConfig config, string suffix, DxpTrackedChangeMode mode)
 	{
-		string expectedPath = Path.Combine(Path.GetDirectoryName(sample.DocxPath)!, $"{Path.GetFileNameWithoutExtension(sample.DocxPath)}{suffix.Replace(".test", string.Empty)}");
-		string actualPath = Path.Combine(Path.GetDirectoryName(sample.DocxPath)!, $"{Path.GetFileNameWithoutExtension(sample.DocxPath)}{suffix}");
+		string expectedPath = TestPaths.GetSampleOutputPath(sample.DocxPath, suffix.Replace(".test", string.Empty));
+		string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, suffix);
 
 		var cfg = CloneConfig(config, mode);
 		string markdown = TestCompare.Normalize(ToMarkdown(sample.DocxPath, cfg));
@@ -155,7 +156,7 @@ public class MarkdownExportTests
 	private void WriteVariant(Sample sample, DxpMarkdownVisitorConfig baseConfig, DxpTrackedChangeMode mode, string suffix)
 	{
 		var cfg = CloneConfig(baseConfig, mode);
-		string path = Path.Combine(Path.GetDirectoryName(sample.DocxPath)!, $"{Path.GetFileNameWithoutExtension(sample.DocxPath)}{suffix}");
+		string path = TestPaths.GetSampleOutputPath(sample.DocxPath, suffix);
 		string markdown = TestCompare.Normalize(ToMarkdown(sample.DocxPath, cfg));
 		File.WriteAllText(path, markdown);
 	}

@@ -49,6 +49,7 @@ public class PlainTextExportTests
 
 	public static IEnumerable<object[]> SampleDocs() =>
 		Directory.EnumerateFiles(SamplesDirectory, "*.docx", SearchOption.TopDirectoryOnly)
+			.Where(path => !Path.GetFileName(path).StartsWith("~$", StringComparison.Ordinal))
 			.OrderBy(Path.GetFileName)
 			.Select(path => new object[] { new Sample(path) });
 
@@ -68,11 +69,10 @@ public class PlainTextExportTests
 
 	private void Verify(Sample sample, DxpPlainTextVisitorConfig config, string actualSuffix)
 	{
-		string basePath = Path.Combine(Path.GetDirectoryName(sample.DocxPath)!, Path.GetFileNameWithoutExtension(sample.DocxPath));
 		string expectedPath = config.TrackedChangeMode == DxpPlainTextTrackedChangeMode.RejectChanges
-			? basePath + ".reject.txt"
-			: basePath + ".txt";
-		string actualPath = basePath + actualSuffix;
+			? TestPaths.GetSampleOutputPath(sample.DocxPath, ".reject.txt")
+			: TestPaths.GetSampleOutputPath(sample.DocxPath, ".txt");
+		string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, actualSuffix);
 
 		string actualText = TestCompare.Normalize(ToPlainText(sample.DocxPath, config));
 		File.WriteAllText(actualPath, actualText);
