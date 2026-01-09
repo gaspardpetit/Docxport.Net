@@ -5,3 +5,4 @@
 artifacts
 .nuget
 DocxportNet.Cli/Properties/launchSettings.json
+samples/*/*.test.*
