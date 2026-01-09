@@ -6,6 +6,34 @@ namespace DocxportNet.Walker;
 
 public class DxpTables
 {
+	private static IEnumerable<TableCell> EnumerateRowCells(TableRow row)
+	{
+		foreach (var child in row.ChildElements)
+		{
+			switch (child)
+			{
+				case TableCell tc:
+					yield return tc;
+					break;
+
+				case SdtCell sdtCell:
+				{
+					var content = sdtCell.SdtContentCell;
+					if (content == null)
+						break;
+					foreach (var inner in content.Elements<TableCell>())
+						yield return inner;
+					break;
+				}
+
+				case CustomXmlCell cxCell:
+					foreach (var inner in cxCell.Elements<TableCell>())
+						yield return inner;
+					break;
+			}
+		}
+	}
+
 	private static IReadOnlyList<int?> ReadTblGridTwips(Table t)
 	{
 		var tg = t.Elements<TableGrid>().FirstOrDefault();
@@ -78,7 +106,7 @@ public class DxpTables
 		if (colCount == 0)
 		{
 			colCount = t.Elements<TableRow>()
-				.Select(r => r.Elements<TableCell>().Sum(tc => GetGridSpan(tc)))
+				.Select(r => EnumerateRowCells(r).Sum(tc => GetGridSpan(tc)))
 				.DefaultIfEmpty(0)
 				.Max();
 		}
@@ -95,7 +123,7 @@ public class DxpTables
 		for (int r = 0; r < rowCount; r++)
 		{
 			int c = 0;
-			foreach (var tc in rows[r].Elements<TableCell>())
+			foreach (var tc in EnumerateRowCells(rows[r]))
 			{
 				// find next free column slot (skip covered slots)
 				while (c < colCount && cells[r, c] != null)

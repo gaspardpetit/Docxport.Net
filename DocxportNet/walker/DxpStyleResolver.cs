@@ -128,27 +128,41 @@ public struct DxpEffectiveRunStyleBuilder
 
 		if (fonts != null)
 		{
-			// Read raw attributes (covers SDK differences across target frameworks).
-			string? asciiTheme = null;
-			string? highAnsiTheme = null;
-			foreach (var attr in fonts.GetAttributes())
-			{
-				if (asciiTheme == null && string.Equals(attr.LocalName, "asciiTheme", StringComparison.OrdinalIgnoreCase))
-					asciiTheme = attr.Value;
-				else if (highAnsiTheme == null && string.Equals(attr.LocalName, "hAnsiTheme", StringComparison.OrdinalIgnoreCase))
-					highAnsiTheme = attr.Value;
-			}
+			string? asciiTheme = TryGetAttributeValue(fonts, "asciiTheme");
+			string? highAnsiTheme = TryGetAttributeValue(fonts, "hAnsiTheme");
 
 			string? resolvedFont =
 				fonts.Ascii?.Value
 				?? fonts.HighAnsi?.Value
 				?? TryResolveThemeFont(asciiTheme, themeFontResolver)
 				?? TryResolveThemeFont(highAnsiTheme, themeFontResolver);
+
 			if (!string.IsNullOrWhiteSpace(resolvedFont))
 				acc.FontName = resolvedFont;
 		}
 		if (fontSize?.Val?.Value != null && int.TryParse(fontSize.Val.Value, out var hp))
 			acc.FontSizeHalfPoints = hp;
+	}
+
+	private static string? TryGetAttributeValue(OpenXmlElement el, string localName)
+	{
+		foreach (var attr in el.GetAttributes())
+		{
+			if (string.Equals(attr.LocalName, localName, StringComparison.OrdinalIgnoreCase))
+				return attr.Value;
+		}
+
+		// Some SDKs may not surface these as attributes; fall back to parsing the element XML.
+		var xml = el.OuterXml;
+		var needle = localName + "=\"";
+		int start = xml.IndexOf(needle, StringComparison.OrdinalIgnoreCase);
+		if (start < 0)
+			return null;
+		start += needle.Length;
+		int end = xml.IndexOf('"', start);
+		if (end < 0)
+			return null;
+		return xml.Substring(start, end - start);
 	}
 
 	private static string? TryResolveThemeFont(string? theme, Func<string, string?>? themeFontResolver)

@@ -365,7 +365,7 @@ public class DxpWalker
 					case TableRow tr:
 					{
 						int currentRow = rowIndex++;
-						WalkTableRow(tr, d, v, tableContext, currentRow);
+						WalkTableRow(tr, d, v, tableContext, model, currentRow);
 						break;
 					}
 
@@ -378,7 +378,7 @@ public class DxpWalker
 								foreach (var inner in content.Elements<TableRow>())
 								{
 									int currentRow = rowIndex++;
-									WalkTableRow(inner, d, v, tableContext, currentRow);
+									WalkTableRow(inner, d, v, tableContext, model, currentRow);
 								}
 							}
 						}
@@ -390,7 +390,7 @@ public class DxpWalker
 							foreach (var inner in cxRow.Elements<TableRow>())
 							{
 								int currentRow = rowIndex++;
-								WalkTableRow(inner, d, v, tableContext, currentRow);
+								WalkTableRow(inner, d, v, tableContext, model, currentRow);
 							}
 						}
 						break;
@@ -452,21 +452,20 @@ public class DxpWalker
 		}
 	}
 
-	private void WalkTableRow(TableRow tr, DxpDocumentContext d, DxpIVisitor v, DxpTableContext tableContext, int rowIndex)
+	private void WalkTableRow(TableRow tr, DxpDocumentContext d, DxpIVisitor v, DxpTableContext tableContext, DxpTableModel model, int rowIndex)
 	{
 		bool isHeader = tr.TableRowProperties?.GetFirstChild<TableHeader>() != null;
 		var rowContext = new DxpTableRowContext(tableContext, rowIndex, isHeader);
 
 		using (v.VisitTableRowBegin(tr, rowContext, d))
 		{
-			int columnIndex = 0;
+			int gridColumnIndex = 0;
 			foreach (var child in tr.ChildElements)
 			{
 				switch (child)
 				{
 					case TableCell tc:
-						WalkTableCell(tc, d, v, rowContext, columnIndex);
-						columnIndex++;
+						WalkTableCellInGrid(tc, d, v, model, rowContext, rowIndex, ref gridColumnIndex);
 						break;
 
 					case TableRowProperties:
@@ -483,8 +482,7 @@ public class DxpWalker
 							{
 								foreach (var inner in content.Elements<TableCell>())
 								{
-									WalkTableCell(inner, d, v, rowContext, columnIndex);
-									columnIndex++;
+									WalkTableCellInGrid(inner, d, v, model, rowContext, rowIndex, ref gridColumnIndex);
 								}
 							}
 						}
@@ -498,8 +496,7 @@ public class DxpWalker
 							// <w:customXmlCell> may contain one or more <w:tc>
 							foreach (var inner in cxCell.Elements<TableCell>())
 							{
-								WalkTableCell(inner, d, v, rowContext, columnIndex);
-								columnIndex++;
+								WalkTableCellInGrid(inner, d, v, model, rowContext, rowIndex, ref gridColumnIndex);
 							}
 						}
 						break;
@@ -514,16 +511,68 @@ public class DxpWalker
 		}
 	}
 
+	private static bool TryGetCellSpans(DxpTableModel model, TableCell tc, int rowIndex, int gridColumnIndex, out DxpCellModel? modelCell)
+	{
+		modelCell = null;
+		if (rowIndex < 0 || rowIndex >= model.RowCount)
+			return false;
+		if (gridColumnIndex < 0 || gridColumnIndex >= model.ColumnCount)
+			return false;
+
+		for (int c = gridColumnIndex; c < model.ColumnCount; c++)
+		{
+			var candidate = model.Cells[rowIndex, c];
+			if (candidate == null)
+				continue;
+			if (ReferenceEquals(candidate.Cell, tc))
+			{
+				modelCell = candidate;
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private void WalkTableCellInGrid(
+		TableCell tc,
+		DxpDocumentContext d,
+		DxpIVisitor v,
+		DxpTableModel model,
+		DxpTableRowContext rowContext,
+		int rowIndex,
+		ref int gridColumnIndex)
+	{
+		// Best-effort: find matching model cell at/after gridColumnIndex.
+		// If the model is missing/doesn't match (edge cases), fall back to 1x1.
+		int rowSpan = 1;
+		int colSpan = 1;
+		bool isCovered = false;
+
+		if (TryGetCellSpans(model, tc, rowIndex, gridColumnIndex, out var modelCell) && modelCell != null)
+		{
+			rowSpan = Math.Max(1, modelCell.RowSpan);
+			colSpan = Math.Max(1, modelCell.ColSpan);
+			isCovered = modelCell.IsCovered;
+			gridColumnIndex = modelCell.Col; // align to model's grid start for this tc
+		}
+
+		// Advance grid position even if we skip emitting (covered vertical-merge continuations).
+		int advance = Math.Max(1, colSpan);
+
+		if (!isCovered)
+			WalkTableCell(tc, d, v, rowContext, gridColumnIndex, rowSpan, colSpan);
+
+		gridColumnIndex += advance;
+	}
 
 
-
-	private void WalkTableCell(TableCell tc, DxpDocumentContext d, DxpIVisitor v, DxpTableRowContext rowContext, int columnIndex)
+	private void WalkTableCell(TableCell tc, DxpDocumentContext d, DxpIVisitor v, DxpTableRowContext rowContext, int columnIndex, int rowSpan, int colSpan)
 	{
 		TableCellProperties? tcp = null;
 		if (tc.HasChildren)
 			tcp = tc.GetFirstChild<TableCellProperties>();
 
-		var cellContext = new DxpTableCellContext(rowContext, rowContext.Index, columnIndex, 1, 1, tcp);
+		var cellContext = new DxpTableCellContext(rowContext, rowContext.Index, columnIndex, rowSpan, colSpan, tcp);
 		using (v.VisitTableCellBegin(tc, cellContext, d))
 		{
 
