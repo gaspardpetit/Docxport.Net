@@ -272,6 +272,16 @@ body.dxp-root {
   height: auto;
 }
 
+.dxp-image[style*="position:absolute"] {
+  position: static !important;
+  left: auto !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: none !important;
+  z-index: auto !important;
+}
+
 .dxp-caption {
   font-size: 0.95em;
   color: var(--dxp-muted);
