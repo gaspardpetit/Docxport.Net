@@ -7,11 +7,26 @@ Docxport.Net is a .NET library for walking DOCX documents and exporting them to 
 
 - Tracked changes (accept/reject/inline views)
 - Lists with proper markers and indentation
-- Tables
+- Tables (including merged cells / spans)
 - Comments and threaded replies
 - Headers and footers
 - Images/drawings
 - Bookmarks, hyperlinks, fields, and more
+
+## Support overview
+
+**Output formats**
+- Markdown (rich + plain)
+- HTML (rich + plain)
+- Plain text
+
+**Document features**
+- Tracked changes: accept/reject/inline/split modes
+- Comments: threads + replies
+- Lists: markers + indentation
+- Tables: cell spanning (row/col), borders/background/vertical-align (incl. `tblStyle` presets; theme colors/advanced border patterns are limited)
+- Headers/footers, bookmarks, hyperlinks, fields
+- Images/drawings (best-effort)
 
 ## Why this exists
 
@@ -125,7 +140,7 @@ It also ships a small utility that translates legacy “symbol fonts” (Symbol,
 | Shapes/SmartArt | Complex shapes/SmartArt/OLE rely on preview images if present; true vector or OLE rendering is not implemented. |
 | Charts | Charts are emitted via available previews or placeholders; data-driven re-rendering is not implemented. |
 | Math/Fields | Core visits are present, but fidelity for complex math/field result rendering isn’t deeply covered by fixtures. |
-| Tables (complex) | Merged/nested table edge cases beyond supplied samples may need additional handling. |
+| Tables (complex) | Table styles are partially supported (borders/background/vertical align, incl. `tblStyle` presets), but theme color resolution and advanced border patterns are still limited; nested/edge-case tables beyond supplied samples may need additional handling. |
 
 Contributions that improve any of these areas are very welcome.
 
