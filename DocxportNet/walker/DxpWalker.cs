@@ -5,6 +5,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
 using DocxportNet.Core;
 using Microsoft.Extensions.Logging;
+using System.IO;
 using System.Xml.Linq;
 
 namespace DocxportNet.Walker;
@@ -20,7 +21,15 @@ public class DxpWalker
 
 	public void Accept(string docxPath, DxpIVisitor v)
 	{
-		using var doc = WordprocessingDocument.Open(docxPath, false);
+		// Open with a permissive share mode so we can read a DOCX while it is open in Word.
+		// (Word often keeps an open handle; OpenXml's path-based open can conflict on Windows.)
+		using var fileStream = new FileStream(
+			docxPath,
+			FileMode.Open,
+			FileAccess.Read,
+			FileShare.ReadWrite | FileShare.Delete);
+
+		using var doc = WordprocessingDocument.Open(fileStream, false);
 		Accept(doc, v);
 	}
 
