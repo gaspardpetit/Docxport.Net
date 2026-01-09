@@ -26,6 +26,10 @@ internal sealed class DxpHtmlVisitorState
 	public bool FontSpanOpen { get; set; }
 	public bool AllCaps { get; set; }
 	public bool IsFirstSection { get; set; } = true;
+	public bool SectionHasHeader { get; set; }
+	public bool SectionHasFooter { get; set; }
+	public bool InHeader { get; set; }
+	public bool InFooter { get; set; }
 	public InlineChangeMode CurrentInlineMode { get; set; } = InlineChangeMode.Unchanged;
 	public int TabIndex { get; set; }
 	public int UnderlineDepth { get; set; }
@@ -67,6 +71,8 @@ public sealed record DxpHtmlVisitorConfig
 	public bool EmbedDefaultStylesheet = true;
 	public string RootCssClass = "dxp-root";
 	public DxpTrackedChangeMode TrackedChangeMode = DxpTrackedChangeMode.InlineChanges;
+	public DxpHeaderFooterSelection HeaderSelection = DxpHeaderFooterSelection.First;
+	public DxpHeaderFooterSelection FooterSelection = DxpHeaderFooterSelection.First;
 
 	public static DxpHtmlVisitorConfig CreateRichConfig() => new();
 	public static DxpHtmlVisitorConfig CreatePlainConfig() => new() {
@@ -90,7 +96,7 @@ public sealed record DxpHtmlVisitorConfig
 	public static DxpHtmlVisitorConfig CreateConfig() => CreateRichConfig();
 }
 
-public sealed class DxpHtmlVisitor : DxpVisitor, DxpITextVisitor, IDisposable
+public sealed class DxpHtmlVisitor : DxpVisitor, DxpITextVisitor, IDxpHeaderFooterSelectionProvider, IDisposable
 {
 	private TextWriter _sinkWriter;
 	private StreamWriter? _ownedStreamWriter;
@@ -114,6 +120,9 @@ public sealed class DxpHtmlVisitor : DxpVisitor, DxpITextVisitor, IDisposable
 		: this(TextWriter.Null, config, logger)
 	{
 	}
+
+	public DxpHeaderFooterSelection HeaderSelection => _config.HeaderSelection;
+	public DxpHeaderFooterSelection FooterSelection => _config.FooterSelection;
 
 	public void SetOutput(TextWriter writer)
 	{
@@ -205,6 +214,8 @@ body.dxp-root {
   position: relative;
   display: flex;
   flex-direction: column;
+  z-index: 0;
+  overflow: hidden;
 }
 
 .dxp-body {
@@ -273,16 +284,6 @@ body.dxp-root {
 .dxp-image {
   max-width: 100%;
   height: auto;
-}
-
-.dxp-image[style*="position:absolute"] {
-  position: static !important;
-  left: auto !important;
-  top: auto !important;
-  right: auto !important;
-  bottom: auto !important;
-  transform: none !important;
-  z-index: auto !important;
 }
 
 .dxp-caption {
@@ -569,7 +570,7 @@ body.dxp-root {
 
 		if (!string.IsNullOrEmpty(dataUri) && contentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
 		{
-			var style = BuildDrawingImageStyle(drw);
+			var style = BuildDrawingImageStyle(drw, d, _state.InHeader, _state.InFooter);
 			var styleAttr = string.IsNullOrEmpty(style) ? "" : $" style=\"{style}\"";
 			Write(d, $"<img class=\"dxp-image\" src=\"{dataUri}\" alt=\"{alt}\"{styleAttr} />");
 		}
@@ -584,7 +585,7 @@ body.dxp-root {
 		}
 	}
 
-	private static string? BuildDrawingImageStyle(Drawing drw)
+	private static string? BuildDrawingImageStyle(Drawing drw, DxpIDocumentContext d, bool inHeader, bool inFooter)
 	{
 		var sb = new StringBuilder();
 
@@ -613,17 +614,17 @@ body.dxp-root {
 			Append(sb, "max-width:none");
 		}
 
-		// Positioning: for floating drawings (wp:anchor), surface a basic absolute positioning approximation.
-		// This is intentionally minimal, but helps for headers/footers that use anchored images.
+		// Positioning: for floating drawings (wp:anchor), surface a best-effort approximation.
+		// We prefer relative positioning (keeps layout flow; avoids overlapping following content) and
+		// adjust page-relative offsets using the current section margins when available.
 		var anchor = drw.Descendants<DocumentFormat.OpenXml.Drawing.Wordprocessing.Anchor>().FirstOrDefault();
 		if (anchor != null)
 		{
-			var positionCss = TryBuildAnchorPositionCss(anchor);
+			var positionCss = TryBuildAnchorPositionCss(anchor, d, inHeader, inFooter);
 			if (!string.IsNullOrEmpty(positionCss))
 			{
-				Append(sb, "position:absolute");
 				Append(sb, "display:block");
-				Append(sb, "z-index:1");
+				Append(sb, "position:relative");
 				Append(sb, positionCss!);
 			}
 		}
@@ -631,7 +632,7 @@ body.dxp-root {
 		return sb.Length == 0 ? null : sb.ToString();
 	}
 
-	private static string? TryBuildAnchorPositionCss(DocumentFormat.OpenXml.Drawing.Wordprocessing.Anchor anchor)
+	private static string? TryBuildAnchorPositionCss(DocumentFormat.OpenXml.Drawing.Wordprocessing.Anchor anchor, DxpIDocumentContext d, bool inHeader, bool inFooter)
 	{
 		// We use local-name based parsing to stay robust across SDK differences.
 		OpenXmlElement? posH = anchor.ChildElements.FirstOrDefault(e => e.LocalName == "positionH");
@@ -640,6 +641,17 @@ body.dxp-root {
 		string? transform = null;
 		var sb = new StringBuilder();
 
+		static string? TryGetAttribute(OpenXmlElement el, string localName)
+			=> el.GetAttributes().FirstOrDefault(a => a.LocalName == localName).Value;
+
+		static bool IsPageReference(string? relativeFrom)
+		{
+			if (string.IsNullOrEmpty(relativeFrom))
+				return false;
+
+			return relativeFrom.Equals("page", StringComparison.OrdinalIgnoreCase);
+		}
+
 		void Append(string name, string value)
 		{
 			if (sb.Length > 0 && sb[sb.Length - 1] != ';')
@@ -647,45 +659,111 @@ body.dxp-root {
 			sb.Append(name).Append(':').Append(value).Append(';');
 		}
 
+		static string FormatInches(double inches)
+			=> inches.ToString("0.###", CultureInfo.InvariantCulture) + "in";
+
+		double marginLeftIn = d.CurrentSection.Layout?.MarginLeft?.Inches ?? 0.0;
+		double marginRightIn = d.CurrentSection.Layout?.MarginRight?.Inches ?? 0.0;
+		double pageCenterShiftIn = (marginRightIn - marginLeftIn) / 2.0;
+
+		// Note: block-level alignment is handled via margins; offsets are applied via transforms.
 		if (posH != null)
 		{
+			var relativeFrom = TryGetAttribute(posH, "relativeFrom")?.Trim();
 			var align = posH.ChildElements.FirstOrDefault(e => e.LocalName == "align")?.InnerText?.Trim().ToLowerInvariant();
 			var offset = posH.ChildElements.FirstOrDefault(e => e.LocalName == "posOffset")?.InnerText?.Trim();
 			long.TryParse(offset, out var offsetEmu);
 			var offsetIn = EmuToInches(offsetEmu);
+			var offsetPresent = !string.IsNullOrEmpty(offset);
+
+			// Compute shift relative to the content box (paragraph/content area).
+			// If relativeFrom="page", Word offsets are from the page edge; our HTML content is inset by margins.
+			bool fromPage = IsPageReference(relativeFrom);
 
 			if (align == "right")
-				Append("right", offsetIn.ToString("0.###", CultureInfo.InvariantCulture) + "in");
+			{
+				Append("margin-left", "auto");
+				var shiftIn = fromPage ? (marginRightIn - (offsetPresent ? offsetIn : 0.0)) : -(offsetPresent ? offsetIn : 0.0);
+				if (Math.Abs(shiftIn) > 0.0005)
+					transform = AppendTransform(transform, "translateX(" + FormatInches(shiftIn) + ")");
+			}
 			else if (align == "center")
 			{
-				Append("left", "50%");
-				transform = AppendTransform(transform, "translateX(-50%)");
+				Append("margin-left", "auto");
+				Append("margin-right", "auto");
+				var shiftIn = (offsetPresent ? offsetIn : 0.0) + (fromPage ? pageCenterShiftIn : 0.0);
+				if (Math.Abs(shiftIn) > 0.0005)
+					transform = AppendTransform(transform, "translateX(" + FormatInches(shiftIn) + ")");
 			}
 			else if (align == "left")
-				Append("left", offsetIn.ToString("0.###", CultureInfo.InvariantCulture) + "in");
-			else if (!string.IsNullOrEmpty(offset))
-				Append("left", offsetIn.ToString("0.###", CultureInfo.InvariantCulture) + "in");
+			{
+				var shiftIn = fromPage ? ((offsetPresent ? offsetIn : 0.0) - marginLeftIn) : (offsetPresent ? offsetIn : 0.0);
+				if (Math.Abs(shiftIn) > 0.0005)
+					transform = AppendTransform(transform, "translateX(" + FormatInches(shiftIn) + ")");
+			}
+			else if (offsetPresent)
+			{
+				var shiftIn = fromPage ? (offsetIn - marginLeftIn) : offsetIn;
+				if (Math.Abs(shiftIn) > 0.0005)
+					transform = AppendTransform(transform, "translateX(" + FormatInches(shiftIn) + ")");
+			}
 		}
 
 		if (posV != null)
 		{
+			var relativeFrom = TryGetAttribute(posV, "relativeFrom")?.Trim();
+			var ignoreVertical = IsPageReference(relativeFrom);
+			if (ignoreVertical)
+				goto AfterVertical;
+
 			var align = posV.ChildElements.FirstOrDefault(e => e.LocalName == "align")?.InnerText?.Trim().ToLowerInvariant();
 			var offset = posV.ChildElements.FirstOrDefault(e => e.LocalName == "posOffset")?.InnerText?.Trim();
 			long.TryParse(offset, out var offsetEmu);
 			var offsetIn = EmuToInches(offsetEmu);
+			var offsetPresent = !string.IsNullOrEmpty(offset);
+			if (inFooter && relativeFrom != null && relativeFrom.Equals("paragraph", StringComparison.OrdinalIgnoreCase) && offsetPresent)
+			{
+				// Best-effort: in a single-page HTML layout, footer paragraphs are placed relative to the bottom edge.
+				// Word's footer "distance from bottom" (w:pgMar/@w:footer) tends to already be reflected in the footer box.
+				// When we apply a raw negative posOffset, it can move the object far above the footer region.
+				// Heuristic: for negative paragraph-relative offsets in footers, flip sign and compensate by footer distance.
+				double footerDistIn = d.CurrentSection.Layout?.MarginFooter?.Inches ?? 0.0;
+				if (offsetIn < 0)
+					offsetIn = (-offsetIn) - footerDistIn;
+			}
 
 			if (align == "bottom")
-				Append("bottom", offsetIn.ToString("0.###", CultureInfo.InvariantCulture) + "in");
+			{
+				var shiftIn = -(offsetPresent ? offsetIn : 0.0);
+				if (Math.Abs(shiftIn) > 0.0005)
+					transform = AppendTransform(transform, "translateY(" + FormatInches(shiftIn) + ")");
+			}
 			else if (align == "center")
 			{
-				Append("top", "50%");
-				transform = AppendTransform(transform, "translateY(-50%)");
+				var shiftIn = offsetPresent ? offsetIn : 0.0;
+				if (Math.Abs(shiftIn) > 0.0005)
+					transform = AppendTransform(transform, "translateY(" + FormatInches(shiftIn) + ")");
 			}
 			else if (align == "top")
-				Append("top", offsetIn.ToString("0.###", CultureInfo.InvariantCulture) + "in");
-			else if (!string.IsNullOrEmpty(offset))
-				Append("top", offsetIn.ToString("0.###", CultureInfo.InvariantCulture) + "in");
+			{
+				var shiftIn = offsetPresent ? offsetIn : 0.0;
+				if (Math.Abs(shiftIn) > 0.0005)
+					transform = AppendTransform(transform, "translateY(" + FormatInches(shiftIn) + ")");
+			}
+			else if (offsetPresent)
+			{
+				if (Math.Abs(offsetIn) > 0.0005)
+					transform = AppendTransform(transform, "translateY(" + FormatInches(offsetIn) + ")");
+			}
+
+AfterVertical:
+			;
 		}
+
+		// Stacking: if the anchor indicates "behind text", try to keep it behind normal content but above page background.
+		var behindDoc = anchor.GetAttributes().FirstOrDefault(a => a.LocalName == "behindDoc").Value;
+		if (string.Equals(behindDoc, "1", StringComparison.Ordinal) || string.Equals(behindDoc, "true", StringComparison.OrdinalIgnoreCase))
+			Append("z-index", "-1");
 
 		if (!string.IsNullOrEmpty(transform))
 			Append("transform", transform!);
@@ -987,19 +1065,72 @@ body.dxp-root {
 		if (_config.EmitSectionHeadersFooters == false)
 			return DxpDisposable.Empty;
 
-		WriteLine(d, """<div class="dxp-header">""");
+		_state.SectionHasHeader = true;
+		_state.InHeader = true;
+
+		var style = new StringBuilder();
+		var layout = d.CurrentSection.Layout;
+		double? marginTopIn = layout?.MarginTop?.Inches;
+		double? headerDistIn = layout?.MarginHeader?.Inches;
+		double marginLeftIn = layout?.MarginLeft?.Inches ?? 0.0;
+		double marginRightIn = layout?.MarginRight?.Inches ?? 0.0;
+		if (marginTopIn != null)
+			style.Append("height:").Append(marginTopIn.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+		if (headerDistIn != null)
+			style.Append("padding-top:").Append(headerDistIn.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+		if (marginLeftIn > 0.0005 || marginRightIn > 0.0005)
+		{
+			// Header/footer in Word can use the full page width; don't let section margins clip content.
+			style.Append("margin-left:-").Append(marginLeftIn.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+			style.Append("margin-right:-").Append(marginRightIn.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+			style.Append("padding-left:").Append(marginLeftIn.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+			style.Append("padding-right:").Append(marginRightIn.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+			style.Append("width:calc(100% + ")
+				.Append(marginLeftIn.ToString("0.###", CultureInfo.InvariantCulture)).Append("in + ")
+				.Append(marginRightIn.ToString("0.###", CultureInfo.InvariantCulture)).Append("in);");
+		}
+		style.Append("box-sizing:border-box;overflow:visible;");
+
+		WriteLine(d, $"""<div class="dxp-header" style="{style}">""");
 
 		return DxpDisposable.Create(() => {
 			WriteLine(d, "</div>");
+			_state.InHeader = false;
 		});
 	}
 
 	public override IDisposable VisitSectionFooterBegin(Footer ftr, object kind, DxpIDocumentContext d)
 	{
-		WriteLine(d, """<div class="dxp-footer">""");
+		_state.SectionHasFooter = true;
+		_state.InFooter = true;
+
+		var style = new StringBuilder("display:flex;flex-direction:column;justify-content:flex-end;");
+		var layout = d.CurrentSection.Layout;
+		double? marginBottomIn = layout?.MarginBottom?.Inches;
+		double? footerDistIn = layout?.MarginFooter?.Inches;
+		double marginLeftIn = layout?.MarginLeft?.Inches ?? 0.0;
+		double marginRightIn = layout?.MarginRight?.Inches ?? 0.0;
+		if (marginBottomIn != null)
+			style.Append("height:").Append(marginBottomIn.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+		if (footerDistIn != null)
+			style.Append("padding-bottom:").Append(footerDistIn.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+		if (marginLeftIn > 0.0005 || marginRightIn > 0.0005)
+		{
+			style.Append("margin-left:-").Append(marginLeftIn.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+			style.Append("margin-right:-").Append(marginRightIn.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+			style.Append("padding-left:").Append(marginLeftIn.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+			style.Append("padding-right:").Append(marginRightIn.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+			style.Append("width:calc(100% + ")
+				.Append(marginLeftIn.ToString("0.###", CultureInfo.InvariantCulture)).Append("in + ")
+				.Append(marginRightIn.ToString("0.###", CultureInfo.InvariantCulture)).Append("in);");
+		}
+		style.Append("box-sizing:border-box;overflow:visible;");
+
+		WriteLine(d, $"""<div class="dxp-footer" style="{style}">""");
 
 		return DxpDisposable.Create(() => {
 			WriteLine(d, "</div>");
+			_state.InFooter = false;
 		});
 	}
 
@@ -1401,7 +1532,7 @@ body.dxp-root {
 		var style = new StringBuilder("flex:1 0 auto;");
 
 		double? marginTopInches = d.CurrentSection.Layout?.MarginTop?.Inches;
-		if (marginTopInches != null)
+		if (marginTopInches != null && _state.SectionHasHeader == false)
 			style.Append("padding-top:").Append(marginTopInches.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
 
 		Write(d, $"""<div class="dxp-body" style="{style}">""" + "\n");
@@ -1415,6 +1546,9 @@ body.dxp-root {
 	{
 		if (!_config.EmitDocumentColors)
 			return DxpDisposable.Empty;
+
+		_state.SectionHasHeader = false;
+		_state.SectionHasFooter = false;
 
 		if (_state.IsFirstSection)
 		{

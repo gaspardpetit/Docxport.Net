@@ -128,18 +128,128 @@ public class DxpWalker
 	{
 		using (v.VisitDocumentBodyBegin(body, d))
 		{
+			var selectionProvider = v as IDxpHeaderFooterSelectionProvider;
+			bool evenAndOddHeaders = d.DocumentSettings != null && d.DocumentSettings.ChildElements.Any(e => e.LocalName == "evenAndOddHeaders");
+
 			// TODO - we expect to always have at least 1 section, if the document
 			// has none, expect BuildSections to create a default one like Word would.
 			List<SectionSlice> sections = DxpSections.SplitDocumentBodyIntoSections(body);
 
+			EffectiveHeaderFooterRefs effective = new();
 			foreach (SectionSlice section in sections)
 			{
-				WalkSection(section, d, v);
+				effective.ApplySectionOverrides(section.Properties);
+
+				HeaderReference? headerRef = null;
+				FooterReference? footerRef = null;
+
+				if (selectionProvider == null)
+				{
+					headerRef = DxpSections.FindFirstSectionHeaderReference(section.Properties);
+					footerRef = DxpSections.FindLastSectionFooterReference(section.Properties);
+				}
+				else
+				{
+					headerRef = effective.SelectHeader(section.Properties, selectionProvider.HeaderSelection, evenAndOddHeaders);
+					footerRef = effective.SelectFooter(section.Properties, selectionProvider.FooterSelection, evenAndOddHeaders);
+				}
+
+				WalkSection(section, d, v, headerRef, footerRef);
 			}
 		}
 	}
 
-	private void WalkSection(SectionSlice section, DxpDocumentContext d, DxpIVisitor v)
+	private sealed class EffectiveHeaderFooterRefs
+	{
+		private HeaderReference? _headerDefault;
+		private HeaderReference? _headerFirst;
+		private HeaderReference? _headerEven;
+		private FooterReference? _footerDefault;
+		private FooterReference? _footerFirst;
+		private FooterReference? _footerEven;
+
+		private static HeaderFooterValues NormalizeHeaderFooterType(HeaderFooterValues? type)
+			=> type ?? HeaderFooterValues.Default;
+
+		public void ApplySectionOverrides(SectionProperties sp)
+		{
+			foreach (var r in sp.Elements<HeaderReference>())
+			{
+				var type = NormalizeHeaderFooterType(r.Type?.Value);
+				if (type == HeaderFooterValues.First)
+					_headerFirst = r;
+				else if (type == HeaderFooterValues.Even)
+					_headerEven = r;
+				else
+					_headerDefault = r;
+			}
+
+			foreach (var r in sp.Elements<FooterReference>())
+			{
+				var type = NormalizeHeaderFooterType(r.Type?.Value);
+				if (type == HeaderFooterValues.First)
+					_footerFirst = r;
+				else if (type == HeaderFooterValues.Even)
+					_footerEven = r;
+				else
+					_footerDefault = r;
+			}
+		}
+
+		public HeaderReference? SelectHeader(SectionProperties sp, DxpHeaderFooterSelection selection, bool evenAndOddHeaders)
+		{
+			if (selection == DxpHeaderFooterSelection.None)
+				return null;
+
+			bool titlePg = sp.GetFirstChild<TitlePage>() != null;
+
+			// Best-effort mapping for a single continuous HTML page:
+			// - First => what Word shows on the first page of the section (uses type=first only when titlePg is set),
+			//           otherwise default (odd page) when even/odd headers are enabled.
+			// - Last  => approximate last-page parity: even when even/odd headers are enabled, else default.
+			if (selection == DxpHeaderFooterSelection.First)
+			{
+				if (titlePg && _headerFirst != null)
+					return _headerFirst;
+				return _headerDefault ?? (evenAndOddHeaders ? _headerEven : null) ?? _headerFirst;
+			}
+
+			if (selection == DxpHeaderFooterSelection.Last)
+			{
+				if (evenAndOddHeaders && _headerEven != null)
+					return _headerEven;
+				return _headerDefault ?? _headerFirst ?? _headerEven;
+			}
+
+			return _headerDefault ?? _headerFirst ?? _headerEven;
+		}
+
+		public FooterReference? SelectFooter(SectionProperties sp, DxpHeaderFooterSelection selection, bool evenAndOddHeaders)
+		{
+			if (selection == DxpHeaderFooterSelection.None)
+				return null;
+
+			bool titlePg = sp.GetFirstChild<TitlePage>() != null;
+
+			if (selection == DxpHeaderFooterSelection.First)
+			{
+				if (titlePg && _footerFirst != null)
+					return _footerFirst;
+				return _footerDefault ?? (evenAndOddHeaders ? _footerEven : null) ?? _footerFirst;
+			}
+
+			if (selection == DxpHeaderFooterSelection.Last)
+			{
+				if (evenAndOddHeaders && _footerEven != null)
+					return _footerEven;
+				return _footerDefault ?? _footerFirst ?? _footerEven;
+			}
+
+			return _footerDefault ?? _footerFirst ?? _footerEven;
+		}
+	}
+
+	private void WalkSection(SectionSlice section, DxpDocumentContext d, DxpIVisitor v, HeaderReference? headerRef, FooterReference? footerRef)
 	{
 		SectionLayout layout = DxpSections.CreateSectionLayout(section.Properties);
 		d.EnterSection(section.Properties, layout);
@@ -147,7 +257,6 @@ public class DxpWalker
 		using (v.VisitSectionBegin(section.Properties, layout, d))
 		{
 			// header
-			HeaderReference? headerRef = DxpSections.FindFirstSectionHeaderReference(section.Properties);
 			if (headerRef != null)
 				WalkHeaderReference(headerRef, d, v);
 
@@ -155,7 +264,6 @@ public class DxpWalker
 			WalkSectionBody(section, d, v);
 
 			// footer
-			FooterReference? footerRef = DxpSections.FindLastSectionFooterReference(section.Properties);
 			if (footerRef != null)
 				WalkFooterReference(footerRef, d, v);
 		}

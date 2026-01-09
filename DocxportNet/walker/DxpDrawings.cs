@@ -1,6 +1,7 @@
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
+using System.Text;
 
 namespace DocxportNet.Walker;
 
@@ -43,7 +44,7 @@ public class DxpDrawings
 
 		var docPr = drw.Descendants<DocumentFormat.OpenXml.Drawing.Wordprocessing.DocProperties>()
 					 .FirstOrDefault();
-		string? altText = docPr?.Description?.Value ?? docPr?.Title?.Value;
+		string? altText = NormalizeAltText(docPr?.Description?.Value ?? docPr?.Title?.Value);
 
 		var blip = drw.Descendants<DocumentFormat.OpenXml.Drawing.Blip>().FirstOrDefault();
 		var relId = blip?.Embed?.Value;
@@ -67,6 +68,34 @@ public class DxpDrawings
 		}
 
 		return new DxpDrawingInfo(relId, contentType, fileName, altText, dataUri);
+	}
+
+	private static string? NormalizeAltText(string? altText)
+	{
+		if (string.IsNullOrWhiteSpace(altText))
+			return null;
+
+		var sb = new StringBuilder(altText.Length);
+		bool previousWasWhitespace = false;
+
+		foreach (var ch in altText)
+		{
+			if (ch == '\r' || ch == '\n' || ch == '\t' || char.IsWhiteSpace(ch))
+			{
+				if (!previousWasWhitespace)
+				{
+					sb.Append(' ');
+					previousWasWhitespace = true;
+				}
+				continue;
+			}
+
+			sb.Append(ch);
+			previousWasWhitespace = false;
+		}
+
+		var normalized = sb.ToString().Trim();
+		return normalized.Length == 0 ? null : normalized;
 	}
 
 	private static (string dataUri, string contentType)? TryBuildAnyDataUri(OpenXmlPart part)
