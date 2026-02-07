@@ -1,6 +1,6 @@
+using DocxportNet;
 using DocxportNet.Tests.Utils;
 using DocxportNet.Visitors.Markdown;
-using DocxportNet.Walker;
 using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
 using Xunit.Sdk;
@@ -163,12 +163,8 @@ public class MarkdownExportTests
 
 	private string ToMarkdown(string docxPath, DxpMarkdownVisitorConfig config)
 	{
-		using var writer = new StringWriter();
-		var visitor = new DxpMarkdownVisitor(writer, config, _logger);
-		var walker = new DxpWalker();
-
-		walker.Accept(docxPath, visitor);
-		return writer.ToString();
+		var visitor = new DxpMarkdownVisitor(config, _logger);
+		return DxpExport.ExportToString(docxPath, visitor, _logger);
 	}
 
 	private DxpMarkdownVisitorConfig CloneConfig(DxpMarkdownVisitorConfig source, DxpTrackedChangeMode mode)

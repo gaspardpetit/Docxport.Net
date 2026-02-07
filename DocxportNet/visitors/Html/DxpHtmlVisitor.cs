@@ -4,12 +4,14 @@ using DocumentFormat.OpenXml.Packaging;
 using DocxportNet.API;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using DocxportNet.Word;
 using System.Text;
 using DocxportNet.Core;
 using System.Net;
 using DocxportNet.Visitors.Markdown;
+using DocxportNet.Fields;
 
 namespace DocxportNet.Visitors.Html;
 
@@ -43,6 +45,8 @@ internal sealed class DxpHtmlVisitorState
 	public double PendingAlignedTabSegmentWidthPt { get; set; }
 	public bool PendingAlignedTabUnderline { get; set; }
 	public StringBuilder PendingAlignedTabBuffer { get; } = new();
+	public int SuppressFieldDepth { get; set; }
+	public Stack<bool> ComplexFieldEvaluated { get; } = new();
 
 	public TextWriter DeletedTextWriter = TextWriter.Null;
 	public TextWriter InsertedTextWriter = TextWriter.Null;
@@ -96,7 +100,7 @@ public sealed record DxpHtmlVisitorConfig
 	public static DxpHtmlVisitorConfig CreateConfig() => CreateRichConfig();
 }
 
-public sealed class DxpHtmlVisitor : DxpVisitor, DxpITextVisitor, IDxpHeaderFooterSelectionProvider, IDisposable
+public sealed class DxpHtmlVisitor : DxpVisitor, DxpITextVisitor, IDxpHeaderFooterSelectionProvider, IDisposable, IDxpFieldEvalProvider
 {
 	private TextWriter _sinkWriter;
 	private StreamWriter? _ownedStreamWriter;
@@ -105,19 +109,23 @@ public sealed class DxpHtmlVisitor : DxpVisitor, DxpITextVisitor, IDxpHeaderFoot
 
 	private readonly DxpHtmlVisitorConfig _config;
 	private DxpHtmlVisitorState _state = new();
+	private readonly DxpFieldEval _fieldEval;
 
-	public DxpHtmlVisitor(TextWriter writer, DxpHtmlVisitorConfig config, ILogger? logger)
+	public DxpFieldEval FieldEval => _fieldEval;
+
+	public DxpHtmlVisitor(TextWriter writer, DxpHtmlVisitorConfig config, ILogger? logger, DxpFieldEval? fieldEval = null)
 		: base(logger)
 	{
 		_config = config;
 		_sinkWriter = writer;
 		_rejectBufferedWriter = new DxpBufferedTextWriter();
 		_acceptBufferedWriter = new DxpBufferedTextWriter();
+		_fieldEval = fieldEval ?? new DxpFieldEval();
 		ConfigureWriters();
 	}
 
-	public DxpHtmlVisitor(DxpHtmlVisitorConfig config, ILogger? logger = null)
-		: this(TextWriter.Null, config, logger)
+	public DxpHtmlVisitor(DxpHtmlVisitorConfig config, ILogger? logger = null, DxpFieldEval? fieldEval = null)
+		: this(TextWriter.Null, config, logger, fieldEval)
 	{
 	}
 
@@ -1135,7 +1143,10 @@ AfterVertical:
 	{
 	}
 
-	public override void VisitComplexFieldBegin(FieldChar begin, DxpIDocumentContext d) { }
+	public override void VisitComplexFieldBegin(FieldChar begin, DxpIDocumentContext d)
+	{
+		_state.ComplexFieldEvaluated.Push(false);
+	}
 
 	public override void VisitComplexFieldInstruction(FieldCode instr, string text, DxpIDocumentContext d)
 	{
@@ -1146,6 +1157,9 @@ AfterVertical:
 
 	public override void VisitComplexFieldCachedResultText(string text, DxpIDocumentContext d)
 	{
+		if (TryWriteEvaluatedComplexField(d))
+			return;
+
 		if (!_config.EmitPageNumbers)
 		{
 			var instr = d.CurrentFields.Current?.InstructionText;
@@ -1155,13 +1169,22 @@ AfterVertical:
 		Write(d, WebUtility.HtmlEncode(text));
 	}
 
-	public override void VisitComplexFieldEnd(FieldChar end, DxpIDocumentContext d) { }
+	public override void VisitComplexFieldEnd(FieldChar end, DxpIDocumentContext d)
+	{
+		if (_state.ComplexFieldEvaluated.Count > 0)
+			_state.ComplexFieldEvaluated.Pop();
+	}
 
 	public override IDisposable VisitSimpleFieldBegin(SimpleField fld, DxpIDocumentContext d)
 	{
-		var instr = fld.Instruction?.Value;
+		var instr = d.CurrentFields.Current?.InstructionText ?? fld.Instruction?.Value;
 		if (instr != null)
+		{
+			if (TryWriteEvaluatedSimpleField(instr, d))
+				return DxpDisposable.Create(() => _state.SuppressFieldDepth--);
+
 			EmitFieldInstruction(d, instr);
+		}
 		return DxpDisposable.Empty;
 	}
 
@@ -1618,6 +1641,9 @@ AfterVertical:
 
 	private void Write(DxpIDocumentContext d, string str)
 	{
+		if (_state.SuppressFieldDepth > 0)
+			return;
+
 		if (_config.TrackedChangeMode == DxpTrackedChangeMode.InlineChanges)
 		{
 			var targetMode = DetermineChangeMode(d);
@@ -1672,6 +1698,39 @@ AfterVertical:
 			WriteRouted(DxpHtmlVisitorState.InlineChangeMode.Unchanged, InlineDeletedTag());
 
 		_state.CurrentInlineMode = mode;
+	}
+
+	private bool TryWriteEvaluatedSimpleField(string instruction, DxpIDocumentContext d)
+	{
+		var result = _fieldEval.EvalAsync(new DxpFieldInstruction(instruction)).GetAwaiter().GetResult();
+		if (result.Status != DxpFieldEvalStatus.Resolved || result.Text == null)
+			return false;
+
+		Write(d, WebUtility.HtmlEncode(result.Text));
+		_state.SuppressFieldDepth++;
+		return true;
+	}
+
+	private bool TryWriteEvaluatedComplexField(DxpIDocumentContext d)
+	{
+		if (_state.ComplexFieldEvaluated.Count == 0)
+			return false;
+
+		if (_state.ComplexFieldEvaluated.Peek())
+			return true;
+
+		var instruction = d.CurrentFields.Current?.InstructionText;
+		if (string.IsNullOrWhiteSpace(instruction))
+			return false;
+
+		var result = _fieldEval.EvalAsync(new DxpFieldInstruction(instruction)).GetAwaiter().GetResult();
+		if (result.Status != DxpFieldEvalStatus.Resolved || result.Text == null)
+			return false;
+
+		Write(d, WebUtility.HtmlEncode(result.Text));
+		_state.ComplexFieldEvaluated.Pop();
+		_state.ComplexFieldEvaluated.Push(true);
+		return true;
 	}
 
 	private void EmitSplitBuffersIfNeeded()

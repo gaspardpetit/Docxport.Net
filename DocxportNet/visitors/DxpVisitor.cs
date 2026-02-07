@@ -1,4 +1,3 @@
-using System.IO;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Office2010.Word;
 using DocumentFormat.OpenXml.Packaging;
@@ -7,7 +6,6 @@ using DocxportNet.API;
 using DocxportNet.Core;
 using Microsoft.Extensions.Logging;
 using System.Xml.Linq;
-using DocxportNet.Walker;
 
 namespace DocxportNet.Visitors;
 

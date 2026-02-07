@@ -5,7 +5,6 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
 using DocxportNet.Core;
 using Microsoft.Extensions.Logging;
-using System.IO;
 using System.Xml.Linq;
 
 namespace DocxportNet.Walker;
@@ -467,6 +466,10 @@ public class DxpWalker
 		var tableContext = new DxpTableContext(tbl, tblPr, tbl.GetFirstChild<TableGrid>(), tableResolvedStyle);
 		int rowIndex = 0;
 
+		var previousTable = d.CurrentTable;
+		var previousTableModel = d.CurrentTableModel;
+		d.CurrentTable = tableContext;
+		d.CurrentTableModel = model;
 		using (v.VisitTableBegin(tbl, model, d, tableContext))
 		{
 			// Table-level props/grid/anchors
@@ -569,6 +572,8 @@ public class DxpWalker
 			}
 			d.StyleTracker.ResetStyle(d, v);
 		}
+		d.CurrentTable = previousTable;
+		d.CurrentTableModel = previousTableModel;
 	}
 
 	private void WalkTableRow(TableRow tr, DxpDocumentContext d, DxpIVisitor v, DxpTableContext tableContext, DxpTableModel model, int rowIndex)
@@ -576,6 +581,8 @@ public class DxpWalker
 		bool isHeader = tr.TableRowProperties?.GetFirstChild<TableHeader>() != null;
 		var rowContext = new DxpTableRowContext(tableContext, rowIndex, isHeader, tr.TableRowProperties);
 
+		var previousRow = d.CurrentTableRow;
+		d.CurrentTableRow = rowContext;
 		using (v.VisitTableRowBegin(tr, rowContext, d))
 		{
 			int gridColumnIndex = 0;
@@ -628,6 +635,7 @@ public class DxpWalker
 				}
 			}
 		}
+		d.CurrentTableRow = previousRow;
 	}
 
 	private static bool TryGetCellSpans(DxpTableModel model, TableCell tc, int rowIndex, int gridColumnIndex, out DxpCellModel? modelCell)
@@ -692,6 +700,8 @@ public class DxpWalker
 			tcp = tc.GetFirstChild<TableCellProperties>();
 
 		var cellContext = new DxpTableCellContext(rowContext, rowContext.Index, columnIndex, rowSpan, colSpan, tcp);
+		var previousCell = d.CurrentTableCell;
+		d.CurrentTableCell = cellContext;
 		using (v.VisitTableCellBegin(tc, cellContext, d))
 		{
 

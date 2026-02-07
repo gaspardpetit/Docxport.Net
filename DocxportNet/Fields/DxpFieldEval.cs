@@ -148,7 +148,7 @@ public sealed class DxpFieldEval
 						string bookmark = tokens[0];
 						var switches = ParseNonFormatSwitches(ast.RawText);
 						bool hasRefSwitches = HasRefSwitches(switches);
-						if (hasRefSwitches && Context.RefResolver != null)
+						if (Context.RefResolver != null)
 						{
 							var request = new Resolution.DxpRefRequest(
 								Bookmark: bookmark,
@@ -267,6 +267,9 @@ public sealed class DxpFieldEval
 							seqValue = Context.GetSequence(identifier);
 						else
 							seqValue = Context.NextSequence(identifier);
+
+						// Track most recent sequence value for numbereditem lookups.
+						Context.SetNumberedItem(identifier, seqValue.ToString(System.Globalization.CultureInfo.InvariantCulture));
 
 						bool shouldHide = hide && !hasStar;
 						value = shouldHide ? new DxpFieldValue(string.Empty) : new DxpFieldValue(seqValue);

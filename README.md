@@ -155,7 +155,7 @@ High‑level support includes:
 - Locale‑aware formatting and list‑separator handling
 - Number‑to‑words languages: English, French, German, Spanish, Italian, Portuguese, Danish, Japanese, Thai, Chinese (Simplified)
 
-Sample usage:
+Minimal setup (standalone):
 
 ```csharp
 using DocxportNet.Fields;
@@ -174,6 +174,32 @@ var title = await eval.EvalAsync(new DxpFieldInstruction("DOCPROPERTY Title \\* 
 // formula.Text -> "$246.90"
 // title.Text   -> "MY DOC"
 ```
+
+Minimal setup (with exporter + middleware):
+
+```csharp
+using DocxportNet;
+using DocxportNet.Fields;
+using DocxportNet.Visitors.PlainText;
+
+var visitor = new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateAcceptConfig());
+// DxpExport wraps the visitor with field-eval middleware automatically.
+string text = DxpExport.ExportToString("my-doc.docx", visitor);
+```
+
+Providing DOCVARIABLEs:
+
+```csharp
+using DocxportNet.Fields;
+
+var eval = new DxpFieldEval();
+eval.Context.SetDocVariable("ClientName", "Contoso Ltd.");
+
+var result = await eval.EvalAsync(new DxpFieldInstruction("DOCVARIABLE ClientName \\* Upper"));
+// result.Text -> "CONTOSO LTD."
+```
+
+If you need dynamic resolution (DB/HTTP/etc.), register a resolver on the context instead of pre‑seeding values.
 
 ## Gaps and contributions welcome
 

@@ -44,7 +44,7 @@ public class DxpParagraphs
 {
 	public static bool HasRenderableParagraphContent(Paragraph p)
 	{
-		// Render if there is any non-empty text, drawings, breaks, or tabs.
+		// Render if there is any non-empty text, drawings, breaks, tabs, or fields.
 		if (p.Descendants<Text>().Any(t => !string.IsNullOrEmpty(t.Text)))
 			return true;
 		if (p.Descendants<DeletedText>().Any(t => !string.IsNullOrEmpty(t.Text)))
@@ -52,6 +52,10 @@ public class DxpParagraphs
 		if (p.Descendants<Drawing>().Any())
 			return true;
 		if (p.Descendants<Break>().Any() || p.Descendants<CarriageReturn>().Any() || p.Descendants<TabChar>().Any())
+			return true;
+		if (p.Descendants<SimpleField>().Any())
+			return true;
+		if (p.Descendants<FieldChar>().Any() || p.Descendants<FieldCode>().Any())
 			return true;
 		return false;
 	}

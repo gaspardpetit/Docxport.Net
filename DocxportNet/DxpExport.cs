@@ -1,7 +1,6 @@
-using System.IO;
-using System;
 using DocumentFormat.OpenXml.Packaging;
 using DocxportNet.API;
+using DocxportNet.Fields;
 using DocxportNet.Walker;
 using Microsoft.Extensions.Logging;
 
@@ -186,13 +185,25 @@ public static class DxpExport
 	private static void RunWalker(string docxPath, DxpIVisitor visitor, ILogger? logger)
 	{
 		var walker = new DxpWalker(logger);
-		walker.Accept(docxPath, visitor);
+		walker.Accept(docxPath, WrapWithFieldEvalMiddleware(visitor));
 	}
 
 	private static void RunWalker(WordprocessingDocument document, DxpIVisitor visitor, ILogger? logger)
 	{
 		var walker = new DxpWalker(logger);
-		walker.Accept(document, visitor);
+		walker.Accept(document, WrapWithFieldEvalMiddleware(visitor));
+	}
+
+	private static DxpIVisitor WrapWithFieldEvalMiddleware(DxpIVisitor visitor)
+	{
+		if (visitor is IDxpFieldEvalProvider provider)
+		{
+			return DxpVisitorMiddleware.Chain(
+				visitor,
+				next => new DxpFieldEvalVisitorMiddleware(next, provider.FieldEval.Context));
+		}
+
+		return visitor;
 	}
 
 	private static void DisposeVisitor(DxpIVisitor visitor)

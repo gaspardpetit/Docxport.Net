@@ -1,6 +1,7 @@
 using System.Globalization;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.CustomProperties;
+using DocxportNet.API;
 
 namespace DocxportNet.Fields;
 
@@ -26,6 +27,7 @@ public sealed class DxpFieldEvalContext
 	public List<Resolution.DxpRefHyperlink> RefHyperlinks { get; } = new();
 	public List<Resolution.DxpRefFootnote> RefFootnotes { get; } = new();
 	public Func<int>? CurrentOutlineLevelProvider { get; set; }
+	public int? CurrentDocumentOrder { get; set; }
 	public Expressions.DxpFormulaFunctionRegistry FormulaFunctions { get; set; } = Expressions.DxpFormulaFunctionRegistry.Default;
 	public Resolution.IDxpFieldValueResolver? ValueResolver { get; set; }
 	public string? ListSeparator { get; set; }
@@ -111,6 +113,44 @@ public sealed class DxpFieldEvalContext
 	private void PopulateDocumentProperties(WordprocessingDocument document, bool includeCustomProperties)
 	{
 		var core = document.PackageProperties;
+		var customList = includeCustomProperties
+			? document.CustomFilePropertiesPart?.Properties?
+				.Elements<CustomDocumentProperty>()
+				.Select(p => new CustomFileProperty(
+					p.Name?.Value ?? string.Empty,
+					p.FirstChild?.LocalName,
+					p.FirstChild?.InnerText))
+				.ToList()
+			: null;
+
+		PopulateDocumentProperties(core, customList, includeCustomProperties);
+	}
+
+	public void InitFromDocumentContext(
+		DxpIDocumentContext documentContext,
+		bool includeDocumentProperties = false,
+		bool includeCustomProperties = false)
+	{
+		var core = documentContext.CoreProperties;
+		if (core != null)
+		{
+			if (core.Created is DateTime created)
+				CreatedDate ??= new DateTimeOffset(created);
+			if (core.Modified is DateTime modified)
+				SavedDate ??= new DateTimeOffset(modified);
+			if (core.LastPrinted is DateTime printed)
+				PrintDate ??= new DateTimeOffset(printed);
+		}
+
+		if (includeDocumentProperties && core != null)
+			PopulateDocumentProperties(core, documentContext.CustomProperties, includeCustomProperties);
+	}
+
+	private void PopulateDocumentProperties(
+		IPackageProperties core,
+		IReadOnlyList<CustomFileProperty>? customProperties,
+		bool includeCustomProperties)
+	{
 
 		AddDocumentProperty("Title", core.Title);
 		AddDocumentProperty("Subject", core.Subject);
@@ -135,16 +175,15 @@ public sealed class DxpFieldEvalContext
 		if (!includeCustomProperties)
 			return;
 
-		var props = document.CustomFilePropertiesPart?.Properties;
-		if (props == null)
+		if (customProperties == null)
 			return;
 
-		foreach (var prop in props.Elements<CustomDocumentProperty>())
+		foreach (var prop in customProperties)
 		{
-			string? name = prop.Name?.Value;
+			string? name = prop.Name;
 			if (string.IsNullOrWhiteSpace(name))
 				continue;
-			string? value = prop.FirstChild?.InnerText;
+			var value = prop.Value?.ToString();
 			AddDocumentProperty(name, value);
 		}
 	}

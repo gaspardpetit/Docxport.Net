@@ -1,11 +1,28 @@
 using System.Globalization;
+using System.IO;
+using System.Collections.Generic;
+using System.Linq;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.Fields;
+using DocxportNet.Walker;
+using DocxportNet.Visitors;
+using DocxportNet.Core;
 using Xunit;
+using Xunit.Abstractions;
+using DocxportNet.API;
+using DocumentFormat.OpenXml;
 
 namespace DocxportNet.Tests;
 
 public class FieldEvalTests
 {
+	private readonly ITestOutputHelper _output;
+
+	public FieldEvalTests(ITestOutputHelper output)
+	{
+		_output = output;
+	}
 	[Fact]
 	public async Task EvalAsync_UsesCache_WhenAllowed()
 	{
@@ -700,5 +717,205 @@ public class FieldEvalTests
 		var ctx = new DxpFieldEvalContext();
 
 		Assert.Throws<ArgumentNullException>(() => ctx.SetNow(null!));
+	}
+
+	[Fact]
+	public void Walker_TableDirectionalRanges_ResolveThroughMiddleware()
+	{
+		using var stream = new MemoryStream();
+		using (var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document, true))
+		{
+			var main = doc.AddMainDocumentPart();
+			main.Document = new Document(new Body(BuildTestTable()));
+			main.Document.Save();
+		}
+
+		stream.Position = 0;
+
+		var eval = new DxpFieldEval();
+		eval.Context.Culture = new CultureInfo("en-US");
+		var collector = new TableFieldCollector(eval);
+		var visitor = DxpVisitorMiddleware.Chain(
+			collector,
+			next => new DxpFieldEvalVisitorMiddleware(next, eval.Context));
+
+		using (var readDoc = WordprocessingDocument.Open(stream, false))
+			new DxpWalker().Accept(readDoc, visitor);
+
+		Assert.Equal("12", collector.Results["= SUM(BELOW)"]);
+		Assert.Equal("1", collector.Results["= SUM(ABOVE)"]);
+		Assert.Equal("6", collector.Results["= SUM(LEFT)"]);
+		Assert.Equal("9", collector.Results["= SUM(ABOVE) + 0"]);
+		Assert.Equal("16", collector.Results["= SUM(RIGHT)"]);
+	}
+
+	[Fact]
+	public void Walker_RefResolvesBookmarkParagraphFootnoteAndHyperlink()
+	{
+		using var stream = new MemoryStream();
+		using (var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document, true))
+		{
+			var main = doc.AddMainDocumentPart();
+			AddMinimalNumberingDefinitions(main, numId: 1, abstractNumId: 1);
+			var content = BuildRefTestContent(numId: 1).ToList();
+			main.Document = new Document(new Body(content));
+
+			var footnotesPart = main.AddNewPart<FootnotesPart>();
+			footnotesPart.Footnotes = new Footnotes(
+				new Footnote(
+					new Paragraph(new Run(new Text("Footnote text"))))
+				{ Id = 1 });
+
+			main.Document.Save();
+		}
+
+		stream.Position = 0;
+
+		var eval = new DxpFieldEval();
+		eval.Context.Culture = new CultureInfo("en-US");
+		var collector = new RefFieldCollector(eval);
+		var visitor = DxpVisitorMiddleware.Chain(
+			collector,
+			next => new DxpFieldEvalVisitorMiddleware(next, eval.Context));
+
+		using (var readDoc = WordprocessingDocument.Open(stream, false))
+		{
+			new DxpWalker().Accept(readDoc, visitor);
+		}
+
+		Assert.Equal("Bookmark Textlink", collector.Results["REF BM1"]);
+		Assert.Equal("1", collector.Results["REF BM1 \\n"]);
+		Assert.Equal("1 above", collector.Results["REF BM1 \\n \\p"]);
+		Assert.Equal("Footnote text", collector.Results["REF BM1 \\f"]);
+		Assert.Equal("Bookmark Textlink", collector.Results["REF BM1 \\h"]);
+		Assert.Contains(eval.Context.RefHyperlinks, link => link.Bookmark == "BM1" && link.Target == "BM1");
+		Assert.Contains(eval.Context.RefFootnotes, note => note.Bookmark == "BM1" && note.Text == "Footnote text");
+	}
+
+	private static Table BuildTestTable()
+	{
+		return new Table(
+			new TableRow(
+				CellWithText("1"),
+				CellWithFormula("= SUM(BELOW)", "12"),
+				CellWithText("3")
+			),
+			new TableRow(
+				CellWithFormula("= SUM(ABOVE)", "1"),
+				CellWithText("5"),
+				CellWithFormula("= SUM(LEFT)", "6")
+			),
+			new TableRow(
+				CellWithFormula("= SUM(RIGHT)", "16"),
+				CellWithText("7"),
+				CellWithFormula("= SUM(ABOVE) + 0", "9")
+			)
+		);
+	}
+
+	private static IEnumerable<OpenXmlElement> BuildRefTestContent(int? numId = null)
+	{
+		var bookmarkStart = new BookmarkStart { Name = "BM1", Id = "1" };
+		var bookmarkEnd = new BookmarkEnd { Id = "1" };
+
+		ParagraphProperties? properties = null;
+		if (numId.HasValue)
+		{
+			properties = new ParagraphProperties(
+				new NumberingProperties(
+					new NumberingLevelReference { Val = 0 },
+					new NumberingId { Val = numId.Value }));
+		}
+
+		yield return new Paragraph(
+			properties,
+			new Run(new Text("1.")),
+			bookmarkStart,
+			new Run(new Text("Bookmark Text")),
+			new Run(new FootnoteReference { Id = 1 }),
+			new Hyperlink(new Run(new Text("link"))) { Anchor = "BM1" },
+			bookmarkEnd);
+
+		yield return new Paragraph(new Run(new Text("After")));
+
+		yield return new Paragraph(new SimpleField { Instruction = "REF BM1" });
+		yield return new Paragraph(new SimpleField { Instruction = "REF BM1 \\n" });
+		yield return new Paragraph(new SimpleField { Instruction = "REF BM1 \\n \\p" });
+		yield return new Paragraph(new SimpleField { Instruction = "REF BM1 \\f" });
+		yield return new Paragraph(new SimpleField { Instruction = "REF BM1 \\h" });
+	}
+
+	private static void AddMinimalNumberingDefinitions(MainDocumentPart main, int numId, int abstractNumId)
+	{
+		var numberingPart = main.AddNewPart<NumberingDefinitionsPart>();
+		numberingPart.Numbering = new Numbering(
+			new AbstractNum(
+				new Level(
+					new StartNumberingValue { Val = 1 },
+					new NumberingFormat { Val = NumberFormatValues.Decimal },
+					new LevelText { Val = "%1." }
+				)
+				{ LevelIndex = 0 }
+			)
+			{ AbstractNumberId = abstractNumId },
+			new NumberingInstance(new AbstractNumId { Val = abstractNumId })
+			{ NumberID = numId }
+		);
+	}
+
+	private static TableCell CellWithText(string text)
+	{
+		return new TableCell(new Paragraph(new Run(new Text(text))));
+	}
+
+	private static TableCell CellWithFormula(string instruction, string cachedText)
+	{
+		var fld = new SimpleField { Instruction = instruction };
+		fld.Append(new Run(new Text(cachedText)));
+		return new TableCell(new Paragraph(fld));
+	}
+
+	private sealed class TableFieldCollector : DxpVisitor
+	{
+		private readonly DxpFieldEval _eval;
+		public Dictionary<string, string?> Results { get; } = new(StringComparer.OrdinalIgnoreCase);
+
+		public TableFieldCollector(DxpFieldEval eval) : base(null)
+		{
+			_eval = eval;
+		}
+
+		public override IDisposable VisitSimpleFieldBegin(SimpleField fld, DxpIDocumentContext d)
+		{
+			var instruction = d.CurrentFields.Current?.InstructionText ?? fld.Instruction?.Value;
+			if (!string.IsNullOrWhiteSpace(instruction))
+			{
+				var result = _eval.EvalAsync(new DxpFieldInstruction(instruction)).GetAwaiter().GetResult();
+				Results[instruction.Trim()] = result.Text;
+			}
+			return DxpDisposable.Empty;
+		}
+	}
+
+	private sealed class RefFieldCollector : DxpVisitor
+	{
+		private readonly DxpFieldEval _eval;
+		public Dictionary<string, string?> Results { get; } = new(StringComparer.OrdinalIgnoreCase);
+
+		public RefFieldCollector(DxpFieldEval eval) : base(null)
+		{
+			_eval = eval;
+		}
+
+		public override IDisposable VisitSimpleFieldBegin(SimpleField fld, DxpIDocumentContext d)
+		{
+			var instruction = d.CurrentFields.Current?.InstructionText ?? fld.Instruction?.Value;
+			if (!string.IsNullOrWhiteSpace(instruction))
+			{
+				var result = _eval.EvalAsync(new DxpFieldInstruction(instruction)).GetAwaiter().GetResult();
+				Results[instruction.Trim()] = result.Text;
+			}
+			return DxpDisposable.Empty;
+		}
 	}
 }

@@ -4,10 +4,12 @@ using DocumentFormat.OpenXml.Packaging;
 using DocxportNet.API;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using DocxportNet.Word;
 using System.Text;
 using DocxportNet.Core;
+using DocxportNet.Fields;
 
 namespace DocxportNet.Visitors.Markdown;
 
@@ -43,6 +45,8 @@ internal sealed class DxpMarkdownVisitorState
 	public StringBuilder PendingAlignedTabBuffer { get; } = new();
 	public Stack<StringBuilder> DeletedCaptures { get; } = new();
 	public InlineChangeMode CurrentInlineMode { get; set; } = InlineChangeMode.Unchanged;
+	public int SuppressFieldDepth { get; set; }
+	public Stack<bool> ComplexFieldEvaluated { get; } = new();
 
 	// the writer used to print deleted content
 	public TextWriter DeletedTextWriter = TextWriter.Null;
@@ -109,7 +113,7 @@ public sealed record DxpMarkdownVisitorConfig
 }
 
 
-public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposable
+public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposable, IDxpFieldEvalProvider
 {
 	private TextWriter _sinkWriter;
 	private StreamWriter? _ownedStreamWriter;
@@ -118,19 +122,23 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
 	private DxpMarkdownVisitorConfig _config;
 	private DxpMarkdownVisitorState _state = new();
+	private readonly DxpFieldEval _fieldEval;
 
-	public DxpMarkdownVisitor(TextWriter writer, DxpMarkdownVisitorConfig config, ILogger? logger)
+	public DxpFieldEval FieldEval => _fieldEval;
+
+	public DxpMarkdownVisitor(TextWriter writer, DxpMarkdownVisitorConfig config, ILogger? logger, DxpFieldEval? fieldEval = null)
 		: base(logger)
 	{
 		_config = config;
 		_sinkWriter = writer;
 		_rejectBufferedWriter = new DxpBufferedTextWriter();
 		_acceptBufferedWriter = new DxpBufferedTextWriter();
+		_fieldEval = fieldEval ?? new DxpFieldEval();
 		ConfigureWriters();
 	}
 
-	public DxpMarkdownVisitor(DxpMarkdownVisitorConfig config, ILogger? logger = null)
-		: this(TextWriter.Null, config, logger)
+	public DxpMarkdownVisitor(DxpMarkdownVisitorConfig config, ILogger? logger = null, DxpFieldEval? fieldEval = null)
+		: this(TextWriter.Null, config, logger, fieldEval)
 	{
 	}
 
@@ -789,6 +797,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
 	public override void VisitComplexFieldBegin(FieldChar begin, DxpIDocumentContext d)
 	{
+		_state.ComplexFieldEvaluated.Push(false);
 	}
 
 	public override void VisitComplexFieldInstruction(FieldCode instr, string text, DxpIDocumentContext d)
@@ -803,6 +812,9 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
 	public override void VisitComplexFieldCachedResultText(string text, DxpIDocumentContext d)
 	{
+		if (TryWriteEvaluatedComplexField(d))
+			return;
+
 		if (!_config.EmitPageNumbers)
 		{
 			var instr = d.CurrentFields.Current?.InstructionText;
@@ -814,13 +826,20 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
 	public override void VisitComplexFieldEnd(FieldChar end, DxpIDocumentContext d)
 	{
+		if (_state.ComplexFieldEvaluated.Count > 0)
+			_state.ComplexFieldEvaluated.Pop();
 	}
 
 	public override IDisposable VisitSimpleFieldBegin(SimpleField fld, DxpIDocumentContext d)
 	{
-		var instr = fld.Instruction?.Value;
+		var instr = d.CurrentFields.Current?.InstructionText ?? fld.Instruction?.Value;
 		if (instr != null)
+		{
+			if (TryWriteEvaluatedSimpleField(instr, d))
+				return DxpDisposable.Create(() => _state.SuppressFieldDepth--);
+
 			EmitFieldInstruction(d, instr);
+		}
 		return DxpDisposable.Empty;
 	}
 
@@ -1416,6 +1435,9 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
 	private void Write(DxpIDocumentContext d, string str)
 	{
+		if (_state.SuppressFieldDepth > 0)
+			return;
+
 		if (_config.TrackedChangeMode == DxpTrackedChangeMode.InlineChanges)
 		{
 			var targetMode = DetermineChangeMode(d);
@@ -1470,6 +1492,39 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 			WriteRouted(DxpMarkdownVisitorState.InlineChangeMode.Unchanged, InlineDeletedTag());
 
 		_state.CurrentInlineMode = mode;
+	}
+
+	private bool TryWriteEvaluatedSimpleField(string instruction, DxpIDocumentContext d)
+	{
+		var result = _fieldEval.EvalAsync(new DxpFieldInstruction(instruction)).GetAwaiter().GetResult();
+		if (result.Status != DxpFieldEvalStatus.Resolved || result.Text == null)
+			return false;
+
+		Write(d, result.Text);
+		_state.SuppressFieldDepth++;
+		return true;
+	}
+
+	private bool TryWriteEvaluatedComplexField(DxpIDocumentContext d)
+	{
+		if (_state.ComplexFieldEvaluated.Count == 0)
+			return false;
+
+		if (_state.ComplexFieldEvaluated.Peek())
+			return true;
+
+		var instruction = d.CurrentFields.Current?.InstructionText;
+		if (string.IsNullOrWhiteSpace(instruction))
+			return false;
+
+		var result = _fieldEval.EvalAsync(new DxpFieldInstruction(instruction)).GetAwaiter().GetResult();
+		if (result.Status != DxpFieldEvalStatus.Resolved || result.Text == null)
+			return false;
+
+		Write(d, result.Text);
+		_state.ComplexFieldEvaluated.Pop();
+		_state.ComplexFieldEvaluated.Push(true);
+		return true;
 	}
 
 	private void EmitSplitBuffersIfNeeded()
