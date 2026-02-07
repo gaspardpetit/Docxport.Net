@@ -306,6 +306,17 @@ public class FieldFormattingTests
 	}
 
 	[Fact]
+	public void ListFormat_UsesNumberToWordsRegistry()
+	{
+		var culture = new CultureInfo("en-US");
+		var ordinal = DocxportNet.Walker.DxpLists.FormatNumber(2, DocumentFormat.OpenXml.Wordprocessing.NumberFormatValues.OrdinalText, culture);
+		var cardinal = DocxportNet.Walker.DxpLists.FormatNumber(4, DocumentFormat.OpenXml.Wordprocessing.NumberFormatValues.CardinalText, culture);
+
+		Assert.Equal("second", ordinal);
+		Assert.Equal("four", cardinal);
+	}
+
+	[Fact]
 	public void Formatter_NumericParsingHonorsInvariantFallbackFlag()
 	{
 		var formatter = new DxpFieldFormatter();

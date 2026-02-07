@@ -409,6 +409,28 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
 		return _docDefaultRunProps?.Languages?.Val?.Value;
 	}
 
+	public string? GetDefaultLanguage()
+	{
+		return _docDefaultRunProps?.Languages?.Val?.Value;
+	}
+
+	public string? ResolveParagraphLanguage(Paragraph p)
+	{
+		// Highest precedence: paragraph mark run properties language
+		var lang = p.ParagraphProperties?.GetFirstChild<ParagraphMarkRunProperties>()
+			?.GetFirstChild<Languages>()?.Val?.Value;
+		if (!string.IsNullOrEmpty(lang))
+			return lang;
+
+		// Paragraph style chain (paragraph and character styles)
+		string? fromStyles = ResolveLangFromStyles(p.ParagraphProperties?.ParagraphStyleId?.Val?.Value);
+		if (!string.IsNullOrEmpty(fromStyles))
+			return fromStyles;
+
+		// Document defaults
+		return _docDefaultRunProps?.Languages?.Val?.Value;
+	}
+
 	private string? ResolveLangFromStyles(string? styleId)
 	{
 		foreach (var style in EnumerateStyleChain(styleId))
@@ -416,8 +438,8 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
 			var lang = style.StyleRunProperties?.Languages?.Val?.Value;
 			if (lang == null)
 			{
-				var rp = style.StyleParagraphProperties?.GetFirstChild<RunProperties>();
-				lang = rp?.Languages?.Val?.Value;
+				var rp = style.StyleParagraphProperties?.GetFirstChild<ParagraphMarkRunProperties>();
+				lang = rp?.GetFirstChild<Languages>()?.Val?.Value;
 			}
 			if (!string.IsNullOrEmpty(lang))
 				return lang;

@@ -149,53 +149,53 @@
 <p style="margin-left:72pt;margin-top:0pt;">1. numbered 1.</p>
 
 
-<p style="margin-bottom:0pt;">1. Item 1st.</p>
+<p style="margin-bottom:0pt;">1st. Item 1st.</p>
 
 
-<p style="margin-top:0pt;margin-bottom:0pt;">2. Item 2nd.</p>
+<p style="margin-top:0pt;margin-bottom:0pt;">2nd. Item 2nd.</p>
 
 
-<p style="margin-top:0pt;margin-bottom:0pt;">3. Item 3rd.</p>
+<p style="margin-top:0pt;margin-bottom:0pt;">3rd. Item 3rd.</p>
 
 
-<p style="margin-top:0pt;margin-bottom:0pt;">4. Item 4th.</p>
+<p style="margin-top:0pt;margin-bottom:0pt;">4th. Item 4th.</p>
 
 
-<p style="margin-top:0pt;">5. Item 5th.</p>
+<p style="margin-top:0pt;">5th. Item 5th.</p>
 
 
 <br/>
-<p style="margin-bottom:0pt;">1. Comic one.</p>
+<p style="margin-bottom:0pt;">one. Comic one.</p>
 
 
-<p style="margin-top:0pt;margin-bottom:0pt;">2. Comic two.</p>
+<p style="margin-top:0pt;margin-bottom:0pt;">two. Comic two.</p>
 
 
-<p style="margin-top:0pt;margin-bottom:0pt;">3. Comic three.</p>
+<p style="margin-top:0pt;margin-bottom:0pt;">three. Comic three.</p>
 
 
-<p style="margin-top:0pt;margin-bottom:0pt;">4. Comic four.</p>
+<p style="margin-top:0pt;margin-bottom:0pt;">four. Comic four.</p>
 
 
-<p style="margin-top:0pt;margin-bottom:0pt;">5. Comic cinq.</p>
+<p style="margin-top:0pt;margin-bottom:0pt;">cinq. Comic cinq.</p>
 
 
-<p style="margin-top:0pt;margin-bottom:0pt;">6. Comic kuusi.</p>
+<p style="margin-top:0pt;margin-bottom:0pt;">kuusi. Comic kuusi.</p>
 
 
-<p style="margin-top:0pt;margin-bottom:0pt;">7. Comic syv.</p>
+<p style="margin-top:0pt;margin-bottom:0pt;">syv. Comic syv.</p>
 
 
-<p style="margin-top:0pt;margin-bottom:0pt;">8. Comic otto.</p>
+<p style="margin-top:0pt;margin-bottom:0pt;">otto. Comic otto.</p>
 
 
-<p style="margin-top:0pt;">9. Comic eννέα.</p>
+<p style="margin-top:0pt;">εννέα. Comic eννέα.</p>
 
 
-<p style="margin-bottom:0pt;">9999. Comic Εννέα χιλιάδες εννιακόσια ενενήντα εννέα.</p>
+<p style="margin-bottom:0pt;">εννέα χιλιάδες εννιακόσια ενενήντα εννέα. Comic Εννέα χιλιάδες εννιακόσια ενενήντα εννέα.</p>
 
 
-<p style="margin-top:0pt;">10000. Comic dix mille.</p>
+<p style="margin-top:0pt;">dix mille. Comic dix mille.</p>
 
 
 <p style="margin-bottom:0pt;">001:  Item 001</p>
