@@ -146,6 +146,7 @@ public sealed class DxpFieldEval
 					if (tokens.Count > 0)
 					{
 						string bookmark = tokens[0];
+						bookmark = await ExpandNestedTextAsync(bookmark);
 						var switches = ParseNonFormatSwitches(ast.RawText);
 						bool hasRefSwitches = HasRefSwitches(switches);
 						if (Context.RefResolver != null)
@@ -195,7 +196,8 @@ public sealed class DxpFieldEval
 					if (tokens.Count > 0)
 					{
 						var resolver = Context.ValueResolver ?? _resolver;
-						var resolved = await resolver.ResolveAsync(tokens[0], Resolution.DxpFieldValueKindHint.DocVariable, Context);
+						var name = await ExpandNestedTextAsync(tokens[0]);
+						var resolved = await resolver.ResolveAsync(name, Resolution.DxpFieldValueKindHint.DocVariable, Context);
 						value = resolved ?? new DxpFieldValue(string.Empty);
 						return (true, value);
 					}
@@ -208,7 +210,8 @@ public sealed class DxpFieldEval
 					if (tokens.Count > 0)
 					{
 						var resolver = Context.ValueResolver ?? _resolver;
-						var resolved = await resolver.ResolveAsync(tokens[0], Resolution.DxpFieldValueKindHint.DocumentProperty, Context);
+						var name = await ExpandNestedTextAsync(tokens[0]);
+						var resolved = await resolver.ResolveAsync(name, Resolution.DxpFieldValueKindHint.DocumentProperty, Context);
 						value = resolved ?? new DxpFieldValue(string.Empty);
 						return (true, value);
 					}
@@ -221,6 +224,7 @@ public sealed class DxpFieldEval
 					if (tokens.Count > 0)
 					{
 						string name = tokens[0];
+						name = await ExpandNestedTextAsync(name);
 						if (TryResolveMergeFieldName(name, ast, out var mapped))
 							name = mapped;
 						var resolver = Context.ValueResolver ?? _resolver;
@@ -238,6 +242,9 @@ public sealed class DxpFieldEval
 					{
 						string identifier = tokens[0];
 						string? bookmark = tokens.Count > 1 ? tokens[1] : null;
+						identifier = await ExpandNestedTextAsync(identifier);
+						if (!string.IsNullOrEmpty(bookmark))
+							bookmark = await ExpandNestedTextAsync(bookmark);
 						var switches = ParseNonFormatSwitches(ast.RawText);
 						bool repeat = switches.ContainsKey('c');
 						bool hide = switches.ContainsKey('h');
@@ -294,6 +301,11 @@ public sealed class DxpFieldEval
 							value = new DxpFieldValue(string.Empty);
 							return (true, value);
 						}
+
+						if (!string.IsNullOrEmpty(prompt))
+							prompt = await ResolveValueAsync(prompt);
+						if (!string.IsNullOrEmpty(defaultValue))
+							defaultValue = await ResolveValueAsync(defaultValue);
 
 						DxpFieldValue? response = null;
 						if (_delegates.AskAsync != null)
@@ -525,6 +537,14 @@ public sealed class DxpFieldEval
 		}
 
 		return expanded;
+	}
+
+	private async Task<string> ExpandNestedTextAsync(string token)
+	{
+		string unquoted = token;
+		if (token.Length >= 2 && token[0] == '"' && token[token.Length - 1] == '"')
+			unquoted = token.Substring(1, token.Length - 2);
+		return await ExpandNestedFieldsAsync(unquoted);
 	}
 
 	private async Task<string> ExpandNestedFieldsAsync(string text)

@@ -248,6 +248,18 @@ public class FieldEvalTests
 	}
 
 	[Fact]
+	public async Task EvalAsync_DocPropertyExpandsNestedName()
+	{
+		var eval = new DxpFieldEval();
+		eval.Context.SetDocumentPropertyValue("Title", new DxpFieldValue("Doc Title"));
+		eval.Context.SetBookmark("PropName", "Title");
+
+		var result = await eval.EvalAsync(new DxpFieldInstruction("DOCPROPERTY { REF PropName }"));
+
+		Assert.Equal("Doc Title", result.Text);
+	}
+
+	[Fact]
 	public async Task EvalAsync_DocPropertyDateFormats()
 	{
 		var eval = new DxpFieldEval();
@@ -274,6 +286,20 @@ public class FieldEvalTests
 	}
 
 	[Fact]
+	public async Task EvalAsync_DocVariableExpandsNestedName()
+	{
+		var eval = new DxpFieldEval(new DxpFieldEvalDelegates
+		{
+			ResolveDocVariableAsync = (name, ctx) => Task.FromResult<DxpFieldValue?>(name == "X" ? new DxpFieldValue("ok") : null)
+		});
+		eval.Context.SetBookmark("VarName", "X");
+
+		var result = await eval.EvalAsync(new DxpFieldInstruction("DOCVARIABLE { REF VarName }"));
+
+		Assert.Equal("ok", result.Text);
+	}
+
+	[Fact]
 	public async Task EvalAsync_MergeFieldUsesResolverAndSwitches()
 	{
 		var eval = new DxpFieldEval(new DxpFieldEvalDelegates
@@ -286,6 +312,20 @@ public class FieldEvalTests
 
 		Assert.Equal("Hello Ana!", result.Text);
 		Assert.Equal(string.Empty, missing.Text);
+	}
+
+	[Fact]
+	public async Task EvalAsync_MergeFieldExpandsNestedName()
+	{
+		var eval = new DxpFieldEval(new DxpFieldEvalDelegates
+		{
+			ResolveMergeFieldAsync = (name, ctx) => Task.FromResult<DxpFieldValue?>(name == "FirstName" ? new DxpFieldValue("Ana") : null)
+		});
+		eval.Context.SetBookmark("FieldName", "FirstName");
+
+		var result = await eval.EvalAsync(new DxpFieldInstruction("MERGEFIELD { REF FieldName }"));
+
+		Assert.Equal("Ana", result.Text);
 	}
 
 	[Fact]
@@ -317,6 +357,19 @@ public class FieldEvalTests
 		Assert.Equal("LinkText", hyperlink.Text);
 		Assert.Single(eval.Context.RefFootnotes);
 		Assert.Single(eval.Context.RefHyperlinks);
+	}
+
+	[Fact]
+	public async Task EvalAsync_RefExpandsNestedBookmarkName()
+	{
+		var eval = new DxpFieldEval();
+		eval.Context.SetBookmark("TargetName", "Note1");
+		eval.Context.RefResolver = new MockRefResolver();
+
+		var result = await eval.EvalAsync(new DxpFieldInstruction("REF { REF TargetName } \\f"));
+
+		Assert.Equal("[1]", result.Text);
+		Assert.Single(eval.Context.RefFootnotes);
 	}
 
 	[Fact]
@@ -352,6 +405,29 @@ public class FieldEvalTests
 
 		Assert.Equal(string.Empty, asked.Text);
 		Assert.Equal("Existing", result.Text);
+	}
+
+	[Fact]
+	public async Task EvalAsync_AskExpandsNestedPromptAndDefault()
+	{
+		string? capturedPrompt = null;
+		var eval = new DxpFieldEval(new DxpFieldEvalDelegates
+		{
+			AskAsync = (prompt, ctx) =>
+			{
+				capturedPrompt = prompt;
+				return Task.FromResult<DxpFieldValue?>(null);
+			}
+		});
+		eval.Context.SetBookmark("Greeting", "Hi");
+		eval.Context.SetBookmark("DefaultCity", "Rome");
+
+		var asked = await eval.EvalAsync(new DxpFieldInstruction("ASK City \"{ REF Greeting } there?\" \\d \"{ REF DefaultCity }\""));
+		var city = await eval.EvalAsync(new DxpFieldInstruction("REF City"));
+
+		Assert.Equal(string.Empty, asked.Text);
+		Assert.Equal("Hi there?", capturedPrompt);
+		Assert.Equal("Rome", city.Text);
 	}
 
 	private sealed class CustomResolver : DocxportNet.Fields.Resolution.IDxpFieldValueResolver
@@ -611,6 +687,23 @@ public class FieldEvalTests
 		Assert.Equal("2", repeat.Text);
 		Assert.Equal("10", reset.Text);
 		Assert.Equal("11", afterReset.Text);
+	}
+
+	[Fact]
+	public async Task EvalAsync_SeqExpandsNestedIdentifierAndBookmark()
+	{
+		var eval = new DxpFieldEval();
+		eval.Context.SetBookmark("SeqName", "Figure");
+		eval.Context.SetBookmark("ResetName", "Start");
+		eval.Context.SetBookmark("Start", "10");
+
+		var first = await eval.EvalAsync(new DxpFieldInstruction("SEQ { REF SeqName }"));
+		var reset = await eval.EvalAsync(new DxpFieldInstruction("SEQ { REF SeqName } { REF ResetName }"));
+		var next = await eval.EvalAsync(new DxpFieldInstruction("SEQ { REF SeqName }"));
+
+		Assert.Equal("1", first.Text);
+		Assert.Equal("10", reset.Text);
+		Assert.Equal("11", next.Text);
 	}
 
 	[Fact]
