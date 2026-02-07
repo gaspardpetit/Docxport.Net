@@ -115,7 +115,7 @@ dotnet run --project DocxportNet.Cli -- my.docx -o my.md --tracked=accept
 ./docxport my.docx --format=html --tracked=inline
 ```
 
-Options: `--format=markdown|html|text`, `--tracked=accept|reject|inline|split` (text uses accept/reject), `--plain` (plain markdown), `-o, --output=path` (infers format from extension when `--format` is omitted).
+Options: `--format=markdown|html|text`, `--tracked=accept|reject|inline|split` (text uses accept/reject), `--plain` (plain markdown), `-o, --output=path` (infers format from extension when `--format` is omitted), `--vars=path` (JSON/INI DOCVARIABLEs), `-D name=value` (repeatable overrides).
 
 ## Custom visitors
 
