@@ -52,6 +52,14 @@ public sealed class DxpFieldEvalVisitorMiddleware : DxpVisitorMiddlewareBase
 		return _next.VisitDocumentBegin(doc, documentContext);
 	}
 
+	protected override bool ShouldForwardContent(DxpIDocumentContext d)
+	{
+		var fields = d.CurrentFields;
+		if (!fields.IsInFieldResult)
+			return true;
+		return !fields.IsNestedField;
+	}
+
 
 	public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
 	{

@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml.Office2010.Word;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
+using DocxportNet.Core;
 using System.Xml.Linq;
 
 namespace DocxportNet.Walker;
@@ -17,6 +18,8 @@ public abstract class DxpVisitorMiddlewareBase : DxpIVisitor
 	}
 
 	public DxpIVisitor Next => _next;
+
+	protected virtual bool ShouldForwardContent(DxpIDocumentContext d) => true;
 
 	public virtual void VisitComplexFieldBegin(FieldChar begin, DxpIDocumentContext d)
 	{
@@ -205,11 +208,15 @@ public abstract class DxpVisitorMiddlewareBase : DxpIVisitor
 
 	public virtual void VisitBreak(Break br, DxpIDocumentContext d)
 	{
+		if (!ShouldForwardContent(d))
+			return;
 		_next.VisitBreak(br, d);
 	}
 
 	public virtual void VisitCarriageReturn(CarriageReturn cr, DxpIDocumentContext d)
 	{
+		if (!ShouldForwardContent(d))
+			return;
 		_next.VisitCarriageReturn(cr, d);
 	}
 
@@ -360,6 +367,8 @@ public abstract class DxpVisitorMiddlewareBase : DxpIVisitor
 
 	public virtual void VisitDeletedText(DeletedText dt, DxpIDocumentContext d)
 	{
+		if (!ShouldForwardContent(d))
+			return;
 		_next.VisitDeletedText(dt, d);
 	}
 
@@ -375,6 +384,8 @@ public abstract class DxpVisitorMiddlewareBase : DxpIVisitor
 
 	public virtual IDisposable VisitDrawingBegin(Drawing drw, DxpDrawingInfo? info, DxpIDocumentContext d)
 	{
+		if (!ShouldForwardContent(d))
+			return DxpDisposable.Empty;
 		return _next.VisitDrawingBegin(drw, info, d);
 	}
 
@@ -500,6 +511,8 @@ public abstract class DxpVisitorMiddlewareBase : DxpIVisitor
 
 	public virtual void VisitNoBreakHyphen(NoBreakHyphen h, DxpIDocumentContext d)
 	{
+		if (!ShouldForwardContent(d))
+			return;
 		_next.VisitNoBreakHyphen(h, d);
 	}
 
@@ -620,6 +633,8 @@ public abstract class DxpVisitorMiddlewareBase : DxpIVisitor
 
 	public virtual IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
 	{
+		if (!ShouldForwardContent(d))
+			return DxpDisposable.Empty;
 		return _next.VisitParagraphBegin(p, d, paragraph);
 	}
 
@@ -655,6 +670,8 @@ public abstract class DxpVisitorMiddlewareBase : DxpIVisitor
 
 	public virtual IDisposable VisitRunBegin(Run r, DxpIDocumentContext d)
 	{
+		if (!ShouldForwardContent(d))
+			return DxpDisposable.Empty;
 		return _next.VisitRunBegin(r, d);
 	}
 
@@ -720,6 +737,8 @@ public abstract class DxpVisitorMiddlewareBase : DxpIVisitor
 
 	public virtual void VisitSoftHyphen(SoftHyphen sh, DxpIDocumentContext d)
 	{
+		if (!ShouldForwardContent(d))
+			return;
 		_next.VisitSoftHyphen(sh, d);
 	}
 
@@ -735,31 +754,43 @@ public abstract class DxpVisitorMiddlewareBase : DxpIVisitor
 
 	public virtual void VisitSymbol(SymbolChar sym, DxpIDocumentContext d)
 	{
+		if (!ShouldForwardContent(d))
+			return;
 		_next.VisitSymbol(sym, d);
 	}
 
 	public virtual void VisitTab(TabChar tab, DxpIDocumentContext d)
 	{
+		if (!ShouldForwardContent(d))
+			return;
 		_next.VisitTab(tab, d);
 	}
 
 	public virtual IDisposable VisitTableBegin(Table t, DxpTableModel model, DxpIDocumentContext d, DxpITableContext table)
 	{
+		if (!ShouldForwardContent(d))
+			return DxpDisposable.Empty;
 		return _next.VisitTableBegin(t, model, d, table);
 	}
 
 	public virtual IDisposable VisitTableCellBegin(TableCell tc, DxpITableCellContext cell, DxpIDocumentContext d)
 	{
+		if (!ShouldForwardContent(d))
+			return DxpDisposable.Empty;
 		return _next.VisitTableCellBegin(tc, cell, d);
 	}
 
 	public virtual IDisposable VisitTableRowBegin(TableRow tr, DxpITableRowContext row, DxpIDocumentContext d)
 	{
+		if (!ShouldForwardContent(d))
+			return DxpDisposable.Empty;
 		return _next.VisitTableRowBegin(tr, row, d);
 	}
 
 	public virtual void VisitText(Text t, DxpIDocumentContext d)
 	{
+		if (!ShouldForwardContent(d))
+			return;
 		_next.VisitText(t, d);
 	}
 
