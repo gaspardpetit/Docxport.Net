@@ -46,6 +46,8 @@ public sealed class DxpNumberToWordsRegistry
 		registry._providers.Add(new ItalianNumberToWordsProvider());
 		registry._providers.Add(new PortugueseNumberToWordsProvider());
 		registry._providers.Add(new DanishNumberToWordsProvider());
+		registry._providers.Add(new FinnishNumberToWordsProvider());
+		registry._providers.Add(new GreekNumberToWordsProvider());
 		return registry;
 	}
 }

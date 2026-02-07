@@ -623,7 +623,7 @@ public sealed class DxpFieldEval
 			return false;
 		if (Context.TryGetMergeFieldAlias(name, out var alias) && !string.IsNullOrWhiteSpace(alias))
 		{
-			resolved = alias;
+			resolved = alias!;
 			return true;
 		}
 		return false;
@@ -761,9 +761,9 @@ public sealed class DxpFieldEval
 
 	private char ResolveListSeparator()
 	{
-			var listSeparator = Context.ListSeparator;
-			if (!string.IsNullOrEmpty(listSeparator))
-				return listSeparator[0];
+		var listSeparator = Context.ListSeparator;
+		if (!string.IsNullOrEmpty(listSeparator))
+			return listSeparator![0];
 
 		var culture = Context.Culture ?? System.Globalization.CultureInfo.CurrentCulture;
 		string separator = culture.TextInfo.ListSeparator;

@@ -102,39 +102,39 @@ a. letter a.
 
                   1. numbered 1.
 
-1. Item 1st.
+1st. Item 1st.
 
-2. Item 2nd.
+2nd. Item 2nd.
 
-3. Item 3rd.
+3rd. Item 3rd.
 
-4. Item 4th.
+4th. Item 4th.
 
-5. Item 5th.
+5th. Item 5th.
 
 
 
-1. Comic one.
+one. Comic one.
 
-2. Comic two.
+two. Comic two.
 
-3. Comic three.
+three. Comic three.
 
-4. Comic four.
+four. Comic four.
 
-5. Comic cinq.
+cinq. Comic cinq.
 
-6. Comic kuusi.
+kuusi. Comic kuusi.
 
-7. Comic syv.
+syv. Comic syv.
 
-8. Comic otto.
+otto. Comic otto.
 
-9. Comic eννέα.
+εννέα. Comic eννέα.
 
-9999. Comic Εννέα χιλιάδες εννιακόσια ενενήντα εννέα.
+εννέα χιλιάδες εννιακόσια ενενήντα εννέα. Comic Εννέα χιλιάδες εννιακόσια ενενήντα εννέα.
 
-10000. Comic dix mille.
+dix mille. Comic dix mille.
 
 001:  Item 001
 

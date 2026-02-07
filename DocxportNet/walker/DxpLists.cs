@@ -1,6 +1,7 @@
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
+using DocxportNet.Formatting;
 using System.Globalization;
 
 namespace DocxportNet.Walker;
@@ -212,7 +213,8 @@ public static class DxpListMarkerFormatter
 	public static string? TryBuildMarkerText(
 		DxpStyleEffectiveNumPr numPr,
 		DxpNumberingResolver nr,
-		DxpListTracker tracker)
+		DxpListTracker tracker,
+		CultureInfo? culture = null)
 	{
 		var resolved = nr.ResolveLevel(numPr.NumId, numPr.Ilvl);
 		if (resolved == null)
@@ -274,7 +276,7 @@ public static class DxpListMarkerFormatter
 
 			string formatted = customWidth != null
 				? cur.Value.ToString(CultureInfo.InvariantCulture).PadLeft(customWidth.Value, '0')
-				: FormatNumber(cur.Value, refFmt);
+				: FormatNumber(cur.Value, refFmt, culture);
 
 			result = result.Replace(placeholder, formatted);
 
@@ -283,10 +285,15 @@ public static class DxpListMarkerFormatter
 		return result;
 	}
 
-	private static string FormatNumber(int n, NumberFormatValues fmt)
+	public static string FormatNumber(int n, NumberFormatValues fmt, CultureInfo? culture = null)
 	{
+		culture ??= CultureInfo.CurrentCulture;
 		if (fmt == NumberFormatValues.Decimal)
 			return n.ToString(CultureInfo.InvariantCulture);
+		if (fmt == NumberFormatValues.DecimalZero)
+			return n < 10 ? "0" + n.ToString(CultureInfo.InvariantCulture) : n.ToString(CultureInfo.InvariantCulture);
+		if (fmt == NumberFormatValues.Hex)
+			return n.ToString("X", CultureInfo.InvariantCulture);
 		if (fmt == NumberFormatValues.UpperRoman)
 			return ToRoman(n).ToUpperInvariant();
 		if (fmt == NumberFormatValues.LowerRoman)
@@ -295,8 +302,34 @@ public static class DxpListMarkerFormatter
 			return ToAlpha(n).ToUpperInvariant();
 		if (fmt == NumberFormatValues.LowerLetter)
 			return ToAlpha(n).ToLowerInvariant();
+		if (fmt == NumberFormatValues.CardinalText)
+			return ResolveNumberProvider(culture).ToCardinal(n);
+		if (fmt == NumberFormatValues.OrdinalText)
+			return ResolveNumberProvider(culture).ToOrdinalWords(n);
+		if (fmt == NumberFormatValues.Ordinal)
+			return n.ToString(CultureInfo.InvariantCulture) + OrdinalSuffix(n);
 
 		return n.ToString(CultureInfo.InvariantCulture);
+	}
+
+	private static IDxpNumberToWordsProvider ResolveNumberProvider(CultureInfo culture)
+	{
+		return DxpNumberToWordsRegistry.Default.Resolve(culture);
+	}
+
+	private static string OrdinalSuffix(int n)
+	{
+		int abs = Math.Abs(n);
+		int mod100 = abs % 100;
+		if (mod100 >= 11 && mod100 <= 13)
+			return "th";
+		return (abs % 10) switch
+		{
+			1 => "st",
+			2 => "nd",
+			3 => "rd",
+			_ => "th"
+		};
 	}
 
 	private static string ToAlpha(int n)
@@ -350,6 +383,11 @@ public class DxpLists
 	{
 	}
 
+	public static string FormatNumber(int n, NumberFormatValues fmt, CultureInfo? culture = null)
+	{
+		return DxpListMarkerFormatter.FormatNumber(n, fmt, culture);
+	}
+
 	internal void Init(WordprocessingDocument doc)
 	{
 		_num = new DxpNumberingResolver(doc);
@@ -366,7 +404,8 @@ public class DxpLists
 			var numPr = s.ResolveEffectiveNumPr(p);
 			if (numPr != null)
 			{
-				marker = DxpListMarkerFormatter.TryBuildMarkerText(numPr, _num, _lists);
+				var culture = ResolveListCulture(p, s);
+				marker = DxpListMarkerFormatter.TryBuildMarkerText(numPr, _num, _lists, culture);
 				numId = numPr.NumId;
 				iLvl = numPr.Ilvl;
 			}
@@ -378,5 +417,24 @@ public class DxpLists
 	{
 		DxpStyleEffectiveIndentTwips indent = s.GetIndentation(p, _num);
 		return indent;
+	}
+
+	private static CultureInfo ResolveListCulture(Paragraph p, DxpIStyleResolver s)
+	{
+		if (s is DxpStyleResolver resolver)
+		{
+			var lang = resolver.ResolveParagraphLanguage(p) ?? resolver.GetDefaultLanguage();
+			if (!string.IsNullOrWhiteSpace(lang))
+			{
+				try
+				{
+					return new CultureInfo(lang);
+				}
+				catch (CultureNotFoundException)
+				{
+				}
+			}
+		}
+		return CultureInfo.CurrentCulture;
 	}
 }

@@ -179,7 +179,7 @@ var title = await eval.EvalAsync(new DxpFieldInstruction("DOCPROPERTY Title \\* 
 
 | Area | Current gap |
 | --- | --- |
-| List markers | Word supports exotic textual markers (“forty-two” in various languages); current formatter covers numeric/roman/alpha/symbol bullets but not full textual spell-outs. |
+| List markers | Word supports exotic textual markers (“forty-two” in various languages); current formatter covers numeric/roman/alpha and supports text‑number formats via the shared number‑to‑words registry, but not every Word numbering style. |
 | Shapes/SmartArt | Complex shapes/SmartArt/OLE rely on preview images if present; true vector or OLE rendering is not implemented. |
 | Charts | Charts are emitted via available previews or placeholders; data-driven re-rendering is not implemented. |
 | Math/Fields | Field evaluation exists, but complex math/field result rendering in exporters isn’t deeply covered by fixtures. |
