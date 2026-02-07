@@ -144,6 +144,37 @@ foreach (var (author, text) in collector.Comments)
 
 It also ships a small utility that translates legacy “symbol fonts” (Symbol, Zapf Dingbats, Webdings, Wingdings) into modern Unicode.
 
+## Field evaluation
+
+Docxport.Net ships a standalone field evaluator for Word field codes. It can be used on its own or alongside the walker/exporter. For the exact language and field specifications, see [docs/word-fields.md](docs/word-fields.md).
+
+High‑level support includes:
+- Core built‑ins: `DATE`/`TIME`/`CREATEDATE`/`SAVEDATE`/`PRINTDATE`, `SET`/`REF`, `DOCPROPERTY`/`DOCVARIABLE`, `MERGEFIELD`, `SEQ`, `IF`/`COMPARE`/`NEXTIF`/`SKIPIF`, `ASK`
+- Formulas: arithmetic, comparisons, functions (`SUM`/`AVERAGE`/etc.), nested fields, table cell references (via a resolver)
+- Formatting switches: `\*` text transforms, `\#` numeric pictures, `\@` date/time pictures
+- Locale‑aware formatting and list‑separator handling
+- Number‑to‑words languages: English, French, German, Spanish, Italian, Portuguese, Danish, Japanese, Thai, Chinese (Simplified)
+
+Sample usage:
+
+```csharp
+using DocxportNet.Fields;
+
+var eval = new DxpFieldEval();
+eval.Context.SetBookmark("Total", "123.45");
+eval.Context.SetDocumentPropertyValue("Title", new DxpFieldValue("My Doc"));
+
+var date = await eval.EvalAsync(new DxpFieldInstruction("DATE \\@ \"yyyy-MM-dd\""));
+var cond = await eval.EvalAsync(new DxpFieldInstruction("IF Total > 100 \"Big\" \"Small\""));
+var formula = await eval.EvalAsync(new DxpFieldInstruction("= Total * 2 \\# \"$#,##0.00\""));
+var title = await eval.EvalAsync(new DxpFieldInstruction("DOCPROPERTY Title \\* Upper"));
+
+// date.Text    -> "2026-02-07" (uses default NowProvider)
+// cond.Text    -> "Big"
+// formula.Text -> "$246.90"
+// title.Text   -> "MY DOC"
+```
+
 ## Gaps and contributions welcome
 
 | Area | Current gap |
@@ -151,7 +182,7 @@ It also ships a small utility that translates legacy “symbol fonts” (Symbol,
 | List markers | Word supports exotic textual markers (“forty-two” in various languages); current formatter covers numeric/roman/alpha/symbol bullets but not full textual spell-outs. |
 | Shapes/SmartArt | Complex shapes/SmartArt/OLE rely on preview images if present; true vector or OLE rendering is not implemented. |
 | Charts | Charts are emitted via available previews or placeholders; data-driven re-rendering is not implemented. |
-| Math/Fields | Core visits are present, but fidelity for complex math/field result rendering isn’t deeply covered by fixtures. |
+| Math/Fields | Field evaluation exists, but complex math/field result rendering in exporters isn’t deeply covered by fixtures. |
 | Tables (complex) | Table styles are partially supported (borders/background/vertical align, incl. `tblStyle` presets), but theme color resolution and advanced border patterns are still limited; nested/edge-case tables beyond supplied samples may need additional handling. |
 
 Contributions that improve any of these areas are very welcome.
