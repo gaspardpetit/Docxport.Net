@@ -646,10 +646,7 @@ body.dxp-root {
 
 		static bool IsPageReference(string? relativeFrom)
 		{
-			if (string.IsNullOrEmpty(relativeFrom))
-				return false;
-
-			return relativeFrom.Equals("page", StringComparison.OrdinalIgnoreCase);
+			return string.Equals(relativeFrom, "page", StringComparison.OrdinalIgnoreCase);
 		}
 
 		void Append(string name, string value)

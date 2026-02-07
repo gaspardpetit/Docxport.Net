@@ -75,10 +75,11 @@ public class DxpDrawings
 		if (string.IsNullOrWhiteSpace(altText))
 			return null;
 
-		var sb = new StringBuilder(altText.Length);
+		var text = altText!;
+		var sb = new StringBuilder(text.Length);
 		bool previousWasWhitespace = false;
 
-		foreach (var ch in altText)
+		foreach (var ch in text)
 		{
 			if (ch == '\r' || ch == '\n' || ch == '\t' || char.IsWhiteSpace(ch))
 			{
