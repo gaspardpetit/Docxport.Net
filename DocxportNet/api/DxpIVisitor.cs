@@ -1,10 +1,8 @@
-using System.IO;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Office2010.Word;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.Xml.Linq;
-using DocxportNet.Walker;
 
 namespace DocxportNet.API;
 
@@ -140,6 +138,7 @@ public record DxpDocumentProperties(
 
 public interface DxpIDocumentContext
 {
+	DxpDocumentIndex DocumentIndex { get; }
 	DxpDocumentProperties DocumentProperties { get; }
 	DxpIStyleResolver Styles { get; }
 	HashSet<string> ReferencedBookmarkAnchors { get; }
@@ -149,6 +148,10 @@ public interface DxpIDocumentContext
 	DxpICustomXmlContext? CurrentCustomXml { get; }
 	DxpISdtContext? CurrentSdt { get; }
 	DxpIRunContext? CurrentRun { get; }
+	DxpITableContext? CurrentTable { get; }
+	DxpITableRowContext? CurrentTableRow { get; }
+	DxpITableCellContext? CurrentTableCell { get; }
+	DxpTableModel? CurrentTableModel { get; }
 	DxpISectionContext CurrentSection { get; }
 	DocumentBackground? Background { get; }
 	DxpStyleEffectiveRunStyle DefaultRunStyle { get; }

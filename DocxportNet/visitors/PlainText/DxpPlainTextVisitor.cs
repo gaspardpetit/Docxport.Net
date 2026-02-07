@@ -6,8 +6,10 @@ using DocxportNet.Core;
 using DocxportNet.Word;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using DocxportNet.Fields;
 
 namespace DocxportNet.Visitors.PlainText;
 
@@ -27,19 +29,23 @@ public sealed record DxpPlainTextVisitorConfig
 	public static DxpPlainTextVisitorConfig CreateRejectConfig() => new() { TrackedChangeMode = DxpPlainTextTrackedChangeMode.RejectChanges };
 }
 
-public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor, IDisposable
+public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor, IDisposable, IDxpFieldEvalProvider
 {
 	private TextWriter _sinkWriter;
 	private StreamWriter? _ownedStreamWriter;
 	private readonly DxpPlainTextVisitorConfig _config;
 	private DxpPlainTextVisitorState _state = new();
+	private readonly DxpFieldEval _fieldEval;
 
-	public DxpPlainTextVisitor(TextWriter writer, DxpPlainTextVisitorConfig config, ILogger? logger)
+	public DxpFieldEval FieldEval => _fieldEval;
+
+	public DxpPlainTextVisitor(TextWriter writer, DxpPlainTextVisitorConfig config, ILogger? logger, DxpFieldEval? fieldEval = null)
 		: base(logger)
 	{
 		_sinkWriter = writer;
 		_config = config;
 		_state.WriterStack.Push(writer);
+		_fieldEval = fieldEval ?? new DxpFieldEval();
 
 		if (_config.TrackedChangeMode != DxpPlainTextTrackedChangeMode.AcceptChanges &&
 			_config.TrackedChangeMode != DxpPlainTextTrackedChangeMode.RejectChanges)
@@ -48,8 +54,8 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 		}
 	}
 
-	public DxpPlainTextVisitor(DxpPlainTextVisitorConfig config, ILogger? logger = null)
-		: this(TextWriter.Null, config, logger)
+	public DxpPlainTextVisitor(DxpPlainTextVisitorConfig config, ILogger? logger = null, DxpFieldEval? fieldEval = null)
+		: this(TextWriter.Null, config, logger, fieldEval)
 	{
 	}
 
@@ -98,7 +104,7 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
 	private void Write(string text, DxpIDocumentContext d)
 	{
-		if (_state.SuppressDepth > 0)
+		if (_state.SuppressDepth > 0 || _state.SuppressFieldDepth > 0)
 			return;
 
 		if (!ShouldEmit(d))
@@ -374,9 +380,32 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 	}
 
 	public override IDisposable VisitComplexFieldResultBegin(DxpIDocumentContext d) => DxpDisposable.Empty;
-	public override void VisitComplexFieldBegin(FieldChar begin, DxpIDocumentContext d) { }
-	public override void VisitComplexFieldCachedResultText(string text, DxpIDocumentContext d) => Write(text, d);
-	public override void VisitComplexFieldEnd(FieldChar end, DxpIDocumentContext d) { }
+	public override void VisitComplexFieldBegin(FieldChar begin, DxpIDocumentContext d)
+	{
+		_state.ComplexFieldEvaluated.Push(false);
+	}
+	public override void VisitComplexFieldCachedResultText(string text, DxpIDocumentContext d)
+	{
+		if (TryWriteEvaluatedComplexField(d))
+			return;
+		Write(text, d);
+	}
+	public override void VisitComplexFieldEnd(FieldChar end, DxpIDocumentContext d)
+	{
+		if (_state.ComplexFieldEvaluated.Count > 0)
+			_state.ComplexFieldEvaluated.Pop();
+	}
+
+	public override IDisposable VisitSimpleFieldBegin(SimpleField fld, DxpIDocumentContext d)
+	{
+		var instr = d.CurrentFields.Current?.InstructionText ?? fld.Instruction?.Value;
+		if (!string.IsNullOrWhiteSpace(instr))
+		{
+			if (TryWriteEvaluatedSimpleField(instr, d))
+				return DxpDisposable.Create(() => _state.SuppressFieldDepth--);
+		}
+		return DxpDisposable.Empty;
+	}
 
 	public override IDisposable VisitTableBegin(Table t, DxpTableModel model, DxpIDocumentContext d, DxpITableContext table)
 	{
@@ -648,5 +677,39 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 		public Stack<TextWriter> WriterStack { get; } = new();
 		public Stack<TableState> TableStack { get; } = new();
 		public int SuppressDepth { get; set; }
+		public int SuppressFieldDepth { get; set; }
+		public Stack<bool> ComplexFieldEvaluated { get; } = new();
+	}
+
+	private bool TryWriteEvaluatedSimpleField(string instruction, DxpIDocumentContext d)
+	{
+		var result = _fieldEval.EvalAsync(new DxpFieldInstruction(instruction)).GetAwaiter().GetResult();
+		if (result.Status != DxpFieldEvalStatus.Resolved || result.Text == null)
+			return false;
+
+		Write(result.Text, d);
+		_state.SuppressFieldDepth++;
+		return true;
+	}
+
+	private bool TryWriteEvaluatedComplexField(DxpIDocumentContext d)
+	{
+		if (_state.ComplexFieldEvaluated.Count == 0)
+			return false;
+		if (_state.ComplexFieldEvaluated.Peek())
+			return true;
+
+		var instruction = d.CurrentFields.Current?.InstructionText;
+		if (string.IsNullOrWhiteSpace(instruction))
+			return false;
+
+		var result = _fieldEval.EvalAsync(new DxpFieldInstruction(instruction)).GetAwaiter().GetResult();
+		if (result.Status != DxpFieldEvalStatus.Resolved || result.Text == null)
+			return false;
+
+		Write(result.Text, d);
+		_state.ComplexFieldEvaluated.Pop();
+		_state.ComplexFieldEvaluated.Push(true);
+		return true;
 	}
 }

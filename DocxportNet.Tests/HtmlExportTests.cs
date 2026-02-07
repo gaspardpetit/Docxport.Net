@@ -1,6 +1,6 @@
+using DocxportNet;
 using DocxportNet.Tests.Utils;
 using DocxportNet.Visitors.Html;
-using DocxportNet.Walker;
 using DocxportNet.Visitors.Markdown;
 using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
@@ -86,12 +86,8 @@ public class HtmlExportTests
 
 	private string ToHtml(string docxPath, DxpHtmlVisitorConfig config)
 	{
-		using var writer = new StringWriter();
-		var visitor = new DxpHtmlVisitor(writer, config, _logger);
-		var walker = new DxpWalker();
-
-		walker.Accept(docxPath, visitor);
-		return writer.ToString();
+		var visitor = new DxpHtmlVisitor(config, _logger);
+		return DxpExport.ExportToString(docxPath, visitor, _logger);
 	}
 
 	private DxpHtmlVisitorConfig CloneConfig(DxpHtmlVisitorConfig source, DxpTrackedChangeMode mode)

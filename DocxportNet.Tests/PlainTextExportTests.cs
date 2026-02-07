@@ -1,6 +1,6 @@
+using DocxportNet;
 using DocxportNet.Tests.Utils;
 using DocxportNet.Visitors.PlainText;
-using DocxportNet.Walker;
 using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
 using Xunit.Sdk;
@@ -90,11 +90,7 @@ public class PlainTextExportTests
 
 	private string ToPlainText(string docxPath, DxpPlainTextVisitorConfig config)
 	{
-		using var writer = new StringWriter();
-		var visitor = new DxpPlainTextVisitor(writer, config, _logger);
-		var walker = new DxpWalker();
-
-		walker.Accept(docxPath, visitor);
-		return writer.ToString();
+		var visitor = new DxpPlainTextVisitor(config, _logger);
+		return DxpExport.ExportToString(docxPath, visitor, _logger);
 	}
 }

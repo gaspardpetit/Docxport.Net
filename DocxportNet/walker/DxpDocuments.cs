@@ -47,18 +47,26 @@ public class DxpDocumentContext : DxpIDocumentContext
 	DxpISdtContext? DxpIDocumentContext.CurrentSdt => CurrentSdt;
 	public DxpRunContext? CurrentRun { get; internal set; }
 	DxpIRunContext? DxpIDocumentContext.CurrentRun => CurrentRun;
+	public DxpITableContext? CurrentTable { get; internal set; }
+	DxpITableContext? DxpIDocumentContext.CurrentTable => CurrentTable;
+	public DxpITableRowContext? CurrentTableRow { get; internal set; }
+	DxpITableRowContext? DxpIDocumentContext.CurrentTableRow => CurrentTableRow;
+	public DxpITableCellContext? CurrentTableCell { get; internal set; }
+	DxpITableCellContext? DxpIDocumentContext.CurrentTableCell => CurrentTableCell;
+	public DxpTableModel? CurrentTableModel { get; internal set; }
+	DxpTableModel? DxpIDocumentContext.CurrentTableModel => CurrentTableModel;
 	public DxpFootnoteContext CurrentFootnote { get; internal set; } = DxpFootnoteContext.INVALID;
 	public DxpSectionContext CurrentSection { get; private set; } = DxpSectionContext.INVALID;
 	DxpISectionContext DxpIDocumentContext.CurrentSection => CurrentSection;
 
 	public DxpDocumentProperties DocumentProperties { get; internal set; }
+	public DxpDocumentIndex DocumentIndex { get; }
 
 	public DxpDocumentContext(WordprocessingDocument doc)
 	{
 		CurrentFields = new();
 		NumberingResolver = new DxpNumberingResolver(doc);
 		TableStyleResolver = new DxpTableStyleResolver(doc);
-		DocumentProperties = new(null, null, null);
 		ReferencedBookmarkAnchors = CollectReferencedAnchors(doc);
 		var mainPart = doc.MainDocumentPart;
 		if (mainPart != null)
@@ -77,6 +85,8 @@ public class DxpDocumentContext : DxpIDocumentContext
 		RejectLists.Init(doc);
 		Styles = new DxpStyleResolver(doc);
 		DefaultRunStyle = Styles.GetDefaultRunStyle();
+		DocumentProperties = new(null, null, null);
+		DocumentIndex = DxpDocumentIndexBuilder.Build(doc, (DxpStyleResolver)Styles);
 
 		CoreProperties = doc.PackageProperties;
 		_defaultEditState = new DxpEditState(
