@@ -19,6 +19,10 @@ public class DxpFieldFrameContext
 	public readonly Stack<FieldFrame> FieldStack = new();
 
 	public FieldFrame? Current => FieldStack.Count > 0 ? FieldStack.Peek() : null;
+	public int FieldDepth => FieldStack.Count;
+	public bool IsOuterField => FieldDepth == 1;
+	public bool IsNestedField => FieldDepth > 1;
+	public bool IsInFieldResult => Current?.InResult == true;
 }
 
 
