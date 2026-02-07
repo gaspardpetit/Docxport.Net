@@ -47,7 +47,10 @@ public sealed class DxpNumericFormatSpec : IDxpFieldFormatSpec
 	public string Apply(string text, DxpFieldValue value, DxpFieldEvalContext context)
 	{
 		if (value.Kind != DxpFieldValueKind.Number || value.NumberValue == null)
-			return text;
+		{
+			if (!value.TryConvertToKind(DxpFieldValueKind.Number, context, out value) || value.NumberValue == null)
+				return text;
+		}
 
 		double number = value.NumberValue.Value;
 		if (number > 0)

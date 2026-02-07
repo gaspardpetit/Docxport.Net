@@ -44,7 +44,10 @@ public sealed class DxpDateTimeFormatSpec : IDxpFieldFormatSpec
 	public string Apply(string text, DxpFieldValue value, DxpFieldEvalContext context)
 	{
 		if (value.Kind != DxpFieldValueKind.DateTime || value.DateTimeValue == null)
-			return text;
+		{
+			if (!value.TryConvertToKind(DxpFieldValueKind.DateTime, context, out value) || value.DateTimeValue == null)
+				return text;
+		}
 
 		var culture = context.Culture ?? CultureInfo.CurrentCulture;
 		var sb = new StringBuilder();
