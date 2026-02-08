@@ -379,28 +379,17 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor, IDisposab
     public override IDisposable VisitComplexFieldResultBegin(DxpIDocumentContext d) => DxpDisposable.Empty;
     public override void VisitComplexFieldBegin(FieldChar begin, DxpIDocumentContext d)
     {
-        _state.ComplexFieldEvaluated.Push(false);
     }
     public override void VisitComplexFieldCachedResultText(string text, DxpIDocumentContext d)
     {
-        if (TryWriteEvaluatedComplexField(d))
-            return;
         Write(text, d);
     }
     public override void VisitComplexFieldEnd(FieldChar end, DxpIDocumentContext d)
     {
-        if (_state.ComplexFieldEvaluated.Count > 0)
-            _state.ComplexFieldEvaluated.Pop();
     }
 
     public override IDisposable VisitSimpleFieldBegin(SimpleField fld, DxpIDocumentContext d)
     {
-        var instr = d.CurrentFields.Current?.InstructionText ?? fld.Instruction?.Value;
-        if (!string.IsNullOrWhiteSpace(instr))
-        {
-            if (TryWriteEvaluatedSimpleField(instr!, d))
-                return DxpDisposable.Create(() => _state.SuppressFieldDepth--);
-        }
         return DxpDisposable.Empty;
     }
 
@@ -675,38 +664,10 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor, IDisposab
         public Stack<TableState> TableStack { get; } = new();
         public int SuppressDepth { get; set; }
         public int SuppressFieldDepth { get; set; }
-        public Stack<bool> ComplexFieldEvaluated { get; } = new();
     }
 
-    private bool TryWriteEvaluatedSimpleField(string instruction, DxpIDocumentContext d)
+    public override void VisitFieldEvaluationResult(string text, DxpIDocumentContext d)
     {
-        var result = _fieldEval.EvalAsync(new DxpFieldInstruction(instruction)).GetAwaiter().GetResult();
-        if (result.Status != DxpFieldEvalStatus.Resolved || result.Text == null)
-            return false;
-
-        Write(result.Text, d);
-        _state.SuppressFieldDepth++;
-        return true;
-    }
-
-    private bool TryWriteEvaluatedComplexField(DxpIDocumentContext d)
-    {
-        if (_state.ComplexFieldEvaluated.Count == 0)
-            return false;
-        if (_state.ComplexFieldEvaluated.Peek())
-            return true;
-
-        var instruction = d.CurrentFields.Current?.InstructionText;
-        if (string.IsNullOrWhiteSpace(instruction))
-            return false;
-
-        var result = _fieldEval.EvalAsync(new DxpFieldInstruction(instruction!)).GetAwaiter().GetResult();
-        if (result.Status != DxpFieldEvalStatus.Resolved || result.Text == null)
-            return false;
-
-        Write(result.Text, d);
-        _state.ComplexFieldEvaluated.Pop();
-        _state.ComplexFieldEvaluated.Push(true);
-        return true;
+        Write(text, d);
     }
 }

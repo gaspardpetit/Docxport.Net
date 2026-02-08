@@ -200,7 +200,7 @@ public static class DxpExport
         {
             return DxpVisitorMiddleware.Chain(
                 visitor,
-                next => new DxpFieldEvalVisitorMiddleware(next, provider.FieldEval.Context, logger: logger));
+                next => new DxpFieldEvalVisitorMiddleware(next, provider.FieldEval, logger: logger));
         }
 
         return visitor;

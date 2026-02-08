@@ -433,6 +433,11 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
         Ignored("IDocxVisitor.VisitComplexFieldEnd", end);
     }
 
+    public virtual void VisitFieldEvaluationResult(string text, DxpIDocumentContext d)
+    {
+        Ignored("IDocxVisitor.VisitFieldEvaluationResult");
+    }
+
     public virtual IDisposable VisitSdtCellBegin(SdtCell sdtCell, DxpIDocumentContext d)
     {
         Ignored("IDocxVisitor.VisitSdtCellBegin", sdtCell);
