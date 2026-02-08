@@ -41,9 +41,6 @@ public class DxpWalker
 
         DxpDocumentContext documentContext = new DxpDocumentContext(doc);
 
-        // Prepare an insertion point between parser and downstream middleware/visitors.
-        v = new DxpContextTracker(v);
-
         documentContext.MainDocumentPart = doc.MainDocumentPart;
         {
             var settings = doc.MainDocumentPart.DocumentSettingsPart?.Settings;

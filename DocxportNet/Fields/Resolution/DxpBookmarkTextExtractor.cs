@@ -13,8 +13,11 @@ internal static class DxpBookmarkTextExtractor
     public static IReadOnlyDictionary<string, string> Extract(WordprocessingDocument document, ILogger? logger = null)
     {
         var visitor = new DxpBookmarkTextVisitor(logger);
+        var pipeline = DxpVisitorMiddleware.Chain(
+            visitor,
+            next => new DxpContextTracker(next));
         var walker = new DxpWalker(logger);
-        walker.Accept(document, visitor);
+        walker.Accept(document, pipeline);
         return visitor.Results;
     }
 

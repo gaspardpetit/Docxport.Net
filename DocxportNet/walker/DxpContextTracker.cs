@@ -10,7 +10,7 @@ namespace DocxportNet.Walker;
 /// Placeholder state layer for the walker pipeline.
 /// Currently forwards all events unchanged.
 /// </summary>
-internal sealed class DxpContextTracker : DxpMiddleware
+public sealed class DxpContextTracker : DxpMiddleware
 {
     private OpenXmlPart? _mainPart;
 

@@ -102,6 +102,13 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
         VerifyVariant(sample, DxpMarkdownVisitorConfig.CreatePlainConfig(), ".plain.inline.test.md", DxpTrackedChangeMode.InlineChanges);
     }
 
+    [Theory]
+    [MemberData(nameof(SampleDocs))]
+    public void TestDocxToMarkdown_Plain_Cached(Sample sample)
+    {
+        VerifyCachedAgainstFixture(sample, DxpMarkdownVisitorConfig.CreatePlainConfig(), ".plain.cached.md", ".plain.cached.test.md");
+    }
+
     private void VerifyAgainstFixture(Sample sample, DxpMarkdownVisitorConfig config, string expectedExt, string actualSuffix)
     {
         string expectedPath = TestPaths.GetSampleOutputPath(sample.DocxPath, expectedExt);
@@ -160,6 +167,43 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
     {
         var visitor = new DxpMarkdownVisitor(config, Logger);
         return DxpExport.ExportToString(docxPath, visitor, Logger);
+    }
+
+    private void VerifyCachedAgainstFixture(Sample sample, DxpMarkdownVisitorConfig config, string expectedExt, string actualSuffix)
+    {
+        string expectedPath = TestPaths.GetSampleOutputPath(sample.DocxPath, expectedExt);
+        string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, actualSuffix);
+
+        string actualMarkdown = TestCompare.Normalize(ToMarkdownCached(sample.DocxPath, CloneConfig(config, DxpTrackedChangeMode.AcceptChanges)));
+        File.WriteAllText(actualPath, actualMarkdown);
+
+        if (!File.Exists(expectedPath))
+            throw new XunitException($"Expected markdown file missing for {sample.FileName} (CachedFields). Add {expectedPath}. Actual output saved to {actualPath}.");
+
+        string expectedMarkdown = TestCompare.Normalize(File.ReadAllText(expectedPath));
+        if (!string.Equals(expectedMarkdown, actualMarkdown, StringComparison.Ordinal))
+        {
+            string diff = TestCompare.DescribeDifference(expectedMarkdown, actualMarkdown);
+            throw new XunitException($"Mismatch for {sample.FileName} (CachedFields): {diff}. Expected: {expectedPath}. Actual: {actualPath}.");
+        }
+    }
+
+    private string ToMarkdownCached(string docxPath, DxpMarkdownVisitorConfig config)
+    {
+        var visitor = new DxpMarkdownVisitor(config, Logger);
+        using var writer = new StringWriter();
+        visitor.SetOutput(writer);
+
+        if (visitor is not DocxportNet.Fields.IDxpFieldEvalProvider provider)
+            throw new XunitException("DxpMarkdownVisitor should provide field evaluation context.");
+
+        var pipeline = DocxportNet.Walker.DxpVisitorMiddleware.Chain(
+            visitor,
+            next => new DocxportNet.Walker.DxpFieldEvalMiddleware(next, provider.FieldEval, DocxportNet.Walker.DxpFieldEvalMode.Cache, logger: Logger),
+            next => new DocxportNet.Walker.DxpContextTracker(next));
+
+        new DocxportNet.Walker.DxpWalker(Logger).Accept(docxPath, pipeline);
+        return writer.ToString();
     }
 
     private static DxpMarkdownVisitorConfig CloneConfig(DxpMarkdownVisitorConfig source, DxpTrackedChangeMode mode)

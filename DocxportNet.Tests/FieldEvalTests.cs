@@ -4,9 +4,13 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
 using DocxportNet.Fields;
 using DocxportNet.Visitors;
+using DocxportNet.Visitors.PlainText;
 using DocxportNet.Walker;
 using System.Globalization;
+using System.Xml.Linq;
 using Xunit.Abstractions;
+using DocxportNet.Tests.Utils;
+using Xunit.Sdk;
 
 namespace DocxportNet.Tests;
 
@@ -796,6 +800,122 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     }
 
     [Fact]
+    public void Walker_CacheMode_UsesCachedResults_AndSuppressesSet()
+    {
+        var bodyXml = $@"
+<w:body xmlns:w=""http://schemas.openxmlformats.org/wordprocessingml/2006/main""
+        xmlns:w14=""http://schemas.microsoft.com/office/word/2010/wordml"">
+<w:p w14:paraId=""7F9887E7"" w14:textId=""31B65863"">
+  <w:r><w:t xml:space=""preserve"">Expect 1: </w:t></w:r>
+  <w:r><w:fldChar w:fldCharType=""begin""/></w:r>
+  <w:r><w:instrText xml:space=""preserve""> SET Var1 ""1"" </w:instrText></w:r>
+  <w:r><w:fldChar w:fldCharType=""separate""/></w:r>
+  <w:r><w:t>1</w:t></w:r>
+  <w:r><w:fldChar w:fldCharType=""end""/></w:r>
+  <w:fldSimple w:instr="" REF Var1 "">
+    <w:r><w:t>1</w:t></w:r>
+  </w:fldSimple>
+</w:p>
+<w:p w14:paraId=""4F8CA4F2"" w14:textId=""0FE5363B"">
+  <w:r><w:t xml:space=""preserve"">Expect Error: </w:t></w:r>
+  <w:r><w:fldChar w:fldCharType=""begin""/></w:r>
+  <w:r><w:instrText xml:space=""preserve""> REF VarUnknown </w:instrText></w:r>
+  <w:r><w:fldChar w:fldCharType=""separate""/></w:r>
+  <w:r><w:t>Error! Reference source not found.</w:t></w:r>
+  <w:r><w:fldChar w:fldCharType=""end""/></w:r>
+</w:p>
+<w:p w14:paraId=""1B477A12"" w14:textId=""504973EB"">
+  <w:r><w:t xml:space=""preserve"">Expect No Error: </w:t></w:r>
+  <w:r><w:fldChar w:fldCharType=""begin""/></w:r>
+  <w:r><w:instrText xml:space=""preserve""> IF </w:instrText></w:r>
+  <w:r><w:fldChar w:fldCharType=""begin""/></w:r>
+  <w:r><w:instrText xml:space=""preserve""> REF VarUnknow </w:instrText></w:r>
+  <w:r><w:fldChar w:fldCharType=""separate""/></w:r>
+  <w:r><w:instrText>Error! Reference source not found.</w:instrText></w:r>
+  <w:r><w:fldChar w:fldCharType=""end""/></w:r>
+  <w:r><w:instrText xml:space=""preserve""> = """" ""Empty"" ""Not Empty"" </w:instrText></w:r>
+  <w:r><w:fldChar w:fldCharType=""separate""/></w:r>
+  <w:r><w:t>Not Empty</w:t></w:r>
+  <w:r><w:fldChar w:fldCharType=""end""/></w:r>
+</w:p>
+<w:p w14:paraId=""1D7DCB2B"" w14:textId=""25F027AF"">
+  <w:r><w:t>Expect one:</w:t></w:r>
+  <w:r><w:t xml:space=""preserve""> </w:t></w:r>
+  <w:r><w:fldChar w:fldCharType=""begin""/></w:r>
+  <w:r><w:instrText xml:space=""preserve""> SET Var1 ""1"" </w:instrText></w:r>
+  <w:r><w:fldChar w:fldCharType=""separate""/></w:r>
+  <w:r><w:t>1</w:t></w:r>
+  <w:r><w:fldChar w:fldCharType=""end""/></w:r>
+  <w:r><w:fldChar w:fldCharType=""begin""/></w:r>
+  <w:r><w:instrText xml:space=""preserve""> IF </w:instrText></w:r>
+  <w:fldSimple w:instr="" REF Var1 "">
+    <w:r><w:instrText>1</w:instrText></w:r>
+  </w:fldSimple>
+  <w:r><w:instrText xml:space=""preserve""> = ""1"" ""one"" ""not one"" </w:instrText></w:r>
+  <w:r><w:fldChar w:fldCharType=""separate""/></w:r>
+  <w:r><w:t>one</w:t></w:r>
+  <w:r><w:fldChar w:fldCharType=""end""/></w:r>
+</w:p>
+<w:p w14:paraId=""381F356C"" w14:textId=""1386C4C3"">
+  <w:r><w:t xml:space=""preserve"">Expect </w:t></w:r>
+  <w:r><w:t>one</w:t></w:r>
+  <w:r><w:t xml:space=""preserve""> (bold)</w:t></w:r>
+  <w:r><w:t xml:space=""preserve"">: </w:t></w:r>
+  <w:r><w:fldChar w:fldCharType=""begin""/></w:r>
+  <w:r><w:instrText xml:space=""preserve""> SET Var1 ""</w:instrText></w:r>
+  <w:r><w:instrText>1</w:instrText></w:r>
+  <w:r><w:instrText xml:space=""preserve"">"" </w:instrText></w:r>
+  <w:r><w:fldChar w:fldCharType=""separate""/></w:r>
+  <w:r><w:t>1</w:t></w:r>
+  <w:r><w:fldChar w:fldCharType=""end""/></w:r>
+  <w:r><w:fldChar w:fldCharType=""begin""/></w:r>
+  <w:r><w:instrText xml:space=""preserve""> IF </w:instrText></w:r>
+  <w:fldSimple w:instr="" REF Var1 "">
+    <w:r><w:instrText>1</w:instrText></w:r>
+  </w:fldSimple>
+  <w:r><w:instrText xml:space=""preserve""> = ""1"" ""</w:instrText></w:r>
+  <w:r><w:instrText>one</w:instrText></w:r>
+  <w:r><w:instrText>"" ""</w:instrText></w:r>
+  <w:r><w:instrText>not one</w:instrText></w:r>
+  <w:r><w:instrText xml:space=""preserve"">"" </w:instrText></w:r>
+  <w:r><w:fldChar w:fldCharType=""separate""/></w:r>
+  <w:r><w:t>one</w:t></w:r>
+  <w:r><w:fldChar w:fldCharType=""end""/></w:r>
+</w:p>
+<w:p w14:paraId=""7B90ECD8"" w14:textId=""271E59D9"">
+  <w:r><w:t xml:space=""preserve"">Expect </w:t></w:r>
+  <w:r><w:t>1</w:t></w:r>
+  <w:r><w:t>2</w:t></w:r>
+  <w:r><w:t>3</w:t></w:r>
+  <w:r><w:t xml:space=""preserve"">: </w:t></w:r>
+  <w:r><w:fldChar w:fldCharType=""begin""/></w:r>
+  <w:r><w:instrText xml:space=""preserve""> IF 1 = 1 ""</w:instrText></w:r>
+  <w:r><w:instrText>1</w:instrText></w:r>
+  <w:r><w:instrText>2</w:instrText></w:r>
+  <w:r><w:instrText>3</w:instrText></w:r>
+  <w:r><w:instrText xml:space=""preserve"">"" ""error"" </w:instrText></w:r>
+  <w:r><w:fldChar w:fldCharType=""separate""/></w:r>
+  <w:r><w:t>1</w:t></w:r>
+  <w:r><w:t>2</w:t></w:r>
+  <w:r><w:t>3</w:t></w:r>
+  <w:r><w:fldChar w:fldCharType=""end""/></w:r>
+</w:p>
+</w:body>";
+
+        var expected = TestCompare.Normalize(string.Join("\n\n", new[] {
+            "Expect 1: 1",
+            "Expect Error: Error! Reference source not found.",
+            "Expect No Error: Not Empty",
+            "Expect one: one",
+            "Expect one (bold): one",
+            "Expect 123: 123"
+        }) + "\n\n");
+
+        var actual = TestCompare.Normalize(ExportPlainTextCachedFromBodyXml(bodyXml));
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
     public void Walker_TableDirectionalRanges_ResolveThroughMiddleware()
     {
         using var stream = new MemoryStream();
@@ -813,7 +933,8 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         var collector = new TableFieldCollector(eval);
         var visitor = DxpVisitorMiddleware.Chain(
             collector,
-            next => new DxpFieldEvalMiddleware(next, eval, logger: Logger));
+            next => new DxpFieldEvalMiddleware(next, eval, logger: Logger),
+            next => new DxpContextTracker(next));
 
         using (var readDoc = WordprocessingDocument.Open(stream, false))
             new DxpWalker(Logger).Accept(readDoc, visitor);
@@ -851,7 +972,8 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         var collector = new RefFieldCollector(eval);
         var visitor = DxpVisitorMiddleware.Chain(
             collector,
-            next => new DxpFieldEvalMiddleware(next, eval, logger: Logger));
+            next => new DxpFieldEvalMiddleware(next, eval, logger: Logger),
+            next => new DxpContextTracker(next));
 
         using (var readDoc = WordprocessingDocument.Open(stream, false))
         {
@@ -949,6 +1071,41 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         var fld = new SimpleField { Instruction = instruction };
         fld.Append(new Run(new Text(cachedText)));
         return new TableCell(new Paragraph(fld));
+    }
+
+    private string ExportPlainTextCachedFromBodyXml(string bodyXml)
+    {
+        using var stream = new MemoryStream();
+        using (var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document, true))
+        {
+            var main = doc.AddMainDocumentPart();
+            var xml = System.Xml.Linq.XDocument.Parse(bodyXml);
+            var body = new Body();
+            body.AddNamespaceDeclaration("w", "http://schemas.openxmlformats.org/wordprocessingml/2006/main");
+            body.AddNamespaceDeclaration("w14", "http://schemas.microsoft.com/office/word/2010/wordml");
+            body.InnerXml = string.Concat(xml.Root!.Nodes());
+            main.Document = new Document(body);
+            main.Document.Save();
+        }
+
+        stream.Position = 0;
+
+        var visitor = new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateAcceptConfig(), Logger);
+        using var writer = new StringWriter();
+        visitor.SetOutput(writer);
+
+        if (visitor is not IDxpFieldEvalProvider provider)
+            throw new XunitException("DxpPlainTextVisitor should provide field evaluation context.");
+
+        var pipeline = DxpVisitorMiddleware.Chain(
+            visitor,
+            next => new DxpFieldEvalMiddleware(next, provider.FieldEval, DxpFieldEvalMode.Cache, logger: Logger),
+            next => new DxpContextTracker(next));
+
+        using (var readDoc = WordprocessingDocument.Open(stream, false))
+            new DxpWalker(Logger).Accept(readDoc, pipeline);
+
+        return writer.ToString();
     }
 
     private sealed class TableFieldCollector : DxpVisitor
