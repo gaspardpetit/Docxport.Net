@@ -2,8 +2,8 @@ namespace DocxportNet.Symbols;
 
 public static class DxpWebdingsEncoding
 {
-	public static readonly string[] Table = [
-	    "\u0000", // 0x00
+    public static readonly string[] Table = [
+        "\u0000", // 0x00
         "\u0001", // 0x01
         "\u0002", // 0x02
         "\u0003", // 0x03

@@ -6,12 +6,12 @@ namespace DocxportNet.Walker;
 
 public class DxpCustomXmlContext : DxpICustomXmlContext
 {
-	public OpenXmlElement Element { get; }
-	public CustomXmlProperties? Properties { get; }
+    public OpenXmlElement Element { get; }
+    public CustomXmlProperties? Properties { get; }
 
-	public DxpCustomXmlContext(OpenXmlElement element, CustomXmlProperties? properties)
-	{
-		Element = element;
-		Properties = properties;
-	}
+    public DxpCustomXmlContext(OpenXmlElement element, CustomXmlProperties? properties)
+    {
+        Element = element;
+        Properties = properties;
+    }
 }

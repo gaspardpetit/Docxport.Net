@@ -2,14 +2,14 @@ namespace DocxportNet.API;
 
 public enum DxpHeaderFooterSelection
 {
-	None,
-	First,
-	Last
+    None,
+    First,
+    Last
 }
 
 public interface IDxpHeaderFooterSelectionProvider
 {
-	DxpHeaderFooterSelection HeaderSelection { get; }
-	DxpHeaderFooterSelection FooterSelection { get; }
+    DxpHeaderFooterSelection HeaderSelection { get; }
+    DxpHeaderFooterSelection FooterSelection { get; }
 }
 
