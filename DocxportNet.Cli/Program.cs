@@ -1,9 +1,11 @@
 using DocxportNet;
+using DocxportNet.API;
+using DocxportNet.Fields;
 using DocxportNet.Visitors.Html;
 using DocxportNet.Visitors.Markdown;
 using DocxportNet.Visitors.PlainText;
-using DocxportNet.API;
-using DocxportNet.Fields;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 using System.Text.Json;
 
 if (args.Length == 0 || args.Contains("--help") || args.Contains("-h"))
@@ -26,6 +28,7 @@ bool plainMarkdown = false;
 bool formatExplicit = false;
 var cliVariables = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 string? varsPath = null;
+LogLevel logLevel = LogLevel.Warning;
 
 for (int i = 0; i < args.Length; i++)
 {
@@ -120,6 +123,19 @@ for (int i = 0; i < args.Length; i++)
         }
         outputPath = args[++i];
     }
+    else if (arg.StartsWith("--log-level=", StringComparison.OrdinalIgnoreCase))
+        logLevel = ParseLogLevel(arg[(arg.IndexOf('=') + 1)..]);
+    else if (arg.Equals("--log-level", StringComparison.OrdinalIgnoreCase))
+    {
+        if (i + 1 >= args.Length)
+        {
+            Console.Error.WriteLine("--log-level requires a value.");
+            return;
+        }
+        logLevel = ParseLogLevel(args[++i]);
+    }
+    else if (arg.Equals("--log", StringComparison.OrdinalIgnoreCase))
+        logLevel = LogLevel.Information;
     else if (inputPath is null)
         inputPath = arg;
 }
@@ -154,18 +170,18 @@ switch (format.ToLowerInvariant())
 {
     case "markdown":
     case "md":
-        ExportMarkdown(inputPath, outputPath, trackedMode, plainMarkdown, varsPath, cliVariables);
+        ExportMarkdown(inputPath, outputPath, trackedMode, plainMarkdown, varsPath, cliVariables, logLevel);
         break;
     case "html":
         if (plainMarkdown)
             Console.Error.WriteLine("Warning: --plain is only supported for markdown; ignoring.");
-        ExportHtml(inputPath, outputPath, trackedMode, varsPath, cliVariables);
+        ExportHtml(inputPath, outputPath, trackedMode, varsPath, cliVariables, logLevel);
         break;
     case "text":
     case "txt":
         if (plainMarkdown)
             Console.Error.WriteLine("Warning: --plain is only supported for markdown; ignoring.");
-        ExportPlainText(inputPath, outputPath, trackedMode, varsPath, cliVariables);
+        ExportPlainText(inputPath, outputPath, trackedMode, varsPath, cliVariables, logLevel);
         break;
     default:
         Console.Error.WriteLine($"Unknown format '{format}'. Expected markdown|html|text.");
@@ -179,15 +195,18 @@ static void ExportMarkdown(
     DxpTrackedChangeMode trackedMode,
     bool plainMarkdown,
     string? varsPath,
-    IReadOnlyDictionary<string, string> cliVariables)
+    IReadOnlyDictionary<string, string> cliVariables,
+    LogLevel logLevel)
 {
     var config = plainMarkdown ? DxpMarkdownVisitorConfig.CreatePlainConfig() : DxpMarkdownVisitorConfig.CreateRichConfig();
     config = config with { TrackedChangeMode = trackedMode };
 
     string output = outputPath ?? Path.ChangeExtension(inputPath, plainMarkdown ? ".plain.md" : ".md");
-    var visitor = new DxpMarkdownVisitor(config);
+    using var loggerFactory = CreateLoggerFactory(logLevel);
+    var logger = loggerFactory.CreateLogger("docxport");
+    var visitor = new DxpMarkdownVisitor(config, logger);
     ApplyDocVariables(visitor, varsPath, cliVariables);
-    DxpExport.ExportToFile(inputPath, visitor, output);
+    DxpExport.ExportToFile(inputPath, visitor, output, logger);
     Console.WriteLine($"Wrote Markdown to {output}");
 }
 
@@ -196,13 +215,16 @@ static void ExportHtml(
     string? outputPath,
     DxpTrackedChangeMode trackedMode,
     string? varsPath,
-    IReadOnlyDictionary<string, string> cliVariables)
+    IReadOnlyDictionary<string, string> cliVariables,
+    LogLevel logLevel)
 {
     var config = DxpHtmlVisitorConfig.CreateRichConfig() with { TrackedChangeMode = trackedMode };
     string output = outputPath ?? Path.ChangeExtension(inputPath, trackedMode == DxpTrackedChangeMode.RejectChanges ? ".reject.html" : ".html");
-    var visitor = new DxpHtmlVisitor(config);
+    using var loggerFactory = CreateLoggerFactory(logLevel);
+    var logger = loggerFactory.CreateLogger("docxport");
+    var visitor = new DxpHtmlVisitor(config, logger);
     ApplyDocVariables(visitor, varsPath, cliVariables);
-    DxpExport.ExportToFile(inputPath, visitor, output);
+    DxpExport.ExportToFile(inputPath, visitor, output, logger);
     Console.WriteLine($"Wrote HTML to {output}");
 }
 
@@ -211,16 +233,19 @@ static void ExportPlainText(
     string? outputPath,
     DxpTrackedChangeMode trackedMode,
     string? varsPath,
-    IReadOnlyDictionary<string, string> cliVariables)
+    IReadOnlyDictionary<string, string> cliVariables,
+    LogLevel logLevel)
 {
     var textMode = trackedMode == DxpTrackedChangeMode.RejectChanges
         ? DxpPlainTextTrackedChangeMode.RejectChanges
         : DxpPlainTextTrackedChangeMode.AcceptChanges;
     var config = new DxpPlainTextVisitorConfig { TrackedChangeMode = textMode };
     string output = outputPath ?? Path.ChangeExtension(inputPath, textMode == DxpPlainTextTrackedChangeMode.RejectChanges ? ".reject.txt" : ".txt");
-    var visitor = new DxpPlainTextVisitor(config);
+    using var loggerFactory = CreateLoggerFactory(logLevel);
+    var logger = loggerFactory.CreateLogger("docxport");
+    var visitor = new DxpPlainTextVisitor(config, logger);
     ApplyDocVariables(visitor, varsPath, cliVariables);
-    DxpExport.ExportToFile(inputPath, visitor, output);
+    DxpExport.ExportToFile(inputPath, visitor, output, logger);
     Console.WriteLine($"Wrote text to {output}");
 }
 
@@ -233,6 +258,35 @@ static DxpTrackedChangeMode ParseTrackedChangeMode(string value)
         "split" => DxpTrackedChangeMode.SplitChanges,
         _ => DxpTrackedChangeMode.AcceptChanges
     };
+}
+
+static LogLevel ParseLogLevel(string value)
+{
+    return value.ToLowerInvariant() switch {
+        "trace" => LogLevel.Trace,
+        "debug" => LogLevel.Debug,
+        "info" => LogLevel.Information,
+        "information" => LogLevel.Information,
+        "warn" => LogLevel.Warning,
+        "warning" => LogLevel.Warning,
+        "error" => LogLevel.Error,
+        "critical" => LogLevel.Critical,
+        "none" => LogLevel.None,
+        _ => LogLevel.Warning
+    };
+}
+
+static ILoggerFactory CreateLoggerFactory(LogLevel minimumLevel)
+{
+    return LoggerFactory.Create(builder => {
+        builder
+            .SetMinimumLevel(minimumLevel)
+            .AddSimpleConsole(options => {
+                options.SingleLine = true;
+                options.TimestampFormat = "HH:mm:ss ";
+                options.UseUtcTimestamp = false;
+            });
+    });
 }
 
 static void PrintHelp()
@@ -249,6 +303,8 @@ Options:
   -o, --output=...  Output file path (default: swaps extension)
   --vars=...     Load DOCVARIABLE values from a JSON or INI file.
   -D name=value  Define a DOCVARIABLE (repeatable). CLI values override --vars.
+  --log          Enable info-level logging to stderr.
+  --log-level=...  Set log level (trace|debug|info|warn|error|critical|none).
   -v, --version  Show CLI version
   -h, --help     Show this help
 """);
