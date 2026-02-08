@@ -1,6 +1,7 @@
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
+using DocxportNet.Core;
 using DocxportNet.Fields;
 using DocxportNet.Fields.Resolution;
 using Microsoft.Extensions.Logging;
@@ -11,6 +12,14 @@ namespace DocxportNet.Walker;
 
 public sealed class DxpFieldEvalVisitorMiddleware : DxpVisitorMiddlewareBase
 {
+    private sealed class FieldEvalFrameState
+    {
+        public bool SuppressContent;
+        public bool Evaluated;
+        public bool IsComplex;
+    }
+
+    private readonly DxpFieldEval _eval;
     private readonly DxpFieldEvalContext _context;
     private readonly bool _includeDocumentProperties;
     private readonly bool _includeCustomProperties;
@@ -18,17 +27,19 @@ public sealed class DxpFieldEvalVisitorMiddleware : DxpVisitorMiddlewareBase
     private readonly ILogger? _logger;
     private bool _initialized;
     private int _paragraphOrder;
+    private readonly Stack<FieldEvalFrameState> _fieldFrames = new();
 
     public DxpFieldEvalVisitorMiddleware(
         DxpIVisitor next,
-        DxpFieldEvalContext context,
+        DxpFieldEval eval,
         bool includeDocumentProperties = true,
         bool includeCustomProperties = false,
         Func<DateTimeOffset>? nowProvider = null,
         ILogger? logger = null)
         : base(next)
     {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
+        _eval = eval ?? throw new ArgumentNullException(nameof(eval));
+        _context = _eval.Context;
         _includeDocumentProperties = includeDocumentProperties;
         _includeCustomProperties = includeCustomProperties;
         _nowProvider = nowProvider;
@@ -58,7 +69,79 @@ public sealed class DxpFieldEvalVisitorMiddleware : DxpVisitorMiddlewareBase
         var fields = d.CurrentFields;
         if (!fields.IsInFieldResult)
             return true;
-        return !fields.IsNestedField;
+        if (fields.IsNestedField)
+            return false;
+        if (_fieldFrames.Count > 0 && _fieldFrames.Peek().SuppressContent)
+            return false;
+        return true;
+    }
+
+    public override void VisitComplexFieldBegin(FieldChar begin, DxpIDocumentContext d)
+    {
+        _fieldFrames.Push(new FieldEvalFrameState { IsComplex = true });
+        _next.VisitComplexFieldBegin(begin, d);
+    }
+
+    public override void VisitComplexFieldCachedResultText(string text, DxpIDocumentContext d)
+    {
+        var current = _fieldFrames.Count > 0 ? _fieldFrames.Peek() : null;
+        if (current != null && current.IsComplex && current.Evaluated)
+            return;
+
+        if (!d.CurrentFields.IsNestedField && TryWriteEvaluatedCurrentField(d, current))
+            return;
+
+        if (!ShouldForwardContent(d))
+            return;
+
+        _next.VisitComplexFieldCachedResultText(text, d);
+    }
+
+    public override void VisitComplexFieldEnd(FieldChar end, DxpIDocumentContext d)
+    {
+        if (_fieldFrames.Count > 0)
+            _fieldFrames.Pop();
+        _next.VisitComplexFieldEnd(end, d);
+    }
+
+    public override IDisposable VisitSimpleFieldBegin(SimpleField fld, DxpIDocumentContext d)
+    {
+        var frame = new FieldEvalFrameState { IsComplex = false };
+        _fieldFrames.Push(frame);
+
+        if (!d.CurrentFields.IsNestedField && TryWriteEvaluatedCurrentField(d, frame))
+        {
+            return DxpDisposable.Create(() => {
+                if (_fieldFrames.Count > 0)
+                    _fieldFrames.Pop();
+            });
+        }
+
+        var inner = _next.VisitSimpleFieldBegin(fld, d);
+        return new DxpCompositeScope(inner, () => {
+            if (_fieldFrames.Count > 0)
+                _fieldFrames.Pop();
+        });
+    }
+
+    private bool TryWriteEvaluatedCurrentField(DxpIDocumentContext d, FieldEvalFrameState? frame)
+    {
+        var instruction = d.CurrentFields.Current?.InstructionText;
+        if (string.IsNullOrWhiteSpace(instruction))
+            return false;
+
+        var result = _eval.EvalAsync(new DxpFieldInstruction(instruction!)).GetAwaiter().GetResult();
+        if (result.Status != DxpFieldEvalStatus.Resolved || result.Text == null)
+            return false;
+
+        if (frame != null)
+        {
+            frame.Evaluated = true;
+            frame.SuppressContent = true;
+        }
+
+        _next.VisitFieldEvaluationResult(result.Text, d);
+        return true;
     }
 
 

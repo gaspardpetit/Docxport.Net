@@ -814,7 +814,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         var collector = new TableFieldCollector(eval);
         var visitor = DxpVisitorMiddleware.Chain(
             collector,
-            next => new DxpFieldEvalVisitorMiddleware(next, eval.Context, logger: Logger));
+            next => new DxpFieldEvalVisitorMiddleware(next, eval, logger: Logger));
 
         using (var readDoc = WordprocessingDocument.Open(stream, false))
             new DxpWalker(Logger).Accept(readDoc, visitor);
@@ -852,7 +852,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         var collector = new RefFieldCollector(eval);
         var visitor = DxpVisitorMiddleware.Chain(
             collector,
-            next => new DxpFieldEvalVisitorMiddleware(next, eval.Context, logger: Logger));
+            next => new DxpFieldEvalVisitorMiddleware(next, eval, logger: Logger));
 
         using (var readDoc = WordprocessingDocument.Open(stream, false))
         {
@@ -954,45 +954,33 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
 
     private sealed class TableFieldCollector : DxpVisitor
     {
-        private readonly DxpFieldEval _eval;
         public Dictionary<string, string?> Results { get; } = new(StringComparer.OrdinalIgnoreCase);
 
         public TableFieldCollector(DxpFieldEval eval) : base(null)
         {
-            _eval = eval;
         }
 
-        public override IDisposable VisitSimpleFieldBegin(SimpleField fld, DxpIDocumentContext d)
+        public override void VisitFieldEvaluationResult(string text, DxpIDocumentContext d)
         {
-            var instruction = d.CurrentFields.Current?.InstructionText ?? fld.Instruction?.Value;
+            var instruction = d.CurrentFields.Current?.InstructionText;
             if (!string.IsNullOrWhiteSpace(instruction))
-            {
-                var result = _eval.EvalAsync(new DxpFieldInstruction(instruction)).GetAwaiter().GetResult();
-                Results[instruction.Trim()] = result.Text;
-            }
-            return DxpDisposable.Empty;
+                Results[instruction.Trim()] = text;
         }
     }
 
     private sealed class RefFieldCollector : DxpVisitor
     {
-        private readonly DxpFieldEval _eval;
         public Dictionary<string, string?> Results { get; } = new(StringComparer.OrdinalIgnoreCase);
 
         public RefFieldCollector(DxpFieldEval eval) : base(null)
         {
-            _eval = eval;
         }
 
-        public override IDisposable VisitSimpleFieldBegin(SimpleField fld, DxpIDocumentContext d)
+        public override void VisitFieldEvaluationResult(string text, DxpIDocumentContext d)
         {
-            var instruction = d.CurrentFields.Current?.InstructionText ?? fld.Instruction?.Value;
+            var instruction = d.CurrentFields.Current?.InstructionText;
             if (!string.IsNullOrWhiteSpace(instruction))
-            {
-                var result = _eval.EvalAsync(new DxpFieldInstruction(instruction)).GetAwaiter().GetResult();
-                Results[instruction.Trim()] = result.Text;
-            }
-            return DxpDisposable.Empty;
+                Results[instruction.Trim()] = text;
         }
     }
 }
