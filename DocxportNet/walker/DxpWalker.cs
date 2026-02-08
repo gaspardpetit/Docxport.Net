@@ -3,7 +3,6 @@ using DocumentFormat.OpenXml.CustomProperties;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
-using DocxportNet.Core;
 using Microsoft.Extensions.Logging;
 using System.Xml.Linq;
 
@@ -42,8 +41,10 @@ public class DxpWalker
 
         DxpDocumentContext documentContext = new DxpDocumentContext(doc);
 
+        // Prepare an insertion point between parser and downstream middleware/visitors.
+        v = new DxpContextTracker(v);
+
         documentContext.MainDocumentPart = doc.MainDocumentPart;
-        using (documentContext.PushCurrentPart(doc.MainDocumentPart))
         {
             var settings = doc.MainDocumentPart.DocumentSettingsPart?.Settings;
             if (settings != null)
@@ -91,19 +92,6 @@ public class DxpWalker
 
                 WalkBibliography(doc, documentContext, v);
 
-                // Global cleanup: dispose any unterminated complex field result scopes
-                if (documentContext.CurrentFields.FieldStack.Count > 0)
-                {
-                    int leaked = documentContext.CurrentFields.FieldStack.Count;
-                    _logger?.LogWarning("Detected {LeakedFields} unterminated complex field(s) at end of document; disposing result scopes defensively.", leaked);
-                    while (documentContext.CurrentFields.FieldStack.Count > 0)
-                    {
-                        var frame = documentContext.CurrentFields.FieldStack.Pop();
-                        frame.ResultScope?.Dispose();
-                    }
-                }
-
-                documentContext.CurrentPart = null;
             }
         }
     }
@@ -258,7 +246,6 @@ public class DxpWalker
     private void WalkSection(SectionSlice section, DxpDocumentContext d, DxpIVisitor v, HeaderReference? headerRef, FooterReference? footerRef)
     {
         SectionLayout layout = DxpSections.CreateSectionLayout(section.Properties);
-        d.EnterSection(section.Properties, layout);
 
         using (v.VisitSectionBegin(section.Properties, layout, d))
         {
@@ -304,12 +291,10 @@ public class DxpWalker
                 {
                     var name = bs.Name?.Value;
                     v.VisitBookmarkStart(bs, d);
-                    d.StyleTracker.ResetStyle(d, v);
                     return;
                 }
                 case BookmarkEnd be:
                     v.VisitBookmarkEnd(be, d);
-                    d.StyleTracker.ResetStyle(d, v);
                     return;
 
                 case SectionProperties:
@@ -435,13 +420,12 @@ public class DxpWalker
         if (d.MainDocumentPart?.GetPartById(relId!) is HeaderPart part && part.Header is Header hdr)
         {
             var kind = hr.Type?.Value ?? HeaderFooterValues.Default;
-            using (d.PushCurrentPart(part))
-            using (v.VisitSectionHeaderBegin(hdr, kind, d))
+            var context = new DxpHeaderFooterContext(kind, part);
+            using (v.VisitSectionHeaderBegin(hdr, context, d))
             {
                 foreach (var child in hdr.ChildElements)
                     WalkBlock(child, d, v);
             }
-            d.StyleTracker.ResetStyle(d, v);
         }
     }
 
@@ -454,13 +438,12 @@ public class DxpWalker
         if (d.MainDocumentPart?.GetPartById(relId!) is FooterPart part && part.Footer is Footer ftr)
         {
             var kind = fr.Type?.Value ?? HeaderFooterValues.Default;
-            using (d.PushCurrentPart(part))
-            using (v.VisitSectionFooterBegin(ftr, kind, d))
+            var context = new DxpHeaderFooterContext(kind, part);
+            using (v.VisitSectionFooterBegin(ftr, context, d))
             {
                 foreach (var child in ftr.ChildElements)
                     WalkBlock(child, d, v);
             }
-            d.StyleTracker.ResetStyle(d, v);
         }
     }
 
@@ -473,10 +456,6 @@ public class DxpWalker
         var tableContext = new DxpTableContext(tbl, tblPr, tbl.GetFirstChild<TableGrid>(), tableResolvedStyle);
         int rowIndex = 0;
 
-        var previousTable = d.CurrentTable;
-        var previousTableModel = d.CurrentTableModel;
-        d.CurrentTable = tableContext;
-        d.CurrentTableModel = model;
         using (v.VisitTableBegin(tbl, model, d, tableContext))
         {
             // Table-level props/grid/anchors
@@ -577,10 +556,7 @@ public class DxpWalker
                         break;
                 }
             }
-            d.StyleTracker.ResetStyle(d, v);
         }
-        d.CurrentTable = previousTable;
-        d.CurrentTableModel = previousTableModel;
     }
 
     private void WalkTableRow(TableRow tr, DxpDocumentContext d, DxpIVisitor v, DxpTableContext tableContext, DxpTableModel model, int rowIndex)
@@ -588,8 +564,6 @@ public class DxpWalker
         bool isHeader = tr.TableRowProperties?.GetFirstChild<TableHeader>() != null;
         var rowContext = new DxpTableRowContext(tableContext, rowIndex, isHeader, tr.TableRowProperties);
 
-        var previousRow = d.CurrentTableRow;
-        d.CurrentTableRow = rowContext;
         using (v.VisitTableRowBegin(tr, rowContext, d))
         {
             int gridColumnIndex = 0;
@@ -642,7 +616,6 @@ public class DxpWalker
                 }
             }
         }
-        d.CurrentTableRow = previousRow;
     }
 
     private static bool TryGetCellSpans(DxpTableModel model, TableCell tc, int rowIndex, int gridColumnIndex, out DxpCellModel? modelCell)
@@ -707,8 +680,6 @@ public class DxpWalker
             tcp = tc.GetFirstChild<TableCellProperties>();
 
         var cellContext = new DxpTableCellContext(rowContext, rowContext.Index, columnIndex, rowSpan, colSpan, tcp);
-        var previousCell = d.CurrentTableCell;
-        d.CurrentTableCell = cellContext;
         using (v.VisitTableCellBegin(tc, cellContext, d))
         {
 
@@ -858,20 +829,12 @@ public class DxpWalker
             p.ParagraphProperties?.ParagraphMarkRunProperties?.GetFirstChild<Inserted>();
         bool isDeletedParagraph = deletedParagraph != null;
         bool isInsertedParagraph = insertedParagraph != null;
-        var paragraphChangeScope = isDeletedParagraph
-            ? d.PushChangeScope(keepAccept: false, keepReject: true, changeInfo: ResolveChangeInfo(deletedParagraph!, d))
-            : isInsertedParagraph
-                ? d.PushChangeScope(keepAccept: true, keepReject: false, changeInfo: ResolveChangeInfo(insertedParagraph!, d))
-                : DxpDisposable.Empty;
 
-        using (paragraphChangeScope)
-        using (d.PushParagraph(p, out DxpParagraphContext paragraphContext, advanceAccept: !isDeletedParagraph, advanceReject: !isInsertedParagraph))
+        var paragraphContext = d.CreateParagraphContext(p, advanceAccept: !isDeletedParagraph, advanceReject: !isInsertedParagraph);
         using (v.VisitParagraphBegin(p, d, paragraphContext))
         {
             foreach (var child in p.ChildElements)
                 WalkParagraphChild(child, d, v);
-
-            d.StyleTracker.ResetStyle(d, v);
         }
     }
 
@@ -1188,7 +1151,6 @@ public class DxpWalker
             .FirstOrDefault(e => e.LocalName == "smartTagPr" && e.NamespaceUri == wNs);
         var attrs = smartTagPr != null ? smartTagPr.Elements<CustomXmlAttribute>().ToList() : new List<CustomXmlAttribute>();
 
-        using (d.PushSmartTag(smart, elementName, elementUri, attrs, out _))
         using (v.VisitSmartTagRunBegin(smart, elementName, elementUri, d))
         {
 
@@ -1317,7 +1279,6 @@ public class DxpWalker
             var content = sdtRun.SdtContentRun;
             if (content != null)
             {
-                using (d.PushSdt(sdtRun, pr, endPr, out _))
                 using (v.VisitSdtContentRunBegin(content, d))
                 {
                     foreach (var child in content.ChildElements)
@@ -1464,13 +1425,6 @@ public class DxpWalker
 
     private void WalkSimpleField(SimpleField fld, DxpDocumentContext d, DxpIVisitor v)
     {
-        // w:fldSimple – simple field whose result is represented by its child content
-        // Attributes: w:instr (field code), w:dirty, w:fldLock. Behavior: children are the current field result.
-        var frame = new FieldFrame { SeenSeparate = true, InResult = true };
-        var instruction = fld.Instruction?.Value;
-        if (!string.IsNullOrEmpty(instruction))
-            frame.InstructionText = instruction;
-        d.CurrentFields.FieldStack.Push(frame);
         using (v.VisitSimpleFieldBegin(fld, d))
         {
             // Optional field data payload (<w:fldData>), rarely used.
@@ -1587,13 +1541,11 @@ public class DxpWalker
                 }
             }
         }
-        d.CurrentFields.FieldStack.Pop();
     }
 
     private void WalkCustomXmlRun(CustomXmlRun cxr, DxpDocumentContext d, DxpIVisitor v)
     {
         var pr = cxr.CustomXmlProperties;
-        using (d.PushCustomXml(cxr, pr, out _))
         using (v.VisitCustomXmlRunBegin(cxr, d))
         {
             // Properties <w:customXmlPr> (element name/namespace, optional data binding metadata)
@@ -1747,7 +1699,6 @@ public class DxpWalker
 
     private void WalkDeletedRun(DeletedRun dr, DxpDocumentContext d, DxpIVisitor v)
     {
-        using (d.PushChangeScope(keepAccept: false, keepReject: true, changeInfo: ResolveChangeInfo(dr, d)))
         using (v.VisitDeletedRunBegin(dr, d))
         {
             foreach (var child in dr.ChildElements)
@@ -1883,7 +1834,6 @@ public class DxpWalker
 
     private void WalkInsertedRun(InsertedRun ir, DxpDocumentContext d, DxpIVisitor v)
     {
-        using (d.PushChangeScope(keepAccept: true, keepReject: false, changeInfo: ResolveChangeInfo(ir, d)))
         using (v.VisitInsertedRunBegin(ir, d))
         {
             foreach (var child in ir.ChildElements)
@@ -2172,8 +2122,6 @@ public class DxpWalker
                 }
             }
 
-            // Ensure inline styles are closed before closing the anchor so tag order stays valid.
-            d.StyleTracker.ResetStyle(d, v);
         }
     }
 
@@ -2349,33 +2297,16 @@ public class DxpWalker
     private void WalkRun(Run r, DxpDocumentContext d, DxpIVisitor v)
     {
         var para = r.Ancestors<Paragraph>().FirstOrDefault();
-        var style = para != null ? d.Styles.ResolveRunStyle(para, r) : d.DefaultRunStyle;
-        var language = para != null ? d.Styles.ResolveRunLanguage(para, r) : null;
+        // No paragraph ancestor — surface to the visitor but keep walking content.
+        if (para == null)
+            WalkUnknown("Run (no Paragraph ancestor)", r, d, v);
 
-        using (d.PushRun(r, style, language, out var runContext))
+        using (v.VisitRunBegin(r, d))
         {
-            // Resolve style only if we can find a paragraph context.
-            bool hasRenderable = r.ChildElements.Any(child =>
-                child is Text or DeletedText or NoBreakHyphen or TabChar or Break or CarriageReturn or Drawing);
-            if (para != null)
+            foreach (var child in r.ChildElements)
             {
-                if (hasRenderable)
+                switch (child)
                 {
-                    d.StyleTracker.ApplyStyle(style, d, v);
-                }
-            }
-            else
-            {
-                // No paragraph ancestor — surface to the visitor but keep walking content.
-                WalkUnknown("Run (no Paragraph ancestor)", r, d, v);
-            }
-
-            using (v.VisitRunBegin(r, d))
-            {
-                foreach (var child in r.ChildElements)
-                {
-                    switch (child)
-                    {
                         case NoBreakHyphen h:
                             v.VisitNoBreakHyphen(h, d);
                             break;
@@ -2393,10 +2324,7 @@ public class DxpWalker
                             break;
 
                         case Text t:
-                            if (d.CurrentFields.Current?.InResult == true)
-                                v.VisitComplexFieldCachedResultText(t.Text, d);
-                            else
-                                v.VisitText(t, d);
+                            v.VisitText(t, d);
                             break;
 
                         case TabChar tab:
@@ -2418,49 +2346,12 @@ public class DxpWalker
                         case FieldChar fc:
                         {
                             var t = fc.FieldCharType?.Value;
-
                             if (t == FieldCharValues.Begin)
-                            {
-                                var frame = new FieldFrame { SeenSeparate = false, ResultScope = null, InResult = false };
-                                d.CurrentFields.FieldStack.Push(frame);
                                 v.VisitComplexFieldBegin(fc, d);
-                            }
                             else if (t == FieldCharValues.Separate)
-                            {
-                                if (d.CurrentFields.FieldStack.Count > 0)
-                                {
-                                    var top = d.CurrentFields.FieldStack.Pop();
-                                    if (!top.SeenSeparate)
-                                    {
-                                        v.VisitComplexFieldSeparate(fc, d);
-                                        top.SeenSeparate = true;
-                                        top.InResult = true;
-                                        if (top.ResultScope == null)
-                                            top.ResultScope = v.VisitComplexFieldResultBegin(d);
-                                    }
-                                    d.CurrentFields.FieldStack.Push(top);
-                                }
-                                else
-                                {
-                                    // stray separate; surface but don’t crash
-                                    v.VisitComplexFieldSeparate(fc, d);
-                                }
-                            }
+                                v.VisitComplexFieldSeparate(fc, d);
                             else if (t == FieldCharValues.End)
-                            {
-                                if (d.CurrentFields.FieldStack.Count > 0)
-                                {
-                                    var top = d.CurrentFields.FieldStack.Pop();
-                                    top.InResult = false;
-                                    top.ResultScope?.Dispose();
-                                    v.VisitComplexFieldEnd(fc, d);
-                                }
-                                else
-                                {
-                                    // stray end; surface but don’t crash
-                                    v.VisitComplexFieldEnd(fc, d);
-                                }
-                            }
+                                v.VisitComplexFieldEnd(fc, d);
                             // Other FieldChar types (rare) — ignore.
                             break;
                         }
@@ -2469,13 +2360,6 @@ public class DxpWalker
                         {
                             // FieldCode.Text can be null; InnerText is a safe fallback
                             var instr = code.Text ?? code.InnerText ?? string.Empty;
-                            if (!string.IsNullOrEmpty(instr) && d.CurrentFields.Current != null)
-                            {
-                                var current = d.CurrentFields.Current;
-                                current.InstructionText = current.InstructionText == null
-                                    ? instr
-                                    : current.InstructionText + instr;
-                            }
                             v.VisitComplexFieldInstruction(code, instr, d);
                             // Do not emit as visible text; instruction is not the result.
                             break;
@@ -2582,7 +2466,6 @@ public class DxpWalker
                         default:
                             WalkUnknown("Run child", child, d, v);
                             break;
-                    }
                 }
             }
         }
@@ -2593,7 +2476,6 @@ public class DxpWalker
     {
         // Begin ruby scope (visitor can choose how to render a ruby run)
         var pr = ruby.GetFirstChild<RubyProperties>(); // SDK class for <w:rubyPr>
-        using (d.PushRuby(ruby, pr, out var rubyCtx))
         using (v.VisitRubyBegin(ruby, d))
         {
             // --- Properties: <w:rubyPr> controls alignment/size/raise/lang of the ruby text ---
@@ -2690,7 +2572,6 @@ public class DxpWalker
     // w:del under pPr/rPr = deleted paragraph mark. No children to walk.
     private void WalkDeleted(Deleted del, DxpDocumentContext d, DxpIVisitor v)
     {
-        using (d.PushChangeScope(keepAccept: false, keepReject: true, changeInfo: ResolveChangeInfo(del, d)))
         using (v.VisitDeletedBegin(del, d))
         {
 
@@ -2719,12 +2600,11 @@ public class DxpWalker
                     switch (child)
                     {
                         case Paragraph p:
-                            using (d.PushParagraph(p, out DxpParagraphContext paragraphContext, advanceAccept: false, advanceReject: true))
+                            var paragraphContext = d.CreateParagraphContext(p, advanceAccept: false, advanceReject: true);
                             using (v.VisitParagraphBegin(p, d, paragraphContext))
                             {
                                 foreach (var innerChild in p.ChildElements)
                                     WalkParagraphChild(innerChild, d, v);
-                                d.StyleTracker.ResetStyle(d, v);
                             }
                             break;
                         case Table t:
@@ -2752,7 +2632,6 @@ public class DxpWalker
     // It has no children; we only need to determine the parent scope and notify the visitor.  Spec: w:ins under trPr / numPr / (pPr/rPr).
     private void WalkInserted(Inserted ins, DxpDocumentContext d, DxpIVisitor v)
     {
-        using (d.PushChangeScope(keepAccept: true, keepReject: false, changeInfo: ResolveChangeInfo(ins, d)))
         using (v.VisitInsertedBegin(ins, d))
         {
             // (1) Inserted table row: <w:trPr><w:ins .../></w:trPr>  ⇒ the row itself is marked as inserted.
@@ -2800,8 +2679,6 @@ public class DxpWalker
 
     private void WalkEndnote(Endnote fn, int index, long id, DxpDocumentContext d, DxpIVisitor v)
     {
-        using (d.PushFootnote(id, index, out DxpFootnoteContext footnote))
-        using (d.PushCurrentPart(d.MainDocumentPart?.EndnotesPart))
         using (v.VisitEndnoteBegin(fn, id, index, d))
         {
             foreach (var child in fn.ChildElements)
@@ -2909,15 +2786,13 @@ public class DxpWalker
                         break;
                 }
             }
-            d.StyleTracker.ResetStyle(d, v);
         }
     }
 
     private void WalkFootnote(Footnote fn, int index, long id, DxpDocumentContext d, DxpIVisitor v)
     {
-        using (d.PushFootnote(id, index, out DxpFootnoteContext footnote))
-        using (d.PushCurrentPart(d.MainDocumentPart?.FootnotesPart))
-        using (v.VisitFootnoteBegin(fn, footnote, d))
+        var footnoteContext = new DxpFootnoteContext(id, index);
+        using (v.VisitFootnoteBegin(fn, footnoteContext, d))
         {
             foreach (var child in fn.ChildElements)
             {
@@ -3024,14 +2899,12 @@ public class DxpWalker
                         break;
                 }
             }
-            d.StyleTracker.ResetStyle(d, v);
         }
     }
 
     private void WalkCustomXmlBlock(CustomXmlBlock cx, DxpDocumentContext d, DxpIVisitor v)
     {
         var pr = cx.CustomXmlProperties;
-        using (d.PushCustomXml(cx, pr, out _))
         using (v.VisitCustomXmlBlockBegin(cx, d))
         {
             // Properties (<w:customXmlPr>) carry element name/namespace and optional data binding metadata.
@@ -3173,7 +3046,6 @@ public class DxpWalker
                 return;
             }
 
-            using (d.PushSdt(sdt, pr, endPr, out _))
             using (v.VisitSdtContentBlockBegin(content, d))
             {
                 foreach (var child in content.ChildElements)
@@ -3189,24 +3061,18 @@ public class DxpWalker
     {
         using (v.VisitCommentBegin(info, thread, d))
         {
-            using (d.PushCurrentPart(info.Part ?? d.CurrentPart))
+            if (info.Blocks != null && info.Blocks.Count > 0)
             {
-                if (info.Blocks != null && info.Blocks.Count > 0)
-                {
-                    foreach (var block in info.Blocks)
-                        WalkBlock(block, d, v);
-
-                    d.StyleTracker.ResetStyle(d, v);
-                    return;
-                }
-
-                if (string.IsNullOrEmpty(info.Text))
-                    return;
-
-                var paragraph = new Paragraph(new Run(new Text(info.Text)));
-                WalkBlock(paragraph, d, v);
-                d.StyleTracker.ResetStyle(d, v);
+                foreach (var block in info.Blocks)
+                    WalkBlock(block, d, v);
+                return;
             }
+
+            if (string.IsNullOrEmpty(info.Text))
+                return;
+
+            var paragraph = new Paragraph(new Run(new Text(info.Text)));
+            WalkBlock(paragraph, d, v);
         }
     }
 
@@ -3254,27 +3120,6 @@ public class DxpWalker
                 WalkCommentContent(info, thread, d, v);
             }
         }
-    }
-
-    private static DxpChangeInfo ResolveChangeInfo(OpenXmlElement change, DxpDocumentContext d)
-    {
-        var current = d.CurrentChangeInfo;
-        string? author = null;
-        DateTime? date = null;
-
-        switch (change)
-        {
-            case TrackChangeType track:
-                author = track.Author?.Value;
-                date = track.Date?.Value;
-                break;
-            case RunTrackChangeType runTrack:
-                author = runTrack.Author?.Value;
-                date = runTrack.Date?.Value;
-                break;
-        }
-
-        return new DxpChangeInfo(author ?? current.Author, date ?? current.Date);
     }
 
     private sealed class DxpTableContext : DxpITableContext

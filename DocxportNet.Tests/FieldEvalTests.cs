@@ -2,7 +2,6 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
-using DocxportNet.Core;
 using DocxportNet.Fields;
 using DocxportNet.Visitors;
 using DocxportNet.Walker;
@@ -814,7 +813,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         var collector = new TableFieldCollector(eval);
         var visitor = DxpVisitorMiddleware.Chain(
             collector,
-            next => new DxpFieldEvalVisitorMiddleware(next, eval, logger: Logger));
+            next => new DxpFieldEvalMiddleware(next, eval, logger: Logger));
 
         using (var readDoc = WordprocessingDocument.Open(stream, false))
             new DxpWalker(Logger).Accept(readDoc, visitor);
@@ -852,7 +851,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         var collector = new RefFieldCollector(eval);
         var visitor = DxpVisitorMiddleware.Chain(
             collector,
-            next => new DxpFieldEvalVisitorMiddleware(next, eval, logger: Logger));
+            next => new DxpFieldEvalMiddleware(next, eval, logger: Logger));
 
         using (var readDoc = WordprocessingDocument.Open(stream, false))
         {

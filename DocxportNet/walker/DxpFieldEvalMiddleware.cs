@@ -10,7 +10,7 @@ using System.Text;
 
 namespace DocxportNet.Walker;
 
-public sealed class DxpFieldEvalVisitorMiddleware : DxpVisitorMiddlewareBase
+public sealed class DxpFieldEvalMiddleware : DxpMiddleware
 {
     private sealed class FieldEvalFrameState
     {
@@ -29,7 +29,7 @@ public sealed class DxpFieldEvalVisitorMiddleware : DxpVisitorMiddlewareBase
     private int _paragraphOrder;
     private readonly Stack<FieldEvalFrameState> _fieldFrames = new();
 
-    public DxpFieldEvalVisitorMiddleware(
+    public DxpFieldEvalMiddleware(
         DxpIVisitor next,
         DxpFieldEval eval,
         bool includeDocumentProperties = true,

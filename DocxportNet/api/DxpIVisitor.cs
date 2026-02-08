@@ -67,6 +67,7 @@ public interface DxpIFootnoteContext
 public sealed record DxpMarker(string? marker, int? numId, int? iLvl);
 
 public sealed record DxpLinkAnchor(string? internalRef, string uri);
+public sealed record DxpHeaderFooterContext(HeaderFooterValues Kind, OpenXmlPart? Part);
 
 public sealed record CustomFileProperty(string Name, string? Type, object? Value);
 

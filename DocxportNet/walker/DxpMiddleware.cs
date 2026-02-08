@@ -8,11 +8,11 @@ using System.Xml.Linq;
 
 namespace DocxportNet.Walker;
 
-public abstract class DxpVisitorMiddlewareBase : DxpIVisitor
+public abstract class DxpMiddleware : DxpIVisitor
 {
     protected DxpIVisitor _next;
 
-    protected DxpVisitorMiddlewareBase(DxpIVisitor next)
+    protected DxpMiddleware(DxpIVisitor next)
     {
         _next = next ?? throw new ArgumentNullException(nameof(next));
     }
