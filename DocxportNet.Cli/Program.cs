@@ -5,7 +5,6 @@ using DocxportNet.Visitors.Html;
 using DocxportNet.Visitors.Markdown;
 using DocxportNet.Visitors.PlainText;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
 using System.Text.Json;
 
 if (args.Length == 0 || args.Contains("--help") || args.Contains("-h"))

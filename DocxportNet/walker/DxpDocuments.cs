@@ -6,7 +6,34 @@ using DocxportNet.Core;
 
 namespace DocxportNet.Walker;
 
-public class DxpDocumentContext : DxpIDocumentContext
+internal interface IDxpMutableDocumentContext
+{
+    DxpStyleTracker StyleTracker { get; }
+    DxpIParagraphContext CurrentParagraph { get; set; }
+    DxpIRunContext? CurrentRun { get; set; }
+    DxpIRubyContext? CurrentRuby { get; set; }
+    DxpISmartTagContext? CurrentSmartTag { get; set; }
+    DxpICustomXmlContext? CurrentCustomXml { get; set; }
+    DxpISdtContext? CurrentSdt { get; set; }
+    DxpIFootnoteContext CurrentFootnote { get; set; }
+    DxpITableContext? CurrentTable { get; set; }
+    DxpITableRowContext? CurrentTableRow { get; set; }
+    DxpITableCellContext? CurrentTableCell { get; set; }
+    DxpTableModel? CurrentTableModel { get; set; }
+    OpenXmlPart? CurrentPart { get; set; }
+    DxpISectionContext CurrentSection { get; set; }
+    IDisposable PushRun(Run r, DxpStyleEffectiveRunStyle style, string? language, out DxpRunContext ctx);
+    IDisposable PushRuby(Ruby ruby, RubyProperties? properties, out DxpRubyContext ctx);
+    IDisposable PushSmartTag(OpenXmlUnknownElement smart, string elementName, string elementUri, IReadOnlyList<CustomXmlAttribute> attrs, out DxpSmartTagContext ctx);
+    IDisposable PushSdt(SdtElement sdt, SdtProperties? properties, SdtEndCharProperties? endCharProperties, out DxpSdtContext ctx);
+    IDisposable PushCustomXml(OpenXmlElement element, CustomXmlProperties? properties, out DxpCustomXmlContext ctx);
+    IDisposable PushFootnote(long id, int index, out DxpFootnoteContext ctx);
+    IDisposable PushChangeScope(bool keepAccept, bool keepReject, DxpChangeInfo changeInfo);
+    IDisposable PushCurrentPart(OpenXmlPart? part);
+    DxpSectionContext EnterSection(SectionProperties sp, SectionLayout layout);
+}
+
+public class DxpDocumentContext : DxpIDocumentContext, IDxpMutableDocumentContext
 {
     private sealed record DxpEditState(bool KeepAccept, bool KeepReject, DxpChangeInfo ChangeInfo);
 
@@ -30,6 +57,11 @@ public class DxpDocumentContext : DxpIDocumentContext
     public IPackageProperties? CoreProperties { get; internal set; }
     public IReadOnlyList<CustomFileProperty>? CustomProperties { get; internal set; }
     public OpenXmlPart? CurrentPart { get; internal set; }
+    OpenXmlPart? IDxpMutableDocumentContext.CurrentPart
+    {
+        get => CurrentPart;
+        set => CurrentPart = value;
+    }
     private readonly DxpEditState _defaultEditState;
     private readonly Stack<DxpEditState> _editStateStack = new();
     public bool KeepAccept => (_editStateStack.Count == 0 ? _defaultEditState : _editStateStack.Peek()).KeepAccept;
@@ -37,27 +69,87 @@ public class DxpDocumentContext : DxpIDocumentContext
     public DxpChangeInfo CurrentChangeInfo => (_editStateStack.Count == 0 ? _defaultEditState : _editStateStack.Peek()).ChangeInfo;
     public DxpParagraphContext CurrentParagraph { get; internal set; } = DxpParagraphContext.INVALID;
     DxpIParagraphContext DxpIDocumentContext.CurrentParagraph => CurrentParagraph;
+    DxpIParagraphContext IDxpMutableDocumentContext.CurrentParagraph
+    {
+        get => CurrentParagraph;
+        set => CurrentParagraph = value as DxpParagraphContext ?? DxpParagraphContext.INVALID;
+    }
     public DxpRubyContext? CurrentRuby { get; internal set; }
     DxpIRubyContext? DxpIDocumentContext.CurrentRuby => CurrentRuby;
+    DxpIRubyContext? IDxpMutableDocumentContext.CurrentRuby
+    {
+        get => CurrentRuby;
+        set => CurrentRuby = value as DxpRubyContext;
+    }
     public DxpSmartTagContext? CurrentSmartTag { get; internal set; }
     DxpISmartTagContext? DxpIDocumentContext.CurrentSmartTag => CurrentSmartTag;
+    DxpISmartTagContext? IDxpMutableDocumentContext.CurrentSmartTag
+    {
+        get => CurrentSmartTag;
+        set => CurrentSmartTag = value as DxpSmartTagContext;
+    }
     public DxpCustomXmlContext? CurrentCustomXml { get; internal set; }
     DxpICustomXmlContext? DxpIDocumentContext.CurrentCustomXml => CurrentCustomXml;
+    DxpICustomXmlContext? IDxpMutableDocumentContext.CurrentCustomXml
+    {
+        get => CurrentCustomXml;
+        set => CurrentCustomXml = value as DxpCustomXmlContext;
+    }
     public DxpSdtContext? CurrentSdt { get; internal set; }
     DxpISdtContext? DxpIDocumentContext.CurrentSdt => CurrentSdt;
+    DxpISdtContext? IDxpMutableDocumentContext.CurrentSdt
+    {
+        get => CurrentSdt;
+        set => CurrentSdt = value as DxpSdtContext;
+    }
     public DxpRunContext? CurrentRun { get; internal set; }
     DxpIRunContext? DxpIDocumentContext.CurrentRun => CurrentRun;
+    DxpIRunContext? IDxpMutableDocumentContext.CurrentRun
+    {
+        get => CurrentRun;
+        set => CurrentRun = value as DxpRunContext;
+    }
     public DxpITableContext? CurrentTable { get; internal set; }
     DxpITableContext? DxpIDocumentContext.CurrentTable => CurrentTable;
+    DxpITableContext? IDxpMutableDocumentContext.CurrentTable
+    {
+        get => CurrentTable;
+        set => CurrentTable = value;
+    }
     public DxpITableRowContext? CurrentTableRow { get; internal set; }
     DxpITableRowContext? DxpIDocumentContext.CurrentTableRow => CurrentTableRow;
+    DxpITableRowContext? IDxpMutableDocumentContext.CurrentTableRow
+    {
+        get => CurrentTableRow;
+        set => CurrentTableRow = value;
+    }
     public DxpITableCellContext? CurrentTableCell { get; internal set; }
     DxpITableCellContext? DxpIDocumentContext.CurrentTableCell => CurrentTableCell;
+    DxpITableCellContext? IDxpMutableDocumentContext.CurrentTableCell
+    {
+        get => CurrentTableCell;
+        set => CurrentTableCell = value;
+    }
     public DxpTableModel? CurrentTableModel { get; internal set; }
     DxpTableModel? DxpIDocumentContext.CurrentTableModel => CurrentTableModel;
+    DxpTableModel? IDxpMutableDocumentContext.CurrentTableModel
+    {
+        get => CurrentTableModel;
+        set => CurrentTableModel = value;
+    }
     public DxpFootnoteContext CurrentFootnote { get; internal set; } = DxpFootnoteContext.INVALID;
-    public DxpSectionContext CurrentSection { get; private set; } = DxpSectionContext.INVALID;
+    DxpIFootnoteContext IDxpMutableDocumentContext.CurrentFootnote
+    {
+        get => CurrentFootnote;
+        set => CurrentFootnote = value as DxpFootnoteContext ?? DxpFootnoteContext.INVALID;
+    }
+    public DxpSectionContext CurrentSection { get; internal set; } = DxpSectionContext.INVALID;
     DxpISectionContext DxpIDocumentContext.CurrentSection => CurrentSection;
+    DxpISectionContext IDxpMutableDocumentContext.CurrentSection
+    {
+        get => CurrentSection;
+        set => CurrentSection = value as DxpSectionContext ?? DxpSectionContext.INVALID;
+    }
 
     public DxpDocumentProperties DocumentProperties { get; internal set; }
     public DxpDocumentIndex DocumentIndex { get; }
@@ -234,17 +326,20 @@ public class DxpDocumentContext : DxpIDocumentContext
         return DxpDisposable.Create(() => CurrentFootnote = prev);
     }
 
-    private DxpFootnoteContext CreateFootnoteContext(long id, int index)
+    private static DxpFootnoteContext CreateFootnoteContext(long id, int index)
     {
         return new DxpFootnoteContext(id, index);
     }
 
     public DxpSectionContext EnterSection(SectionProperties sp, SectionLayout layout)
     {
-        DxpSectionContext ctx = new DxpSectionContext(sp, layout, BuildDxpSectionLayout(layout));
+        DxpSectionContext ctx = new(sp, layout, BuildDxpSectionLayout(layout));
         CurrentSection = ctx;
         return ctx;
     }
+
+    DxpSectionContext IDxpMutableDocumentContext.EnterSection(SectionProperties sp, SectionLayout layout) =>
+        EnterSection(sp, layout);
 
     internal static DxpSectionLayout BuildDxpSectionLayout(SectionLayout layout)
     {
@@ -338,6 +433,8 @@ public class DxpDocumentContext : DxpIDocumentContext
             CurrentPart = part;
         return DxpDisposable.Create(() => CurrentPart = previous);
     }
+
+    IDisposable IDxpMutableDocumentContext.PushCurrentPart(OpenXmlPart? part) => PushCurrentPart(part);
 
     public IDisposable PushChangeScope(bool keepAccept, bool keepReject, DxpChangeInfo changeInfo)
     {
