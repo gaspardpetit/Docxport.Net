@@ -998,7 +998,18 @@ public sealed class DxpFieldEvalMiddleware : DxpMiddleware
             return;
         }
 
-        var sink = _next;
+        bool useGlobalStyle = _next is DxpContextTracker tracker &&
+            (tracker.Next is DocxportNet.Visitors.Html.DxpHtmlVisitor ||
+                tracker.Next is DocxportNet.Visitors.Markdown.DxpMarkdownVisitor ||
+                tracker.Next is DocxportNet.Visitors.PlainText.DxpPlainTextVisitor);
+        var sink = useGlobalStyle ? _next : GetSyntheticSink();
+        DxpStyleTracker? localStyleTracker = null;
+        if (!useGlobalStyle && runProperties != null)
+        {
+            var style = BuildEffectiveRunStyle(d, runProperties);
+            localStyleTracker = new DxpStyleTracker();
+            localStyleTracker.ApplyStyle(style, d, sink);
+        }
 
         var run = new Run();
         if (runProperties != null)
@@ -1011,9 +1022,16 @@ public sealed class DxpFieldEvalMiddleware : DxpMiddleware
         // Attach to a temporary paragraph so style resolution can see a paragraph ancestor.
         var tempParagraph = new Paragraph();
         tempParagraph.Append(run);
-        using (sink.VisitRunBegin(run, d))
+        try
         {
-            sink.VisitText(t, d);
+            using (sink.VisitRunBegin(run, d))
+            {
+                sink.VisitText(t, d);
+            }
+        }
+        finally
+        {
+            localStyleTracker?.ResetStyle(d, sink);
         }
     }
 
