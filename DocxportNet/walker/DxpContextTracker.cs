@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
 using DocxportNet.Core;
+using Microsoft.Extensions.Logging;
 
 namespace DocxportNet.Walker;
 
@@ -13,8 +14,12 @@ namespace DocxportNet.Walker;
 public sealed class DxpContextTracker : DxpMiddleware
 {
     private OpenXmlPart? _mainPart;
+    private readonly ILogger? _logger;
 
-    public DxpContextTracker(DxpIVisitor next) : base(next) { }
+    public DxpContextTracker(DxpIVisitor next, ILogger? logger = null) : base(next)
+    {
+        _logger = logger;
+    }
 
     public override IDisposable VisitDocumentBegin(WordprocessingDocument doc, DxpIDocumentContext documentContext)
     {
@@ -121,6 +126,17 @@ public sealed class DxpContextTracker : DxpMiddleware
 
         bool hasRenderable = r.ChildElements.Any(child =>
             child is Text or DeletedText or NoBreakHyphen or TabChar or Break or CarriageReturn or Drawing);
+        if (_logger?.IsEnabled(LogLevel.Debug) == true)
+        {
+            var runText = string.Concat(r.Elements<Text>().Select(t => t.Text));
+            bool hasBoldProp = r.RunProperties?.Bold != null;
+            _logger.LogDebug(
+                "RunBegin: hasRenderable={HasRenderable}, runBoldProp={RunBoldProp}, effectiveBold={EffectiveBold}, text='{RunText}'",
+                hasRenderable,
+                hasBoldProp,
+                style.Bold,
+                runText);
+        }
         if (para != null && hasRenderable)
             doc.StyleTracker.ApplyStyle(style, d, _next);
 

@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using System.Globalization;
 
 namespace DocxportNet.Fields;
 
@@ -246,6 +247,18 @@ public sealed class DxpFieldEval
                     {
                         var resolver = Context.ValueResolver ?? _resolver;
                         var name = await ExpandNestedTextAsync(tokens[0]);
+                        DxpFieldNodeBuffer? resolvedNodes = null;
+                        if (_delegates.ResolveDocVariableNodesAsync != null)
+                        {
+                            resolvedNodes = await _delegates.ResolveDocVariableNodesAsync(name, Context);
+                            if (resolvedNodes != null)
+                            {
+                                Context.SetDocVariableNodes(name, resolvedNodes);
+                                value = new DxpFieldValue(resolvedNodes.ToPlainText());
+                                return (true, value);
+                            }
+                        }
+
                         var resolved = await resolver.ResolveAsync(name, Resolution.DxpFieldValueKindHint.DocVariable, Context);
                         if (resolved == null)
                         {
@@ -257,6 +270,8 @@ public sealed class DxpFieldEval
                         {
                             value = resolved.Value;
                         }
+
+                        Context.SetDocVariableNodes(name, DxpFieldNodeBuffer.FromText(ToDefaultString(value)));
                         return (true, value);
                     }
                 }
@@ -474,6 +489,31 @@ public sealed class DxpFieldEval
         if (condition)
             return new DxpFieldEvalResult(DxpFieldEvalStatus.Skipped, null);
         return new DxpFieldEvalResult(DxpFieldEvalStatus.Resolved, string.Empty);
+    }
+
+    private string ToDefaultString(DxpFieldValue value)
+    {
+        switch (value.Kind)
+        {
+            case DxpFieldValueKind.String:
+                return value.StringValue ?? string.Empty;
+            case DxpFieldValueKind.Number:
+            {
+                if (!value.NumberValue.HasValue)
+                    return string.Empty;
+                var culture = Context.Culture ?? CultureInfo.CurrentCulture;
+                return value.NumberValue.Value.ToString(culture);
+            }
+            case DxpFieldValueKind.DateTime:
+            {
+                if (!value.DateTimeValue.HasValue)
+                    return string.Empty;
+                var culture = Context.Culture ?? CultureInfo.CurrentCulture;
+                return value.DateTimeValue.Value.ToString(culture);
+            }
+            default:
+                return string.Empty;
+        }
     }
 
     private bool TryParseIfArgs(

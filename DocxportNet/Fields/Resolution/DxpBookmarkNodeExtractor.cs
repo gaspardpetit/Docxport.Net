@@ -15,7 +15,7 @@ internal static class DxpBookmarkNodeExtractor
         var visitor = new DxpBookmarkNodeVisitor(logger);
         var pipeline = DxpVisitorMiddleware.Chain(
             visitor,
-            next => new DxpContextTracker(next));
+            next => new DxpContextTracker(next, logger));
         var walker = new DxpWalker(logger);
         walker.Accept(document, pipeline);
         return visitor.Results;

@@ -52,6 +52,13 @@ public sealed class DxpContextFieldValueResolver : IDxpFieldValueResolver
         }
 
         if ((kind == DxpFieldValueKindHint.Any || kind == DxpFieldValueKindHint.DocVariable) &&
+            context.TryGetDocVariableNodes(name, out var dvNodes))
+        {
+            var text = dvNodes.ToPlainText();
+            return Task.FromResult<DxpFieldValue?>(new DxpFieldValue(text));
+        }
+
+        if ((kind == DxpFieldValueKindHint.Any || kind == DxpFieldValueKindHint.DocVariable) &&
             context.TryGetDocVariable(name, out var dv) && dv != null)
             return Task.FromResult<DxpFieldValue?>(new DxpFieldValue(dv));
 
