@@ -7,7 +7,6 @@ using DocxportNet.Visitors;
 using DocxportNet.Visitors.PlainText;
 using DocxportNet.Walker;
 using System.Globalization;
-using System.Xml.Linq;
 using Xunit.Abstractions;
 using DocxportNet.Tests.Utils;
 using Xunit.Sdk;
@@ -107,7 +106,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     public async Task EvalAsync_IfNumericComparison()
     {
         var eval = new DxpFieldEval(logger: Logger);
-        eval.Context.SetBookmark("Order", "120");
+        eval.Context.SetBookmarkNodes("Order", DxpFieldNodeBuffer.FromText("120"));
 
         var result = await eval.EvalAsync(new DxpFieldInstruction("IF Order >= 100 \"Thanks\" \"No\""));
 
@@ -156,8 +155,8 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     {
         var eval = new DxpFieldEval(logger: Logger);
         eval.Context.Culture = new CultureInfo("en-US");
-        eval.Context.SetBookmark("A", "10");
-        eval.Context.SetBookmark("B", "5");
+        eval.Context.SetBookmarkNodes("A", DxpFieldNodeBuffer.FromText("10"));
+        eval.Context.SetBookmarkNodes("B", DxpFieldNodeBuffer.FromText("5"));
 
         var result = await eval.EvalAsync(new DxpFieldInstruction("= (A + B) * 2"));
         var sum = await eval.EvalAsync(new DxpFieldInstruction("= SUM(1, 2, 3)"));
@@ -248,7 +247,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     {
         var eval = new DxpFieldEval(logger: Logger);
         eval.Context.SetDocumentPropertyValue("Title", new DxpFieldValue("Doc Title"));
-        eval.Context.SetBookmark("PropName", "Title");
+        eval.Context.SetBookmarkNodes("PropName", DxpFieldNodeBuffer.FromText("Title"));
 
         var result = await eval.EvalAsync(new DxpFieldInstruction("DOCPROPERTY { REF PropName }"));
 
@@ -286,7 +285,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         var eval = new DxpFieldEval(new DxpFieldEvalDelegates {
             ResolveDocVariableAsync = (name, ctx) => Task.FromResult<DxpFieldValue?>(name == "X" ? new DxpFieldValue("ok") : null)
         }, logger: Logger);
-        eval.Context.SetBookmark("VarName", "X");
+        eval.Context.SetBookmarkNodes("VarName", DxpFieldNodeBuffer.FromText("X"));
 
         var result = await eval.EvalAsync(new DxpFieldInstruction("DOCVARIABLE { REF VarName }"));
 
@@ -320,6 +319,59 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     }
 
     [Fact]
+    public void Walker_EvalMode_RefWithoutSwitch_ReplaysStructuredBookmark()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Expect one: </w:t></w:r>
+    <w:bookmarkStart w:id="0" w:name="BM1"/>
+    <w:del w:id="1" w:author="test">
+      <w:r><w:rPr><w:b/></w:rPr><w:t>one</w:t></w:r>
+    </w:del>
+    <w:bookmarkEnd w:id="0"/>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> REF BM1 </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var actual = ExportPlainTextEvaluatedFromBodyXml(bodyXml);
+        var expected = TestCompare.Normalize("Expect one: one\n\n");
+        Assert.Equal(expected, TestCompare.Normalize(actual));
+    }
+
+    [Fact]
+    public void Walker_EvalMode_RefWithSwitch_FormatsFlattenedBookmark()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Expect 12: </w:t></w:r>
+    <w:bookmarkStart w:id="0" w:name="BM2"/>
+    <w:del w:id="1" w:author="test">
+      <w:r><w:rPr><w:b/></w:rPr><w:t>1</w:t></w:r>
+      <w:r><w:rPr><w:u w:val="single"/></w:rPr><w:t>2</w:t></w:r>
+    </w:del>
+    <w:bookmarkEnd w:id="0"/>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> REF BM2 \\# "00" </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var actual = ExportPlainTextEvaluatedFromBodyXml(bodyXml);
+        var expected = TestCompare.Normalize("Expect 12: 12\n\n");
+        Assert.Equal(expected, TestCompare.Normalize(actual));
+    }
+
+    [Fact]
     public async Task EvalAsync_MergeFieldUsesResolverAndSwitches()
     {
         var eval = new DxpFieldEval(new DxpFieldEvalDelegates {
@@ -339,7 +391,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         var eval = new DxpFieldEval(new DxpFieldEvalDelegates {
             ResolveMergeFieldAsync = (name, ctx) => Task.FromResult<DxpFieldValue?>(name == "FirstName" ? new DxpFieldValue("Ana") : null)
         }, logger: Logger);
-        eval.Context.SetBookmark("FieldName", "FirstName");
+        eval.Context.SetBookmarkNodes("FieldName", DxpFieldNodeBuffer.FromText("FirstName"));
 
         var result = await eval.EvalAsync(new DxpFieldInstruction("MERGEFIELD { REF FieldName }"));
 
@@ -380,7 +432,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     public async Task EvalAsync_RefExpandsNestedBookmarkName()
     {
         var eval = new DxpFieldEval(logger: Logger);
-        eval.Context.SetBookmark("TargetName", "Note1");
+        eval.Context.SetBookmarkNodes("TargetName", DxpFieldNodeBuffer.FromText("Note1"));
         eval.Context.RefResolver = new MockRefResolver();
 
         var result = await eval.EvalAsync(new DxpFieldInstruction("REF { REF TargetName } \\f"));
@@ -413,7 +465,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         var eval = new DxpFieldEval(new DxpFieldEvalDelegates {
             AskAsync = (prompt, ctx) => Task.FromResult<DxpFieldValue?>(new DxpFieldValue("New"))
         }, logger: Logger);
-        eval.Context.SetBookmark("Answer", "Existing");
+        eval.Context.SetBookmarkNodes("Answer", DxpFieldNodeBuffer.FromText("Existing"));
 
         var asked = await eval.EvalAsync(new DxpFieldInstruction("ASK Answer \"Prompt\" \\o"));
         var result = await eval.EvalAsync(new DxpFieldInstruction("REF Answer"));
@@ -432,8 +484,8 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
                 return Task.FromResult<DxpFieldValue?>(null);
             }
         }, logger: Logger);
-        eval.Context.SetBookmark("Greeting", "Hi");
-        eval.Context.SetBookmark("DefaultCity", "Rome");
+        eval.Context.SetBookmarkNodes("Greeting", DxpFieldNodeBuffer.FromText("Hi"));
+        eval.Context.SetBookmarkNodes("DefaultCity", DxpFieldNodeBuffer.FromText("Rome"));
 
         var asked = await eval.EvalAsync(new DxpFieldInstruction("ASK City \"{ REF Greeting } there?\" \\d \"{ REF DefaultCity }\""));
         var city = await eval.EvalAsync(new DxpFieldInstruction("REF City"));
@@ -571,7 +623,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     {
         var eval = new DxpFieldEval(logger: Logger);
         eval.Context.Culture = new CultureInfo("en-US");
-        eval.Context.SetBookmark("A", "5");
+        eval.Context.SetBookmarkNodes("A", DxpFieldNodeBuffer.FromText("5"));
 
         var defined = await eval.EvalAsync(new DxpFieldInstruction("= DEFINED(A)"));
         var undefined = await eval.EvalAsync(new DxpFieldInstruction("= DEFINED(Unknown)"));
@@ -657,7 +709,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     public async Task EvalAsync_CompareReturnsOneOrZero()
     {
         var eval = new DxpFieldEval(logger: Logger);
-        eval.Context.SetBookmark("Value", "5");
+        eval.Context.SetBookmarkNodes("Value", DxpFieldNodeBuffer.FromText("5"));
 
         var result = await eval.EvalAsync(new DxpFieldInstruction("COMPARE Value >= 5"));
         var result2 = await eval.EvalAsync(new DxpFieldInstruction("COMPARE Value < 5"));
@@ -670,7 +722,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     public async Task EvalAsync_SkipIfAndNextIfReturnSkippedStatus()
     {
         var eval = new DxpFieldEval(logger: Logger);
-        eval.Context.SetBookmark("Value", "5");
+        eval.Context.SetBookmarkNodes("Value", DxpFieldNodeBuffer.FromText("5"));
 
         var skip = await eval.EvalAsync(new DxpFieldInstruction("SKIPIF Value >= 5"));
         var next = await eval.EvalAsync(new DxpFieldInstruction("NEXTIF Value >= 5"));
@@ -691,7 +743,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         var second = await eval.EvalAsync(new DxpFieldInstruction("SEQ Figure"));
         var repeat = await eval.EvalAsync(new DxpFieldInstruction("SEQ Figure \\c"));
 
-        eval.Context.SetBookmark("Start", "10");
+        eval.Context.SetBookmarkNodes("Start", DxpFieldNodeBuffer.FromText("10"));
         var reset = await eval.EvalAsync(new DxpFieldInstruction("SEQ Figure Start"));
         var afterReset = await eval.EvalAsync(new DxpFieldInstruction("SEQ Figure"));
 
@@ -706,9 +758,9 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     public async Task EvalAsync_SeqExpandsNestedIdentifierAndBookmark()
     {
         var eval = new DxpFieldEval(logger: Logger);
-        eval.Context.SetBookmark("SeqName", "Figure");
-        eval.Context.SetBookmark("ResetName", "Start");
-        eval.Context.SetBookmark("Start", "10");
+        eval.Context.SetBookmarkNodes("SeqName", DxpFieldNodeBuffer.FromText("Figure"));
+        eval.Context.SetBookmarkNodes("ResetName", DxpFieldNodeBuffer.FromText("Start"));
+        eval.Context.SetBookmarkNodes("Start", DxpFieldNodeBuffer.FromText("10"));
 
         var first = await eval.EvalAsync(new DxpFieldInstruction("SEQ { REF SeqName }"));
         var reset = await eval.EvalAsync(new DxpFieldInstruction("SEQ { REF SeqName } { REF ResetName }"));
@@ -811,10 +863,10 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     public void Context_AllowsCaseInsensitiveBookmarkLookup()
     {
         var ctx = new DxpFieldEvalContext();
-        ctx.SetBookmark("TotalCost", "123.45");
+        ctx.SetBookmarkNodes("TotalCost", DxpFieldNodeBuffer.FromText("123.45"));
 
-        Assert.True(ctx.TryGetBookmark("totalcost", out var value));
-        Assert.Equal("123.45", value);
+        Assert.True(ctx.TryGetBookmarkNodes("totalcost", out var nodes));
+        Assert.Equal("123.45", nodes.ToPlainText());
     }
 
     [Fact]

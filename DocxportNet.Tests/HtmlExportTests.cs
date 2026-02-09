@@ -1,4 +1,3 @@
-using DocxportNet;
 using DocxportNet.Tests.Utils;
 using DocxportNet.Visitors.Html;
 using DocxportNet.Visitors.Markdown;

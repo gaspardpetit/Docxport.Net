@@ -67,6 +67,9 @@ public sealed class DxpFieldEvalMiddleware : DxpMiddleware
             _context.RefResolver ??= new DocxportNet.Fields.Resolution.DxpRefIndexResolver(
                 documentContext.DocumentIndex.RefIndex,
                 () => _context.CurrentDocumentOrder);
+            var bookmarkNodes = DocxportNet.Fields.Resolution.DxpBookmarkNodeExtractor.Extract(doc, _logger);
+            foreach (var kvp in bookmarkNodes)
+                _context.SetBookmarkNodes(kvp.Key, kvp.Value);
             _initialized = true;
         }
 
@@ -213,7 +216,9 @@ public sealed class DxpFieldEvalMiddleware : DxpMiddleware
             });
         }
 
-        if (_mode == DxpFieldEvalMode.Cache && !string.IsNullOrWhiteSpace(frame.InstructionText) &&
+        if (_mode == DxpFieldEvalMode.Cache &&
+            frame != null &&
+            !string.IsNullOrWhiteSpace(frame.InstructionText) &&
             frame.InstructionText.StartsWith("SET", StringComparison.OrdinalIgnoreCase))
         {
             return DxpDisposable.Create(() => {
@@ -292,10 +297,10 @@ public sealed class DxpFieldEvalMiddleware : DxpMiddleware
                 frame.SuppressContent = true;
             }
 
-            var result = _eval.EvalAsync(new DxpFieldInstruction(instruction!)).GetAwaiter().GetResult();
+            var setResult = _eval.EvalAsync(new DxpFieldInstruction(instruction!)).GetAwaiter().GetResult();
             if (TryGetFirstToken(argsText, out var setName))
             {
-                var text = result.Text ?? string.Empty;
+                var text = setResult.Text ?? string.Empty;
                 _context.SetBookmarkNodes(setName, DxpFieldNodeBuffer.FromText(text));
             }
             return true;

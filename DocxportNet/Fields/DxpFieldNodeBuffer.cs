@@ -1,12 +1,131 @@
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
+using System.Text;
 
 namespace DocxportNet.Fields;
 
 public sealed class DxpFieldNodeBuffer
 {
-    private readonly List<Action<DxpIVisitor, DxpIDocumentContext>> _actions = new();
+    private interface IReplayNode
+    {
+        void Replay(DxpIVisitor visitor, DxpIDocumentContext context);
+        void AppendText(StringBuilder sb);
+    }
+
+    private sealed class TextNode : IReplayNode
+    {
+        private readonly string _text;
+
+        public TextNode(string text)
+        {
+            _text = text;
+        }
+
+        public void Replay(DxpIVisitor visitor, DxpIDocumentContext context)
+        {
+            var t = new Text(_text);
+            if (NeedsPreserveSpace(_text))
+                t.Space = SpaceProcessingModeValues.Preserve;
+            visitor.VisitText(t, context);
+        }
+
+        public void AppendText(StringBuilder sb) => sb.Append(_text);
+    }
+
+    private sealed class DeletedTextNode : IReplayNode
+    {
+        private readonly string _text;
+
+        public DeletedTextNode(string text)
+        {
+            _text = text;
+        }
+
+        public void Replay(DxpIVisitor visitor, DxpIDocumentContext context)
+        {
+            visitor.VisitDeletedText(new DeletedText(_text), context);
+        }
+
+        public void AppendText(StringBuilder sb) => sb.Append(_text);
+    }
+
+    private sealed class BreakNode : IReplayNode
+    {
+        public void Replay(DxpIVisitor visitor, DxpIDocumentContext context) => visitor.VisitBreak(new Break(), context);
+        public void AppendText(StringBuilder sb) => sb.Append('\n');
+    }
+
+    private sealed class TabNode : IReplayNode
+    {
+        public void Replay(DxpIVisitor visitor, DxpIDocumentContext context) => visitor.VisitTab(new TabChar(), context);
+        public void AppendText(StringBuilder sb) => sb.Append('\t');
+    }
+
+    private sealed class CarriageReturnNode : IReplayNode
+    {
+        public void Replay(DxpIVisitor visitor, DxpIDocumentContext context) => visitor.VisitCarriageReturn(new CarriageReturn(), context);
+        public void AppendText(StringBuilder sb) => sb.Append('\n');
+    }
+
+    private sealed class NoBreakHyphenNode : IReplayNode
+    {
+        public void Replay(DxpIVisitor visitor, DxpIDocumentContext context) => visitor.VisitNoBreakHyphen(new NoBreakHyphen(), context);
+        public void AppendText(StringBuilder sb) => sb.Append('-');
+    }
+
+    private sealed class RunNode : IReplayNode
+    {
+        private readonly Run _run;
+        private readonly DxpFieldNodeBuffer _children;
+
+        public RunNode(Run run, DxpFieldNodeBuffer children)
+        {
+            _run = run;
+            _children = children;
+        }
+
+        public void Replay(DxpIVisitor visitor, DxpIDocumentContext context)
+        {
+            using (visitor.VisitRunBegin(_run, context))
+                _children.Replay(visitor, context);
+        }
+
+        public void AppendText(StringBuilder sb) => _children.AppendText(sb);
+    }
+
+    private sealed class HyperlinkNode : IReplayNode
+    {
+        private readonly Hyperlink _link;
+        private readonly DxpLinkAnchor? _target;
+        private readonly DxpFieldNodeBuffer _children;
+
+        public HyperlinkNode(Hyperlink link, DxpLinkAnchor? target, DxpFieldNodeBuffer children)
+        {
+            _link = link;
+            _target = target;
+            _children = children;
+        }
+
+        public void Replay(DxpIVisitor visitor, DxpIDocumentContext context)
+        {
+            using (visitor.VisitHyperlinkBegin(_link, _target, context))
+                _children.Replay(visitor, context);
+        }
+
+        public void AppendText(StringBuilder sb) => _children.AppendText(sb);
+    }
+
+    private readonly List<IReplayNode> _nodes;
+
+    public DxpFieldNodeBuffer() : this(new List<IReplayNode>())
+    {
+    }
+
+    private DxpFieldNodeBuffer(List<IReplayNode> nodes)
+    {
+        _nodes = nodes;
+    }
 
     public static DxpFieldNodeBuffer FromText(string text)
     {
@@ -17,22 +136,49 @@ public sealed class DxpFieldNodeBuffer
 
     public void Replay(DxpIVisitor visitor, DxpIDocumentContext context)
     {
-        foreach (var action in _actions)
-            action(visitor, context);
+        foreach (var node in _nodes)
+            node.Replay(visitor, context);
+    }
+
+    public string ToPlainText()
+    {
+        var sb = new StringBuilder();
+        AppendText(sb);
+        return sb.ToString();
+    }
+
+    internal void AddText(string text) => _nodes.Add(new TextNode(text));
+    internal void AddDeletedText(string text) => _nodes.Add(new DeletedTextNode(text));
+    internal void AddBreak() => _nodes.Add(new BreakNode());
+    internal void AddTab() => _nodes.Add(new TabNode());
+    internal void AddCarriageReturn() => _nodes.Add(new CarriageReturnNode());
+    internal void AddNoBreakHyphen() => _nodes.Add(new NoBreakHyphenNode());
+
+    internal DxpFieldNodeBuffer BeginRun(Run run)
+    {
+        var child = new DxpFieldNodeBuffer();
+        _nodes.Add(new RunNode(run, child));
+        return child;
+    }
+
+    internal DxpFieldNodeBuffer BeginHyperlink(Hyperlink link, DxpLinkAnchor? target)
+    {
+        var child = new DxpFieldNodeBuffer();
+        _nodes.Add(new HyperlinkNode(link, target, child));
+        return child;
     }
 
     private void AddRunText(string text)
     {
-        _actions.Add((visitor, context) => {
-            var run = new Run();
-            using (visitor.VisitRunBegin(run, context))
-            {
-                var t = new Text(text);
-                if (NeedsPreserveSpace(text))
-                    t.Space = SpaceProcessingModeValues.Preserve;
-                visitor.VisitText(t, context);
-            }
-        });
+        var run = new Run();
+        var child = BeginRun(run);
+        child.AddText(text);
+    }
+
+    private void AppendText(StringBuilder sb)
+    {
+        foreach (var node in _nodes)
+            node.AppendText(sb);
     }
 
     private static bool NeedsPreserveSpace(string text)
