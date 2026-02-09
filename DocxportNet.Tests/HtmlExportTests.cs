@@ -58,6 +58,13 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
         VerifyAgainstFixture(sample, DxpHtmlVisitorConfig.CreateRichConfig(), ".reject.html", ".reject.test.html", DxpTrackedChangeMode.RejectChanges);
     }
 
+    [Theory]
+    [MemberData(nameof(SampleDocs))]
+    public void TestDocxToHtml_Cached(Sample sample)
+    {
+        VerifyCachedAgainstFixture(sample, DxpHtmlVisitorConfig.CreateRichConfig(), ".cached.html", ".cached.test.html");
+    }
+
     private void VerifyAgainstFixture(Sample sample, DxpHtmlVisitorConfig baseConfig, string expectedExt, string actualSuffix, DxpTrackedChangeMode mode)
     {
         string expectedPath = TestPaths.GetSampleOutputPath(sample.DocxPath, expectedExt);
@@ -108,5 +115,43 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
             RootCssClass = source.RootCssClass,
             TrackedChangeMode = mode
         };
+    }
+
+    private void VerifyCachedAgainstFixture(Sample sample, DxpHtmlVisitorConfig baseConfig, string expectedExt, string actualSuffix)
+    {
+        string expectedPath = TestPaths.GetSampleOutputPath(sample.DocxPath, expectedExt);
+        string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, actualSuffix);
+
+        var config = CloneConfig(baseConfig, DxpTrackedChangeMode.AcceptChanges);
+        string html = TestCompare.Normalize(ToHtmlCached(sample.DocxPath, config));
+        File.WriteAllText(actualPath, html);
+
+        if (!File.Exists(expectedPath))
+            throw new XunitException($"Expected HTML file missing for {sample.FileName} (CachedFields). Add {expectedPath}. Actual output saved to {actualPath}.");
+
+        string expectedHtml = TestCompare.Normalize(File.ReadAllText(expectedPath));
+        if (!string.Equals(expectedHtml, html, StringComparison.Ordinal))
+        {
+            string diff = TestCompare.DescribeDifference(expectedHtml, html);
+            throw new XunitException($"Mismatch for {sample.FileName} (CachedFields): {diff}. Expected: {expectedPath}. Actual: {actualPath}.");
+        }
+    }
+
+    private string ToHtmlCached(string docxPath, DxpHtmlVisitorConfig config)
+    {
+        var visitor = new DxpHtmlVisitor(config, Logger);
+        using var writer = new StringWriter();
+        visitor.SetOutput(writer);
+
+        if (visitor is not DocxportNet.Fields.IDxpFieldEvalProvider provider)
+            throw new XunitException("DxpHtmlVisitor should provide field evaluation context.");
+
+        var pipeline = DocxportNet.Walker.DxpVisitorMiddleware.Chain(
+            visitor,
+            next => new DocxportNet.Walker.DxpFieldEvalMiddleware(next, provider.FieldEval, DocxportNet.Walker.DxpFieldEvalMode.Cache, logger: Logger),
+            next => new DocxportNet.Walker.DxpContextTracker(next));
+
+        new DocxportNet.Walker.DxpWalker(Logger).Accept(docxPath, pipeline);
+        return writer.ToString();
     }
 }

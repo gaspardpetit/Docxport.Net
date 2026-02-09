@@ -17,10 +17,15 @@ public sealed class DxpFieldEvalMiddleware : DxpMiddleware
         public bool SuppressContent;
         public bool Evaluated;
         public bool IsComplex;
+        public bool SeenSeparate;
+        public bool InResult;
+        public string? InstructionText;
+        public bool InstructionEmitted;
     }
 
     private readonly DxpFieldEval _eval;
     private readonly DxpFieldEvalContext _context;
+    private readonly DxpFieldEvalMode _mode;
     private readonly bool _includeDocumentProperties;
     private readonly bool _includeCustomProperties;
     private readonly Func<DateTimeOffset>? _nowProvider;
@@ -28,10 +33,12 @@ public sealed class DxpFieldEvalMiddleware : DxpMiddleware
     private bool _initialized;
     private int _paragraphOrder;
     private readonly Stack<FieldEvalFrameState> _fieldFrames = new();
+    private FieldEvalFrameState? _outerFrame;
 
     public DxpFieldEvalMiddleware(
         DxpIVisitor next,
         DxpFieldEval eval,
+        DxpFieldEvalMode mode = DxpFieldEvalMode.Evaluate,
         bool includeDocumentProperties = true,
         bool includeCustomProperties = false,
         Func<DateTimeOffset>? nowProvider = null,
@@ -40,6 +47,7 @@ public sealed class DxpFieldEvalMiddleware : DxpMiddleware
     {
         _eval = eval ?? throw new ArgumentNullException(nameof(eval));
         _context = _eval.Context;
+        _mode = mode;
         _includeDocumentProperties = includeDocumentProperties;
         _includeCustomProperties = includeCustomProperties;
         _nowProvider = nowProvider;
@@ -66,30 +74,61 @@ public sealed class DxpFieldEvalMiddleware : DxpMiddleware
 
     protected override bool ShouldForwardContent(DxpIDocumentContext d)
     {
-        var fields = d.CurrentFields;
-        if (!fields.IsInFieldResult)
+        if (_mode == DxpFieldEvalMode.Cache)
+        {
+            if (_outerFrame == null)
+                return true;
+            if (!_outerFrame.InResult)
+                return false;
+            if (_outerFrame.SuppressContent)
+                return false;
+            return !IsNestedField;
+        }
+
+        if (!IsInFieldResult)
             return true;
-        if (fields.IsNestedField)
+        if (IsNestedField)
             return false;
         if (_fieldFrames.Count > 0 && _fieldFrames.Peek().SuppressContent)
             return false;
         return true;
     }
 
+    private FieldEvalFrameState? CurrentField => _fieldFrames.Count > 0 ? _fieldFrames.Peek() : null;
+    private bool IsNestedField => _fieldFrames.Count > 1;
+    private bool IsInFieldResult => CurrentField?.InResult == true;
+
     public override void VisitComplexFieldBegin(FieldChar begin, DxpIDocumentContext d)
     {
-        _fieldFrames.Push(new FieldEvalFrameState { IsComplex = true });
-        _next.VisitComplexFieldBegin(begin, d);
+        var frame = new FieldEvalFrameState { IsComplex = true, InResult = false, SeenSeparate = false };
+        _fieldFrames.Push(frame);
+        if (_fieldFrames.Count == 1)
+            _outerFrame = frame;
+        d.CurrentFields.FieldStack.Push(new FieldFrame { SeenSeparate = false, ResultScope = null, InResult = false });
     }
 
     public override void VisitComplexFieldCachedResultText(string text, DxpIDocumentContext d)
     {
-        var current = _fieldFrames.Count > 0 ? _fieldFrames.Peek() : null;
+        if (_mode == DxpFieldEvalMode.Cache && _outerFrame?.SuppressContent == true)
+            return;
+        if (_mode == DxpFieldEvalMode.Cache && IsNestedField)
+            return;
+
+        var current = CurrentField;
         if (current != null && current.IsComplex && current.Evaluated)
             return;
 
-        if (!d.CurrentFields.IsNestedField && TryWriteEvaluatedCurrentField(d, current))
-            return;
+        if (_mode == DxpFieldEvalMode.Evaluate)
+        {
+            if (!IsNestedField && TryWriteEvaluatedCurrentField(current, d))
+                return;
+        }
+
+        if (current != null && !current.InstructionEmitted && !string.IsNullOrWhiteSpace(current.InstructionText))
+        {
+            current.InstructionEmitted = true;
+            _next.VisitComplexFieldInstruction(new FieldCode(), current.InstructionText!, d);
+        }
 
         if (!ShouldForwardContent(d))
             return;
@@ -97,36 +136,128 @@ public sealed class DxpFieldEvalMiddleware : DxpMiddleware
         _next.VisitComplexFieldCachedResultText(text, d);
     }
 
+    public override void VisitComplexFieldInstruction(FieldCode instr, string text, DxpIDocumentContext d)
+    {
+        if (!string.IsNullOrEmpty(text) && CurrentField != null)
+        {
+            var current = CurrentField;
+            current.InstructionText = current.InstructionText == null
+                ? text
+                : current.InstructionText + text;
+            if (_mode == DxpFieldEvalMode.Cache && IsSetInstruction(current.InstructionText))
+                current.SuppressContent = true;
+        }
+        if (!string.IsNullOrEmpty(text) && d.CurrentFields.Current != null)
+        {
+            var current = d.CurrentFields.Current;
+            current.InstructionText = current.InstructionText == null
+                ? text
+                : current.InstructionText + text;
+        }
+    }
+
+    public override void VisitComplexFieldSeparate(FieldChar separate, DxpIDocumentContext d)
+    {
+        if (CurrentField == null)
+            return;
+
+        if (!CurrentField.SeenSeparate)
+        {
+            CurrentField.SeenSeparate = true;
+            CurrentField.InResult = true;
+        }
+        if (d.CurrentFields.Current != null && !d.CurrentFields.Current.SeenSeparate)
+        {
+            d.CurrentFields.Current.SeenSeparate = true;
+            d.CurrentFields.Current.InResult = true;
+        }
+    }
+
     public override void VisitComplexFieldEnd(FieldChar end, DxpIDocumentContext d)
     {
         if (_fieldFrames.Count > 0)
+        {
+            if (_fieldFrames.Count == 1)
+                _outerFrame = null;
             _fieldFrames.Pop();
-        _next.VisitComplexFieldEnd(end, d);
+        }
+        if (d.CurrentFields.FieldStack.Count > 0)
+            d.CurrentFields.FieldStack.Pop();
     }
 
     public override IDisposable VisitSimpleFieldBegin(SimpleField fld, DxpIDocumentContext d)
     {
-        var frame = new FieldEvalFrameState { IsComplex = false };
+        var frame = new FieldEvalFrameState { IsComplex = false, InResult = true, SeenSeparate = true };
+        var instruction = fld.Instruction?.Value;
+        if (!string.IsNullOrEmpty(instruction))
+            frame.InstructionText = instruction;
         _fieldFrames.Push(frame);
+        if (_fieldFrames.Count == 1)
+            _outerFrame = frame;
+        var docFrame = new FieldFrame { SeenSeparate = true, InResult = true, InstructionText = instruction };
+        d.CurrentFields.FieldStack.Push(docFrame);
 
-        if (!d.CurrentFields.IsNestedField && TryWriteEvaluatedCurrentField(d, frame))
+        if (_mode == DxpFieldEvalMode.Evaluate && !IsNestedField && TryWriteEvaluatedCurrentField(frame, d))
         {
             return DxpDisposable.Create(() => {
+                if (_fieldFrames.Count == 1)
+                    _outerFrame = null;
                 if (_fieldFrames.Count > 0)
                     _fieldFrames.Pop();
+                if (d.CurrentFields.FieldStack.Count > 0)
+                    d.CurrentFields.FieldStack.Pop();
             });
         }
 
-        var inner = _next.VisitSimpleFieldBegin(fld, d);
+        if (_mode == DxpFieldEvalMode.Cache && !string.IsNullOrWhiteSpace(frame.InstructionText) &&
+            frame.InstructionText.StartsWith("SET", StringComparison.OrdinalIgnoreCase))
+        {
+            return DxpDisposable.Create(() => {
+                if (_fieldFrames.Count == 1)
+                    _outerFrame = null;
+                if (_fieldFrames.Count > 0)
+                    _fieldFrames.Pop();
+                if (d.CurrentFields.FieldStack.Count > 0)
+                    d.CurrentFields.FieldStack.Pop();
+            });
+        }
+
+        var inner = DxpDisposable.Empty;
         return new DxpCompositeScope(inner, () => {
+            if (_fieldFrames.Count == 1)
+                _outerFrame = null;
             if (_fieldFrames.Count > 0)
                 _fieldFrames.Pop();
+            if (d.CurrentFields.FieldStack.Count > 0)
+                d.CurrentFields.FieldStack.Pop();
         });
     }
 
-    private bool TryWriteEvaluatedCurrentField(DxpIDocumentContext d, FieldEvalFrameState? frame)
+    public override void VisitText(Text t, DxpIDocumentContext d)
     {
-        var instruction = d.CurrentFields.Current?.InstructionText;
+        if (_mode == DxpFieldEvalMode.Cache)
+        {
+            if (_outerFrame?.InResult == true)
+            {
+                VisitComplexFieldCachedResultText(t.Text, d);
+                return;
+            }
+        }
+        else if (IsInFieldResult)
+        {
+            VisitComplexFieldCachedResultText(t.Text, d);
+            return;
+        }
+
+        if (!ShouldForwardContent(d))
+            return;
+
+        _next.VisitText(t, d);
+    }
+
+    private bool TryWriteEvaluatedCurrentField(FieldEvalFrameState? frame, DxpIDocumentContext d)
+    {
+        var instruction = frame?.InstructionText;
         if (string.IsNullOrWhiteSpace(instruction))
             return false;
 
@@ -142,6 +273,16 @@ public sealed class DxpFieldEvalMiddleware : DxpMiddleware
 
         _next.VisitFieldEvaluationResult(result.Text, d);
         return true;
+    }
+
+    private static bool IsSetInstruction(string? instruction)
+    {
+        if (string.IsNullOrWhiteSpace(instruction))
+            return false;
+        var trimmed = instruction.TrimStart();
+        if (!trimmed.StartsWith("SET", StringComparison.OrdinalIgnoreCase))
+            return false;
+        return trimmed.Length == 3 || char.IsWhiteSpace(trimmed[3]);
     }
 
 

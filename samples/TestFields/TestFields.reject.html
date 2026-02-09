@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Document</title>
+  <style>
+:root {
+  --dxp-text: #111111;
+  --dxp-background: #ffffff;
+  --dxp-chrome: #f2f2f2;
+  --dxp-border: #d0d0d0;
+  --dxp-accent: #005fb8;
+  --dxp-muted: #4a4a4a;
+}
+
+body.dxp-root {
+  margin: 0;
+  padding: 0;
+  background: var(--dxp-chrome);
+  color: var(--dxp-text);
+  font-family: "Segoe UI", "Calibri", "Helvetica Neue", Arial, sans-serif;
+}
+
+.dxp-document {
+  background: var(--dxp-background);
+  margin: 1rem auto;
+  padding: 1rem;
+  max-width: 8.5in;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.16);
+}
+
+.dxp-section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.dxp-body {
+  flex: 1 0 auto;
+}
+
+.dxp-header,
+.dxp-footer {
+  font-size: 0.95em;
+  color: var(--dxp-muted);
+}
+
+.dxp-heading {
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.dxp-heading-1 { font-size: inherit; }
+.dxp-heading-2 { font-size: inherit; }
+.dxp-heading-3 { font-size: inherit; }
+.dxp-heading-4 { font-size: inherit; }
+.dxp-heading-5 { font-size: inherit; }
+.dxp-heading-6 { font-size: inherit; }
+.dxp-heading.align-center { text-align: center; }
+.dxp-heading.align-right { text-align: right; }
+.dxp-heading.align-justify { text-align: justify; }
+
+.dxp-paragraph {
+  margin: 0 0 0.6em;
+  line-height: 1.4;
+}
+.dxp-paragraph.align-center { text-align: center; }
+.dxp-paragraph.align-right { text-align: right; }
+.dxp-paragraph.align-justify { text-align: justify; }
+.dxp-paragraph .dxp-marker { display: inline-block; min-width: 1.4em; }
+
+.dxp-blockquote {
+  border-left: 3px solid var(--dxp-border);
+  margin: 0.4em 0;
+  padding: 0.2em 1em;
+  color: var(--dxp-muted);
+}
+
+.dxp-code {
+  background: #f6f8fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 0.5em;
+  font-family: Consolas, Monaco, monospace;
+  white-space: pre-wrap;
+}
+
+.dxp-table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.5em 0;
+}
+.dxp-table td, .dxp-table th {
+  padding: 4px 6px;
+  vertical-align: top;
+}
+.dxp-table .header-row th {
+  background: #f4f4f4;
+}
+
+.dxp-image {
+  max-width: 100%;
+  height: auto;
+}
+
+.dxp-caption {
+  font-size: 0.95em;
+  color: var(--dxp-muted);
+}
+
+.dxp-footnote {
+  font-size: 0.9em;
+  border-top: 1px solid var(--dxp-border);
+  margin-top: 1em;
+  padding-top: 0.5em;
+}
+
+.dxp-comment {
+  background: #fffbeb;
+  border: 1px solid #e6c44a;
+  border-radius: 6px;
+  padding: 6px;
+  margin-bottom: 6px;
+}
+.dxp-comments {
+  background: #fff8c6;
+  border: 1px solid #e6c44a;
+  border-radius: 6px;
+  padding: 8px;
+  margin: 8px 0 8px 12px;
+}
+
+.dxp-underline { text-decoration: underline; }
+.dxp-strike { text-decoration: line-through; }
+.dxp-inserted { text-decoration: underline; color: var(--dxp-accent); }
+.dxp-deleted { text-decoration: line-through; color: #a40000; }
+
+.dxp-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  border: 1px solid var(--dxp-border);
+}
+.dxp-split-column {
+  padding: 8px;
+}
+  </style>
+</head>
+<body class="dxp-root">
+<div class="dxp-document">
+<div class="dxp-section" style="color:#000000;display:flex;flex-direction:column;position:relative;width:8.5in;min-height:11in;box-sizing:border-box;padding-left:1in;padding-right:1in;background-color:#ffffff;font-family:Aptos;font-size:12pt;">
+<div class="dxp-body" style="flex:1 0 auto;padding-top:1in;">
+<p class="dxp-paragraph">Expect 1: 111</p>
+<p class="dxp-paragraph">Expect Error: <strong class="dxp-bold"><span class="dxp-field" data-field="REF VarUnknown"></span>Error! Reference source not found.</strong></p>
+<p class="dxp-paragraph">Expect No Error: <span class="dxp-field" data-field="IF  = &quot;&quot; &quot;Empty&quot; &quot;Not Empty&quot;"></span>Not Empty</p>
+<p class="dxp-paragraph">Expect one: 1</p>
+<p class="dxp-paragraph">Expect <strong class="dxp-bold">one</strong> (bold): <a id="Var1" data-bookmark-id="0"></a>1<strong class="dxp-bold"></strong></p>
+<p class="dxp-paragraph">Expect <strong class="dxp-bold">1</strong><span class="dxp-underline">2</span><strong class="dxp-bold">3: 123</strong><span class="dxp-underline"></span><strong class="dxp-bold"></strong></p>
+</div>
+</div>
+</div>
+</body>
+</html>

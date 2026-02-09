@@ -62,6 +62,13 @@ public class PlainTextExportTests : TestBase<PlainTextExportTests>
         Verify(sample, DxpPlainTextVisitorConfig.CreateRejectConfig(), ".reject.test.txt");
     }
 
+    [Theory]
+    [MemberData(nameof(SampleDocs))]
+    public void CachedMatchesFixture(Sample sample)
+    {
+        VerifyCached(sample, DxpPlainTextVisitorConfig.CreateAcceptConfig(), ".cached.txt", ".cached.test.txt");
+    }
+
     private void Verify(Sample sample, DxpPlainTextVisitorConfig config, string actualSuffix)
     {
         string expectedPath = config.TrackedChangeMode == DxpPlainTextTrackedChangeMode.RejectChanges
@@ -87,5 +94,42 @@ public class PlainTextExportTests : TestBase<PlainTextExportTests>
     {
         var visitor = new DxpPlainTextVisitor(config, Logger);
         return DxpExport.ExportToString(docxPath, visitor, Logger);
+    }
+
+    private void VerifyCached(Sample sample, DxpPlainTextVisitorConfig config, string expectedExt, string actualSuffix)
+    {
+        string expectedPath = TestPaths.GetSampleOutputPath(sample.DocxPath, expectedExt);
+        string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, actualSuffix);
+
+        string actualText = TestCompare.Normalize(ToPlainTextCached(sample.DocxPath, config));
+        File.WriteAllText(actualPath, actualText);
+
+        if (!File.Exists(expectedPath))
+            throw new XunitException($"Expected plain text file missing for {sample.FileName} (CachedFields). Add {expectedPath}. Actual output saved to {actualPath}.");
+
+        string expectedText = TestCompare.Normalize(File.ReadAllText(expectedPath));
+        if (!string.Equals(expectedText, actualText, StringComparison.Ordinal))
+        {
+            string diff = TestCompare.DescribeDifference(expectedText, actualText);
+            throw new XunitException($"Mismatch for {sample.FileName} (CachedFields): {diff}. Expected: {expectedPath}. Actual: {actualPath}.");
+        }
+    }
+
+    private string ToPlainTextCached(string docxPath, DxpPlainTextVisitorConfig config)
+    {
+        var visitor = new DxpPlainTextVisitor(config, Logger);
+        using var writer = new StringWriter();
+        visitor.SetOutput(writer);
+
+        if (visitor is not DocxportNet.Fields.IDxpFieldEvalProvider provider)
+            throw new XunitException("DxpPlainTextVisitor should provide field evaluation context.");
+
+        var pipeline = DocxportNet.Walker.DxpVisitorMiddleware.Chain(
+            visitor,
+            next => new DocxportNet.Walker.DxpFieldEvalMiddleware(next, provider.FieldEval, DocxportNet.Walker.DxpFieldEvalMode.Cache, logger: Logger),
+            next => new DocxportNet.Walker.DxpContextTracker(next));
+
+        new DocxportNet.Walker.DxpWalker(Logger).Accept(docxPath, pipeline);
+        return writer.ToString();
     }
 }

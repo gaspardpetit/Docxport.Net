@@ -200,10 +200,13 @@ public static class DxpExport
         {
             return DxpVisitorMiddleware.Chain(
                 visitor,
-                next => new DxpFieldEvalMiddleware(next, provider.FieldEval, logger: logger));
+                next => new DxpFieldEvalMiddleware(next, provider.FieldEval, logger: logger),
+                next => new DxpContextTracker(next));
         }
 
-        return visitor;
+        return DxpVisitorMiddleware.Chain(
+            visitor,
+            next => new DxpContextTracker(next));
     }
 
     private static void DisposeVisitor(DxpIVisitor visitor)
