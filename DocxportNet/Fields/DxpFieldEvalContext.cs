@@ -8,6 +8,7 @@ namespace DocxportNet.Fields;
 public sealed class DxpFieldEvalContext
 {
     private readonly Dictionary<string, string?> _docVariables = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, DxpFieldNodeBuffer> _docVariableNodes = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, string?> _documentProperties = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, DxpFieldValue> _documentPropertyValues = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, DxpFieldNodeBuffer> _bookmarkNodes = new(StringComparer.OrdinalIgnoreCase);
@@ -43,6 +44,8 @@ public sealed class DxpFieldEvalContext
 
     public void SetDocVariable(string name, string? value) => _docVariables[name] = value;
     public bool TryGetDocVariable(string name, out string? value) => _docVariables.TryGetValue(name, out value);
+    public void SetDocVariableNodes(string name, DxpFieldNodeBuffer nodes) => _docVariableNodes[name] = nodes;
+    public bool TryGetDocVariableNodes(string name, out DxpFieldNodeBuffer nodes) => _docVariableNodes.TryGetValue(name, out nodes!);
 
     public void SetDocumentProperty(string name, string? value) => _documentProperties[name] = value;
     public bool TryGetDocumentProperty(string name, out string? value) => _documentProperties.TryGetValue(name, out value);

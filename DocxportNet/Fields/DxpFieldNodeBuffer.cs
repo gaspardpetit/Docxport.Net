@@ -92,6 +92,19 @@ public sealed class DxpFieldNodeBuffer
         }
 
         public void AppendText(StringBuilder sb) => _children.AppendText(sb);
+
+        public RunProperties? CloneRunProperties()
+        {
+            if (_run.RunProperties == null)
+                return null;
+            return (RunProperties)_run.RunProperties.CloneNode(true);
+        }
+
+        public bool TryGetFirstRunProperties(out RunProperties? props)
+        {
+            props = CloneRunProperties();
+            return true;
+        }
     }
 
     private sealed class HyperlinkNode : IReplayNode
@@ -114,6 +127,8 @@ public sealed class DxpFieldNodeBuffer
         }
 
         public void AppendText(StringBuilder sb) => _children.AppendText(sb);
+
+        public bool TryGetFirstRunProperties(out RunProperties? props) => _children.TryGetFirstRunProperties(out props);
     }
 
     private readonly List<IReplayNode> _nodes;
@@ -145,6 +160,19 @@ public sealed class DxpFieldNodeBuffer
         var sb = new StringBuilder();
         AppendText(sb);
         return sb.ToString();
+    }
+
+    public bool TryGetFirstRunProperties(out RunProperties? props)
+    {
+        props = null;
+        foreach (var node in _nodes)
+        {
+            if (node is RunNode runNode)
+                return runNode.TryGetFirstRunProperties(out props);
+            if (node is HyperlinkNode linkNode)
+                return linkNode.TryGetFirstRunProperties(out props);
+        }
+        return false;
     }
 
     internal void AddText(string text) => _nodes.Add(new TextNode(text));

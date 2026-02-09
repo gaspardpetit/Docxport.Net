@@ -10,6 +10,8 @@ using System.Globalization;
 using Xunit.Abstractions;
 using DocxportNet.Tests.Utils;
 using Xunit.Sdk;
+using System.Text;
+using DocxportNet.Core;
 
 namespace DocxportNet.Tests;
 
@@ -368,6 +370,112 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
 
         var actual = ExportPlainTextEvaluatedFromBodyXml(bodyXml);
         var expected = TestCompare.Normalize("Expect 12: 12\n\n");
+        Assert.Equal(expected, TestCompare.Normalize(actual));
+    }
+
+    [Fact]
+    public void Walker_EvalMode_RefWithCharformat_UsesFieldCodeRunStyle()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Expect bold: </w:t></w:r>
+    <w:bookmarkStart w:id="0" w:name="BM1"/>
+    <w:del w:id="1" w:author="test">
+      <w:r><w:t>one</w:t></w:r>
+    </w:del>
+    <w:bookmarkEnd w:id="0"/>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:rPr><w:b/></w:rPr><w:instrText xml:space="preserve"> REF BM1 \\* Charformat </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var actual = ExportRunMarkupEvaluatedFromBodyXml(bodyXml);
+        var expected = TestCompare.Normalize("Expect bold: one<b>one</b>\n\n");
+        Assert.Equal(expected, TestCompare.Normalize(actual));
+    }
+
+    [Fact]
+    public void Walker_EvalMode_DocVariableWithCharformat_UsesFieldCodeRunStyle()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Expect bold: </w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:rPr><w:b/></w:rPr><w:instrText xml:space="preserve"> DOCVARIABLE Var1 \\* Charformat </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var delegates = new DxpFieldEvalDelegates {
+            ResolveDocVariableAsync = (name, _) => Task.FromResult<DxpFieldValue?>(name == "Var1" ? new DxpFieldValue("one") : null)
+        };
+        var eval = new DxpFieldEval(delegates, logger: Logger);
+        eval.Context.SetDocVariableNodes("Var1", DxpFieldNodeBuffer.FromText("one"));
+
+        var actual = ExportRunMarkupEvaluatedFromBodyXml(bodyXml, eval);
+        var expected = TestCompare.Normalize("Expect bold: <b>one</b>\n\n");
+        Assert.Equal(expected, TestCompare.Normalize(actual));
+    }
+
+    [Fact]
+    public void Walker_EvalMode_RefWithMergeformat_UsesCachedResultRunStyles()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Expect merge: </w:t></w:r>
+    <w:bookmarkStart w:id="0" w:name="BM1"/>
+    <w:r><w:t>one</w:t></w:r>
+    <w:bookmarkEnd w:id="0"/>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> REF BM1 \\* MERGEFORMAT </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:rPr><w:b/></w:rPr><w:t>cached</w:t></w:r>
+    <w:r><w:t>result</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var actual = ExportRunMarkupEvaluatedFromBodyXml(bodyXml);
+        var expected = TestCompare.Normalize("Expect merge: one<b>on</b>e\n\n");
+        Assert.Equal(expected, TestCompare.Normalize(actual));
+    }
+
+    [Fact]
+    public void Walker_EvalMode_DocVariableWithMergeformat_UsesCachedResultRunStyles()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Expect merge: </w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> DOCVARIABLE Var1 \\* MERGEFORMAT </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:rPr><w:b/></w:rPr><w:t>cached</w:t></w:r>
+    <w:r><w:t>result</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var delegates = new DxpFieldEvalDelegates {
+            ResolveDocVariableAsync = (name, _) => Task.FromResult<DxpFieldValue?>(name == "Var1" ? new DxpFieldValue("one") : null)
+        };
+        var eval = new DxpFieldEval(delegates, logger: Logger);
+        eval.Context.SetDocVariableNodes("Var1", DxpFieldNodeBuffer.FromText("one"));
+
+        var actual = ExportRunMarkupEvaluatedFromBodyXml(bodyXml, eval);
+        var expected = TestCompare.Normalize("Expect merge: <b>on</b>e\n\n");
         Assert.Equal(expected, TestCompare.Normalize(actual));
     }
 
@@ -1037,7 +1145,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         var visitor = DxpVisitorMiddleware.Chain(
             collector,
             next => new DxpFieldEvalMiddleware(next, eval, logger: Logger),
-            next => new DxpContextTracker(next));
+            next => new DxpContextTracker(next, Logger));
 
         using (var readDoc = WordprocessingDocument.Open(stream, false))
             new DxpWalker(Logger).Accept(readDoc, visitor);
@@ -1076,7 +1184,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         var visitor = DxpVisitorMiddleware.Chain(
             collector,
             next => new DxpFieldEvalMiddleware(next, eval, logger: Logger),
-            next => new DxpContextTracker(next));
+            next => new DxpContextTracker(next, Logger));
 
         using (var readDoc = WordprocessingDocument.Open(stream, false))
         {
@@ -1203,7 +1311,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         var pipeline = DxpVisitorMiddleware.Chain(
             visitor,
             next => new DxpFieldEvalMiddleware(next, provider.FieldEval, DxpFieldEvalMode.Cache, logger: Logger),
-            next => new DxpContextTracker(next));
+            next => new DxpContextTracker(next, Logger));
 
         using (var readDoc = WordprocessingDocument.Open(stream, false))
             new DxpWalker(Logger).Accept(readDoc, pipeline);
@@ -1211,7 +1319,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         return writer.ToString();
     }
 
-    private string ExportPlainTextEvaluatedFromBodyXml(string bodyXml)
+    private string ExportPlainTextEvaluatedFromBodyXml(string bodyXml, DxpFieldEval? fieldEval = null)
     {
         using var stream = new MemoryStream();
         using (var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document, true))
@@ -1228,7 +1336,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
 
         stream.Position = 0;
 
-        var visitor = new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateAcceptConfig(), Logger);
+        var visitor = new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateAcceptConfig(), Logger, fieldEval);
         using var writer = new StringWriter();
         visitor.SetOutput(writer);
 
@@ -1238,12 +1346,71 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         var pipeline = DxpVisitorMiddleware.Chain(
             visitor,
             next => new DxpFieldEvalMiddleware(next, provider.FieldEval, DxpFieldEvalMode.Evaluate, logger: Logger),
-            next => new DxpContextTracker(next));
+            next => new DxpContextTracker(next, Logger));
 
         using (var readDoc = WordprocessingDocument.Open(stream, false))
             new DxpWalker(Logger).Accept(readDoc, pipeline);
 
         return writer.ToString();
+    }
+
+    private string ExportRunMarkupEvaluatedFromBodyXml(string bodyXml, DxpFieldEval? fieldEval = null)
+    {
+        using var stream = new MemoryStream();
+        using (var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document, true))
+        {
+            var main = doc.AddMainDocumentPart();
+            var xml = System.Xml.Linq.XDocument.Parse(bodyXml);
+            var body = new Body();
+            body.AddNamespaceDeclaration("w", "http://schemas.openxmlformats.org/wordprocessingml/2006/main");
+            body.AddNamespaceDeclaration("w14", "http://schemas.microsoft.com/office/word/2010/wordml");
+            body.InnerXml = string.Concat(xml.Root!.Nodes());
+            main.Document = new Document(body);
+            main.Document.Save();
+        }
+
+        stream.Position = 0;
+
+        var visitor = new RunMarkupVisitor();
+        var eval = fieldEval ?? new DxpFieldEval(logger: Logger);
+
+        var pipeline = DxpVisitorMiddleware.Chain(
+            visitor,
+            next => new DxpFieldEvalMiddleware(next, eval, DxpFieldEvalMode.Evaluate, logger: Logger),
+            next => new DxpContextTracker(next, Logger));
+
+        using (var readDoc = WordprocessingDocument.Open(stream, false))
+            new DxpWalker(Logger).Accept(readDoc, pipeline);
+
+        return visitor.ToString();
+    }
+
+    private sealed class RunMarkupVisitor : DxpVisitor, DxpITextVisitor
+    {
+        private readonly StringBuilder _builder = new();
+
+        public RunMarkupVisitor() : base(null)
+        {
+        }
+
+        public override IDisposable VisitRunBegin(Run r, DxpIDocumentContext d)
+        {
+            return DxpDisposable.Empty;
+        }
+
+        public override void VisitText(Text t, DxpIDocumentContext d)
+        {
+            _builder.Append(t.Text);
+        }
+
+        public override void StyleBoldBegin(DxpIDocumentContext d) => _builder.Append("<b>");
+        public override void StyleBoldEnd(DxpIDocumentContext d) => _builder.Append("</b>");
+
+        public void SetOutput(TextWriter writer)
+        {
+        }
+
+        public override string ToString() => _builder.ToString();
     }
 
     private sealed class TableFieldCollector : DxpVisitor
@@ -1266,6 +1433,22 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
             else
                 Results[key] = text;
         }
+
+        public override void VisitText(Text t, DxpIDocumentContext d)
+        {
+            var current = d.CurrentFields.Current;
+            if (current?.InResult != true)
+                return;
+            var instruction = current.InstructionText;
+            if (string.IsNullOrWhiteSpace(instruction))
+                return;
+
+            var key = instruction.Trim();
+            if (Results.TryGetValue(key, out var existing))
+                Results[key] = (existing ?? string.Empty) + t.Text;
+            else
+                Results[key] = t.Text;
+        }
     }
 
     private sealed class RefFieldCollector : DxpVisitor
@@ -1287,6 +1470,22 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
                 Results[key] = (existing ?? string.Empty) + text;
             else
                 Results[key] = text;
+        }
+
+        public override void VisitText(Text t, DxpIDocumentContext d)
+        {
+            var current = d.CurrentFields.Current;
+            if (current?.InResult != true)
+                return;
+            var instruction = current.InstructionText;
+            if (string.IsNullOrWhiteSpace(instruction))
+                return;
+
+            var key = instruction.Trim();
+            if (Results.TryGetValue(key, out var existing))
+                Results[key] = (existing ?? string.Empty) + t.Text;
+            else
+                Results[key] = t.Text;
         }
     }
 }

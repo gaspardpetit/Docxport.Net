@@ -89,6 +89,12 @@ The following named formats convert numbers into other representations.  When us
 | `\* Charformat` | Applies the formatting of the first letter of the field code to the entire result([Format field results (Microsoft Support)](https://support.microsoft.com/en-us/office/format-field-results-baa61f5a-5636-4f11-ab4f-6c36ae43508c)). | If the `R` in `{ REF chapter2_title \* Charformat }` is bold, the entire referenced title appears bold([Format field results (Microsoft Support)](https://support.microsoft.com/en-us/office/format-field-results-baa61f5a-5636-4f11-ab4f-6c36ae43508c)). |
 | `\* MERGEFORMAT` | Preserves the manual formatting applied to the previous field result when the field updates([Format field results (Microsoft Support)](https://support.microsoft.com/en-us/office/format-field-results-baa61f5a-5636-4f11-ab4f-6c36ae43508c)).  Word inserts this switch by default when fields are created through the Field dialog([Format field results (Microsoft Support)](https://support.microsoft.com/en-us/office/format-field-results-baa61f5a-5636-4f11-ab4f-6c36ae43508c)). |
 
+**Implementation note (DocxportNet):**
+- **CHARFORMAT**: when synthesising a result, copy run properties from the *first character of the field code* (the first field‑code run) and apply them to the entire result run.
+- **MERGEFORMAT**: when synthesising a result, reuse the *cached result run properties* (per‑run) from the previous field result.  If no cached result exists, fall back to an unstyled run.
+
+This reflects Word’s runtime behaviour: CHARFORMAT ties result styling to the field code, while MERGEFORMAT preserves prior result styling.  MERGEFORMAT is the only case where evaluation depends on cached result formatting.
+
 ### 2.2 Numeric format switch (\#)
 
 The `\#` switch, used with Formula (`=`), `SET`, `REF` and other numeric fields, defines custom numeric formatting.  Word constructs the numeric picture by combining format items([Format field results (Microsoft Support)](https://support.microsoft.com/en-us/office/format-field-results-baa61f5a-5636-4f11-ab4f-6c36ae43508c)):

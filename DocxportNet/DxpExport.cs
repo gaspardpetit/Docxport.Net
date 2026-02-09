@@ -316,12 +316,12 @@ public static class DxpExport
                     provider.FieldEval,
                     mode == DxpFieldEvalExportMode.Cache ? DxpFieldEvalMode.Cache : DxpFieldEvalMode.Evaluate,
                     logger: logger),
-                next => new DxpContextTracker(next));
+                next => new DxpContextTracker(next, logger));
         }
 
         return DxpVisitorMiddleware.Chain(
             visitor,
-            next => new DxpContextTracker(next));
+            next => new DxpContextTracker(next, logger));
     }
 
     private static void DisposeVisitor(DxpIVisitor visitor)
