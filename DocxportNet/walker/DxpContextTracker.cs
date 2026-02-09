@@ -122,6 +122,24 @@ public sealed class DxpContextTracker : DxpMiddleware
         var styles = d.Styles;
         var defaultRunStyle = d.DefaultRunStyle;
         var style = para != null ? styles.ResolveRunStyle(para, r) : defaultRunStyle;
+        if (para == null && r.RunProperties != null)
+        {
+            var acc = new DxpEffectiveRunStyleBuilder {
+                Bold = style.Bold,
+                Italic = style.Italic,
+                Underline = style.Underline,
+                Strike = style.Strike,
+                DoubleStrike = style.DoubleStrike,
+                Superscript = style.Superscript,
+                Subscript = style.Subscript,
+                AllCaps = style.AllCaps,
+                SmallCaps = style.SmallCaps,
+                FontName = style.FontName,
+                FontSizeHalfPoints = style.FontSizeHalfPoints
+            };
+            DxpEffectiveRunStyleBuilder.ApplyRunProperties(r.RunProperties, null, ref acc);
+            style = acc.ToImmutable();
+        }
         var language = para != null ? styles.ResolveRunLanguage(para, r) : null;
 
         bool hasRenderable = r.ChildElements.Any(child =>

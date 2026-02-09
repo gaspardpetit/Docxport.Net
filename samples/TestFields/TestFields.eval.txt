@@ -8,10 +8,10 @@ Expect 1: 1
 
 Expect Error: Error! Reference source not found.
 
-Expect No Error:
+Expect No Error: Not Empty
 
-Expect one:
+Expect one: one
 
-Expect one (bold):
+Expect one (bold): one
 
 Expect 123: 123

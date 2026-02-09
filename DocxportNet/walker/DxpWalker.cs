@@ -11,6 +11,9 @@ namespace DocxportNet.Walker;
 public class DxpWalker
 {
     private readonly ILogger? _logger;
+    private int _simpleFieldDepth;
+    private int _complexFieldDepth;
+    private int _complexFieldInSimpleDepth;
 
     public DxpWalker(ILogger? logger = null)
     {
@@ -38,6 +41,10 @@ public class DxpWalker
             _logger?.LogError("DOCX has no MainDocumentPart; unable to walk document.");
             return;
         }
+
+        _simpleFieldDepth = 0;
+        _complexFieldDepth = 0;
+        _complexFieldInSimpleDepth = 0;
 
         DxpDocumentContext documentContext = new DxpDocumentContext(doc);
 
@@ -1422,121 +1429,129 @@ public class DxpWalker
 
     private void WalkSimpleField(SimpleField fld, DxpDocumentContext d, DxpIVisitor v)
     {
-        using (v.VisitSimpleFieldBegin(fld, d))
+        _simpleFieldDepth++;
+        try
         {
-            // Optional field data payload (<w:fldData>), rarely used.
-            if (fld.FieldData is { } data)
-                v.VisitFieldData(data, d);
-
-            foreach (var child in fld.ChildElements)
+            using (v.VisitSimpleFieldBegin(fld, d))
             {
-                switch (child)
+                // Optional field data payload (<w:fldData>), rarely used.
+                if (fld.FieldData is { } data)
+                    v.VisitFieldData(data, d);
+
+                foreach (var child in fld.ChildElements)
                 {
-                    // ---- Core inline content (run-universe) ----
-                    case Run r:
-                        WalkRun(r, d, v);
-                        break;
-                    case Hyperlink link:
-                        WalkHyperlink(link, d, v);
-                        break;
-                    case SdtRun sdtRun:
-                        WalkSdtRun(sdtRun, d, v);
-                        break;
-                    case CustomXmlRun cxr:
-                        WalkCustomXmlRun(cxr, d, v);
-                        break;
-                    case OpenXmlUnknownElement smart
-                        when smart.LocalName == "smartTag" && smart.NamespaceUri == "http://schemas.openxmlformats.org/wordprocessingml/2006/main":
+                    switch (child)
                     {
-                        WalkSmartTagRun(smart, d, v);
-                        break;
+                        // ---- Core inline content (run-universe) ----
+                        case Run r:
+                            WalkRun(r, d, v);
+                            break;
+                        case Hyperlink link:
+                            WalkHyperlink(link, d, v);
+                            break;
+                        case SdtRun sdtRun:
+                            WalkSdtRun(sdtRun, d, v);
+                            break;
+                        case CustomXmlRun cxr:
+                            WalkCustomXmlRun(cxr, d, v);
+                            break;
+                        case OpenXmlUnknownElement smart
+                            when smart.LocalName == "smartTag" && smart.NamespaceUri == "http://schemas.openxmlformats.org/wordprocessingml/2006/main":
+                        {
+                            WalkSmartTagRun(smart, d, v);
+                            break;
+                        }
+
+                        // ---- Anchors / range markup ----
+                        case BookmarkStart bs:
+                            v.VisitBookmarkStart(bs, d);
+                            break;
+                        case BookmarkEnd be:
+                            v.VisitBookmarkEnd(be, d);
+                            break;
+                        case CommentRangeStart crs:
+                            WalkCommentRangeStart(crs, d, v);
+                            break;
+                        case CommentReference cref:
+                            WalkCommentReference(cref, d, v);
+                            break;
+                        case CommentRangeEnd cre:
+                            break;
+                        case PermStart ps:
+                            v.VisitPermStart(ps, d);
+                            break;
+                        case PermEnd pe:
+                            v.VisitPermEnd(pe, d);
+                            break;
+                        case ProofError perr:
+                            v.VisitProofError(perr, d);
+                            break;
+
+                        // ---- Move ranges (location containers) ----
+                        case MoveFromRangeStart mfrs:
+                            v.VisitMoveFromRangeStart(mfrs, d);
+                            break;
+                        case MoveFromRangeEnd mfre:
+                            v.VisitMoveFromRangeEnd(mfre, d);
+                            break;
+                        case MoveToRangeStart mtrs:
+                            v.VisitMoveToRangeStart(mtrs, d);
+                            break;
+                        case MoveToRangeEnd mtre:
+                            v.VisitMoveToRangeEnd(mtre, d);
+                            break;
+
+                        // ---- Tracked-change run containers ----
+                        case InsertedRun insRun:
+                            WalkInsertedRun(insRun, d, v);
+                            break;
+                        case DeletedRun delRun:
+                            WalkDeletedRun(delRun, d, v);
+                            break;
+                        case MoveFromRun moveFromRun:
+                            v.VisitMoveFromRun(moveFromRun, d);
+                            break;
+                        case MoveToRun moveToRun:
+                            v.VisitMoveToRun(moveToRun, d);
+                            break;
+
+                        // ---- Office Math (inline & display) ----
+                        case DocumentFormat.OpenXml.Math.OfficeMath oMath:
+                            v.VisitOMath(oMath, d);
+                            break;
+                        case DocumentFormat.OpenXml.Math.Paragraph oMathPara:
+                            v.VisitOMathParagraph(oMathPara, d);
+                            break;
+
+                        // ---- Bidi containers & subdocument ----
+                        case BidirectionalOverride bdo:
+                            WalkBidirectionalOverride(bdo, d, v);
+                            break;
+                        case BidirectionalEmbedding bdi:
+                            WalkBidirectionalEmbedding(bdi, d, v);
+                            break;
+                        case SubDocumentReference subDoc:
+                            v.VisitSubDocumentReference(subDoc, d);
+                            break;
+
+                        // ---- Markup Compatibility wrapper ----
+                        case AlternateContent ac:
+                            WalkAlternateContent(ac, d, v);
+                            break;
+
+                        // ---- Elements listed as parents of fldSimple, not children; fallthrough is correct ----
+                        // (e.g., another fldSimple wrapping this one is allowed *as parent*, not common as child.)
+
+                        default:
+                            WalkUnknown("SimpleField", child, d, v);
+                            break;
                     }
-
-                    // ---- Anchors / range markup ----
-                    case BookmarkStart bs:
-                        v.VisitBookmarkStart(bs, d);
-                        break;
-                    case BookmarkEnd be:
-                        v.VisitBookmarkEnd(be, d);
-                        break;
-                    case CommentRangeStart crs:
-                        WalkCommentRangeStart(crs, d, v);
-                        break;
-                    case CommentReference cref:
-                        WalkCommentReference(cref, d, v);
-                        break;
-                    case CommentRangeEnd cre:
-                        break;
-                    case PermStart ps:
-                        v.VisitPermStart(ps, d);
-                        break;
-                    case PermEnd pe:
-                        v.VisitPermEnd(pe, d);
-                        break;
-                    case ProofError perr:
-                        v.VisitProofError(perr, d);
-                        break;
-
-                    // ---- Move ranges (location containers) ----
-                    case MoveFromRangeStart mfrs:
-                        v.VisitMoveFromRangeStart(mfrs, d);
-                        break;
-                    case MoveFromRangeEnd mfre:
-                        v.VisitMoveFromRangeEnd(mfre, d);
-                        break;
-                    case MoveToRangeStart mtrs:
-                        v.VisitMoveToRangeStart(mtrs, d);
-                        break;
-                    case MoveToRangeEnd mtre:
-                        v.VisitMoveToRangeEnd(mtre, d);
-                        break;
-
-                    // ---- Tracked-change run containers ----
-                    case InsertedRun insRun:
-                        WalkInsertedRun(insRun, d, v);
-                        break;
-                    case DeletedRun delRun:
-                        WalkDeletedRun(delRun, d, v);
-                        break;
-                    case MoveFromRun moveFromRun:
-                        v.VisitMoveFromRun(moveFromRun, d);
-                        break;
-                    case MoveToRun moveToRun:
-                        v.VisitMoveToRun(moveToRun, d);
-                        break;
-
-                    // ---- Office Math (inline & display) ----
-                    case DocumentFormat.OpenXml.Math.OfficeMath oMath:
-                        v.VisitOMath(oMath, d);
-                        break;
-                    case DocumentFormat.OpenXml.Math.Paragraph oMathPara:
-                        v.VisitOMathParagraph(oMathPara, d);
-                        break;
-
-                    // ---- Bidi containers & subdocument ----
-                    case BidirectionalOverride bdo:
-                        WalkBidirectionalOverride(bdo, d, v);
-                        break;
-                    case BidirectionalEmbedding bdi:
-                        WalkBidirectionalEmbedding(bdi, d, v);
-                        break;
-                    case SubDocumentReference subDoc:
-                        v.VisitSubDocumentReference(subDoc, d);
-                        break;
-
-                    // ---- Markup Compatibility wrapper ----
-                    case AlternateContent ac:
-                        WalkAlternateContent(ac, d, v);
-                        break;
-
-                    // ---- Elements listed as parents of fldSimple, not children; fallthrough is correct ----
-                    // (e.g., another fldSimple wrapping this one is allowed *as parent*, not common as child.)
-
-                    default:
-                        WalkUnknown("SimpleField", child, d, v);
-                        break;
                 }
             }
+        }
+        finally
+        {
+            _simpleFieldDepth--;
         }
     }
 
@@ -2344,11 +2359,22 @@ public class DxpWalker
                         {
                             var t = fc.FieldCharType?.Value;
                             if (t == FieldCharValues.Begin)
+                            {
+                                _complexFieldDepth++;
+                                if (_simpleFieldDepth > 0)
+                                    _complexFieldInSimpleDepth++;
                                 v.VisitComplexFieldBegin(fc, d);
+                            }
                             else if (t == FieldCharValues.Separate)
                                 v.VisitComplexFieldSeparate(fc, d);
                             else if (t == FieldCharValues.End)
+                            {
                                 v.VisitComplexFieldEnd(fc, d);
+                                if (_complexFieldDepth > 0)
+                                    _complexFieldDepth--;
+                                if (_simpleFieldDepth > 0 && _complexFieldInSimpleDepth > 0)
+                                    _complexFieldInSimpleDepth--;
+                            }
                             // Other FieldChar types (rare) — ignore.
                             break;
                         }
@@ -2357,6 +2383,17 @@ public class DxpWalker
                         {
                             // FieldCode.Text can be null; InnerText is a safe fallback
                             var instr = code.Text ?? code.InnerText ?? string.Empty;
+                            if (_simpleFieldDepth > 0 && _complexFieldInSimpleDepth == 0)
+                            {
+                                if (!string.IsNullOrEmpty(instr))
+                                {
+                                    var t = new Text(instr);
+                                    if (NeedsPreserveSpace(instr))
+                                        t.Space = SpaceProcessingModeValues.Preserve;
+                                    v.VisitText(t, d);
+                                }
+                                break;
+                            }
                             v.VisitComplexFieldInstruction(code, instr, d);
                             // Do not emit as visible text; instruction is not the result.
                             break;
@@ -3399,6 +3436,23 @@ public class DxpWalker
                 WalkUnknown("Paragraph", child, d, v);
                 break;
         }
+    }
+
+    private static bool NeedsPreserveSpace(string text)
+    {
+        if (text.Length == 0)
+            return false;
+        if (char.IsWhiteSpace(text[0]) || char.IsWhiteSpace(text[text.Length - 1]))
+            return true;
+        for (int i = 0; i < text.Length; i++)
+        {
+            char ch = text[i];
+            if (ch == '\t' || ch == '\r' || ch == '\n')
+                return true;
+            if (ch == ' ' && i + 1 < text.Length && text[i + 1] == ' ')
+                return true;
+        }
+        return false;
     }
 
 }

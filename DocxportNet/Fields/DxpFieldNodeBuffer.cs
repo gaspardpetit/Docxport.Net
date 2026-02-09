@@ -100,6 +100,8 @@ public sealed class DxpFieldNodeBuffer
             return (RunProperties)_run.RunProperties.CloneNode(true);
         }
 
+        public string GetText() => _children.ToPlainText();
+
         public bool TryGetFirstRunProperties(out RunProperties? props)
         {
             props = CloneRunProperties();
@@ -155,6 +157,8 @@ public sealed class DxpFieldNodeBuffer
             node.Replay(visitor, context);
     }
 
+    public bool IsEmpty => _nodes.Count == 0;
+
     public string ToPlainText()
     {
         var sb = new StringBuilder();
@@ -174,6 +178,23 @@ public sealed class DxpFieldNodeBuffer
         }
         return false;
     }
+
+    internal bool TryGetRunSegments(out List<(string text, RunProperties? props)> segments)
+    {
+        segments = new List<(string text, RunProperties? props)>();
+        foreach (var node in _nodes)
+        {
+            if (node is HyperlinkNode)
+                return false;
+            if (node is RunNode runNode)
+            {
+                segments.Add((runNode.GetText(), runNode.CloneRunProperties()));
+                continue;
+            }
+        }
+        return segments.Count > 0;
+    }
+
 
     internal void AddText(string text) => _nodes.Add(new TextNode(text));
     internal void AddDeletedText(string text) => _nodes.Add(new DeletedTextNode(text));
@@ -199,6 +220,10 @@ public sealed class DxpFieldNodeBuffer
     private void AddRunText(string text)
     {
         var run = new Run();
+        var t = new Text(text);
+        if (NeedsPreserveSpace(text))
+            t.Space = SpaceProcessingModeValues.Preserve;
+        run.AppendChild(t);
         var child = BeginRun(run);
         child.AddText(text);
     }
