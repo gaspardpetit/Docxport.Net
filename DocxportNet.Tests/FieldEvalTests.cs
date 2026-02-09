@@ -277,7 +277,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         var missing = await eval.EvalAsync(new DxpFieldInstruction("DOCVARIABLE Missing"));
 
         Assert.Equal("ok", result.Text);
-        Assert.Equal(string.Empty, missing.Text);
+        Assert.Equal("Error! No document variable supplied.", missing.Text);
     }
 
     [Fact]
@@ -291,6 +291,32 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         var result = await eval.EvalAsync(new DxpFieldInstruction("DOCVARIABLE { REF VarName }"));
 
         Assert.Equal("ok", result.Text);
+    }
+
+    [Fact]
+    public void Walker_EvalMode_SetSuppressesOutputAndSetsBookmark()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Expect 1: </w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> SET Var1 "1" </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>1</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> REF Var1 </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>1</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var actual = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml));
+        var expected = TestCompare.Normalize("Expect 1: 1\n\n");
+        Assert.Equal(expected, actual);
     }
 
     [Fact]
@@ -916,6 +942,31 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     }
 
     [Fact]
+    public void Walker_EvalMode_IfWithMissingRefUsesErrorTextAsValue()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+        xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml">
+  <w:p>
+    <w:r>
+      <w:t xml:space="preserve">Expect No Error: </w:t>
+    </w:r>
+
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> IF { REF VarUnknow } = "" "Empty" "Not Empty" </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>Not Empty</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var actual = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml));
+        var expected = TestCompare.Normalize("Expect No Error: Not Empty\n\n");
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
     public void Walker_TableDirectionalRanges_ResolveThroughMiddleware()
     {
         using var stream = new MemoryStream();
@@ -1108,6 +1159,41 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         return writer.ToString();
     }
 
+    private string ExportPlainTextEvaluatedFromBodyXml(string bodyXml)
+    {
+        using var stream = new MemoryStream();
+        using (var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document, true))
+        {
+            var main = doc.AddMainDocumentPart();
+            var xml = System.Xml.Linq.XDocument.Parse(bodyXml);
+            var body = new Body();
+            body.AddNamespaceDeclaration("w", "http://schemas.openxmlformats.org/wordprocessingml/2006/main");
+            body.AddNamespaceDeclaration("w14", "http://schemas.microsoft.com/office/word/2010/wordml");
+            body.InnerXml = string.Concat(xml.Root!.Nodes());
+            main.Document = new Document(body);
+            main.Document.Save();
+        }
+
+        stream.Position = 0;
+
+        var visitor = new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateAcceptConfig(), Logger);
+        using var writer = new StringWriter();
+        visitor.SetOutput(writer);
+
+        if (visitor is not IDxpFieldEvalProvider provider)
+            throw new XunitException("DxpPlainTextVisitor should provide field evaluation context.");
+
+        var pipeline = DxpVisitorMiddleware.Chain(
+            visitor,
+            next => new DxpFieldEvalMiddleware(next, provider.FieldEval, DxpFieldEvalMode.Evaluate, logger: Logger),
+            next => new DxpContextTracker(next));
+
+        using (var readDoc = WordprocessingDocument.Open(stream, false))
+            new DxpWalker(Logger).Accept(readDoc, pipeline);
+
+        return writer.ToString();
+    }
+
     private sealed class TableFieldCollector : DxpVisitor
     {
         public Dictionary<string, string?> Results { get; } = new(StringComparer.OrdinalIgnoreCase);
@@ -1116,11 +1202,17 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         {
         }
 
-        public override void VisitFieldEvaluationResult(string text, DxpIDocumentContext d)
+        public override void VisitComplexFieldCachedResultText(string text, DxpIDocumentContext d)
         {
             var instruction = d.CurrentFields.Current?.InstructionText;
-            if (!string.IsNullOrWhiteSpace(instruction))
-                Results[instruction.Trim()] = text;
+            if (string.IsNullOrWhiteSpace(instruction))
+                return;
+
+            var key = instruction.Trim();
+            if (Results.TryGetValue(key, out var existing))
+                Results[key] = (existing ?? string.Empty) + text;
+            else
+                Results[key] = text;
         }
     }
 
@@ -1132,11 +1224,17 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         {
         }
 
-        public override void VisitFieldEvaluationResult(string text, DxpIDocumentContext d)
+        public override void VisitComplexFieldCachedResultText(string text, DxpIDocumentContext d)
         {
             var instruction = d.CurrentFields.Current?.InstructionText;
-            if (!string.IsNullOrWhiteSpace(instruction))
-                Results[instruction.Trim()] = text;
+            if (string.IsNullOrWhiteSpace(instruction))
+                return;
+
+            var key = instruction.Trim();
+            if (Results.TryGetValue(key, out var existing))
+                Results[key] = (existing ?? string.Empty) + text;
+            else
+                Results[key] = text;
         }
     }
 }

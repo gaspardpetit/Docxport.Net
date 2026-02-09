@@ -1478,11 +1478,6 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
         _state.CurrentInlineMode = mode;
     }
 
-    public override void VisitFieldEvaluationResult(string text, DxpIDocumentContext d)
-    {
-        Write(d, text);
-    }
-
     private void EmitSplitBuffersIfNeeded()
     {
         var rejected = _rejectBufferedWriter.Drain();

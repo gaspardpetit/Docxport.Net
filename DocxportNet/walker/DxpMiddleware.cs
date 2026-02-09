@@ -63,13 +63,6 @@ public abstract class DxpMiddleware : DxpIVisitor
         _next.VisitComplexFieldEnd(end, d);
     }
 
-    public virtual void VisitFieldEvaluationResult(string text, DxpIDocumentContext d)
-    {
-        if (!ShouldForwardContent(d))
-            return;
-        _next.VisitFieldEvaluationResult(text, d);
-    }
-
     public virtual void StyleBoldBegin(DxpIDocumentContext d)
     {
         if (!ShouldForwardContent(d))

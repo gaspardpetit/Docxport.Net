@@ -1,3 +1,4 @@
+using DocxportNet;
 using DocxportNet.Tests.Utils;
 using DocxportNet.Visitors.PlainText;
 using Xunit.Abstractions;
@@ -52,14 +53,14 @@ public class PlainTextExportTests : TestBase<PlainTextExportTests>
     [MemberData(nameof(SampleDocs))]
     public void AcceptMatchesFixture(Sample sample)
     {
-        Verify(sample, DxpPlainTextVisitorConfig.CreateAcceptConfig(), ".test.txt");
+        Verify(sample, DxpPlainTextVisitorConfig.CreateAcceptConfig(), ".txt", ".test.txt", DxpFieldEvalExportMode.None);
     }
 
     [Theory]
     [MemberData(nameof(SampleDocs))]
     public void RejectMatchesFixture(Sample sample)
     {
-        Verify(sample, DxpPlainTextVisitorConfig.CreateRejectConfig(), ".reject.test.txt");
+        Verify(sample, DxpPlainTextVisitorConfig.CreateRejectConfig(), ".reject.txt", ".reject.test.txt", DxpFieldEvalExportMode.None);
     }
 
     [Theory]
@@ -69,14 +70,26 @@ public class PlainTextExportTests : TestBase<PlainTextExportTests>
         VerifyCached(sample, DxpPlainTextVisitorConfig.CreateAcceptConfig(), ".cached.txt", ".cached.test.txt");
     }
 
-    private void Verify(Sample sample, DxpPlainTextVisitorConfig config, string actualSuffix)
+    [Theory]
+    [MemberData(nameof(SampleDocs))]
+    public void EvalMatchesFixture(Sample sample)
+    {
+        Verify(sample, DxpPlainTextVisitorConfig.CreateAcceptConfig(), ".eval.txt", ".eval.test.txt", DxpFieldEvalExportMode.Evaluate);
+    }
+
+    private void Verify(
+        Sample sample,
+        DxpPlainTextVisitorConfig config,
+        string expectedExt,
+        string actualSuffix,
+        DxpFieldEvalExportMode evalMode)
     {
         string expectedPath = config.TrackedChangeMode == DxpPlainTextTrackedChangeMode.RejectChanges
             ? TestPaths.GetSampleOutputPath(sample.DocxPath, ".reject.txt")
-            : TestPaths.GetSampleOutputPath(sample.DocxPath, ".txt");
+            : TestPaths.GetSampleOutputPath(sample.DocxPath, expectedExt);
         string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, actualSuffix);
 
-        string actualText = TestCompare.Normalize(ToPlainText(sample.DocxPath, config));
+        string actualText = TestCompare.Normalize(ToPlainText(sample.DocxPath, config, evalMode));
         File.WriteAllText(actualPath, actualText);
 
         if (!File.Exists(expectedPath))
@@ -90,10 +103,11 @@ public class PlainTextExportTests : TestBase<PlainTextExportTests>
         }
     }
 
-    private string ToPlainText(string docxPath, DxpPlainTextVisitorConfig config)
+    private string ToPlainText(string docxPath, DxpPlainTextVisitorConfig config, DxpFieldEvalExportMode evalMode)
     {
         var visitor = new DxpPlainTextVisitor(config, Logger);
-        return DxpExport.ExportToString(docxPath, visitor, Logger);
+        var options = new DxpExportOptions { FieldEvalMode = evalMode };
+        return DxpExport.ExportToString(docxPath, visitor, options, Logger);
     }
 
     private void VerifyCached(Sample sample, DxpPlainTextVisitorConfig config, string expectedExt, string actualSuffix)

@@ -238,6 +238,8 @@ In this example, numeric results are formatted using the numeric picture switch.
 
 - **Wildcards:** `?` (matches one character) and `*` (matches zero or more characters) are permitted in Expression2 when using `=` or `<>`([IF field (Word 2003 documentation)](https://documentation.help/MS-Office-Word-2003/worefIF1.htm)).
 
+- **Nested field errors:** Word treats the *result text* of nested fields as the literal value used in comparisons.  For example, if `{ REF Missing }` yields `Error! Reference source not found.`, then `{ IF { REF Missing } = "" "Empty" "Not Empty" }` evaluates to `"Not Empty"` because the left expression is the error string, not an empty value.  This behaviour is observed in Word, but is not explicitly specified in Microsoft’s field code documentation.
+
 - **Examples:**
 
   *Simple numeric comparison:* `{ IF Order >= 100 "Thanks" "The minimum order is 100 units" }` displays `Thanks` when the order bookmark is ≥ 100([IF field (Word 2003 documentation)](https://documentation.help/MS-Office-Word-2003/worefIF1.htm)).
@@ -480,4 +482,3 @@ The `CREATEDATE` field is formatted with the full weekday, full month, day and f
 - **Microsoft Office Word 2003 Documentation – Examples of IF fields:** Shows complex IF examples combining merge fields, calculations and nested conditions([Examples of IF fields (Word 2003 documentation)](https://documentation.help/ms-office-word-2003/worefExamplesOfIFFields1.htm)).
 - **Microsoft Office Word 2003 Documentation – Formula (=) field:** Describes the formula field operators, functions, cell references and numeric picture switch([Formula (=) field (Word 2003 documentation)](https://documentation.help/ms-office-word-2003/worefFormula1.htm))([Formula (=) field (Word 2003 documentation)](https://documentation.help/ms-office-word-2003/worefFormula1.htm)).
 - **Graham Mayor – Formatting Word fields:** Provides best practices for inserting and updating fields (use Ctrl + F9, Alt + F9, F9) and explains fragility of field codes([Formatting Word fields (Graham Mayor)](https://www.gmayor.com/formatting_word_fields.htm)).
-

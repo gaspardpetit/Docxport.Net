@@ -4,6 +4,9 @@ namespace DocxportNet.Fields;
 
 public sealed class DxpFieldEval
 {
+    private const string RefNotFoundError = "Error! Reference source not found.";
+    private const string DocVariableMissingError = "Error! No document variable supplied.";
+    private const string DocPropertyUnknownError = "Error! Unknown document property name.";
     private readonly DxpFieldParser _parser = new();
     private readonly DxpFieldFormatter _formatter = new();
     private readonly DxpFieldEvalDelegates _delegates;
@@ -225,13 +228,16 @@ public sealed class DxpFieldEval
                         }
 
                         _logger?.LogWarning("REF could not resolve bookmark '{Bookmark}'.", bookmark);
+                        value = new DxpFieldValue(RefNotFoundError);
+                        return (true, value);
                     }
                 }
                 else
                 {
                     _logger?.LogWarning("REF field missing arguments.");
                 }
-                return (false, value);
+                value = new DxpFieldValue(RefNotFoundError);
+                return (true, value);
             case "DOCVARIABLE":
                 if (ast.ArgumentsText != null)
                 {
@@ -241,14 +247,22 @@ public sealed class DxpFieldEval
                         var resolver = Context.ValueResolver ?? _resolver;
                         var name = await ExpandNestedTextAsync(tokens[0]);
                         var resolved = await resolver.ResolveAsync(name, Resolution.DxpFieldValueKindHint.DocVariable, Context);
-                        value = resolved ?? new DxpFieldValue(string.Empty);
-                        if (resolved == null && _logger?.IsEnabled(LogLevel.Debug) == true)
-                            _logger.LogDebug("DOCVARIABLE '{Name}' not resolved; using empty string.", name);
+                        if (resolved == null)
+                        {
+                            value = new DxpFieldValue(DocVariableMissingError);
+                            if (_logger?.IsEnabled(LogLevel.Debug) == true)
+                                _logger.LogDebug("DOCVARIABLE '{Name}' not resolved; using error text.", name);
+                        }
+                        else
+                        {
+                            value = resolved.Value;
+                        }
                         return (true, value);
                     }
                 }
                 _logger?.LogWarning("DOCVARIABLE field missing arguments.");
-                return (false, value);
+                value = new DxpFieldValue(DocVariableMissingError);
+                return (true, value);
             case "DOCPROPERTY":
                 if (ast.ArgumentsText != null)
                 {
@@ -258,14 +272,22 @@ public sealed class DxpFieldEval
                         var resolver = Context.ValueResolver ?? _resolver;
                         var name = await ExpandNestedTextAsync(tokens[0]);
                         var resolved = await resolver.ResolveAsync(name, Resolution.DxpFieldValueKindHint.DocumentProperty, Context);
-                        value = resolved ?? new DxpFieldValue(string.Empty);
-                        if (resolved == null && _logger?.IsEnabled(LogLevel.Debug) == true)
-                            _logger.LogDebug("DOCPROPERTY '{Name}' not resolved; using empty string.", name);
+                        if (resolved == null)
+                        {
+                            value = new DxpFieldValue(DocPropertyUnknownError);
+                            if (_logger?.IsEnabled(LogLevel.Debug) == true)
+                                _logger.LogDebug("DOCPROPERTY '{Name}' not resolved; using error text.", name);
+                        }
+                        else
+                        {
+                            value = resolved.Value;
+                        }
                         return (true, value);
                     }
                 }
                 _logger?.LogWarning("DOCPROPERTY field missing arguments.");
-                return (false, value);
+                value = new DxpFieldValue(DocPropertyUnknownError);
+                return (true, value);
             case "MERGEFIELD":
                 if (ast.ArgumentsText != null)
                 {
@@ -494,6 +516,7 @@ public sealed class DxpFieldEval
     {
         var tokens = new List<string>();
         bool inQuote = false;
+        bool justClosedQuote = false;
         var current = new System.Text.StringBuilder();
         for (int i = 0; i < text.Length; i++)
         {
@@ -508,6 +531,8 @@ public sealed class DxpFieldEval
                     continue;
                 }
                 inQuote = !inQuote;
+                if (!inQuote)
+                    justClosedQuote = true;
                 continue;
             }
 
@@ -537,6 +562,7 @@ public sealed class DxpFieldEval
                 }
                 if (token.Length > 0)
                     tokens.Add(token);
+                justClosedQuote = false;
                 i--;
                 continue;
             }
@@ -547,15 +573,24 @@ public sealed class DxpFieldEval
                 {
                     tokens.Add(current.ToString());
                     current.Clear();
+                    justClosedQuote = false;
+                }
+                else if (justClosedQuote)
+                {
+                    tokens.Add(string.Empty);
+                    justClosedQuote = false;
                 }
                 continue;
             }
 
             current.Append(ch);
+            justClosedQuote = false;
         }
 
         if (current.Length > 0)
             tokens.Add(current.ToString());
+        else if (justClosedQuote)
+            tokens.Add(string.Empty);
         return tokens;
     }
 

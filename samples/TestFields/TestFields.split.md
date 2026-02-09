@@ -6,22 +6,126 @@
 
 <div class="section" style="color:#000000;display:flex;flex-direction:column;position:relative;width:8.5in;min-height:11in;box-sizing:border-box;padding-left:1in;padding-right:1in;background-color:#ffffff;font-family:Aptos;font-size:12pt;">
 <div class="body" style="flex:1 0 auto;padding-top:1in;">
-Expect 1: 111
+Expect 1:
 
-Expect Error: <b>
+`SET Var1 "1"`
+
+1
+
+`REF Var1`
+
+1
+
+Expect Error:
 
 `REF VarUnknown`
 
-Error! Reference source not found.</b>
+<b>Error! Reference source not found.</b>
 
 Expect No Error:
 
-`IF  = "" "Empty" "Not Empty"`
+`IF`
+
+
+
+`REF VarUnknow`
+
+
+
+`Error! Reference source not found.`
+
+
+
+`= "" "Empty" "Not Empty"`
 
 Not Empty
 
-Expect one: 1
+Expect one:
 
-Expect <b>one</b> (bold): <a id="Var1" data-bookmark-id="0"></a>1<b></b>
+`SET Var1 "1"`
 
-Expect <b>1</b><u>2</u><b>3: 123</b><u></u><b></b>
+1
+
+`IF`
+
+
+
+`REF Var1`
+
+
+
+`1`
+
+
+
+`= "1" "one" "not one"`
+
+one
+
+Expect <b>one</b> (bold):
+
+`SET Var1 "`
+
+
+
+`1`
+
+
+
+`"`
+
+<a id="Var1" data-bookmark-id="0"></a>1
+
+`IF`
+
+
+
+`REF Var1`
+
+
+
+`1`
+
+
+
+`= "1" "`
+
+
+
+`one`
+
+
+
+`" "`
+
+
+
+`not one`
+
+
+
+`"`
+
+<b>one</b>
+
+Expect <b>1</b><u>2</u><b>3:
+
+`IF 1 = 1 "`
+
+
+
+`1`
+
+
+
+`2`
+
+
+
+`3`
+
+
+
+`" "error"`
+
+1</b><u>2</u><b>3</b>

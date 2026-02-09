@@ -1,3 +1,4 @@
+using DocxportNet;
 using DocxportNet.Tests.Utils;
 using DocxportNet.Visitors.Markdown;
 using Xunit.Abstractions;
@@ -49,49 +50,49 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
     [MemberData(nameof(SampleDocs))]
     public void TestDocxToMarkdown_Rich(Sample sample)
     {
-        VerifyAgainstFixture(sample, DxpMarkdownVisitorConfig.CreateRichConfig(), ".md", ".test.md");
+        VerifyAgainstFixture(sample, DxpMarkdownVisitorConfig.CreateRichConfig(), ".md", ".test.md", DxpFieldEvalExportMode.None);
     }
 
     [Theory]
     [MemberData(nameof(SampleDocs))]
     public void TestDocxToMarkdown_Plain(Sample sample)
     {
-        VerifyAgainstFixture(sample, DxpMarkdownVisitorConfig.CreatePlainConfig(), ".plain.md", ".plain.test.md");
+        VerifyAgainstFixture(sample, DxpMarkdownVisitorConfig.CreatePlainConfig(), ".plain.md", ".plain.test.md", DxpFieldEvalExportMode.None);
     }
 
     [Theory]
     [MemberData(nameof(SampleDocs))]
     public void TestDocxToMarkdown_Rich_Reject(Sample sample)
     {
-        VerifyVariant(sample, DxpMarkdownVisitorConfig.CreateRichConfig(), ".reject.test.md", DxpTrackedChangeMode.RejectChanges);
+        VerifyVariant(sample, DxpMarkdownVisitorConfig.CreateRichConfig(), ".reject.test.md", DxpTrackedChangeMode.RejectChanges, DxpFieldEvalExportMode.None);
     }
 
     [Theory]
     [MemberData(nameof(SampleDocs))]
     public void TestDocxToMarkdown_Rich_Inline(Sample sample)
     {
-        VerifyVariant(sample, DxpMarkdownVisitorConfig.CreateRichConfig(), ".inline.test.md", DxpTrackedChangeMode.InlineChanges);
+        VerifyVariant(sample, DxpMarkdownVisitorConfig.CreateRichConfig(), ".inline.test.md", DxpTrackedChangeMode.InlineChanges, DxpFieldEvalExportMode.None);
     }
 
     [Theory]
     [MemberData(nameof(SampleDocs))]
     public void TestDocxToMarkdown_Rich_Split(Sample sample)
     {
-        VerifyVariant(sample, DxpMarkdownVisitorConfig.CreateRichConfig(), ".split.test.md", DxpTrackedChangeMode.SplitChanges);
+        VerifyVariant(sample, DxpMarkdownVisitorConfig.CreateRichConfig(), ".split.test.md", DxpTrackedChangeMode.SplitChanges, DxpFieldEvalExportMode.None);
     }
 
     [Theory]
     [MemberData(nameof(SampleDocs))]
     public void TestDocxToMarkdown_Plain_Reject(Sample sample)
     {
-        VerifyVariant(sample, DxpMarkdownVisitorConfig.CreatePlainConfig(), ".plain.reject.test.md", DxpTrackedChangeMode.RejectChanges);
+        VerifyVariant(sample, DxpMarkdownVisitorConfig.CreatePlainConfig(), ".plain.reject.test.md", DxpTrackedChangeMode.RejectChanges, DxpFieldEvalExportMode.None);
     }
 
     [Theory]
     [MemberData(nameof(SampleDocs))]
     public void TestDocxToMarkdown_Plain_Split(Sample sample)
     {
-        VerifyVariant(sample, DxpMarkdownVisitorConfig.CreatePlainConfig(), ".plain.split.test.md", DxpTrackedChangeMode.SplitChanges);
+        VerifyVariant(sample, DxpMarkdownVisitorConfig.CreatePlainConfig(), ".plain.split.test.md", DxpTrackedChangeMode.SplitChanges, DxpFieldEvalExportMode.None);
     }
 
 
@@ -99,7 +100,7 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
     [MemberData(nameof(SampleDocs))]
     public void TestDocxToMarkdown_Plain_Inline(Sample sample)
     {
-        VerifyVariant(sample, DxpMarkdownVisitorConfig.CreatePlainConfig(), ".plain.inline.test.md", DxpTrackedChangeMode.InlineChanges);
+        VerifyVariant(sample, DxpMarkdownVisitorConfig.CreatePlainConfig(), ".plain.inline.test.md", DxpTrackedChangeMode.InlineChanges, DxpFieldEvalExportMode.None);
     }
 
     [Theory]
@@ -109,12 +110,31 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
         VerifyCachedAgainstFixture(sample, DxpMarkdownVisitorConfig.CreatePlainConfig(), ".plain.cached.md", ".plain.cached.test.md");
     }
 
-    private void VerifyAgainstFixture(Sample sample, DxpMarkdownVisitorConfig config, string expectedExt, string actualSuffix)
+    [Theory]
+    [MemberData(nameof(SampleDocs))]
+    public void TestDocxToMarkdown_Rich_Eval(Sample sample)
+    {
+        VerifyAgainstFixture(sample, DxpMarkdownVisitorConfig.CreateRichConfig(), ".eval.md", ".eval.test.md", DxpFieldEvalExportMode.Evaluate);
+    }
+
+    [Theory]
+    [MemberData(nameof(SampleDocs))]
+    public void TestDocxToMarkdown_Plain_Eval(Sample sample)
+    {
+        VerifyAgainstFixture(sample, DxpMarkdownVisitorConfig.CreatePlainConfig(), ".plain.eval.md", ".plain.eval.test.md", DxpFieldEvalExportMode.Evaluate);
+    }
+
+    private void VerifyAgainstFixture(
+        Sample sample,
+        DxpMarkdownVisitorConfig config,
+        string expectedExt,
+        string actualSuffix,
+        DxpFieldEvalExportMode evalMode)
     {
         string expectedPath = TestPaths.GetSampleOutputPath(sample.DocxPath, expectedExt);
         string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, actualSuffix);
 
-        string actualMarkdown = TestCompare.Normalize(ToMarkdown(sample.DocxPath, CloneConfig(config, DxpTrackedChangeMode.AcceptChanges)));
+        string actualMarkdown = TestCompare.Normalize(ToMarkdown(sample.DocxPath, CloneConfig(config, DxpTrackedChangeMode.AcceptChanges), evalMode));
         File.WriteAllText(actualPath, actualMarkdown);
 
         if (!File.Exists(expectedPath))
@@ -131,17 +151,17 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
         }
 
         // Emit additional tracked-change variants for inspection.
-        WriteVariant(sample, config, DxpTrackedChangeMode.RejectChanges, actualSuffix.Replace(".test", ".reject.test"));
-        WriteVariant(sample, config, DxpTrackedChangeMode.InlineChanges, actualSuffix.Replace(".test", ".inline.test"));
+        WriteVariant(sample, config, DxpTrackedChangeMode.RejectChanges, actualSuffix.Replace(".test", ".reject.test"), evalMode);
+        WriteVariant(sample, config, DxpTrackedChangeMode.InlineChanges, actualSuffix.Replace(".test", ".inline.test"), evalMode);
     }
 
-    private void VerifyVariant(Sample sample, DxpMarkdownVisitorConfig config, string suffix, DxpTrackedChangeMode mode)
+    private void VerifyVariant(Sample sample, DxpMarkdownVisitorConfig config, string suffix, DxpTrackedChangeMode mode, DxpFieldEvalExportMode evalMode)
     {
         string expectedPath = TestPaths.GetSampleOutputPath(sample.DocxPath, suffix.Replace(".test", string.Empty));
         string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, suffix);
 
         var cfg = CloneConfig(config, mode);
-        string markdown = TestCompare.Normalize(ToMarkdown(sample.DocxPath, cfg));
+        string markdown = TestCompare.Normalize(ToMarkdown(sample.DocxPath, cfg, evalMode));
         File.WriteAllText(actualPath, markdown);
 
         if (!File.Exists(expectedPath))
@@ -155,18 +175,19 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
         }
     }
 
-    private void WriteVariant(Sample sample, DxpMarkdownVisitorConfig baseConfig, DxpTrackedChangeMode mode, string suffix)
+    private void WriteVariant(Sample sample, DxpMarkdownVisitorConfig baseConfig, DxpTrackedChangeMode mode, string suffix, DxpFieldEvalExportMode evalMode)
     {
         var cfg = CloneConfig(baseConfig, mode);
         string path = TestPaths.GetSampleOutputPath(sample.DocxPath, suffix);
-        string markdown = TestCompare.Normalize(ToMarkdown(sample.DocxPath, cfg));
+        string markdown = TestCompare.Normalize(ToMarkdown(sample.DocxPath, cfg, evalMode));
         File.WriteAllText(path, markdown);
     }
 
-    private string ToMarkdown(string docxPath, DxpMarkdownVisitorConfig config)
+    private string ToMarkdown(string docxPath, DxpMarkdownVisitorConfig config, DxpFieldEvalExportMode evalMode)
     {
         var visitor = new DxpMarkdownVisitor(config, Logger);
-        return DxpExport.ExportToString(docxPath, visitor, Logger);
+        var options = new DxpExportOptions { FieldEvalMode = evalMode };
+        return DxpExport.ExportToString(docxPath, visitor, options, Logger);
     }
 
     private void VerifyCachedAgainstFixture(Sample sample, DxpMarkdownVisitorConfig config, string expectedExt, string actualSuffix)

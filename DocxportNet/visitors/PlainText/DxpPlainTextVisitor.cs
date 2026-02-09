@@ -666,8 +666,4 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor, IDisposab
         public int SuppressFieldDepth { get; set; }
     }
 
-    public override void VisitFieldEvaluationResult(string text, DxpIDocumentContext d)
-    {
-        Write(text, d);
-    }
 }

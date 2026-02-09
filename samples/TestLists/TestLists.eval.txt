@@ -1,0 +1,203 @@
+Author: Gaspard Petit
+LastModifiedBy: Gaspard Petit
+Revision: 8
+Created: 2025-12-19 13:22:00Z
+Modified: 2025-12-21 07:40:00Z
+
+• default list level 1
+
+next line, no bullet
+
+o default list level 2
+
+next line no bullet
+
+         ▪ default list level 3
+
+         next line no bullet
+
+                  • default list level 4
+
+                  next line no bullet
+
+                           o default list level 5
+
+                           next line no bullet
+
+                                    ▪ default list level 6
+
+                                    next line no bullet
+
+                                        • default list level 7
+
+                                        next line no bullet
+
+                                        o default list level 8
+
+                                        next line no bullet
+
+                                        ▪ default list level 9
+
+                                        next line no bullet
+
+                                        o default list level 8
+
+                                        • default list level 7
+
+                                    ▪ default list level 6
+
+                           o default list level 5
+
+                  • default list level 4
+
+         ▪ default list level 3
+
+o default list level 2
+
+• default list level 1
+
+
+
+⮚ arrow bullet
+
+— hyphen bullet
+
+▪ square bullet
+
+❖ diamond bullet
+
+✔ checkmark bulet
+
+• fancy bullet
+
+1: numbered 1:
+
+2: numbered 2:
+
+3: numbered 3:
+
+a. letter a
+
+b. letter b
+
+         i. roman i
+
+         ii. roman ii
+
+                  1. numbered 1.
+
+                  2. numbered 2.
+
+I. Roman I.
+
+II. Roman II
+
+III. Roman III.
+
+IV. Roman IV.
+
+a. letter a.
+
+         i. roman i.
+
+                  1. numbered 1.
+
+1st. Item 1st.
+
+2nd. Item 2nd.
+
+3rd. Item 3rd.
+
+4th. Item 4th.
+
+5th. Item 5th.
+
+
+
+one. Comic one.
+
+two. Comic two.
+
+three. Comic three.
+
+four. Comic four.
+
+cinq. Comic cinq.
+
+kuusi. Comic kuusi.
+
+syv. Comic syv.
+
+otto. Comic otto.
+
+εννέα. Comic eννέα.
+
+εννέα χιλιάδες εννιακόσια ενενήντα εννέα. Comic Εννέα χιλιάδες εννιακόσια ενενήντα εννέα.
+
+dix mille. Comic dix mille.
+
+001:  Item 001
+
+002:  Item 002
+
+003:  Item 003
+
+004:  Item 004
+
+1:  Fancy 1
+
+2:  Fancy 2
+
+
+
+1 Heading 1
+
+1.1 Heading 1.1
+
+1.1.1 Heading 1.1.1
+
+1.1.1.1 Heading 1.1.1.1
+
+1.1.1.1.1 Heading 1.1.1.1.1
+
+1.1.1.1.1.1 Heading 1.1.1.1.1.1
+
+1.1.1.1.1.1.1 Heading 1.1.1.1.1.1.1
+
+1.1.1.1.1.1.1.1 Heading 1.1.1.1.1.1.1.1
+
+  1.1.1.1.1.1.1.1.1 Heading 1.1.1.1.1.1.1.1.1
+
+1) Multi level 1
+
+a) Multi level (a)
+
+i) Multi level (i)
+
+(1) Multi level (1)
+
+    (a) Multi level (a)
+
+         (i) Multi level (i)
+
+              1. Multi level 1.
+
+                  a.  Multi level a.
+
+                      i. Multi level i.
+
+
+
+1:  Original 1
+
+2:  Original 2
+
+3:  Original 3
+
+4:  Added 5
+
+5:  Original 6
+
+6:  Added 7
+
+7:  Original 9

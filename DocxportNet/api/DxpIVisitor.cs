@@ -211,8 +211,6 @@ public interface DxpIFieldVisitor
     // Called when the field ends (w:fldChar type="end")
     void VisitComplexFieldEnd(FieldChar end, DxpIDocumentContext d);
 
-    // Called when a field is evaluated and yields a string result.
-    void VisitFieldEvaluationResult(string text, DxpIDocumentContext d);
 }
 
 

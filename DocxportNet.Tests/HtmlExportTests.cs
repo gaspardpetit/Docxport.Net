@@ -1,3 +1,4 @@
+using DocxportNet;
 using DocxportNet.Tests.Utils;
 using DocxportNet.Visitors.Html;
 using DocxportNet.Visitors.Markdown;
@@ -48,14 +49,14 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
     [MemberData(nameof(SampleDocs))]
     public void TestDocxToHtml_Accept(Sample sample)
     {
-        VerifyAgainstFixture(sample, DxpHtmlVisitorConfig.CreateRichConfig(), ".html", ".test.html", DxpTrackedChangeMode.AcceptChanges);
+        VerifyAgainstFixture(sample, DxpHtmlVisitorConfig.CreateRichConfig(), ".html", ".test.html", DxpTrackedChangeMode.AcceptChanges, DxpFieldEvalExportMode.None);
     }
 
     [Theory]
     [MemberData(nameof(SampleDocs))]
     public void TestDocxToHtml_Reject(Sample sample)
     {
-        VerifyAgainstFixture(sample, DxpHtmlVisitorConfig.CreateRichConfig(), ".reject.html", ".reject.test.html", DxpTrackedChangeMode.RejectChanges);
+        VerifyAgainstFixture(sample, DxpHtmlVisitorConfig.CreateRichConfig(), ".reject.html", ".reject.test.html", DxpTrackedChangeMode.RejectChanges, DxpFieldEvalExportMode.None);
     }
 
     [Theory]
@@ -65,13 +66,26 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
         VerifyCachedAgainstFixture(sample, DxpHtmlVisitorConfig.CreateRichConfig(), ".cached.html", ".cached.test.html");
     }
 
-    private void VerifyAgainstFixture(Sample sample, DxpHtmlVisitorConfig baseConfig, string expectedExt, string actualSuffix, DxpTrackedChangeMode mode)
+    [Theory]
+    [MemberData(nameof(SampleDocs))]
+    public void TestDocxToHtml_Eval(Sample sample)
+    {
+        VerifyAgainstFixture(sample, DxpHtmlVisitorConfig.CreateRichConfig(), ".eval.html", ".eval.test.html", DxpTrackedChangeMode.AcceptChanges, DxpFieldEvalExportMode.Evaluate);
+    }
+
+    private void VerifyAgainstFixture(
+        Sample sample,
+        DxpHtmlVisitorConfig baseConfig,
+        string expectedExt,
+        string actualSuffix,
+        DxpTrackedChangeMode mode,
+        DxpFieldEvalExportMode evalMode)
     {
         string expectedPath = TestPaths.GetSampleOutputPath(sample.DocxPath, expectedExt);
         string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, actualSuffix);
 
         var config = CloneConfig(baseConfig, mode);
-        string html = TestCompare.Normalize(ToHtml(sample.DocxPath, config));
+        string html = TestCompare.Normalize(ToHtml(sample.DocxPath, config, evalMode));
         File.WriteAllText(actualPath, html);
 
         if (!File.Exists(expectedPath))
@@ -86,10 +100,11 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
         }
     }
 
-    private string ToHtml(string docxPath, DxpHtmlVisitorConfig config)
+    private string ToHtml(string docxPath, DxpHtmlVisitorConfig config, DxpFieldEvalExportMode evalMode)
     {
         var visitor = new DxpHtmlVisitor(config, Logger);
-        return DxpExport.ExportToString(docxPath, visitor, Logger);
+        var options = new DxpExportOptions { FieldEvalMode = evalMode };
+        return DxpExport.ExportToString(docxPath, visitor, options, Logger);
     }
 
     private DxpHtmlVisitorConfig CloneConfig(DxpHtmlVisitorConfig source, DxpTrackedChangeMode mode)
