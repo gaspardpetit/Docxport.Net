@@ -152,12 +152,12 @@ body.dxp-root {
 <div class="dxp-document">
 <div class="dxp-section" style="color:#000000;display:flex;flex-direction:column;position:relative;width:8.5in;min-height:11in;box-sizing:border-box;padding-left:1in;padding-right:1in;background-color:#ffffff;font-family:Aptos;font-size:12pt;">
 <div class="dxp-body" style="flex:1 0 auto;padding-top:1in;">
-<p class="dxp-paragraph">Expect 1: 111</p>
-<p class="dxp-paragraph">Expect Error: <strong class="dxp-bold"><span class="dxp-field" data-field="REF VarUnknown"></span>Error! Reference source not found.</strong></p>
-<p class="dxp-paragraph">Expect No Error: <span class="dxp-field" data-field="IF  = &quot;&quot; &quot;Empty&quot; &quot;Not Empty&quot;"></span>Not Empty</p>
-<p class="dxp-paragraph">Expect one: 1</p>
-<p class="dxp-paragraph">Expect <strong class="dxp-bold">one</strong> (bold): <a id="Var1" data-bookmark-id="0"></a>1<strong class="dxp-bold"></strong></p>
-<p class="dxp-paragraph">Expect <strong class="dxp-bold">1</strong><span class="dxp-underline">2</span><strong class="dxp-bold">3: 123</strong><span class="dxp-underline"></span><strong class="dxp-bold"></strong></p>
+<p class="dxp-paragraph">Expect 1: <span class="dxp-field" data-field="SET Var1 &quot;1&quot;"></span>1<span class="dxp-field" data-field="REF Var1"></span>1</p>
+<p class="dxp-paragraph">Expect Error: <span class="dxp-field" data-field="REF VarUnknown"></span><strong class="dxp-bold">Error! Reference source not found.</strong></p>
+<p class="dxp-paragraph">Expect No Error: <span class="dxp-field" data-field="IF"></span><span class="dxp-field" data-field="REF VarUnknow"></span><span class="dxp-field" data-field="Error! Reference source not found."></span><span class="dxp-field" data-field="= &quot;&quot; &quot;Empty&quot; &quot;Not Empty&quot;"></span>Not Empty</p>
+<p class="dxp-paragraph">Expect one: <span class="dxp-field" data-field="SET Var1 &quot;1&quot;"></span>1<span class="dxp-field" data-field="IF"></span><span class="dxp-field" data-field="REF Var1"></span><span class="dxp-field" data-field="1"></span><span class="dxp-field" data-field="= &quot;1&quot; &quot;one&quot; &quot;not one&quot;"></span>one</p>
+<p class="dxp-paragraph">Expect <strong class="dxp-bold">one</strong> (bold): <span class="dxp-field" data-field="SET Var1 &quot;"></span><span class="dxp-field" data-field="1"></span><span class="dxp-field" data-field="&quot;"></span><a id="Var1" data-bookmark-id="0"></a>1<span class="dxp-field" data-field="IF"></span><span class="dxp-field" data-field="REF Var1"></span><span class="dxp-field" data-field="1"></span><span class="dxp-field" data-field="= &quot;1&quot; &quot;"></span><span class="dxp-field" data-field="one"></span><span class="dxp-field" data-field="&quot; &quot;"></span><span class="dxp-field" data-field="not one"></span><span class="dxp-field" data-field="&quot;"></span><strong class="dxp-bold">one</strong></p>
+<p class="dxp-paragraph">Expect <strong class="dxp-bold">1</strong><span class="dxp-underline">2</span><strong class="dxp-bold">3: <span class="dxp-field" data-field="IF 1 = 1 &quot;"></span><span class="dxp-field" data-field="1"></span><span class="dxp-field" data-field="2"></span><span class="dxp-field" data-field="3"></span><span class="dxp-field" data-field="&quot; &quot;error&quot;"></span>1</strong><span class="dxp-underline">2</span><strong class="dxp-bold">3</strong></p>
 </div>
 </div>
 </div>

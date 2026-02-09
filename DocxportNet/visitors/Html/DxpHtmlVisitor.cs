@@ -1684,11 +1684,6 @@ body.dxp-root {
         _state.CurrentInlineMode = mode;
     }
 
-    public override void VisitFieldEvaluationResult(string text, DxpIDocumentContext d)
-    {
-        Write(d, WebUtility.HtmlEncode(text));
-    }
-
     private void EmitSplitBuffersIfNeeded()
     {
         var rejected = _rejectBufferedWriter.Drain();

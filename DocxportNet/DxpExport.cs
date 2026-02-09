@@ -16,19 +16,27 @@ public static class DxpExport
     /// <summary>
     /// Export to a text string using a <see cref="DxpITextVisitor"/> and a DOCX file path.
     /// </summary>
-    public static string ExportToString(string docxPath, DxpITextVisitor visitor, ILogger? logger = null)
+    public static string ExportToString(string docxPath, DxpITextVisitor visitor, DxpExportOptions? options, ILogger? logger = null)
     {
         using var writer = new StringWriter();
         visitor.SetOutput(writer);
         try
         {
-            RunWalker(docxPath, visitor, logger);
+            RunWalker(docxPath, visitor, options, logger);
             return writer.ToString();
         }
         finally
         {
             DisposeVisitor(visitor);
         }
+    }
+
+    /// <summary>
+    /// Export to a text string using a <see cref="DxpITextVisitor"/> and a DOCX file path.
+    /// </summary>
+    public static string ExportToString(string docxPath, DxpITextVisitor visitor, ILogger? logger = null)
+    {
+        return ExportToString(docxPath, visitor, options: null, logger);
     }
 
     /// <summary>
@@ -39,7 +47,23 @@ public static class DxpExport
         visitor.SetOutput(Stream.Null);
         try
         {
-            RunWalker(docxPath, visitor, logger);
+            RunWalker(docxPath, visitor, options: null, logger);
+        }
+        finally
+        {
+            DisposeVisitor(visitor);
+        }
+    }
+
+    /// <summary>
+    /// Drive a visitor without caring about output (e.g., collectors). A null sink is assigned.
+    /// </summary>
+    public static void Export(string docxPath, DxpIVisitor visitor, DxpExportOptions? options, ILogger? logger = null)
+    {
+        visitor.SetOutput(Stream.Null);
+        try
+        {
+            RunWalker(docxPath, visitor, options, logger);
         }
         finally
         {
@@ -53,11 +77,20 @@ public static class DxpExport
     /// </summary>
     public static string ExportToString(WordprocessingDocument document, DxpITextVisitor visitor, ILogger? logger = null)
     {
+        return ExportToString(document, visitor, options: null, logger);
+    }
+
+    /// <summary>
+    /// Export to a text string using a <see cref="DxpITextVisitor"/> and an already-open <see cref="WordprocessingDocument"/>.
+    /// The document remains open; disposal is left to the caller.
+    /// </summary>
+    public static string ExportToString(WordprocessingDocument document, DxpITextVisitor visitor, DxpExportOptions? options, ILogger? logger = null)
+    {
         using var writer = new StringWriter();
         visitor.SetOutput(writer);
         try
         {
-            RunWalker(document, visitor, logger);
+            RunWalker(document, visitor, options, logger);
             return writer.ToString();
         }
         finally
@@ -71,9 +104,17 @@ public static class DxpExport
     /// </summary>
     public static string ExportToString(byte[] docxBytes, DxpITextVisitor visitor, ILogger? logger = null)
     {
+        return ExportToString(docxBytes, visitor, options: null, logger);
+    }
+
+    /// <summary>
+    /// Export to a text string using a <see cref="DxpITextVisitor"/> and in-memory DOCX bytes.
+    /// </summary>
+    public static string ExportToString(byte[] docxBytes, DxpITextVisitor visitor, DxpExportOptions? options, ILogger? logger = null)
+    {
         using var stream = new MemoryStream(docxBytes, writable: false);
         using var document = WordprocessingDocument.Open(stream, false);
-        return ExportToString(document, visitor, logger);
+        return ExportToString(document, visitor, options, logger);
     }
 
     /// <summary>
@@ -85,7 +126,25 @@ public static class DxpExport
         visitor.SetOutput(ms);
         try
         {
-            RunWalker(docxPath, visitor, logger);
+            RunWalker(docxPath, visitor, options: null, logger);
+            return ms.ToArray();
+        }
+        finally
+        {
+            DisposeVisitor(visitor);
+        }
+    }
+
+    /// <summary>
+    /// Export to a byte array using a <see cref="DxpIVisitor"/> and a DOCX file path.
+    /// </summary>
+    public static byte[] ExportToBytes(string docxPath, DxpIVisitor visitor, DxpExportOptions? options, ILogger? logger = null)
+    {
+        using var ms = new MemoryStream();
+        visitor.SetOutput(ms);
+        try
+        {
+            RunWalker(docxPath, visitor, options, logger);
             return ms.ToArray();
         }
         finally
@@ -103,7 +162,25 @@ public static class DxpExport
         visitor.SetOutput(ms);
         try
         {
-            RunWalker(document, visitor, logger);
+            RunWalker(document, visitor, options: null, logger);
+            return ms.ToArray();
+        }
+        finally
+        {
+            DisposeVisitor(visitor);
+        }
+    }
+
+    /// <summary>
+    /// Export to a byte array using a <see cref="DxpIVisitor"/> and an already-open <see cref="WordprocessingDocument"/>.
+    /// </summary>
+    public static byte[] ExportToBytes(WordprocessingDocument document, DxpIVisitor visitor, DxpExportOptions? options, ILogger? logger = null)
+    {
+        using var ms = new MemoryStream();
+        visitor.SetOutput(ms);
+        try
+        {
+            RunWalker(document, visitor, options, logger);
             return ms.ToArray();
         }
         finally
@@ -117,9 +194,17 @@ public static class DxpExport
     /// </summary>
     public static byte[] ExportToBytes(byte[] docxBytes, DxpIVisitor visitor, ILogger? logger = null)
     {
+        return ExportToBytes(docxBytes, visitor, options: null, logger);
+    }
+
+    /// <summary>
+    /// Export to a byte array using a <see cref="DxpIVisitor"/> and in-memory DOCX bytes.
+    /// </summary>
+    public static byte[] ExportToBytes(byte[] docxBytes, DxpIVisitor visitor, DxpExportOptions? options, ILogger? logger = null)
+    {
         using var stream = new MemoryStream(docxBytes, writable: false);
         using var document = WordprocessingDocument.Open(stream, false);
-        return ExportToBytes(document, visitor, logger);
+        return ExportToBytes(document, visitor, options, logger);
     }
 
     /// <summary>
@@ -127,13 +212,21 @@ public static class DxpExport
     /// </summary>
     public static string ExportToFile(string docxPath, DxpIVisitor visitor, string outputPath, ILogger? logger = null)
     {
+        return ExportToFile(docxPath, visitor, outputPath, options: null, logger);
+    }
+
+    /// <summary>
+    /// Walks the DOCX at <paramref name="docxPath"/> with <paramref name="visitor"/> and writes the output to <paramref name="outputPath"/>.
+    /// </summary>
+    public static string ExportToFile(string docxPath, DxpIVisitor visitor, string outputPath, DxpExportOptions? options, ILogger? logger = null)
+    {
         CreateParentDirectory(outputPath);
 
         using var fileStream = File.Create(outputPath);
         visitor.SetOutput(fileStream);
         try
         {
-            RunWalker(docxPath, visitor, logger);
+            RunWalker(docxPath, visitor, options, logger);
             fileStream.Flush();
             return outputPath;
         }
@@ -148,9 +241,17 @@ public static class DxpExport
     /// </summary>
     public static string ExportToFile(byte[] docxBytes, DxpIVisitor visitor, string outputPath, ILogger? logger = null)
     {
+        return ExportToFile(docxBytes, visitor, outputPath, options: null, logger);
+    }
+
+    /// <summary>
+    /// Walks in-memory DOCX bytes with <paramref name="visitor"/> and writes the output to <paramref name="outputPath"/>.
+    /// </summary>
+    public static string ExportToFile(byte[] docxBytes, DxpIVisitor visitor, string outputPath, DxpExportOptions? options, ILogger? logger = null)
+    {
         using var stream = new MemoryStream(docxBytes, writable: false);
         using var document = WordprocessingDocument.Open(stream, false);
-        return ExportToFile(document, visitor, outputPath, logger);
+        return ExportToFile(document, visitor, outputPath, options, logger);
     }
 
     /// <summary>
@@ -159,13 +260,22 @@ public static class DxpExport
     /// </summary>
     public static string ExportToFile(WordprocessingDocument document, DxpIVisitor visitor, string outputPath, ILogger? logger = null)
     {
+        return ExportToFile(document, visitor, outputPath, options: null, logger);
+    }
+
+    /// <summary>
+    /// Walks an already-open <see cref="WordprocessingDocument"/> with <paramref name="visitor"/> and writes the output to <paramref name="outputPath"/>.
+    /// The document remains open; disposal is left to the caller.
+    /// </summary>
+    public static string ExportToFile(WordprocessingDocument document, DxpIVisitor visitor, string outputPath, DxpExportOptions? options, ILogger? logger = null)
+    {
         CreateParentDirectory(outputPath);
 
         using var fileStream = File.Create(outputPath);
         visitor.SetOutput(fileStream);
         try
         {
-            RunWalker(document, visitor, logger);
+            RunWalker(document, visitor, options, logger);
             fileStream.Flush();
             return outputPath;
         }
@@ -182,25 +292,30 @@ public static class DxpExport
             Directory.CreateDirectory(directory);
     }
 
-    private static void RunWalker(string docxPath, DxpIVisitor visitor, ILogger? logger)
+    private static void RunWalker(string docxPath, DxpIVisitor visitor, DxpExportOptions? options, ILogger? logger)
     {
         var walker = new DxpWalker(logger);
-        walker.Accept(docxPath, WrapWithFieldEvalMiddleware(visitor, logger));
+        walker.Accept(docxPath, WrapWithFieldEvalMiddleware(visitor, options, logger));
     }
 
-    private static void RunWalker(WordprocessingDocument document, DxpIVisitor visitor, ILogger? logger)
+    private static void RunWalker(WordprocessingDocument document, DxpIVisitor visitor, DxpExportOptions? options, ILogger? logger)
     {
         var walker = new DxpWalker(logger);
-        walker.Accept(document, WrapWithFieldEvalMiddleware(visitor, logger));
+        walker.Accept(document, WrapWithFieldEvalMiddleware(visitor, options, logger));
     }
 
-    private static DxpIVisitor WrapWithFieldEvalMiddleware(DxpIVisitor visitor, ILogger? logger)
+    private static DxpIVisitor WrapWithFieldEvalMiddleware(DxpIVisitor visitor, DxpExportOptions? options, ILogger? logger)
     {
-        if (visitor is IDxpFieldEvalProvider provider)
+        var mode = options?.FieldEvalMode ?? DxpFieldEvalExportMode.Evaluate;
+        if (visitor is IDxpFieldEvalProvider provider && mode != DxpFieldEvalExportMode.None)
         {
             return DxpVisitorMiddleware.Chain(
                 visitor,
-                next => new DxpFieldEvalMiddleware(next, provider.FieldEval, logger: logger),
+                next => new DxpFieldEvalMiddleware(
+                    next,
+                    provider.FieldEval,
+                    mode == DxpFieldEvalExportMode.Cache ? DxpFieldEvalMode.Cache : DxpFieldEvalMode.Evaluate,
+                    logger: logger),
                 next => new DxpContextTracker(next));
         }
 

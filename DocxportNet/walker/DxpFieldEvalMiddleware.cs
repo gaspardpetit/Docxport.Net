@@ -1,3 +1,4 @@
+using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
@@ -30,6 +31,7 @@ public sealed class DxpFieldEvalMiddleware : DxpMiddleware
     private readonly bool _includeCustomProperties;
     private readonly Func<DateTimeOffset>? _nowProvider;
     private readonly ILogger? _logger;
+    private readonly DxpFieldParser _parser = new();
     private bool _initialized;
     private int _paragraphOrder;
     private readonly Stack<FieldEvalFrameState> _fieldFrames = new();
@@ -115,11 +117,13 @@ public sealed class DxpFieldEvalMiddleware : DxpMiddleware
             return;
 
         var current = CurrentField;
-        if (current != null && current.IsComplex && current.Evaluated)
+        if (current != null && current.Evaluated)
             return;
 
         if (_mode == DxpFieldEvalMode.Evaluate)
         {
+            if (current != null && current.Evaluated)
+                return;
             if (!IsNestedField && TryWriteEvaluatedCurrentField(current, d))
                 return;
         }
@@ -261,18 +265,251 @@ public sealed class DxpFieldEvalMiddleware : DxpMiddleware
         if (string.IsNullOrWhiteSpace(instruction))
             return false;
 
-        var result = _eval.EvalAsync(new DxpFieldInstruction(instruction!)).GetAwaiter().GetResult();
-        if (result.Status != DxpFieldEvalStatus.Resolved || result.Text == null)
-            return false;
+        var parse = _parser.Parse(instruction);
+        var fieldType = parse.Ast.FieldType ?? string.Empty;
+        var argsText = parse.Ast.ArgumentsText;
 
-        if (frame != null)
+        if (fieldType.Equals("REF", StringComparison.OrdinalIgnoreCase) &&
+            !HasFieldSwitches(instruction) &&
+            TryGetFirstToken(argsText, out var refName) &&
+            _context.TryGetBookmarkNodes(refName, out var storedNodes))
         {
-            frame.Evaluated = true;
-            frame.SuppressContent = true;
+            if (frame != null)
+            {
+                frame.Evaluated = true;
+                frame.SuppressContent = true;
+            }
+
+            storedNodes.Replay(_next, d);
+            return true;
         }
 
-        _next.VisitFieldEvaluationResult(result.Text, d);
+        if (fieldType.Equals("SET", StringComparison.OrdinalIgnoreCase))
+        {
+            if (frame != null)
+            {
+                frame.Evaluated = true;
+                frame.SuppressContent = true;
+            }
+
+            var result = _eval.EvalAsync(new DxpFieldInstruction(instruction!)).GetAwaiter().GetResult();
+            if (TryGetFirstToken(argsText, out var setName))
+            {
+                var text = result.Text ?? string.Empty;
+                _context.SetBookmarkNodes(setName, DxpFieldNodeBuffer.FromText(text));
+            }
+            return true;
+        }
+        else
+        {
+
+            var result = _eval.EvalAsync(new DxpFieldInstruction(instruction!)).GetAwaiter().GetResult();
+            if (frame != null)
+            {
+                frame.Evaluated = true;
+                frame.SuppressContent = true;
+            }
+
+            if (result.Status != DxpFieldEvalStatus.Resolved || result.Text == null)
+            {
+                EmitEvaluatedText(GetEvaluationErrorText(instruction), d);
+                return true;
+            }
+
+            EmitEvaluatedText(result.Text, d);
+            return true;
+        }
+    }
+
+    private string GetEvaluationErrorText(string instruction)
+    {
+        var parse = _parser.Parse(instruction);
+        var fieldType = parse.Ast.FieldType;
+        if (string.IsNullOrWhiteSpace(fieldType))
+            return "Error! Invalid field code.";
+
+        switch (fieldType.Trim().ToUpperInvariant())
+        {
+            case "REF":
+                return "Error! Reference source not found.";
+            case "DOCVARIABLE":
+                return "Error! No document variable supplied.";
+            case "DOCPROPERTY":
+                return "Error! Unknown document property name.";
+            case "IF":
+                return "Error! Invalid field code.";
+            case "=":
+                return "Error! Invalid formula.";
+            default:
+                return "Error! Invalid field code.";
+        }
+    }
+
+    private static bool HasFieldSwitches(string instruction)
+    {
+        bool inQuote = false;
+        int braceDepth = 0;
+        for (int i = 0; i < instruction.Length; i++)
+        {
+            char ch = instruction[i];
+            if (inQuote && ch == '\\' && i + 1 < instruction.Length && instruction[i + 1] == '"')
+            {
+                i++;
+                continue;
+            }
+            if (ch == '"')
+            {
+                inQuote = !inQuote;
+                continue;
+            }
+
+            if (!inQuote)
+            {
+                if (ch == '{')
+                {
+                    braceDepth++;
+                    continue;
+                }
+                if (ch == '}' && braceDepth > 0)
+                {
+                    braceDepth--;
+                    continue;
+                }
+            }
+
+            if (!inQuote && braceDepth == 0 && ch == '\\')
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool TryGetFirstToken(string? argsText, out string token)
+    {
+        token = string.Empty;
+        if (string.IsNullOrWhiteSpace(argsText))
+            return false;
+
+        var tokens = TokenizeArgs(argsText);
+        if (tokens.Count == 0)
+            return false;
+        token = tokens[0];
         return true;
+    }
+
+    private static List<string> TokenizeArgs(string text)
+    {
+        var tokens = new List<string>();
+        bool inQuote = false;
+        bool justClosedQuote = false;
+        var current = new StringBuilder();
+        for (int i = 0; i < text.Length; i++)
+        {
+            char ch = text[i];
+            if (ch == '"')
+            {
+                if (inQuote && i > 0 && text[i - 1] == '\\')
+                {
+                    if (current.Length > 0)
+                        current.Length -= 1;
+                    current.Append('"');
+                    continue;
+                }
+                inQuote = !inQuote;
+                if (!inQuote)
+                    justClosedQuote = true;
+                continue;
+            }
+
+            if (!inQuote && ch == '{')
+            {
+                int start = i;
+                int depth = 0;
+                for (; i < text.Length; i++)
+                {
+                    if (text[i] == '{')
+                        depth++;
+                    else if (text[i] == '}')
+                    {
+                        depth--;
+                        if (depth == 0)
+                        {
+                            i++;
+                            break;
+                        }
+                    }
+                }
+                string token = text.Substring(start, i - start).Trim();
+                if (current.Length > 0)
+                {
+                    tokens.Add(current.ToString());
+                    current.Clear();
+                }
+                if (token.Length > 0)
+                    tokens.Add(token);
+                justClosedQuote = false;
+                i--;
+                continue;
+            }
+
+            if (!inQuote && char.IsWhiteSpace(ch))
+            {
+                if (current.Length > 0)
+                {
+                    tokens.Add(current.ToString());
+                    current.Clear();
+                    justClosedQuote = false;
+                }
+                else if (justClosedQuote)
+                {
+                    tokens.Add(string.Empty);
+                    justClosedQuote = false;
+                }
+                continue;
+            }
+
+            current.Append(ch);
+            justClosedQuote = false;
+        }
+
+        if (current.Length > 0)
+            tokens.Add(current.ToString());
+        else if (justClosedQuote)
+            tokens.Add(string.Empty);
+
+        return tokens;
+    }
+
+    private void EmitEvaluatedText(string text, DxpIDocumentContext d)
+    {
+        if (string.IsNullOrEmpty(text))
+            return;
+
+        var run = new Run();
+        using (_next.VisitRunBegin(run, d))
+        {
+            var t = new Text(text);
+            if (NeedsPreserveSpace(text))
+                t.Space = SpaceProcessingModeValues.Preserve;
+            _next.VisitText(t, d);
+        }
+    }
+
+    private static bool NeedsPreserveSpace(string text)
+    {
+        if (text.Length == 0)
+            return false;
+        if (char.IsWhiteSpace(text[0]) || char.IsWhiteSpace(text[text.Length - 1]))
+            return true;
+        for (int i = 0; i < text.Length; i++)
+        {
+            char ch = text[i];
+            if (ch == '\t' || ch == '\r' || ch == '\n')
+                return true;
+            if (ch == ' ' && i + 1 < text.Length && text[i + 1] == ' ')
+                return true;
+        }
+        return false;
     }
 
     private static bool IsSetInstruction(string? instruction)
