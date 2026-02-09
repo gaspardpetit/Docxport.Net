@@ -172,7 +172,7 @@ public sealed class DxpFieldEval
                         string name = tokens[0];
                         string rawValue = tokens.Count > 1 ? tokens[1] : string.Empty;
                         string resolved = await ResolveValueAsync(rawValue);
-                        Context.SetBookmark(name, resolved);
+                        Context.SetBookmarkNodes(name, DxpFieldNodeBuffer.FromText(resolved));
                         value = new DxpFieldValue(resolved);
                         return (true, value);
                     }
@@ -218,9 +218,9 @@ public sealed class DxpFieldEval
                             }
                         }
 
-                        if (Context.TryGetBookmark(bookmark, out var bm))
+                        if (Context.TryGetBookmarkNodes(bookmark, out var bmNodes))
                         {
-                            string text = bm ?? string.Empty;
+                            string text = bmNodes.ToPlainText();
                             if (hasRefSwitches && switches.ContainsKey('t'))
                                 text = StripNonNumeric(text);
                             value = new DxpFieldValue(text);
@@ -344,9 +344,8 @@ public sealed class DxpFieldEval
                         if (!string.IsNullOrWhiteSpace(bookmark))
                         {
                             var bookmarkName = bookmark!;
-                            if (Context.TryGetBookmark(bookmarkName, out var bmValue) &&
-                            bmValue != null &&
-                            TryParseNumber(bmValue, out var bmNumber))
+                            if (Context.TryGetBookmarkNodes(bookmarkName, out var bmNodes) &&
+                            TryParseNumber(bmNodes.ToPlainText(), out var bmNumber))
                             {
                                 Context.SetSequence(identifier, (int)Math.Floor(bmNumber));
                                 bookmarkReset = true;
@@ -381,7 +380,7 @@ public sealed class DxpFieldEval
                         bool onlyOnce = switches.ContainsKey('o');
                         string? defaultValue = switches.TryGetValue('d', out var def) ? def : null;
 
-                        if (onlyOnce && Context.TryGetBookmark(bookmark, out var existing) && existing != null)
+                        if (onlyOnce && Context.TryGetBookmarkNodes(bookmark, out _))
                         {
                             value = new DxpFieldValue(string.Empty);
                             return (true, value);
@@ -406,7 +405,7 @@ public sealed class DxpFieldEval
                             ?? defaultValue
                             ?? string.Empty;
 
-                        Context.SetBookmark(bookmark, resolved);
+                        Context.SetBookmarkNodes(bookmark, DxpFieldNodeBuffer.FromText(resolved));
                         value = new DxpFieldValue(string.Empty);
                         return (true, value);
                     }

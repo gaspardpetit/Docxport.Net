@@ -45,8 +45,11 @@ public sealed class DxpContextFieldValueResolver : IDxpFieldValueResolver
     public Task<DxpFieldValue?> ResolveAsync(string name, DxpFieldValueKindHint kind, DxpFieldEvalContext context)
     {
         if ((kind == DxpFieldValueKindHint.Any || kind == DxpFieldValueKindHint.Bookmark) &&
-            context.TryGetBookmark(name, out var bm) && bm != null)
-            return Task.FromResult<DxpFieldValue?>(new DxpFieldValue(bm));
+            context.TryGetBookmarkNodes(name, out var bmNodes))
+        {
+            var text = bmNodes.ToPlainText();
+            return Task.FromResult<DxpFieldValue?>(new DxpFieldValue(text));
+        }
 
         if ((kind == DxpFieldValueKindHint.Any || kind == DxpFieldValueKindHint.DocVariable) &&
             context.TryGetDocVariable(name, out var dv) && dv != null)

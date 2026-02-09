@@ -1,4 +1,3 @@
-using DocxportNet;
 using DocxportNet.Tests.Utils;
 using DocxportNet.Visitors.Markdown;
 using Xunit.Abstractions;
