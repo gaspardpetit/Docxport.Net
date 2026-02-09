@@ -6,8 +6,10 @@ using DocxportNet.Fields.Formatting;
 using DocxportNet.Core;
 using DocxportNet.Fields;
 using DocxportNet.Fields.Resolution;
+using DocxportNet.Visitors;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 
 namespace DocxportNet.Walker;
@@ -25,6 +27,29 @@ public sealed class DxpFieldEvalMiddleware : DxpMiddleware
         public bool InstructionEmitted;
         public RunProperties? CodeRunProperties;
         public List<RunProperties?>? CachedResultRunProperties;
+        public IfCaptureState? IfState;
+    }
+
+    private sealed class IfCaptureState
+    {
+        public int TokenIndex = 0;
+        public bool FieldTypeConsumed;
+        public bool InQuote;
+        public int BraceDepth;
+        public bool JustClosedQuote;
+        public readonly StringBuilder CurrentToken = new();
+        public readonly DxpFieldNodeBuffer TrueBuffer = new();
+        public readonly DxpFieldNodeBuffer FalseBuffer = new();
+        public readonly DxpFieldNodeBufferRecorder Recorder = new();
+
+        public DxpFieldNodeBuffer? GetCurrentBuffer()
+        {
+            return TokenIndex switch {
+                3 => TrueBuffer,
+                4 => FalseBuffer,
+                _ => null
+            };
+        }
     }
 
     private readonly DxpFieldEval _eval;
@@ -120,6 +145,263 @@ public sealed class DxpFieldEvalMiddleware : DxpMiddleware
         return hasMergeFormat;
     }
 
+    private static bool StartsWithIf(string instruction)
+    {
+        var trimmed = instruction.TrimStart();
+        if (!trimmed.StartsWith("IF", StringComparison.OrdinalIgnoreCase))
+            return false;
+        return trimmed.Length == 2 || char.IsWhiteSpace(trimmed[2]);
+    }
+
+    private void ProcessIfInstructionSegment(IfCaptureState state, string text, RunProperties? runProps)
+    {
+        if (string.IsNullOrEmpty(text))
+            return;
+
+        DxpFieldNodeBuffer? currentTarget = state.GetCurrentBuffer();
+        var bufferText = new StringBuilder();
+
+        for (int i = 0; i < text.Length; i++)
+        {
+            char ch = text[i];
+
+            if (ch == '"' && state.InQuote && i > 0 && text[i - 1] == '\\')
+            {
+                if (state.CurrentToken.Length > 0)
+                    state.CurrentToken.Length -= 1;
+                state.CurrentToken.Append('"');
+                if (state.GetCurrentBuffer() != null && state.BraceDepth == 0)
+                    bufferText.Append('"');
+                continue;
+            }
+
+            if (ch == '"')
+            {
+                state.InQuote = !state.InQuote;
+                if (!state.InQuote)
+                    state.JustClosedQuote = true;
+                continue;
+            }
+
+            if (!state.InQuote && ch == '{')
+            {
+                state.BraceDepth++;
+                state.CurrentToken.Append(ch);
+                continue;
+            }
+
+            if (state.BraceDepth > 0)
+            {
+                state.CurrentToken.Append(ch);
+                if (ch == '{')
+                    state.BraceDepth++;
+                else if (ch == '}')
+                    state.BraceDepth--;
+                continue;
+            }
+
+            if (!state.InQuote && char.IsWhiteSpace(ch))
+            {
+                if (state.CurrentToken.Length > 0 || state.JustClosedQuote)
+                {
+                    var tokenText = state.CurrentToken.ToString();
+                    if (!state.FieldTypeConsumed && tokenText.Equals("IF", StringComparison.OrdinalIgnoreCase))
+                    {
+                        state.FieldTypeConsumed = true;
+                        state.TokenIndex = 0;
+                    }
+                    else
+                    {
+                        state.TokenIndex++;
+                    }
+                    state.CurrentToken.Clear();
+                    state.JustClosedQuote = false;
+                }
+                continue;
+            }
+
+            state.CurrentToken.Append(ch);
+            state.JustClosedQuote = false;
+            var nextTarget = state.GetCurrentBuffer();
+            if (nextTarget != currentTarget)
+            {
+                if (currentTarget != null && bufferText.Length > 0)
+                {
+                    AppendBufferText(currentTarget, bufferText.ToString(), runProps);
+                    bufferText.Clear();
+                }
+                currentTarget = nextTarget;
+            }
+            if (currentTarget != null)
+                bufferText.Append(ch);
+        }
+
+        if (currentTarget != null && bufferText.Length > 0)
+            AppendBufferText(currentTarget, bufferText.ToString(), runProps);
+    }
+
+    private static void AppendBufferText(DxpFieldNodeBuffer buffer, string text, RunProperties? runProps)
+    {
+        if (string.IsNullOrEmpty(text))
+            return;
+        var run = new Run();
+        if (runProps != null)
+            run.RunProperties = (RunProperties)runProps.CloneNode(true);
+        var t = new Text(text);
+        if (NeedsPreserveSpace(text))
+            t.Space = SpaceProcessingModeValues.Preserve;
+        run.AppendChild(t);
+        var child = buffer.BeginRun(run);
+        child.AddText(text);
+    }
+
+    private sealed class DxpFieldNodeBufferRecorder : DxpVisitor
+    {
+        private readonly Stack<DxpFieldNodeBuffer> _stack = new();
+        private readonly Stack<Run?> _runStack = new();
+
+        public DxpFieldNodeBufferRecorder() : base(null)
+        {
+        }
+
+        public void Reset(DxpFieldNodeBuffer root)
+        {
+            _stack.Clear();
+            _runStack.Clear();
+            _stack.Push(root);
+            _runStack.Push(null);
+        }
+
+        private DxpFieldNodeBuffer Current => _stack.Peek();
+        private Run? CurrentRun => _runStack.Peek();
+
+        public override IDisposable VisitRunBegin(Run r, DxpIDocumentContext d)
+        {
+            var run = new Run();
+            if (r.RunProperties != null)
+                run.RunProperties = (RunProperties)r.RunProperties.CloneNode(true);
+            var child = Current.BeginRun(run);
+            _stack.Push(child);
+            _runStack.Push(run);
+            return DxpDisposable.Create(() => {
+                _stack.Pop();
+                _runStack.Pop();
+            });
+        }
+
+        public override void VisitText(Text t, DxpIDocumentContext d)
+        {
+            Current.AddText(t.Text);
+            var run = CurrentRun;
+            if (run != null)
+            {
+                var text = new Text(t.Text);
+                if (NeedsPreserveSpace(t.Text))
+                    text.Space = SpaceProcessingModeValues.Preserve;
+                run.AppendChild(text);
+            }
+        }
+        public override void VisitDeletedText(DeletedText dt, DxpIDocumentContext d) => Current.AddDeletedText(dt.Text);
+        public override void VisitBreak(Break b, DxpIDocumentContext d) => Current.AddBreak();
+        public override void VisitTab(TabChar tab, DxpIDocumentContext d) => Current.AddTab();
+        public override void VisitCarriageReturn(CarriageReturn cr, DxpIDocumentContext d) => Current.AddCarriageReturn();
+        public override void VisitNoBreakHyphen(NoBreakHyphen nbh, DxpIDocumentContext d) => Current.AddNoBreakHyphen();
+
+        public override IDisposable VisitHyperlinkBegin(Hyperlink link, DxpLinkAnchor? target, DxpIDocumentContext d)
+        {
+            var clone = (Hyperlink)link.CloneNode(false);
+            var child = Current.BeginHyperlink(clone, target);
+            _stack.Push(child);
+            return DxpDisposable.Create(() => _stack.Pop());
+        }
+    }
+
+    private bool TryEvaluateIfAndEmit(FieldEvalFrameState frame, DxpIDocumentContext d)
+    {
+        if (frame.IfState == null || string.IsNullOrWhiteSpace(frame.InstructionText))
+            return false;
+
+        var ifResult = _eval.EvaluateIfConditionAsync(frame.InstructionText).GetAwaiter().GetResult();
+        if (ifResult == null || !ifResult.Value.Success)
+        {
+            frame.Evaluated = true;
+            frame.SuppressContent = true;
+            EmitEvaluatedText(GetEvaluationErrorText(frame.InstructionText), d);
+            return true;
+        }
+
+        var selected = ifResult.Value.Condition ? frame.IfState.TrueBuffer : frame.IfState.FalseBuffer;
+        frame.Evaluated = true;
+        frame.SuppressContent = true;
+        if (selected.IsEmpty)
+        {
+            var evalResult = _eval.EvalAsync(new DxpFieldInstruction(frame.InstructionText)).GetAwaiter().GetResult();
+            if (evalResult.Status == DxpFieldEvalStatus.Resolved && evalResult.Text != null)
+                EmitEvaluatedText(evalResult.Text, d);
+            else
+                EmitEvaluatedText(GetEvaluationErrorText(frame.InstructionText), d);
+            return true;
+        }
+
+        if (selected.TryGetRunSegments(out var segments))
+        {
+            foreach (var (text, props) in segments)
+                EmitEvaluatedText(text, d, props);
+            return true;
+        }
+
+        selected.Replay(_next, d);
+        return true;
+    }
+
+    private FieldEvalFrameState? GetActiveIfFrame()
+    {
+        if (_fieldFrames.Count == 0)
+            return null;
+
+        foreach (var frame in _fieldFrames)
+        {
+            if (frame.IfState == null)
+                continue;
+            if (frame.InResult)
+                continue;
+            return frame;
+        }
+
+        return null;
+    }
+
+    private static string FormatIfLiteralToken(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+            return "\"\"";
+
+        bool needsQuote = value.Any(char.IsWhiteSpace) || value.Contains('"');
+        if (!needsQuote)
+            return value;
+
+        var escaped = value.Replace("\"", "\\\"");
+        return $"\"{escaped}\"";
+    }
+
+    private bool TryInjectIfInstructionValue(string value)
+    {
+        var frame = GetActiveIfFrame();
+        if (frame?.IfState == null)
+            return false;
+        if (frame.IfState.GetCurrentBuffer() != null)
+            return false;
+
+        var token = FormatIfLiteralToken(value);
+        var needsSpace = !string.IsNullOrEmpty(frame.InstructionText) &&
+            !char.IsWhiteSpace(frame.InstructionText![frame.InstructionText.Length - 1]);
+        // Add a trailing space so the tokenizer commits the injected token.
+        var segment = (needsSpace ? " " : string.Empty) + token + " ";
+        frame.InstructionText = frame.InstructionText == null ? token : frame.InstructionText + segment;
+        ProcessIfInstructionSegment(frame.IfState, segment, null);
+        return true;
+    }
+
     public override void VisitComplexFieldBegin(FieldChar begin, DxpIDocumentContext d)
     {
         var frame = new FieldEvalFrameState { IsComplex = true, InResult = false, SeenSeparate = false };
@@ -146,8 +428,13 @@ public sealed class DxpFieldEvalMiddleware : DxpMiddleware
                 return;
             if (current != null && ShouldDeferEvaluation(current))
                 return;
-            if (!IsNestedField && TryWriteEvaluatedCurrentField(current, d))
+            if (current != null && current.IfState != null)
                 return;
+            if ((!IsNestedField || IsCapturingForIf() || GetActiveIfFrame() != null) &&
+                TryWriteEvaluatedCurrentField(current, d))
+                return;
+            // In eval mode, we do not forward cached results or instruction text.
+            return;
         }
 
         if (current != null && !current.InstructionEmitted && !string.IsNullOrWhiteSpace(current.InstructionText))
@@ -164,6 +451,12 @@ public sealed class DxpFieldEvalMiddleware : DxpMiddleware
 
     public override void VisitComplexFieldInstruction(FieldCode instr, string text, DxpIDocumentContext d)
     {
+        if (!string.IsNullOrEmpty(text) && CurrentField?.InResult == true)
+        {
+            VisitComplexFieldCachedResultText(text, d);
+            return;
+        }
+
         if (!string.IsNullOrEmpty(text) && CurrentField != null)
         {
             var current = CurrentField;
@@ -172,6 +465,14 @@ public sealed class DxpFieldEvalMiddleware : DxpMiddleware
                 : current.InstructionText + text;
             if (_mode == DxpFieldEvalMode.Cache && IsSetInstruction(current.InstructionText))
                 current.SuppressContent = true;
+            if (current.IfState == null && StartsWithIf(current.InstructionText))
+                current.IfState = new IfCaptureState();
+
+            if (current.IfState != null)
+            {
+                var runProps = (instr.Parent as Run)?.RunProperties;
+                ProcessIfInstructionSegment(current.IfState, text, runProps);
+            }
             if (current.CodeRunProperties == null)
             {
                 if (instr.Parent is Run instrRun && instrRun.RunProperties != null)
@@ -207,6 +508,16 @@ public sealed class DxpFieldEvalMiddleware : DxpMiddleware
             d.CurrentFields.Current.SeenSeparate = true;
             d.CurrentFields.Current.InResult = true;
         }
+
+        if (_mode == DxpFieldEvalMode.Evaluate && !IsNestedField)
+        {
+            var frame = CurrentField;
+            if (frame != null && frame.IfState != null && !frame.Evaluated)
+            {
+                if (TryEvaluateIfAndEmit(frame, d))
+                    return;
+            }
+        }
     }
 
     public override void VisitComplexFieldEnd(FieldChar end, DxpIDocumentContext d)
@@ -214,6 +525,10 @@ public sealed class DxpFieldEvalMiddleware : DxpMiddleware
         if (_mode == DxpFieldEvalMode.Evaluate && !IsNestedField)
         {
             var frame = CurrentField;
+            if (frame != null && frame.IfState != null && !frame.Evaluated)
+                TryEvaluateIfAndEmit(frame, d);
+            if (frame != null && !frame.Evaluated)
+                TryWriteEvaluatedCurrentField(frame, d);
             if (frame != null && !frame.Evaluated && ShouldDeferEvaluation(frame))
                 TryWriteEvaluatedCurrentField(frame, d);
         }
@@ -242,9 +557,11 @@ public sealed class DxpFieldEvalMiddleware : DxpMiddleware
         var docFrame = new FieldFrame { SeenSeparate = true, InResult = true, InstructionText = instruction };
         d.CurrentFields.FieldStack.Push(docFrame);
 
-        if (_mode == DxpFieldEvalMode.Evaluate && !IsNestedField)
+        if (_mode == DxpFieldEvalMode.Evaluate && (!IsNestedField || IsCapturingForIf() || GetActiveIfFrame() != null))
         {
-            if (!ShouldDeferEvaluation(frame) && TryWriteEvaluatedCurrentField(frame, d))
+            if (frame.IfState == null && frame.InstructionText != null && StartsWithIf(frame.InstructionText))
+                frame.IfState = new IfCaptureState();
+            if (frame.IfState == null && !ShouldDeferEvaluation(frame) && TryWriteEvaluatedCurrentField(frame, d))
             {
                 return DxpDisposable.Create(() => {
                     if (_fieldFrames.Count == 1)
@@ -256,11 +573,13 @@ public sealed class DxpFieldEvalMiddleware : DxpMiddleware
                 });
             }
 
-            if (ShouldDeferEvaluation(frame))
+            if (ShouldDeferEvaluation(frame) && !IsNestedField)
             {
                 return DxpDisposable.Create(() => {
                     if (!frame.Evaluated)
                         TryWriteEvaluatedCurrentField(frame, d);
+                    if (!frame.Evaluated && frame.IfState != null)
+                        TryEvaluateIfAndEmit(frame, d);
                     if (_fieldFrames.Count == 1)
                         _outerFrame = null;
                     if (_fieldFrames.Count > 0)
@@ -325,6 +644,7 @@ public sealed class DxpFieldEvalMiddleware : DxpMiddleware
         if (string.IsNullOrWhiteSpace(instruction))
             return false;
 
+        var fallbackRunProps = frame?.CodeRunProperties;
         var parse = _parser.Parse(instruction);
         var fieldType = parse.Ast.FieldType ?? string.Empty;
         var argsText = parse.Ast.ArgumentsText;
@@ -374,10 +694,12 @@ public sealed class DxpFieldEvalMiddleware : DxpMiddleware
             var formatText = formatResult.Status == DxpFieldEvalStatus.Resolved && formatResult.Text != null
                 ? formatResult.Text
                 : GetEvaluationErrorText(instruction);
+            if (TryInjectIfInstructionValue(formatText))
+                return true;
             if (mergeRunProps != null)
                 EmitEvaluatedText(formatText, d, mergeRunProps);
             else
-                EmitEvaluatedText(formatText, d, runProps);
+                EmitEvaluatedText(formatText, d, runProps ?? fallbackRunProps);
             return true;
         }
 
@@ -392,7 +714,10 @@ public sealed class DxpFieldEvalMiddleware : DxpMiddleware
                 frame.SuppressContent = true;
             }
 
-            storedNodes.Replay(_next, d);
+            if (TryInjectIfInstructionValue(storedNodes.ToPlainText()))
+                return true;
+            var replayVisitor = TryGetCaptureVisitor(out var captureVisitor, out _) ? captureVisitor! : _next;
+            storedNodes.Replay(replayVisitor, d);
             return true;
         }
 
@@ -414,7 +739,22 @@ public sealed class DxpFieldEvalMiddleware : DxpMiddleware
                     frame.SuppressContent = true;
                 }
 
-                docVarNodes.Replay(_next, d);
+                if (TryInjectIfInstructionValue(docVarNodes.ToPlainText()))
+                    return true;
+                if (docVarNodes.TryGetFirstRunProperties(out var docVarProps) && docVarProps != null)
+                {
+                    var replayVisitor = TryGetCaptureVisitor(out var captureVisitor, out _) ? captureVisitor! : _next;
+                    docVarNodes.Replay(replayVisitor, d);
+                }
+                else if (fallbackRunProps != null)
+                {
+                    EmitEvaluatedText(docVarNodes.ToPlainText(), d, fallbackRunProps);
+                }
+                else
+                {
+                    var replayVisitor = TryGetCaptureVisitor(out var captureVisitor, out _) ? captureVisitor! : _next;
+                    docVarNodes.Replay(replayVisitor, d);
+                }
                 return true;
             }
         }
@@ -447,11 +787,16 @@ public sealed class DxpFieldEvalMiddleware : DxpMiddleware
 
             if (result.Status != DxpFieldEvalStatus.Resolved || result.Text == null)
             {
-                EmitEvaluatedText(GetEvaluationErrorText(instruction), d);
+                var errorText = GetEvaluationErrorText(instruction);
+                if (TryInjectIfInstructionValue(errorText))
+                    return true;
+                EmitEvaluatedText(errorText, d, fallbackRunProps);
                 return true;
             }
 
-            EmitEvaluatedText(result.Text, d);
+            if (TryInjectIfInstructionValue(result.Text))
+                return true;
+            EmitEvaluatedText(result.Text, d, fallbackRunProps);
             return true;
         }
     }
@@ -639,9 +984,27 @@ public sealed class DxpFieldEvalMiddleware : DxpMiddleware
         if (string.IsNullOrEmpty(text))
             return;
 
-        var sink = GetSyntheticSink();
+        if (TryGetCaptureVisitor(out var captureVisitor, out var captureBuffer))
+        {
+            var captureRun = new Run();
+            if (runProperties != null)
+                captureRun.RunProperties = (RunProperties)runProperties.CloneNode(true);
+            var captureText = new Text(text);
+            if (NeedsPreserveSpace(text))
+                captureText.Space = SpaceProcessingModeValues.Preserve;
+            captureRun.AppendChild(captureText);
+            using (captureVisitor!.VisitRunBegin(captureRun, d))
+                captureVisitor.VisitText(captureText, d);
+            return;
+        }
+
+        bool useGlobalStyle = _next is DxpContextTracker tracker &&
+            (tracker.Next is DocxportNet.Visitors.Html.DxpHtmlVisitor ||
+                tracker.Next is DocxportNet.Visitors.Markdown.DxpMarkdownVisitor ||
+                tracker.Next is DocxportNet.Visitors.PlainText.DxpPlainTextVisitor);
+        var sink = useGlobalStyle ? _next : GetSyntheticSink();
         DxpStyleTracker? localStyleTracker = null;
-        if (runProperties != null)
+        if (!useGlobalStyle && runProperties != null)
         {
             var style = BuildEffectiveRunStyle(d, runProperties);
             localStyleTracker = new DxpStyleTracker();
@@ -728,6 +1091,44 @@ public sealed class DxpFieldEvalMiddleware : DxpMiddleware
     private DxpIVisitor GetSyntheticSink()
     {
         return _next is DxpMiddleware middleware ? middleware.Next : _next;
+    }
+
+    private bool TryGetCaptureVisitor(out DxpIVisitor? visitor, out DxpFieldNodeBuffer? buffer)
+    {
+        visitor = null;
+        buffer = null;
+        var state = GetActiveIfState();
+        if (state == null)
+            return false;
+        buffer = state.GetCurrentBuffer();
+        if (buffer == null)
+            return false;
+        state.Recorder.Reset(buffer);
+        visitor = state.Recorder;
+        return true;
+    }
+
+    private IfCaptureState? GetActiveIfState()
+    {
+        if (_fieldFrames.Count == 0)
+            return null;
+
+        foreach (var frame in _fieldFrames)
+        {
+            if (frame.IfState == null)
+                continue;
+            if (frame.InResult)
+                continue;
+            return frame.IfState;
+        }
+
+        return null;
+    }
+
+    private bool IsCapturingForIf()
+    {
+        var state = GetActiveIfState();
+        return state?.GetCurrentBuffer() != null;
     }
 
     private static bool HasRenderableContent(Run r)

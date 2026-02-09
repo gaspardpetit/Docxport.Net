@@ -6,12 +6,12 @@
 
 Expect 1: 1
 
-Expect Error: <b>Error! Reference source not found.</b>
+Expect Error: Error! Reference source not found.
 
-Expect No Error:
+Expect No Error: Not Empty
 
-Expect one:
+Expect one: one
 
-Expect <b>one</b> (bold): <b></b>
+Expect <b>one</b> (bold): <b>one</b>
 
-Expect <b>1</b><u>2</u><b>3: 123</b><u></u><b></b>
+Expect <b>1</b><u>2</u><b>3: 123</b>

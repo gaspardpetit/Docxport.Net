@@ -453,6 +453,27 @@ public sealed class DxpFieldEval
         return new DxpFieldEvalResult(DxpFieldEvalStatus.Resolved, text);
     }
 
+    internal readonly record struct DxpIfConditionResult(bool Success, bool Condition, string? TrueText, string? FalseText);
+
+    internal async Task<DxpIfConditionResult?> EvaluateIfConditionAsync(string instructionText)
+    {
+        var parse = _parser.Parse(instructionText);
+        if (!parse.Success || parse.Ast.FieldType == null)
+            return null;
+        if (!parse.Ast.FieldType.Equals("IF", StringComparison.OrdinalIgnoreCase))
+            return null;
+        if (parse.Ast.ArgumentsText == null)
+            return null;
+        if (!TryParseIfArgs(parse.Ast.ArgumentsText, out var left, out var op, out var right, out var trueText, out var falseText))
+            return new DxpIfConditionResult(false, false, null, null);
+
+        string leftValue = await ResolveValueAsync(left);
+        string rightValue = await ResolveValueAsync(right);
+        bool condition = EvaluateComparison(leftValue, op, rightValue);
+        _logger?.LogInformation("IF evaluated to {Condition}.", condition);
+        return new DxpIfConditionResult(true, condition, trueText, falseText);
+    }
+
     private async Task<DxpFieldEvalResult?> EvalCompareAsync(DxpFieldAst ast)
     {
         if (ast.ArgumentsText == null)

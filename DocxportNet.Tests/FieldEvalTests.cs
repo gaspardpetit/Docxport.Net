@@ -1127,6 +1127,36 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     }
 
     [Fact]
+    public void Walker_EvalMode_IfWithNestedRefInTrueBranch_EmitsRefResult()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:bookmarkStart w:id="0" w:name="BM1"/>
+    <w:r><w:t>one</w:t></w:r>
+    <w:bookmarkEnd w:id="0"/>
+  </w:p>
+  <w:p>
+    <w:r><w:t xml:space="preserve">Expect: </w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> IF 1 = 1 "</w:instrText></w:r>
+    <w:fldSimple w:instr=" REF BM1 ">
+      <w:r><w:instrText>one</w:instrText></w:r>
+    </w:fldSimple>
+    <w:r><w:instrText xml:space="preserve">" "no" </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var actual = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml));
+        var expected = TestCompare.Normalize("one\n\nExpect: one\n\n");
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
     public void Walker_TableDirectionalRanges_ResolveThroughMiddleware()
     {
         using var stream = new MemoryStream();

@@ -52,11 +52,7 @@ Expect one:
 
 `REF Var1`
 
-
-
-`1`
-
-
+1
 
 `= "1" "one" "not one"`
 
@@ -82,11 +78,7 @@ Expect <b>one</b> (bold):
 
 `REF Var1`
 
-
-
-`1`
-
-
+1
 
 `= "1" "`
 
