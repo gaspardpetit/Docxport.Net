@@ -4,33 +4,25 @@
 <!-- Created: 2026-02-08 19:39:00Z -->
 <!-- Modified: 2026-02-08 23:30:00Z -->
 
-Expect 1:
+Expect 1: 1
 
-`REF Var1`
-
-1
-
-Expect Error: <b>
-
-`REF VarUnknown`
-
-Error! Reference source not found.</b>
+Expect Error: Error! Reference source not found.
 
 Expect No Error:
 
-`IF  = "" "Empty" "Not Empty"`
+`IF "Error! Reference source not found."  = "" "Empty" "Not Empty"`
 
 Not Empty
 
 Expect one:
 
-`IF  = "1" "one" "not one"`
+`IF 1  = "1" "one" "not one"`
 
 one
 
 Expect <b>one</b> (bold): <b>
 
-`IF  = "1" "one" "not one"`
+`IF 1  = "1" "one" "not one"`
 
 one</b>
 

@@ -2,7 +2,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
 using System.Globalization;
 
-namespace DocxportNet.Walker;
+namespace DocxportNet.Walker.Parts;
 
 public class DxpTables
 {
@@ -58,17 +58,6 @@ public class DxpTables
         return span is > 1 ? span.Value : 1;
     }
 
-    private static string? GetVMerge(TableCell tc)
-    {
-        // null => no merge
-        // "restart" => starts a vertical merge region (sometimes val absent = restart depending on producers)
-        // "continue" => continues
-        var vm = tc.TableCellProperties?.VerticalMerge;
-        if (vm == null)
-            return null;
-        return vm.Val?.Value.ToString(); // "restart"/"continue" or null
-    }
-
     private static bool IsVMergeContinue(TableCell tc)
     {
         var vm = tc.TableCellProperties?.VerticalMerge;
@@ -80,21 +69,6 @@ public class DxpTables
             return true;
 
         return vm.Val.Value == MergedCellValues.Continue;
-    }
-
-    private static bool IsVMergeRestartOrStart(TableCell tc)
-    {
-        var vm = tc.TableCellProperties?.VerticalMerge;
-        if (vm == null)
-            return false;
-
-        // <w:vMerge w:val="restart"/> clearly starts
-        if (vm.Val?.Value == MergedCellValues.Restart)
-            return true;
-
-        // Some producers use <w:vMerge/> on the first cell too; ambiguous.
-        // We'll treat val==null as "continue" ONLY if we can find a master above.
-        return false;
     }
 
     public DxpTableModel BuildTableModel(Table t)

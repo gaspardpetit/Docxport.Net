@@ -3,22 +3,28 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
 using DocxportNet.Core;
+using DocxportNet.Walker;
+using DocxportNet.Walker.Context;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Globalization;
 
-namespace DocxportNet.Walker;
+namespace DocxportNet.Middleware;
 
 /// <summary>
 /// Placeholder state layer for the walker pipeline.
 /// Currently forwards all events unchanged.
 /// </summary>
-public sealed class DxpContextTracker : DxpMiddleware
+public sealed class DxpContextMiddleware : DxpLoggingMiddleware
 {
+    public override DxpIVisitor Next { get; }
     private OpenXmlPart? _mainPart;
     private readonly ILogger? _logger;
 
-    public DxpContextTracker(DxpIVisitor next, ILogger? logger = null) : base(next)
+    public DxpContextMiddleware(DxpIVisitor next, ILogger? logger = null) : base(logger, "DxpContextTracker")
     {
         _logger = logger;
+		Next = next ?? throw new ArgumentNullException(nameof(next));
     }
 
     public override IDisposable VisitDocumentBegin(WordprocessingDocument doc, DxpIDocumentContext documentContext)
@@ -28,7 +34,7 @@ public sealed class DxpContextTracker : DxpMiddleware
         if (documentContext is IDxpMutableDocumentContext mutable)
             partScope = mutable.PushCurrentPart(_mainPart);
 
-        var inner = _next.VisitDocumentBegin(doc, documentContext);
+        var inner = Next.VisitDocumentBegin(doc, documentContext);
         return new DxpAfterScope(inner, () => {
             partScope.Dispose();
             CleanupFields(documentContext);
@@ -38,10 +44,20 @@ public sealed class DxpContextTracker : DxpMiddleware
 
     public override void VisitText(Text t, DxpIDocumentContext d)
     {
+        var fontSizeHp = d.CurrentRun?.Style.FontSizeHalfPoints;
+        var fontSizePt = fontSizeHp.HasValue
+            ? (fontSizeHp.Value / 2.0).ToString("0.###", CultureInfo.InvariantCulture)
+            : "null";
+        var escapedText = t.Text
+            .Replace("\r", "\\r")
+            .Replace("\n", "\\n")
+            .Replace("\t", "\\t");
+        Console.WriteLine($"[Context] Text='{escapedText}' FontSizeHp={fontSizeHp?.ToString() ?? "null"} FontSizePt={fontSizePt}");
+
         if (d.CurrentFields.IsInFieldResult)
-            _next.VisitComplexFieldCachedResultText(t.Text, d);
+			Next.VisitComplexFieldCachedResultText(t.Text, d);
         else
-            _next.VisitText(t, d);
+			Next.VisitText(t, d);
     }
 
     public override IDisposable VisitSimpleFieldBegin(SimpleField fld, DxpIDocumentContext d)
@@ -52,7 +68,7 @@ public sealed class DxpContextTracker : DxpMiddleware
             frame.InstructionText = instruction;
         d.CurrentFields.FieldStack.Push(frame);
 
-        var inner = _next.VisitSimpleFieldBegin(fld, d);
+        var inner = Next.VisitSimpleFieldBegin(fld, d);
         return new DxpAfterScope(inner, () => {
             if (d.CurrentFields.FieldStack.Count > 0)
                 d.CurrentFields.FieldStack.Pop();
@@ -63,7 +79,7 @@ public sealed class DxpContextTracker : DxpMiddleware
     {
         var frame = new FieldFrame { SeenSeparate = false, ResultScope = null, InResult = false };
         d.CurrentFields.FieldStack.Push(frame);
-        _next.VisitComplexFieldBegin(begin, d);
+		Next.VisitComplexFieldBegin(begin, d);
     }
 
     public override void VisitComplexFieldInstruction(FieldCode instr, string text, DxpIDocumentContext d)
@@ -76,7 +92,7 @@ public sealed class DxpContextTracker : DxpMiddleware
                 : current.InstructionText + text;
         }
 
-        _next.VisitComplexFieldInstruction(instr, text, d);
+		Next.VisitComplexFieldInstruction(instr, text, d);
     }
 
     public override void VisitComplexFieldSeparate(FieldChar separate, DxpIDocumentContext d)
@@ -86,17 +102,17 @@ public sealed class DxpContextTracker : DxpMiddleware
             var top = d.CurrentFields.FieldStack.Pop();
             if (!top.SeenSeparate)
             {
-                _next.VisitComplexFieldSeparate(separate, d);
+				Next.VisitComplexFieldSeparate(separate, d);
                 top.SeenSeparate = true;
                 top.InResult = true;
                 if (top.ResultScope == null)
-                    top.ResultScope = _next.VisitComplexFieldResultBegin(d);
+                    top.ResultScope = Next.VisitComplexFieldResultBegin(d);
             }
             d.CurrentFields.FieldStack.Push(top);
             return;
         }
 
-        _next.VisitComplexFieldSeparate(separate, d);
+		Next.VisitComplexFieldSeparate(separate, d);
     }
 
     public override void VisitComplexFieldEnd(FieldChar end, DxpIDocumentContext d)
@@ -106,17 +122,17 @@ public sealed class DxpContextTracker : DxpMiddleware
             var top = d.CurrentFields.FieldStack.Pop();
             top.InResult = false;
             top.ResultScope?.Dispose();
-            _next.VisitComplexFieldEnd(end, d);
+			Next.VisitComplexFieldEnd(end, d);
             return;
         }
 
-        _next.VisitComplexFieldEnd(end, d);
+		Next.VisitComplexFieldEnd(end, d);
     }
 
     public override IDisposable VisitRunBegin(Run r, DxpIDocumentContext d)
     {
         if (d is not IDxpMutableDocumentContext doc)
-            return _next.VisitRunBegin(r, d);
+            return Next.VisitRunBegin(r, d);
 
         var para = r.Ancestors<Paragraph>().FirstOrDefault();
         var styles = d.Styles;
@@ -156,17 +172,17 @@ public sealed class DxpContextTracker : DxpMiddleware
                 runText);
         }
         if (para != null && hasRenderable)
-            doc.StyleTracker.ApplyStyle(style, d, _next);
+            doc.StyleTracker.ApplyStyle(style, d, Next);
 
         var runScope = doc.PushRun(r, style, language, out _);
-        var inner = _next.VisitRunBegin(r, d);
+        var inner = Next.VisitRunBegin(r, d);
         return new DxpAfterScope(inner, runScope.Dispose);
     }
 
     public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
     {
         if (d is not IDxpMutableDocumentContext doc || paragraph is not DxpParagraphContext ctx)
-            return _next.VisitParagraphBegin(p, d, paragraph);
+            return Next.VisitParagraphBegin(p, d, paragraph);
 
         Deleted? deletedParagraph =
             p.ParagraphProperties?.GetFirstChild<Deleted>() ??
@@ -183,7 +199,7 @@ public sealed class DxpContextTracker : DxpMiddleware
 
         var previous = doc.CurrentParagraph;
         doc.CurrentParagraph = ctx;
-        var inner = _next.VisitParagraphBegin(p, d, paragraph);
+        var inner = Next.VisitParagraphBegin(p, d, paragraph);
         return new DxpAroundScope(
             inner,
             () => {
@@ -198,7 +214,7 @@ public sealed class DxpContextTracker : DxpMiddleware
     {
         if (d is not IDxpMutableDocumentContext doc)
         {
-            var inner = _next.VisitTableBegin(t, model, d, table);
+            var inner = Next.VisitTableBegin(t, model, d, table);
             return new DxpBeforeScope(inner, () => ResetStyle(d));
         }
 
@@ -206,7 +222,7 @@ public sealed class DxpContextTracker : DxpMiddleware
         var previousModel = doc.CurrentTableModel;
         doc.CurrentTable = table;
         doc.CurrentTableModel = model;
-        var innerScope = _next.VisitTableBegin(t, model, d, table);
+        var innerScope = Next.VisitTableBegin(t, model, d, table);
         return new DxpBeforeScope(innerScope, () => {
             ResetStyle(d);
             doc.CurrentTable = previousTable;
@@ -217,22 +233,22 @@ public sealed class DxpContextTracker : DxpMiddleware
     public override IDisposable VisitTableRowBegin(TableRow tr, DxpITableRowContext row, DxpIDocumentContext d)
     {
         if (d is not IDxpMutableDocumentContext doc)
-            return _next.VisitTableRowBegin(tr, row, d);
+            return Next.VisitTableRowBegin(tr, row, d);
 
         var previousRow = doc.CurrentTableRow;
         doc.CurrentTableRow = row;
-        var inner = _next.VisitTableRowBegin(tr, row, d);
+        var inner = Next.VisitTableRowBegin(tr, row, d);
         return new DxpAfterScope(inner, () => doc.CurrentTableRow = previousRow);
     }
 
     public override IDisposable VisitTableCellBegin(TableCell tc, DxpITableCellContext cell, DxpIDocumentContext d)
     {
         if (d is not IDxpMutableDocumentContext doc)
-            return _next.VisitTableCellBegin(tc, cell, d);
+            return Next.VisitTableCellBegin(tc, cell, d);
 
         var previousCell = doc.CurrentTableCell;
         doc.CurrentTableCell = cell;
-        var inner = _next.VisitTableCellBegin(tc, cell, d);
+        var inner = Next.VisitTableCellBegin(tc, cell, d);
         return new DxpAfterScope(inner, () => doc.CurrentTableCell = previousCell);
     }
 
@@ -243,7 +259,7 @@ public sealed class DxpContextTracker : DxpMiddleware
         if (d is IDxpMutableDocumentContext doc)
             partScope = doc.PushCurrentPart(part ?? doc.CurrentPart);
 
-        var inner = _next.VisitSectionHeaderBegin(hdr, value, d);
+        var inner = Next.VisitSectionHeaderBegin(hdr, value, d);
         return new DxpAroundScope(inner, () => ResetStyle(d), partScope.Dispose);
     }
 
@@ -254,24 +270,24 @@ public sealed class DxpContextTracker : DxpMiddleware
         if (d is IDxpMutableDocumentContext doc)
             partScope = doc.PushCurrentPart(part ?? doc.CurrentPart);
 
-        var inner = _next.VisitSectionFooterBegin(ftr, value, d);
+        var inner = Next.VisitSectionFooterBegin(ftr, value, d);
         return new DxpAroundScope(inner, () => ResetStyle(d), partScope.Dispose);
     }
 
     public override IDisposable VisitSectionBegin(SectionProperties properties, SectionLayout layout, DxpIDocumentContext d)
     {
         if (d is not IDxpMutableDocumentContext doc)
-            return _next.VisitSectionBegin(properties, layout, d);
+            return Next.VisitSectionBegin(properties, layout, d);
 
         var previous = doc.CurrentSection;
         doc.EnterSection(properties, layout);
-        var inner = _next.VisitSectionBegin(properties, layout, d);
+        var inner = Next.VisitSectionBegin(properties, layout, d);
         return new DxpAfterScope(inner, () => doc.CurrentSection = previous);
     }
 
     public override IDisposable VisitHyperlinkBegin(Hyperlink link, DxpLinkAnchor? target, DxpIDocumentContext d)
     {
-        var inner = _next.VisitHyperlinkBegin(link, target, d);
+        var inner = Next.VisitHyperlinkBegin(link, target, d);
         return new DxpBeforeScope(inner, () => ResetStyle(d));
     }
 
@@ -281,25 +297,25 @@ public sealed class DxpContextTracker : DxpMiddleware
         if (d is IDxpMutableDocumentContext doc)
             partScope = doc.PushCurrentPart(c.Part ?? doc.CurrentPart);
 
-        var inner = _next.VisitCommentBegin(c, thread, d);
+        var inner = Next.VisitCommentBegin(c, thread, d);
         return new DxpAroundScope(inner, () => ResetStyle(d), partScope.Dispose);
     }
 
     public override IDisposable VisitRubyBegin(Ruby ruby, DxpIDocumentContext d)
     {
         if (d is not IDxpMutableDocumentContext doc)
-            return _next.VisitRubyBegin(ruby, d);
+            return Next.VisitRubyBegin(ruby, d);
 
         var pr = ruby.GetFirstChild<RubyProperties>();
         var scope = doc.PushRuby(ruby, pr, out _);
-        var inner = _next.VisitRubyBegin(ruby, d);
+        var inner = Next.VisitRubyBegin(ruby, d);
         return new DxpAfterScope(inner, scope.Dispose);
     }
 
     public override IDisposable VisitSmartTagRunBegin(OpenXmlUnknownElement smart, string elementName, string elementUri, DxpIDocumentContext d)
     {
         if (d is not IDxpMutableDocumentContext doc)
-            return _next.VisitSmartTagRunBegin(smart, elementName, elementUri, d);
+            return Next.VisitSmartTagRunBegin(smart, elementName, elementUri, d);
 
         var wNs = smart.NamespaceUri;
         var smartTagPr = smart.ChildElements
@@ -308,93 +324,93 @@ public sealed class DxpContextTracker : DxpMiddleware
         var attrs = smartTagPr != null ? smartTagPr.Elements<CustomXmlAttribute>().ToList() : new List<CustomXmlAttribute>();
 
         var scope = doc.PushSmartTag(smart, elementName, elementUri, attrs, out _);
-        var inner = _next.VisitSmartTagRunBegin(smart, elementName, elementUri, d);
+        var inner = Next.VisitSmartTagRunBegin(smart, elementName, elementUri, d);
         return new DxpAfterScope(inner, scope.Dispose);
     }
 
     public override IDisposable VisitCustomXmlRunBegin(CustomXmlRun cxr, DxpIDocumentContext d)
     {
         if (d is not IDxpMutableDocumentContext doc)
-            return _next.VisitCustomXmlRunBegin(cxr, d);
+            return Next.VisitCustomXmlRunBegin(cxr, d);
 
         var scope = doc.PushCustomXml(cxr, cxr.CustomXmlProperties, out _);
-        var inner = _next.VisitCustomXmlRunBegin(cxr, d);
+        var inner = Next.VisitCustomXmlRunBegin(cxr, d);
         return new DxpAfterScope(inner, scope.Dispose);
     }
 
     public override IDisposable VisitCustomXmlBlockBegin(CustomXmlBlock cx, DxpIDocumentContext d)
     {
         if (d is not IDxpMutableDocumentContext doc)
-            return _next.VisitCustomXmlBlockBegin(cx, d);
+            return Next.VisitCustomXmlBlockBegin(cx, d);
 
         var scope = doc.PushCustomXml(cx, cx.CustomXmlProperties, out _);
-        var inner = _next.VisitCustomXmlBlockBegin(cx, d);
+        var inner = Next.VisitCustomXmlBlockBegin(cx, d);
         return new DxpAfterScope(inner, scope.Dispose);
     }
 
     public override IDisposable VisitSdtContentRunBegin(SdtContentRun content, DxpIDocumentContext d)
     {
         if (d is not IDxpMutableDocumentContext doc)
-            return _next.VisitSdtContentRunBegin(content, d);
+            return Next.VisitSdtContentRunBegin(content, d);
 
         if (content.Parent is not SdtRun sdtRun)
-            return _next.VisitSdtContentRunBegin(content, d);
+            return Next.VisitSdtContentRunBegin(content, d);
 
         var scope = doc.PushSdt(sdtRun, sdtRun.SdtProperties, sdtRun.SdtEndCharProperties, out _);
-        var inner = _next.VisitSdtContentRunBegin(content, d);
+        var inner = Next.VisitSdtContentRunBegin(content, d);
         return new DxpAfterScope(inner, scope.Dispose);
     }
 
     public override IDisposable VisitSdtContentBlockBegin(SdtContentBlock content, DxpIDocumentContext d)
     {
         if (d is not IDxpMutableDocumentContext doc)
-            return _next.VisitSdtContentBlockBegin(content, d);
+            return Next.VisitSdtContentBlockBegin(content, d);
 
         if (content.Parent is not SdtBlock sdtBlock)
-            return _next.VisitSdtContentBlockBegin(content, d);
+            return Next.VisitSdtContentBlockBegin(content, d);
 
         var scope = doc.PushSdt(sdtBlock, sdtBlock.SdtProperties, sdtBlock.SdtEndCharProperties, out _);
-        var inner = _next.VisitSdtContentBlockBegin(content, d);
+        var inner = Next.VisitSdtContentBlockBegin(content, d);
         return new DxpAfterScope(inner, scope.Dispose);
     }
 
     public override IDisposable VisitDeletedRunBegin(DeletedRun dr, DxpIDocumentContext d)
     {
         if (d is not IDxpMutableDocumentContext doc)
-            return _next.VisitDeletedRunBegin(dr, d);
+            return Next.VisitDeletedRunBegin(dr, d);
 
         var scope = doc.PushChangeScope(keepAccept: false, keepReject: true, changeInfo: ResolveChangeInfo(dr, d));
-        var inner = _next.VisitDeletedRunBegin(dr, d);
+        var inner = Next.VisitDeletedRunBegin(dr, d);
         return new DxpAfterScope(inner, scope.Dispose);
     }
 
     public override IDisposable VisitInsertedRunBegin(InsertedRun ir, DxpIDocumentContext d)
     {
         if (d is not IDxpMutableDocumentContext doc)
-            return _next.VisitInsertedRunBegin(ir, d);
+            return Next.VisitInsertedRunBegin(ir, d);
 
         var scope = doc.PushChangeScope(keepAccept: true, keepReject: false, changeInfo: ResolveChangeInfo(ir, d));
-        var inner = _next.VisitInsertedRunBegin(ir, d);
+        var inner = Next.VisitInsertedRunBegin(ir, d);
         return new DxpAfterScope(inner, scope.Dispose);
     }
 
     public override IDisposable VisitDeletedBegin(Deleted del, DxpIDocumentContext d)
     {
         if (d is not IDxpMutableDocumentContext doc)
-            return _next.VisitDeletedBegin(del, d);
+            return Next.VisitDeletedBegin(del, d);
 
         var scope = doc.PushChangeScope(keepAccept: false, keepReject: true, changeInfo: ResolveChangeInfo(del, d));
-        var inner = _next.VisitDeletedBegin(del, d);
+        var inner = Next.VisitDeletedBegin(del, d);
         return new DxpAfterScope(inner, scope.Dispose);
     }
 
     public override IDisposable VisitInsertedBegin(Inserted ins, DxpIDocumentContext d)
     {
         if (d is not IDxpMutableDocumentContext doc)
-            return _next.VisitInsertedBegin(ins, d);
+            return Next.VisitInsertedBegin(ins, d);
 
         var scope = doc.PushChangeScope(keepAccept: true, keepReject: false, changeInfo: ResolveChangeInfo(ins, d));
-        var inner = _next.VisitInsertedBegin(ins, d);
+        var inner = Next.VisitInsertedBegin(ins, d);
         return new DxpAfterScope(inner, scope.Dispose);
     }
 
@@ -402,14 +418,14 @@ public sealed class DxpContextTracker : DxpMiddleware
     {
         if (d is not IDxpMutableDocumentContext doc)
         {
-            var innerScope = _next.VisitFootnoteBegin(footnote, footnoteContext, d);
+            var innerScope = Next.VisitFootnoteBegin(footnote, footnoteContext, d);
             return new DxpBeforeScope(innerScope, () => ResetStyle(d));
         }
 
         var previous = doc.CurrentFootnote;
         doc.CurrentFootnote = footnoteContext;
         var partScope = doc.PushCurrentPart((_mainPart as MainDocumentPart)?.FootnotesPart);
-        var inner = _next.VisitFootnoteBegin(footnote, footnoteContext, d);
+        var inner = Next.VisitFootnoteBegin(footnote, footnoteContext, d);
         return new DxpAroundScope(inner, () => ResetStyle(d), () => {
             partScope.Dispose();
             doc.CurrentFootnote = previous;
@@ -420,13 +436,13 @@ public sealed class DxpContextTracker : DxpMiddleware
     {
         if (d is not IDxpMutableDocumentContext doc)
         {
-            var innerScope = _next.VisitEndnoteBegin(endnote, id, index, d);
+            var innerScope = Next.VisitEndnoteBegin(endnote, id, index, d);
             return new DxpBeforeScope(innerScope, () => ResetStyle(d));
         }
 
         var scope = doc.PushFootnote(id, index, out _);
         var partScope = doc.PushCurrentPart((_mainPart as MainDocumentPart)?.EndnotesPart);
-        var inner = _next.VisitEndnoteBegin(endnote, id, index, d);
+        var inner = Next.VisitEndnoteBegin(endnote, id, index, d);
         return new DxpAroundScope(inner, () => ResetStyle(d), () => {
             partScope.Dispose();
             scope.Dispose();
@@ -435,20 +451,20 @@ public sealed class DxpContextTracker : DxpMiddleware
 
     public override void VisitBookmarkStart(BookmarkStart bs, DxpIDocumentContext d)
     {
-        _next.VisitBookmarkStart(bs, d);
+		Next.VisitBookmarkStart(bs, d);
         ResetStyle(d);
     }
 
     public override void VisitBookmarkEnd(BookmarkEnd be, DxpIDocumentContext d)
     {
-        _next.VisitBookmarkEnd(be, d);
+		Next.VisitBookmarkEnd(be, d);
         ResetStyle(d);
     }
 
     private void ResetStyle(DxpIDocumentContext d)
     {
         if (d is IDxpMutableDocumentContext doc)
-            doc.StyleTracker.ResetStyle(d, _next);
+            doc.StyleTracker.ResetStyle(d, Next);
     }
 
     private static void CleanupFields(DxpIDocumentContext d)

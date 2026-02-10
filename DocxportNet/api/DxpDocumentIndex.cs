@@ -1,5 +1,7 @@
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using DocxportNet.Fields;
+using DocxportNet.Fields.Resolution;
 using System.Text;
 
 namespace DocxportNet.API;
@@ -7,17 +9,20 @@ namespace DocxportNet.API;
 public sealed class DxpDocumentIndex
 {
     public IReadOnlyDictionary<string, string> Bookmarks { get; }
+    public IReadOnlyDictionary<string, DxpFieldNodeBuffer> BookmarkNodes { get; }
     public IReadOnlyList<string> SequenceIdentifiers { get; }
     public DxpRefIndex RefIndex { get; }
     public IReadOnlyList<DxpCaptionEntry> Captions { get; }
 
     public DxpDocumentIndex(
         IReadOnlyDictionary<string, string> bookmarks,
+        IReadOnlyDictionary<string, DxpFieldNodeBuffer> bookmarkNodes,
         IReadOnlyList<string> sequenceIdentifiers,
         DxpRefIndex? refIndex = null,
         IReadOnlyList<DxpCaptionEntry>? captions = null)
     {
         Bookmarks = bookmarks;
+        BookmarkNodes = bookmarkNodes;
         SequenceIdentifiers = sequenceIdentifiers;
         RefIndex = refIndex ?? DxpRefIndex.Empty;
         Captions = captions ?? [];
@@ -78,7 +83,8 @@ public sealed class DxpDocumentIndex
         foreach (var kvp in bookmarks)
             resolvedBookmarks[kvp.Key] = kvp.Value.ToString();
 
-        return new DxpDocumentIndex(resolvedBookmarks, seqIdentifiers, DxpRefIndex.Empty);
+        var bookmarkNodes = DxpBookmarkNodeExtractor.Extract(doc);
+        return new DxpDocumentIndex(resolvedBookmarks, bookmarkNodes, seqIdentifiers, DxpRefIndex.Empty);
     }
 
     private static void TryCollectSeqIdentifier(string? instruction, List<string> seqIdentifiers)

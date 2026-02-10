@@ -1,5 +1,5 @@
 using DocumentFormat.OpenXml.Packaging;
-using DocxportNet.Walker;
+using DocxportNet.Walker.Context;
 using System.Xml.Linq;
 using Xunit.Abstractions;
 

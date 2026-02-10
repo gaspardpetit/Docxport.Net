@@ -320,7 +320,7 @@ static string GetVersion()
 
 static void ApplyDocVariables(DxpIVisitor visitor, string? varsPath, IReadOnlyDictionary<string, string> cliVariables)
 {
-    if (visitor is not IDxpFieldEvalProvider provider)
+    if (visitor is not DxpIFieldEvalProvider provider)
         return;
 
     var context = provider.FieldEval.Context;

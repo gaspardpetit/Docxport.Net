@@ -2,7 +2,7 @@ using System.Globalization;
 
 namespace DocxportNet.Formatting.Impl;
 
-public sealed class FinnishNumberToWordsProvider : IDxpNumberToWordsProvider
+public sealed class FinnishNumberToWordsProvider : DxpINumberToWordsProvider
 {
     public bool CanHandle(CultureInfo culture) => culture.TwoLetterISOLanguageName.Equals("fi", StringComparison.OrdinalIgnoreCase);
 

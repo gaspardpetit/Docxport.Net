@@ -5,7 +5,7 @@ using DocxportNet.API;
 
 namespace DocxportNet.Fields;
 
-public sealed class DxpFieldEvalContext
+public sealed partial class DxpFieldEvalContext
 {
     private readonly Dictionary<string, string?> _docVariables = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, DxpFieldNodeBuffer> _docVariableNodes = new(StringComparer.OrdinalIgnoreCase);
@@ -21,12 +21,12 @@ public sealed class DxpFieldEvalContext
     public CultureInfo? Culture { get; set; } = CultureInfo.CurrentCulture;
     public bool StripAmPmPeriods { get; set; } = false;
     public bool AllowInvariantNumericFallback { get; set; } = true;
-    public DocxportNet.Formatting.IDxpNumberToWordsProvider? NumberToWordsProvider { get; set; }
+    public DocxportNet.Formatting.DxpINumberToWordsProvider? NumberToWordsProvider { get; set; }
     public DocxportNet.Formatting.DxpNumberToWordsRegistry NumberToWordsRegistry { get; set; } = DocxportNet.Formatting.DxpNumberToWordsRegistry.Default;
     public Resolution.IDxpTableValueResolver? TableResolver { get; set; }
     public Resolution.IDxpRefResolver? RefResolver { get; set; }
-    public List<Resolution.DxpRefHyperlink> RefHyperlinks { get; } = new();
-    public List<Resolution.DxpRefFootnote> RefFootnotes { get; } = new();
+    public List<DxpRefHyperlink> RefHyperlinks { get; } = new();
+    public List<DxpRefFootnote> RefFootnotes { get; } = new();
     public Func<int>? CurrentOutlineLevelProvider { get; set; }
     public int? CurrentDocumentOrder { get; set; }
     public Expressions.DxpFormulaFunctionRegistry FormulaFunctions { get; set; } = Expressions.DxpFormulaFunctionRegistry.Default;

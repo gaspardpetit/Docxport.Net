@@ -3,6 +3,8 @@ using DocumentFormat.OpenXml.CustomProperties;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
+using DocxportNet.Walker.Context;
+using DocxportNet.Walker.Parts;
 using Microsoft.Extensions.Logging;
 using System.Xml.Linq;
 

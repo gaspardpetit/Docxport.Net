@@ -2,7 +2,7 @@ using System.Globalization;
 
 namespace DocxportNet.Formatting.Impl;
 
-public sealed class FrenchNumberToWordsProvider : IDxpNumberToWordsProvider
+public sealed class FrenchNumberToWordsProvider : DxpINumberToWordsProvider
 {
     public bool CanHandle(CultureInfo culture) => culture.TwoLetterISOLanguageName.Equals("fr", StringComparison.OrdinalIgnoreCase);
 

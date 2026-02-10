@@ -50,7 +50,8 @@ public sealed record DxpRefEndnote(
 
 public sealed record DxpRefHyperlink(
     string Bookmark,
-    string Target
+    string Target,
+    string? Text
 );
 
 public sealed record DxpRefParagraphNumber(

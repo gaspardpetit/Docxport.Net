@@ -3,7 +3,7 @@ using System.Text;
 
 namespace DocxportNet.Formatting.Impl;
 
-public sealed class JapaneseNumberToWordsProvider : IDxpNumberToWordsProvider
+public sealed class JapaneseNumberToWordsProvider : DxpINumberToWordsProvider
 {
     public bool CanHandle(CultureInfo culture) => culture.TwoLetterISOLanguageName.Equals("ja", StringComparison.OrdinalIgnoreCase);
 

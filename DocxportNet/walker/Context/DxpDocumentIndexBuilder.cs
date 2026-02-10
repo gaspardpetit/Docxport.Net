@@ -1,10 +1,12 @@
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
+using DocxportNet.Fields.Resolution;
+using DocxportNet.Walker.Context;
 using DocxportNet.Word;
 using System.Text;
 
-namespace DocxportNet.Walker;
+namespace DocxportNet.Walker.State;
 
 internal static class DxpDocumentIndexBuilder
 {
@@ -122,7 +124,7 @@ internal static class DxpDocumentIndexBuilder
                                     foreach (var name in openNames)
                                     {
                                         if (!refHyperlinks.ContainsKey(name))
-                                            refHyperlinks[name] = new DxpRefHyperlink(name, target!);
+                                            refHyperlinks[name] = new DxpRefHyperlink(name, target!, null);
                                     }
                                 }
                             }
@@ -150,6 +152,7 @@ internal static class DxpDocumentIndexBuilder
                 bookmarkOrder.TryGetValue(kvp.Key, out var ord) ? ord : 0);
         }
 
+        var bookmarkNodes = DxpBookmarkNodeExtractor.Extract(doc);
         var refIndex = new DxpRefIndex(
             refBookmarks,
             refFootnotes,
@@ -157,8 +160,9 @@ internal static class DxpDocumentIndexBuilder
             refHyperlinks,
             paragraphNumbers);
 
-        return new DxpDocumentIndex(resolvedBookmarks, seqIdentifiers, refIndex, captions);
+        return new DxpDocumentIndex(resolvedBookmarks, bookmarkNodes, seqIdentifiers, refIndex, captions);
     }
+
 
     private static Dictionary<long, (string Mark, string Text)> BuildFootnoteIndex(WordprocessingDocument doc)
     {

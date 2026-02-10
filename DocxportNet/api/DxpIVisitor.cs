@@ -8,10 +8,10 @@ namespace DocxportNet.API;
 
 public sealed record FieldFrame
 {
-    public bool SeenSeparate;
-    public IDisposable? ResultScope;
-    public bool InResult;
-    public string? InstructionText;
+    public bool SeenSeparate { get; set; }
+    public IDisposable? ResultScope { get; set; }
+    public bool InResult { get; set; }
+    public string? InstructionText { get; set; }
 }
 
 public class DxpFieldFrameContext
@@ -19,25 +19,22 @@ public class DxpFieldFrameContext
     public readonly Stack<FieldFrame> FieldStack = new();
 
     public FieldFrame? Current => FieldStack.Count > 0 ? FieldStack.Peek() : null;
-    public int FieldDepth => FieldStack.Count;
-    public bool IsOuterField => FieldDepth == 1;
-    public bool IsNestedField => FieldDepth > 1;
     public bool IsInFieldResult => Current?.InResult == true;
 }
 
 
 public sealed class SectionLayout
 {
-    public PageSize? PageSize;
-    public PageMargin? PageMargin;
-    public Columns? Columns;
-    public DocGrid? DocGrid;
-    public PageBorders? PageBorders;
-    public LineNumberType? LineNumbers;
-    public TextDirection? TextDirection;            // w:textDirection (if used)
-    public VerticalTextAlignment? VerticalJustification;
-    public FootnoteProperties? FootnoteProperties;
-    public EndnoteProperties? EndnoteProperties;
+    public PageSize? PageSize { get; set; }
+	public PageMargin? PageMargin { get; set; }
+	public Columns? Columns { get; set; }
+	public DocGrid? DocGrid { get; set; }
+	public PageBorders? PageBorders { get; set; }
+	public LineNumberType? LineNumbers { get; set; }
+	public TextDirection? TextDirection { get; set; }            // w:textDirection (if used)
+	public VerticalTextAlignment? VerticalJustification { get; set; }
+	public FootnoteProperties? FootnoteProperties { get; set; }
+	public EndnoteProperties? EndnoteProperties { get; set; }
 }
 
 public sealed class DxpSectionLayout

@@ -25,7 +25,7 @@ public class FieldFormattingTests
         var formatter = new DxpFieldFormatter();
         var context = new DxpFieldEvalContext { Culture = new CultureInfo("en-US") };
         var value = new DxpFieldValue(new DateTimeOffset(2026, 2, 6, 15, 4, 0, TimeSpan.Zero));
-        var switches = new DocxportNet.Fields.Formatting.IDxpFieldFormatSpec[]
+        var switches = new IDxpFieldFormatSpec[]
         {
             new DxpDateTimeFormatSpec("\\@ \"MMM d, yyyy\"",
             [

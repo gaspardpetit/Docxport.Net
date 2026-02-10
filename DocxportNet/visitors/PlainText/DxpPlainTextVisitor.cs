@@ -28,7 +28,7 @@ public sealed record DxpPlainTextVisitorConfig
     public static DxpPlainTextVisitorConfig CreateRejectConfig() => new() { TrackedChangeMode = DxpPlainTextTrackedChangeMode.RejectChanges };
 }
 
-public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor, IDisposable, IDxpFieldEvalProvider
+public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor, IDisposable, DxpIFieldEvalProvider
 {
     private TextWriter _sinkWriter;
     private StreamWriter? _ownedStreamWriter;

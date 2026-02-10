@@ -1,7 +1,7 @@
 using System.Globalization;
 namespace DocxportNet.Formatting.Impl;
 
-public sealed class EnglishNumberToWordsProvider : IDxpNumberToWordsProvider
+public sealed class EnglishNumberToWordsProvider : DxpINumberToWordsProvider
 {
     public bool CanHandle(CultureInfo culture) => culture.TwoLetterISOLanguageName.Equals("en", StringComparison.OrdinalIgnoreCase);
 

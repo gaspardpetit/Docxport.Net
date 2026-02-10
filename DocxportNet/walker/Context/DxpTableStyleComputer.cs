@@ -1,7 +1,7 @@
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
 
-namespace DocxportNet.Walker;
+namespace DocxportNet.Walker.Context;
 
 internal static class DxpTableStyleComputer
 {

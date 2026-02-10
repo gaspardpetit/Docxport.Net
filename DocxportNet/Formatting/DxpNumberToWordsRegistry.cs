@@ -5,18 +5,18 @@ namespace DocxportNet.Formatting;
 
 public sealed class DxpNumberToWordsRegistry
 {
-    private readonly List<IDxpNumberToWordsProvider> _providers = new();
+    private readonly List<DxpINumberToWordsProvider> _providers = new();
 
     public static DxpNumberToWordsRegistry Default { get; } = CreateDefault();
 
-    public void Register(IDxpNumberToWordsProvider provider)
+    public void Register(DxpINumberToWordsProvider provider)
     {
         if (provider == null)
             throw new ArgumentNullException(nameof(provider));
         _providers.Insert(0, provider);
     }
 
-    public IDxpNumberToWordsProvider Resolve(CultureInfo culture)
+    public DxpINumberToWordsProvider Resolve(CultureInfo culture)
     {
         foreach (var provider in _providers)
         {

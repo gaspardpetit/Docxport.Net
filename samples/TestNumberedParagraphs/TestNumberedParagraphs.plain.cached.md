@@ -41,11 +41,7 @@
 
 
 <div class="footer" style="border-top:1px solid #000;">
-<p style="margin-top:6pt;">
-
-`PAGE   \* MERGEFORMAT`
-
-</p>
+<p style="margin-top:6pt;">2</p>
 
 
 </div>

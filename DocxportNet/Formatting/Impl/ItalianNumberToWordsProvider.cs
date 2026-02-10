@@ -2,7 +2,7 @@ using System.Globalization;
 
 namespace DocxportNet.Formatting.Impl;
 
-public sealed class ItalianNumberToWordsProvider : IDxpNumberToWordsProvider
+public sealed class ItalianNumberToWordsProvider : DxpINumberToWordsProvider
 {
     public bool CanHandle(CultureInfo culture) => culture.TwoLetterISOLanguageName.Equals("it", StringComparison.OrdinalIgnoreCase);
 

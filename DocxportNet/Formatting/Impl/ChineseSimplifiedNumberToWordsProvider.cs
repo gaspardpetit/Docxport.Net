@@ -3,7 +3,7 @@ using System.Text;
 
 namespace DocxportNet.Formatting.Impl;
 
-public sealed class ChineseSimplifiedNumberToWordsProvider : IDxpNumberToWordsProvider
+public sealed class ChineseSimplifiedNumberToWordsProvider : DxpINumberToWordsProvider
 {
     public bool CanHandle(CultureInfo culture) => culture.Name.StartsWith("zh", StringComparison.OrdinalIgnoreCase);
 

@@ -2,7 +2,7 @@ using System.Globalization;
 
 namespace DocxportNet.Formatting.Impl;
 
-public sealed class ThaiNumberToWordsProvider : IDxpNumberToWordsProvider
+public sealed class ThaiNumberToWordsProvider : DxpINumberToWordsProvider
 {
     public bool CanHandle(CultureInfo culture) => culture.TwoLetterISOLanguageName.Equals("th", StringComparison.OrdinalIgnoreCase);
 
