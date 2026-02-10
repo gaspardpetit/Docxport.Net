@@ -2,7 +2,7 @@ using System.Globalization;
 
 namespace DocxportNet.Formatting.Impl;
 
-public sealed class SpanishNumberToWordsProvider : IDxpNumberToWordsProvider
+public sealed class SpanishNumberToWordsProvider : DxpINumberToWordsProvider
 {
     public bool CanHandle(CultureInfo culture) => culture.TwoLetterISOLanguageName.Equals("es", StringComparison.OrdinalIgnoreCase);
 

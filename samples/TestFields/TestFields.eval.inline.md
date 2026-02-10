@@ -14,9 +14,9 @@ Expect No Error: Not Empty
 
 Expect one: one
 
-Expect <b>one</b> (bold): <a id="Var1" data-bookmark-id="0"></a><b>one</b>
+Expect <b>one</b> (bold): <b>one</b>
 
-Expect <b>1</b><u>2</u><b>3: 123</b>
+Expect <b>1</b><u>2</u><b>3: 1</b><u>2</u><b>3</b>
 
 </div>
 </div>

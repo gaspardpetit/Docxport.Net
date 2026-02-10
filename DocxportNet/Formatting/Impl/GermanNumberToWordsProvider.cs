@@ -2,7 +2,7 @@ using System.Globalization;
 
 namespace DocxportNet.Formatting.Impl;
 
-public sealed class GermanNumberToWordsProvider : IDxpNumberToWordsProvider
+public sealed class GermanNumberToWordsProvider : DxpINumberToWordsProvider
 {
     public bool CanHandle(CultureInfo culture) => culture.TwoLetterISOLanguageName.Equals("de", StringComparison.OrdinalIgnoreCase);
 

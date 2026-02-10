@@ -92,11 +92,6 @@ internal sealed class DxpFormulaParser
         return left;
     }
 
-    private DxpFormulaNode ParseUnary()
-    {
-        return ParsePostfix();
-    }
-
     private DxpFormulaNode ParseSignedPrimary()
     {
         if (MatchOp("+", "-"))

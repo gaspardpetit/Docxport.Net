@@ -6,7 +6,7 @@ using DocxportNet.Word;
 using System.Globalization;
 using System.Xml.Linq;
 
-namespace DocxportNet.Walker;
+namespace DocxportNet.Walker.Context;
 
 
 public struct DxpEffectiveRunStyleBuilder
@@ -376,13 +376,19 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
 
         // 2) Apply paragraph style chain (paragraph style's rPr affects runs)
         var pStyleId = p.ParagraphProperties?.ParagraphStyleId?.Val?.Value;
+        if (string.IsNullOrWhiteSpace(pStyleId))
+            pStyleId = DxpWordBuiltInStyleId.wdStyleNormal;
         ApplyParagraphStyleChainRunProps(pStyleId, ref acc);
 
-        // 3) Apply character style chain (rStyle)
+        // 3) Apply direct paragraph run properties (pPr/rPr)
+        var paraRunProps = p.ParagraphProperties?.GetFirstChild<RunProperties>();
+        DxpEffectiveRunStyleBuilder.ApplyRunProperties(paraRunProps, ResolveThemeFont, ref acc);
+
+        // 4) Apply character style chain (rStyle)
         var rStyleId = r.RunProperties?.RunStyle?.Val?.Value;
         ApplyCharacterStyleChainRunProps(rStyleId, ref acc);
 
-        // 4) Apply direct run formatting (highest precedence)
+        // 5) Apply direct run formatting (highest precedence)
         DxpEffectiveRunStyleBuilder.ApplyRunProperties(r.RunProperties, ResolveThemeFont, ref acc);
 
         return acc.ToImmutable();

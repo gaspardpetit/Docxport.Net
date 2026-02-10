@@ -1,6 +1,6 @@
 using DocumentFormat.OpenXml;
 
-namespace DocxportNet.Walker;
+namespace DocxportNet.Walker.Parts;
 
 public class DxpAlternateContents
 {

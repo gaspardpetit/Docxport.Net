@@ -5,12 +5,12 @@ namespace System.Runtime.CompilerServices
 
 namespace System.Runtime.CompilerServices
 {
-    [System.AttributeUsage(System.AttributeTargets.Class |
+    [AttributeUsage(System.AttributeTargets.Class |
                            System.AttributeTargets.Struct |
                            System.AttributeTargets.Field |
                            System.AttributeTargets.Property,
                            AllowMultiple = false, Inherited = false)]
-    internal sealed class RequiredMemberAttribute : System.Attribute
+    internal sealed class RequiredMemberAttribute : Attribute
     {
         public RequiredMemberAttribute() { }
     }
@@ -18,9 +18,9 @@ namespace System.Runtime.CompilerServices
 
 namespace System.Diagnostics.CodeAnalysis
 {
-    [System.AttributeUsage(System.AttributeTargets.Constructor,
+    [AttributeUsage(System.AttributeTargets.Constructor,
                            AllowMultiple = false, Inherited = false)]
-    internal sealed class SetsRequiredMembersAttribute : System.Attribute
+    internal sealed class SetsRequiredMembersAttribute : Attribute
     {
         public SetsRequiredMembersAttribute() { }
     }
@@ -28,7 +28,7 @@ namespace System.Diagnostics.CodeAnalysis
 
 namespace System.Runtime.CompilerServices
 {
-    [System.AttributeUsage(
+    [AttributeUsage(
         System.AttributeTargets.Class |
         System.AttributeTargets.Struct |
         System.AttributeTargets.Method |
@@ -37,7 +37,7 @@ namespace System.Runtime.CompilerServices
         System.AttributeTargets.Field,
         AllowMultiple = true,
         Inherited = false)]
-    internal sealed class CompilerFeatureRequiredAttribute : System.Attribute
+    internal sealed class CompilerFeatureRequiredAttribute : Attribute
     {
         public CompilerFeatureRequiredAttribute(string featureName)
             => FeatureName = featureName;

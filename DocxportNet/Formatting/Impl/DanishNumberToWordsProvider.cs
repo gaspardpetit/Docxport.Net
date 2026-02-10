@@ -2,7 +2,7 @@ using System.Globalization;
 
 namespace DocxportNet.Formatting.Impl;
 
-public sealed class DanishNumberToWordsProvider : IDxpNumberToWordsProvider
+public sealed class DanishNumberToWordsProvider : DxpINumberToWordsProvider
 {
     public bool CanHandle(CultureInfo culture) => culture.TwoLetterISOLanguageName.Equals("da", StringComparison.OrdinalIgnoreCase);
 

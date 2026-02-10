@@ -1,6 +1,6 @@
 namespace DocxportNet.Fields;
 
-public interface IDxpFieldEvalProvider
+public interface DxpIFieldEvalProvider
 {
     DxpFieldEval FieldEval { get; }
 }

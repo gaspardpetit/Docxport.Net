@@ -1,6 +1,6 @@
 using DocxportNet.API;
 
-namespace DocxportNet.Walker;
+namespace DocxportNet.Middleware;
 
 public static class DxpVisitorMiddleware
 {

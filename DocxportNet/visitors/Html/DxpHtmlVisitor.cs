@@ -11,6 +11,7 @@ using DocxportNet.Core;
 using System.Net;
 using DocxportNet.Visitors.Markdown;
 using DocxportNet.Fields;
+using DocxportNet.Walker.Context;
 
 namespace DocxportNet.Visitors.Html;
 
@@ -98,7 +99,7 @@ public sealed record DxpHtmlVisitorConfig
     public static DxpHtmlVisitorConfig CreateConfig() => CreateRichConfig();
 }
 
-public sealed class DxpHtmlVisitor : DxpVisitor, DxpITextVisitor, IDxpHeaderFooterSelectionProvider, IDisposable, IDxpFieldEvalProvider
+public sealed class DxpHtmlVisitor : DxpVisitor, DxpITextVisitor, IDxpHeaderFooterSelectionProvider, IDisposable, DxpIFieldEvalProvider
 {
     private TextWriter _sinkWriter;
     private StreamWriter? _ownedStreamWriter;
@@ -1448,8 +1449,6 @@ body.dxp-root {
         return trimmed;
     }
 
-    private static bool LooksLikeOrderedListMarker(string marker) => Regex.IsMatch(marker, @"^\d+[.)]$");
-
     private static string BuildMarkerHtml(string marker, string? markerCss)
     {
         if (string.IsNullOrEmpty(marker))
@@ -1495,7 +1494,8 @@ body.dxp-root {
         if (marker.numId == null || marker.iLvl == null)
             return null;
 
-        if (d is not DocxportNet.Walker.DxpDocumentContext docCtx)
+
+        if (d is not DxpDocumentContext docCtx)
             return null;
 
         var resolved = docCtx.NumberingResolver.ResolveLevel(marker.numId.Value, marker.iLvl.Value);
@@ -1721,20 +1721,6 @@ body.dxp-root {
         if (_config.EmitRunColor)
             return "<span class=\"dxp-deleted\">";
         return "<span>";
-    }
-
-    private double AdjustMarginLeft(double marginPt, DxpIDocumentContext d)
-    {
-        var marginLeftPoints = d.CurrentSection.Layout?.MarginLeft?.Inches is double inches
-            ? inches * 72.0
-            : (double?)null;
-
-        if (marginLeftPoints == null)
-            return marginPt;
-        var adjusted = marginPt - marginLeftPoints.Value;
-        if (adjusted < 0)
-            adjusted = 0;
-        return adjusted;
     }
 
     private static bool LooksLikePageField(string? instr)

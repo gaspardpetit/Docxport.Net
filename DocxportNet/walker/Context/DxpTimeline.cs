@@ -4,7 +4,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using System.Globalization;
 using DocxportNet.API;
 
-namespace DocxportNet.Walker;
+namespace DocxportNet.Walker.Context;
 
 public static class DxpTimeline
 {

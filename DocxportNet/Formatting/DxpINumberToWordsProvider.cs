@@ -2,7 +2,7 @@ using System.Globalization;
 
 namespace DocxportNet.Formatting;
 
-public interface IDxpNumberToWordsProvider
+public interface DxpINumberToWordsProvider
 {
     bool CanHandle(CultureInfo culture);
     string ToCardinal(int number);

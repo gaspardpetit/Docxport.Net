@@ -10,6 +10,7 @@
 		<Description>Docx Exporter</Description>
 		<RootNamespace>DocxportNet</RootNamespace>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0|AnyCPU'">

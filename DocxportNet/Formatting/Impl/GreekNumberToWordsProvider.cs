@@ -2,7 +2,7 @@ using System.Globalization;
 
 namespace DocxportNet.Formatting.Impl;
 
-public sealed class GreekNumberToWordsProvider : IDxpNumberToWordsProvider
+public sealed class GreekNumberToWordsProvider : DxpINumberToWordsProvider
 {
     public bool CanHandle(CultureInfo culture) => culture.TwoLetterISOLanguageName.Equals("el", StringComparison.OrdinalIgnoreCase);
 

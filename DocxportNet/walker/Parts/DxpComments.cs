@@ -4,7 +4,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentFormat.OpenXml.Office2013.Word;
 using DocxportNet.API;
 
-namespace DocxportNet.Walker;
+namespace DocxportNet.Walker.Parts;
 
 public class DxpComments
 {

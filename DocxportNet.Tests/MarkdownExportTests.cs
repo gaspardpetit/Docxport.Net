@@ -1,3 +1,5 @@
+using DocxportNet.Fields.Eval;
+using DocxportNet.Middleware;
 using DocxportNet.Tests.Utils;
 using DocxportNet.Visitors.Markdown;
 using Xunit.Abstractions;
@@ -214,15 +216,15 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
         using var writer = new StringWriter();
         visitor.SetOutput(writer);
 
-        if (visitor is not DocxportNet.Fields.IDxpFieldEvalProvider provider)
+        if (visitor is not Fields.DxpIFieldEvalProvider provider)
             throw new XunitException("DxpMarkdownVisitor should provide field evaluation context.");
 
-        var pipeline = DocxportNet.Walker.DxpVisitorMiddleware.Chain(
+        var pipeline = DxpVisitorMiddleware.Chain(
             visitor,
-            next => new DocxportNet.Walker.DxpFieldEvalMiddleware(next, provider.FieldEval, DocxportNet.Walker.DxpFieldEvalMode.Cache, logger: Logger),
-            next => new DocxportNet.Walker.DxpContextTracker(next));
+            next => new Walker.DxpFieldEvalMiddleware(next, provider.FieldEval, DxpEvalFieldMode.Cache, logger: Logger),
+            next => new DxpContextMiddleware(next));
 
-        new DocxportNet.Walker.DxpWalker(Logger).Accept(docxPath, pipeline);
+        new Walker.DxpWalker(Logger).Accept(docxPath, pipeline);
         return writer.ToString();
     }
 

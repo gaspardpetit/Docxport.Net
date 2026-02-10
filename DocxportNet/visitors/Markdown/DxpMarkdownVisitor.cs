@@ -111,7 +111,7 @@ public sealed record DxpMarkdownVisitorConfig
 }
 
 
-public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposable, IDxpFieldEvalProvider
+public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposable, DxpIFieldEvalProvider
 {
     private TextWriter _sinkWriter;
     private StreamWriter? _ownedStreamWriter;
@@ -1250,20 +1250,6 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
     public override IDisposable VisitDocumentBodyBegin(Body body, DxpIDocumentContext d)
     {
         return DxpDisposable.Empty;
-    }
-
-    private double AdjustMarginLeft(double marginPt, DxpIDocumentContext d)
-    {
-        var marginLeftPoints = d.CurrentSection.Layout?.MarginLeft?.Inches is double inches
-            ? inches * 72.0
-            : (double?)null;
-
-        if (marginLeftPoints == null)
-            return marginPt;
-        var adjusted = marginPt - marginLeftPoints.Value;
-        if (adjusted < 0)
-            adjusted = 0;
-        return adjusted;
     }
 
     private static bool LooksLikePageField(string? instr)

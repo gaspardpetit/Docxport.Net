@@ -3,7 +3,7 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
 
-namespace DocxportNet.Walker;
+namespace DocxportNet.Walker.Context;
 
 internal sealed class DxpTableStyleResolver
 {
@@ -339,17 +339,6 @@ internal sealed class DxpTableStyleResolver
     }
 
     private static (bool BorderSet, DxpComputedBorder? Border) PickComputedBorder(MergedTableBorders merged)
-    {
-        bool any = merged.AnySpecified;
-        var b = merged.PickFirstBorderCandidate();
-        var computed = ToComputedBorder(b);
-        if (computed != null)
-            return (true, computed);
-
-        return (any, null);
-    }
-
-    private static (bool BorderSet, DxpComputedBorder? Border) PickComputedBorder(MergedCellBorders merged)
     {
         bool any = merged.AnySpecified;
         var b = merged.PickFirstBorderCandidate();

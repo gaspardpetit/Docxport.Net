@@ -2,6 +2,7 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
 using DocxportNet.Formatting;
+using DocxportNet.Walker.Context;
 using System.Globalization;
 
 namespace DocxportNet.Walker;
@@ -312,7 +313,7 @@ public static class DxpListMarkerFormatter
         return n.ToString(CultureInfo.InvariantCulture);
     }
 
-    private static IDxpNumberToWordsProvider ResolveNumberProvider(CultureInfo culture)
+    private static DxpINumberToWordsProvider ResolveNumberProvider(CultureInfo culture)
     {
         return DxpNumberToWordsRegistry.Default.Resolve(culture);
     }

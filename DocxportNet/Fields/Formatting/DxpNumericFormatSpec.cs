@@ -231,16 +231,6 @@ public sealed class DxpNumericFormatSpec : IDxpFieldFormatSpec
         return count;
     }
 
-    private static bool HasGroupingSeparator(IReadOnlyList<DxpNumericToken> tokens)
-    {
-        foreach (var token in tokens)
-        {
-            if (token.Kind == DxpNumericTokenKind.GroupingSeparator)
-                return true;
-        }
-        return false;
-    }
-
     private static int? GetGroupingSize(IReadOnlyList<DxpNumericToken> tokens)
     {
         int lastSeparator = -1;

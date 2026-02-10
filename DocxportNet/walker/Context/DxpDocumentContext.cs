@@ -3,8 +3,10 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
 using DocxportNet.Core;
+using DocxportNet.Walker.Parts;
+using DocxportNet.Walker.State;
 
-namespace DocxportNet.Walker;
+namespace DocxportNet.Walker.Context;
 
 internal interface IDxpMutableDocumentContext
 {

@@ -2,7 +2,7 @@ using System.Globalization;
 
 namespace DocxportNet.Formatting.Impl;
 
-public sealed class PortugueseNumberToWordsProvider : IDxpNumberToWordsProvider
+public sealed class PortugueseNumberToWordsProvider : DxpINumberToWordsProvider
 {
     public bool CanHandle(CultureInfo culture) => culture.TwoLetterISOLanguageName.Equals("pt", StringComparison.OrdinalIgnoreCase);
 

@@ -4,86 +4,38 @@ namespace DocxportNet.Fields.Resolution;
 
 public sealed class DxpRefIndexResolver : IDxpRefResolver
 {
-    private readonly DxpRefIndex _index;
-    private readonly Func<int?> _currentOrderProvider;
-
-    public DxpRefIndexResolver(DxpRefIndex index, Func<int?> currentOrderProvider)
+    public Task<DxpRefRecord?> ResolveAsync(
+        DxpRefRequest request,
+        DxpFieldEvalContext context,
+        DxpIDocumentContext? documentContext)
     {
-        _index = index ?? throw new ArgumentNullException(nameof(index));
-        _currentOrderProvider = currentOrderProvider ?? throw new ArgumentNullException(nameof(currentOrderProvider));
-    }
+        var index = documentContext?.DocumentIndex.RefIndex;
+        var documentNodes = documentContext?.DocumentIndex.BookmarkNodes;
+        DxpFieldNodeBuffer? nodes = null;
+        if (context.TryGetBookmarkNodes(request.Bookmark, out var evalNodes))
+            nodes = evalNodes;
+        else if (documentNodes != null && documentNodes.TryGetValue(request.Bookmark, out var docNodes))
+            nodes = docNodes;
 
-    public Task<DxpRefResult?> ResolveAsync(DxpRefRequest request, DxpFieldEvalContext context)
-    {
-        if (!_index.Bookmarks.TryGetValue(request.Bookmark, out var bm))
-            return Task.FromResult<DxpRefResult?>(null);
-
-        string? text = bm.Text;
-
-        bool wantsParagraphNumber = request.FullContextParagraphNumber ||
-            request.RelativeParagraphNumber ||
-            request.ParagraphNumber;
-
-        if (wantsParagraphNumber)
+        if (index != null && index.Bookmarks.TryGetValue(request.Bookmark, out var bm))
         {
-            text = null;
-            if (_index.ParagraphNumbers.TryGetValue(request.Bookmark, out var para))
-            {
-                if (request.FullContextParagraphNumber)
-                    text = para.FullNumber;
-                else if (request.RelativeParagraphNumber)
-                    text = para.CurrentLevelNumber;
-                else if (request.ParagraphNumber)
-                    text = para.CurrentLevelNumber;
-
-                if (request.SuppressNonNumeric)
-                    text = para.NumericOnly;
-            }
+            index.ParagraphNumbers.TryGetValue(request.Bookmark, out var para);
+            index.Footnotes.TryGetValue(request.Bookmark, out var footnote);
+            index.Endnotes.TryGetValue(request.Bookmark, out var endnote);
+            index.Hyperlinks.TryGetValue(request.Bookmark, out var hyperlink);
+            return Task.FromResult<DxpRefRecord?>(DxpRefRecords.FromIndex(
+                request.Bookmark,
+                nodes,
+                bm,
+                para,
+                footnote,
+                endnote,
+                hyperlink));
         }
 
-        if (!string.IsNullOrEmpty(request.SeparatorText) && !string.IsNullOrEmpty(text))
-            text = text!.Replace(".", request.SeparatorText);
+        if (nodes == null)
+            return Task.FromResult<DxpRefRecord?>(null);
 
-        if (request.AboveBelow && wantsParagraphNumber)
-        {
-            var current = _currentOrderProvider();
-            if (current.HasValue)
-            {
-                text = AppendAboveBelow(text, current.Value, bm.DocumentOrder);
-            }
-        }
-
-        string? hyperlinkTarget = request.Hyperlink ? request.Bookmark : null;
-        string? footnoteText = null;
-        string? footnoteMark = null;
-        if (request.Footnote && _index.Footnotes.TryGetValue(request.Bookmark, out var fn))
-        {
-            footnoteText = fn.Text;
-            footnoteMark = fn.Mark;
-        }
-        if (request.Footnote && _index.Endnotes.TryGetValue(request.Bookmark, out var en))
-        {
-            footnoteText = en.Text;
-            footnoteMark = en.Mark;
-        }
-        if (request.Hyperlink && _index.Hyperlinks.TryGetValue(request.Bookmark, out var link))
-        {
-            hyperlinkTarget = link.Target;
-        }
-
-        if (request.Footnote && !string.IsNullOrEmpty(footnoteText))
-            text = footnoteText;
-
-        return Task.FromResult<DxpRefResult?>(new DxpRefResult(text, hyperlinkTarget, footnoteText, footnoteMark));
-    }
-
-    private static string? AppendAboveBelow(string? text, int current, int target)
-    {
-        if (string.IsNullOrEmpty(text))
-            text = string.Empty;
-        var label = current < target ? "below" : current > target ? "above" : null;
-        if (label == null)
-            return text;
-        return string.IsNullOrEmpty(text) ? label : $"{text} {label}";
+        return Task.FromResult<DxpRefRecord?>(DxpRefRecords.FromNodes(request.Bookmark, nodes));
     }
 }

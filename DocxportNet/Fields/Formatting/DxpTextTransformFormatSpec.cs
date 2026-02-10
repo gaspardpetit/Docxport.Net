@@ -288,7 +288,7 @@ public sealed class DxpTextTransformFormatSpec : IDxpFieldFormatSpec
         return provider.ToDollarText(number);
     }
 
-    private static IDxpNumberToWordsProvider ResolveNumberProvider(DxpFieldEvalContext context)
+    private static DxpINumberToWordsProvider ResolveNumberProvider(DxpFieldEvalContext context)
     {
         if (context.NumberToWordsProvider != null)
             return context.NumberToWordsProvider;

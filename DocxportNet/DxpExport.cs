@@ -1,6 +1,8 @@
 using DocumentFormat.OpenXml.Packaging;
 using DocxportNet.API;
 using DocxportNet.Fields;
+using DocxportNet.Fields.Eval;
+using DocxportNet.Middleware;
 using DocxportNet.Walker;
 using Microsoft.Extensions.Logging;
 
@@ -307,21 +309,21 @@ public static class DxpExport
     private static DxpIVisitor WrapWithFieldEvalMiddleware(DxpIVisitor visitor, DxpExportOptions? options, ILogger? logger)
     {
         var mode = options?.FieldEvalMode ?? DxpFieldEvalExportMode.Evaluate;
-        if (visitor is IDxpFieldEvalProvider provider && mode != DxpFieldEvalExportMode.None)
+        if (visitor is DxpIFieldEvalProvider provider && mode != DxpFieldEvalExportMode.None)
         {
             return DxpVisitorMiddleware.Chain(
                 visitor,
                 next => new DxpFieldEvalMiddleware(
                     next,
                     provider.FieldEval,
-                    mode == DxpFieldEvalExportMode.Cache ? DxpFieldEvalMode.Cache : DxpFieldEvalMode.Evaluate,
+                    mode == DxpFieldEvalExportMode.Cache ? DxpEvalFieldMode.Cache : DxpEvalFieldMode.Evaluate,
                     logger: logger),
-                next => new DxpContextTracker(next, logger));
+                next => new DxpContextMiddleware(next, logger));
         }
 
         return DxpVisitorMiddleware.Chain(
             visitor,
-            next => new DxpContextTracker(next, logger));
+            next => new DxpContextMiddleware(next, logger));
     }
 
     private static void DisposeVisitor(DxpIVisitor visitor)
