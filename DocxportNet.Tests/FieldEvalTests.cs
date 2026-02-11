@@ -202,6 +202,19 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     }
 
     [Fact]
+    public async Task EvalAsync_FormulaErrorsReturnErrorText()
+    {
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.Culture = new CultureInfo("en-US");
+
+        var divide = await eval.EvalAsync(new DxpFieldInstruction("= 1 / 0"));
+        var unknown = await eval.EvalAsync(new DxpFieldInstruction("= LN(10)"));
+
+        Assert.Equal("!Zero Divide", divide.Text);
+        Assert.Equal("!Syntax Error, 10", unknown.Text);
+    }
+
+    [Fact]
     public async Task EvalAsync_ResolvesVariableViaDelegate()
     {
         var eval = new DxpFieldEval(new DxpFieldEvalDelegates {

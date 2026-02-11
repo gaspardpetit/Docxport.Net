@@ -40,6 +40,24 @@ internal static class DxpFieldEvalRules
         }
     }
 
+    internal static string GetFormulaErrorText(
+        Expressions.DxpFormulaEvalError error,
+        string? token = null)
+    {
+        string text = error switch {
+            Expressions.DxpFormulaEvalError.DivideByZero => "!Zero Divide",
+            Expressions.DxpFormulaEvalError.SyntaxError => "!Syntax Error",
+            Expressions.DxpFormulaEvalError.UnknownFunction => "!Syntax Error",
+            _ => "Error! Invalid formula."
+        };
+
+        if (!string.IsNullOrWhiteSpace(token) &&
+            error is Expressions.DxpFormulaEvalError.SyntaxError or Expressions.DxpFormulaEvalError.UnknownFunction)
+            return $"{text}, {token}";
+
+        return text;
+    }
+
     internal static bool TryGetCharOrMergeFormat(
         IReadOnlyList<IDxpFieldFormatSpec> specs,
         out bool hasCharFormat,

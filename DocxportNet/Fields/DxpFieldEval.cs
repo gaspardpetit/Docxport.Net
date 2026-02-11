@@ -1,7 +1,8 @@
 using DocxportNet.API;
+using DocxportNet.Fields.Eval;
+using DocxportNet.Fields.Resolution;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
-using DocxportNet.Fields.Resolution;
 
 namespace DocxportNet.Fields;
 
@@ -135,16 +136,33 @@ public sealed class DxpFieldEval
                 {
                     char listSeparator = ResolveListSeparator();
                     var parser = new Expressions.DxpFormulaParser(ast.ArgumentsText, listSeparator);
-                    var expr = parser.ParseExpression();
+                    var expr = parser.ParseExpression(requireEnd: true);
+                    if (parser.HasError)
+                    {
+                        string errorText = DxpFieldEvalRules.GetFormulaErrorText(
+                            Expressions.DxpFormulaEvalError.SyntaxError,
+                            parser.ErrorToken);
+                        value = new DxpFieldValue(errorText);
+                        return (true, value);
+                    }
                     var evaluator = new Expressions.DxpFormulaEvaluator(
                         Context,
                         instruction => EvalNestedFieldAsync(instruction, documentContext),
                         ResolveIdentifierValueAsync);
-                    double result = await evaluator.EvaluateAsync(expr);
-                    value = new DxpFieldValue(result);
-                    if (_logger?.IsEnabled(LogLevel.Debug) == true)
-                        _logger.LogDebug("Formula field evaluated to {Result}.", result);
-                    return (true, value);
+                    try
+                    {
+                        double result = await evaluator.EvaluateAsync(expr);
+                        value = new DxpFieldValue(result);
+                        if (_logger?.IsEnabled(LogLevel.Debug) == true)
+                            _logger.LogDebug("Formula field evaluated to {Result}.", result);
+                        return (true, value);
+                    }
+                    catch (Expressions.DxpFormulaEvalException ex)
+                    {
+                        string errorText = DxpFieldEvalRules.GetFormulaErrorText(ex.Error, ex.Token);
+                        value = new DxpFieldValue(errorText);
+                        return (true, value);
+                    }
                 }
                 _logger?.LogWarning("Formula field '=' missing arguments.");
                 return (false, value);

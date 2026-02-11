@@ -1,9 +1,9 @@
 <!-- Title: Field Test Title -->
 <!-- Author: Petit, Gaspard -->
 <!-- LastModifiedBy: Petit, Gaspard -->
-<!-- Revision: 11 -->
+<!-- Revision: 14 -->
 <!-- Created: 2026-02-11 08:11:00Z -->
-<!-- Modified: 2026-02-11 09:33:00Z -->
+<!-- Modified: 2026-02-11 09:59:00Z -->
 <!-- CustomProp1: custom-value -->
 <!-- Created: 2010-10-13T04:00:00Z -->
 
@@ -243,6 +243,142 @@ TEST SEQ
 
 </td>
     <td>8
+
+</td>
+  </tr>
+</table>
+TEST FORMULA
+
+<table>
+  <tr>
+    <td>= 2 + 3
+
+</td>
+    <td>5
+
+</td>
+  </tr>
+  <tr>
+    <td>= 2 + 3 * 4
+
+</td>
+    <td>14
+
+</td>
+  </tr>
+  <tr>
+    <td>= 3 > 2
+
+</td>
+    <td>1
+
+</td>
+  </tr>
+  <tr>
+    <td>= SUM(1,2,3)
+
+</td>
+    <td>6
+
+</td>
+  </tr>
+  <tr>
+    <td>= { DATE \@ "yyyy" } + 1
+
+</td>
+    <td>2027
+
+</td>
+  </tr>
+  <tr>
+    <td>= 1 / 0
+
+</td>
+    <td><b>!Zero Divide</b>
+
+</td>
+  </tr>
+  <tr>
+    <td>= LN(10)
+
+</td>
+    <td><b>!Syntax Error, 10</b>
+
+</td>
+  </tr>
+  <tr>
+    <td>= SUM(ABOVE)
+
+</td>
+    <td>2053
+
+</td>
+  </tr>
+</table>
+ASK TEST
+
+<table>
+  <tr>
+    <td>ASK Name "Name?" \d "Unknown"
+
+</td>
+    <td>Bob
+
+</td>
+  </tr>
+  <tr>
+    <td>REF Name
+
+</td>
+    <td>Bob
+
+</td>
+  </tr>
+  <tr>
+    <td>ASK Name "Name?" \o
+
+</td>
+    <td>Bob
+
+</td>
+  </tr>
+  <tr>
+    <td>REF Name
+
+</td>
+    <td>Bob
+
+</td>
+  </tr>
+  <tr>
+    <td>SET DefaultCity "Rome"
+
+</td>
+    <td>
+
+</td>
+  </tr>
+  <tr>
+    <td>SET Greeting "Hi"
+
+</td>
+    <td>
+
+</td>
+  </tr>
+  <tr>
+    <td>ASK City "{ REF Greeting }?" \d "{ REF DefaultCity }"
+
+</td>
+    <td>Montreal
+
+</td>
+  </tr>
+  <tr>
+    <td>REF City
+
+</td>
+    <td>Montreal
 
 </td>
   </tr>

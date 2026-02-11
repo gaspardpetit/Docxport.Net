@@ -334,6 +334,108 @@ a</p>
 </td>
   </tr>
 </table>
+<p class="dxp-paragraph align-center">TEST FORMULA</p>
+<table class="dxp-table" style="border:0.5pt solid #000000;border-collapse:collapse;">
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">= 2 + 3</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">5</p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">= 2 + 3 * 4</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">14</p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">= 3 &gt; 2</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">1</p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">= SUM(1,2,3)</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">6</p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">= { DATE \@ &quot;yyyy&quot; } + 1</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">2027</p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">= 1 / 0</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">!Zero Divide</p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">= LN(10)</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">!Syntax Error, 10</p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">= SUM(ABOVE)</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">2053</p>
+</td>
+  </tr>
+</table>
+<p class="dxp-paragraph align-center">ASK TEST</p>
+<table class="dxp-table" style="border:0.5pt solid #000000;border-collapse:collapse;">
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">ASK Name &quot;Name?&quot; \d &quot;Unknown&quot;</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"></p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">REF Name</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">Bob</p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">ASK Name &quot;Name?&quot; \o </p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"></p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">REF Name</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">Bob</p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">SET DefaultCity &quot;Rome&quot;</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"></p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">SET Greeting &quot;Hi&quot;</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"></p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">ASK City &quot;{ REF Greeting }?&quot; \d &quot;{ REF DefaultCity }&quot;</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"></p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">REF City</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">Montreal</p>
+</td>
+  </tr>
+</table>
 </div>
 </div>
 </div>

@@ -108,10 +108,10 @@ Status: feature-complete
 
 Status: partial (delegate-backed)
 
-- [ ] Delegate prompt + default.
-- [ ] \o behavior (only-once semantics vs true merge behavior).
-- [ ] No output emitted.
-- [ ] Regression test present.
+- [x] Delegate prompt + default.
+- [x] \o behavior (only-once semantics vs true merge behavior).
+- [x] No output emitted.
+- [x] Regression test present.
 
 ## SKIPIF / NEXTIF
 
@@ -126,9 +126,9 @@ Status: partial (no record skipping)
 
 Status: partial
 
-- [ ] Core operators and comparisons.
-- [ ] Supported functions (current registry).
-- [ ] Table range resolution (A1, ABOVE/LEFT/RIGHT/BELOW) with TableResolver.
-- [ ] Error handling parity with Word (not yet implemented).
+- [x] Core operators and comparisons.
+- [x] Supported functions (current registry).
+- [x] Table range resolution (A1, ABOVE/LEFT/RIGHT/BELOW) with TableResolver.
+- [x] Error handling parity with Word (not yet implemented).
 - [ ] Additional Word functions (not yet implemented).
-- [ ] Regression test present.
+- [x] Regression test present.
