@@ -4,7 +4,7 @@
     Override that late in evaluation so the CLI reports a useful version unless explicitly set.
   -->
   <PropertyGroup>
-    <DxpCliFallbackVersion>1.2.0-local</DxpCliFallbackVersion>
+    <DxpCliFallbackVersion>1.2.1-local</DxpCliFallbackVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Version)' == '' Or '$(Version)' == '1.0.0'">
