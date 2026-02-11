@@ -77,13 +77,14 @@ public sealed class DxpFieldEval
                 else if (fieldType.Equals("SKIPIF", StringComparison.OrdinalIgnoreCase) ||
                     fieldType.Equals("NEXTIF", StringComparison.OrdinalIgnoreCase))
                 {
-                    var skipResult = await EvalSkipIfAsync(parse.Ast, documentContext);
+                    bool skipOutput = fieldType.Equals("SKIPIF", StringComparison.OrdinalIgnoreCase);
+                    var skipResult = await EvalSkipIfAsync(parse.Ast, skipOutput, documentContext);
                     if (skipResult != null)
                         return skipResult;
                 }
                 else
                 {
-                    var builtIn = await TryEvalBuiltInAsync(fieldType, parse.Ast, documentContext);
+                    var builtIn = await TryEvalBuiltInAsync(fieldType, parse.Ast, documentContext, cancellationToken);
                     if (builtIn.success)
                     {
                         string text = fieldType.Equals("MERGEFIELD", StringComparison.OrdinalIgnoreCase)
@@ -126,7 +127,8 @@ public sealed class DxpFieldEval
     private async Task<(bool success, DxpFieldValue value)> TryEvalBuiltInAsync(
         string fieldType,
         DxpFieldAst ast,
-        DxpIDocumentContext? documentContext)
+        DxpIDocumentContext? documentContext,
+        CancellationToken cancellationToken)
     {
         var value = default(DxpFieldValue);
         switch (fieldType.ToUpperInvariant())
@@ -354,9 +356,19 @@ public sealed class DxpFieldEval
                     if (tokens.Count > 0)
                     {
                         string name = tokens[0];
-                    name = await ExpandNestedTextAsync(name, documentContext);
+                        name = await ExpandNestedTextAsync(name, documentContext);
                         if (TryResolveMergeFieldName(name, ast, out var mapped))
                             name = mapped;
+                        var cursor = Context.MergeCursor;
+                        if (cursor?.HasCurrent == true)
+                        {
+                            var cursorValue = cursor.GetValue(name);
+                            if (cursorValue != null)
+                            {
+                                value = cursorValue.Value;
+                                return (true, value);
+                            }
+                        }
                         var resolver = Context.ValueResolver ?? _resolver;
                         var resolved = await resolver.ResolveAsync(name, DxpFieldValueKindHint.MergeField, Context);
                         value = resolved ?? new DxpFieldValue(string.Empty);
@@ -367,6 +379,51 @@ public sealed class DxpFieldEval
                 }
                 _logger?.LogWarning("MERGEFIELD field missing arguments.");
                 return (false, value);
+            case "MERGEREC":
+            {
+                var cursor = Context.MergeCursor;
+                if (cursor?.HasCurrent == true)
+                {
+                    value = new DxpFieldValue(cursor.RecordIndex);
+                    return (true, value);
+                }
+                value = new DxpFieldValue(string.Empty);
+                return (true, value);
+            }
+            case "MERGESEQ":
+                if (Context.MergeSequence > 0)
+                    value = new DxpFieldValue(Context.MergeSequence);
+                else
+                    value = new DxpFieldValue(string.Empty);
+                return (true, value);
+            case "GREETINGLINE":
+            case "ADDRESSBLOCK":
+            {
+                var cursor = Context.MergeCursor;
+                if (cursor?.HasCurrent == true)
+                {
+                    var culture = Context.Culture ?? CultureInfo.CurrentCulture;
+                    var provider = ResolveMergeMacroProvider(Context, culture);
+                    var resolved = provider.Resolve(fieldType, cursor, culture);
+                    value = new DxpFieldValue(resolved ?? string.Empty);
+                    return (true, value);
+                }
+                value = new DxpFieldValue(string.Empty);
+                return (true, value);
+            }
+            case "NUMPAGES":
+                value = ResolveDocumentMetricValue(documentContext, props => props.Pages, "NUMPAGES");
+                return (true, value);
+            case "NUMWORDS":
+                value = ResolveDocumentMetricValue(documentContext, props => props.Words, "NUMWORDS");
+                return (true, value);
+            case "NUMCHARS":
+                value = ResolveDocumentMetricValue(documentContext, props => props.Characters, "NUMCHARS");
+                return (true, value);
+            case "NEXT":
+                AdvanceMergeCursor(skipOutput: false);
+                value = new DxpFieldValue(string.Empty);
+                return (true, value);
             case "SEQ":
                 if (ast.ArgumentsText != null)
                 {
@@ -471,6 +528,34 @@ public sealed class DxpFieldEval
                 }
                 _logger?.LogWarning("ASK field missing arguments.");
                 return (false, value);
+            case "DATABASE":
+                if (ast.ArgumentsText != null)
+                {
+                    var tokens = TokenizeArgs(ast.ArgumentsText);
+                    if (tokens.Count > 0)
+                    {
+                        if (Context.DatabaseProvider == null)
+                        {
+                            _logger?.LogInformation("DATABASE provider not configured; returning empty.");
+                            value = new DxpFieldValue(string.Empty);
+                            return (true, value);
+                        }
+
+                        string query = await ExpandNestedTextAsync(tokens[0], documentContext);
+                        var parameters = await ParseDatabaseParametersAsync(tokens, documentContext);
+                        var options = ParseDatabaseOptions(ast.RawText);
+                        var request = new DxpDatabaseRequest(
+                            query,
+                            parameters.Count > 0 ? parameters : null,
+                            options,
+                            Context.Culture);
+                        var result = await Context.DatabaseProvider.ExecuteAsync(request, cancellationToken);
+                        value = new DxpFieldValue(RenderDatabaseResult(result));
+                        return (true, value);
+                    }
+                }
+                _logger?.LogWarning("DATABASE field missing arguments.");
+                return (false, value);
             default:
                 return (false, value);
         }
@@ -539,7 +624,10 @@ public sealed class DxpFieldEval
         return new DxpFieldEvalResult(DxpFieldEvalStatus.Resolved, text);
     }
 
-    private async Task<DxpFieldEvalResult?> EvalSkipIfAsync(DxpFieldAst ast, DxpIDocumentContext? documentContext)
+    private async Task<DxpFieldEvalResult?> EvalSkipIfAsync(
+        DxpFieldAst ast,
+        bool skipOutput,
+        DxpIDocumentContext? documentContext)
     {
         if (ast.ArgumentsText == null)
             return null;
@@ -554,8 +642,29 @@ public sealed class DxpFieldEval
         bool condition = EvaluateComparison(leftValue, op, rightValue);
         _logger?.LogInformation("SKIPIF evaluated to {Condition}.", condition);
         if (condition)
+        {
+            AdvanceMergeCursor(skipOutput);
             return new DxpFieldEvalResult(DxpFieldEvalStatus.Skipped, null);
+        }
         return new DxpFieldEvalResult(DxpFieldEvalStatus.Resolved, string.Empty);
+    }
+
+    private void AdvanceMergeCursor(bool skipOutput)
+    {
+        var cursor = Context.MergeCursor;
+        if (cursor == null)
+            return;
+
+        Context.RegisterMergeRecordAction(
+            skipOutput ? DxpMergeRecordAction.SkipOutput : DxpMergeRecordAction.Advance);
+        cursor.MoveNext();
+    }
+
+    private static DxpIMergeMacroProvider ResolveMergeMacroProvider(DxpFieldEvalContext context, CultureInfo culture)
+    {
+        if (context.MergeMacroProvider != null)
+            return context.MergeMacroProvider;
+        return context.MergeMacroRegistry.Resolve(culture);
     }
 
     private string ToDefaultString(DxpFieldValue value)
@@ -969,6 +1078,87 @@ public sealed class DxpFieldEval
         return false;
     }
 
+    private async Task<Dictionary<string, DxpFieldValue>> ParseDatabaseParametersAsync(
+        List<string> tokens,
+        DxpIDocumentContext? documentContext)
+    {
+        var parameters = new Dictionary<string, DxpFieldValue>(StringComparer.OrdinalIgnoreCase);
+        if (tokens.Count < 2)
+            return parameters;
+
+        for (int i = 1; i < tokens.Count; i += 2)
+        {
+            string nameToken = tokens[i];
+            string name = await ExpandNestedTextAsync(nameToken, documentContext);
+            if (string.IsNullOrWhiteSpace(name))
+                continue;
+
+            string valueToken = i + 1 < tokens.Count ? tokens[i + 1] : string.Empty;
+            if (i + 1 >= tokens.Count)
+                _logger?.LogWarning("DATABASE parameter '{Name}' missing value; using empty string.", name);
+            string resolved = await ResolveValueAsync(valueToken, documentContext);
+            parameters[name] = new DxpFieldValue(resolved);
+        }
+
+        return parameters;
+    }
+
+    private IReadOnlyDictionary<string, string?>? ParseDatabaseOptions(string rawText)
+    {
+        var switches = ParseNonFormatSwitches(rawText);
+        if (switches.Count == 0)
+            return null;
+
+        var options = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
+        foreach (var kvp in switches)
+            options[kvp.Key.ToString()] = kvp.Value;
+        return options;
+    }
+
+    private string RenderDatabaseResult(DxpDatabaseResult? result)
+    {
+        if (result == null || result.Rows.Count == 0)
+            return string.Empty;
+
+        var sb = new System.Text.StringBuilder();
+        int columnCount = result.Columns.Count;
+        if (columnCount > 0)
+        {
+            var header = new string[columnCount];
+            for (int i = 0; i < columnCount; i++)
+                header[i] = result.Columns[i].Name ?? string.Empty;
+            AppendDatabaseLine(sb, header);
+        }
+
+        foreach (var row in result.Rows)
+        {
+            int cellCount = columnCount > 0 ? columnCount : row.Count;
+            var cells = new string[cellCount];
+            for (int i = 0; i < cellCount; i++)
+            {
+                DxpFieldValue? cell = i < row.Count ? row[i] : null;
+                cells[i] = FormatDatabaseCell(cell);
+            }
+            AppendDatabaseLine(sb, cells);
+        }
+
+        return sb.ToString();
+    }
+
+    private static void AppendDatabaseLine(System.Text.StringBuilder sb, IReadOnlyList<string> cells)
+    {
+        if (sb.Length > 0)
+            sb.Append('\n');
+        sb.Append(string.Join("\t", cells));
+    }
+
+    private string FormatDatabaseCell(DxpFieldValue? value)
+    {
+        if (!value.HasValue)
+            return string.Empty;
+        return ToDefaultString(value.Value);
+    }
+
     private static string StripNonNumeric(string text)
     {
         if (string.IsNullOrEmpty(text))
@@ -1070,6 +1260,7 @@ public sealed class DxpFieldEval
             || fieldType.Equals("COMPARE", StringComparison.OrdinalIgnoreCase)
             || fieldType.Equals("SKIPIF", StringComparison.OrdinalIgnoreCase)
             || fieldType.Equals("NEXTIF", StringComparison.OrdinalIgnoreCase)
+            || fieldType.Equals("NEXT", StringComparison.OrdinalIgnoreCase)
             || fieldType.Equals("=", StringComparison.OrdinalIgnoreCase)
             || fieldType.Equals("DATE", StringComparison.OrdinalIgnoreCase)
             || fieldType.Equals("TIME", StringComparison.OrdinalIgnoreCase)
@@ -1081,7 +1272,40 @@ public sealed class DxpFieldEval
             || fieldType.Equals("DOCVARIABLE", StringComparison.OrdinalIgnoreCase)
             || fieldType.Equals("DOCPROPERTY", StringComparison.OrdinalIgnoreCase)
             || fieldType.Equals("MERGEFIELD", StringComparison.OrdinalIgnoreCase)
+            || fieldType.Equals("MERGEREC", StringComparison.OrdinalIgnoreCase)
+            || fieldType.Equals("MERGESEQ", StringComparison.OrdinalIgnoreCase)
+            || fieldType.Equals("GREETINGLINE", StringComparison.OrdinalIgnoreCase)
+            || fieldType.Equals("ADDRESSBLOCK", StringComparison.OrdinalIgnoreCase)
+            || fieldType.Equals("NUMPAGES", StringComparison.OrdinalIgnoreCase)
+            || fieldType.Equals("NUMWORDS", StringComparison.OrdinalIgnoreCase)
+            || fieldType.Equals("NUMCHARS", StringComparison.OrdinalIgnoreCase)
             || fieldType.Equals("SEQ", StringComparison.OrdinalIgnoreCase)
-            || fieldType.Equals("ASK", StringComparison.OrdinalIgnoreCase);
+            || fieldType.Equals("ASK", StringComparison.OrdinalIgnoreCase)
+            || fieldType.Equals("DATABASE", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private DxpFieldValue ResolveDocumentMetricValue(
+        DxpIDocumentContext? documentContext,
+        Func<DocumentFormat.OpenXml.ExtendedProperties.Properties, DocumentFormat.OpenXml.OpenXmlLeafTextElement?> selector,
+        string fieldType)
+    {
+        if (documentContext?.ExtendedProperties == null)
+        {
+            _logger?.LogWarning("{FieldType} field missing extended document properties; returning empty.", fieldType);
+            return new DxpFieldValue(string.Empty);
+        }
+
+        var element = selector(documentContext.ExtendedProperties);
+        var text = element?.Text;
+        if (string.IsNullOrWhiteSpace(text))
+            return new DxpFieldValue(string.Empty);
+
+        if (int.TryParse(text, out var number) && number == 0)
+            return new DxpFieldValue(string.Empty);
+
+        if (double.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out var numeric))
+            return new DxpFieldValue(numeric);
+
+        return new DxpFieldValue(text!);
     }
 }

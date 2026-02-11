@@ -12,7 +12,65 @@ Field codes consist of:
 
 This specification is organised into conceptual sections with examples and references.  Each section lists applicable field types, syntax rules, supported parameters and switch behaviour.  A final section discusses implementation considerations for offline evaluation.
 
+
+## Scope, Non-Goals, and Intentional Exclusions
+
+This document describes Microsoft Word field code semantics at a level sufficient for correct parsing, evaluation, and integration outside of Word itself. Certain categories of Word behavior are intentionally out of scope, not due to incomplete research, but because they are intrinsically dependent on Word’s proprietary layout, style, or engine subsystems and cannot be faithfully reproduced without embedding or re-hosting Word.
+
+This document does not attempt to fully specify or re-implement layout-driven and pagination-dependent fields whose results depend on Word’s final line breaking, pagination, widow and orphan control, and floating object placement. For these fields, evaluation semantics are described, but exact numeric results are only defined once pagination is stable.
+
+Style-engine and list-engine constructs whose behavior is governed by Word’s internal numbering tables, abstract list definitions, and paragraph style inheritance rather than explicit field parameters are also excluded from full specification. This includes fields such as LISTNUM and numbering produced implicitly by list styles rather than by SEQ or related fields.
+
+Legacy automatic numbering fields (AUTONUM, AUTONUMOUT, AUTONUMLGL) are described only at a high level. Their behavior is driven by undocumented, version-specific layout logic and is therefore non-deterministic outside Word.
+
+Bibliography and citation fields (CITATION, BIBLIOGRAPHY) are documented in terms of construction, inputs, and switches, but not fully re-implemented. Final formatting depends on Word’s internal citation-style engine and locale-aware rendering logic, which are not publicly specified.
+
+UI-driven constructs whose configuration is captured through dialogs rather than explicit field code syntax (for example AddressBlock and GreetingLine layout choices) are described in terms of evaluation behavior rather than UI configuration mechanics.
+
+Finally, this document does not enumerate version-specific bugs or historical inconsistencies across Word releases. Where behavior is known to vary, the stable semantic model is described instead of cataloging defects.
+
+These exclusions are deliberate. The intent is to provide a sound, defensible, and implementable semantic model for all declarative and data-driven field behaviors, while explicitly identifying the boundaries where Word’s internal engines become authoritative.
+
 ---
+
+## Using and Updating Field Codes in Microsoft Word
+
+Microsoft Word field codes are not plain text constructs; they are structured document objects with explicit insertion, display, update, locking, and navigation semantics. Correct use and interpretation of fields requires understanding the keyboard-level operations Word exposes for interacting with them, as these operations directly affect evaluation state, visibility, and persistence.
+
+Field braces must be inserted using **Ctrl + F9**; typing literal `{` and `}` characters does not create a field and will not be recognized by Word’s field engine. Once inserted, a field exists as a discrete object that stores both its *code* and its *most recently computed result*. Word allows independent control over whether the user sees the code or the result, and whether the field is eligible for recomputation.
+
+Field evaluation is triggered explicitly rather than continuously. Pressing **F9** updates the currently selected field or selection range. Selecting the entire document (Ctrl + A) followed by F9 updates all fields in the current story (typically the main document body). Headers, footers, text boxes, shapes, and other stories are not reliably updated by a single global select-all operation and may require separate updates or print-time refresh. Display toggles such as **Alt + F9** (all fields) and **Shift + F9** (current field) switch between code view and result view only; they do not trigger evaluation.
+
+Word also supports explicit field state manipulation. Fields can be locked using **Ctrl + F11**, preventing them from updating while preserving their last computed result. Locked fields still participate in nested evaluations as literal values. Fields can be permanently unlinked using **Ctrl + Shift + F9**, which replaces the field with its current result text and removes all future update capability. Navigation between fields is provided by **F11** and **Shift + F11**, allowing sequential traversal of field objects independent of document text.
+
+From an implementation perspective, these user-facing controls correspond directly to internal state: whether a field is locked, whether it is dirty (out of date), whether its code or result is displayed, and whether it remains linked to an evaluation mechanism. Any Word-compatible interpreter or document processor must model these states explicitly to match observed Word behavior.
+
+### Field Keyboard Commands (Summary)
+
+| Shortcut | Effect |
+|--------|--------|
+| **Ctrl + F9** | Insert a new field with proper field braces |
+| **F9** | Update the selected field(s) |
+| **Ctrl + A → F9** | Update all fields in the current story |
+| **Alt + F9** | Toggle display of all field codes vs. results |
+| **Shift + F9** | Toggle display of the selected field’s code vs. result |
+| **Ctrl + Shift + F9** | Unlink field (convert to literal text) |
+| **Ctrl + F11** | Lock field (suppress updates) |
+| **Ctrl + Shift + F11** | Unlock field |
+| **F11** | Jump to next field |
+| **Shift + F11** | Jump to previous field |
+
+### References
+
+Microsoft Support – Update fields  
+https://support.microsoft.com/en-us/office/update-fields-7339a049-cb0d-4d5a-8679-97c20c643d4e
+
+Microsoft Support – Keyboard shortcuts in Word  
+https://support.microsoft.com/en-us/office/keyboard-shortcuts-in-word-95ef89dd-7142-4b50-afb2-f762f663ceb2
+
+Graham Mayor – Formatting Word fields  
+https://www.gmayor.com/formatting_word_fields.htm
+
 
 ## 1 Fundamentals and Evaluation Semantics
 
@@ -190,7 +248,7 @@ Below is an exhaustive list of functions supported by Word’s formula field (th
 
 Usage notes and examples
 
- - Multiple arguments: Functions with empty parentheses can take several values or cell references. For example, `=SUM(A1, A2, B3:B5)` or `=AVERAGE(LEFT)` (the `LEFT` keyword averages cells to the left of the formula cell).
+- Multiple arguments: Functions with empty parentheses can take several values or cell references. For example, `=SUM(A1, A2, B3:B5)` or `=AVERAGE(LEFT)` (the `LEFT` keyword averages cells to the left of the formula cell).
 
 - Logical functions: `AND`, `OR`, `NOT`, `TRUE` and `FALSE` return `1` (true) or `0` (false), allowing you to build conditional expressions. In formulas, you can combine them with relational operators (`=`, `<`, `>`, etc.) and use the result in an `IF` field.
 
@@ -489,3 +547,577 @@ The `CREATEDATE` field is formatted with the full weekday, full month, day and f
 - **Microsoft Office Word 2003 Documentation – Examples of IF fields:** Shows complex IF examples combining merge fields, calculations and nested conditions([Examples of IF fields (Word 2003 documentation)](https://documentation.help/ms-office-word-2003/worefExamplesOfIFFields1.htm)).
 - **Microsoft Office Word 2003 Documentation – Formula (=) field:** Describes the formula field operators, functions, cell references and numeric picture switch([Formula (=) field (Word 2003 documentation)](https://documentation.help/ms-office-word-2003/worefFormula1.htm))([Formula (=) field (Word 2003 documentation)](https://documentation.help/ms-office-word-2003/worefFormula1.htm)).
 - **Graham Mayor – Formatting Word fields:** Provides best practices for inserting and updating fields (use Ctrl + F9, Alt + F9, F9) and explains fragility of field codes([Formatting Word fields (Graham Mayor)](https://www.gmayor.com/formatting_word_fields.htm)).
+
+# Appendix – Additional Word Field Codes
+
+## NEXT Field (Mail Merge Record Advance)
+
+The **NEXT** field is a mail-merge control field that forces Microsoft Word to advance the merge data source to the next record unconditionally and merge it into the current output without starting a new section or document. Its syntax is `{ NEXT }`.
+
+Unlike conditional merge fields such as `NEXTIF`, `NEXT` accepts no expressions or switches. Its sole effect is to reposition the merge data source pointer. Word generates this field when the user inserts a *Next Record* rule in the mail-merge UI. It is commonly used in label layouts or multiple-record-per-page designs. The field must appear in the main document body; use in headers, footers or nested contexts may cause incorrect evaluation or record skipping.
+
+**Reference:**  
+Microsoft Support – *List of field codes in Word*.  
+https://support.microsoft.com/en-gb/office/list-of-field-codes-in-word-1ad6d91a-55a7-4a8d-b535-cf7888659a51
+
+---
+
+## MERGEREC and MERGESEQ
+
+Word provides merge-specific counter fields:
+
+- **MERGEREC** inserts the current record number from the underlying data source.
+- **MERGESEQ** inserts a sequential counter of records actually merged into the output document, starting at 1 for each merge run.
+
+These fields are distinct from the general `SEQ` field and are typically used to number labels, apply conditional formatting, or display merge order independent of source indexing.
+
+**Reference:**  
+Microsoft Support – *List of field codes in Word*.  
+https://support.microsoft.com/en-gb/office/list-of-field-codes-in-word-1ad6d91a-55a7-4a8d-b535-cf7888659a51
+
+---
+
+## Document Metrics Fields
+
+Word exposes document statistics via the following fields:
+
+- **NUMPAGES** – total number of pages  
+- **NUMWORDS** – total word count  
+- **NUMCHARS** – total character count  
+
+These fields are frequently used in headers, footers and front matter and are updated when fields are refreshed, printed or previewed.
+
+**Reference:**  
+Microsoft Support – *List of field codes in Word*.  
+https://support.microsoft.com/en-gb/office/list-of-field-codes-in-word-1ad6d91a-55a7-4a8d-b535-cf7888659a51
+
+---
+
+## Cross-Reference Fields
+
+Two common reference-oriented fields are:
+
+- **PAGEREF** – inserts the page number on which a bookmarked item appears.
+- **NOTEREF** – inserts the reference mark for a bookmarked footnote or endnote.
+
+These differ from the general `REF` field in that they resolve pagination context (`PAGEREF`) or note markers (`NOTEREF`) rather than arbitrary bookmarked text.
+
+**Reference:**  
+Microsoft Support – *List of field codes in Word*.  
+https://support.microsoft.com/en-gb/office/list-of-field-codes-in-word-1ad6d91a-55a7-4a8d-b535-cf7888659a51
+
+---
+
+## Other Notable Field Types (Overview)
+
+Microsoft Word supports many additional field codes not covered elsewhere in this specification, including:
+
+- Mail-merge helpers such as `AddressBlock` and `GreetingLine`.
+- External content fields such as `IncludeText`, `IncludePicture`, `Database` and `Embed`.
+- Structural fields such as `TOC`, `Index`, `Citation` and `Bibliography`.
+- Automatic numbering and text fields (`AutoNum*`, `AutoText*`).
+- Document property fields (`Author`, `Title`, `Keywords`, etc.).
+
+A complete parser or interpreter should be prepared to encounter these fields and either evaluate them or surface appropriate placeholders or errors depending on context.
+
+**Reference:**  
+Microsoft Support – *List of field codes in Word*.  
+https://support.microsoft.com/en-gb/office/list-of-field-codes-in-word-1ad6d91a-55a7-4a8d-b535-cf7888659a51
+
+## GREETINGLINE Field (Implementation-Oriented Description)
+
+The **`GREETINGLINE`** field is a mail-merge convenience field that evaluates to a formatted salutation by combining multiple merge values with fixed text according to a stored greeting pattern. Unlike `MERGEFIELD`, it does not correspond to a single data-source column. Instead, it operates on **role-based merge values**—commonly a courtesy title (for example, “Mr.”, “Mme”), a first name, and a last name—which are mapped by the user at insertion time through Word’s *Mailings → Greeting Line* dialog. These roles are resolved at evaluation time by reading the associated merge fields from the current data record; Word does not infer gender or derive titles and uses the literal values present in the data source.
+
+From an implementation standpoint, `GREETINGLINE` can be treated as a **macro-style field** whose field code encapsulates the selected greeting format, optional fallback text, and language context chosen in the UI. Evaluation consists of selecting the stored greeting pattern (for example, salutation + title + last name, or salutation + first name), substituting the available role values, and inserting the resulting text into the document. If one or more role values are missing or empty, the behavior follows the stored fallback configuration: either emitting a generic greeting string if one was defined, or rendering the greeting with the missing components omitted while preserving surrounding punctuation. Localization affects only the fixed salutation text and punctuation conventions; the field name and role-resolution mechanism are language-independent. For offline or non-interactive processing, an interpreter may model `GREETINGLINE` as syntactic sugar that expands into a sequence of literal text and `MERGEFIELD` evaluations driven by the persisted greeting pattern.
+
+**References:**  
+Microsoft Support – *Insert mail merge fields (including Address Block and Greeting Line)*.  
+https://support.microsoft.com/en-us/office/insert-mail-merge-fields-9a1ab5e3-2d7a-420d-8d7e-7cc26f26acff  
+
+Microsoft Support – *List of field codes in Word* (alphabetical index, includes `GreetingLine`).  
+https://support.microsoft.com/en-gb/office/list-of-field-codes-in-word-1ad6d91a-55a7-4a8d-b535-cf7888659a51
+
+## ADDRESSBLOCK Field (Implementation-Oriented Description)
+
+The **`ADDRESSBLOCK`** field is a mail-merge convenience field that evaluates to a formatted postal address block by aggregating multiple address-related merge values into a single, multi-line output. Unlike `MERGEFIELD`, it does not correspond to a single data-source column. Instead, it operates on a set of **logical address roles**—such as recipient name, company, street address, city, state/province, postal code, and country—that are mapped by the user at insertion time through Word’s *Mailings → Address Block* dialog and, if necessary, the associated *Match Fields* interface.
+
+From an implementation perspective, `ADDRESSBLOCK` can be treated as a **macro-style composite field** whose evaluation consists of expanding a stored address template over the mapped address roles. The template defines the ordering of address components, the insertion of line breaks, and the placement of punctuation (for example, commas or spaces between locality elements). During evaluation, the field retrieves the mapped merge values for the current data record and substitutes them into the template. Components whose mapped values are empty are omitted from the output, typically along with their associated separators, resulting in a compact address block without blank lines.
+
+The field does not expose user-editable switches in the field code for controlling layout; formatting choices are captured implicitly from the insertion dialog rather than through explicit `\\switch` syntax. Localization affects the default ordering of address components and country-specific formatting conventions but does not alter the field name or its fundamental role-resolution mechanism. For offline or non-interactive processing, an interpreter may model `ADDRESSBLOCK` as syntactic sugar that expands into a sequence of `MERGEFIELD` evaluations and literal line breaks according to the persisted address template and role mappings.
+
+**References:**  
+Microsoft Support – *Insert mail merge fields (including Address Block)*.  
+https://support.microsoft.com/en-us/office/insert-mail-merge-fields-9a1ab5e3-2d7a-420d-8d7e-7cc26f26acff  
+
+Microsoft Support – *How to use the Mail Merge feature in Word* (includes Address Block and field matching).  
+https://support.microsoft.com/en-us/topic/how-to-use-the-mail-merge-feature-in-word-to-create-and-to-print-form-letters-that-use-the-data-from-an-excel-worksheet-d8709e29-c106-2348-7e38-13eecc338679  
+
+Microsoft Support – *List of field codes in Word* (alphabetical index, includes `AddressBlock`).  
+https://support.microsoft.com/en-gb/office/list-of-field-codes-in-word-1ad6d91a-55a7-4a8d-b535-cf7888659a51
+
+
+## DATABASE Field (Implementation-Oriented Description)
+
+The **`DATABASE`** field is a Word field code that allows a document to retrieve data dynamically by executing a query against an external database and inserting the resulting dataset into the document, typically as a table. It is part of Word’s standard field code set and is most commonly used in advanced mail-merge or reporting scenarios where data must be selected or filtered independently of the primary merge data source.
+
+Functionally, the field encapsulates two core elements: a **database connection specification** and a **query string**. The connection information is provided via a field switch (commonly `\\d`) and may reference a local file (such as an Access `.mdb`/`.accdb` or Excel workbook) or a full ODBC/OLE DB connection string. When required by the target database engine, this connection string may include authentication parameters such as user name and password or may rely on integrated security. Word does not interpret or secure these credentials; it passes the connection string verbatim to the underlying database provider.
+
+The query itself is supplied as a literal string (commonly via the `\\s` switch) and is executed by the database engine specified in the connection, not by Word. As a result, the query language is **not Word-specific SQL** but rather the SQL dialect supported by the target system (for example, Access SQL for Jet/ACE databases, Transact-SQL for Microsoft SQL Server, or another vendor-specific dialect when using ODBC). Standard SQL constructs such as `SELECT`, `FROM`, and `WHERE` are generally supported, while advanced features depend entirely on the database backend.
+
+A notable characteristic of the `DATABASE` field is that the query string may contain **embedded Word fields**, such as `MERGEFIELD`, allowing the query to be parameterized based on the current merge record or document state. In this case, embedded fields are evaluated first, and their results are substituted into the query string before the database query is executed. The resulting recordset is then rendered into the document, usually as a table whose rows and columns correspond to the query output. Formatting and layout options are limited and largely controlled by Word rather than by the field code itself.
+
+For offline or programmatic evaluation, `DATABASE` should be treated as an **external-data macro field**. A compatible implementation involves resolving embedded fields, establishing a database connection using the supplied connection string, executing the query using the appropriate database driver, and inserting the returned rows into the document model. Because the field depends on external systems and credentials, implementations commonly choose to support it conditionally, provide a stubbed evaluation, or surface a controlled error when database access is unavailable.
+
+**References:**  
+Microsoft Support – *List of field codes in Word* (alphabetical index, includes `Database`).  
+https://support.microsoft.com/en-gb/office/list-of-field-codes-in-word-1ad6d91a-55a7-4a8d-b535-cf7888659a51  
+
+BetterSolutions – *Database field* (overview and common switches).  
+https://bettersolutions.com/word/fields/database-field.htm  
+
+Stack Overflow – *Using Word DATABASE field with SQL and embedded MERGEFIELD*.  
+https://stackoverflow.com/questions/73159646/ms-word-database-field-sql-switch-how-to-reference-merge-field
+
+## Field Error Semantics (Implementation-Oriented Description)
+
+Microsoft Word reports field-evaluation failures by substituting the expected field result with a **literal, human-readable error string**. These error strings are inserted directly into the document and thereafter behave as ordinary text: they participate in nested field evaluation, conditional logic, comparisons, and variable assignment. Word does not expose numeric error codes or structured exceptions at the field level; error reporting is entirely text-based and user-facing.
+
+When a field fails to evaluate (for example, due to a missing bookmark, an unresolved cross-reference, or an invalid structural context), Word replaces the field result with an error message beginning with a localized equivalent of the prefix **“Error!”**. Evaluation does not halt. Instead, the error text becomes the field’s result and is propagated outward if the field is nested inside another field. As a consequence, conditional fields such as `IF`, `COMPARE`, or formulas operate on the literal error text rather than on a null or undefined value.
+
+Commonly observed English-language field error messages include:
+
+- **“Error! Bookmark Not Defined.”** — a referenced bookmark does not exist (e.g., `REF` to a deleted bookmark).  
+- **“Error! Reference source not found.”** — a cross-reference target (heading, caption, or numbered item) cannot be resolved.  
+- **“Error! No text of specified style in document.”** — a field depending on the presence of a specific style (for example, certain numbering or caption contexts) cannot find matching content.  
+
+Microsoft does not publish an exhaustive list of all possible field error strings. In practice, most field-related errors share a common pattern: a localized form of **“Error!”** followed by a short diagnostic phrase. Because these messages are localized, their exact wording depends on the Word UI language. For example, in French builds of Word, “Error! Bookmark Not Defined.” appears as **“Erreur ! Signet non défini.”**. Implementations must therefore avoid hard-coding English error strings and instead rely on pattern-based or locale-aware detection.
+
+From an implementation perspective, field errors should be modeled with the following semantics:
+- A field error yields a **string result**, not an exception.
+- The error string is **propagated unchanged** into any enclosing field.
+- Comparisons and calculations that consume an error result treat it as text; numeric coercion does not occur.
+- Error detection should be **locale-aware**, typically by matching a configurable set of localized “Error!” prefixes or known message patterns.
+
+For offline or programmatic evaluation, it is advisable to distinguish internally between a *successful evaluation result* and an *error-result string*, even though both ultimately render as text. This allows downstream consumers to detect error conditions while preserving Word-compatible behavior in nested evaluation and conditional logic.
+
+**References:**  
+Microsoft Support – *Troubleshoot bookmarks* (documents “Error! Bookmark Not Defined.”).  
+https://support.microsoft.com/en-us/office/troubleshoot-bookmarks-9cad566f-913d-49c6-8d37-c21e0e8d6db0  
+
+Microsoft Learn / Support forums – *Reference source not found* (cross-reference errors).  
+https://learn.microsoft.com/en-us/answers/questions/5638855/in-a-shared-word-document-how-to-fix-not-being-abl  
+
+Super User – *Error! No text of specified style in document* (community-documented field error).  
+https://superuser.com/questions/641315/ms-word-field-code-error-error-no-text-of-specified-style-in-document
+
+
+## External Content Fields: INCLUDETEXT and INCLUDEPICTURE
+
+### Overview
+
+The `INCLUDETEXT` and `INCLUDEPICTURE` fields are external-content fields that dynamically incorporate content from outside the current Word document at field-evaluation time. Unlike mail-merge fields, which bind to a structured data source, these fields reference external files or resources and inject their contents directly into the document model. They are explicitly listed in Microsoft’s canonical field index and behave as macro-style fields whose evaluation depends on filesystem or URI access rather than merge records.
+
+### INCLUDETEXT Field
+
+The `INCLUDETEXT` field inserts text from another document. Its general syntax is:
+
+    { INCLUDETEXT "FullFilePath" [BookmarkName] [\\!] }
+
+- **FullFilePath** is a quoted absolute or relative path to a Word document (`.doc`, `.docx`, `.rtf`). Paths containing spaces must be quoted.
+- **BookmarkName** is optional. If present, only the content delimited by the named bookmark in the source document is included. If omitted, the entire document body is inserted.
+- **\\! (lock nested fields)** suppresses automatic updating of fields contained within the included text. Without this switch, Word evaluates nested fields in the included content when the `INCLUDETEXT` field is updated.
+
+Evaluation semantics:
+1. Word resolves the file path and opens the external document.
+2. If a bookmark is specified, Word extracts only that bookmarked range; otherwise, it extracts the full document body.
+3. The extracted content is inserted verbatim into the current document.
+4. Nested fields inside the included content are evaluated unless the `\\!` switch is present.
+
+The included content is not copied permanently; it is refreshed whenever fields are updated. Missing files or bookmarks result in literal error text being displayed at the field location.
+
+### INCLUDEPICTURE Field
+
+The `INCLUDEPICTURE` field inserts a picture from an external file or URI. Its general syntax is:
+
+    { INCLUDEPICTURE "URIorFilePath" [\\d] }
+
+- **URIorFilePath** may be a local filesystem path or a remote URL.
+- **\\d (link instead of embed)** instructs Word to store only a link to the image rather than embedding the image binary data in the document.
+
+Supported formats include common raster image types such as PNG, JPG/JPEG, GIF, BMP, and TIFF. The field does not extract images from PDF files; PDFs must be converted to supported image formats before inclusion.
+
+Evaluation semantics:
+1. Word resolves the path or URI.
+2. The image is loaded at field-update time.
+3. The image is rendered as a picture object in the document.
+4. If `\\d` is present, the document retains only a reference to the external image and reloads it on subsequent updates.
+
+### Formatting and Layout
+
+Neither `INCLUDETEXT` nor `INCLUDEPICTURE` exposes field-code switches for controlling layout, sizing, alignment, borders, cropping, or positioning.
+
+- For `INCLUDETEXT`, formatting is inherited from the source document and from the surrounding paragraph context in the target document.
+- For `INCLUDEPICTURE`, all visual formatting (size, scale, wrapping, borders, effects) is applied through Word’s picture object properties after the field has resolved.
+
+From an implementation perspective, formatting is not part of field evaluation and must be modeled as document-object properties associated with the inserted content.
+
+### Implementation Notes
+
+For offline or programmatic evaluation:
+- Treat both fields as external-resource resolvers.
+- Resolve nested fields before or after inclusion according to the `\\!` switch.
+- Guard against recursive inclusion loops.
+- Handle missing files, invalid URIs, and inaccessible resources by emitting Word-style error text rather than throwing hard errors.
+- Consider security implications when resolving external paths or URLs.
+
+### References
+
+Microsoft Support – List of field codes in Word  
+https://support.microsoft.com/en-gb/office/list-of-field-codes-in-word-1ad6d91a-55a7-4a8d-b535-cf7888659a51
+
+Microsoft Office Word 2003 Documentation – INCLUDETEXT field  
+https://documentation.help/ms-office-word-2003/worefINCLUDETEXT1.htm
+
+BetterSolutions – INCLUDETEXT and INCLUDEPICTURE field behavior  
+https://bettersolutions.com/word/fields/includetext-field.htm  
+https://bettersolutions.com/word/fields/includepicture-field.htm
+
+
+## Structural and Aggregate Fields: TOC, TC, INDEX, XE, RD
+
+### Overview
+
+The TOC/INDEX ecosystem in Microsoft Word consists of *aggregate fields* that synthesize document-wide structures by scanning, collecting, sorting, and rendering information distributed across the document (and optionally across multiple documents). These fields differ fundamentally from scalar fields (e.g., REF, DATE) in that their evaluation requires a **multi-pass document scan** and access to pagination metadata.
+
+The ecosystem is composed of:
+
+- **TOC** — Table of Contents generator
+- **TC** — Table of Contents entry marker
+- **INDEX** — Index generator
+- **XE** — Index entry marker
+- **RD** — External document reference for aggregation
+
+Evaluation of TOC and INDEX fields depends on the presence, placement, and configuration of TC/XE/RD fields and paragraph metadata.
+
+---
+
+## TOC Field (Table of Contents)
+
+### Syntax (canonical form)
+
+    { TOC [\\o "start-end"] [\\t "Style,Level;…"] [\\u] [\\b Bookmark] [\\f Identifier] [\\l Levels] [\\c SeqId] [\\a CaptionId] }
+
+### Data sources scanned
+
+A TOC field aggregates entries from one or more of the following sources, depending on switches:
+
+1. **Paragraph outline levels** (typically via built-in Heading styles).
+2. **Paragraph outline attributes** (explicit outline level property, via \\u).
+3. **TC fields** whose identifiers and levels match TOC filters.
+4. **Captioned SEQ fields** when \\c or \\a is used.
+5. **Referenced documents** via RD fields.
+
+### Entry model
+
+Each TOC entry is resolved to:
+
+- **Display text**
+- **Hierarchy level** (integer ≥ 1)
+- **Target location** (paragraph anchor)
+- **Resolved page number**
+
+Entries are ordered primarily by document order, not alphabetically.
+
+### Switch semantics
+
+- **\\o "n-m"** — Include headings with outline levels between *n* and *m*.
+- **\\t "Style,Level;…"** — Map paragraph styles to explicit TOC levels.
+- **\\u** — Include paragraphs with an outline level property even if not styled.
+- **\\b Bookmark** — Restrict scanning to the bookmarked document range.
+- **\\f Identifier** — Include only TC fields tagged with this identifier.
+- **\\l Levels** — Include only TC entries whose \\l value matches Levels.
+- **\\c SeqId** — Build TOC from SEQ fields with the given identifier.
+- **\\a CaptionId** — Include captioned objects of a given type (text only).
+
+### Evaluation notes
+
+- Pagination must be resolved before final TOC rendering.
+- TOC output is regenerated wholesale on update.
+- Layout (leaders, indentation) is controlled by styles, not field switches.
+
+---
+
+## TC Field (Table of Contents Entry Marker)
+
+### Syntax
+
+    { TC "EntryText" \\l Level [\\f Identifier] }
+
+### Semantics
+
+- TC fields are **non-rendering markers**.
+- They inject synthetic TOC entries independent of paragraph styles.
+- EntryText is literal and not derived from document content.
+- Level defines TOC nesting depth.
+- Identifier allows partitioning multiple TOCs.
+
+During TOC evaluation, TC fields are collected, filtered, and converted into TOC entries as if they were headings at the specified level.
+
+---
+
+## INDEX Field
+
+### Syntax (simplified)
+
+    { INDEX [\\b Bookmark] [\\f Identifier] [\\e Separator] [\\h] [\\r] [\\z] }
+
+### Data sources scanned
+
+- All XE fields within scope.
+- XE fields from referenced documents via RD.
+
+### Entry model
+
+Each index entry resolves to:
+
+- **Primary term**
+- Optional **secondary term**
+- Optional **cross-reference text**
+- One or more **page numbers**
+
+Entries are **alphabetically sorted** using locale-dependent collation.
+
+### Evaluation semantics
+
+- Duplicate page references for the same term are collapsed.
+- Cross-references are rendered as “See” / “See also” constructs.
+- Page numbers are resolved post-layout.
+
+---
+
+## XE Field (Index Entry Marker)
+
+### Syntax
+
+    { XE "Term[:Subterm]" [\\t "CrossRefText"] [\\f Identifier] }
+
+### Semantics
+
+- XE fields mark indexable terms at a document location.
+- Primary and secondary terms are parsed from the string.
+- Multiple XE fields with the same term accumulate page numbers.
+- Cross-reference entries suppress page numbers and emit reference text.
+
+XE fields do not render content directly.
+
+---
+
+## RD Field (Referenced Document)
+
+### Syntax
+
+    { RD "DocumentPath" }
+
+### Semantics
+
+- RD fields extend the scan scope of TOC and INDEX.
+- Referenced documents are opened and scanned as read-only sources.
+- TC/XE/heading metadata is merged into the parent aggregation.
+- Pagination is resolved in the context of the *source document*, not the host.
+
+Recursive RD chains must be cycle-checked by the implementation.
+
+---
+
+## Processing Model (Implementation Guidance)
+
+A Word-compatible implementation requires:
+
+1. **Pre-scan phase** — identify TC, XE, RD, heading metadata.
+2. **Recursive document loading** — resolve RD references.
+3. **Entry collection** — normalize entries into TOC/INDEX models.
+4. **Filtering** — apply identifier, bookmark, and level constraints.
+5. **Sorting** — structural (TOC) or locale-aware collation (INDEX).
+6. **Pagination resolution** — requires layout engine integration.
+7. **Rendering** — generate structured output using styles.
+
+These fields cannot be evaluated correctly without document-level context and pagination awareness.
+
+---
+
+## References
+
+Microsoft Support – List of field codes in Word  
+https://support.microsoft.com/en-gb/office/list-of-field-codes-in-word-1ad6d91a-55a7-4a8d-b535-cf7888659a51
+
+Microsoft Support – Create and update a table of contents  
+https://support.microsoft.com/en-us/office/create-a-table-of-contents-or-update-a-table-of-contents-882e8564-0edb-435e-84b5-1d8552ccf0c0
+
+Microsoft Support – Create and update an index  
+https://support.microsoft.com/en-us/office/create-and-update-an-index-cc502c71-a605-41fd-9a02-cda9d14bf073
+
+Office-Watch – All Word TOC switches explained  
+https://office-watch.com/2023/all-word-table-of-contents-options/
+
+
+## Header, Footer, and Section Scope Semantics
+
+In Microsoft Word, headers and footers are not part of the main document text flow but are stored as **section-scoped story ranges** with independent evaluation contexts. Each section maintains up to six distinct header/footer containers (primary, first-page, and even-page variants for both header and footer). Fields located in these containers are evaluated against the **section’s pagination and numbering state**, not the linear body text stream. As a result, the same field code (for example `{ PAGE }`) can yield different results in the body versus in a header or footer, depending on the section’s page-numbering configuration, restart rules, and linkage settings.
+
+Section breaks establish hard evaluation boundaries. Fields such as `PAGE`, `SECTION`, `SECTIONPAGES`, `NUMPAGES`, and `SEQ \\s n` resolve their values relative to the **current section context** when placed in headers or footers. For example, `{ PAGE }` reflects the page index within the section’s numbering scheme (including any “Start at” offset), while `{ NUMPAGES }` returns the total page count for the entire document, and `{ SECTIONPAGES }` returns the total page count of the current section only. When headers or footers are marked as *linked to previous*, their field content and evaluation context are effectively inherited from the preceding section; when unlinked, the fields are evaluated independently using the new section’s metadata.
+
+Field update behavior also differs structurally. Bulk updates such as “select all + F9” operate on a single story range and therefore do not reliably update fields in headers, footers, text boxes, or other non-body stories. In Word automation and in practice, headers and footers require an explicit traversal and update pass per section. Mail-merge control fields (`NEXT`, `NEXTIF`, `SKIPIF`) are not well-defined in headers or footers and are only consistently supported in the main document body; their placement outside the body yields version-dependent or undefined behavior.
+
+For an implementation that aims to match Word, headers and footers must be modeled as **separate field containers bound to section objects**, with explicit linkage state, independent field lists, and access to section-level pagination data. Evaluation of header/footer fields must be deferred until pagination is known, and section boundaries must invalidate and recompute dependent field results when numbering or layout changes occur.
+
+### References
+
+Microsoft Support – List of field codes in Word  
+https://support.microsoft.com/en-gb/office/list-of-field-codes-in-word-1ad6d91a-55a7-4a8d-b535-cf7888659a51
+
+AddBalance – Word sections and headers/footers (technical overview)  
+https://www.addbalance.com/usersguide/sections.htm
+
+MakeOfficeWork – Page numbering and section behavior  
+https://makeofficework.com/showing_page_numbers.htm
+
+Microsoft public Word VBA discussions – Updating fields in headers/footers  
+https://microsoft.public.word.vba.general.narkive.com/HoWXuFiP/updating-fields-in-headers-footers
+
+
+## Unicode, RTL, and Vertical Text Semantics in Field Evaluation
+
+Microsoft Word evaluates field codes over **logical Unicode text** (internally UTF-16) and applies script directionality, vertical layout, and glyph shaping strictly at the **rendering stage**, not during field evaluation. Field results are always produced as linear Unicode strings; bidirectional reordering, character mirroring, and vertical glyph orientation are applied later based on paragraph, run, and page layout properties. This separation is critical: fields do not alter character order for right-to-left (RTL) scripts, nor do they insert layout control characters as part of evaluation.
+
+In RTL contexts (for example Arabic or Hebrew paragraphs), fields inherit the paragraph’s directional property. Mixed LTR/RTL content within a field result is rendered according to the Unicode Bidirectional Algorithm, with numbers and Latin text maintaining left-to-right ordering unless explicitly overridden by embedding controls. This visual reordering does not affect the underlying string value returned by the field and therefore must be treated as a layout concern by any implementation. Nested fields, comparisons, and numeric formatting operate on the logical string and numeric values, independent of visual direction.
+
+Case-conversion format switches (`\\* Upper`, `\\* Lower`, `\\* FirstCap`, `\\* Caps`) operate on Unicode characters and are **locale-sensitive** where applicable. While many scripts are unicameral and unaffected (for example Arabic or Hebrew), Latin script segments embedded in RTL text are subject to language-specific case mappings. An implementation that aims to match Word behavior should therefore rely on Unicode case-mapping tables with locale awareness rather than ASCII-only transformations.
+
+Vertical text handling is primarily relevant to East Asian layouts (Japanese, Chinese, Korean) and is orthogonal to field semantics. The `\\v` switch on `MERGEFIELD` and related fields does not modify the semantic value of the field; instead, it acts as a **rendering hint** indicating that the result should participate correctly in vertical text flow when the document or paragraph is set to vertical writing mode. In such layouts, Word may rotate glyphs, select alternate glyph forms, or adjust spacing, but the evaluated field result remains a standard Unicode string. In horizontal layouts, the `\\v` switch typically has no observable effect.
+
+Numeric (`\\#`) and date/time (`\\@`) format switches are not script-specific but are **locale-dependent**. Digits, decimal separators, digit grouping symbols, calendar systems, and month/day names are resolved using the document or system locale. In RTL documents, numerals are often rendered left-to-right within an RTL run, following Unicode bidi rules, without altering their numeric value or string representation.
+
+For implementers, the correct model is therefore layered: field evaluation produces a Unicode string or numeric value; locale-aware formatting is applied next; and bidirectional reordering or vertical layout adjustments are handled exclusively by the rendering engine. Any attempt to combine evaluation and layout logic risks diverging from Word’s behavior, particularly in mixed-script or vertical-text documents.
+
+**References:**  
+Microsoft Support – Format field results (Unicode, locale, and formatting behavior)  
+https://support.microsoft.com/en-us/office/format-field-results-baa61f5a-5636-4f11-ab4f-6c36ae43508c  
+
+Superuser – Purpose of the `\\v` switch in MERGEFIELD (vertical text context)  
+https://superuser.com/questions/1212759/whats-the-purpose-of-mergefield-v-switch-in-ms-word  
+
+Unicode Consortium – Unicode Bidirectional Algorithm (UAX #9)  
+https://www.unicode.org/reports/tr9/
+
+## AUTONUM / AUTONUMOUT / AUTONUMLGL (Detailed Legacy Semantics)
+
+The **AUTONUM**, **AUTONUMOUT**, and **AUTONUMLGL** fields are legacy automatic numbering fields whose values are generated by Word’s internal layout and outline engine rather than by explicit field parameters. Unlike `SEQ` or list styles, these fields expose no switches to control formatting, restarting, or scoping. Their behavior is driven implicitly by **paragraph position, outline level, and document structure**, and updates occur as part of Word’s pagination and layout recalculation rather than through explicit field updates.
+
+`AUTONUM` produces a flat, sequential number that increments in document order, historically used for margin numbering or simple automatic numbering in early Word templates. `AUTONUMOUT` and `AUTONUMLGL` both participate in **outline-level numbering**, deriving their hierarchical structure from the paragraph’s outline level (for example Heading 1, Heading 2, etc.). The distinction between them is representational rather than structural: `AUTONUMOUT` emits outline numbers with trailing punctuation (such as `1.`, `1.1.`, `1.1.1.`), whereas `AUTONUMLGL` emits legal-style hierarchical numbers without trailing punctuation (`1`, `1.1`, `1.1.1`).
+
+These fields update automatically when document structure changes (paragraph insertion, deletion, outline level changes) and are **not reliably refreshed by F9**. Their results may be suppressed, unstable, or absent when nested inside conditional fields (`IF`, `SKIPIF`) or when placed in non-body story ranges. Microsoft does not publish a formal, version-stable specification for AUTONUM* evaluation, and observed behavior varies across Word versions and compatibility modes.
+
+For implementation purposes, the AUTONUM* family should be treated as **non-deterministic, layout-driven generators**. A compatible engine should recognize these field types and either delegate evaluation to Word, approximate numbering using outline metadata, or explicitly flag them as legacy constructs whose exact behavior cannot be reproduced outside Word’s layout engine.
+
+### AUTONUM* Field Comparison (Operational View)
+
+| Field | Increment Driver | Hierarchy Source | Output Form | Distinguishing Characteristic |
+|------|------------------|------------------|-------------|-------------------------------|
+| AUTONUM | Insertion order | None (flat) | 1, 2, 3 | Simple sequential numbering |
+| AUTONUMOUT | Outline level | Paragraph outline level | 1., 1.1., 1.1.1. | Hierarchical numbering with punctuation |
+| AUTONUMLGL | Outline level | Paragraph outline level | 1, 1.1, 1.1.1 | Hierarchical numbering without punctuation (legal style) |
+
+**References:**  
+Microsoft Support – List of field codes in Word  
+https://support.microsoft.com/en-gb/office/list-of-field-codes-in-word-1ad6d91a-55a7-4a8d-b535-cf7888659a51  
+
+Microsoft Learn – Word field type enumeration (WdFieldType)  
+https://learn.microsoft.com/en-us/office/vba/api/word.wdfieldtype  
+
+Microsoft Office Word 2003 Documentation – AUTONUMLGL field  
+https://documentation.help/MS-Office-Word-2003/worefAUTONUMLGL1.htm
+
+## CITATION and BIBLIOGRAPHY Fields (Implementation-Oriented Semantics)
+
+The **CITATION** and **BIBLIOGRAPHY** fields implement Word’s internal bibliographic system. Unlike most other fields, they do not primarily reference document text, bookmarks, or merge data. Instead, they resolve against a **structured bibliography source store** maintained by Word (the *Source Manager*), where each bibliographic entry is identified by a unique **Tag** and stored as structured metadata (author, title, year, publisher, etc.). Both fields are tightly coupled to Word’s citation-style engine and are not fully specifiable using field code syntax alone.
+
+### CITATION Field
+
+**Syntax:**  
+`{ CITATION "Tag" [ switches ] }`
+
+The CITATION field inserts an in-text reference to a single bibliographic source identified by its Tag. The Tag must correspond to an existing source entry in the document’s bibliography source list; if no such source exists, Word renders an error or an empty result depending on version and update context.
+
+At evaluation time, Word performs the following steps:
+1. Locate the source record matching the Tag in the active document or attached template.
+2. Select the active citation style (APA, MLA, Chicago, ISO 690, etc.).
+3. Format the in-text citation according to that style and the current locale.
+4. Apply any field-level switches to the formatted result.
+
+**Supported switches (observed and documented):**
+
+| Switch | Meaning |
+|------|--------|
+| `\\f "text"` | Inserts literal prefix text immediately before the citation. |
+| `\\s "text"` | Inserts literal suffix text immediately after the citation. |
+| `\\l LCID` | Overrides the locale used to format the citation (language, punctuation, labels). |
+| `\\m "Tag2"` | Adds an additional source Tag, allowing multiple sources in a single citation. |
+| `\\v number` | Supplies a volume number to the citation, consumed by styles that support it. |
+
+**Example:**  
+`{ CITATION "Doe2020" \\l 1033 \\f "see " \\s ", esp. ch. 2" }`
+
+The field code itself does not encode author names, dates, or titles; all such data is retrieved from the source store. Formatting logic (parentheses, author-year ordering, separators) is entirely style-driven.
+
+### BIBLIOGRAPHY Field
+
+**Syntax:**  
+`{ BIBLIOGRAPHY [ switches ] }`
+
+The BIBLIOGRAPHY field generates a complete bibliography or works-cited section by aggregating all sources referenced by CITATION fields in the document. It does not take source Tags, as its scope is document-wide.
+
+At evaluation time, Word:
+1. Collects all distinct source records referenced by CITATION fields.
+2. Sorts and formats them according to the active bibliography style.
+3. Emits a formatted block of text representing the bibliography.
+
+**Supported switches:**
+
+| Switch | Meaning |
+|------|--------|
+| `\\l LCID` | Overrides the locale used for bibliography formatting. |
+
+**Example:**  
+`{ BIBLIOGRAPHY \\l 1036 }`  
+Formats the bibliography using French locale rules where supported by the selected style.
+
+The BIBLIOGRAPHY field expands to formatted text only; it does not emit nested fields for individual entries. Updating citations or changing the bibliography style requires explicit field refresh to regenerate the output.
+
+### Construction and Storage Model
+
+Both CITATION and BIBLIOGRAPHY rely on:
+- A structured source store embedded in the document or template (often serialized as XML).
+- A citation-style definition, typically implemented internally or via XSL templates installed with Word.
+- Locale metadata that affects labels, punctuation, and ordering.
+
+Because citation formatting logic is external to the field code and driven by Word’s internal style engine, **full reimplementation requires replicating Word’s source schema, style engine, and locale handling**. As a result, these fields are best classified as **engine-dependent macro fields** rather than declarative field expressions.
+
+### Implementation Guidance
+
+For non-Word implementations:
+- Parse and preserve CITATION and BIBLIOGRAPHY field codes.
+- Model source data as structured records keyed by Tag.
+- Apply style-based formatting using a citation processor if full fidelity is required.
+- Otherwise, surface these fields as externally-resolved constructs or flag them as non-reproducible without Word’s bibliography engine.
+
+**References:**  
+Microsoft Support – List of field codes in Word  
+https://support.microsoft.com/en-gb/office/list-of-field-codes-in-word-1ad6d91a-55a7-4a8d-b535-cf7888659a51  
+
+Microsoft Support – Add citations and create a bibliography  
+https://support.microsoft.com/en-us/office/add-citations-in-a-word-document-ab9322bb-a8d3-47f4-80c8-63c06779f127  
+
+Microsoft Learn – Working with bibliographies in Word  
+https://learn.microsoft.com/en-us/office/vba/word/concepts/working-with-word/working-with-bibliographies
+
+

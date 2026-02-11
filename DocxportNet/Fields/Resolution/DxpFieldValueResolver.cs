@@ -44,6 +44,14 @@ public sealed class DxpContextFieldValueResolver : IDxpFieldValueResolver
 {
     public Task<DxpFieldValue?> ResolveAsync(string name, DxpFieldValueKindHint kind, DxpFieldEvalContext context)
     {
+        if ((kind == DxpFieldValueKindHint.Any || kind == DxpFieldValueKindHint.MergeField) &&
+            context.MergeCursor?.HasCurrent == true)
+        {
+            var value = context.MergeCursor.GetValue(name);
+            if (value != null)
+                return Task.FromResult<DxpFieldValue?>(value);
+        }
+
         if ((kind == DxpFieldValueKindHint.Any || kind == DxpFieldValueKindHint.Bookmark) &&
             context.TryGetBookmarkNodes(name, out var bmNodes))
         {

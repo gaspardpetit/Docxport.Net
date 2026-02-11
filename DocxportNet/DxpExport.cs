@@ -2,6 +2,7 @@ using DocumentFormat.OpenXml.Packaging;
 using DocxportNet.API;
 using DocxportNet.Fields;
 using DocxportNet.Fields.Eval;
+using DocxportNet.Fields.Resolution;
 using DocxportNet.Middleware;
 using DocxportNet.Walker;
 using Microsoft.Extensions.Logging;
@@ -199,6 +200,96 @@ public static class DxpExport
         return ExportToBytes(docxBytes, visitor, options: null, logger);
     }
 
+    public static IReadOnlyList<string> ExportToStrings(
+        string docxPath,
+        IDxpMergeRecordCursor cursor,
+        Func<DxpFieldEval, DxpITextVisitor> visitorFactory,
+        DxpFieldEval? fieldEval = null,
+        DxpExportOptions? options = null,
+        ILogger? logger = null)
+    {
+        using var document = WordprocessingDocument.Open(docxPath, false);
+        return ExportToStrings(document, cursor, visitorFactory, fieldEval, options, logger);
+    }
+
+    public static IReadOnlyList<string> ExportToStrings(
+        WordprocessingDocument document,
+        IDxpMergeRecordCursor cursor,
+        Func<DxpFieldEval, DxpITextVisitor> visitorFactory,
+        DxpFieldEval? fieldEval = null,
+        DxpExportOptions? options = null,
+        ILogger? logger = null)
+    {
+        if (document == null)
+            throw new ArgumentNullException(nameof(document));
+        if (cursor == null)
+            throw new ArgumentNullException(nameof(cursor));
+        if (visitorFactory == null)
+            throw new ArgumentNullException(nameof(visitorFactory));
+
+        var eval = fieldEval ?? new DxpFieldEval(logger: logger);
+        eval.Context.MergeCursor = cursor;
+
+        var exportOptions = options ?? new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate };
+        return RunMergeLoop(cursor, eval, () => {
+            var visitor = visitorFactory(eval);
+            return ExportToString(document, visitor, exportOptions, logger);
+        });
+    }
+
+    public static IReadOnlyList<string> ExportToStrings(
+        IDxpMergeRecordCursor cursor,
+        Func<DxpFieldEval, string> outputFactory,
+        DxpFieldEval? fieldEval = null,
+        ILogger? logger = null)
+    {
+        if (cursor == null)
+            throw new ArgumentNullException(nameof(cursor));
+        if (outputFactory == null)
+            throw new ArgumentNullException(nameof(outputFactory));
+
+        var eval = fieldEval ?? new DxpFieldEval(logger: logger);
+        eval.Context.MergeCursor = cursor;
+
+        return RunMergeLoop(cursor, eval, () => outputFactory(eval));
+    }
+
+    public static IReadOnlyList<string> ExportToFiles(
+        string docxPath,
+        IDxpMergeRecordCursor cursor,
+        Func<DxpFieldEval, DxpITextVisitor> visitorFactory,
+        Func<int, string> outputPathFactory,
+        DxpFieldEval? fieldEval = null,
+        DxpExportOptions? options = null,
+        ILogger? logger = null)
+    {
+        using var document = WordprocessingDocument.Open(docxPath, false);
+        return ExportToFiles(document, cursor, visitorFactory, outputPathFactory, fieldEval, options, logger);
+    }
+
+    public static IReadOnlyList<string> ExportToFiles(
+        WordprocessingDocument document,
+        IDxpMergeRecordCursor cursor,
+        Func<DxpFieldEval, DxpITextVisitor> visitorFactory,
+        Func<int, string> outputPathFactory,
+        DxpFieldEval? fieldEval = null,
+        DxpExportOptions? options = null,
+        ILogger? logger = null)
+    {
+        if (outputPathFactory == null)
+            throw new ArgumentNullException(nameof(outputPathFactory));
+
+        var outputs = ExportToStrings(document, cursor, visitorFactory, fieldEval, options, logger);
+        for (int i = 0; i < outputs.Count; i++)
+        {
+            var path = outputPathFactory(i);
+            if (string.IsNullOrWhiteSpace(path))
+                continue;
+            File.WriteAllText(path, outputs[i]);
+        }
+        return outputs;
+    }
+
     /// <summary>
     /// Export to a byte array using a <see cref="DxpIVisitor"/> and in-memory DOCX bytes.
     /// </summary>
@@ -304,6 +395,52 @@ public static class DxpExport
     {
         var walker = new DxpWalker(logger);
         walker.Accept(document, WrapWithFieldEvalMiddleware(visitor, options, logger));
+    }
+
+    private static IReadOnlyList<string> RunMergeLoop(
+        IDxpMergeRecordCursor cursor,
+        DxpFieldEval eval,
+        Func<string> outputFactory)
+    {
+        var results = new List<string>();
+
+        eval.Context.ResetMergeSequence();
+        eval.Context.SetMergeSequence(1);
+
+        if (!cursor.HasCurrent && !cursor.MoveNext())
+            return results;
+
+        while (cursor.HasCurrent)
+        {
+            eval.Context.ResetForRecord();
+            var output = outputFactory();
+
+            var action = eval.Context.ConsumeMergeRecordAction();
+            if (action != DxpMergeRecordAction.SkipOutput)
+            {
+                results.Add(output);
+                eval.Context.IncrementMergeSequence();
+            }
+
+            if (action == DxpMergeRecordAction.SkipOutput)
+            {
+                if (!cursor.HasCurrent)
+                    break;
+                continue;
+            }
+
+            if (action == DxpMergeRecordAction.Advance)
+            {
+                if (!cursor.HasCurrent)
+                    break;
+                continue;
+            }
+
+            if (!cursor.MoveNext())
+                break;
+        }
+
+        return results;
     }
 
     private static DxpIVisitor WrapWithFieldEvalMiddleware(DxpIVisitor visitor, DxpExportOptions? options, ILogger? logger)

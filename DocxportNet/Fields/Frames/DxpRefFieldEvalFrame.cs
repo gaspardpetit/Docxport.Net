@@ -27,8 +27,9 @@ internal sealed class DxpRefFieldEvalFrame : DxpValueFieldEvalFrame
         if (string.IsNullOrWhiteSpace(instruction))
             return false;
 
+        var instructionText = instruction!;
         var parser = new DxpFieldParser();
-        var parse = parser.Parse(instruction);
+        var parse = parser.Parse(instructionText);
         if (!string.Equals(parse.Ast.FieldType, "REF", StringComparison.OrdinalIgnoreCase))
             return false;
 
@@ -42,7 +43,8 @@ internal sealed class DxpRefFieldEvalFrame : DxpValueFieldEvalFrame
         if (string.IsNullOrWhiteSpace(parse.Ast.ArgumentsText))
             return false;
 
-        var tokens = TokenizeArgs(parse.Ast.ArgumentsText);
+        var argumentsText = parse.Ast.ArgumentsText!;
+        var tokens = TokenizeArgs(argumentsText);
         if (tokens.Count == 0 || string.IsNullOrWhiteSpace(tokens[0]))
             return false;
 

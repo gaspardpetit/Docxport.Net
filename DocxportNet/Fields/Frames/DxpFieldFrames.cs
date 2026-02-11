@@ -44,8 +44,10 @@ class DxpFieldFrames
 
 	public static void EmitRun(Run run, DxpIDocumentContext d, DxpIVisitor? sink)
 	{
-		if (sink != null)
-	        d.Walker.WalkRun(run, d as DxpDocumentContext, sink);
+		if (sink == null)
+			return;
+		if (d is DxpDocumentContext docContext)
+			d.Walker.WalkRun(run, docContext, sink);
 	}
 
 	public static void EmitTextInRun(string text, DxpIDocumentContext d, Run run, DxpIVisitor? sink)
