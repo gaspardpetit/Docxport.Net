@@ -28,6 +28,28 @@ Docxport.Net is a .NET library for walking DOCX documents and exporting them to 
 - Headers/footers, bookmarks, hyperlinks, fields
 - Images/drawings (best-effort)
 
+**Field evaluation & mail merge**
+- Word field evaluator with nested fields + formatting switches (`\*` `\#` `\@`)
+- Mail‑merge control: `NEXT` / `NEXTIF` / `SKIPIF`, `MERGEREC` / `MERGESEQ`
+- Merge macros: `GREETINGLINE` / `ADDRESSBLOCK` (locale‑aware templates)
+- Pluggable `DATABASE` provider (bring your own DB connector)
+- Full checklist: [docs/supported-fields.md](docs/supported-fields.md)
+
+## Field support (high‑level)
+
+| Group | Fields | Status |
+| --- | --- | --- |
+| Core | IF, SET, REF, DOCVARIABLE, DOCPROPERTY | ✅ |
+| Dates | DATE, TIME, CREATEDATE, SAVEDATE, PRINTDATE | ✅ |
+| Merge | MERGEFIELD, NEXT/NEXTIF/SKIPIF, MERGEREC/MERGESEQ | ✅ |
+| Utilities | SEQ, COMPARE, ASK, Formula (=) | ◐ |
+| Macros | GREETINGLINE, ADDRESSBLOCK | ◐ |
+| Metrics | NUMPAGES, NUMWORDS, NUMCHARS | ◐ |
+| Indexing | TOC / INDEX / PAGEREF / NOTEREF | ⛔ |
+
+Legend: ✅ full, ◐ partial, ⛔ out of scope  
+Full checklist: [docs/supported-fields.md](docs/supported-fields.md)
+
 ## Why this exists
 
 Most DOCX “save as text” pipelines lose important fidelity: strikethroughs and deletions disappear, list markers collapse to bullets or vanish (pandoc), comments/track changes are missing, images are dropped, and tools like LibreOffice/Interop require UI or platform-specific installs. Docxport.Net walks the OOXML directly, headlessly, and emits Markdown/HTML/plain text while preserving tracked changes, comments, list markers, images, headers/footers, and other semantics.

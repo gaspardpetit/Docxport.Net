@@ -2,6 +2,7 @@ using System.Globalization;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.CustomProperties;
 using DocxportNet.API;
+using DocxportNet.Fields.Resolution;
 
 namespace DocxportNet.Fields;
 
@@ -23,19 +24,66 @@ public sealed partial class DxpFieldEvalContext
     public bool AllowInvariantNumericFallback { get; set; } = true;
     public DocxportNet.Formatting.DxpINumberToWordsProvider? NumberToWordsProvider { get; set; }
     public DocxportNet.Formatting.DxpNumberToWordsRegistry NumberToWordsRegistry { get; set; } = DocxportNet.Formatting.DxpNumberToWordsRegistry.Default;
+    public Resolution.DxpIMergeMacroProvider? MergeMacroProvider { get; set; }
+    public Resolution.DxpMergeMacroRegistry MergeMacroRegistry { get; set; } = Resolution.DxpMergeMacroRegistry.Default;
     public Resolution.IDxpTableValueResolver? TableResolver { get; set; }
     public Resolution.IDxpRefResolver? RefResolver { get; set; }
+    public Resolution.IDatabaseFieldProvider? DatabaseProvider { get; set; }
     public List<DxpRefHyperlink> RefHyperlinks { get; } = new();
     public List<DxpRefFootnote> RefFootnotes { get; } = new();
     public Func<int>? CurrentOutlineLevelProvider { get; set; }
     public int? CurrentDocumentOrder { get; set; }
     public Expressions.DxpFormulaFunctionRegistry FormulaFunctions { get; set; } = Expressions.DxpFormulaFunctionRegistry.Default;
     public Resolution.IDxpFieldValueResolver? ValueResolver { get; set; }
+    public IDxpMergeRecordCursor? MergeCursor { get; set; }
     public string? ListSeparator { get; set; }
 
     public DateTimeOffset? CreatedDate { get; set; }
     public DateTimeOffset? SavedDate { get; set; }
     public DateTimeOffset? PrintDate { get; set; }
+
+    public DxpMergeRecordAction MergeRecordAction { get; private set; } = DxpMergeRecordAction.None;
+    public int MergeSequence { get; private set; }
+
+    public void ResetMergeRecordAction() => MergeRecordAction = DxpMergeRecordAction.None;
+
+    public void ResetForRecord()
+    {
+        _docVariables.Clear();
+        _docVariableNodes.Clear();
+        _bookmarkNodes.Clear();
+        _sequences.Clear();
+        _numberedItems.Clear();
+        _sequenceResetKeys.Clear();
+        RefHyperlinks.Clear();
+        RefFootnotes.Clear();
+        MergeRecordAction = DxpMergeRecordAction.None;
+    }
+
+    public void ResetMergeSequence() => MergeSequence = 0;
+
+    public void IncrementMergeSequence() => MergeSequence++;
+
+    internal void SetMergeSequence(int value) => MergeSequence = value;
+
+    public DxpMergeRecordAction ConsumeMergeRecordAction()
+    {
+        var action = MergeRecordAction;
+        MergeRecordAction = DxpMergeRecordAction.None;
+        return action;
+    }
+
+    internal void RegisterMergeRecordAction(DxpMergeRecordAction action)
+    {
+        if (action == DxpMergeRecordAction.SkipOutput)
+        {
+            MergeRecordAction = DxpMergeRecordAction.SkipOutput;
+            return;
+        }
+
+        if (MergeRecordAction == DxpMergeRecordAction.None)
+            MergeRecordAction = action;
+    }
 
     public void SetNow(Func<DateTimeOffset> nowProvider)
     {

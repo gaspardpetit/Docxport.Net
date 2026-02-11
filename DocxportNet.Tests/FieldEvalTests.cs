@@ -7,6 +7,7 @@ using DocxportNet.Visitors;
 using DocxportNet.Visitors.PlainText;
 using DocxportNet.Walker;
 using System.Globalization;
+using System.Threading;
 using Xunit.Abstractions;
 using DocxportNet.Tests.Utils;
 using Xunit.Sdk;
@@ -14,11 +15,14 @@ using System.Text;
 using DocxportNet.Core;
 using Microsoft.Extensions.Logging;
 using DocxportNet.Fields.Resolution;
+using DocxportNet.Fields.Resolution.Impl;
 using DocxportNet.Middleware;
 using DocxportNet.Fields.Eval;
 using DocxportNet.Visitors.Html;
 using DocumentFormat.OpenXml.CustomProperties;
+using ExtendedProperties = DocumentFormat.OpenXml.ExtendedProperties;
 using DocumentFormat.OpenXml.VariantTypes;
+using DocxportNet;
 
 namespace DocxportNet.Tests;
 
@@ -849,6 +853,161 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     }
 
     [Fact]
+    public async Task EvalAsync_GreetingLineUsesMergeMacroProvider()
+    {
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.Culture = new CultureInfo("en-US");
+        eval.Context.MergeMacroProvider = new EnglishMergeMacroProvider();
+        eval.Context.MergeCursor = new ListMergeRecordCursor(new[] {
+            new Dictionary<string, DxpFieldValue>(StringComparer.OrdinalIgnoreCase) {
+                ["Title"] = new DxpFieldValue("Dr."),
+                ["LastName"] = new DxpFieldValue("Smith"),
+                ["FirstName"] = new DxpFieldValue("Taylor")
+            }
+        });
+
+        var result = await eval.EvalAsync(new DxpFieldInstruction("GREETINGLINE"));
+
+        Assert.Equal("Dear Dr. Smith,", result.Text);
+    }
+
+    [Fact]
+    public async Task EvalAsync_GreetingLineFallsBackWhenNamesMissing()
+    {
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.Culture = new CultureInfo("en-US");
+        eval.Context.MergeMacroProvider = new EnglishMergeMacroProvider();
+        eval.Context.MergeCursor = new ListMergeRecordCursor(new[] {
+            new Dictionary<string, DxpFieldValue>(StringComparer.OrdinalIgnoreCase) {
+                ["FirstName"] = new DxpFieldValue("Ana")
+            }
+        });
+
+        var result = await eval.EvalAsync(new DxpFieldInstruction("GREETINGLINE"));
+
+        Assert.Equal("Dear Ana,", result.Text);
+
+        var fallbackEval = new DxpFieldEval(logger: Logger);
+        fallbackEval.Context.Culture = new CultureInfo("en-US");
+        fallbackEval.Context.MergeMacroProvider = new EnglishMergeMacroProvider();
+        fallbackEval.Context.MergeCursor = new ListMergeRecordCursor(new[] {
+            new Dictionary<string, DxpFieldValue>(StringComparer.OrdinalIgnoreCase)
+        });
+
+        var fallback = await fallbackEval.EvalAsync(new DxpFieldInstruction("GREETINGLINE"));
+
+        Assert.Equal("Hello,", fallback.Text);
+    }
+
+    [Fact]
+    public async Task EvalAsync_AddressBlockFormatsAndOmitsEmptyParts()
+    {
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.Culture = new CultureInfo("en-US");
+        eval.Context.MergeMacroProvider = new EnglishMergeMacroProvider();
+        eval.Context.MergeCursor = new ListMergeRecordCursor(new[] {
+            new Dictionary<string, DxpFieldValue>(StringComparer.OrdinalIgnoreCase) {
+                ["Company"] = new DxpFieldValue("Acme Co."),
+                ["Address1"] = new DxpFieldValue("123 Main St"),
+                ["Address2"] = new DxpFieldValue(string.Empty),
+                ["City"] = new DxpFieldValue("Springfield"),
+                ["State"] = new DxpFieldValue("IL"),
+                ["PostalCode"] = new DxpFieldValue("62704"),
+                ["Country"] = new DxpFieldValue("USA")
+            }
+        });
+
+        var result = await eval.EvalAsync(new DxpFieldInstruction("ADDRESSBLOCK"));
+
+        Assert.Equal("Acme Co.\n123 Main St\nSPRINGFIELD IL  62704\nUSA", result.Text);
+    }
+
+    [Fact]
+    public async Task EvalAsync_AddressBlock_EnglishUsesUppercaseLocality()
+    {
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.Culture = new CultureInfo("en-US");
+        eval.Context.MergeCursor = new ListMergeRecordCursor(new[] {
+            new Dictionary<string, DxpFieldValue>(StringComparer.OrdinalIgnoreCase) {
+                ["Company"] = new DxpFieldValue("Acme Co."),
+                ["Address1"] = new DxpFieldValue("123 Main St"),
+                ["City"] = new DxpFieldValue("Springfield"),
+                ["State"] = new DxpFieldValue("IL"),
+                ["PostalCode"] = new DxpFieldValue("62704"),
+                ["Country"] = new DxpFieldValue("United States")
+            }
+        });
+
+        var result = await eval.EvalAsync(new DxpFieldInstruction("ADDRESSBLOCK"));
+
+        Assert.Equal("Acme Co.\n123 Main St\nSPRINGFIELD IL  62704\nUNITED STATES", result.Text);
+    }
+
+    [Fact]
+    public async Task EvalAsync_AddressBlock_FrenchUsesCedex()
+    {
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.Culture = new CultureInfo("fr-FR");
+        eval.Context.MergeCursor = new ListMergeRecordCursor(new[] {
+            new Dictionary<string, DxpFieldValue>(StringComparer.OrdinalIgnoreCase) {
+                ["Company"] = new DxpFieldValue("Entreprise SA"),
+                ["Address1"] = new DxpFieldValue("12 Rue de la République"),
+                ["PostalCode"] = new DxpFieldValue("75011"),
+                ["City"] = new DxpFieldValue("PARIS"),
+                ["Cedex"] = new DxpFieldValue("2"),
+                ["Country"] = new DxpFieldValue("France")
+            }
+        });
+
+        var result = await eval.EvalAsync(new DxpFieldInstruction("ADDRESSBLOCK"));
+
+        Assert.Equal("Entreprise SA\n12 Rue de la République\n75011 PARIS CEDEX 2\nFrance", result.Text);
+    }
+
+    [Fact]
+    public async Task EvalAsync_AddressBlock_ItalianIncludesProvinceCode()
+    {
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.Culture = new CultureInfo("it-IT");
+        eval.Context.MergeCursor = new ListMergeRecordCursor(new[] {
+            new Dictionary<string, DxpFieldValue>(StringComparer.OrdinalIgnoreCase) {
+                ["Company"] = new DxpFieldValue("Azienda SRL"),
+                ["Address1"] = new DxpFieldValue("Via Nazionale 123"),
+                ["PostalCode"] = new DxpFieldValue("00185"),
+                ["City"] = new DxpFieldValue("ROMA"),
+                ["State"] = new DxpFieldValue("RM"),
+                ["Country"] = new DxpFieldValue("Italy")
+            }
+        });
+
+        var result = await eval.EvalAsync(new DxpFieldInstruction("ADDRESSBLOCK"));
+
+        Assert.Equal("Azienda SRL\nVia Nazionale 123\n00185 ROMA (RM)\nItaly", result.Text);
+    }
+
+    [Fact]
+    public async Task EvalAsync_AddressBlock_JapaneseUsesPostalMarkAndOrder()
+    {
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.Culture = new CultureInfo("ja-JP");
+        eval.Context.MergeCursor = new ListMergeRecordCursor(new[] {
+            new Dictionary<string, DxpFieldValue>(StringComparer.OrdinalIgnoreCase) {
+                ["Company"] = new DxpFieldValue("株式会社テスト"),
+                ["PostalCode"] = new DxpFieldValue("100-8994"),
+                ["State"] = new DxpFieldValue("東京都"),
+                ["City"] = new DxpFieldValue("中央区"),
+                ["Address1"] = new DxpFieldValue("八重洲1-5-3"),
+                ["Address2"] = new DxpFieldValue("ビル2F"),
+                ["Country"] = new DxpFieldValue("日本")
+            }
+        });
+
+        var result = await eval.EvalAsync(new DxpFieldInstruction("ADDRESSBLOCK"));
+
+        Assert.Equal("株式会社テスト\n〒100-8994\n東京都中央区\n八重洲1-5-3\nビル2F\n日本", result.Text);
+    }
+
+    [Fact]
     public async Task EvalAsync_RefUsesResolverAndSwitches()
     {
         var eval = new DxpFieldEval(logger: Logger);
@@ -930,6 +1089,45 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         Assert.Equal(string.Empty, asked.Text);
         Assert.Equal("Hi there?", capturedPrompt);
         Assert.Equal("Rome", city.Text);
+    }
+
+    [Fact]
+    public async Task EvalAsync_DatabaseUsesProviderAndRendersRows()
+    {
+        var provider = new MockDatabaseProvider {
+            Result = new DxpDatabaseResult(
+                new[] {
+                    new DxpDatabaseColumn("Id"),
+                    new DxpDatabaseColumn("Name")
+                },
+                new[] {
+                    new DxpFieldValue?[] { new DxpFieldValue(1), new DxpFieldValue("Alpha") },
+                    new DxpFieldValue?[] { new DxpFieldValue(2), new DxpFieldValue("Beta") }
+                })
+        };
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.DatabaseProvider = provider;
+
+        var result = await eval.EvalAsync(new DxpFieldInstruction("DATABASE \"SELECT\" Id \"7\""));
+
+        Assert.Equal(DxpFieldEvalStatus.Resolved, result.Status);
+        Assert.Equal("Id\tName\n1\tAlpha\n2\tBeta", result.Text);
+        Assert.NotNull(provider.LastRequest);
+        Assert.Equal("SELECT", provider.LastRequest!.QueryText);
+        Assert.NotNull(provider.LastRequest.Parameters);
+        Assert.True(provider.LastRequest.Parameters!.TryGetValue("Id", out var param));
+        Assert.Equal("7", param.StringValue);
+    }
+
+    [Fact]
+    public async Task EvalAsync_DatabaseWithoutProviderReturnsEmpty()
+    {
+        var eval = new DxpFieldEval(logger: Logger);
+
+        var result = await eval.EvalAsync(new DxpFieldInstruction("DATABASE \"SELECT\""));
+
+        Assert.Equal(DxpFieldEvalStatus.Resolved, result.Status);
+        Assert.Equal(string.Empty, result.Text);
     }
 
     private sealed class CustomResolver : IDxpFieldValueResolver
@@ -1022,6 +1220,21 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
             if (_directions.TryGetValue(direction, out var values))
                 return Task.FromResult(values);
             return Task.FromResult<IReadOnlyList<double>>([]);
+        }
+    }
+
+    private sealed class MockDatabaseProvider : IDatabaseFieldProvider
+    {
+        public DxpDatabaseRequest? LastRequest { get; private set; }
+        public DxpDatabaseResult? Result { get; set; }
+
+        public Task<DxpDatabaseResult?> ExecuteAsync(
+            DxpDatabaseRequest request,
+            CancellationToken cancellationToken)
+        {
+            _ = cancellationToken;
+            LastRequest = request;
+            return Task.FromResult(Result);
         }
     }
 
@@ -1197,6 +1410,369 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         Assert.Equal(DxpFieldEvalStatus.Skipped, next.Status);
         Assert.Equal(DxpFieldEvalStatus.Resolved, skipFalse.Status);
         Assert.Equal(string.Empty, skipFalse.Text);
+    }
+
+    [Fact]
+    public async Task EvalAsync_NextAdvancesCursor()
+    {
+        var eval = new DxpFieldEval(logger: Logger);
+        var cursor = new TrackingMergeRecordCursor(2);
+        eval.Context.MergeCursor = cursor;
+
+        var result = await eval.EvalAsync(new DxpFieldInstruction("NEXT"));
+
+        Assert.Equal(DxpFieldEvalStatus.Resolved, result.Status);
+        Assert.Equal(1, cursor.Index);
+        Assert.Equal(1, cursor.MoveNextCalls);
+        Assert.Equal(DxpMergeRecordAction.Advance, eval.Context.MergeRecordAction);
+    }
+
+    [Fact]
+    public async Task EvalAsync_NextIfAdvancesOnlyWhenTrue()
+    {
+        var evalTrue = new DxpFieldEval(logger: Logger);
+        var cursorTrue = new TrackingMergeRecordCursor(2);
+        evalTrue.Context.MergeCursor = cursorTrue;
+
+        var resultTrue = await evalTrue.EvalAsync(new DxpFieldInstruction("NEXTIF 1 = 1"));
+
+        Assert.Equal(DxpFieldEvalStatus.Skipped, resultTrue.Status);
+        Assert.Equal(1, cursorTrue.Index);
+        Assert.Equal(1, cursorTrue.MoveNextCalls);
+        Assert.Equal(DxpMergeRecordAction.Advance, evalTrue.Context.MergeRecordAction);
+
+        var evalFalse = new DxpFieldEval(logger: Logger);
+        var cursorFalse = new TrackingMergeRecordCursor(2);
+        evalFalse.Context.MergeCursor = cursorFalse;
+
+        var resultFalse = await evalFalse.EvalAsync(new DxpFieldInstruction("NEXTIF 1 = 0"));
+
+        Assert.Equal(DxpFieldEvalStatus.Resolved, resultFalse.Status);
+        Assert.Equal(0, cursorFalse.Index);
+        Assert.Equal(0, cursorFalse.MoveNextCalls);
+        Assert.Equal(DxpMergeRecordAction.None, evalFalse.Context.MergeRecordAction);
+    }
+
+    [Fact]
+    public async Task EvalAsync_SkipIfMarksSkipOutputAndAdvances()
+    {
+        var eval = new DxpFieldEval(logger: Logger);
+        var cursor = new TrackingMergeRecordCursor(2);
+        eval.Context.MergeCursor = cursor;
+
+        var result = await eval.EvalAsync(new DxpFieldInstruction("SKIPIF 1 = 1"));
+
+        Assert.Equal(DxpFieldEvalStatus.Skipped, result.Status);
+        Assert.Equal(1, cursor.Index);
+        Assert.Equal(1, cursor.MoveNextCalls);
+        Assert.Equal(DxpMergeRecordAction.SkipOutput, eval.Context.MergeRecordAction);
+    }
+
+    [Fact]
+    public void MergeLoop_AdvancesAndSkipsRecords()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Name=</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> MERGEFIELD Name </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:t xml:space="preserve"> Next=</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> NEXTIF Flag = 1 </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> MERGEFIELD Name </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> SKIPIF Skip = 1 </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var docBytes = BuildDocBytesFromBodyXml(bodyXml);
+        var cursor = new ListMergeRecordCursor(new List<Dictionary<string, DxpFieldValue>>
+        {
+            new(StringComparer.OrdinalIgnoreCase)
+            {
+                ["Name"] = new DxpFieldValue("Alpha"),
+                ["Flag"] = new DxpFieldValue(1.0),
+                ["Skip"] = new DxpFieldValue(0.0)
+            },
+            new(StringComparer.OrdinalIgnoreCase)
+            {
+                ["Name"] = new DxpFieldValue("Beta"),
+                ["Flag"] = new DxpFieldValue(0.0),
+                ["Skip"] = new DxpFieldValue(0.0)
+            },
+            new(StringComparer.OrdinalIgnoreCase)
+            {
+                ["Name"] = new DxpFieldValue("Gamma"),
+                ["Flag"] = new DxpFieldValue(0.0),
+                ["Skip"] = new DxpFieldValue(1.0)
+            },
+            new(StringComparer.OrdinalIgnoreCase)
+            {
+                ["Name"] = new DxpFieldValue("Delta"),
+                ["Flag"] = new DxpFieldValue(0.0),
+                ["Skip"] = new DxpFieldValue(0.0)
+            }
+        });
+
+        using var readDoc = WordprocessingDocument.Open(new MemoryStream(docBytes), false);
+        var results = DxpMergeLoop.MergePlainText(readDoc, cursor, logger: Logger);
+
+        Assert.Equal(3, results.Count);
+        Assert.Equal(TestCompare.Normalize("Name=Alpha Next=Beta\n\n"), TestCompare.Normalize(results[0]));
+        Assert.Equal(TestCompare.Normalize("Name=Beta Next=Beta\n\n"), TestCompare.Normalize(results[1]));
+        Assert.Equal(TestCompare.Normalize("Name=Delta Next=Delta\n\n"), TestCompare.Normalize(results[2]));
+    }
+
+    [Fact]
+    public void MergeLoop_HtmlMarkdownPlainText_ShareRecordCounts()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Name=</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> MERGEFIELD Name </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> SKIPIF Skip = 1 </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var docBytes = BuildDocBytesFromBodyXml(bodyXml);
+        var records = new List<Dictionary<string, DxpFieldValue>>
+        {
+            new(StringComparer.OrdinalIgnoreCase)
+            {
+                ["Name"] = new DxpFieldValue("Alice"),
+                ["Skip"] = new DxpFieldValue(0.0)
+            },
+            new(StringComparer.OrdinalIgnoreCase)
+            {
+                ["Name"] = new DxpFieldValue("Bob"),
+                ["Skip"] = new DxpFieldValue(1.0)
+            },
+            new(StringComparer.OrdinalIgnoreCase)
+            {
+                ["Name"] = new DxpFieldValue("Cara"),
+                ["Skip"] = new DxpFieldValue(0.0)
+            }
+        };
+
+        using var plainDoc = WordprocessingDocument.Open(new MemoryStream(docBytes), false);
+        using var htmlDoc = WordprocessingDocument.Open(new MemoryStream(docBytes), false);
+        using var mdDoc = WordprocessingDocument.Open(new MemoryStream(docBytes), false);
+
+        var plainResults = DxpMergeLoop.MergePlainText(plainDoc, new ListMergeRecordCursor(records), logger: Logger);
+        var htmlResults = DxpMergeLoop.MergeHtml(htmlDoc, new ListMergeRecordCursor(records), logger: Logger);
+        var markdownResults = DxpMergeLoop.MergeMarkdown(mdDoc, new ListMergeRecordCursor(records), logger: Logger);
+
+        Assert.Equal(2, plainResults.Count);
+        Assert.Equal(plainResults.Count, htmlResults.Count);
+        Assert.Equal(plainResults.Count, markdownResults.Count);
+
+        Assert.Contains("Alice", plainResults[0], StringComparison.Ordinal);
+        Assert.Contains("Cara", plainResults[1], StringComparison.Ordinal);
+
+        Assert.Contains("Alice", htmlResults[0], StringComparison.Ordinal);
+        Assert.Contains("Cara", htmlResults[1], StringComparison.Ordinal);
+
+        Assert.Contains("Alice", markdownResults[0], StringComparison.Ordinal);
+        Assert.Contains("Cara", markdownResults[1], StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void MergeLoop_RespectsAdvanceAndSkipOutput_WithoutDoc()
+    {
+        var records = new List<Dictionary<string, DxpFieldValue>>
+        {
+            new(StringComparer.OrdinalIgnoreCase)
+            {
+                ["Name"] = new DxpFieldValue("Alpha"),
+                ["Flag"] = new DxpFieldValue(1.0),
+                ["Skip"] = new DxpFieldValue(0.0)
+            },
+            new(StringComparer.OrdinalIgnoreCase)
+            {
+                ["Name"] = new DxpFieldValue("Beta"),
+                ["Flag"] = new DxpFieldValue(0.0),
+                ["Skip"] = new DxpFieldValue(0.0)
+            },
+            new(StringComparer.OrdinalIgnoreCase)
+            {
+                ["Name"] = new DxpFieldValue("Gamma"),
+                ["Flag"] = new DxpFieldValue(0.0),
+                ["Skip"] = new DxpFieldValue(1.0)
+            },
+            new(StringComparer.OrdinalIgnoreCase)
+            {
+                ["Name"] = new DxpFieldValue("Delta"),
+                ["Flag"] = new DxpFieldValue(0.0),
+                ["Skip"] = new DxpFieldValue(0.0)
+            }
+        };
+
+        var cursor = new ListMergeRecordCursor(records);
+        var outputs = DxpExport.ExportToStrings(cursor, eval => {
+            var name = eval.EvalAsync(new DxpFieldInstruction("MERGEFIELD Name")).GetAwaiter().GetResult().Text ?? string.Empty;
+            _ = eval.EvalAsync(new DxpFieldInstruction("NEXTIF Flag = 1")).GetAwaiter().GetResult();
+            var nextName = eval.EvalAsync(new DxpFieldInstruction("MERGEFIELD Name")).GetAwaiter().GetResult().Text ?? string.Empty;
+            _ = eval.EvalAsync(new DxpFieldInstruction("SKIPIF Skip = 1")).GetAwaiter().GetResult();
+            return $"{name}-{nextName}";
+        }, logger: Logger);
+
+        Assert.Equal(3, outputs.Count);
+        Assert.Equal("Alpha-Beta", outputs[0]);
+        Assert.Equal("Beta-Beta", outputs[1]);
+        Assert.Equal("Delta-Delta", outputs[2]);
+    }
+
+    [Fact]
+    public void MergeLoop_IsolatesBookmarksPerRecord()
+    {
+        var records = new List<Dictionary<string, DxpFieldValue>>
+        {
+            new(StringComparer.OrdinalIgnoreCase)
+            {
+                ["SetToken"] = new DxpFieldValue("1")
+            },
+            new(StringComparer.OrdinalIgnoreCase)
+            {
+                ["SetToken"] = new DxpFieldValue("0")
+            }
+        };
+
+        var cursor = new ListMergeRecordCursor(records);
+        var outputs = DxpExport.ExportToStrings(cursor, eval => {
+            var setToken = eval.EvalAsync(new DxpFieldInstruction("MERGEFIELD SetToken")).GetAwaiter().GetResult().Text ?? string.Empty;
+            if (string.Equals(setToken, "1", StringComparison.Ordinal))
+                _ = eval.EvalAsync(new DxpFieldInstruction("SET Token \"Alpha\"")).GetAwaiter().GetResult();
+            var value = eval.EvalAsync(new DxpFieldInstruction("REF Token")).GetAwaiter().GetResult().Text ?? string.Empty;
+            return value;
+        }, logger: Logger);
+
+        Assert.Equal(2, outputs.Count);
+        Assert.Equal("Alpha", outputs[0]);
+        Assert.NotEqual("Alpha", outputs[1]);
+    }
+
+    [Fact]
+    public void MergeLoop_MergeRecAndMergeSeq_RespectSkipOutput()
+    {
+        var records = new List<Dictionary<string, DxpFieldValue>>
+        {
+            new(StringComparer.OrdinalIgnoreCase) { ["Skip"] = new DxpFieldValue(0.0) },
+            new(StringComparer.OrdinalIgnoreCase) { ["Skip"] = new DxpFieldValue(1.0) },
+            new(StringComparer.OrdinalIgnoreCase) { ["Skip"] = new DxpFieldValue(0.0) }
+        };
+
+        var cursor = new ListMergeRecordCursor(records);
+        var outputs = DxpExport.ExportToStrings(cursor, eval => {
+            var rec = eval.EvalAsync(new DxpFieldInstruction("MERGEREC")).GetAwaiter().GetResult().Text ?? string.Empty;
+            var seq = eval.EvalAsync(new DxpFieldInstruction("MERGESEQ")).GetAwaiter().GetResult().Text ?? string.Empty;
+            _ = eval.EvalAsync(new DxpFieldInstruction("SKIPIF Skip = 1")).GetAwaiter().GetResult();
+            return $"{rec}-{seq}";
+        }, logger: Logger);
+
+        Assert.Equal(2, outputs.Count);
+        Assert.Equal("1-1", outputs[0]);
+        Assert.Equal("3-2", outputs[1]);
+    }
+
+    [Fact]
+    public void EvalAsync_DocumentMetrics_ResolveFromExtendedProperties()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Pages=</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> NUMPAGES \\# "0000" </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:t xml:space="preserve"> Words=</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> NUMWORDS </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:t xml:space="preserve"> Chars=</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> NUMCHARS </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var actual = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(
+            bodyXml,
+            configureDocument: doc => {
+                var part = doc.AddNewPart<ExtendedFilePropertiesPart>();
+                part.Properties = new ExtendedProperties.Properties(
+                    new ExtendedProperties.Pages { Text = "12" },
+                    new ExtendedProperties.Words { Text = "345" },
+                    new ExtendedProperties.Characters { Text = "6789" });
+                part.Properties.Save();
+            }));
+
+        var expected = TestCompare.Normalize("Pages=0012 Words=345 Chars=6789\n\n");
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void EvalAsync_DocumentMetrics_MissingPropertiesYieldEmpty()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Pages=</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> NUMPAGES </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:t xml:space="preserve"> Words=</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> NUMWORDS </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:t xml:space="preserve"> Chars=</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> NUMCHARS </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var actual = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml));
+        var expected = TestCompare.Normalize("Pages= Words= Chars=\n\n");
+        Assert.Equal(expected, actual);
     }
 
     [Fact]
@@ -2247,6 +2823,24 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         return new TableCell(new Paragraph(fld));
     }
 
+    private static byte[] BuildDocBytesFromBodyXml(string bodyXml)
+    {
+        using var stream = new MemoryStream();
+        using (var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document, true))
+        {
+            var main = doc.AddMainDocumentPart();
+            var xml = System.Xml.Linq.XDocument.Parse(bodyXml);
+            var body = new Body();
+            body.AddNamespaceDeclaration("w", "http://schemas.openxmlformats.org/wordprocessingml/2006/main");
+            body.AddNamespaceDeclaration("w14", "http://schemas.microsoft.com/office/word/2010/wordml");
+            body.InnerXml = string.Concat(xml.Root!.Nodes());
+            main.Document = new Document(body);
+            main.Document.Save();
+        }
+
+        return stream.ToArray();
+    }
+
     private string ExportPlainTextCachedFromBodyXml(string bodyXml)
     {
         using var stream = new MemoryStream();
@@ -2535,6 +3129,79 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
             if (_directions.TryGetValue(direction, out var values))
                 return Task.FromResult(values);
             return Task.FromResult<IReadOnlyList<double>>([]);
+        }
+    }
+
+    private sealed class ListMergeRecordCursor : IDxpMergeRecordCursor
+    {
+        private readonly IReadOnlyList<Dictionary<string, DxpFieldValue>> _records;
+        private int _index;
+
+        public ListMergeRecordCursor(IReadOnlyList<Dictionary<string, DxpFieldValue>> records)
+        {
+            _records = records ?? throw new ArgumentNullException(nameof(records));
+            _index = 0;
+        }
+
+        public bool HasCurrent => _index >= 0 && _index < _records.Count;
+        public int RecordIndex => HasCurrent ? _index + 1 : 0;
+
+        public bool MoveNext()
+        {
+            if (_index + 1 < _records.Count)
+            {
+                _index++;
+                return true;
+            }
+
+            _index = _records.Count;
+            return false;
+        }
+
+        public DxpFieldValue? GetValue(string fieldName)
+        {
+            if (!HasCurrent)
+                return null;
+
+            if (_records[_index].TryGetValue(fieldName, out var value))
+                return value;
+
+            return null;
+        }
+    }
+
+    private sealed class TrackingMergeRecordCursor : IDxpMergeRecordCursor
+    {
+        private readonly int _count;
+
+        public TrackingMergeRecordCursor(int count)
+        {
+            _count = count;
+            Index = 0;
+        }
+
+        public int Index { get; private set; }
+        public int MoveNextCalls { get; private set; }
+        public bool HasCurrent => Index >= 0 && Index < _count;
+        public int RecordIndex => HasCurrent ? Index + 1 : 0;
+
+        public bool MoveNext()
+        {
+            MoveNextCalls++;
+            if (Index + 1 < _count)
+            {
+                Index++;
+                return true;
+            }
+
+            Index = _count;
+            return false;
+        }
+
+        public DxpFieldValue? GetValue(string fieldName)
+        {
+            _ = fieldName;
+            return null;
         }
     }
 }

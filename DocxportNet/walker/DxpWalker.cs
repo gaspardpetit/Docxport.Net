@@ -73,6 +73,7 @@ public class DxpWalker
                 : new List<CustomFileProperty>();
 
             documentContext.CustomProperties = customList;
+            documentContext.ExtendedProperties = doc.ExtendedFilePropertiesPart?.Properties;
             IReadOnlyList<DxpTimelineEvent> timeline = DxpTimeline.BuildTimeline(doc);
 
             documentContext.DocumentProperties = new DxpDocumentProperties(core, customList, timeline);

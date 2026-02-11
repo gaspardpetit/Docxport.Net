@@ -1,4 +1,5 @@
 using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.ExtendedProperties;
 using DocumentFormat.OpenXml.Office2010.Word;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
@@ -164,6 +165,7 @@ public interface DxpIDocumentContext
     Settings? DocumentSettings { get; }
     IPackageProperties? CoreProperties { get; }
     IReadOnlyList<CustomFileProperty>? CustomProperties { get; }
+    Properties? ExtendedProperties { get; }
     bool KeepAccept { get; }
     bool KeepReject { get; }
     DxpChangeInfo CurrentChangeInfo { get; }

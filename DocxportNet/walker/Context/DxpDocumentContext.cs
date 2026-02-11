@@ -1,4 +1,5 @@
 using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.ExtendedProperties;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
@@ -58,6 +59,7 @@ public class DxpDocumentContext : DxpIDocumentContext, IDxpMutableDocumentContex
     public Settings? DocumentSettings { get; internal set; }
     public IPackageProperties? CoreProperties { get; internal set; }
     public IReadOnlyList<CustomFileProperty>? CustomProperties { get; internal set; }
+    public Properties? ExtendedProperties { get; internal set; }
     public OpenXmlPart? CurrentPart { get; internal set; }
     OpenXmlPart? IDxpMutableDocumentContext.CurrentPart {
         get => CurrentPart;

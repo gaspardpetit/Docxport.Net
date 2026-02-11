@@ -149,6 +149,15 @@ internal sealed class DxpFieldEvalFrameFactory
     internal static bool IsAskInstruction(string? instruction)
         => StartsWithField(instruction, "ASK");
 
+    internal static bool IsDocumentMetricInstruction(string? instruction)
+    {
+        if (StartsWithField(instruction, "NUMPAGES"))
+            return true;
+        if (StartsWithField(instruction, "NUMWORDS"))
+            return true;
+        return StartsWithField(instruction, "NUMCHARS");
+    }
+
     internal static bool IsSkipIfInstruction(string? instruction)
     {
         if (StartsWithField(instruction, "SKIPIF"))

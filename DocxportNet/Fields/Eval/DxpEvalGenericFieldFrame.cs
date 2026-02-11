@@ -278,7 +278,8 @@ internal sealed class DxpEvalGenericFieldFrame : DxpMiddleware, DxpIFieldEvalFra
             DxpFieldEvalFrameFactory.IsMergeFieldInstruction(instructionText) ||
             DxpFieldEvalFrameFactory.IsSeqInstruction(instructionText) ||
             DxpFieldEvalFrameFactory.IsDateTimeInstruction(instructionText) ||
-            DxpFieldEvalFrameFactory.IsCompareInstruction(instructionText))
+            DxpFieldEvalFrameFactory.IsCompareInstruction(instructionText) ||
+            DxpFieldEvalFrameFactory.IsDocumentMetricInstruction(instructionText))
         {
             if (DxpFieldEvalFrameFactory.IsDocPropertyInstruction(instructionText))
             {
@@ -313,6 +314,13 @@ internal sealed class DxpEvalGenericFieldFrame : DxpMiddleware, DxpIFieldEvalFra
                 DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
                     ? new DxpCompareFieldCachedFrame(Next)
                     : new DxpCompareFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
+                return frame;
+            }
+            if (DxpFieldEvalFrameFactory.IsDocumentMetricInstruction(instructionText))
+            {
+                DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
+                    ? new DxpSimpleFieldCachedFrame(Next)
+                    : new DxpValueFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
                 return frame;
             }
         }
