@@ -1,0 +1,53 @@
+Title: Field Test Title
+Author: Petit, Gaspard
+LastModifiedBy: Petit, Gaspard
+Revision: 11
+Created: 2026-02-11 08:11:00Z
+Modified: 2026-02-11 09:33:00Z
+CustomProp1: custom-value
+Created: 2010-10-13T04:00:00Z
+
+DOCVARIABLE TEST
+
+DOCVARIABLE Var1                | one
+DOCVARIABLE Missing             | Error! No document variable supplied.
+DOCVARIABLE Var1 \* Charformat  | one
+DOCVARIABLE Var1 \* MERGEFORMAT | one
+
+IF TEST
+
+IF 5 >= 3 "OK" "BAD"                                       | OK
+IF "Approved" = "App*" "YES" "NO"                          | YES
+SET Var2 "two"                                             |
+IF { REF Var1 } = "two" "Value is { REF Var1 }" "Mismatch" | Value is two
+IF { REF MissingBookmark } = "" "Empty" "Not Empty"        | REF
+
+DOCPROPERTY TEST
+
+DOCPROPERTY Title                   | Field Test Title
+DOCPROPERTY Created \@ "yyyy-MM-dd" | 2010-10-13
+DOCPROPERTY "CustomProp1"           | custom-value
+
+TEST COMPARE
+
+COMPARE 5 >= 3              | 1
+COMPARE 2 > 3               | 0
+COMPARE "Approved" = "App*" | 1
+
+TEST MERGEFIELD
+
+MERGEFIELD FirstName \b "Hello " \f "!"  | Hello «FirstName»!
+MERGEFIELD EmptyField \b "Hello " \f "!" | Hello «EmptyField»!
+MERGEFIELD GivenName \m                  | «GivenName»
+MERGEFIELD FirstName \v                  | «FirstName»
+MERGEFIELD FirstName \* Upper            | «FIRSTNAME»
+
+TEST SEQ
+
+SEQ Figure              | 1
+SEQ Figure              | 2
+SEQ Figure \c           | 2
+SEQ Figure \r 5         | 5
+SEQ Figure \h           |
+SEQ Figure \h \* Arabic | 7
+SEQ Figure \s 1         | 8

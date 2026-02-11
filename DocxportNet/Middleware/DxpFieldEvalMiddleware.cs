@@ -38,7 +38,7 @@ public sealed partial class DxpFieldEvalMiddleware : DxpLoggingMiddleware
         DxpFieldEval eval,
         DxpEvalFieldMode mode = DxpEvalFieldMode.Evaluate,
         bool includeDocumentProperties = true,
-        bool includeCustomProperties = false,
+        bool includeCustomProperties = true,
         Func<DateTimeOffset>? nowProvider = null,
         ILogger? logger = null,
         DxpEvalFieldMiddlewareOptions? options = null)

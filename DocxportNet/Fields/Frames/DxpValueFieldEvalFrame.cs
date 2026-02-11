@@ -24,6 +24,10 @@ internal class DxpValueFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame
 
     public override DxpIVisitor? Next { get; }
 
+    protected DxpFieldEval Eval => _eval;
+    protected DxpFieldEvalContext EvalContext => _eval.Context;
+    protected string? InstructionText => _instructionText;
+
     public DxpValueFieldEvalFrame(
         DxpIVisitor? next,
         DxpFieldEval eval,
@@ -116,7 +120,7 @@ internal class DxpValueFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame
         return;
     }
 
-    private bool Evaluate(DxpIDocumentContext d)
+    protected virtual bool Evaluate(DxpIDocumentContext d)
     {
         if (string.IsNullOrWhiteSpace(_instructionText))
             return false;
