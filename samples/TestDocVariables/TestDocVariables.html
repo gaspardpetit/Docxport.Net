@@ -332,6 +332,108 @@ body.dxp-root {
 </td>
   </tr>
 </table>
+<p class="dxp-paragraph align-center">TEST FORMULA</p>
+<table class="dxp-table" style="border:0.5pt solid #000000;border-collapse:collapse;">
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">= 2 + 3</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"><span class="dxp-field" data-field="= 2 + 3"></span>5</p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">= 2 + 3 * 4</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"><span class="dxp-field" data-field="= 2 + 3 * 4"></span>14</p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">= 3 &gt; 2</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"><span class="dxp-field" data-field="= 3 &gt; 2"></span>1</p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">= SUM(1,2,3)</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"><span class="dxp-field" data-field="= SUM(1,2,3)"></span>6</p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">= { DATE \@ &quot;yyyy&quot; } + 1</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"><span class="dxp-field" data-field="="></span><span class="dxp-field" data-field="DATE \@ &quot;yyyy&quot;"></span><span class="dxp-field" data-field="2026"></span><span class="dxp-field" data-field="+ 1"></span>2027</p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">= 1 / 0</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"><span class="dxp-field" data-field="= 1 / 0"></span><strong class="dxp-bold">!Zero Divide</strong></p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">= LN(10)</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"><span class="dxp-field" data-field="= LN(10)"></span><strong class="dxp-bold">!Syntax Error, 10</strong></p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">= SUM(ABOVE)</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"><span class="dxp-field" data-field="= SUM(ABOVE)"></span>2053</p>
+</td>
+  </tr>
+</table>
+<p class="dxp-paragraph align-center">ASK TEST</p>
+<table class="dxp-table" style="border:0.5pt solid #000000;border-collapse:collapse;">
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">ASK Name &quot;Name?&quot; \d &quot;Unknown&quot;</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"><span class="dxp-field" data-field="ASK Name &quot;Name?&quot; \d &quot;Unknown&quot;"></span>Bob</p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">REF Name</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"><span class="dxp-field" data-field="REF Name"></span>Bob</p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">ASK Name &quot;Name?&quot; \o </p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"><span class="dxp-field" data-field="ASK Name &quot;Name?&quot; \o"></span><a id="Name" data-bookmark-id="1"></a>Bob</p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">REF Name</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"><span class="dxp-field" data-field="REF Name"></span>Bob</p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">SET DefaultCity &quot;Rome&quot;</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"><span class="dxp-field" data-field="SET DefaultCity &quot;Rome&quot;"></span><a id="DefaultCity" data-bookmark-id="2"></a>Rome</p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">SET Greeting &quot;Hi&quot;</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"><span class="dxp-field" data-field="SET Greeting &quot;Hi&quot;"></span><a id="Greeting" data-bookmark-id="3"></a>Hi</p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">ASK City &quot;{ REF Greeting }?&quot; \d &quot;{ REF DefaultCity }&quot;</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"><span class="dxp-field" data-field="ASK City &quot;"></span><span class="dxp-field" data-field="REF Greeting"></span><span class="dxp-field" data-field="Hi"></span><span class="dxp-field" data-field="REF"></span><span class="dxp-field" data-field="Name"></span><span class="dxp-field" data-field="Bob"></span><span class="dxp-field" data-field="?&quot; \d &quot;"></span><span class="dxp-field" data-field="REF DefaultCity"></span><span class="dxp-field" data-field="Rome"></span><span class="dxp-field" data-field="&quot;"></span><a id="City" data-bookmark-id="4"></a>Montreal</p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">REF City</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"><span class="dxp-field" data-field="REF"></span><span class="dxp-field" data-field="City"></span>Montreal</p>
+</td>
+  </tr>
+</table>
 </div>
 </div>
 </div>

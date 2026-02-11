@@ -25,12 +25,35 @@ internal sealed record DxpUnaryNode(string Op, DxpFormulaNode Expr) : DxpFormula
 internal sealed record DxpBinaryNode(string Op, DxpFormulaNode Left, DxpFormulaNode Right) : DxpFormulaNode;
 internal sealed record DxpCallNode(string Name, IReadOnlyList<DxpFormulaNode> Args) : DxpFormulaNode;
 
+internal enum DxpFormulaEvalError
+{
+    DivideByZero,
+    UnknownFunction,
+    SyntaxError
+}
+
+internal sealed class DxpFormulaEvalException : Exception
+{
+    public DxpFormulaEvalException(DxpFormulaEvalError error, string? token = null, Exception? inner = null)
+        : base($"Formula evaluation failed: {error}.", inner)
+    {
+        Error = error;
+        Token = token;
+    }
+
+    public DxpFormulaEvalError Error { get; }
+    public string? Token { get; }
+}
+
 internal sealed class DxpFormulaParser
 {
     private readonly List<DxpFormulaToken> _tokens;
     private int _pos;
 
     private readonly char _listSeparator;
+
+    public bool HasError { get; private set; }
+    public string? ErrorToken { get; private set; }
 
     public DxpFormulaParser(string text, char listSeparator = ',')
     {
@@ -39,9 +62,12 @@ internal sealed class DxpFormulaParser
         _pos = 0;
     }
 
-    public DxpFormulaNode ParseExpression()
+    public DxpFormulaNode ParseExpression(bool requireEnd = false)
     {
-        return ParseComparison();
+        var expr = ParseComparison();
+        if (requireEnd && !IsAtEnd())
+            FlagError(Peek().Text);
+        return expr;
     }
 
     private DxpFormulaNode ParseComparison()
@@ -155,6 +181,7 @@ internal sealed class DxpFormulaParser
             Consume(DxpFormulaTokenKind.RParen);
             return expr;
         }
+        FlagError(Peek().Text);
         return new DxpNumberNode("0");
     }
 
@@ -192,6 +219,7 @@ internal sealed class DxpFormulaParser
             Advance();
             return;
         }
+        FlagError(Peek().Text);
     }
 
     private bool Check(DxpFormulaTokenKind kind)
@@ -209,6 +237,15 @@ internal sealed class DxpFormulaParser
     private bool IsAtEnd() => Peek().Kind == DxpFormulaTokenKind.End;
     private DxpFormulaToken Peek() => _tokens[_pos];
     private DxpFormulaToken Previous() => _tokens[_pos - 1];
+
+    private void FlagError(string? token)
+    {
+        if (HasError)
+            return;
+        HasError = true;
+        if (!string.IsNullOrWhiteSpace(token))
+            ErrorToken = token;
+    }
 
     private static bool TryParseCellReference(string name)
     {
@@ -408,7 +445,7 @@ internal sealed class DxpFormulaEvaluator
             "+" => left + right,
             "-" => left - right,
             "*" => left * right,
-            "/" => right == 0 ? 0 : left / right,
+            "/" => right == 0 ? throw new DxpFormulaEvalException(DxpFormulaEvalError.DivideByZero) : left / right,
             "^" => Math.Pow(left, right),
             "=" => left == right ? 1 : 0,
             "<>" => left != right ? 1 : 0,
@@ -429,10 +466,14 @@ internal sealed class DxpFormulaEvaluator
         if (call.Name.Equals("DEFINED", StringComparison.OrdinalIgnoreCase))
             return await EvalDefinedAsync(call);
 
+        if (!_context.FormulaFunctions.TryResolve(call.Name, out var fn))
+        {
+            string? token = call.Args.Count > 0 ? GetTokenText(call.Args[0]) : null;
+            throw new DxpFormulaEvalException(DxpFormulaEvalError.UnknownFunction, token);
+        }
+
         var args = await EvaluateArgsAsync(call.Args);
-        if (_context.FormulaFunctions.TryResolve(call.Name, out var fn))
-            return fn(args);
-        return 0;
+        return fn(args);
     }
 
     private async Task<double> EvalIfFunctionAsync(DxpCallNode call)
@@ -558,5 +599,15 @@ internal sealed class DxpFormulaEvaluator
             return true;
         number = 0;
         return false;
+    }
+
+    private static string? GetTokenText(DxpFormulaNode node)
+    {
+        return node switch {
+            DxpNumberNode number => number.Text,
+            DxpIdentifierNode id => id.Name,
+            DxpFieldNode field => field.Instruction,
+            _ => null
+        };
     }
 }

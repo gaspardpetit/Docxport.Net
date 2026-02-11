@@ -1,9 +1,9 @@
 <!-- Title: Field Test Title -->
 <!-- Author: Petit, Gaspard -->
 <!-- LastModifiedBy: Petit, Gaspard -->
-<!-- Revision: 11 -->
+<!-- Revision: 14 -->
 <!-- Created: 2026-02-11 08:11:00Z -->
-<!-- Modified: 2026-02-11 09:33:00Z -->
+<!-- Modified: 2026-02-11 09:59:00Z -->
 <!-- CustomProp1: custom-value -->
 <!-- Created: 2010-10-13T04:00:00Z -->
 
@@ -391,6 +391,260 @@ Hello «EmptyField»!
 `SEQ Figure \s 1`
 
 8
+
+</td>
+  </tr>
+</table>
+<p style="text-align:center;">TEST FORMULA</p>
+
+
+<table style="border:0.5pt solid #000000;border-collapse:collapse;">
+  <tr>
+    <td style="border:0.5pt solid #000000;">= 2 + 3
+
+</td>
+    <td style="border:0.5pt solid #000000;">
+
+`= 2 + 3`
+
+5
+
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;">= 2 + 3 * 4
+
+</td>
+    <td style="border:0.5pt solid #000000;">
+
+`= 2 + 3 * 4`
+
+14
+
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;">= 3 > 2
+
+</td>
+    <td style="border:0.5pt solid #000000;">
+
+`= 3 > 2`
+
+1
+
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;">= SUM(1,2,3)
+
+</td>
+    <td style="border:0.5pt solid #000000;">
+
+`= SUM(1,2,3)`
+
+6
+
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;">= { DATE \@ "yyyy" } + 1
+
+</td>
+    <td style="border:0.5pt solid #000000;">
+
+`=`
+
+
+
+`DATE \@ "yyyy"`
+
+
+
+`2026`
+
+
+
+`+ 1`
+
+2027
+
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;">= 1 / 0
+
+</td>
+    <td style="border:0.5pt solid #000000;">
+
+`= 1 / 0`
+
+<b>!Zero Divide</b>
+
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;">= LN(10)
+
+</td>
+    <td style="border:0.5pt solid #000000;">
+
+`= LN(10)`
+
+<b>!Syntax Error, 10</b>
+
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;">= SUM(ABOVE)
+
+</td>
+    <td style="border:0.5pt solid #000000;">
+
+`= SUM(ABOVE)`
+
+2053
+
+</td>
+  </tr>
+</table>
+<p style="text-align:center;">ASK TEST</p>
+
+
+<table style="border:0.5pt solid #000000;border-collapse:collapse;">
+  <tr>
+    <td style="border:0.5pt solid #000000;">ASK Name "Name?" \d "Unknown"
+
+</td>
+    <td style="border:0.5pt solid #000000;">
+
+`ASK Name "Name?" \d "Unknown"`
+
+Bob
+
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;">REF Name
+
+</td>
+    <td style="border:0.5pt solid #000000;">
+
+`REF Name`
+
+Bob
+
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;">ASK Name "Name?" \o
+
+</td>
+    <td style="border:0.5pt solid #000000;">
+
+`ASK Name "Name?" \o`
+
+<a id="Name" data-bookmark-id="1"></a>Bob
+
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;">REF Name
+
+</td>
+    <td style="border:0.5pt solid #000000;">
+
+`REF Name`
+
+Bob
+
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;">SET DefaultCity "Rome"
+
+</td>
+    <td style="border:0.5pt solid #000000;">
+
+`SET DefaultCity "Rome"`
+
+<a id="DefaultCity" data-bookmark-id="2"></a>Rome
+
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;">SET Greeting "Hi"
+
+</td>
+    <td style="border:0.5pt solid #000000;">
+
+`SET Greeting "Hi"`
+
+<a id="Greeting" data-bookmark-id="3"></a>Hi
+
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;">ASK City "{ REF Greeting }?" \d "{ REF DefaultCity }"
+
+</td>
+    <td style="border:0.5pt solid #000000;">
+
+`ASK City "`
+
+
+
+`REF Greeting`
+
+
+
+`Hi`
+
+
+
+`REF`
+
+
+
+`Name`
+
+
+
+`Bob`
+
+
+
+`?" \d "`
+
+
+
+`REF DefaultCity`
+
+
+
+`Rome`
+
+
+
+`"`
+
+<a id="City" data-bookmark-id="4"></a>Montreal
+
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;">REF City
+
+</td>
+    <td style="border:0.5pt solid #000000;">
+
+`REF`
+
+
+
+`City`
+
+Montreal
 
 </td>
   </tr>

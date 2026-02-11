@@ -188,9 +188,11 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
 
     private string ToMarkdown(string docxPath, DxpMarkdownVisitorConfig config, DxpFieldEvalExportMode evalMode)
     {
-        var visitor = new DxpMarkdownVisitor(config, Logger);
+        DxpFieldEval? fieldEval = null;
         if (evalMode == DxpFieldEvalExportMode.Evaluate)
-            ConfigureEvalContext(visitor.FieldEval);
+            fieldEval = CreateEvalWithAsk();
+
+        var visitor = new DxpMarkdownVisitor(config, Logger, fieldEval);
         var options = new DxpExportOptions { FieldEvalMode = evalMode };
         return DxpExport.ExportToString(docxPath, visitor, options, Logger);
     }
@@ -263,6 +265,21 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
         eval.Context.ValueResolver = new DxpChainedFieldValueResolver(
             new SampleFieldValueResolver(),
             new DxpContextFieldValueResolver());
+    }
+
+    private DxpFieldEval CreateEvalWithAsk()
+    {
+        var delegates = new DxpFieldEvalDelegates {
+            AskAsync = (prompt, _) => Task.FromResult<DxpFieldValue?>(prompt switch {
+                "Name?" => new DxpFieldValue("Bob"),
+                "Hi Bob?" => new DxpFieldValue("Montreal"),
+                _ => null
+            })
+        };
+
+        var eval = new DxpFieldEval(delegates, logger: Logger);
+        ConfigureEvalContext(eval);
+        return eval;
     }
 
     private sealed class SampleFieldValueResolver : IDxpFieldValueResolver

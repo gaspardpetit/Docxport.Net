@@ -1,9 +1,9 @@
 Title: Field Test Title
 Author: Petit, Gaspard
 LastModifiedBy: Petit, Gaspard
-Revision: 11
+Revision: 14
 Created: 2026-02-11 08:11:00Z
-Modified: 2026-02-11 09:33:00Z
+Modified: 2026-02-11 09:59:00Z
 CustomProp1: custom-value
 Created: 2010-10-13T04:00:00Z
 
@@ -51,3 +51,25 @@ SEQ Figure \r 5         | 5
 SEQ Figure \h           |
 SEQ Figure \h \* Arabic | 7
 SEQ Figure \s 1         | 8
+
+TEST FORMULA
+
+= 2 + 3                  | 5
+= 2 + 3 * 4              | 14
+= 3 > 2                  | 1
+= SUM(1,2,3)             | 6
+= { DATE \@ "yyyy" } + 1 | 2027
+= 1 / 0                  | !Zero Divide
+= LN(10)                 | !Syntax Error, 10
+= SUM(ABOVE)             | 2053
+
+ASK TEST
+
+ASK Name "Name?" \d "Unknown"                         | Bob
+REF Name                                              | Bob
+ASK Name "Name?" \o                                   | Bob
+REF Name                                              | Bob
+SET DefaultCity "Rome"                                |
+SET Greeting "Hi"                                     |
+ASK City "{ REF Greeting }?" \d "{ REF DefaultCity }" | Montreal
+REF City                                              | Montreal
