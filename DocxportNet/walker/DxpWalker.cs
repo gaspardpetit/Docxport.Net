@@ -48,7 +48,7 @@ public class DxpWalker
         _complexFieldDepth = 0;
         _complexFieldInSimpleDepth = 0;
 
-        DxpDocumentContext documentContext = new DxpDocumentContext(doc);
+        DxpDocumentContext documentContext = new DxpDocumentContext(this, doc);
 
         documentContext.MainDocumentPart = doc.MainDocumentPart;
         {
@@ -2308,7 +2308,7 @@ public class DxpWalker
         }
     }
 
-    private void WalkRun(Run r, DxpDocumentContext d, DxpIVisitor v)
+    public void WalkRun(Run r, DxpDocumentContext d, DxpIVisitor v)
     {
         var para = r.Ancestors<Paragraph>().FirstOrDefault();
         // No paragraph ancestor — surface to the visitor but keep walking content.

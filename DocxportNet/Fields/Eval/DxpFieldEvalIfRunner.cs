@@ -9,15 +9,15 @@ namespace DocxportNet.Fields.Eval;
 
 internal static class DxpFieldEvalIfRunner
 {
-    public static void EnsureIfState(DxpIFieldEvalFrame frame)
+    public static DxpIFCaptureState EnsureIfState(ref DxpIFCaptureState? state)
     {
-        frame.IfState ??= new DxpIFCaptureState();
+        state ??= new DxpIFCaptureState();
+        return state;
     }
 
-    public static void ProcessInstructionSegment(DxpIFieldEvalFrame frame, string text, Run? run, RunProperties? runProps)
+    public static void ProcessInstructionSegment(DxpIFCaptureState state, string text, Run? run, RunProperties? runProps)
     {
-        var state = frame.IfState;
-        if (state == null || string.IsNullOrEmpty(text))
+        if (string.IsNullOrEmpty(text))
             return;
 
         DxpFieldNodeBuffer? currentTarget = state.GetCurrentBuffer();
@@ -103,29 +103,28 @@ internal static class DxpFieldEvalIfRunner
     }
 
     public static bool TryEvaluateAndEmit(
-        DxpIFieldEvalFrame frame,
+        DxpIFCaptureState state,
+        string instructionText,
         DxpFieldEval eval,
         DxpIDocumentContext documentContext,
-        DxpIVisitor next,
+        DxpIVisitor? next,
         Func<string, string> errorTextProvider,
         Action<string, DxpIDocumentContext, RunProperties?> emitText)
     {
-        if (frame.IfState == null || string.IsNullOrWhiteSpace(frame.InstructionText))
+        if (string.IsNullOrWhiteSpace(instructionText))
             return false;
 
-        string instructionText = frame.InstructionText!;
+        if (next == null)
+            return true;
+
         var ifResult = eval.EvaluateIfConditionAsync(instructionText, documentContext).GetAwaiter().GetResult();
         if (ifResult == null || !ifResult.Value.Success)
         {
-            frame.Evaluated = true;
-            frame.SuppressContent = true;
             emitText(errorTextProvider(instructionText), documentContext, null);
             return true;
         }
 
-        var selected = ifResult.Value.Condition ? frame.IfState.TrueBuffer : frame.IfState.FalseBuffer;
-        frame.Evaluated = true;
-        frame.SuppressContent = true;
+        var selected = ifResult.Value.Condition ? state.TrueBuffer : state.FalseBuffer;
         if (selected.IsEmpty)
         {
             var evalResult = eval.EvalAsync(new DxpFieldInstruction(instructionText), documentContext).GetAwaiter().GetResult();

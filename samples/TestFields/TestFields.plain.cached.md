@@ -6,28 +6,12 @@
 
 Expect 1: 1
 
-Expect Error: Error! Reference source not found.
+Expect Error: <b>Error! Reference source not found.</b>
 
-Expect No Error:
+Expect No Error: Not Empty
 
-`IF "Error! Reference source not found."  = "" "Empty" "Not Empty"`
+Expect one: one
 
-Not Empty
+Expect <b>one</b> (bold): <b>one</b>
 
-Expect one:
-
-`IF 1  = "1" "one" "not one"`
-
-one
-
-Expect <b>one</b> (bold): <b>
-
-`IF 1  = "1" "one" "not one"`
-
-one</b>
-
-Expect <b>1</b><u>2</u><b>3:
-
-`IF 1 = 1 "123" "error"`
-
-1</b><u>2</u><b>3</b>
+Expect <b>1</b><u>2</u><b>3: 1</b><u>2</u><b>3</b>

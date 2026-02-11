@@ -7,33 +7,35 @@ namespace DocxportNet.Fields.Eval;
 internal sealed class DxpFieldEvalFrameFactory
 {
     public DxpIFieldEvalFrame Create(
-        DxpIFieldEvalFrame frame,
+        string? instruction,
         DxpIVisitor next,
         DxpFieldEval eval,
         DxpFieldEvalContext context,
         ILogger? logger,
         DxpEvalFieldMode mode)
     {
-        if (IsRefInstruction(frame.InstructionText))
+        if (IsRefInstruction(instruction))
         {
             return mode == DxpEvalFieldMode.Cache
-                ? new DxpRefFieldCachedFrame(next, context, logger)
-                : new DxpRefFieldEvalFrame(next, eval, context, logger);
+                ? new DxpRefFieldCachedFrame(next)
+                : new DxpRefFieldEvalFrame(next, eval, logger, codeRun: null, instructionText: instruction);
         }
-        if (IsDocVariableInstruction(frame.InstructionText))
+        if (IsDocVariableInstruction(instruction))
             return mode == DxpEvalFieldMode.Cache
-                ? new DxpDocVariableFieldCachedFrame(next, context, logger)
-                : new DxpDocVariableFieldEvalFrame(next, eval, context, logger);
-		if (IsIfInstruction(frame.InstructionText))
-            return new DxpIFFieldEvalFrame(next, eval, context, logger, mode);
-        if (IsSetInstruction(frame.InstructionText))
+                ? new DxpDocVariableFieldCachedFrame(next)
+                : new DxpDocVariableFieldEvalFrame(next, eval, logger, codeRun: null, instructionText: instruction);
+        if (IsIfInstruction(instruction))
+            return mode == DxpEvalFieldMode.Cache
+                ? new DxpIFFieldCachedFrame(next)
+                : new DxpIFFieldEvalFrame(next, eval, logger);
+		if (IsSetInstruction(instruction))
         {
             return mode == DxpEvalFieldMode.Cache
-                ? new DxpSetFieldCachedFrame(eval, context, logger)
-                : new DxpSetFieldEvalFrame(eval, context, logger);
+                ? new DxpSetFieldCachedFrame(context, logger)
+                : new DxpSetFieldEvalFrame(eval, context, logger, instruction);
         }
         if (logger?.IsEnabled(LogLevel.Debug) == true)
-            logger.LogDebug("FieldFrameFactory: falling back to GenericFieldEvalFrame for {FrameType}.", frame.GetType().Name);
+            logger.LogDebug("FieldFrameFactory: falling back to GenericFieldEvalFrame for instruction '{Instruction}'.", instruction ?? string.Empty);
         return new DxpEvalGenericFieldFrame(next, eval, context, logger, mode);
     }
 

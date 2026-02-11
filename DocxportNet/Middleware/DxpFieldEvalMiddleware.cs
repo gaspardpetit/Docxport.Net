@@ -8,7 +8,6 @@ using DocxportNet.Fields.Resolution;
 using DocxportNet.Middleware;
 using DocxportNet.Walker.Context;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Globalization;
 
 namespace DocxportNet.Walker;
@@ -29,7 +28,6 @@ public sealed partial class DxpFieldEvalMiddleware : DxpLoggingMiddleware
     private readonly DxpEvalFieldMiddlewareOptions _options;
     private bool _initialized;
     private int _paragraphOrder;
-    private readonly DxpFieldEvalFrameFactory _frameFactory;
     private readonly Stack<DxpIFieldEvalFrame> _fieldFrames = new();
     private readonly Stack<DxpIVisitor> _frameAdapters = new();
     private DxpIFieldEvalFrame? _outerFrame;
@@ -55,7 +53,6 @@ public sealed partial class DxpFieldEvalMiddleware : DxpLoggingMiddleware
         _nowProvider = nowProvider;
         _logger = logger;
         _options = options ?? new DxpEvalFieldMiddlewareOptions();
-        _frameFactory = new DxpFieldEvalFrameFactory();
     }
 
     public override IDisposable VisitDocumentBegin(WordprocessingDocument doc, DxpIDocumentContext documentContext)
@@ -73,24 +70,10 @@ public sealed partial class DxpFieldEvalMiddleware : DxpLoggingMiddleware
         _paragraphOrder = 0;
         _context.FieldDepth = 0;
         _context.OuterFrame = null;
-        _context.ActiveIfFrame = null;
         return Next.VisitDocumentBegin(doc, documentContext);
     }
 
     private DxpIFieldEvalFrame? CurrentField => _fieldFrames.Count > 0 ? _fieldFrames.Peek() : null;
-    private bool IsInFieldResult => CurrentField?.InResult == true;
-
-    private static void CopyFrameState(DxpIFieldEvalFrame source, DxpIFieldEvalFrame target)
-    {
-        target.SuppressContent = source.SuppressContent;
-        target.Evaluated = source.Evaluated;
-        target.InResult = source.InResult;
-        target.InstructionText = source.InstructionText;
-        target.CodeRunProperties = source.CodeRunProperties;
-        target.CodeRun = source.CodeRun;
-        target.CachedResultRuns = source.CachedResultRuns;
-        target.IfState = source.IfState;
-    }
 
     private DxpIFieldEvalFrame CreateInitialFrame(
         bool isComplex,
@@ -98,76 +81,28 @@ public sealed partial class DxpFieldEvalMiddleware : DxpLoggingMiddleware
         bool seenSeparate,
         string? instructionText = null)
     {
-        var next = _currentAdapter ?? _next;
-        var frame = new DxpEvalGenericFieldFrame(next, _eval, _context, _logger, _mode);
-        frame.InResult = inResult;
-        frame.SeenSeparate = seenSeparate;
-        frame.InstructionText = instructionText;
-        return frame;
-    }
-
-    private DxpIFieldEvalFrame PromoteFrameIfNeeded(DxpIFieldEvalFrame frame, DxpIVisitor next)
-    {
-        if (DxpFieldEvalFrameFactory.IsSetInstruction(frame.InstructionText))
-        {
-			DxpIFieldEvalFrame adapterFrame = _mode == DxpEvalFieldMode.Cache
-                ? new DxpSetFieldCachedFrame(_eval, _context, _logger)
-                : new DxpSetFieldEvalFrame(_eval, _context, _logger);
-            CopyFrameState(frame, adapterFrame);
-            return adapterFrame;
-        }
-        if (DxpFieldEvalFrameFactory.IsRefInstruction(frame.InstructionText))
-        {
-            var adapterFrame = new DxpRefFieldEvalFrame(next, _eval, _context, _logger);
-            CopyFrameState(frame, adapterFrame);
-            return adapterFrame;
-        }
-        if (DxpFieldEvalFrameFactory.IsDocVariableInstruction(frame.InstructionText))
-        {
-			DxpIFieldEvalFrame adapterFrame = _mode == DxpEvalFieldMode.Cache
-                ? new DxpDocVariableFieldCachedFrame(next, _context, _logger)
-                : new DxpDocVariableFieldEvalFrame(next, _eval, _context, _logger);
-			CopyFrameState(frame, adapterFrame);
-            return adapterFrame;
-        }
-        if (DxpFieldEvalFrameFactory.IsIfInstruction(frame.InstructionText))
-        {
-            var adapterFrame = new DxpIFFieldEvalFrame(next, _eval, _context, _logger, _mode);
-            CopyFrameState(frame, adapterFrame);
-            return adapterFrame;
-        }
+        var next = GetChainedNext();
+        var frame = new DxpEvalGenericFieldFrame(
+            next,
+            _eval,
+            _context,
+            _logger,
+            _mode,
+            inResult,
+            seenSeparate,
+            instructionText);
         return frame;
     }
 
     private void PushAdapterForFrame(DxpIFieldEvalFrame frame)
     {
-        var next = _currentAdapter ?? _next;
-        var promoted = PromoteFrameIfNeeded(frame, next);
-        if (!ReferenceEquals(promoted, frame))
-        {
-            if (_fieldFrames.Count > 0 && ReferenceEquals(_fieldFrames.Peek(), frame))
-                _fieldFrames.Pop();
-            _fieldFrames.Push(promoted);
-            if (ReferenceEquals(_outerFrame, frame))
-                _outerFrame = promoted;
-            frame = promoted;
-        }
-
         if (frame is DxpIVisitor visitor)
         {
             _frameAdapters.Push(visitor);
             _currentAdapter = visitor;
             return;
         }
-
-        var created = _frameFactory.Create(frame, next, _eval, _context, _logger, _mode);
-        if (created is DxpIVisitor createdVisitor)
-        {
-            _frameAdapters.Push(createdVisitor);
-            _currentAdapter = createdVisitor;
-            return;
-        }
-        throw new InvalidOperationException($"Field frame '{created.GetType().Name}' does not implement {nameof(DxpIVisitor)}.");
+        throw new InvalidOperationException($"Field frame '{frame.GetType().Name}' does not implement {nameof(DxpIVisitor)}.");
     }
 
     private void PopCurrentAdapter()
@@ -177,51 +112,6 @@ public sealed partial class DxpFieldEvalMiddleware : DxpLoggingMiddleware
         _currentAdapter = _frameAdapters.Count > 0 ? _frameAdapters.Peek() : null;
     }
 
-    private void ReplaceCurrentAdapter(DxpIFieldEvalFrame replacement)
-    {
-        if (_frameAdapters.Count > 0)
-            _frameAdapters.Pop();
-        _currentAdapter = _frameAdapters.Count > 0 ? _frameAdapters.Peek() : null;
-        var next = _currentAdapter ?? _next;
-        var promoted = PromoteFrameIfNeeded(replacement, next);
-        if (!ReferenceEquals(promoted, replacement))
-        {
-            if (_fieldFrames.Count > 0 && ReferenceEquals(_fieldFrames.Peek(), replacement))
-                _fieldFrames.Pop();
-            _fieldFrames.Push(promoted);
-            if (ReferenceEquals(_outerFrame, replacement))
-                _outerFrame = promoted;
-            replacement = promoted;
-        }
-
-        if (replacement is DxpIVisitor visitor)
-        {
-            _frameAdapters.Push(visitor);
-            _currentAdapter = visitor;
-            return;
-        }
-
-        var created = _frameFactory.Create(replacement, next, _eval, _context, _logger, _mode);
-        if (created is DxpIVisitor createdVisitor)
-        {
-            _frameAdapters.Push(createdVisitor);
-            _currentAdapter = createdVisitor;
-            return;
-        }
-        throw new InvalidOperationException($"Field frame '{created.GetType().Name}' does not implement {nameof(DxpIVisitor)}.");
-    }
-
-    private void ReplaceCurrentField(DxpIFieldEvalFrame current, DxpIFieldEvalFrame replacement)
-    {
-        _fieldFrames.Pop();
-        _fieldFrames.Push(replacement);
-        if (ReferenceEquals(_outerFrame, current))
-            _outerFrame = replacement;
-        ReplaceCurrentAdapter(replacement);
-        UpdateFrameState();
-        if (_logger?.IsEnabled(LogLevel.Debug) == true)
-            _logger.LogDebug("FieldSpecialize: {From} -> {To}", current.GetType().Name, replacement.GetType().Name);
-    }
 
     private void PopCurrentField(DxpIDocumentContext d)
     {
@@ -239,34 +129,15 @@ public sealed partial class DxpFieldEvalMiddleware : DxpLoggingMiddleware
     {
         _context.FieldDepth = _fieldFrames.Count;
         _context.OuterFrame = _outerFrame;
-        if (_fieldFrames.Count == 0)
-        {
-            _context.ActiveIfFrame = null;
-            if (_logger?.IsEnabled(LogLevel.Debug) == true)
-                _logger.LogDebug("FrameState: depth=0 outer=null activeIf=null");
-            return;
-        }
-
-        foreach (var frame in _fieldFrames)
-        {
-            if (frame.IfState == null)
-                continue;
-            if (frame.InResult)
-                continue;
-            _context.ActiveIfFrame = frame;
-            if (_logger?.IsEnabled(LogLevel.Debug) == true)
-                _logger.LogDebug("FrameState: depth={Depth} outer={Outer} activeIf={Active}",
-                    _context.FieldDepth,
-                    _context.OuterFrame?.GetType().Name ?? "null",
-                    _context.ActiveIfFrame?.GetType().Name ?? "null");
-            return;
-        }
-
-        _context.ActiveIfFrame = null;
         if (_logger?.IsEnabled(LogLevel.Debug) == true)
-            _logger.LogDebug("FrameState: depth={Depth} outer={Outer} activeIf=null",
+            _logger.LogDebug("FrameState: depth={Depth} outer={Outer}",
                 _context.FieldDepth,
                 _context.OuterFrame?.GetType().Name ?? "null");
+    }
+
+    private DxpIVisitor GetChainedNext()
+    {
+        return _currentAdapter ?? _next;
     }
 
     public override void VisitComplexFieldBegin(FieldChar begin, DxpIDocumentContext d)
@@ -290,20 +161,6 @@ public sealed partial class DxpFieldEvalMiddleware : DxpLoggingMiddleware
 
     public override void VisitComplexFieldInstruction(FieldCode instr, string text, DxpIDocumentContext d)
     {
-        if (!string.IsNullOrEmpty(text) && CurrentField?.InResult != true)
-        {
-            var current = CurrentField!;
-            current.InstructionText = current.InstructionText == null
-                ? text
-                : current.InstructionText + text;
-            if (!string.IsNullOrEmpty(current.InstructionText))
-            {
-                var promoted = PromoteFrameIfNeeded(current, _currentAdapter ?? _next);
-                if (!ReferenceEquals(promoted, current))
-                    ReplaceCurrentField(current, promoted);
-            }
-        }
-
         _currentAdapter?.VisitComplexFieldInstruction(instr, text, d);
     }
 
@@ -340,22 +197,6 @@ public sealed partial class DxpFieldEvalMiddleware : DxpLoggingMiddleware
     public override void VisitText(Text t, DxpIDocumentContext d)
     {
         LogTextWithFont("Eval.VisitText", t.Text);
-        if (_mode == DxpEvalFieldMode.Cache)
-        {
-            if (_outerFrame != null && !_outerFrame.InResult)
-                return;
-            if (_outerFrame?.InResult == true)
-            {
-                VisitComplexFieldCachedResultText(t.Text, d);
-                return;
-            }
-        }
-        else if (IsInFieldResult)
-        {
-            VisitComplexFieldCachedResultText(t.Text, d);
-            return;
-        }
-
         Next.VisitText(t, d);
     }
 
@@ -426,14 +267,8 @@ public sealed partial class DxpFieldEvalMiddleware : DxpLoggingMiddleware
 		if (TryResolveRunCulture(r, d, _logger, out var culture))
             _context.Culture = culture;
 
-        if (CurrentField != null && !CurrentField.InResult && CurrentField.CodeRunProperties == null && r.RunProperties != null)
-        {
-            CurrentField.CodeRunProperties = (RunProperties)r.RunProperties.CloneNode(true);
-            if (_logger?.IsEnabled(LogLevel.Debug) == true)
-                _logger.LogDebug("Captured field code run properties from run.");
-        }
-        if (CurrentField != null && !CurrentField.InResult && CurrentField.CodeRun == null)
-            CurrentField.CodeRun = r;
+        if (CurrentField is DxpEvalGenericFieldFrame generic)
+            generic.TryCaptureCodeRun(r);
 
         var inner = Next.VisitRunBegin(r, d);
         return new DxpCompositeScope(inner, () => {
@@ -524,4 +359,5 @@ public sealed partial class DxpFieldEvalMiddleware : DxpLoggingMiddleware
             _inner.Dispose();
         }
     }
+
 }

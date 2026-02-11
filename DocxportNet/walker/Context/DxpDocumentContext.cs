@@ -59,8 +59,7 @@ public class DxpDocumentContext : DxpIDocumentContext, IDxpMutableDocumentContex
     public IPackageProperties? CoreProperties { get; internal set; }
     public IReadOnlyList<CustomFileProperty>? CustomProperties { get; internal set; }
     public OpenXmlPart? CurrentPart { get; internal set; }
-    OpenXmlPart? IDxpMutableDocumentContext.CurrentPart
-    {
+    OpenXmlPart? IDxpMutableDocumentContext.CurrentPart {
         get => CurrentPart;
         set => CurrentPart = value;
     }
@@ -71,84 +70,72 @@ public class DxpDocumentContext : DxpIDocumentContext, IDxpMutableDocumentContex
     public DxpChangeInfo CurrentChangeInfo => (_editStateStack.Count == 0 ? _defaultEditState : _editStateStack.Peek()).ChangeInfo;
     public DxpParagraphContext CurrentParagraph { get; internal set; } = DxpParagraphContext.INVALID;
     DxpIParagraphContext DxpIDocumentContext.CurrentParagraph => CurrentParagraph;
-    DxpIParagraphContext IDxpMutableDocumentContext.CurrentParagraph
-    {
+    DxpIParagraphContext IDxpMutableDocumentContext.CurrentParagraph {
         get => CurrentParagraph;
         set => CurrentParagraph = value as DxpParagraphContext ?? DxpParagraphContext.INVALID;
     }
     public DxpRubyContext? CurrentRuby { get; internal set; }
     DxpIRubyContext? DxpIDocumentContext.CurrentRuby => CurrentRuby;
-    DxpIRubyContext? IDxpMutableDocumentContext.CurrentRuby
-    {
+    DxpIRubyContext? IDxpMutableDocumentContext.CurrentRuby {
         get => CurrentRuby;
         set => CurrentRuby = value as DxpRubyContext;
     }
     public DxpSmartTagContext? CurrentSmartTag { get; internal set; }
     DxpISmartTagContext? DxpIDocumentContext.CurrentSmartTag => CurrentSmartTag;
-    DxpISmartTagContext? IDxpMutableDocumentContext.CurrentSmartTag
-    {
+    DxpISmartTagContext? IDxpMutableDocumentContext.CurrentSmartTag {
         get => CurrentSmartTag;
         set => CurrentSmartTag = value as DxpSmartTagContext;
     }
     public DxpCustomXmlContext? CurrentCustomXml { get; internal set; }
     DxpICustomXmlContext? DxpIDocumentContext.CurrentCustomXml => CurrentCustomXml;
-    DxpICustomXmlContext? IDxpMutableDocumentContext.CurrentCustomXml
-    {
+    DxpICustomXmlContext? IDxpMutableDocumentContext.CurrentCustomXml {
         get => CurrentCustomXml;
         set => CurrentCustomXml = value as DxpCustomXmlContext;
     }
     public DxpSdtContext? CurrentSdt { get; internal set; }
     DxpISdtContext? DxpIDocumentContext.CurrentSdt => CurrentSdt;
-    DxpISdtContext? IDxpMutableDocumentContext.CurrentSdt
-    {
+    DxpISdtContext? IDxpMutableDocumentContext.CurrentSdt {
         get => CurrentSdt;
         set => CurrentSdt = value as DxpSdtContext;
     }
     public DxpRunContext? CurrentRun { get; internal set; }
     DxpIRunContext? DxpIDocumentContext.CurrentRun => CurrentRun;
-    DxpIRunContext? IDxpMutableDocumentContext.CurrentRun
-    {
+    DxpIRunContext? IDxpMutableDocumentContext.CurrentRun {
         get => CurrentRun;
         set => CurrentRun = value as DxpRunContext;
     }
     public DxpITableContext? CurrentTable { get; internal set; }
     DxpITableContext? DxpIDocumentContext.CurrentTable => CurrentTable;
-    DxpITableContext? IDxpMutableDocumentContext.CurrentTable
-    {
+    DxpITableContext? IDxpMutableDocumentContext.CurrentTable {
         get => CurrentTable;
         set => CurrentTable = value;
     }
     public DxpITableRowContext? CurrentTableRow { get; internal set; }
     DxpITableRowContext? DxpIDocumentContext.CurrentTableRow => CurrentTableRow;
-    DxpITableRowContext? IDxpMutableDocumentContext.CurrentTableRow
-    {
+    DxpITableRowContext? IDxpMutableDocumentContext.CurrentTableRow {
         get => CurrentTableRow;
         set => CurrentTableRow = value;
     }
     public DxpITableCellContext? CurrentTableCell { get; internal set; }
     DxpITableCellContext? DxpIDocumentContext.CurrentTableCell => CurrentTableCell;
-    DxpITableCellContext? IDxpMutableDocumentContext.CurrentTableCell
-    {
+    DxpITableCellContext? IDxpMutableDocumentContext.CurrentTableCell {
         get => CurrentTableCell;
         set => CurrentTableCell = value;
     }
     public DxpTableModel? CurrentTableModel { get; internal set; }
     DxpTableModel? DxpIDocumentContext.CurrentTableModel => CurrentTableModel;
-    DxpTableModel? IDxpMutableDocumentContext.CurrentTableModel
-    {
+    DxpTableModel? IDxpMutableDocumentContext.CurrentTableModel {
         get => CurrentTableModel;
         set => CurrentTableModel = value;
     }
     public DxpFootnoteContext CurrentFootnote { get; internal set; } = DxpFootnoteContext.INVALID;
-    DxpIFootnoteContext IDxpMutableDocumentContext.CurrentFootnote
-    {
+    DxpIFootnoteContext IDxpMutableDocumentContext.CurrentFootnote {
         get => CurrentFootnote;
         set => CurrentFootnote = value as DxpFootnoteContext ?? DxpFootnoteContext.INVALID;
     }
     public DxpSectionContext CurrentSection { get; internal set; } = DxpSectionContext.INVALID;
     DxpISectionContext DxpIDocumentContext.CurrentSection => CurrentSection;
-    DxpISectionContext IDxpMutableDocumentContext.CurrentSection
-    {
+    DxpISectionContext IDxpMutableDocumentContext.CurrentSection {
         get => CurrentSection;
         set => CurrentSection = value as DxpSectionContext ?? DxpSectionContext.INVALID;
     }
@@ -156,9 +143,12 @@ public class DxpDocumentContext : DxpIDocumentContext, IDxpMutableDocumentContex
     public DxpDocumentProperties DocumentProperties { get; internal set; }
     public DxpDocumentIndex DocumentIndex { get; }
 
-    public DxpDocumentContext(WordprocessingDocument doc)
+    public DxpWalker Walker { get; internal set; }
+
+    public DxpDocumentContext(DxpWalker walker, WordprocessingDocument doc)
     {
-        CurrentFields = new();
+        Walker = walker;
+		CurrentFields = new();
         NumberingResolver = new DxpNumberingResolver(doc);
         TableStyleResolver = new DxpTableStyleResolver(doc);
         ReferencedBookmarkAnchors = CollectReferencedAnchors(doc);

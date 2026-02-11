@@ -1160,7 +1160,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     }
 
     [Fact]
-    public void Walker_EvalMode_NestedRefDoesNotSubstitute()
+    public void Walker_EvalMode_NestedRefWithInnerFieldChars_Substitutes()
     {
         var bodyXml = """
 <w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
@@ -1193,11 +1193,77 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
 """;
 
         var actual = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml));
+        var expected = TestCompare.Normalize("Expect: Z\n\n");
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void Walker_EvalMode_NestedRefAcrossInstructionRuns_Substitutes()
+    {
+        var bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+        xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Expect: </w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> SET X "Y" </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>Y</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> SET Y "Z" </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>Z</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> REF { </w:instrText></w:r>
+    <w:r><w:instrText xml:space="preserve"> REF X </w:instrText></w:r>
+    <w:r><w:instrText xml:space="preserve"> } </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>?</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var actual = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml));
+        var expected = TestCompare.Normalize("Expect: Z\n\n");
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void Walker_EvalMode_NestedRefSplitBetweenInstructionAndResult_DoesNotSubstitute()
+    {
+        var bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+        xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Expect: </w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> SET X "Y" </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>Y</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> SET Y "Z" </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>Z</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> REF { </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t xml:space="preserve"> REF X } </w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var actual = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml));
         Assert.DoesNotContain("Z", actual);
     }
 
     [Fact]
-    public void Walker_EvalMode_NestedRefSubstitutes()
+    public void Walker_EvalMode_NestedRefInlineInstruction_Substitutes()
     {
         var bodyXml = """
 <w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
