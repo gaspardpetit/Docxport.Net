@@ -243,14 +243,14 @@ internal sealed class DxpEvalGenericFieldFrame : DxpMiddleware, DxpIFieldEvalFra
         {
 			DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
                 ? new DxpRefFieldCachedFrame(Next)
-                : new DxpRefFieldEvalFrame(Next, _eval, _logger, CodeRun, instructionText);
+                : new DxpRefFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
             return frame;
         }
         if (DxpFieldEvalFrameFactory.IsDocVariableInstruction(instructionText))
         {
 			DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
                 ? new DxpDocVariableFieldCachedFrame(Next)
-                : new DxpDocVariableFieldEvalFrame(Next, _eval, _logger, CodeRun, instructionText);
+                : new DxpDocVariableFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
             return frame;
         }
         if (DxpFieldEvalFrameFactory.IsIfInstruction(instructionText))
@@ -258,6 +258,69 @@ internal sealed class DxpEvalGenericFieldFrame : DxpMiddleware, DxpIFieldEvalFra
 			DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
                 ? new DxpIFFieldCachedFrame(Next)
                 : new DxpIFFieldEvalFrame(Next, _eval, _logger, CodeRun);
+            return frame;
+        }
+        if (DxpFieldEvalFrameFactory.IsAskInstruction(instructionText))
+        {
+            DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
+                ? new DxpAskFieldCachedFrame(Next)
+                : new DxpAskFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
+            return frame;
+        }
+        if (DxpFieldEvalFrameFactory.IsSkipIfInstruction(instructionText))
+        {
+            DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
+                ? new DxpSkipIfFieldCachedFrame(Next)
+                : new DxpSkipIfFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
+            return frame;
+        }
+        if (DxpFieldEvalFrameFactory.IsDocPropertyInstruction(instructionText) ||
+            DxpFieldEvalFrameFactory.IsMergeFieldInstruction(instructionText) ||
+            DxpFieldEvalFrameFactory.IsSeqInstruction(instructionText) ||
+            DxpFieldEvalFrameFactory.IsDateTimeInstruction(instructionText) ||
+            DxpFieldEvalFrameFactory.IsCompareInstruction(instructionText))
+        {
+            if (DxpFieldEvalFrameFactory.IsDocPropertyInstruction(instructionText))
+            {
+                DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
+                    ? new DxpDocPropertyFieldCachedFrame(Next)
+                    : new DxpDocPropertyFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
+                return frame;
+            }
+            if (DxpFieldEvalFrameFactory.IsMergeFieldInstruction(instructionText))
+            {
+                DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
+                    ? new DxpMergeFieldCachedFrame(Next)
+                    : new DxpMergeFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
+                return frame;
+            }
+            if (DxpFieldEvalFrameFactory.IsSeqInstruction(instructionText))
+            {
+                DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
+                    ? new DxpSeqFieldCachedFrame(Next)
+                    : new DxpSeqFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
+                return frame;
+            }
+            if (DxpFieldEvalFrameFactory.IsDateTimeInstruction(instructionText))
+            {
+                DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
+                    ? new DxpDateTimeFieldCachedFrame(Next)
+                    : new DxpDateTimeFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
+                return frame;
+            }
+            if (DxpFieldEvalFrameFactory.IsCompareInstruction(instructionText))
+            {
+                DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
+                    ? new DxpCompareFieldCachedFrame(Next)
+                    : new DxpCompareFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
+                return frame;
+            }
+        }
+        if (DxpFieldEvalFrameFactory.IsFormulaInstruction(instructionText))
+        {
+            DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
+                ? new DxpFormulaFieldCachedFrame(Next)
+                : new DxpFormulaFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
             return frame;
         }
         return null;

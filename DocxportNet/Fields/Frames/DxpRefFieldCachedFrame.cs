@@ -2,10 +2,9 @@ using DocxportNet.API;
 
 namespace DocxportNet.Fields.Frames;
 
-internal sealed class DxpRefFieldCachedFrame : DxpFieldCachedFrameBase, DxpIFieldEvalFrame
+internal sealed class DxpRefFieldCachedFrame : DxpSimpleFieldCachedFrame, DxpIFieldEvalFrame
 {
-	public DxpRefFieldCachedFrame(DxpIVisitor next)
-		: base(next)
-	{}
-
+    public DxpRefFieldCachedFrame(DxpIVisitor next)
+        : base(next)
+    {}
 }

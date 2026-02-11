@@ -326,6 +326,101 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     }
 
     [Fact]
+    public void Walker_EvalMode_ValueFields_EmitStructuredResults()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Expect: </w:t></w:r>
+    <w:r><w:t xml:space="preserve">Title=</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> DOCPROPERTY Title </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:t xml:space="preserve"> Merge=</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> MERGEFIELD FirstName \\* Upper </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:t xml:space="preserve"> Seq=</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> SEQ Figure </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:t xml:space="preserve"> Date=</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> DATE \\@ "yyyy-MM-dd" </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:t xml:space="preserve"> Compare=</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> COMPARE 5 > 3 </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:t xml:space="preserve"> Formula=</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> = 2 + 3 </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var eval = new DxpFieldEval(new DxpFieldEvalDelegates {
+            ResolveMergeFieldAsync = (name, _) => Task.FromResult<DxpFieldValue?>(name == "FirstName" ? new DxpFieldValue("Ana") : null)
+        }, logger: Logger);
+        eval.Context.SetDocumentPropertyValue("Title", new DxpFieldValue("Doc"));
+        eval.Context.SetNow(() => new DateTimeOffset(2026, 2, 7, 0, 0, 0, TimeSpan.Zero));
+        eval.Context.Culture = new CultureInfo("en-US");
+
+        var actual = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml, eval));
+        var expected = TestCompare.Normalize("Expect: Title=Doc Merge=ANA Seq=1 Date=2026-02-07 Compare=1 Formula=5\n\n");
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void Walker_EvalMode_AskAndSkipIfSuppressOutput()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Answer: </w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> ASK Name "Name?" \\d "Unknown" </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> REF Name </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:t xml:space="preserve"> Skip=</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> SKIPIF 1 = 1 </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>should-not-appear</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var eval = new DxpFieldEval(new DxpFieldEvalDelegates {
+            AskAsync = (prompt, _) => Task.FromResult<DxpFieldValue?>(prompt == "Name?" ? new DxpFieldValue("Ana") : null)
+        }, logger: Logger);
+
+        var actual = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml, eval));
+        var expected = TestCompare.Normalize("Answer: Ana Skip=\n\n");
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
     public void Walker_EvalMode_RefWithoutSwitch_ReplaysStructuredBookmark()
     {
         const string bodyXml = """
@@ -969,7 +1064,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
             .Add("A1", 2)
             .Add("B1", 3)
             .Add("A1:B1", 2, 3)
-            .AddDirection(DocxportNet.Fields.Resolution.DxpTableRangeDirection.Left, 5, 7);
+            .AddDirection(DxpTableRangeDirection.Left, 5, 7);
 
         var cell = await eval.EvalAsync(new DxpFieldInstruction("= A1 + B1"));
         var range = await eval.EvalAsync(new DxpFieldInstruction("= SUM(A1:B1)"));
@@ -1743,7 +1838,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
 			Assert.Contains("Erreur ! Aucune variable de document fournie.", html, StringComparison.Ordinal);
 	}
 
-	[Fact(Skip = "Generic field fallback now emits unsupported errors; formula fields (e.g., = SUM(ABOVE)) need a dedicated frame.")]
+	[Fact]
     public void Walker_TableDirectionalRanges_ResolveThroughMiddleware()
     {
         using var stream = new MemoryStream();
@@ -1759,10 +1854,10 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         var eval = new DxpFieldEval(logger: Logger);
         eval.Context.Culture = new CultureInfo("en-US");
         var resolver = new CapturingTableResolver()
-            .AddDirection(DocxportNet.Fields.Resolution.DxpTableRangeDirection.Below, 12)
-            .AddDirection(DocxportNet.Fields.Resolution.DxpTableRangeDirection.Above, 1)
-            .AddDirection(DocxportNet.Fields.Resolution.DxpTableRangeDirection.Left, 6)
-            .AddDirection(DocxportNet.Fields.Resolution.DxpTableRangeDirection.Right, 16);
+            .AddDirection(DxpTableRangeDirection.Below, 12)
+            .AddDirection(DxpTableRangeDirection.Above, 1)
+            .AddDirection(DxpTableRangeDirection.Left, 6)
+            .AddDirection(DxpTableRangeDirection.Right, 16);
         eval.Context.TableResolver = resolver;
         var visitor = DxpVisitorMiddleware.Chain(
             new DxpVisitor(Logger),
@@ -1772,10 +1867,10 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         using (var readDoc = WordprocessingDocument.Open(stream, false))
             new DxpWalker(Logger).Accept(readDoc, visitor);
 
-        Assert.Contains(DocxportNet.Fields.Resolution.DxpTableRangeDirection.Below, resolver.DirectionCalls);
-        Assert.Contains(DocxportNet.Fields.Resolution.DxpTableRangeDirection.Above, resolver.DirectionCalls);
-        Assert.Contains(DocxportNet.Fields.Resolution.DxpTableRangeDirection.Left, resolver.DirectionCalls);
-        Assert.Contains(DocxportNet.Fields.Resolution.DxpTableRangeDirection.Right, resolver.DirectionCalls);
+        Assert.Contains(DxpTableRangeDirection.Below, resolver.DirectionCalls);
+        Assert.Contains(DxpTableRangeDirection.Above, resolver.DirectionCalls);
+        Assert.Contains(DxpTableRangeDirection.Left, resolver.DirectionCalls);
+        Assert.Contains(DxpTableRangeDirection.Right, resolver.DirectionCalls);
     }
 
     [Fact]

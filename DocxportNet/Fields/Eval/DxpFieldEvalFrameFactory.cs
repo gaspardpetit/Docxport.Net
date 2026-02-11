@@ -18,12 +18,12 @@ internal sealed class DxpFieldEvalFrameFactory
         {
             return mode == DxpEvalFieldMode.Cache
                 ? new DxpRefFieldCachedFrame(next)
-                : new DxpRefFieldEvalFrame(next, eval, logger, codeRun: null, instructionText: instruction);
+                : new DxpRefFieldEvalFrame(next, eval, logger, instruction);
         }
         if (IsDocVariableInstruction(instruction))
             return mode == DxpEvalFieldMode.Cache
                 ? new DxpDocVariableFieldCachedFrame(next)
-                : new DxpDocVariableFieldEvalFrame(next, eval, logger, codeRun: null, instructionText: instruction);
+                : new DxpDocVariableFieldEvalFrame(next, eval, logger, instruction);
         if (IsIfInstruction(instruction))
             return mode == DxpEvalFieldMode.Cache
                 ? new DxpIFFieldCachedFrame(next)
@@ -33,6 +33,61 @@ internal sealed class DxpFieldEvalFrameFactory
             return mode == DxpEvalFieldMode.Cache
                 ? new DxpSetFieldCachedFrame(context, logger)
                 : new DxpSetFieldEvalFrame(eval, context, logger, instruction);
+        }
+        if (IsAskInstruction(instruction))
+        {
+            return mode == DxpEvalFieldMode.Cache
+                ? new DxpAskFieldCachedFrame(next)
+                : new DxpAskFieldEvalFrame(next, eval, logger, instruction);
+        }
+        if (IsSkipIfInstruction(instruction))
+        {
+            return mode == DxpEvalFieldMode.Cache
+                ? new DxpSkipIfFieldCachedFrame(next)
+                : new DxpSkipIfFieldEvalFrame(next, eval, logger, instruction);
+        }
+        if (IsDocPropertyInstruction(instruction) ||
+            IsMergeFieldInstruction(instruction) ||
+            IsSeqInstruction(instruction) ||
+            IsDateTimeInstruction(instruction) ||
+            IsCompareInstruction(instruction))
+        {
+            if (IsDocPropertyInstruction(instruction))
+            {
+                return mode == DxpEvalFieldMode.Cache
+                    ? new DxpDocPropertyFieldCachedFrame(next)
+                    : new DxpDocPropertyFieldEvalFrame(next, eval, logger, instruction);
+            }
+            if (IsMergeFieldInstruction(instruction))
+            {
+                return mode == DxpEvalFieldMode.Cache
+                    ? new DxpMergeFieldCachedFrame(next)
+                    : new DxpMergeFieldEvalFrame(next, eval, logger, instruction);
+            }
+            if (IsSeqInstruction(instruction))
+            {
+                return mode == DxpEvalFieldMode.Cache
+                    ? new DxpSeqFieldCachedFrame(next)
+                    : new DxpSeqFieldEvalFrame(next, eval, logger, instruction);
+            }
+            if (IsDateTimeInstruction(instruction))
+            {
+                return mode == DxpEvalFieldMode.Cache
+                    ? new DxpDateTimeFieldCachedFrame(next)
+                    : new DxpDateTimeFieldEvalFrame(next, eval, logger, instruction);
+            }
+            if (IsCompareInstruction(instruction))
+            {
+                return mode == DxpEvalFieldMode.Cache
+                    ? new DxpCompareFieldCachedFrame(next)
+                    : new DxpCompareFieldEvalFrame(next, eval, logger, instruction);
+            }
+        }
+        if (IsFormulaInstruction(instruction))
+        {
+            return mode == DxpEvalFieldMode.Cache
+                ? new DxpFormulaFieldCachedFrame(next)
+                : new DxpFormulaFieldEvalFrame(next, eval, logger, instruction);
         }
         if (logger?.IsEnabled(LogLevel.Debug) == true)
             logger.LogDebug("FieldFrameFactory: falling back to GenericFieldEvalFrame for instruction '{Instruction}'.", instruction ?? string.Empty);
@@ -77,5 +132,58 @@ internal sealed class DxpFieldEvalFrameFactory
         if (!trimmed.StartsWith("IF", StringComparison.OrdinalIgnoreCase))
             return false;
         return trimmed.Length == 2 || char.IsWhiteSpace(trimmed[2]);
+    }
+
+    internal static bool IsDocPropertyInstruction(string? instruction)
+        => StartsWithField(instruction, "DOCPROPERTY");
+
+    internal static bool IsMergeFieldInstruction(string? instruction)
+        => StartsWithField(instruction, "MERGEFIELD");
+
+    internal static bool IsSeqInstruction(string? instruction)
+        => StartsWithField(instruction, "SEQ");
+
+    internal static bool IsCompareInstruction(string? instruction)
+        => StartsWithField(instruction, "COMPARE");
+
+    internal static bool IsAskInstruction(string? instruction)
+        => StartsWithField(instruction, "ASK");
+
+    internal static bool IsSkipIfInstruction(string? instruction)
+    {
+        if (StartsWithField(instruction, "SKIPIF"))
+            return true;
+        return StartsWithField(instruction, "NEXTIF");
+    }
+
+    internal static bool IsDateTimeInstruction(string? instruction)
+    {
+        if (StartsWithField(instruction, "DATE"))
+            return true;
+        if (StartsWithField(instruction, "TIME"))
+            return true;
+        if (StartsWithField(instruction, "CREATEDATE"))
+            return true;
+        if (StartsWithField(instruction, "SAVEDATE"))
+            return true;
+        return StartsWithField(instruction, "PRINTDATE");
+    }
+
+    internal static bool IsFormulaInstruction(string? instruction)
+    {
+        if (string.IsNullOrWhiteSpace(instruction))
+            return false;
+        var trimmed = instruction!.TrimStart();
+        return trimmed.Length > 0 && trimmed[0] == '=';
+    }
+
+    private static bool StartsWithField(string? instruction, string fieldType)
+    {
+        if (string.IsNullOrWhiteSpace(instruction))
+            return false;
+        var trimmed = instruction!.TrimStart();
+        if (!trimmed.StartsWith(fieldType, StringComparison.OrdinalIgnoreCase))
+            return false;
+        return trimmed.Length == fieldType.Length || char.IsWhiteSpace(trimmed[fieldType.Length]);
     }
 }

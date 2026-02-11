@@ -285,7 +285,7 @@ public sealed class DxpFieldEval
                             }
                         }
 
-                        var resolved = await resolver.ResolveAsync(name, Resolution.DxpFieldValueKindHint.DocVariable, Context);
+                        var resolved = await resolver.ResolveAsync(name, DxpFieldValueKindHint.DocVariable, Context);
                         if (resolved == null)
                         {
                             value = new DxpFieldValue(DocVariableMissingError);
@@ -312,7 +312,7 @@ public sealed class DxpFieldEval
                     {
                         var resolver = Context.ValueResolver ?? _resolver;
                         var name = await ExpandNestedTextAsync(tokens[0], documentContext);
-                        var resolved = await resolver.ResolveAsync(name, Resolution.DxpFieldValueKindHint.DocumentProperty, Context);
+                        var resolved = await resolver.ResolveAsync(name, DxpFieldValueKindHint.DocumentProperty, Context);
                         if (resolved == null)
                         {
                             value = new DxpFieldValue(DocPropertyUnknownError);
@@ -340,7 +340,7 @@ public sealed class DxpFieldEval
                         if (TryResolveMergeFieldName(name, ast, out var mapped))
                             name = mapped;
                         var resolver = Context.ValueResolver ?? _resolver;
-                        var resolved = await resolver.ResolveAsync(name, Resolution.DxpFieldValueKindHint.MergeField, Context);
+                        var resolved = await resolver.ResolveAsync(name, DxpFieldValueKindHint.MergeField, Context);
                         value = resolved ?? new DxpFieldValue(string.Empty);
                         if (resolved == null && _logger?.IsEnabled(LogLevel.Debug) == true)
                             _logger.LogDebug("MERGEFIELD '{Name}' not resolved; using empty string.", name);
@@ -400,7 +400,7 @@ public sealed class DxpFieldEval
                             seqValue = Context.NextSequence(identifier);
 
                         // Track most recent sequence value for numbereditem lookups.
-                        Context.SetNumberedItem(identifier, seqValue.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                        Context.SetNumberedItem(identifier, seqValue.ToString(CultureInfo.InvariantCulture));
 
                         bool shouldHide = hide && !hasStar;
                         value = shouldHide ? new DxpFieldValue(string.Empty) : new DxpFieldValue(seqValue);
@@ -442,7 +442,7 @@ public sealed class DxpFieldEval
                             _logger.LogDebug("ASK delegate not configured; using default value.");
 
                         string resolved = response?.StringValue
-                            ?? (response?.NumberValue?.ToString(Context.Culture ?? System.Globalization.CultureInfo.CurrentCulture))
+                            ?? (response?.NumberValue?.ToString(Context.Culture ?? CultureInfo.CurrentCulture))
                             ?? defaultValue
                             ?? string.Empty;
 
@@ -733,14 +733,14 @@ public sealed class DxpFieldEval
         string expanded = await ExpandNestedFieldsAsync(unquoted, documentContext);
 
         var resolver = Context.ValueResolver ?? _resolver;
-        DxpFieldValue? resolvedValue = await resolver.ResolveAsync(expanded, Resolution.DxpFieldValueKindHint.Any, Context);
+        DxpFieldValue? resolvedValue = await resolver.ResolveAsync(expanded, DxpFieldValueKindHint.Any, Context);
         if (resolvedValue.HasValue)
         {
             var value = resolvedValue.Value;
             if (value.StringValue != null)
                 return value.StringValue;
             if (value.NumberValue != null)
-                return value.NumberValue.Value.ToString(Context.Culture ?? System.Globalization.CultureInfo.CurrentCulture);
+                return value.NumberValue.Value.ToString(Context.Culture ?? CultureInfo.CurrentCulture);
         }
 
         if (_logger?.IsEnabled(LogLevel.Debug) == true)
@@ -807,11 +807,11 @@ public sealed class DxpFieldEval
 
     private bool TryParseNumber(string text, out double number)
     {
-        var culture = Context.Culture ?? System.Globalization.CultureInfo.CurrentCulture;
-        if (double.TryParse(text, System.Globalization.NumberStyles.Any, culture, out number))
+        var culture = Context.Culture ?? CultureInfo.CurrentCulture;
+        if (double.TryParse(text, NumberStyles.Any, culture, out number))
             return true;
         if (Context.AllowInvariantNumericFallback &&
-            double.TryParse(text, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out number))
+            double.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out number))
             return true;
         number = 0;
         return false;
@@ -830,7 +830,7 @@ public sealed class DxpFieldEval
     private async Task<DxpFieldValue?> ResolveIdentifierValueAsync(string name)
     {
         var resolver = Context.ValueResolver ?? _resolver;
-        return await resolver.ResolveAsync(name, Resolution.DxpFieldValueKindHint.Any, Context);
+        return await resolver.ResolveAsync(name, DxpFieldValueKindHint.Any, Context);
     }
 
     private string FormatMergeField(DxpFieldValue value, DxpFieldAst ast)
@@ -998,7 +998,7 @@ public sealed class DxpFieldEval
         if (!string.IsNullOrEmpty(listSeparator))
             return listSeparator![0];
 
-        var culture = Context.Culture ?? System.Globalization.CultureInfo.CurrentCulture;
+        var culture = Context.Culture ?? CultureInfo.CurrentCulture;
         string separator = culture.TextInfo.ListSeparator;
         return string.IsNullOrEmpty(separator) ? ',' : separator[0];
     }
