@@ -317,6 +317,7 @@ public static class DxpExport
                     next,
                     provider.FieldEval,
                     mode == DxpFieldEvalExportMode.Cache ? DxpEvalFieldMode.Cache : DxpEvalFieldMode.Evaluate,
+                    includeCustomProperties: true,
                     logger: logger),
                 next => new DxpContextMiddleware(next, logger));
         }

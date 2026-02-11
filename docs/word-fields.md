@@ -244,7 +244,8 @@ In this example, numeric results are formatted using the numeric picture switch.
 
 - **Wildcards:** `?` (matches one character) and `*` (matches zero or more characters) are permitted in Expression2 when using `=` or `<>`([IF field (Word 2003 documentation)](https://documentation.help/MS-Office-Word-2003/worefIF1.htm)).
 
-- **Nested field errors:** Word treats the *result text* of nested fields as the literal value used in comparisons.  For example, if `{ REF Missing }` yields `Error! Reference source not found.`, then `{ IF { REF Missing } = "" "Empty" "Not Empty" }` evaluates to `"Not Empty"` because the left expression is the error string, not an empty value.  This behaviour is observed in Word, but is not explicitly specified in Microsoft’s field code documentation.
+- **Nested field errors:** Word treats the *result text* of nested fields as the literal value used in comparisons.  For example, if `{ REF Missing }` yields `Error! Reference source not found.`, then `{ IF { REF Missing } = "" "Empty" "Not Empty" }` evaluates to `"Not Empty"` because the left expression is the error string, not an empty value.  This behaviour is observed in Word, but is not explicitly specified in Microsoft’s field code documentation.  
+  **DocxportNet note:** In our evaluation, missing `REF` inside an `IF` currently uses the `REF` error text (not the raw field keyword). Some Word builds appear to display just `REF` for this case; we treat that as a documented divergence.
 
 - **Examples:**
 

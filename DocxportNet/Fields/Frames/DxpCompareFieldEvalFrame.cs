@@ -6,9 +6,9 @@ using Microsoft.Extensions.Logging;
 
 namespace DocxportNet.Fields.Frames;
 
-internal sealed class DxpDocVariableFieldEvalFrame : DxpValueFieldEvalFrame
+internal sealed class DxpCompareFieldEvalFrame : DxpValueFieldEvalFrame
 {
-    public DxpDocVariableFieldEvalFrame(DxpIVisitor? next, DxpFieldEval eval, ILogger? logger, string? instructionText, Run? codeRun = null)
+    public DxpCompareFieldEvalFrame(DxpIVisitor? next, DxpFieldEval eval, ILogger? logger, string? instructionText, Run? codeRun = null)
         : base(next, eval, logger, instructionText, codeRun)
     {}
 }

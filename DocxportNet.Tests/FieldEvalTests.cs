@@ -17,6 +17,8 @@ using DocxportNet.Fields.Resolution;
 using DocxportNet.Middleware;
 using DocxportNet.Fields.Eval;
 using DocxportNet.Visitors.Html;
+using DocumentFormat.OpenXml.CustomProperties;
+using DocumentFormat.OpenXml.VariantTypes;
 
 namespace DocxportNet.Tests;
 
@@ -273,6 +275,71 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     }
 
     [Fact]
+    public void Walker_EvalMode_DocProperty_ResolvesBuiltInAndCustom()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Title: </w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> DOCPROPERTY Title </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:t xml:space="preserve"> Created: </w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> DOCPROPERTY Created \\@ "yyyy-MM-dd" </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:t xml:space="preserve"> Custom: </w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> DOCPROPERTY "CustomProp1" </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var eval = new DxpFieldEval(logger: Logger);
+        var actual = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(
+            bodyXml,
+            eval,
+            includeCustomProperties: true,
+            configureDocument: doc => {
+                doc.PackageProperties.Title = "My Title";
+                doc.PackageProperties.Created = new DateTime(2026, 2, 7, 12, 0, 0, DateTimeKind.Utc);
+
+                var customPart = doc.CustomFilePropertiesPart ?? doc.AddCustomFilePropertiesPart();
+                customPart.Properties ??= new Properties();
+
+                CustomDocumentProperty? existing = null;
+                foreach (var prop in customPart.Properties.Elements<CustomDocumentProperty>())
+                {
+                    if (string.Equals(prop.Name?.Value, "CustomProp1", StringComparison.Ordinal))
+                    {
+                        existing = prop;
+                        break;
+                    }
+                }
+
+                var custom = existing ?? new CustomDocumentProperty {
+                    Name = "CustomProp1",
+                    PropertyId = 2,
+                    FormatId = "{D5CDD505-2E9C-101B-9397-08002B2CF9AE}"
+                };
+                custom.VTLPWSTR = new VTLPWSTR("Custom Value");
+                if (existing == null)
+                    customPart.Properties.AppendChild(custom);
+                customPart.Properties.Save();
+            }));
+        Assert.Contains("Title: My Title", actual, StringComparison.Ordinal);
+        Assert.Contains("Created: 2026-02-07", actual, StringComparison.Ordinal);
+        Assert.Contains("Custom: Custom Value", actual, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public async Task EvalAsync_DocVariableUsesResolver()
     {
         var eval = new DxpFieldEval(new DxpFieldEvalDelegates {
@@ -322,6 +389,130 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
 
         var actual = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml));
         var expected = TestCompare.Normalize("Expect 1: 1\n\n");
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void Walker_EvalMode_SetWithNestedFieldValue_SetsBookmark()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Value: </w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> SET Var1 "{ DATE \\@ yyyy }" </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> REF Var1 </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.SetNow(() => new DateTimeOffset(2026, 2, 7, 0, 0, 0, TimeSpan.Zero));
+
+        var actual = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml, eval));
+        var expected = TestCompare.Normalize("Value: 2026\n\n");
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void Walker_EvalMode_ValueFields_EmitStructuredResults()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Expect: </w:t></w:r>
+    <w:r><w:t xml:space="preserve">Title=</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> DOCPROPERTY Title </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:t xml:space="preserve"> Merge=</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> MERGEFIELD FirstName \\* Upper </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:t xml:space="preserve"> Seq=</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> SEQ Figure </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:t xml:space="preserve"> Date=</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> DATE \\@ "yyyy-MM-dd" </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:t xml:space="preserve"> Compare=</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> COMPARE 5 > 3 </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:t xml:space="preserve"> Formula=</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> = 2 + 3 </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var eval = new DxpFieldEval(new DxpFieldEvalDelegates {
+            ResolveMergeFieldAsync = (name, _) => Task.FromResult<DxpFieldValue?>(name == "FirstName" ? new DxpFieldValue("Ana") : null)
+        }, logger: Logger);
+        eval.Context.SetDocumentPropertyValue("Title", new DxpFieldValue("Doc"));
+        eval.Context.SetNow(() => new DateTimeOffset(2026, 2, 7, 0, 0, 0, TimeSpan.Zero));
+        eval.Context.Culture = new CultureInfo("en-US");
+
+        var actual = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml, eval));
+        var expected = TestCompare.Normalize("Expect: Title=Doc Merge=ANA Seq=1 Date=2026-02-07 Compare=1 Formula=5\n\n");
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void Walker_EvalMode_AskAndSkipIfSuppressOutput()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Answer: </w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> ASK Name "Name?" \\d "Unknown" </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> REF Name </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:t xml:space="preserve"> Skip=</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> SKIPIF 1 = 1 </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>should-not-appear</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var eval = new DxpFieldEval(new DxpFieldEvalDelegates {
+            AskAsync = (prompt, _) => Task.FromResult<DxpFieldValue?>(prompt == "Name?" ? new DxpFieldValue("Ana") : null)
+        }, logger: Logger);
+
+        var actual = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml, eval));
+        var expected = TestCompare.Normalize("Answer: Ana Skip=\n\n");
         Assert.Equal(expected, actual);
     }
 
@@ -376,6 +567,126 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         var actual = ExportPlainTextEvaluatedFromBodyXml(bodyXml);
         var expected = TestCompare.Normalize("Expect 12: 12\n\n");
         Assert.Equal(expected, TestCompare.Normalize(actual));
+    }
+
+    [Fact]
+    public void Walker_EvalMode_RefWithoutSwitch_ReplaysStructuredBookmarkRuns()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Expect: </w:t></w:r>
+    <w:bookmarkStart w:id="0" w:name="BM3"/>
+    <w:r><w:rPr><w:b/></w:rPr><w:t>one</w:t></w:r>
+    <w:r><w:rPr><w:u w:val="single"/></w:rPr><w:t>two</w:t></w:r>
+    <w:r><w:t>three</w:t></w:r>
+    <w:bookmarkEnd w:id="0"/>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> REF BM3 </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var actual = TestCompare.Normalize(ExportRunMarkupEvaluatedFromBodyXml(bodyXml));
+        var expected = TestCompare.Normalize("Expect: <b>one</b><u>two</u>three<b>one</b><u>two</u>three\n\n");
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void Walker_EvalMode_RefWithFormatSwitch_FlattensBookmarkContent()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Expect: </w:t></w:r>
+    <w:bookmarkStart w:id="0" w:name="BM3"/>
+    <w:r><w:rPr><w:b/></w:rPr><w:t>one</w:t></w:r>
+    <w:r><w:rPr><w:u w:val="single"/></w:rPr><w:t>two</w:t></w:r>
+    <w:r><w:t>three</w:t></w:r>
+    <w:bookmarkEnd w:id="0"/>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> REF BM3 \\* MERGEFORMAT </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var actual = TestCompare.Normalize(ExportRunMarkupEvaluatedFromBodyXml(bodyXml));
+        var expected = TestCompare.Normalize("Expect: <b>one</b><u>two</u>threeonetwothree\n\n");
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void Walker_EvalMode_RefSwitches_EmitExpectedTextAndSideEffects()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Refs: </w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> REF Section \\n </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:t xml:space="preserve">, </w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> REF Section \\r </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:t xml:space="preserve">, </w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> REF Section \\w </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:t xml:space="preserve">, </w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> REF Section \\t </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:t xml:space="preserve">, </w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> REF Section \\d "-" </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:t xml:space="preserve">, </w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> REF Section \\n \\p </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:t xml:space="preserve">, </w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> REF Note1 \\f </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:t xml:space="preserve">, </w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> REF Link \\h </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.RefResolver = new MockRefResolver();
+
+        var actual = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml, eval));
+        var expected = TestCompare.Normalize("Refs: 1.01, 1.01, Section 1.01, 1.01, Section 1-01, 1.01 below, [1], LinkText\n\n");
+        Assert.Equal(expected, actual);
+        Assert.Single(eval.Context.RefFootnotes);
+        Assert.Single(eval.Context.RefHyperlinks);
     }
 
     [Fact]
@@ -646,7 +957,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
                         Bookmark: request.Bookmark,
                         Nodes: null,
                         DocumentText: "Section 1.01",
-                        DocumentOrder: null,
+                        DocumentOrder: 2,
                         ParagraphNumber: new DxpRefParagraphNumber(request.Bookmark, "Section 1.01", "1.01", "101"),
                         Footnote: null,
                         Endnote: null,
@@ -969,7 +1280,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
             .Add("A1", 2)
             .Add("B1", 3)
             .Add("A1:B1", 2, 3)
-            .AddDirection(DocxportNet.Fields.Resolution.DxpTableRangeDirection.Left, 5, 7);
+            .AddDirection(DxpTableRangeDirection.Left, 5, 7);
 
         var cell = await eval.EvalAsync(new DxpFieldInstruction("= A1 + B1"));
         var range = await eval.EvalAsync(new DxpFieldInstruction("= SUM(A1:B1)"));
@@ -1743,7 +2054,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
 			Assert.Contains("Erreur ! Aucune variable de document fournie.", html, StringComparison.Ordinal);
 	}
 
-	[Fact(Skip = "Generic field fallback now emits unsupported errors; formula fields (e.g., = SUM(ABOVE)) need a dedicated frame.")]
+	[Fact]
     public void Walker_TableDirectionalRanges_ResolveThroughMiddleware()
     {
         using var stream = new MemoryStream();
@@ -1759,10 +2070,10 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         var eval = new DxpFieldEval(logger: Logger);
         eval.Context.Culture = new CultureInfo("en-US");
         var resolver = new CapturingTableResolver()
-            .AddDirection(DocxportNet.Fields.Resolution.DxpTableRangeDirection.Below, 12)
-            .AddDirection(DocxportNet.Fields.Resolution.DxpTableRangeDirection.Above, 1)
-            .AddDirection(DocxportNet.Fields.Resolution.DxpTableRangeDirection.Left, 6)
-            .AddDirection(DocxportNet.Fields.Resolution.DxpTableRangeDirection.Right, 16);
+            .AddDirection(DxpTableRangeDirection.Below, 12)
+            .AddDirection(DxpTableRangeDirection.Above, 1)
+            .AddDirection(DxpTableRangeDirection.Left, 6)
+            .AddDirection(DxpTableRangeDirection.Right, 16);
         eval.Context.TableResolver = resolver;
         var visitor = DxpVisitorMiddleware.Chain(
             new DxpVisitor(Logger),
@@ -1772,10 +2083,10 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         using (var readDoc = WordprocessingDocument.Open(stream, false))
             new DxpWalker(Logger).Accept(readDoc, visitor);
 
-        Assert.Contains(DocxportNet.Fields.Resolution.DxpTableRangeDirection.Below, resolver.DirectionCalls);
-        Assert.Contains(DocxportNet.Fields.Resolution.DxpTableRangeDirection.Above, resolver.DirectionCalls);
-        Assert.Contains(DocxportNet.Fields.Resolution.DxpTableRangeDirection.Left, resolver.DirectionCalls);
-        Assert.Contains(DocxportNet.Fields.Resolution.DxpTableRangeDirection.Right, resolver.DirectionCalls);
+        Assert.Contains(DxpTableRangeDirection.Below, resolver.DirectionCalls);
+        Assert.Contains(DxpTableRangeDirection.Above, resolver.DirectionCalls);
+        Assert.Contains(DxpTableRangeDirection.Left, resolver.DirectionCalls);
+        Assert.Contains(DxpTableRangeDirection.Right, resolver.DirectionCalls);
     }
 
     [Fact]
@@ -1832,7 +2143,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
                 .FirstOrDefault();
         }
 
-        Assert.Equal(5, resolver.Calls.Count);
+        Assert.Equal(4, resolver.Calls.Count);
         Assert.Equal("1", FindResult(paragraphNumber: true)?.Text);
         Assert.Equal("1 above", FindResult(paragraphNumber: true, aboveBelow: true)?.Text);
         Assert.Equal("Footnote text", FindResult(footnote: true)?.Text);
@@ -1958,7 +2269,11 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         return writer.ToString();
     }
 
-    private string ExportPlainTextEvaluatedFromBodyXml(string bodyXml, DxpFieldEval? fieldEval = null)
+    private string ExportPlainTextEvaluatedFromBodyXml(
+        string bodyXml,
+        DxpFieldEval? fieldEval = null,
+        bool includeCustomProperties = false,
+        Action<WordprocessingDocument>? configureDocument = null)
     {
         using var stream = new MemoryStream();
         using (var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document, true))
@@ -1971,6 +2286,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
             body.InnerXml = string.Concat(xml.Root!.Nodes());
             main.Document = new Document(body);
             main.Document.Save();
+            configureDocument?.Invoke(doc);
         }
 
         stream.Position = 0;
@@ -1984,7 +2300,13 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
 
         var pipeline = DxpVisitorMiddleware.Chain(
             visitor,
-            next => new DxpFieldEvalMiddleware(next, provider.FieldEval, DxpEvalFieldMode.Evaluate, logger: Logger),
+            next => new DxpFieldEvalMiddleware(
+                next,
+                provider.FieldEval,
+                DxpEvalFieldMode.Evaluate,
+                includeDocumentProperties: true,
+                includeCustomProperties: includeCustomProperties,
+                logger: Logger),
             next => new DxpContextMiddleware(next, Logger));
 
         using (var readDoc = WordprocessingDocument.Open(stream, false))

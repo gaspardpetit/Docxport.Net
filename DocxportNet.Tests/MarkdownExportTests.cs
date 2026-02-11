@@ -1,4 +1,6 @@
+using DocxportNet.Fields;
 using DocxportNet.Fields.Eval;
+using DocxportNet.Fields.Resolution;
 using DocxportNet.Middleware;
 using DocxportNet.Tests.Utils;
 using DocxportNet.Visitors.Markdown;
@@ -187,6 +189,8 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
     private string ToMarkdown(string docxPath, DxpMarkdownVisitorConfig config, DxpFieldEvalExportMode evalMode)
     {
         var visitor = new DxpMarkdownVisitor(config, Logger);
+        if (evalMode == DxpFieldEvalExportMode.Evaluate)
+            ConfigureEvalContext(visitor.FieldEval);
         var options = new DxpExportOptions { FieldEvalMode = evalMode };
         return DxpExport.ExportToString(docxPath, visitor, options, Logger);
     }
@@ -250,5 +254,30 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
             EmitTimeline = source.EmitTimeline,
             TrackedChangeMode = mode
         };
+    }
+
+    private static void ConfigureEvalContext(DxpFieldEval eval)
+    {
+        eval.Context.SetDocVariable("Var1", "two");
+        eval.Context.SetMergeFieldAlias("GivenName", "FirstName");
+        eval.Context.ValueResolver = new DxpChainedFieldValueResolver(
+            new SampleFieldValueResolver(),
+            new DxpContextFieldValueResolver());
+    }
+
+    private sealed class SampleFieldValueResolver : IDxpFieldValueResolver
+    {
+        public Task<DxpFieldValue?> ResolveAsync(string name, DxpFieldValueKindHint kind, DxpFieldEvalContext context)
+        {
+            _ = context;
+            if (kind == DxpFieldValueKindHint.Any || kind == DxpFieldValueKindHint.MergeField)
+            {
+                if (string.Equals(name, "FirstName", StringComparison.OrdinalIgnoreCase))
+                    return Task.FromResult<DxpFieldValue?>(new DxpFieldValue("Ana"));
+                if (string.Equals(name, "EmptyField", StringComparison.OrdinalIgnoreCase))
+                    return Task.FromResult<DxpFieldValue?>(new DxpFieldValue(string.Empty));
+            }
+            return Task.FromResult<DxpFieldValue?>(null);
+        }
     }
 }
