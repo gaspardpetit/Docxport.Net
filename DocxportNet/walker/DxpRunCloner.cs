@@ -1,5 +1,4 @@
 using DocumentFormat.OpenXml.Wordprocessing;
-using System.Linq;
 
 namespace DocxportNet.Walker;
 

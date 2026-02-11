@@ -1,7 +1,6 @@
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.Fields.Formatting;
-using System.Linq;
 
 namespace DocxportNet.Fields.Eval;
 
@@ -15,14 +14,15 @@ internal static class DxpFieldEvalRules
         return hasMergeFormat;
     }
 
-    internal static string GetEvaluationErrorText(DxpFieldParser parser, string instruction)
+    internal static string GetEvaluationErrorText(string instruction)
     {
-        var parse = parser.Parse(instruction);
-        var fieldType = parse.Ast.FieldType;
+        DxpFieldParser parser = new();
+		DxpFieldParseResult parse = parser.Parse(instruction);
+        string? fieldType = parse.Ast.FieldType;
         if (string.IsNullOrWhiteSpace(fieldType))
             return "Error! Invalid field code.";
 
-        var normalizedFieldType = fieldType!.Trim().ToUpperInvariant();
+        string normalizedFieldType = fieldType!.Trim().ToUpperInvariant();
         switch (normalizedFieldType)
         {
             case "REF":

@@ -6,7 +6,6 @@ using DocxportNet.Core;
 using DocxportNet.Walker;
 using DocxportNet.Walker.Context;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Globalization;
 
 namespace DocxportNet.Middleware;

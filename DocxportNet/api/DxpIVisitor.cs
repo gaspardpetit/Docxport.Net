@@ -2,6 +2,7 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Office2010.Word;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using DocxportNet.Walker;
 using System.Xml.Linq;
 
 namespace DocxportNet.API;
@@ -140,7 +141,9 @@ public record DxpDocumentProperties(
 
 public interface DxpIDocumentContext
 {
-    DxpDocumentIndex DocumentIndex { get; }
+    DxpWalker Walker { get; }
+
+	DxpDocumentIndex DocumentIndex { get; }
     DxpDocumentProperties DocumentProperties { get; }
     DxpIStyleResolver Styles { get; }
     HashSet<string> ReferencedBookmarkAnchors { get; }
