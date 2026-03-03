@@ -692,11 +692,18 @@ body.dxp-root {
             }
             else if (align == "center")
             {
-                Append("margin-left", "auto");
-                Append("margin-right", "auto");
                 var shiftIn = (offsetPresent ? offsetIn : 0.0) + (fromPage ? pageCenterShiftIn : 0.0);
+                Append("left", "50%");
                 if (Math.Abs(shiftIn) > 0.0005)
-                    transform = AppendTransform(transform, "translateX(" + FormatInches(shiftIn) + ")");
+                {
+                    var delta = FormatInches(Math.Abs(shiftIn));
+                    var op = shiftIn >= 0 ? "+" : "-";
+                    transform = AppendTransform(transform, $"translateX(calc(-50% {op} {delta}))");
+                }
+                else
+                {
+                    transform = AppendTransform(transform, "translateX(-50%)");
+                }
             }
             else if (align == "left")
             {
@@ -715,9 +722,17 @@ body.dxp-root {
         if (posV != null)
         {
             var relativeFrom = TryGetAttribute(posV, "relativeFrom")?.Trim();
-            var ignoreVertical = IsPageReference(relativeFrom);
-            if (ignoreVertical)
-                goto AfterVertical;
+            bool fromPage = IsPageReference(relativeFrom);
+            var pageVerticalCompIn = 0.0;
+            if (fromPage)
+            {
+                if (inHeader)
+                    pageVerticalCompIn = -(d.CurrentSection.Layout?.MarginHeader?.Inches ?? 0.0);
+                else if (inFooter)
+                    pageVerticalCompIn = d.CurrentSection.Layout?.MarginFooter?.Inches ?? 0.0;
+                else
+                    goto AfterVertical;
+            }
 
             var align = posV.ChildElements.FirstOrDefault(e => e.LocalName == "align")?.InnerText?.Trim().ToLowerInvariant();
             var offset = posV.ChildElements.FirstOrDefault(e => e.LocalName == "posOffset")?.InnerText?.Trim();
@@ -737,26 +752,27 @@ body.dxp-root {
 
             if (align == "bottom")
             {
-                var shiftIn = -(offsetPresent ? offsetIn : 0.0);
+                var shiftIn = -(offsetPresent ? offsetIn : 0.0) + pageVerticalCompIn;
                 if (Math.Abs(shiftIn) > 0.0005)
                     transform = AppendTransform(transform, "translateY(" + FormatInches(shiftIn) + ")");
             }
             else if (align == "center")
             {
-                var shiftIn = offsetPresent ? offsetIn : 0.0;
+                var shiftIn = (offsetPresent ? offsetIn : 0.0) + pageVerticalCompIn;
                 if (Math.Abs(shiftIn) > 0.0005)
                     transform = AppendTransform(transform, "translateY(" + FormatInches(shiftIn) + ")");
             }
             else if (align == "top")
             {
-                var shiftIn = offsetPresent ? offsetIn : 0.0;
+                var shiftIn = (offsetPresent ? offsetIn : 0.0) + pageVerticalCompIn;
                 if (Math.Abs(shiftIn) > 0.0005)
                     transform = AppendTransform(transform, "translateY(" + FormatInches(shiftIn) + ")");
             }
             else if (offsetPresent)
             {
-                if (Math.Abs(offsetIn) > 0.0005)
-                    transform = AppendTransform(transform, "translateY(" + FormatInches(offsetIn) + ")");
+                var shiftIn = offsetIn + pageVerticalCompIn;
+                if (Math.Abs(shiftIn) > 0.0005)
+                    transform = AppendTransform(transform, "translateY(" + FormatInches(shiftIn) + ")");
             }
 
         AfterVertical:
