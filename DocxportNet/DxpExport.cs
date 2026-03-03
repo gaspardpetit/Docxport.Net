@@ -6,6 +6,7 @@ using DocxportNet.Fields.Resolution;
 using DocxportNet.Middleware;
 using DocxportNet.Walker;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace DocxportNet;
 
@@ -387,14 +388,46 @@ public static class DxpExport
 
     private static void RunWalker(string docxPath, DxpIVisitor visitor, DxpExportOptions? options, ILogger? logger)
     {
-        var walker = new DxpWalker(logger);
-        walker.Accept(docxPath, WrapWithFieldEvalMiddleware(visitor, options, logger));
+        logger?.LogDebug("Export step start: {Step}. Input: {InputPath}", "Run walker (path)", docxPath);
+        var runTimer = Stopwatch.StartNew();
+        try
+        {
+            logger?.LogDebug("Export step start: {Step}", "Build middleware pipeline");
+            var middlewareTimer = Stopwatch.StartNew();
+            var wrapped = WrapWithFieldEvalMiddleware(visitor, options, logger);
+            logger?.LogDebug("Export step finish: {Step} ({ElapsedMs} ms)", "Build middleware pipeline", middlewareTimer.ElapsedMilliseconds);
+
+            var walker = new DxpWalker(logger);
+            walker.Accept(docxPath, wrapped);
+            logger?.LogDebug("Export step finish: {Step} ({ElapsedMs} ms)", "Run walker (path)", runTimer.ElapsedMilliseconds);
+        }
+        catch (Exception ex)
+        {
+            logger?.LogDebug(ex, "Export step failed: {Step} ({ElapsedMs} ms). Input: {InputPath}", "Run walker (path)", runTimer.ElapsedMilliseconds, docxPath);
+            throw;
+        }
     }
 
     private static void RunWalker(WordprocessingDocument document, DxpIVisitor visitor, DxpExportOptions? options, ILogger? logger)
     {
-        var walker = new DxpWalker(logger);
-        walker.Accept(document, WrapWithFieldEvalMiddleware(visitor, options, logger));
+        logger?.LogDebug("Export step start: {Step}", "Run walker (document)");
+        var runTimer = Stopwatch.StartNew();
+        try
+        {
+            logger?.LogDebug("Export step start: {Step}", "Build middleware pipeline");
+            var middlewareTimer = Stopwatch.StartNew();
+            var wrapped = WrapWithFieldEvalMiddleware(visitor, options, logger);
+            logger?.LogDebug("Export step finish: {Step} ({ElapsedMs} ms)", "Build middleware pipeline", middlewareTimer.ElapsedMilliseconds);
+
+            var walker = new DxpWalker(logger);
+            walker.Accept(document, wrapped);
+            logger?.LogDebug("Export step finish: {Step} ({ElapsedMs} ms)", "Run walker (document)", runTimer.ElapsedMilliseconds);
+        }
+        catch (Exception ex)
+        {
+            logger?.LogDebug(ex, "Export step failed: {Step} ({ElapsedMs} ms)", "Run walker (document)", runTimer.ElapsedMilliseconds);
+            throw;
+        }
     }
 
     private static IReadOnlyList<string> RunMergeLoop(

@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
 using DocxportNet.Word;
+using Microsoft.Extensions.Logging;
 using System.Globalization;
 using System.Xml.Linq;
 
@@ -181,7 +182,9 @@ public struct DxpEffectiveRunStyleBuilder
 public sealed class DxpStyleResolver : DxpIStyleResolver
 {
     private readonly Styles? _styles;
-    private readonly Dictionary<string, Style> _byId;
+    private readonly ILogger? _logger;
+    private readonly Dictionary<(string Id, StyleValues? Type), Style> _byIdType;
+    private readonly Dictionary<string, List<Style>> _byIdAllTypes;
 
     private readonly RunPropertiesBaseStyle? _docDefaultRunProps;
     private readonly ParagraphPropertiesBaseStyle? _docDefaultParaProps;
@@ -199,7 +202,7 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
 
         // 2) Paragraph style chain (base -> ... -> direct style)
         var pStyleId = p.ParagraphProperties?.ParagraphStyleId?.Val?.Value;
-        foreach (var style in EnumerateStyleChainRaw(pStyleId).Reverse())
+        foreach (var style in EnumerateStyleChainRaw(pStyleId, StyleValues.Paragraph).Reverse())
         {
             var ind = style.StyleParagraphProperties?.Indentation;
             ApplyIndentation(ind, ref acc);
@@ -270,20 +273,51 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
 
 
 
-    public DxpStyleResolver(WordprocessingDocument doc)
+    public DxpStyleResolver(WordprocessingDocument doc, ILogger? logger = null)
     {
+        _logger = logger;
         _styles = doc.MainDocumentPart?.StyleDefinitionsPart?.Styles;
-        _byId = _styles?
-            .Elements<Style>()
-            .Where(s => s.StyleId?.Value != null)
-            .ToDictionary(s => s.StyleId!.Value!, s => s)
-            ?? new Dictionary<string, Style>();
+        _byIdType = new Dictionary<(string Id, StyleValues? Type), Style>(StyleLookupKeyComparer.Instance);
+        _byIdAllTypes = new Dictionary<string, List<Style>>(StringComparer.Ordinal);
+
+        int sameTypeOverrideCount = 0;
+        foreach (var s in _styles?.Elements<Style>() ?? Enumerable.Empty<Style>())
+        {
+            var id = s.StyleId?.Value;
+            if (string.IsNullOrEmpty(id))
+                continue;
+
+            var type = s.Type?.Value;
+            var key = (id!, type);
+            if (_byIdType.ContainsKey(key))
+                sameTypeOverrideCount++;
+
+            _byIdType[key] = s;
+
+            if (!_byIdAllTypes.TryGetValue(id!, out var byType))
+            {
+                byType = new List<Style>();
+                _byIdAllTypes[id!] = byType;
+            }
+
+            int existingTypeIndex = byType.FindIndex(x => x.Type?.Value == type);
+            if (existingTypeIndex >= 0)
+                byType[existingTypeIndex] = s; // last wins for same (id,type)
+            else
+                byType.Add(s);
+        }
 
         var docDefaults = _styles?.DocDefaults;
         _docDefaultRunProps = docDefaults?.RunPropertiesDefault?.RunPropertiesBaseStyle;
         _docDefaultParaProps = docDefaults?.ParagraphPropertiesDefault?.ParagraphPropertiesBaseStyle;
 
         (_themeMajorLatinFont, _themeMinorLatinFont) = TryGetThemeLatinFonts(doc);
+
+        int crossTypeSharedIds = _byIdAllTypes.Count(kvp => kvp.Value.Count > 1);
+        if (sameTypeOverrideCount > 0)
+            _logger?.LogDebug("Style resolver: applied {Count} same-type style overrides (last wins).", sameTypeOverrideCount);
+        if (crossTypeSharedIds > 0)
+            _logger?.LogDebug("Style resolver: found {Count} styleId values shared across multiple style types.", crossTypeSharedIds);
     }
 
     private static (string? majorLatin, string? minorLatin) TryGetThemeLatinFonts(WordprocessingDocument doc)
@@ -328,15 +362,84 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
         return null;
     }
 
+    private bool TryGetStyle(string styleId, StyleValues preferredType, out Style style)
+    {
+        if (_byIdType.TryGetValue((styleId, preferredType), out var typedStyle))
+        {
+            style = typedStyle;
+            return true;
+        }
+
+        if (!_byIdAllTypes.TryGetValue(styleId, out var candidates) || candidates.Count == 0)
+        {
+            style = null!;
+            return false;
+        }
+
+        if (candidates.Count == 1)
+        {
+            style = candidates[0];
+            _logger?.LogDebug(
+                "Style resolver fallback: styleId '{StyleId}' requested as {PreferredType}, using sole candidate type {ResolvedType}.",
+                styleId,
+                preferredType,
+                style.Type?.Value);
+            return true;
+        }
+
+        // Prefer the context type when available among multiple candidates.
+        var contextCandidate = candidates.FirstOrDefault(s => s.Type?.Value == preferredType);
+        if (contextCandidate != null)
+        {
+            style = contextCandidate;
+            _logger?.LogDebug(
+                "Style resolver fallback: styleId '{StyleId}' requested as {PreferredType}, selected context-matching candidate.",
+                styleId,
+                preferredType);
+            return true;
+        }
+
+        style = candidates[0];
+        _logger?.LogDebug(
+            "Style resolver fallback: styleId '{StyleId}' requested as {PreferredType}, no matching type found among {CandidateCount} candidates; using first candidate type {ResolvedType}.",
+            styleId,
+            preferredType,
+            candidates.Count,
+            style.Type?.Value);
+        return true;
+    }
+
+    private sealed class StyleLookupKeyComparer : IEqualityComparer<(string Id, StyleValues? Type)>
+    {
+        public static readonly StyleLookupKeyComparer Instance = new();
+
+        public bool Equals((string Id, StyleValues? Type) x, (string Id, StyleValues? Type) y)
+            => string.Equals(x.Id, y.Id, StringComparison.Ordinal) && x.Type == y.Type;
+
+        public int GetHashCode((string Id, StyleValues? Type) obj)
+        {
+            unchecked
+            {
+                int hash = 17;
+                hash = (hash * 31) + StringComparer.Ordinal.GetHashCode(obj.Id);
+                hash = (hash * 31) + (obj.Type.HasValue ? obj.Type.Value.GetHashCode() : 0);
+                return hash;
+            }
+        }
+    }
+
     public DxpStyleInfo? GetStyleInfo(string? styleId)
+        => GetStyleInfo(styleId, StyleValues.Paragraph);
+
+    private DxpStyleInfo? GetStyleInfo(string? styleId, StyleValues preferredType)
     {
         if (string.IsNullOrEmpty(styleId))
             return null;
-        if (!_byId.TryGetValue(styleId!, out var s))
+        if (!TryGetStyle(styleId!, preferredType, out var s))
             return null;
 
         return new DxpStyleInfo(
-            StyleId: styleId!,
+            StyleId: s.StyleId?.Value ?? styleId!,
             Name: s.StyleName?.Val?.Value,
             Type: s.Type?.Value,
             BasedOnStyleId: s.BasedOn?.Val?.Value
@@ -344,16 +447,28 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
     }
 
     public IReadOnlyList<DxpStyleInfo> GetStyleChain(string? styleId)
+        => GetStyleChain(styleId, StyleValues.Paragraph);
+
+    private IReadOnlyList<DxpStyleInfo> GetStyleChain(string? styleId, StyleValues preferredType)
     {
         var result = new List<DxpStyleInfo>();
-        var seen = new HashSet<string>(StringComparer.Ordinal);
+        var seen = new HashSet<(string Id, StyleValues? Type)>(StyleLookupKeyComparer.Instance);
 
         var current = styleId;
-        while (!string.IsNullOrEmpty(current) && seen.Add(current!))
+        while (!string.IsNullOrEmpty(current))
         {
-            var info = GetStyleInfo(current);
-            if (info == null)
+            if (!TryGetStyle(current!, preferredType, out var style))
                 break;
+
+            var resolvedKey = (current!, style.Type?.Value);
+            if (!seen.Add(resolvedKey))
+                break;
+
+            var info = new DxpStyleInfo(
+                StyleId: style.StyleId?.Value ?? current!,
+                Name: style.StyleName?.Val?.Value,
+                Type: style.Type?.Value,
+                BasedOnStyleId: style.BasedOn?.Val?.Value);
 
             result.Add(info);
             current = info.BasedOnStyleId;
@@ -365,7 +480,7 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
     public IReadOnlyList<DxpStyleInfo> GetParagraphStyleChain(Paragraph p)
     {
         var pStyleId = p.ParagraphProperties?.ParagraphStyleId?.Val?.Value;
-        return GetStyleChain(pStyleId);
+        return GetStyleChain(pStyleId, StyleValues.Paragraph);
     }
 
 
@@ -402,12 +517,12 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
             return lang;
 
         // Paragraph style chain (paragraph and character styles)
-        string? fromStyles = ResolveLangFromStyles(p.ParagraphProperties?.ParagraphStyleId?.Val?.Value);
+        string? fromStyles = ResolveLangFromStyles(p.ParagraphProperties?.ParagraphStyleId?.Val?.Value, StyleValues.Paragraph);
         if (!string.IsNullOrEmpty(fromStyles))
             return fromStyles;
 
         var runStyleId = r.RunProperties?.RunStyle?.Val?.Value;
-        fromStyles = ResolveLangFromStyles(runStyleId);
+        fromStyles = ResolveLangFromStyles(runStyleId, StyleValues.Character);
         if (!string.IsNullOrEmpty(fromStyles))
             return fromStyles;
 
@@ -429,7 +544,7 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
             return lang;
 
         // Paragraph style chain (paragraph and character styles)
-        string? fromStyles = ResolveLangFromStyles(p.ParagraphProperties?.ParagraphStyleId?.Val?.Value);
+        string? fromStyles = ResolveLangFromStyles(p.ParagraphProperties?.ParagraphStyleId?.Val?.Value, StyleValues.Paragraph);
         if (!string.IsNullOrEmpty(fromStyles))
             return fromStyles;
 
@@ -437,9 +552,9 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
         return _docDefaultRunProps?.Languages?.Val?.Value;
     }
 
-    private string? ResolveLangFromStyles(string? styleId)
+    private string? ResolveLangFromStyles(string? styleId, StyleValues preferredType)
     {
-        foreach (var style in EnumerateStyleChain(styleId))
+        foreach (var style in EnumerateStyleChain(styleId, preferredType))
         {
             var lang = style.StyleRunProperties?.Languages?.Val?.Value;
             if (lang == null)
@@ -456,7 +571,7 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
 
     private void ApplyParagraphStyleChainRunProps(string? styleId, ref DxpEffectiveRunStyleBuilder acc)
     {
-        foreach (var style in EnumerateStyleChain(styleId).Reverse())
+        foreach (var style in EnumerateStyleChain(styleId, StyleValues.Paragraph).Reverse())
         {
             DxpEffectiveRunStyleBuilder.ApplyStyleRunProperties(style.StyleRunProperties, ResolveThemeFont, ref acc);
             var rp = style.StyleParagraphProperties?.GetFirstChild<RunProperties>();
@@ -466,22 +581,26 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
 
     private void ApplyCharacterStyleChainRunProps(string? styleId, ref DxpEffectiveRunStyleBuilder acc)
     {
-        foreach (var style in EnumerateStyleChain(styleId).Reverse())
+        foreach (var style in EnumerateStyleChain(styleId, StyleValues.Character).Reverse())
             DxpEffectiveRunStyleBuilder.ApplyStyleRunProperties(style.StyleRunProperties, ResolveThemeFont, ref acc);
     }
 
-    private IEnumerable<Style> EnumerateStyleChain(string? styleId)
+    private IEnumerable<Style> EnumerateStyleChain(string? styleId, StyleValues preferredType)
     {
         // Walk basedOn chain, starting from styleId, stopping on cycles or missing.
         if (string.IsNullOrEmpty(styleId))
             yield break;
 
-        var seen = new HashSet<string>(StringComparer.Ordinal);
+        var seen = new HashSet<(string Id, StyleValues? Type)>(StyleLookupKeyComparer.Instance);
 
         var current = styleId;
-        while (!string.IsNullOrEmpty(current) && seen.Add(current!))
+        while (!string.IsNullOrEmpty(current))
         {
-            if (!_byId.TryGetValue(current!, out var style))
+            if (!TryGetStyle(current!, preferredType, out var style))
+                yield break;
+
+            var resolvedKey = (current!, style.Type?.Value);
+            if (!seen.Add(resolvedKey))
                 yield break;
 
             yield return style;
@@ -500,7 +619,7 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
 
         // From style chain
         var pStyleId = p.ParagraphProperties?.ParagraphStyleId?.Val?.Value;
-        foreach (var s in EnumerateStyleChainRaw(pStyleId)) // Style objects
+        foreach (var s in EnumerateStyleChainRaw(pStyleId, StyleValues.Paragraph)) // Style objects
         {
             var lvl = s.StyleParagraphProperties?.OutlineLevel?.Val?.Value;
             if (lvl != null)
@@ -518,7 +637,7 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
 
         // From style chain
         var pStyleId = p.ParagraphProperties?.ParagraphStyleId?.Val?.Value;
-        foreach (var s in EnumerateStyleChainRaw(pStyleId))
+        foreach (var s in EnumerateStyleChainRaw(pStyleId, StyleValues.Paragraph))
         {
             var jc = s.StyleParagraphProperties?.Justification?.Val?.Value;
             if (jc != null)
@@ -559,7 +678,7 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
             return direct;
 
         var pStyleId = p.ParagraphProperties?.ParagraphStyleId?.Val?.Value;
-        foreach (var s in EnumerateStyleChainRaw(pStyleId))
+        foreach (var s in EnumerateStyleChainRaw(pStyleId, StyleValues.Paragraph))
         {
             var shd = s.StyleParagraphProperties?.Shading;
             if (HasMeaningfulShadingFill(shd))
@@ -577,7 +696,7 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
             return direct;
 
         var pStyleId = p.ParagraphProperties?.ParagraphStyleId?.Val?.Value;
-        foreach (var s in EnumerateStyleChainRaw(pStyleId))
+        foreach (var s in EnumerateStyleChainRaw(pStyleId, StyleValues.Paragraph))
         {
             var tabs = s.StyleParagraphProperties?.Tabs;
             if (tabs != null)
@@ -594,7 +713,7 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
             return direct;
 
         var pStyleId = p.ParagraphProperties?.ParagraphStyleId?.Val?.Value;
-        foreach (var s in EnumerateStyleChainRaw(pStyleId))
+        foreach (var s in EnumerateStyleChainRaw(pStyleId, StyleValues.Paragraph))
         {
             var spacing = s.StyleParagraphProperties?.SpacingBetweenLines;
             if (spacing != null)
@@ -613,7 +732,7 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
             return direct.Val == null || direct.Val.Value;
 
         var pStyleId = p.ParagraphProperties?.ParagraphStyleId?.Val?.Value;
-        foreach (var s in EnumerateStyleChainRaw(pStyleId))
+        foreach (var s in EnumerateStyleChainRaw(pStyleId, StyleValues.Paragraph))
         {
             var cs = s.StyleParagraphProperties?.ContextualSpacing;
             if (cs != null)
@@ -643,7 +762,7 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
         if (directSide != null)
             return (TBorder)directSide.CloneNode(true);
 
-        foreach (var s in EnumerateStyleChainRaw(pStyleId))
+        foreach (var s in EnumerateStyleChainRaw(pStyleId, StyleValues.Paragraph))
         {
             var b = s.StyleParagraphProperties?.ParagraphBorders;
             if (b == null)
@@ -660,16 +779,20 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
     }
 
     // helper: raw style chain (same logic as EnumerateStyleChain)
-    private IEnumerable<Style> EnumerateStyleChainRaw(string? styleId)
+    private IEnumerable<Style> EnumerateStyleChainRaw(string? styleId, StyleValues preferredType)
     {
         if (string.IsNullOrEmpty(styleId))
             yield break;
-        var seen = new HashSet<string>(StringComparer.Ordinal);
+        var seen = new HashSet<(string Id, StyleValues? Type)>(StyleLookupKeyComparer.Instance);
         var current = styleId;
 
-        while (!string.IsNullOrEmpty(current) && seen.Add(current!))
+        while (!string.IsNullOrEmpty(current))
         {
-            if (!_byId.TryGetValue(current!, out var style))
+            if (!TryGetStyle(current!, preferredType, out var style))
+                yield break;
+
+            var resolvedKey = (current!, style.Type?.Value);
+            if (!seen.Add(resolvedKey))
                 yield break;
             yield return style;
             current = style.BasedOn?.Val?.Value;
@@ -740,7 +863,7 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
 
     public int? GetHeadingLevelFromStyleChain(string? pStyleId)
     {
-        foreach (var s in GetStyleChain(pStyleId))
+        foreach (var s in GetStyleChain(pStyleId, StyleValues.Paragraph))
         {
             var lvl = TryGetHeadingLevelFromStyleNameOrId(s);
             if (lvl is >= 1 and <= 9)
@@ -782,7 +905,7 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
         int? numId = null;
         int? ilvl = null;
 
-        foreach (var style in EnumerateStyleChainRaw(pStyleId)) // direct -> parent -> ...
+        foreach (var style in EnumerateStyleChainRaw(pStyleId, StyleValues.Paragraph)) // direct -> parent -> ...
         {
             var np = style.StyleParagraphProperties?.NumberingProperties;
             if (np == null)

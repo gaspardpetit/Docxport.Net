@@ -169,7 +169,7 @@ public class DxpDocumentContext : DxpIDocumentContext, IDxpMutableDocumentContex
         }
         AcceptLists.Init(doc);
         RejectLists.Init(doc);
-        Styles = new DxpStyleResolver(doc);
+        Styles = new DxpStyleResolver(doc, walker.Logger);
         DefaultRunStyle = Styles.GetDefaultRunStyle();
         DocumentProperties = new(null, null, null);
         DocumentIndex = DxpDocumentIndexBuilder.Build(doc, (DxpStyleResolver)Styles);

@@ -6,6 +6,7 @@ using DocxportNet.API;
 using DocxportNet.Walker.Context;
 using DocxportNet.Walker.Parts;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 using System.Xml.Linq;
 
 namespace DocxportNet.Walker;
@@ -13,6 +14,7 @@ namespace DocxportNet.Walker;
 public class DxpWalker
 {
     private readonly ILogger? _logger;
+    internal ILogger? Logger => _logger;
     private int _simpleFieldDepth;
     private int _complexFieldDepth;
     private int _complexFieldInSimpleDepth;
@@ -24,16 +26,27 @@ public class DxpWalker
 
     public void Accept(string docxPath, DxpIVisitor v)
     {
-        // Open with a permissive share mode so we can read a DOCX while it is open in Word.
-        // (Word often keeps an open handle; OpenXml's path-based open can conflict on Windows.)
-        using var fileStream = new FileStream(
-            docxPath,
-            FileMode.Open,
-            FileAccess.Read,
-            FileShare.ReadWrite | FileShare.Delete);
+        _logger?.LogDebug("Walker step start: {Step}. Input: {InputPath}", "Open DOCX", docxPath);
+        var openTimer = Stopwatch.StartNew();
+        try
+        {
+            // Open with a permissive share mode so we can read a DOCX while it is open in Word.
+            // (Word often keeps an open handle; OpenXml's path-based open can conflict on Windows.)
+            using var fileStream = new FileStream(
+                docxPath,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.ReadWrite | FileShare.Delete);
 
-        using var doc = WordprocessingDocument.Open(fileStream, false);
-        Accept(doc, v);
+            using var doc = WordprocessingDocument.Open(fileStream, false);
+            _logger?.LogDebug("Walker step finish: {Step} ({ElapsedMs} ms). Input: {InputPath}", "Open DOCX", openTimer.ElapsedMilliseconds, docxPath);
+            Accept(doc, v);
+        }
+        catch (Exception ex)
+        {
+            _logger?.LogDebug(ex, "Walker step failed: {Step} ({ElapsedMs} ms). Input: {InputPath}", "Open DOCX", openTimer.ElapsedMilliseconds, docxPath);
+            throw;
+        }
     }
 
     public void Accept(WordprocessingDocument doc, DxpIVisitor v)
@@ -48,58 +61,81 @@ public class DxpWalker
         _complexFieldDepth = 0;
         _complexFieldInSimpleDepth = 0;
 
-        DxpDocumentContext documentContext = new DxpDocumentContext(this, doc);
-
-        documentContext.MainDocumentPart = doc.MainDocumentPart;
+        _logger?.LogDebug("Walker step start: {Step}", "Build document context");
+        var contextTimer = Stopwatch.StartNew();
+        DxpDocumentContext documentContext;
+        try
         {
-            var settings = doc.MainDocumentPart.DocumentSettingsPart?.Settings;
-            if (settings != null)
-                documentContext.DocumentSettings = settings;
+            documentContext = new DxpDocumentContext(this, doc);
+            _logger?.LogDebug("Walker step finish: {Step} ({ElapsedMs} ms)", "Build document context", contextTimer.ElapsedMilliseconds);
+        }
+        catch (Exception ex)
+        {
+            _logger?.LogDebug(ex, "Walker step failed: {Step} ({ElapsedMs} ms)", "Build document context", contextTimer.ElapsedMilliseconds);
+            throw;
+        }
 
-            var core = doc.PackageProperties;
-            documentContext.CoreProperties = core;
-
-            var customPart = doc.CustomFilePropertiesPart;
-            var props = customPart?.Properties;
-
-            var customList = props != null
-                ? props.Elements<CustomDocumentProperty>()
-                    .Select(p => new CustomFileProperty(
-                        p.Name?.Value ?? string.Empty,
-                        p.FirstChild?.LocalName,  // e.g., "vt:lpwstr", "vt:bool", "vt:filetime", etc.
-                        p.FirstChild?.InnerText   // the string form of the value
-                    ))
-                    .ToList()
-                : new List<CustomFileProperty>();
-
-            documentContext.CustomProperties = customList;
-            documentContext.ExtendedProperties = doc.ExtendedFilePropertiesPart?.Properties;
-            IReadOnlyList<DxpTimelineEvent> timeline = DxpTimeline.BuildTimeline(doc);
-
-            documentContext.DocumentProperties = new DxpDocumentProperties(core, customList, timeline);
-
-            using (v.VisitDocumentBegin(doc, documentContext))
+        _logger?.LogDebug("Walker step start: {Step}", "Visit document");
+        var visitTimer = Stopwatch.StartNew();
+        try
+        {
+            documentContext.MainDocumentPart = doc.MainDocumentPart;
             {
-                var body = doc.MainDocumentPart?.Document?.Body;
-                if (body == null)
+                var settings = doc.MainDocumentPart.DocumentSettingsPart?.Settings;
+                if (settings != null)
+                    documentContext.DocumentSettings = settings;
+
+                var core = doc.PackageProperties;
+                documentContext.CoreProperties = core;
+
+                var customPart = doc.CustomFilePropertiesPart;
+                var props = customPart?.Properties;
+
+                var customList = props != null
+                    ? props.Elements<CustomDocumentProperty>()
+                        .Select(p => new CustomFileProperty(
+                            p.Name?.Value ?? string.Empty,
+                            p.FirstChild?.LocalName,  // e.g., "vt:lpwstr", "vt:bool", "vt:filetime", etc.
+                            p.FirstChild?.InnerText   // the string form of the value
+                        ))
+                        .ToList()
+                    : new List<CustomFileProperty>();
+
+                documentContext.CustomProperties = customList;
+                documentContext.ExtendedProperties = doc.ExtendedFilePropertiesPart?.Properties;
+                IReadOnlyList<DxpTimelineEvent> timeline = DxpTimeline.BuildTimeline(doc);
+
+                documentContext.DocumentProperties = new DxpDocumentProperties(core, customList, timeline);
+
+                using (v.VisitDocumentBegin(doc, documentContext))
                 {
-                    _logger?.LogError("DOCX has no main document body; cannot continue.");
-                    throw new InvalidOperationException("DOCX has no main document body.");
+                    var body = doc.MainDocumentPart?.Document?.Body;
+                    if (body == null)
+                    {
+                        _logger?.LogError("DOCX has no main document body; cannot continue.");
+                        throw new InvalidOperationException("DOCX has no main document body.");
+                    }
+
+                    // Walk the main story then section-anchored headers/footers (see #2)
+                    WalkDocumentBody(body, documentContext, v);
+                    // Remove the global “walk all headers/footers” to avoid duplicates (see #2)
+
+                    // Footnotes/Endnotes
+                    foreach (var fn in documentContext.Footnotes.GetFootnotes())
+                        WalkFootnote(fn.Item1, fn.Item2, fn.Item3, documentContext, v);
+                    foreach (var en in documentContext.Endnotes.GetEndnotes())
+                        WalkEndnote(en.Item1, en.Item2, en.Item3, documentContext, v);
+
+                    WalkBibliography(doc, documentContext, v);
+
                 }
-
-                // Walk the main story then section-anchored headers/footers (see #2)
-                WalkDocumentBody(body, documentContext, v);
-                // Remove the global “walk all headers/footers” to avoid duplicates (see #2)
-
-                // Footnotes/Endnotes
-                foreach (var fn in documentContext.Footnotes.GetFootnotes())
-                    WalkFootnote(fn.Item1, fn.Item2, fn.Item3, documentContext, v);
-                foreach (var en in documentContext.Endnotes.GetEndnotes())
-                    WalkEndnote(en.Item1, en.Item2, en.Item3, documentContext, v);
-
-                WalkBibliography(doc, documentContext, v);
-
             }
+            _logger?.LogDebug("Walker step finish: {Step} ({ElapsedMs} ms)", "Visit document", visitTimer.ElapsedMilliseconds);
+        }
+        catch (Exception ex)
+        {
+            _logger?.LogDebug(ex, "Walker step failed: {Step} ({ElapsedMs} ms)", "Visit document", visitTimer.ElapsedMilliseconds);
+            throw;
         }
     }
 
