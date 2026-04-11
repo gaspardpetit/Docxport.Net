@@ -220,6 +220,9 @@ public sealed partial class DxpFieldEvalMiddleware : DxpLoggingMiddleware
 
     private void LogTextWithFont(string source, string text)
     {
+        if (_logger?.IsEnabled(LogLevel.Debug) != true)
+            return;
+
         var run = _context.CurrentRun;
         string? fontSizeHp = run?.RunProperties?.FontSize?.Val?.Value;
         if (string.IsNullOrWhiteSpace(fontSizeHp))
@@ -236,7 +239,12 @@ public sealed partial class DxpFieldEvalMiddleware : DxpLoggingMiddleware
             .Replace("\r", "\\r")
             .Replace("\n", "\\n")
             .Replace("\t", "\\t");
-        Console.WriteLine($"[{source}] Text='{escapedText}' FontSizeHp={fontSizeHp ?? "null"} FontSizePt={fontSizePt}");
+        _logger.LogDebug(
+            "[{Source}] Text='{Text}' FontSizeHp={FontSizeHp} FontSizePt={FontSizePt}",
+            source,
+            escapedText,
+            fontSizeHp ?? "null",
+            fontSizePt);
     }
 
     public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)

@@ -43,15 +43,10 @@ public sealed class DxpContextMiddleware : DxpLoggingMiddleware
 
     public override void VisitText(Text t, DxpIDocumentContext d)
     {
+        if (_logger?.IsEnabled(LogLevel.Debug) == true)
+            LogTextWithFont("Context", t.Text, d.CurrentRun?.Style.FontSizeHalfPoints);
+
         var fontSizeHp = d.CurrentRun?.Style.FontSizeHalfPoints;
-        var fontSizePt = fontSizeHp.HasValue
-            ? (fontSizeHp.Value / 2.0).ToString("0.###", CultureInfo.InvariantCulture)
-            : "null";
-        var escapedText = t.Text
-            .Replace("\r", "\\r")
-            .Replace("\n", "\\n")
-            .Replace("\t", "\\t");
-        Console.WriteLine($"[Context] Text='{escapedText}' FontSizeHp={fontSizeHp?.ToString() ?? "null"} FontSizePt={fontSizePt}");
 
         if (d.CurrentFields.IsInFieldResult)
 			Next.VisitComplexFieldCachedResultText(t.Text, d);
@@ -564,5 +559,22 @@ public sealed class DxpContextMiddleware : DxpLoggingMiddleware
             _inner.Dispose();
             _afterDispose();
         }
+    }
+
+    private void LogTextWithFont(string source, string text, int? fontSizeHalfPoints)
+    {
+        var fontSizePt = fontSizeHalfPoints.HasValue
+            ? (fontSizeHalfPoints.Value / 2.0).ToString("0.###", CultureInfo.InvariantCulture)
+            : "null";
+        var escapedText = text
+            .Replace("\r", "\\r")
+            .Replace("\n", "\\n")
+            .Replace("\t", "\\t");
+        _logger?.LogDebug(
+            "[{Source}] Text='{Text}' FontSizeHp={FontSizeHp} FontSizePt={FontSizePt}",
+            source,
+            escapedText,
+            fontSizeHalfPoints?.ToString() ?? "null",
+            fontSizePt);
     }
 }
