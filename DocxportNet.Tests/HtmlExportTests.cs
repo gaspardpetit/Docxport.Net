@@ -1,3 +1,6 @@
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.Fields;
 using DocxportNet.Fields.Eval;
 using DocxportNet.Fields.Resolution;
@@ -75,6 +78,99 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
     public void TestDocxToHtml_Eval(Sample sample)
     {
         VerifyAgainstFixture(sample, DxpHtmlVisitorConfig.CreateRichConfig(), ".eval.html", ".eval.test.html", DxpTrackedChangeMode.AcceptChanges, DxpFieldEvalExportMode.Evaluate);
+    }
+
+    [Fact]
+    public void HtmlExport_RendersFootnotesInsideSectionBeforeFooter()
+    {
+        using var stream = new MemoryStream();
+        using (var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document, true))
+        {
+            var main = doc.AddMainDocumentPart();
+            var footerPart = main.AddNewPart<FooterPart>();
+            footerPart.Footer = new Footer(
+                new Paragraph(
+                    new Run(new Text("Footer text"))));
+
+            var footnotesPart = main.AddNewPart<FootnotesPart>();
+            footnotesPart.Footnotes = new Footnotes(
+                new Footnote(
+                    new Paragraph(
+                        new Run(new FootnoteReferenceMark()),
+                        new Run(new Text(" Footnote text"))))
+                {
+                    Id = 1
+                });
+
+            main.Document = new Document(
+                new Body(
+                    new Paragraph(
+                        new Run(new Text("Body text")),
+                        new Run(new FootnoteReference { Id = 1 })),
+                    new SectionProperties(
+                        new FooterReference { Id = main.GetIdOfPart(footerPart), Type = HeaderFooterValues.Default },
+                        new PageSize { Width = 12240U, Height = 15840U },
+                        new PageMargin { Top = 1440, Right = 1440U, Bottom = 1440, Left = 1440U, Header = 720U, Footer = 720U, Gutter = 0U })));
+
+            main.Document.Save();
+            footerPart.Footer.Save();
+            footnotesPart.Footnotes.Save();
+        }
+
+        stream.Position = 0;
+
+        using var readDoc = WordprocessingDocument.Open(stream, false);
+        var visitor = new DxpHtmlVisitor(DxpHtmlVisitorConfig.CreateRichConfig(), Logger);
+        var html = TestCompare.Normalize(DxpExport.ExportToString(
+            readDoc,
+            visitor,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.None },
+            Logger));
+
+        Assert.Contains(".dxp-footnotes::before", html);
+
+        int bodyIndex = html.IndexOf("Body text", StringComparison.Ordinal);
+        int footnotesIndex = html.IndexOf("""<div class="dxp-footnotes">""", StringComparison.Ordinal);
+        int footnoteTextIndex = html.IndexOf("Footnote text", StringComparison.Ordinal);
+        int footerIndex = html.IndexOf("""<div class="dxp-footer""", StringComparison.Ordinal);
+
+        Assert.True(bodyIndex >= 0, "Body text should be present.");
+        Assert.True(footnotesIndex > bodyIndex, "Footnotes should render after the body content.");
+        Assert.True(footnoteTextIndex > footnotesIndex, "Footnote text should render inside the footnotes block.");
+        Assert.True(footerIndex > footnotesIndex, "Footnotes should render before the footer within the section canvas.");
+    }
+
+    [Fact]
+    public void HtmlExport_RendersHyperlinkFieldAsActiveAnchor()
+    {
+        using var stream = new MemoryStream();
+        using (var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document, true))
+        {
+            var main = doc.AddMainDocumentPart();
+            main.Document = new Document(
+                new Body(
+                    new Paragraph(
+                        new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                        new Run(new FieldCode(""" HYPERLINK "https://openparliament.ca/committees/industry/44-1/49/catherine-lovrics-2/" """) { Space = SpaceProcessingModeValues.Preserve }),
+                        new Run(new FieldChar { FieldCharType = FieldCharValues.Separate }),
+                        new Run(new Text("https://openparliament.ca/committees/industry/44-1/49/catherine-lovrics-2/")),
+                        new Run(new FieldChar { FieldCharType = FieldCharValues.End }))));
+            main.Document.Save();
+        }
+
+        stream.Position = 0;
+
+        using var readDoc = WordprocessingDocument.Open(stream, false);
+        var visitor = new DxpHtmlVisitor(DxpHtmlVisitorConfig.CreateRichConfig(), Logger);
+        var html = TestCompare.Normalize(DxpExport.ExportToString(
+            readDoc,
+            visitor,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.None },
+            Logger));
+
+        Assert.Contains("""<a class="dxp-link" href="https://openparliament.ca/committees/industry/44-1/49/catherine-lovrics-2/">""", html);
+        Assert.Contains("https://openparliament.ca/committees/industry/44-1/49/catherine-lovrics-2/", html);
+        Assert.DoesNotContain("data-field=\"HYPERLINK &quot;https://openparliament.ca/committees/industry/44-1/49/catherine-lovrics-2/&quot;\"", html);
     }
 
     private void VerifyAgainstFixture(

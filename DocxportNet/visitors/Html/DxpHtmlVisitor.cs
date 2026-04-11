@@ -46,6 +46,7 @@ internal sealed class DxpHtmlVisitorState
     public bool PendingAlignedTabUnderline { get; set; }
     public StringBuilder PendingAlignedTabBuffer { get; } = new();
     public int SuppressFieldDepth { get; set; }
+    public bool FootnotesOpen { get; set; }
 
     public TextWriter DeletedTextWriter = TextWriter.Null;
     public TextWriter InsertedTextWriter = TextWriter.Null;
@@ -109,6 +110,8 @@ public sealed class DxpHtmlVisitor : DxpVisitor, DxpITextVisitor, IDxpHeaderFoot
     private readonly DxpHtmlVisitorConfig _config;
     private DxpHtmlVisitorState _state = new();
     private readonly DxpFieldEval _fieldEval;
+    private readonly DxpFieldParser _fieldParser = new();
+    private readonly Stack<StringBuilder> _complexFieldInstructions = new();
 
     public DxpFieldEval FieldEval => _fieldEval;
 
@@ -297,11 +300,26 @@ body.dxp-root {
   color: var(--dxp-muted);
 }
 
-.dxp-footnote {
+.dxp-footnotes {
+  margin-top: auto;
+  padding-top: 0.75em;
   font-size: 0.9em;
+}
+
+.dxp-footnotes::before {
+  content: "";
+  display: block;
+  width: 33%;
   border-top: 1px solid var(--dxp-border);
-  margin-top: 1em;
-  padding-top: 0.5em;
+  margin: 0 0 0.6em;
+}
+
+.dxp-footnote {
+  margin: 0 0 0.35em;
+}
+
+.dxp-footnote:last-child {
+  margin-bottom: 0;
 }
 
 .dxp-comment {
@@ -366,6 +384,7 @@ body.dxp-root {
         _sinkWriter.WriteLine($"<body class=\"{_config.RootCssClass}\">");
 
         return DxpDisposable.Create(() => {
+            CloseFootnotesBlockIfNeeded(d);
             _sinkWriter.WriteLine("</body>");
             _sinkWriter.WriteLine("</html>");
             _sinkWriter.Flush();
@@ -1118,6 +1137,8 @@ body.dxp-root {
 
     public override IDisposable VisitSectionFooterBegin(Footer ftr, object kind, DxpIDocumentContext d)
     {
+        CloseFootnotesBlockIfNeeded(d);
+
         _state.SectionHasFooter = true;
         _state.InFooter = true;
 
@@ -1157,14 +1178,28 @@ body.dxp-root {
 
     public override void VisitComplexFieldBegin(FieldChar begin, DxpIDocumentContext d)
     {
+        _complexFieldInstructions.Push(new StringBuilder());
     }
 
     public override void VisitComplexFieldInstruction(FieldCode instr, string text, DxpIDocumentContext d)
     {
-        EmitFieldInstruction(d, text);
+        if (_complexFieldInstructions.Count > 0 && !string.IsNullOrEmpty(text))
+            _complexFieldInstructions.Peek().Append(text);
+
+        var instruction = _complexFieldInstructions.Count > 0
+            ? _complexFieldInstructions.Peek().ToString()
+            : d.CurrentFields.Current?.InstructionText ?? text;
+        if (!IsHyperlinkFieldInstruction(instruction))
+            EmitFieldInstruction(d, text);
     }
 
-    public override IDisposable VisitComplexFieldResultBegin(DxpIDocumentContext d) => DxpDisposable.Empty;
+    public override IDisposable VisitComplexFieldResultBegin(DxpIDocumentContext d)
+    {
+        var instr = _complexFieldInstructions.Count > 0
+            ? _complexFieldInstructions.Peek().ToString()
+            : d.CurrentFields.Current?.InstructionText;
+        return BeginFieldHyperlinkIfNeeded(d, instr);
+    }
 
     public override void VisitComplexFieldCachedResultText(string text, DxpIDocumentContext d)
     {
@@ -1179,18 +1214,26 @@ body.dxp-root {
 
     public override void VisitComplexFieldEnd(FieldChar end, DxpIDocumentContext d)
     {
+        if (_complexFieldInstructions.Count > 0)
+            _complexFieldInstructions.Pop();
     }
 
     public override IDisposable VisitSimpleFieldBegin(SimpleField fld, DxpIDocumentContext d)
     {
         var instr = d.CurrentFields.Current?.InstructionText ?? fld.Instruction?.Value;
-        if (instr != null)
+        if (!IsHyperlinkFieldInstruction(instr) && instr != null)
             EmitFieldInstruction(d, instr);
-        return DxpDisposable.Empty;
+        return BeginFieldHyperlinkIfNeeded(d, instr);
     }
 
     public override IDisposable VisitFootnoteBegin(Footnote fn, DxpIFootnoteContext footnote, DxpIDocumentContext d)
     {
+        if (!_state.FootnotesOpen)
+        {
+            WriteLine(d, """<div class="dxp-footnotes">""");
+            _state.FootnotesOpen = true;
+        }
+
         WriteLine(d, $"""<div class="dxp-footnote" id="fn-{footnote.Id}">""");
         return DxpDisposable.Create(() => WriteLine(d, "</div>"));
     }
@@ -1620,8 +1663,18 @@ body.dxp-root {
         Write(d, $"""<div class="dxp-section" style="{style}">""" + "\n");
 
         return DxpDisposable.Create(() => {
+            CloseFootnotesBlockIfNeeded(d);
             WriteLine(d, "</div>");
         });
+    }
+
+    private void CloseFootnotesBlockIfNeeded(DxpIDocumentContext d)
+    {
+        if (!_state.FootnotesOpen)
+            return;
+
+        WriteLine(d, "</div>");
+        _state.FootnotesOpen = false;
     }
 
     private void WriteLine(DxpIDocumentContext d) => Write(d, "\n");
@@ -1637,6 +1690,113 @@ body.dxp-root {
             return;
 
         Write(d, $"<span class=\"dxp-field\" data-field=\"{HtmlAttr(trimmed)}\"></span>");
+    }
+
+    private IDisposable BeginFieldHyperlinkIfNeeded(DxpIDocumentContext d, string? instruction)
+    {
+        var href = TryGetHyperlinkFieldTarget(instruction);
+        if (string.IsNullOrEmpty(href))
+            return DxpDisposable.Empty;
+
+        Write(d, $"""<a class="dxp-link" href="{HtmlAttr(href)}">""");
+        return DxpDisposable.Create(() => Write(d, "</a>"));
+    }
+
+    private bool IsHyperlinkFieldInstruction(string? instruction)
+        => TryGetHyperlinkFieldTarget(instruction) != null;
+
+    private string? TryGetHyperlinkFieldTarget(string? instruction)
+    {
+        if (string.IsNullOrWhiteSpace(instruction))
+            return null;
+
+        var parse = _fieldParser.Parse(instruction);
+        var fieldType = parse.Ast.FieldType;
+        if (!string.Equals(fieldType, "HYPERLINK", StringComparison.OrdinalIgnoreCase))
+            return null;
+
+        var tokens = TokenizeFieldArguments(parse.Ast.ArgumentsText);
+        if (tokens.Count == 0)
+            return null;
+
+        string? target = null;
+        string? localAnchor = null;
+        for (int i = 0; i < tokens.Count; i++)
+        {
+            var token = tokens[i];
+            if (string.Equals(token, @"\l", StringComparison.OrdinalIgnoreCase))
+            {
+                if (i + 1 < tokens.Count)
+                    localAnchor = tokens[++i];
+                continue;
+            }
+
+            if (token.Length > 0 && token[0] == '\\')
+            {
+                if ((string.Equals(token, @"\o", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(token, @"\t", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(token, @"\m", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(token, @"\n", StringComparison.OrdinalIgnoreCase)) &&
+                    i + 1 < tokens.Count)
+                {
+                    i++;
+                }
+                continue;
+            }
+
+            if (target == null)
+                target = token;
+        }
+
+        if (string.IsNullOrWhiteSpace(target))
+            return string.IsNullOrWhiteSpace(localAnchor) ? null : $"#{localAnchor}";
+        if (string.IsNullOrWhiteSpace(localAnchor))
+            return target;
+        return target.IndexOf('#') >= 0 ? target : $"{target}#{localAnchor}";
+    }
+
+    private static List<string> TokenizeFieldArguments(string? argumentsText)
+    {
+        var tokens = new List<string>();
+        if (string.IsNullOrWhiteSpace(argumentsText))
+            return tokens;
+
+        var current = new StringBuilder();
+        bool inQuote = false;
+
+        for (int i = 0; i < argumentsText!.Length; i++)
+        {
+            char ch = argumentsText[i];
+            if (ch == '"' && (i == 0 || argumentsText[i - 1] != '\\'))
+            {
+                inQuote = !inQuote;
+                continue;
+            }
+
+            if (!inQuote && char.IsWhiteSpace(ch))
+            {
+                if (current.Length > 0)
+                {
+                    tokens.Add(current.ToString());
+                    current.Clear();
+                }
+                continue;
+            }
+
+            if (ch == '\\' && i + 1 < argumentsText.Length && argumentsText[i + 1] == '"')
+            {
+                current.Append('"');
+                i++;
+                continue;
+            }
+
+            current.Append(ch);
+        }
+
+        if (current.Length > 0)
+            tokens.Add(current.ToString());
+
+        return tokens;
     }
 
     private void Write(DxpIDocumentContext d, string str)

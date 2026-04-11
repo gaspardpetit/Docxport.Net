@@ -110,11 +110,26 @@ body.dxp-root {
   color: var(--dxp-muted);
 }
 
-.dxp-footnote {
+.dxp-footnotes {
+  margin-top: auto;
+  padding-top: 0.75em;
   font-size: 0.9em;
+}
+
+.dxp-footnotes::before {
+  content: "";
+  display: block;
+  width: 33%;
   border-top: 1px solid var(--dxp-border);
-  margin-top: 1em;
-  padding-top: 0.5em;
+  margin: 0 0 0.6em;
+}
+
+.dxp-footnote {
+  margin: 0 0 0.35em;
+}
+
+.dxp-footnote:last-child {
+  margin-bottom: 0;
 }
 
 .dxp-comment {
