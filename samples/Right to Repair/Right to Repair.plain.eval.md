@@ -1,0 +1,306 @@
+<!-- LastModifiedBy: Petit, Gaspard -->
+<!-- Revision: 2 -->
+<!-- Created: 2024-11-22 17:45:00Z -->
+<!-- Modified: 2026-04-11 05:51:00Z -->
+<!-- ContentTypeId: 0x0101008BCA4F4E672FAC4691598DEB380F9245 -->
+
+<div class="header" style="border-bottom:1px solid #000;">
+</div>
+# BILL C-244: UNLOCKING THE RIGHT TO REPAIR
+
+Gaspard Petit, Laura Trépanier-Champagne
+
+On November 7, 2024, Bill C-244, <i>An Act to amend the Copyright Act (diagnosis, maintenance and repair)<a href="#fn-2" id="fnref-2">[1]</a></i> received royal assent, adding a new exception to the provisions governing technological protection measures (TPM) in the <i>Copyright Act</i> (CA). This legislative amendment adds section 41.121 to the CA, making it legal to circumvent TPMs for product maintenance, repair and diagnosis.
+
+### What it means
+
+<p style="border-top:0.5pt solid #000000;border-right:0.5pt solid #000000;border-left:0.5pt solid #000000;">The new section 41.121 is expected to have a limited impact on the Canadian repair market. Although repairers can now circumvent TPMs to diagnose, maintain or repair a customer’s device, it is still forbidden for repairers to use the services of a TPM circumvention specialist, and specialized circumvention equipment is still prohibited. Furthermore, the absence of a fair dealing exception in this amendment poses ongoing risks of copyright infringement for these purposes.</p>
+
+
+<p style="border-right:0.5pt solid #000000;border-left:0.5pt solid #000000;">A number of questions remain unanswered, including the scope the courts will assign to the terms “maintenance” and “repair.” Does upgrading a device with improved technology fall within the definition of maintenance, or are repairers restricted to servicing devices according to original specifications? For example, if a connected device becomes obsolete after a new security standard is adopted, would replacing its software constitute maintenance?</p>
+
+
+<p style="border-right:0.5pt solid #000000;border-bottom:0.5pt solid #000000;border-left:0.5pt solid #000000;">In short, the adoption of Bill C-244 represents but a small step toward the right to repair goods, and it serves as a prime example of how reconciling property rights with intellectual property rights can be challenging.</p>
+
+
+### Amendments made by C-244
+
+Section 41.121, as introduced by C-244, has three paragraphs:
+
+<p style="margin-top:6pt;margin-bottom:6pt;border-top:0.5pt solid #000000;border-right:0.5pt solid #000000;border-left:0.5pt solid #000000;background-color:#FFFFFF;"><b>Diagnosis, maintenance and repair</b></p>
+
+
+<p style="margin-top:6pt;margin-bottom:6pt;border-right:0.5pt solid #000000;border-left:0.5pt solid #000000;background-color:#FFFFFF;">41.121 (1) Paragraph 41.1(1)(a) does not apply to a person who circumvents a technological protection measure for the sole purpose of maintaining or repairing a product, including any related diagnosing, if the work, performer’s performance fixed in a sound recording or sound recording to which the technological protection measure controls access forms a part of the product.</p>
+
+
+<p style="margin-top:6pt;margin-bottom:6pt;border-right:0.5pt solid #000000;border-left:0.5pt solid #000000;background-color:#FFFFFF;"><b>For greater certainty</b></p>
+
+
+<p style="margin-top:6pt;margin-bottom:6pt;border-right:0.5pt solid #000000;border-left:0.5pt solid #000000;background-color:#FFFFFF;">(2) For greater certainty, subsection (1) applies to a person who circumvents a technological protection measure in the circumstances referred to in that subsection for another person.</p>
+
+
+<p style="margin-top:6pt;margin-bottom:6pt;border-right:0.5pt solid #000000;border-left:0.5pt solid #000000;background-color:#FFFFFF;"><b>Non-application</b></p>
+
+
+<p style="margin-top:6pt;margin-bottom:6pt;border-right:0.5pt solid #000000;border-bottom:0.5pt solid #000000;border-left:0.5pt solid #000000;background-color:#FFFFFF;">(3) A person acting in the circumstances referred to in subsection (1) is not entitled to benefit from the exception under that subsection if the person does an act that constitutes an infringement of copyright.</p>
+
+
+Under the new section, the protection afforded to TPMs is set aside for maintenance and repair purposes, including the related diagnosing. Subsection 41.121(2) adds that the exception also applies to a person, such as a professional repairer, who repairs a product for another person. Subsection 41.121(3) further adds that the exception applies only to situations where there is no copyright infringement; for example, copyright infringement would be a person circumventing TPMs to repair a product, but taking advantage of the situation to make an illicit copy of a computer program.
+
+Bill C-244 reintroduced certain provisions of Bill C-272,<a href="#fn-3" id="fnref-3">[2]</a> which had been tabled in September 2020 but abandoned after the 2021 federal election. However, unlike the original text, the amendment passed on November 7, 2024, does not allow a person to manufacture, import or distribute TPM-circumvention devices to be used to perform repairs. It is rather limited to making the act of circumvention itself legal.
+
+### Origin of the problem
+
+Bill C-272 was partly introduced in response to the decision in <i>Nintendo of America Inc. v. King</i>,<a href="#fn-4" id="fnref-4">[3]</a> which had considerably dampened the TPM-containing-device repair industry. In that case, the Federal Court awarded Nintendo of America Inc. $11.7 million in statutory damages following the circumvention of its TPMs, with $20,000 awarded for each of the 585 affected games, and an additional $1 million in punitive damages.
+
+Technological Protection Measures (TPMs), also known as digital locks or digital rights management (DRM) technologies, are mechanisms used to safeguard copyrights and sensitive information in the digital domain. They regulate access to or the copying, alteration and redistribution of digital content, such as audio and video files, software and e-books. TPMs can take various forms, including access codes, passwords, encryption keys, watermarks, digital signatures, encryption methods, and integrated hardware-based protections. These measures may be embedded in the files themselves, or in the devices that read, store or distribute them. DVD encryption and video game cartridge protections are well-known examples.
+
+The World Intellectual Property Organization (WIPO) first proposed a framework for protecting TPMs in 1996, anticipating that increased internet usage might escalate copyright infringement.<a href="#fn-5" id="fnref-5">[4]</a> In 1999, the United States ratified the framework by passing the <i>Digital Millennium Copyright Act</i> (DMCA), followed by Canada’s enactment of the <i>Copyright Modernization Act<a href="#fn-6" id="fnref-6">[5]</a></i> in 2014. This legislative amendment introduced section 41.1 and related provisions to the Copyright Act (CA), prohibiting the circumvention of TPMs. Today, TPMs are ubiquitous, appearing in cars, tractors, medical implants, printer cartridges, game consoles, and various electronic devices. The $11.7 million award to Nintendo of America Inc. pursuant to this provision had a chilling effect on the repair industry.<a href="#fn-7" id="fnref-7">[6]</a> In response to the Nintendo decision, Bill C-272 proposed exceptions to the prohibition on circumventing TPMs for diagnosis, maintenance, and repair activities, as specified in  paragraph 41.1(1)(a) of the CA. It also included an exception for the manufacture, importation, or distribution of products designed to circumvent TPMs for these purposes, addressing the restrictions noted in paragraph 41.1(1)(c) of the CA.
+
+### Harmonization with the Canada-United States-Mexico Agreement
+
+The scope of the new section 41.121 introduced by Bill C-244 was significantly narrowed to prevent conflicts with the Canada-United States-Mexico Agreement (CUSMA). Article 20.66 of CUSMA requires member countries to enforce three categories of prohibitions related to TPMs: a prohibition on offering TPM circumvention services, a prohibition on the manufacture, import, or distribution of devices intended for TPMs circumvention, and a prohibition on the act itself of circumventing TPMs. Paragraph 5 of Article 20.66 specifies certain exceptions to these prohibitions, particularly for purposes such as interoperability, encryption research (security), and government activities (most of which are addressed under sections 41.11 and following of the CA), but it does not include an exception for the repair of goods.
+
+The exception provided in section 41.121 was thus limited to the third CUSMA category which involves the prohibition on circumventing TPMs themselves, as outlined in paragraph 41.1(1)(a) of the CA. As such, the prohibitions on offering TPM circumvention services, and manufacturing, importing or distributing TPM circumvention devices, set out in paragraphs 41.1(1)(b) and 41.1(1)(c), respectively, remain unchanged, even if the purpose of circumvention is to repair a device.
+
+### Introduction of ambiguous wording
+
+Legal professionals may recognize that the changes made to the definitions in section 41 present new challenges. In an attempt to clarify how the new provision’s application, the legislator has added two conflicting expressions to the definitions of “circumvent” and “technological protection measure,” which may not have been necessary.
+
+<table>
+  <tr>
+    <td><p style="margin-top:6pt;margin-bottom:6pt;"><b>Before</b></p>
+
+
+</td>
+    <td><p style="margin-top:6pt;margin-bottom:6pt;"><b>After</b></p>
+
+
+</td>
+  </tr>
+  <tr>
+    <td><p style="margin-top:6pt;margin-bottom:6pt;background-color:#FFFFFF;"><b>Technical protection measures and information on the rights mechanism</b></p>
+
+
+<p style="margin-top:6pt;margin-bottom:6pt;background-color:#FFFFFF;"><b>Definitions</b></p>
+
+
+<p style="margin-top:6pt;margin-bottom:6pt;background-color:#FFFFFF;"><b>41 </b>The following definitions apply in this section and in sections 41.1 to 41.21.</p>
+
+
+<p style="margin-top:6pt;margin-bottom:6pt;background-color:#FFFFFF;"><b><i>circumvent </i></b>means,</p>
+
+
+<p style="margin-top:5pt;margin-bottom:5pt;line-height:1;background-color:#FFFFFF;"><b>a)</b>&#9;(a) in respect of a technological protection measure within the meaning of paragraph (a) of the definition technological protection measure, to descramble a scrambled work or decrypt an encrypted work or to otherwise avoid, bypass, remove, deactivate or impair the technological protection measure, unless it is done with the authority of the copyright owner; and</p>
+
+
+</td>
+    <td><p style="margin-top:6pt;margin-bottom:6pt;background-color:#FFFFFF;"><b>Technical protection measures and information on the rights mechanism</b></p>
+
+
+<p style="margin-top:6pt;margin-bottom:6pt;background-color:#FFFFFF;"><b>Definitions</b></p>
+
+
+<p style="margin-top:6pt;margin-bottom:6pt;background-color:#FFFFFF;"><b>41 </b>The following definitions apply in this section and in sections 41.1 to 41.21.</p>
+
+
+<p style="margin-top:6pt;margin-bottom:6pt;background-color:#FFFFFF;"><b><i>circumvent </i></b>means,</p>
+
+
+<p style="margin-top:5pt;margin-bottom:5pt;line-height:1;"><b>a)</b>&#9;(a) in respect of a technological protection measure within the meaning of paragraph (a) of the definition technological protection measure, to descramble a scrambled work <b><u>or computer program</u></b>, or decrypt an encrypted work or computer program or to otherwise avoid, bypass, remove, deactivate or impair the technological protection measure, unless it is done with the authority of the copyright owner; and</p>
+
+
+</td>
+  </tr>
+  <tr>
+    <td><p style="margin-top:5pt;margin-bottom:5pt;line-height:1;background-color:#FFFFFF;"><b>b) &#9;</b>…</p>
+
+
+</td>
+    <td><p style="margin-top:5pt;margin-bottom:5pt;line-height:1;background-color:#FFFFFF;"><b>b)&#9;</b>…</p>
+
+
+</td>
+  </tr>
+  <tr>
+    <td><p style="margin-top:6pt;margin-bottom:6pt;background-color:#FFFFFF;"><b><i>technological protection measure </i></b>means any effective technology, device or component that, in the ordinary course of its operation, </p>
+
+
+<p style="margin-top:5pt;margin-bottom:5pt;line-height:1;background-color:#FFFFFF;"><b>a)&#9;</b>controls access to a work, to a performer’s performance fixed in a sound recording or to a sound recording and whose use is authorized by the copyright owner; or</p>
+
+
+</td>
+    <td><p style="margin-top:6pt;margin-bottom:6pt;background-color:#FFFFFF;"><b><i>technological protection measure </i></b>means any effective technology, device or component that, in the ordinary course of its operation,</p>
+
+
+<p style="margin-top:5pt;margin-bottom:5pt;line-height:1;background-color:#FFFFFF;"><b>a)&#9;</b>controls access to a work, <b><u>including a computer program</u></b>, to a performer’s performance fixed in a sound recording or to a sound recording and whose use is authorized by the copyright owner;</p>
+
+
+</td>
+  </tr>
+  <tr>
+    <td><b>b)&#9;</b>…
+
+</td>
+    <td><p style="margin-top:5pt;margin-bottom:5pt;line-height:1;background-color:#FFFFFF;"><b>b)&#9;</b>…</p>
+
+
+</td>
+  </tr>
+</table>
+In the first instance, the legislator specifies that definition applies to “a work <u>or computer program</u>,” which suggests that a computer program is not considered a work. However, the second definition uses the phrase “a work, <u>including a computer program</u>,” implying the opposite. These clarifications were unnecessary, since the definition of “work” already includes literary works, and section 2 of the CA expressly states that literary works include computer programs. It is unfortunate that the text was adopted in its current form despite the numerous comments on this issue during parliamentary reviews.<a href="#fn-8" id="fnref-8">[7]</a>
+
+### Striking a balance between property rights and intellectual property rights
+
+The debates surrounding these legislative changes illustrate the inherent challenges in striking a balance between the reduction of property rights, including the right to repair goods, and the promotion of intellectual property rights.
+
+For example, the Entertainment Software Association of Canada has advocated for excluding game consoles from the new exception.<a href="#fn-9" id="fnref-9">[8]</a> Paul Fogolin, the association’s Vice President of Policy and Government Affairs, argued that broadly opening the right to repair goods could jeopardize the video game industry by making it almost impossible for rights holders to pursue legal action against those tampering with their protection measures.<a href="#fn-10" id="fnref-10">[9]</a> Charles Bernard, Lead Economist for the Canadian Automobile Dealers Association,<i> </i>expressed concerns about increased auto theft risks.<a href="#fn-11" id="fnref-11">[10]</a> Catherine Lovrics, Chair of the Copyright Policy Committee, Intellectual Property Institute of Canada, anticipated cybersecurity risks.<a href="#fn-12" id="fnref-12">[11]</a> Several industry stakeholders believe that making documents, software, parts, and tools available for repair could elevate the risk of cyberattacks.
+
+Industry representatives in the United States have highlighted similar risks. For instance, the Association of Equipment Manufacturers<i> </i>suggests that enabling the circumvention of TPMs could compromise emission controls on equipment, potentially leading to violations of environmental laws and risks to human life.<a href="#fn-13" id="fnref-13">[12]</a> Others have raised concerns about product liability issues.<a href="#fn-14" id="fnref-14">[13]</a> According to Apple and Panasonic, today’s electronics are too complex for non-specialists to repair and, thus, broadening the right to repair could compromise consumer safety.</b>
+
+Concerns about safety, security, and liability are certainly legitimate; however, it is also valid to question whether intellectual property law is the appropriate vehicle to address these issues.
+
+During review of C-244, Shannon Sereda, Director of Government Relations, Policy, and Markets for Alberta Wheat and Barley Commissions, highlighted the potential difficulties farmers face when they cannot swiftly repair their equipment. She argued that “[t]he current legislative environment in Canada supports equipment repair monopolies by allowing OEMs to prohibit the bypassing of TPMs.”<a href="#fn-18" id="fnref-18">[17]</a> Anthony D. Rosborough, a researcher in the Law Department of the European University Institute, corroborated this viewpoint, stating that TPMs “function principally to protect technologies, rather than works or the rights of authors.” In his view, the industry sometimes relies on copyrights for what should be more appropriately protected with patents or trade secrets.<a href="#fn-19" id="fnref-19">[18]</a>
+
+The relaxation of TPM rules in Canada aligns with similar measures already implemented in the United States. On October 28, the Librarian of Congress renewed a series of exceptions to section 1201 of the <i>Digital Millennium Copyright Act</i> (DMCA), including provisions that allow the circumvention of certain protection measures for repairs.<a href="#fn-20" id="fnref-20">[19]</a> These exceptions are subject to renewal every three years and have so far been renewed twice since 2018.<a href="#fn-21" id="fnref-21">[20]</a> Over the past few years, the United States has taken several steps to promote the right to repair goods. In May 2021, the Federal Trade Commission (FTC) filed a detailed report<a href="#fn-22" id="fnref-22">[21]</a> on anti-competitive practices related to the right to repair. On July 9, 2021, shortly after the report was released, the U.S. President issued an Executive Order to combat such practices and encourage the development of a third-</sub>party or owner repair market.<a href="#fn-23" id="fnref-23">[22]</a> Since then, multiple states have enacted laws supporting the right to repair.<a href="#fn-24" id="fnref-24">[23]</a> On January 8, 2023, John Deere pledged to enable independent repairers to service its equipment.<a href="#fn-25" id="fnref-25">[24]</a> Apple Inc., historically opposed to expanding the right to repair, shifted its stance in 2022 by launching a self-service repair program and publicly supporting California’s new right-to-repair law.<a href="#fn-26" id="fnref-26">[25]</a> Last year, WIPO reported that 40 states had introduced legislation in favour of the right to repair.<a href="#fn-27" id="fnref-27">[26]</a>
+
+Here in Canada, the adoption of Bill C-244 represents another step in establishing the right to repair goods. This measure builds on another federal bill, C-59,<a href="#fn-28" id="fnref-28">[27]</a> which also received assent last June and amended the <i>Competition Act</i> to empower courts to compel suppliers to sell diagnosis or repair tools. At the provincial level, Quebec became the first province to enact right-to-repair legislation last year.<b> <a href="#fn-30" id="fnref-30">[29]</a></b> In the coming months, it remains to be seen whether the new section 41.121 of the Copyright Act (CA) will unlock the repair market. For the moment, the measure strikes us as somewhat timid.
+
+<div class="footnote" id="fn-2">
+<p style="margin-bottom:0pt;line-height:1;">1 PARLIAMENT OF CANADA, LEGISinfo: C-244: <i>An Act to amend the Copyright Act (diagnosis, maintenance and repair)</i>, Parliament of Canada, online: Error! Invalid field code..</p>
+
+
+</div>
+<div class="footnote" id="fn-3">
+<p style="margin-bottom:0pt;line-height:1;">2 PARLIAMENT OF CANADA, LEGISinfo: C-272, <i>An Act to amend the Copyright Act (diagnosis, maintenance and repair)</i>, Parliament of Canada, online: Error! Invalid field code.</p>
+
+
+</div>
+<div class="footnote" id="fn-4">
+<p style="margin-bottom:0pt;line-height:1;">3<i> Error! Invalid field code.</i>, 2017 FC 246, [2018] 1 FCR 509.</p>
+
+
+</div>
+<div class="footnote" id="fn-5">
+<p style="margin-bottom:0pt;line-height:1;">4<i> WIPO Copyright Treaty</i>, December 20, 1996, article 11, online: Error! Invalid field code..</p>
+
+
+</div>
+<div class="footnote" id="fn-6">
+<p style="margin-bottom:0pt;line-height:1;">5<i> Copyright Modernization Act</i>, S.C. 2012, c. 20, assented to on 2012-06-29, online: Error! Invalid field code.; Canada Gazette, Vol. 146,No. 23 – November 7, 2012, SI/2012-85 <i>Order Fixing Various Dates as the Dates on which Certain Provisions of the Act Come into Force</i>, P.C. 2012-1392, October 25, 2012, online: Error! Invalid field code.. </p>
+
+
+</div>
+<div class="footnote" id="fn-7">
+<p style="margin-bottom:0pt;line-height:1;">6 Graham J. Reynolds, “Of Lock-Breaking and Stock Taking - IP, Climate Change, and the Right to Repair in Canada,” in 2023 101-1 <i>Canadian Bar Review</i> 32, 2023 CanLIIDocs 1144, p. 54, online: Error! Invalid field code..</p>
+
+
+</div>
+<div class="footnote" id="fn-8">
+<p style="margin-bottom:0pt;line-height:1;">7 Committee on Industry and Technology, 5 December 2022, Catherine Lovrics, <i>Open Parliament</i>, online: Error! Invalid field code.; Committee on Industry and Technology, 15 February 2023, Viviane Lapointe, <i>Open Parliament</i>, online: Error! Invalid field code.; Committee on Industry and Technology, 15 February 2023, Andy  Fillmore, <i>Open Parliament</i>, online: Error! Invalid field code.; Committee on Industry and Technology, 15 february 2023, Patrick Blanar, online: Error! Invalid field code..</p>
+
+
+</div>
+<div class="footnote" id="fn-9">
+<p style="margin-bottom:0pt;line-height:1;">8 Entertainment Software Association of Canada, <i>Bill C-244 – An Act to amend the Copyright Act (diagnosis, maintenance and repair),</i> online:Error! Invalid field code..</p>
+
+
+</div>
+<div class="footnote" id="fn-10">
+<p style="margin-bottom:0pt;line-height:1;">9 Committee on Industry and Technology, February 8, 2023, Paul Fogolin, online: Error! Invalid field code..</p>
+
+
+</div>
+<div class="footnote" id="fn-11">
+<p style="margin-bottom:0pt;line-height:1;">10 Committee on Industry and Technology, February 8, 2023, Charles Bernard, online: Error! Invalid field code..</p>
+
+
+</div>
+<div class="footnote" id="fn-12">
+<p style="margin-bottom:0pt;line-height:1;">11 Industry and Technology Committee, December 5, 2022, Catherine Lovrics, online:Error! Invalid field code..</p>
+
+
+</div>
+<div class="footnote" id="fn-13">
+<p style="margin-bottom:0pt;line-height:1;">12 Emma Fillman,<i> “</i>Comprehensive Right to Repair:<i> </i>The Fight Against Planned Obsolescence in Canada,” (2023) 32 Dalhousie J Legal Stud 123, p. 145. onlineError! Invalid field code.<u>.</u></p>
+
+
+</div>
+<div class="footnote" id="fn-14">
+<p style="margin-bottom:0pt;line-height:1;">13 Irene Calboli, “The right to repair: Recent Developments in the USA<i>,” World Intellectual Property Organization Magazine</i>, August 2023, online:Error! Invalid field code..</p>
+
+
+</div>
+<div class="footnote" id="fn-15">
+</div>
+<div class="footnote" id="fn-16">
+</div>
+<div class="footnote" id="fn-17">
+<p style="margin-bottom:0pt;line-height:1;">16 Emma Fillman, “Comprehensive Right to Repair:<i> </i>The Fight Against Planned Obsolescence in Canada,” (2023) 32 Dalhousie J Legal Stud 123, pp. 142 and following, onlineError! Invalid field code.<u>.</u></p>
+
+
+</div>
+<div class="footnote" id="fn-18">
+<p style="margin-bottom:0pt;line-height:1;">17 Committee on Industry and Technology, February 8, 2023, Shannon Sereda, online:Error! Invalid field code..</p>
+
+
+</div>
+<div class="footnote" id="fn-19">
+<p style="margin-bottom:0pt;line-height:1;">18 Committee on Industry and Technology, February 8, 2023, Anthony D. Rosborough, online:Error! Invalid field code..</p>
+
+
+</div>
+<div class="footnote" id="fn-20">
+<p style="margin-bottom:0pt;line-height:1;">19 Copyright Office, Library of Congress, E<i>xemption to Prohibition on Circumvention of Copyright Protection Systems for Access Control Technologies</i>, Federal Register, October 28, 2024, online:Error! Invalid field code..</p>
+
+
+</div>
+<div class="footnote" id="fn-21">
+<p style="margin-bottom:0pt;line-height:1;">20 Copyright Office, Library of Congress, <i>Exemption to Prohibition on Circumvention of Copyright Protection Systems for Access Control Technologies</i>, Federal Register, October 26, 2018, online:Error! Invalid field code..</p>
+
+
+</div>
+<div class="footnote" id="fn-22">
+<p style="margin-bottom:0pt;line-height:1;">21 Federal Trade Commission, <i>Nixing the Fix: An FTC Report to Congress on Repair Restrictions</i>, May 2021, online:Error! Invalid field code..</p>
+
+
+</div>
+<div class="footnote" id="fn-23">
+<p style="margin-bottom:0pt;line-height:1;">22 The White House, <i>Executive Order on Promoting Competition in the American Economy</i>, July 9, 2021, online: Error! Invalid field code..</p>
+
+
+</div>
+<div class="footnote" id="fn-24">
+<p style="margin-bottom:0pt;line-height:1;">23 X, Jon Campbell, December 29, 2022, online:Error! Invalid field code.; Colorado General Assembly, <i>Consumer Right to Repair Agricultural Equipment</i>, April 25, 2023, online:Error! Invalid field code.; Minnesota Legislature, Minnesota Session Laws, 93<sup>rd</sup> Legislature, Chapter 57 – S.F. No. 2744, online:Error! Invalid field code.; Sidley, “California Becomes Third U.S.<i> </i>State to Join the Right-to-Repair Movement,” October 24, 2023, online:Error! Invalid field code..</p>
+
+
+</div>
+<div class="footnote" id="fn-25">
+<p style="margin-bottom:0pt;line-height:1;">24 John Deere, <i>Memorandum of Undestanding</i>, January 8, 2023, online: Error! Invalid field code..</p>
+
+
+</div>
+<div class="footnote" id="fn-26">
+<p style="margin-bottom:0pt;line-height:1;">25 The Verge, “Surprise:<i> </i>Apple now supports California’s right to repair,” August 23, 2023, online: Error! Invalid field code..</p>
+
+
+</div>
+<div class="footnote" id="fn-27">
+<p style="margin-bottom:0pt;line-height:1;">26 Irene Calboli, “The right to repair: Recent Developments in the USA,”<i> World Intellectual Property Organization Magazine</i>, online:Error! Invalid field code.. </p>
+
+
+</div>
+<div class="footnote" id="fn-28">
+<p style="margin-bottom:0pt;line-height:1;">27 PARLIAMENT OF CANADA, LEGISinfo: C-59: <i>An Act to implement certain provisions of the fall economic statement tabled in Parliament on November 21, 2023 and certain provisions of the budget tabled in Parliament on March 28, 2023</i>; Parliament of Canada, online:Error! Invalid field code.<i>.</i></p>
+
+
+</div>
+<div class="footnote" id="fn-29">
+</div>
+<div class="footnote" id="fn-30">
+<p style="margin-bottom:0pt;line-height:1;">29 Québec National Assembly, Bill 29, <i>An Act to protect consumers from planned obsolescence and to promote the durability, repairability and maintenance of goods, </i>online: Error! Invalid field code.<u>.</u></p>
+
+
+</div>
+<div class="footer" style="border-top:1px solid #000;">
+</div>

@@ -120,12 +120,6 @@ public class DxpWalker
                     WalkDocumentBody(body, documentContext, v);
                     // Remove the global “walk all headers/footers” to avoid duplicates (see #2)
 
-                    // Footnotes/Endnotes
-                    foreach (var fn in documentContext.Footnotes.GetFootnotes())
-                        WalkFootnote(fn.Item1, fn.Item2, fn.Item3, documentContext, v);
-                    foreach (var en in documentContext.Endnotes.GetEndnotes())
-                        WalkEndnote(en.Item1, en.Item2, en.Item3, documentContext, v);
-
                     WalkBibliography(doc, documentContext, v);
 
                 }
@@ -173,8 +167,9 @@ public class DxpWalker
             List<SectionSlice> sections = DxpSections.SplitDocumentBodyIntoSections(body);
 
             EffectiveHeaderFooterRefs effective = new();
-            foreach (SectionSlice section in sections)
+            for (int i = 0; i < sections.Count; i++)
             {
+                SectionSlice section = sections[i];
                 effective.ApplySectionOverrides(section.Properties);
 
                 HeaderReference? headerRef = null;
@@ -191,7 +186,8 @@ public class DxpWalker
                     footerRef = effective.SelectFooter(section.Properties, selectionProvider.FooterSelection, evenAndOddHeaders);
                 }
 
-                WalkSection(section, d, v, headerRef, footerRef);
+                bool isLastSection = i == sections.Count - 1;
+                WalkSection(section, d, v, headerRef, footerRef, isLastSection);
             }
         }
     }
@@ -286,7 +282,7 @@ public class DxpWalker
         }
     }
 
-    private void WalkSection(SectionSlice section, DxpDocumentContext d, DxpIVisitor v, HeaderReference? headerRef, FooterReference? footerRef)
+    private void WalkSection(SectionSlice section, DxpDocumentContext d, DxpIVisitor v, HeaderReference? headerRef, FooterReference? footerRef, bool isLastSection)
     {
         SectionLayout layout = DxpSections.CreateSectionLayout(section.Properties);
 
@@ -299,10 +295,22 @@ public class DxpWalker
             // body
             WalkSectionBody(section, d, v);
 
+            if (isLastSection)
+                WalkFootnotesAndEndnotes(d, v);
+
             // footer
             if (footerRef != null)
                 WalkFooterReference(footerRef, d, v);
         }
+    }
+
+    private void WalkFootnotesAndEndnotes(DxpDocumentContext d, DxpIVisitor v)
+    {
+        foreach (var fn in d.Footnotes.GetFootnotes())
+            WalkFootnote(fn.Item1, fn.Item2, fn.Item3, d, v);
+
+        foreach (var en in d.Endnotes.GetEndnotes())
+            WalkEndnote(en.Item1, en.Item2, en.Item3, d, v);
     }
 
     private void WalkSectionBody(SectionSlice section, DxpDocumentContext d, DxpIVisitor v)
