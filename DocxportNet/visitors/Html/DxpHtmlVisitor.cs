@@ -56,6 +56,7 @@ internal sealed class DxpHtmlVisitorState
 public sealed record DxpHtmlVisitorConfig
 {
     public bool EmitImages = true;
+    public bool EmitParagraphMetadata = false;
     public bool EmitStyleFont = true;
     public bool EmitRunColor = true;
     public bool EmitRunBackground = true;
@@ -830,6 +831,19 @@ body.dxp-root {
     static string HtmlAttr(string s) =>
         s.Replace("&", "&amp;").Replace("\"", "&quot;").Replace("<", "&lt;").Replace(">", "&gt;");
 
+    private static string? GetDocxPartName(OpenXmlPart? part)
+    {
+        return part switch {
+            MainDocumentPart => "document",
+            HeaderPart => "header",
+            FooterPart => "footer",
+            FootnotesPart => "footnote",
+            EndnotesPart => "endnote",
+            WordprocessingCommentsPart => "comment",
+            _ => null
+        };
+    }
+
     public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
     {
         _state.TabIndex = 0;
@@ -955,6 +969,16 @@ body.dxp-root {
             openTag.Append(" class=\"").Append(string.Join(" ", paraClasses)).Append('"');
         if (style.Length > 0)
             openTag.Append(" style=\"").Append(style).Append('"');
+        if (_config.EmitParagraphMetadata)
+        {
+            string? paraId = p.ParagraphId?.Value;
+            if (!string.IsNullOrEmpty(paraId))
+                openTag.Append(" data-para-id=\"").Append(HtmlAttr(paraId)).Append('"');
+
+            string? docxPart = GetDocxPartName(d.CurrentPart);
+            if (!string.IsNullOrEmpty(docxPart))
+                openTag.Append(" data-docx-part=\"").Append(HtmlAttr(docxPart)).Append('"');
+        }
         openTag.Append('>');
         Write(d, openTag.ToString());
 
