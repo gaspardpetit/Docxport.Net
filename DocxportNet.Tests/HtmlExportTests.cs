@@ -173,6 +173,112 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
         Assert.DoesNotContain("data-field=\"HYPERLINK &quot;https://openparliament.ca/committees/industry/44-1/49/catherine-lovrics-2/&quot;\"", html);
     }
 
+    [Fact]
+    public void HtmlExport_EmitParagraphMetadata_EmitsParaIdAndDocumentPart()
+    {
+        using var stream = new MemoryStream();
+        using (var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document, true))
+        {
+            var main = doc.AddMainDocumentPart();
+            var paragraph = new Paragraph(
+                new Run(new Text("Body text")));
+            paragraph.ParagraphId = "1234ABCD";
+
+            main.Document = new Document(new Body(paragraph));
+            main.Document.Save();
+        }
+
+        stream.Position = 0;
+
+        using var readDoc = WordprocessingDocument.Open(stream, false);
+        var config = DxpHtmlVisitorConfig.CreateRichConfig();
+        config.EmitParagraphMetadata = true;
+        var visitor = new DxpHtmlVisitor(config, Logger);
+        var html = TestCompare.Normalize(DxpExport.ExportToString(
+            readDoc,
+            visitor,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.None },
+            Logger));
+
+        Assert.Contains("data-para-id=\"1234ABCD\"", html, StringComparison.Ordinal);
+        Assert.Contains("data-docx-part=\"document\"", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void HtmlExport_EmitParagraphMetadata_EmitsFootnotePart()
+    {
+        using var stream = new MemoryStream();
+        using (var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document, true))
+        {
+            var main = doc.AddMainDocumentPart();
+            var footnotesPart = main.AddNewPart<FootnotesPart>();
+            footnotesPart.Footnotes = new Footnotes(
+                new Footnote(
+                    new Paragraph(
+                        new Run(new FootnoteReferenceMark()),
+                        new Run(new Text(" Footnote text"))))
+                {
+                    Id = 1
+                });
+
+            main.Document = new Document(
+                new Body(
+                    new Paragraph(
+                        new Run(new Text("Body text")),
+                        new Run(new FootnoteReference { Id = 1 })),
+                    new SectionProperties(
+                        new PageSize { Width = 12240U, Height = 15840U },
+                        new PageMargin { Top = 1440, Right = 1440U, Bottom = 1440, Left = 1440U, Header = 720U, Footer = 720U, Gutter = 0U })));
+
+            main.Document.Save();
+            footnotesPart.Footnotes.Save();
+        }
+
+        stream.Position = 0;
+
+        using var readDoc = WordprocessingDocument.Open(stream, false);
+        var config = DxpHtmlVisitorConfig.CreateRichConfig();
+        config.EmitParagraphMetadata = true;
+        var visitor = new DxpHtmlVisitor(config, Logger);
+        var html = TestCompare.Normalize(DxpExport.ExportToString(
+            readDoc,
+            visitor,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.None },
+            Logger));
+
+        Assert.Contains("data-docx-part=\"document\"", html, StringComparison.Ordinal);
+        Assert.Contains("data-docx-part=\"footnote\"", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void HtmlExport_DoesNotEmitParagraphMetadata_ByDefault()
+    {
+        using var stream = new MemoryStream();
+        using (var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document, true))
+        {
+            var main = doc.AddMainDocumentPart();
+            var paragraph = new Paragraph(
+                new Run(new Text("Body text")));
+            paragraph.ParagraphId = "1234ABCD";
+
+            main.Document = new Document(new Body(paragraph));
+            main.Document.Save();
+        }
+
+        stream.Position = 0;
+
+        using var readDoc = WordprocessingDocument.Open(stream, false);
+        var visitor = new DxpHtmlVisitor(DxpHtmlVisitorConfig.CreateRichConfig(), Logger);
+        var html = TestCompare.Normalize(DxpExport.ExportToString(
+            readDoc,
+            visitor,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.None },
+            Logger));
+
+        Assert.DoesNotContain("data-para-id=", html, StringComparison.Ordinal);
+        Assert.DoesNotContain("data-docx-part=", html, StringComparison.Ordinal);
+    }
+
     private void VerifyAgainstFixture(
         Sample sample,
         DxpHtmlVisitorConfig baseConfig,
@@ -215,6 +321,7 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
     {
         return new DxpHtmlVisitorConfig {
             EmitImages = source.EmitImages,
+            EmitParagraphMetadata = source.EmitParagraphMetadata,
             EmitStyleFont = source.EmitStyleFont,
             EmitRunColor = source.EmitRunColor,
             EmitRunBackground = source.EmitRunBackground,

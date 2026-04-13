@@ -166,6 +166,7 @@ public interface DxpIDocumentContext
     IPackageProperties? CoreProperties { get; }
     IReadOnlyList<CustomFileProperty>? CustomProperties { get; }
     Properties? ExtendedProperties { get; }
+    OpenXmlPart? CurrentPart { get; }
     bool KeepAccept { get; }
     bool KeepReject { get; }
     DxpChangeInfo CurrentChangeInfo { get; }
