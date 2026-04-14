@@ -8,28 +8,20 @@
 
 </td><td style="width:50%;vertical-align:top;padding:8px;border:1px solid #ccc;">original text, added text, original text
 
-</td></tr></table><p style="margin-bottom:0pt;">1:  Original 1</p>
+</td></tr></table>1:  Original 1
 
+2:  Original 2
 
-<p style="margin-top:0pt;margin-bottom:0pt;">2:  Original 2</p>
+3:  Original 3
 
+<table style="width:100%;border-collapse:collapse;border:1px solid #ccc;"><tr><td style="width:50%;vertical-align:top;padding:8px;border:1px solid #ccc;">4:  Deleted 4
 
-<p style="margin-top:0pt;margin-bottom:0pt;">3:  Original 3</p>
+</td><td style="width:50%;vertical-align:top;padding:8px;border:1px solid #ccc;"></td></tr></table><table style="width:100%;border-collapse:collapse;border:1px solid #ccc;"><tr><td style="width:50%;vertical-align:top;padding:8px;border:1px solid #ccc;"></td><td style="width:50%;vertical-align:top;padding:8px;border:1px solid #ccc;">4:  Added 5
 
+</td></tr></table>5:  Original 6
 
-<table style="width:100%;border-collapse:collapse;border:1px solid #ccc;"><tr><td style="width:50%;vertical-align:top;padding:8px;border:1px solid #ccc;"><p style="margin-top:0pt;margin-bottom:0pt;">4:  Deleted 4</p>
+<table style="width:100%;border-collapse:collapse;border:1px solid #ccc;"><tr><td style="width:50%;vertical-align:top;padding:8px;border:1px solid #ccc;"></td><td style="width:50%;vertical-align:top;padding:8px;border:1px solid #ccc;">6:  Added 7
 
+</td></tr></table><table style="width:100%;border-collapse:collapse;border:1px solid #ccc;"><tr><td style="width:50%;vertical-align:top;padding:8px;border:1px solid #ccc;">6:  Delete 8
 
-</td><td style="width:50%;vertical-align:top;padding:8px;border:1px solid #ccc;"></td></tr></table><table style="width:100%;border-collapse:collapse;border:1px solid #ccc;"><tr><td style="width:50%;vertical-align:top;padding:8px;border:1px solid #ccc;"></td><td style="width:50%;vertical-align:top;padding:8px;border:1px solid #ccc;"><p style="margin-top:0pt;margin-bottom:0pt;">4:  Added 5</p>
-
-
-</td></tr></table><p style="margin-top:0pt;margin-bottom:0pt;">5:  Original 6</p>
-
-
-<table style="width:100%;border-collapse:collapse;border:1px solid #ccc;"><tr><td style="width:50%;vertical-align:top;padding:8px;border:1px solid #ccc;"></td><td style="width:50%;vertical-align:top;padding:8px;border:1px solid #ccc;"><p style="margin-top:0pt;margin-bottom:0pt;">6:  Added 7</p>
-
-
-</td></tr></table><table style="width:100%;border-collapse:collapse;border:1px solid #ccc;"><tr><td style="width:50%;vertical-align:top;padding:8px;border:1px solid #ccc;"><p style="margin-top:0pt;margin-bottom:0pt;">6:  Delete 8</p>
-
-
-</td><td style="width:50%;vertical-align:top;padding:8px;border:1px solid #ccc;"></td></tr></table><p style="margin-top:0pt;">7:  Original 9</p>
+</td><td style="width:50%;vertical-align:top;padding:8px;border:1px solid #ccc;"></td></tr></table>7:  Original 9

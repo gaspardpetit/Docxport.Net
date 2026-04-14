@@ -73,6 +73,7 @@ public sealed record DxpMarkdownVisitorConfig
     public bool EmitTableBorders = true;
     public bool EmitDocumentColors = true;
     public bool EmitParagraphAlignment = true;
+    public bool EmitRichLayoutHtml = true;
     public bool PreserveListSymbols = true;
     public bool RichTables = true;
     public bool UsePlainCodeBlocks = false;
@@ -95,6 +96,7 @@ public sealed record DxpMarkdownVisitorConfig
         EmitTableBorders = false,
         EmitDocumentColors = false,
         EmitParagraphAlignment = false,
+        EmitRichLayoutHtml = false,
         PreserveListSymbols = false,
         RichTables = false,
         UsePlainCodeBlocks = true,
@@ -667,7 +669,8 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
         }
 
         var paraCss = paragraph.ComputedStyle.ToCss(includeTextAlign: _config.EmitParagraphAlignment);
-        bool needsParagraphWrapper = !isHeading && !string.IsNullOrEmpty(paraCss);
+        // Paragraph style wrappers are layout-preservation HTML rather than semantic Markdown structure.
+        bool needsParagraphWrapper = _config.EmitRichLayoutHtml && !isHeading && !string.IsNullOrEmpty(paraCss);
         if (needsParagraphWrapper)
         {
             Write(d, $"<p style=\"{paraCss}\">");
@@ -997,6 +1000,13 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
     public override void VisitTab(TabChar tab, DxpIDocumentContext d)
     {
+        if (!_config.EmitRichLayoutHtml)
+        {
+            FlushPendingAlignedTab(d);
+            Write(d, "\t");
+            return;
+        }
+
         var stops = d.CurrentParagraph.Layout?.TabStops;
         if (stops == null || stops.Count == 0)
         {
