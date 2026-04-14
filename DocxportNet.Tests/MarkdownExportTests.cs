@@ -1,9 +1,13 @@
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.Fields;
 using DocxportNet.Fields.Eval;
 using DocxportNet.Fields.Resolution;
 using DocxportNet.Middleware;
 using DocxportNet.Tests.Utils;
 using DocxportNet.Visitors.Markdown;
+using System.Xml.Linq;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
@@ -127,6 +131,155 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
         VerifyAgainstFixture(sample, DxpMarkdownVisitorConfig.CreatePlainConfig(), ".plain.eval.md", ".plain.eval.test.md", DxpFieldEvalExportMode.Evaluate);
     }
 
+    [Fact]
+    public void MarkdownExport_EmitRichLayoutHtml_RichModeEmitsParagraphWrapper()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:pPr>
+      <w:ind w:left="720"/>
+      <w:spacing w:line="230" w:lineRule="auto"/>
+    </w:pPr>
+    <w:r><w:t>Styled paragraph</w:t></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var config = DxpMarkdownVisitorConfig.CreateRichConfig();
+        string markdown = ExportMarkdownFromBodyXml(bodyXml, config);
+
+        Assert.Contains("<p style=", markdown, StringComparison.Ordinal);
+        Assert.Contains("Styled paragraph", markdown, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void MarkdownExport_EmitRichLayoutHtml_PlainModeSuppressesParagraphWrapper()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:pPr>
+      <w:ind w:left="720"/>
+      <w:spacing w:line="230" w:lineRule="auto"/>
+    </w:pPr>
+    <w:r><w:t>Styled paragraph</w:t></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var config = DxpMarkdownVisitorConfig.CreatePlainConfig();
+        string markdown = ExportMarkdownFromBodyXml(bodyXml, config);
+
+        Assert.DoesNotContain("<p style=", markdown, StringComparison.Ordinal);
+        Assert.Contains("Styled paragraph", markdown, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void MarkdownExport_EmitRichLayoutHtml_RichModeEmitsTabSpan()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:pPr>
+      <w:tabs>
+        <w:tab w:val="left" w:pos="2880"/>
+      </w:tabs>
+    </w:pPr>
+    <w:r><w:t>Left</w:t></w:r>
+    <w:r><w:tab/></w:r>
+    <w:r><w:t>Right</w:t></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var config = DxpMarkdownVisitorConfig.CreateRichConfig();
+        string markdown = ExportMarkdownFromBodyXml(bodyXml, config);
+
+        Assert.Contains("<span class=\"dxp-tab", markdown, StringComparison.Ordinal);
+        Assert.Contains("Left", markdown, StringComparison.Ordinal);
+        Assert.Contains("Right", markdown, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void MarkdownExport_EmitRichLayoutHtml_PlainModeSuppressesTabSpan()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:pPr>
+      <w:tabs>
+        <w:tab w:val="left" w:pos="2880"/>
+      </w:tabs>
+    </w:pPr>
+    <w:r><w:t>Left</w:t></w:r>
+    <w:r><w:tab/></w:r>
+    <w:r><w:t>Right</w:t></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var config = DxpMarkdownVisitorConfig.CreatePlainConfig();
+        string markdown = ExportMarkdownFromBodyXml(bodyXml, config);
+
+        Assert.DoesNotContain("<span class=\"dxp-tab", markdown, StringComparison.Ordinal);
+        Assert.Contains("Left\tRight", markdown, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void MarkdownExport_EmitRichLayoutHtml_DoesNotSuppressHeaderHtmlGuardedElsewhere()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t>Body text</w:t></w:r>
+  </w:p>
+  <w:sectPr>
+    <w:headerReference w:type="default" r:id="rIdHeader1" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/>
+  </w:sectPr>
+</w:body>
+""";
+
+        var config = DxpMarkdownVisitorConfig.CreatePlainConfig();
+        string markdown = ExportMarkdownFromBodyXml(
+            bodyXml,
+            config,
+            document => {
+                var main = document.MainDocumentPart ?? throw new InvalidOperationException("Main document part should exist.");
+                var headerPart = main.AddNewPart<HeaderPart>("rIdHeader1");
+                headerPart.Header = new Header(
+                    new Paragraph(
+                        new Run(new Text("Header text"))));
+                headerPart.Header.Save();
+            });
+
+        Assert.Contains("<div class=\"header\"", markdown, StringComparison.Ordinal);
+        Assert.Contains("Header text", markdown, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void MarkdownExport_EmitRichLayoutHtml_DoesNotSuppressDeletedMarkup()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:del w:id="1" w:author="test">
+      <w:r>
+        <w:delText>Deleted text</w:delText>
+      </w:r>
+    </w:del>
+  </w:p>
+</w:body>
+""";
+
+        var config = DxpMarkdownVisitorConfig.CreatePlainConfig();
+        config.TrackedChangeMode = DxpTrackedChangeMode.InlineChanges;
+        string markdown = ExportMarkdownFromBodyXml(bodyXml, config);
+
+        Assert.Contains("<del>", markdown, StringComparison.Ordinal);
+        Assert.Contains("Deleted text", markdown, StringComparison.Ordinal);
+    }
+
     private void VerifyAgainstFixture(
         Sample sample,
         DxpMarkdownVisitorConfig config,
@@ -234,6 +387,35 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
         return writer.ToString();
     }
 
+    private string ExportMarkdownFromBodyXml(
+        string bodyXml,
+        DxpMarkdownVisitorConfig config,
+        Action<WordprocessingDocument>? configureDocument = null)
+    {
+        using var stream = new MemoryStream();
+        using (var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document, true))
+        {
+            var main = doc.AddMainDocumentPart();
+            var xml = XDocument.Parse(bodyXml);
+            var body = new Body();
+            body.AddNamespaceDeclaration("w", "http://schemas.openxmlformats.org/wordprocessingml/2006/main");
+            body.AddNamespaceDeclaration("w14", "http://schemas.microsoft.com/office/word/2010/wordml");
+            body.InnerXml = string.Concat(xml.Root!.Nodes());
+            main.Document = new Document(body);
+            main.Document.Save();
+            configureDocument?.Invoke(doc);
+        }
+
+        stream.Position = 0;
+
+        using var readDoc = WordprocessingDocument.Open(stream, false);
+        return TestCompare.Normalize(DxpExport.ExportToString(
+            readDoc,
+            new DxpMarkdownVisitor(config, Logger),
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.None },
+            Logger));
+    }
+
     private static DxpMarkdownVisitorConfig CloneConfig(DxpMarkdownVisitorConfig source, DxpTrackedChangeMode mode)
     {
         return new DxpMarkdownVisitorConfig {
@@ -244,6 +426,7 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
             EmitTableBorders = source.EmitTableBorders,
             EmitDocumentColors = source.EmitDocumentColors,
             EmitParagraphAlignment = source.EmitParagraphAlignment,
+            EmitRichLayoutHtml = source.EmitRichLayoutHtml,
             PreserveListSymbols = source.PreserveListSymbols,
             RichTables = source.RichTables,
             UsePlainCodeBlocks = source.UsePlainCodeBlocks,

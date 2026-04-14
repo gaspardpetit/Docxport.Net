@@ -14,36 +14,27 @@ On November 7, 2024, Bill C-244, <i>An Act to amend the Copyright Act (diagnosis
 
 ### What it means
 
-<p style="border-top:0.5pt solid #000000;border-right:0.5pt solid #000000;border-left:0.5pt solid #000000;">The new section 41.121 will have but a limited impact on the Canadian repair market. Despite the amendment to the CA, it is still forbidden for repairers to use the services of a TPM circumvention specialist, and specialized circumvention equipment is still prohibited. Furthermore, although repairers can now circumvent TPMs to diagnose, maintain or repair a customer’s device, the risks of copyright infringement still exist, because the amendment fails to introduce a fair dealing exception for these purposes.</p>
+The new section 41.121 will have but a limited impact on the Canadian repair market. Despite the amendment to the CA, it is still forbidden for repairers to use the services of a TPM circumvention specialist, and specialized circumvention equipment is still prohibited. Furthermore, although repairers can now circumvent TPMs to diagnose, maintain or repair a customer’s device, the risks of copyright infringement still exist, because the amendment fails to introduce a fair dealing exception for these purposes.
 
+A number of questions also remain unanswered, such as: What scope will the courts give to the terms “maintenance” and “repair”? Does the exception make it legal to upgrade a device to meet new standards or repair it with more efficient parts, or are repairers only allowed to service devices to original specifications? Consider, for example, the case of a connected device that becomes obsolete after a new security standard is adopted: Will updating it constitute maintenance?
 
-<p style="border-right:0.5pt solid #000000;border-left:0.5pt solid #000000;">A number of questions also remain unanswered, such as: What scope will the courts give to the terms “maintenance” and “repair”? Does the exception make it legal to upgrade a device to meet new standards or repair it with more efficient parts, or are repairers only allowed to service devices to original specifications? Consider, for example, the case of a connected device that becomes obsolete after a new security standard is adopted: Will updating it constitute maintenance?</p>
-
-
-<p style="border-right:0.5pt solid #000000;border-bottom:0.5pt solid #000000;border-left:0.5pt solid #000000;">In short, the adoption of Bill C-244 represents but a small step toward the right to repair goods, and it shows how hard it is to reconcile the property rights that apply to goods with intellectual property rights.</p>
-
+In short, the adoption of Bill C-244 represents but a small step toward the right to repair goods, and it shows how hard it is to reconcile the property rights that apply to goods with intellectual property rights.
 
 ### Amendments made by C-244
 
 Section 41.121, as introduced by C-244, has three paragraphs:
 
-<p style="margin-top:6pt;margin-bottom:6pt;border-top:0.5pt solid #000000;border-right:0.5pt solid #000000;border-left:0.5pt solid #000000;background-color:#FFFFFF;"><b>Diagnosis, maintenance and repair</b></p>
+<b>Diagnosis, maintenance and repair</b>
 
+41.121 (1) Paragraph 41.1(1)(a) does not apply to a person who circumvents a technological protection measure for the sole purpose of maintaining or repairing a product, including any related diagnosing, if the work, performer’s performance fixed in a sound recording or sound recording to which the technological protection measure controls access forms a part of the product.
 
-<p style="margin-top:6pt;margin-bottom:6pt;border-right:0.5pt solid #000000;border-left:0.5pt solid #000000;background-color:#FFFFFF;">41.121 (1) Paragraph 41.1(1)(a) does not apply to a person who circumvents a technological protection measure for the sole purpose of maintaining or repairing a product, including any related diagnosing, if the work, performer’s performance fixed in a sound recording or sound recording to which the technological protection measure controls access forms a part of the product.</p>
+<b>For greater certainty</b>
 
+(2) For greater certainty, subsection (1) applies to a person who circumvents a technological protection measure in the circumstances referred to in that subsection for another person.
 
-<p style="margin-top:6pt;margin-bottom:6pt;border-right:0.5pt solid #000000;border-left:0.5pt solid #000000;background-color:#FFFFFF;"><b>For greater certainty</b></p>
+<b>Non-application</b>
 
-
-<p style="margin-top:6pt;margin-bottom:6pt;border-right:0.5pt solid #000000;border-left:0.5pt solid #000000;background-color:#FFFFFF;">(2) For greater certainty, subsection (1) applies to a person who circumvents a technological protection measure in the circumstances referred to in that subsection for another person.</p>
-
-
-<p style="margin-top:6pt;margin-bottom:6pt;border-right:0.5pt solid #000000;border-left:0.5pt solid #000000;background-color:#FFFFFF;"><b>Non-application</b></p>
-
-
-<p style="margin-top:6pt;margin-bottom:6pt;border-right:0.5pt solid #000000;border-bottom:0.5pt solid #000000;border-left:0.5pt solid #000000;background-color:#FFFFFF;">(3) A person acting in the circumstances referred to in subsection (1) is not entitled to benefit from the exception under that subsection if the person does an act that constitutes an infringement of copyright.</p>
-
+(3) A person acting in the circumstances referred to in subsection (1) is not entitled to benefit from the exception under that subsection if the person does an act that constitutes an infringement of copyright.
 
 Under the new section, the protection afforded to TPMs is set aside for maintenance and repair purposes, including the related diagnosing. Subsection 41.121(2) adds that the exception also applies to a person, such as a professional repairer, who repairs a product for another person. Subsection 41.121(3) further adds that the exception applies only to situations where there is no copyright infringement; for example, copyright infringement would be a person circumventing TPMs to repair a product, but taking advantage of the situation to make an illicit copy of a computer program.
 
@@ -69,81 +60,62 @@ Our legal peers will probably agree that the changes made to the definitions in 
 
 <table>
   <tr>
-    <td><p style="margin-top:6pt;margin-bottom:6pt;"><b>Before</b></p>
-
+    <td><b>Before</b>
 
 </td>
-    <td><p style="margin-top:6pt;margin-bottom:6pt;"><b>After</b></p>
-
+    <td><b>After</b>
 
 </td>
   </tr>
   <tr>
-    <td><p style="margin-top:6pt;margin-bottom:6pt;background-color:#FFFFFF;"><b>Technical protection measures and information on the rights mechanism</b></p>
+    <td><b>Technical protection measures and information on the rights mechanism</b>
 
+<b>Definitions</b>
 
-<p style="margin-top:6pt;margin-bottom:6pt;background-color:#FFFFFF;"><b>Definitions</b></p>
+<b>41 </b>The following definitions apply in this section and in sections 41.1 to 41.21.
 
+<b><i>circumvent </i></b>means,
 
-<p style="margin-top:6pt;margin-bottom:6pt;background-color:#FFFFFF;"><b>41 </b>The following definitions apply in this section and in sections 41.1 to 41.21.</p>
-
-
-<p style="margin-top:6pt;margin-bottom:6pt;background-color:#FFFFFF;"><b><i>circumvent </i></b>means,</p>
-
-
-<p style="margin-top:5pt;margin-bottom:5pt;line-height:1;background-color:#FFFFFF;"><b>a)</b>&#9;(a) in respect of a technological protection measure within the meaning of paragraph (a) of the definition technological protection measure, to descramble a scrambled work or decrypt an encrypted work or to otherwise avoid, bypass, remove, deactivate or impair the technological protection measure, unless it is done with the authority of the copyright owner; and</p>
-
+<b>a)</b>	(a) in respect of a technological protection measure within the meaning of paragraph (a) of the definition technological protection measure, to descramble a scrambled work or decrypt an encrypted work or to otherwise avoid, bypass, remove, deactivate or impair the technological protection measure, unless it is done with the authority of the copyright owner; and
 
 </td>
-    <td><p style="margin-top:6pt;margin-bottom:6pt;background-color:#FFFFFF;"><b>Technical protection measures and information on the rights mechanism</b></p>
+    <td><b>Technical protection measures and information on the rights mechanism</b>
 
+<b>Definitions</b>
 
-<p style="margin-top:6pt;margin-bottom:6pt;background-color:#FFFFFF;"><b>Definitions</b></p>
+<b>41 </b>The following definitions apply in this section and in sections 41.1 to 41.21.
 
+<b><i>circumvent </i></b>means,
 
-<p style="margin-top:6pt;margin-bottom:6pt;background-color:#FFFFFF;"><b>41 </b>The following definitions apply in this section and in sections 41.1 to 41.21.</p>
-
-
-<p style="margin-top:6pt;margin-bottom:6pt;background-color:#FFFFFF;"><b><i>circumvent </i></b>means,</p>
-
-
-<p style="margin-top:5pt;margin-bottom:5pt;line-height:1;"><b>a)</b>&#9;(a) in respect of a technological protection measure within the meaning of paragraph (a) of the definition technological protection measure, to descramble a scrambled work <b><u>or computer program</u></b>, or decrypt an encrypted work or computer program or to otherwise avoid, bypass, remove, deactivate or impair the technological protection measure, unless it is done with the authority of the copyright owner; and</p>
-
+<b>a)</b>	(a) in respect of a technological protection measure within the meaning of paragraph (a) of the definition technological protection measure, to descramble a scrambled work <b><u>or computer program</u></b>, or decrypt an encrypted work or computer program or to otherwise avoid, bypass, remove, deactivate or impair the technological protection measure, unless it is done with the authority of the copyright owner; and
 
 </td>
   </tr>
   <tr>
-    <td><p style="margin-top:5pt;margin-bottom:5pt;line-height:1;background-color:#FFFFFF;"><b>b) &#9;</b>…</p>
-
+    <td><b>b) 	</b>…
 
 </td>
-    <td><p style="margin-top:5pt;margin-bottom:5pt;line-height:1;background-color:#FFFFFF;"><b>b)&#9;</b>…</p>
-
+    <td><b>b)	</b>…
 
 </td>
   </tr>
   <tr>
-    <td><p style="margin-top:6pt;margin-bottom:6pt;background-color:#FFFFFF;"><b><i>technological protection measure </i></b>means any effective technology, device or component that, in the ordinary course of its operation, </p>
+    <td><b><i>technological protection measure </i></b>means any effective technology, device or component that, in the ordinary course of its operation,
 
-
-<p style="margin-top:5pt;margin-bottom:5pt;line-height:1;background-color:#FFFFFF;"><b>a)&#9;</b>controls access to a work, to a performer’s performance fixed in a sound recording or to a sound recording and whose use is authorized by the copyright owner; or</p>
-
+<b>a)	</b>controls access to a work, to a performer’s performance fixed in a sound recording or to a sound recording and whose use is authorized by the copyright owner; or
 
 </td>
-    <td><p style="margin-top:6pt;margin-bottom:6pt;background-color:#FFFFFF;"><b><i>technological protection measure </i></b>means any effective technology, device or component that, in the ordinary course of its operation,</p>
+    <td><b><i>technological protection measure </i></b>means any effective technology, device or component that, in the ordinary course of its operation,
 
-
-<p style="margin-top:5pt;margin-bottom:5pt;line-height:1;background-color:#FFFFFF;"><b>a)&#9;</b>controls access to a work, <b><u>including a computer program</u></b>, to a performer’s performance fixed in a sound recording or to a sound recording and whose use is authorized by the copyright owner;</p>
-
+<b>a)	</b>controls access to a work, <b><u>including a computer program</u></b>, to a performer’s performance fixed in a sound recording or to a sound recording and whose use is authorized by the copyright owner;
 
 </td>
   </tr>
   <tr>
-    <td><b>b)&#9;</b>…
+    <td><b>b)	</b>…
 
 </td>
-    <td><p style="margin-top:5pt;margin-bottom:5pt;line-height:1;background-color:#FFFFFF;"><b>b)&#9;</b>…</p>
-
+    <td><b>b)	</b>…
 
 </td>
   </tr>
@@ -167,45 +139,41 @@ The relaxation of TPM rules aligns with similar measures already passed in the U
 Here in Canada, the adoption of Bill C-244 is another step in the emergence of the right to repair goods. The measure builds on another federal bill, C-59,<a href="#fn-28" id="fnref-28">[27]</a> which was assented to last June and amends the <i>Competition Act</i> to allow the courts to compel suppliers to sell diagnosis or repair tools. At the provincial level, Quebec became the first province to adopt right-to-repair legislation<a href="#fn-29" id="fnref-29">[28]</a> last year.</b> Over the next few months, we will see whether the new section 41.121 of the CA will unlock the repair market. For the moment, the measure appears to us to be rather timid.
 
 <div class="footnote" id="fn-2">
-<p style="margin-bottom:0pt;line-height:1;">1 PARLIAMENT OF CANADA, LEGISinfo: C-244: <i>An Act to amend the Copyright Act (diagnosis, maintenance and repair)</i>, Parliament of Canada, online:
+1 PARLIAMENT OF CANADA, LEGISinfo: C-244: <i>An Act to amend the Copyright Act (diagnosis, maintenance and repair)</i>, Parliament of Canada, online:
 
 `HYPERLINK "https://www.parl.ca/legisinfo/en/bill/44-1/c-244"`
 
-<u>https://www.parl.ca/legisinfo/en/bill/44-1/c-244</u>.</p>
-
+<u>https://www.parl.ca/legisinfo/en/bill/44-1/c-244</u>.
 
 </div>
 <div class="footnote" id="fn-3">
-<p style="margin-bottom:0pt;line-height:1;">2 PARLIAMENT OF CANADA, LEGISinfo: C-272, <i>An Act to amend the Copyright Act (diagnosis, maintenance and repair)</i>, Parliament of Canada, online:
+2 PARLIAMENT OF CANADA, LEGISinfo: C-272, <i>An Act to amend the Copyright Act (diagnosis, maintenance and repair)</i>, Parliament of Canada, online:
 
 `HYPERLINK "https://www.parl.ca/legisinfo/en/bill/43-2/c-272"`
 
-<u>https://www.parl.ca/legisinfo/en/bill/43-2/c-272.</u></p>
-
+<u>https://www.parl.ca/legisinfo/en/bill/43-2/c-272.</u>
 
 </div>
 <div class="footnote" id="fn-4">
-<p style="margin-bottom:0pt;line-height:1;">3<i>
+3<i>
 
 ```
 HYPERLINK "https://www.canlii.org/en/ca/fct/doc/2017/2017fc246/2017fc246.html?resultId=f34c76e717524f8d8c1acd90bbd83943&searchId=2024-11-29T09:58:58:760/2be4b3f51b7245eebea7ffaaaa3df9a0"
 ```
 
-<u>Nintendo of America Inc. </u></i><u>v.<i> King</i></u>, 2017 FC 246, [2018] 1 FCR 509.</p>
-
+<u>Nintendo of America Inc. </u></i><u>v.<i> King</i></u>, 2017 FC 246, [2018] 1 FCR 509.
 
 </div>
 <div class="footnote" id="fn-5">
-<p style="margin-bottom:0pt;line-height:1;">4<i> WIPO Copyright Treaty</i>, December 20, 1996, article 11, online:
+4<i> WIPO Copyright Treaty</i>, December 20, 1996, article 11, online:
 
 `HYPERLINK "https://www.wipo.int/wipolex/en/treaties/textdetails/12740"`
 
-<u>https://www.wipo.int/wipolex/en/treaties/textdetails/12740</u>.</p>
-
+<u>https://www.wipo.int/wipolex/en/treaties/textdetails/12740</u>.
 
 </div>
 <div class="footnote" id="fn-6">
-<p style="margin-bottom:0pt;line-height:1;">5<i> Copyright Modernization Act</i>, S.C. 2012, c. 20, assented to on 2012-06-29, online:
+5<i> Copyright Modernization Act</i>, S.C. 2012, c. 20, assented to on 2012-06-29, online:
 
 ```
 HYPERLINK "https://laws-lois.justice.gc.ca/eng/AnnualStatutes/2012_20/FullText.html"
@@ -217,21 +185,19 @@ HYPERLINK "https://laws-lois.justice.gc.ca/eng/AnnualStatutes/2012_20/FullText.h
 HYPERLINK "https://canadagazette.gc.ca/rp-pr/p2/2012/2012-11-07/html/si-tr85-eng.html"
 ```
 
-<u>https: //canadagazette.gc.ca/rp-pr/p2/2012/2012-11-07/html/si-tr85-fra.html</u>. </p>
-
+<u>https: //canadagazette.gc.ca/rp-pr/p2/2012/2012-11-07/html/si-tr85-fra.html</u>.
 
 </div>
 <div class="footnote" id="fn-7">
-<p style="margin-bottom:0pt;line-height:1;">6 Graham J. Reynolds, “Of Lock-Breaking and Stock Taking - IP, Climate Change, and the Right to Repair in Canada,” in 2023 101-1 <i>Canadian Bar Review</i> 32, 2023 CanLIIDocs 1144, p. 54, online:
+6 Graham J. Reynolds, “Of Lock-Breaking and Stock Taking - IP, Climate Change, and the Right to Repair in Canada,” in 2023 101-1 <i>Canadian Bar Review</i> 32, 2023 CanLIIDocs 1144, p. 54, online:
 
 `HYPERLINK "https://canlii.ca/t/7n4cj"`
 
-<u>https://canlii.ca/t/7n4cj</u>.</p>
-
+<u>https://canlii.ca/t/7n4cj</u>.
 
 </div>
 <div class="footnote" id="fn-8">
-<p style="margin-bottom:0pt;line-height:1;">7 Committee on Industry and Technology, 5 December 2022, Catherine Lovrics, <i>Open Parliament</i>, online:
+7 Committee on Industry and Technology, 5 December 2022, Catherine Lovrics, <i>Open Parliament</i>, online:
 
 ```
 HYPERLINK "https://openparliament.ca/committees/industry/44-1/49/catherine-lovrics-2/"
@@ -255,152 +221,137 @@ HYPERLINK "https://openparliament.ca/committees/industry/44-1/59/andy-fillmore-6
 HYPERLINK "https://openparliament.ca/committees/industry/44-1/59/patrick-blanar-1/"
 ```
 
-<u>https://openparliament.ca/committees/industry/44-1/59/patrick-blanar-1/</u>.</p>
-
+<u>https://openparliament.ca/committees/industry/44-1/59/patrick-blanar-1/</u>.
 
 </div>
 <div class="footnote" id="fn-9">
-<p style="margin-bottom:0pt;line-height:1;">8 Entertainment Software Association of Canada, <i>Bill C-244 – An Act to amend the Copyright Act (diagnosis, maintenance and repair),</i> online:
+8 Entertainment Software Association of Canada, <i>Bill C-244 – An Act to amend the Copyright Act (diagnosis, maintenance and repair),</i> online:
 
 ```
 HYPERLINK "https://www.ourcommons.ca/Content/Committee/441/INDU/Brief/BR12209146/br-external/EntertainmentSoftwareAssociationOfCanada-e.pdf"
 ```
 
-<u> https://www.ourcommons.ca/Content/Committee/441/INDU/Brief/BR12209146/br-external/EntertainmentSoftwareAssociationOfCanada-e.pdf</u>.</p>
-
+<u> https://www.ourcommons.ca/Content/Committee/441/INDU/Brief/BR12209146/br-external/EntertainmentSoftwareAssociationOfCanada-e.pdf</u>.
 
 </div>
 <div class="footnote" id="fn-10">
-<p style="margin-bottom:0pt;line-height:1;">9 Committee on Industry and Technology, February 8, 2023, Paul Fogolin, online:
+9 Committee on Industry and Technology, February 8, 2023, Paul Fogolin, online:
 
 ```
 HYPERLINK "https://openparliament.ca/committees/industry/44-1/57/paul-fogolin-1/"
 ```
 
-<u>https://openparliament.ca/committees/industry/44-1/57/paul-fogolin-1/</u>.</p>
-
+<u>https://openparliament.ca/committees/industry/44-1/57/paul-fogolin-1/</u>.
 
 </div>
 <div class="footnote" id="fn-11">
-<p style="margin-bottom:0pt;line-height:1;">10 Committee on Industry and Technology, February 8, 2023, Charles Bernard, online:
+10 Committee on Industry and Technology, February 8, 2023, Charles Bernard, online:
 
 ```
 HYPERLINK "https://openparliament.ca/committees/industry/44-1/57/charles-bernard-1/"
 ```
 
-<u>https://openparliament.ca/committees/industry/44-1/57/charles-bernard-1/</u>.</p>
-
+<u>https://openparliament.ca/committees/industry/44-1/57/charles-bernard-1/</u>.
 
 </div>
 <div class="footnote" id="fn-12">
-<p style="margin-bottom:0pt;line-height:1;">11 Industry and Technology Committee, December 5, 2022, Catherine Lovrics, online:
+11 Industry and Technology Committee, December 5, 2022, Catherine Lovrics, online:
 
 ```
 HYPERLINK "https://openparliament.ca/committees/industry/44-1/49/catherine-lovrics-2/"
 ```
 
-<u> https://openparliament.ca/committees/industry/44-1/49/catherine-lovrics-2/</u>.</p>
-
+<u> https://openparliament.ca/committees/industry/44-1/49/catherine-lovrics-2/</u>.
 
 </div>
 <div class="footnote" id="fn-13">
-<p style="margin-bottom:0pt;line-height:1;">12 Emma Fillman,<i> “</i>Comprehensive Right to Repair:<i> </i>The Fight Against Planned Obsolescence in Canada,” (2023) 32 Dalhousie J Legal Stud 123, p. 145. online
+12 Emma Fillman,<i> “</i>Comprehensive Right to Repair:<i> </i>The Fight Against Planned Obsolescence in Canada,” (2023) 32 Dalhousie J Legal Stud 123, p. 145. online
 
 `HYPERLINK "https://digitalcommons.schulichlaw.dal.ca/djls/vol32/iss1/5/"`
 
-<u> https://digitalcommons.schulichlaw.dal.ca/djls/vol32/iss1/5/.</u></p>
-
+<u> https://digitalcommons.schulichlaw.dal.ca/djls/vol32/iss1/5/.</u>
 
 </div>
 <div class="footnote" id="fn-14">
-<p style="margin-bottom:0pt;line-height:1;">13 Irene Calboli, “The right to repair: Recent Developments in the USA<i>,” World Intellectual Property Organization Magazine</i>, August 2023, online:
+13 Irene Calboli, “The right to repair: Recent Developments in the USA<i>,” World Intellectual Property Organization Magazine</i>, August 2023, online:
 
 `HYPERLINK "https://www.wipo.int/wipo_magazine_digital/en/2023/article_0023.html"`
 
-<u> https://www.wipo.int/wipo_magazine_digital/en/2023/article_0023.html</u>.</p>
-
+<u> https://www.wipo.int/wipo_magazine_digital/en/2023/article_0023.html</u>.
 
 </div>
 <div class="footnote" id="fn-15">
-<p style="margin-bottom:0pt;line-height:1;">14 Emma Fillman, “Comprehensive Right to Repair:<i> </i>The Fight Against Planned Obsolescence in Canada,” (2023) 32 Dalhousie J Legal Stud 123, pp. 142 and following, online<u> https://digitalcommons.schulichlaw.dal.ca/djls/vol32/iss1/5/.</u></p>
-
+14 Emma Fillman, “Comprehensive Right to Repair:<i> </i>The Fight Against Planned Obsolescence in Canada,” (2023) 32 Dalhousie J Legal Stud 123, pp. 142 and following, online<u> https://digitalcommons.schulichlaw.dal.ca/djls/vol32/iss1/5/.</u>
 
 </div>
 <div class="footnote" id="fn-16">
-<p style="margin-bottom:0pt;line-height:1;">15 Emma Fillman, “Comprehensive Right to Repair:<i> </i>The Fight Against Planned Obsolescence in Canada,” (2023) 32 Dalhousie J Legal Stud 123, pp. 142 and following, online<u> https://digitalcommons.schulichlaw.dal.ca/djls/vol32/iss1/5/.</u></p>
-
+15 Emma Fillman, “Comprehensive Right to Repair:<i> </i>The Fight Against Planned Obsolescence in Canada,” (2023) 32 Dalhousie J Legal Stud 123, pp. 142 and following, online<u> https://digitalcommons.schulichlaw.dal.ca/djls/vol32/iss1/5/.</u>
 
 </div>
 <div class="footnote" id="fn-17">
 </div>
 <div class="footnote" id="fn-18">
-<p style="margin-bottom:0pt;line-height:1;">17 Committee on Industry and Technology, February 8, 2023, Shannon Sereda, online:
+17 Committee on Industry and Technology, February 8, 2023, Shannon Sereda, online:
 
 ```
 HYPERLINK "https://openparliament.ca/committees/industry/44-1/57/shannon-sereda-1/"
 ```
 
-<u> https://openparliament.ca/committees/industry/44-1/57/shannon-sereda-1/</u>.</p>
-
+<u> https://openparliament.ca/committees/industry/44-1/57/shannon-sereda-1/</u>.
 
 </div>
 <div class="footnote" id="fn-19">
-<p style="margin-bottom:0pt;line-height:1;">18 Committee on Industry and Technology, February 8, 2023, Anthony D. Rosborough, online:
+18 Committee on Industry and Technology, February 8, 2023, Anthony D. Rosborough, online:
 
 ```
 HYPERLINK "https://openparliament.ca/committees/industry/44-1/57/anthony-d-rosborough-1/"
 ```
 
-<u> https://openparliament.ca/committees/industry/44-1/57/anthony-d-rosborough-1/</u>.</p>
-
+<u> https://openparliament.ca/committees/industry/44-1/57/anthony-d-rosborough-1/</u>.
 
 </div>
 <div class="footnote" id="fn-20">
-<p style="margin-bottom:0pt;line-height:1;">19 Copyright Office, Library of Congress, E<i>xemption to Prohibition on Circumvention of Copyright Protection Systems for Access Control Technologies</i>, Federal Register, October 28, 2024, online:
+19 Copyright Office, Library of Congress, E<i>xemption to Prohibition on Circumvention of Copyright Protection Systems for Access Control Technologies</i>, Federal Register, October 28, 2024, online:
 
 ```
 HYPERLINK "https://www.federalregister.gov/documents/2024/10/28/2024-24563/exemption-to-prohibition-on-circumvention-of-copyright-protection-systems-for-access-control"
 ```
 
-<u> https://www.federalregister.gov/documents/2024/10/28/2024-24563/exemption-to-prohibition-on-circumvention-of-copyright-protection-systems-for-access-control</u>.</p>
-
+<u> https://www.federalregister.gov/documents/2024/10/28/2024-24563/exemption-to-prohibition-on-circumvention-of-copyright-protection-systems-for-access-control</u>.
 
 </div>
 <div class="footnote" id="fn-21">
-<p style="margin-bottom:0pt;line-height:1;">20 Copyright Office, Library of Congress, <i>Exemption to Prohibition on Circumvention of Copyright Protection Systems for Access Control Technologies</i>, Federal Register, October 26, 2018, online:
+20 Copyright Office, Library of Congress, <i>Exemption to Prohibition on Circumvention of Copyright Protection Systems for Access Control Technologies</i>, Federal Register, October 26, 2018, online:
 
 ```
 HYPERLINK "https://www.federalregister.gov/documents/2018/10/26/2018-23241/exemption-to-prohibition-on-circumvention-of-copyright-protection-systems-for-access-control"
 ```
 
-<u> https://www.federalregister.gov/documents/2018/10/26/2018-23241/exemption-to-prohibition-on-circumvention-of-copyright-protection-systems-for-access-control</u>.</p>
-
+<u> https://www.federalregister.gov/documents/2018/10/26/2018-23241/exemption-to-prohibition-on-circumvention-of-copyright-protection-systems-for-access-control</u>.
 
 </div>
 <div class="footnote" id="fn-22">
-<p style="margin-bottom:0pt;line-height:1;">21 Federal Trade Commission, <i>Nixing the Fix: An FTC Report to Congress on Repair Restrictions</i>, May 2021, online:
+21 Federal Trade Commission, <i>Nixing the Fix: An FTC Report to Congress on Repair Restrictions</i>, May 2021, online:
 
 ```
 HYPERLINK "https://www.ftc.gov/system/files/documents/reports/nixing-fix-ftc-report-congress-repair-restrictions/nixing_the_fix_report_final_5521_630pm-508_002.pdf"
 ```
 
-<u> https://www.ftc.gov/system/files/documents/reports/nixing-fix-ftc-report-congress-repair-restrictions/nixing_the_fix_report_final_5521_630pm-508_002.pdf</u>.</p>
-
+<u> https://www.ftc.gov/system/files/documents/reports/nixing-fix-ftc-report-congress-repair-restrictions/nixing_the_fix_report_final_5521_630pm-508_002.pdf</u>.
 
 </div>
 <div class="footnote" id="fn-23">
-<p style="margin-bottom:0pt;line-height:1;">22 The White House, <i>Executive Order on Promoting Competition in the American Economy</i>, July 9, 2021, online:
+22 The White House, <i>Executive Order on Promoting Competition in the American Economy</i>, July 9, 2021, online:
 
 ```
 HYPERLINK "https://www.whitehouse.gov/briefing-room/presidential-actions/2021/07/09/executive-order-on-promoting-competition-in-the-american-economy/"
 ```
 
-<u>https://www.whitehouse.gov/briefing-room/presidential-actions/2021/07/09/executive-order-on-promoting-competition-in-the-american-economy/</u>.</p>
-
+<u>https://www.whitehouse.gov/briefing-room/presidential-actions/2021/07/09/executive-order-on-promoting-competition-in-the-american-economy/</u>.
 
 </div>
 <div class="footnote" id="fn-24">
-<p style="margin-bottom:0pt;line-height:1;">23 X, Jon Campbell, December 29, 2022, online:
+23 X, Jon Campbell, December 29, 2022, online:
 
 `HYPERLINK "https://twitter.com/JonCampbellNY/status/1608327624526548993"`
 
@@ -418,51 +369,45 @@ HYPERLINK "https://www.whitehouse.gov/briefing-room/presidential-actions/2021/07
 HYPERLINK "https://www.sidley.com/en/insights/newsupdates/2023/10/california-becomes-third-us-state-to-join-the-right-to-repair-movement"
 ```
 
-<u> https://www.sidley.com/en/insights/newsupdates/2023/10/california-becomes-third-us-state-to-join-the-right-to-repair-movement</u>.</p>
-
+<u> https://www.sidley.com/en/insights/newsupdates/2023/10/california-becomes-third-us-state-to-join-the-right-to-repair-movement</u>.
 
 </div>
 <div class="footnote" id="fn-25">
-<p style="margin-bottom:0pt;line-height:1;">24 John Deere, <i>Memorandum of Undestanding</i>, January 8, 2023, online:
+24 John Deere, <i>Memorandum of Undestanding</i>, January 8, 2023, online:
 
 `HYPERLINK "https://www.fb.org/files/AFBF_John_Deere_MOU.pdf"`
 
-<u>https://www.fb.org/files/AFBF_John_Deere_MOU.pdf</u>.</p>
-
+<u>https://www.fb.org/files/AFBF_John_Deere_MOU.pdf</u>.
 
 </div>
 <div class="footnote" id="fn-26">
-<p style="margin-bottom:0pt;line-height:1;">25 The Verge, “Surprise:<i> </i>Apple now supports California’s right to repair,” August 23, 2023, online:
+25 The Verge, “Surprise:<i> </i>Apple now supports California’s right to repair,” August 23, 2023, online:
 
 ```
 HYPERLINK "https://www.theverge.com/2023/8/23/23843506/apple-california-right-to-repair-sb-244"
 ```
 
-<u>https://www.theverge.com/2023/8/23/23843506/apple-california-right-to-repair-sb-244</u>.</p>
-
+<u>https://www.theverge.com/2023/8/23/23843506/apple-california-right-to-repair-sb-244</u>.
 
 </div>
 <div class="footnote" id="fn-27">
-<p style="margin-bottom:0pt;line-height:1;">26 Irene Calboli, “The right to repair: Recent Developments in the USA,”<i> World Intellectual Property Organization Magazine</i>, online:
+26 Irene Calboli, “The right to repair: Recent Developments in the USA,”<i> World Intellectual Property Organization Magazine</i>, online:
 
 `HYPERLINK "https://www.wipo.int/wipo_magazine_digital/en/2023/article_0023.html"`
 
-<u> https://www.wipo.int/wipo_magazine_digital/en/2023/article_0023.html</u>. </p>
-
+<u> https://www.wipo.int/wipo_magazine_digital/en/2023/article_0023.html</u>.
 
 </div>
 <div class="footnote" id="fn-28">
-<p style="margin-bottom:0pt;line-height:1;">27 PARLIAMENT OF CANADA, LEGISinfo: C-59: <i>An Act to implement certain provisions of the fall economic statement tabled in Parliament on November 21, 2023 and certain provisions of the budget tabled in Parliament on March 28, 2023</i>; Parliament of Canada, online:
+27 PARLIAMENT OF CANADA, LEGISinfo: C-59: <i>An Act to implement certain provisions of the fall economic statement tabled in Parliament on November 21, 2023 and certain provisions of the budget tabled in Parliament on March 28, 2023</i>; Parliament of Canada, online:
 
 `HYPERLINK "https://www.parl.ca/legisinfo/en/bill/44-1/c-59"`
 
-<i><u> </u></i><u>https://www.parl.ca/legisinfo/en/bill/44-1/c-59</u><i>.</i></p>
-
+<i><u> </u></i><u>https://www.parl.ca/legisinfo/en/bill/44-1/c-59</u><i>.</i>
 
 </div>
 <div class="footnote" id="fn-29">
-<p style="margin-bottom:0pt;line-height:1;">28 Québec National Assembly, Bill 29, <i>An Act to protect consumers from planned obsolescence and to promote the durability, repairability and maintenance of goods, </i>online: <u>https://www.assnat.qc.ca/en/travaux-parlementaires/projets-loi/projet-loi-29-43-1.html.</u></p>
-
+28 Québec National Assembly, Bill 29, <i>An Act to protect consumers from planned obsolescence and to promote the durability, repairability and maintenance of goods, </i>online: <u>https://www.assnat.qc.ca/en/travaux-parlementaires/projets-loi/projet-loi-29-43-1.html.</u>
 
 </div>
 <div class="footnote" id="fn-30">

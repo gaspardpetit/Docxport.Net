@@ -4,290 +4,196 @@
 <!-- Created: 2025-12-19 13:22:00Z -->
 <!-- Modified: 2025-12-21 07:40:00Z -->
 
-<p style="margin-bottom:0pt;">• default list level 1</p>
+• default list level 1
 
+next line, no bullet
 
-<p style="margin-top:0pt;margin-bottom:0pt;">next line, no bullet</p>
+o default list level 2
 
+next line no bullet
 
-<p style="margin-top:0pt;margin-bottom:0pt;">o default list level 2</p>
+▪ default list level 3
 
+next line no bullet
 
-<p style="margin-top:0pt;margin-bottom:0pt;">next line no bullet</p>
+• default list level 4
 
+next line no bullet
 
-<p style="margin-left:36pt;margin-top:0pt;margin-bottom:0pt;">▪ default list level 3</p>
+o default list level 5
 
+next line no bullet
 
-<p style="margin-left:36pt;margin-top:0pt;margin-bottom:0pt;">next line no bullet</p>
+▪ default list level 6
 
+next line no bullet
 
-<p style="margin-left:72pt;margin-top:0pt;margin-bottom:0pt;">• default list level 4</p>
+• default list level 7
 
+next line no bullet
 
-<p style="margin-left:72pt;margin-top:0pt;margin-bottom:0pt;">next line no bullet</p>
+o default list level 8
 
+next line no bullet
 
-<p style="margin-left:108pt;margin-top:0pt;margin-bottom:0pt;">o default list level 5</p>
+▪ default list level 9
 
+next line no bullet
 
-<p style="margin-left:108pt;margin-top:0pt;margin-bottom:0pt;">next line no bullet</p>
+o default list level 8
 
+• default list level 7
 
-<p style="margin-left:144pt;margin-top:0pt;margin-bottom:0pt;">▪ default list level 6</p>
+▪ default list level 6
 
+o default list level 5
 
-<p style="margin-left:144pt;margin-top:0pt;margin-bottom:0pt;">next line no bullet</p>
+• default list level 4
 
+▪ default list level 3
 
-<p style="margin-left:180pt;margin-top:0pt;margin-bottom:0pt;">• default list level 7</p>
+o default list level 2
 
-
-<p style="margin-left:180pt;margin-top:0pt;margin-bottom:0pt;">next line no bullet</p>
-
-
-<p style="margin-left:216pt;margin-top:0pt;margin-bottom:0pt;">o default list level 8</p>
-
-
-<p style="margin-left:216pt;margin-top:0pt;margin-bottom:0pt;">next line no bullet</p>
-
-
-<p style="margin-left:252pt;margin-top:0pt;margin-bottom:0pt;">▪ default list level 9</p>
-
-
-<p style="margin-left:252pt;margin-top:0pt;margin-bottom:0pt;">next line no bullet</p>
-
-
-<p style="margin-left:216pt;margin-top:0pt;margin-bottom:0pt;">o default list level 8</p>
-
-
-<p style="margin-left:180pt;margin-top:0pt;margin-bottom:0pt;">• default list level 7</p>
-
-
-<p style="margin-left:144pt;margin-top:0pt;margin-bottom:0pt;">▪ default list level 6</p>
-
-
-<p style="margin-left:108pt;margin-top:0pt;margin-bottom:0pt;">o default list level 5</p>
-
-
-<p style="margin-left:72pt;margin-top:0pt;margin-bottom:0pt;">• default list level 4</p>
-
-
-<p style="margin-left:36pt;margin-top:0pt;margin-bottom:0pt;">▪ default list level 3</p>
-
-
-<p style="margin-top:0pt;margin-bottom:0pt;">o default list level 2</p>
-
-
-<p style="margin-top:0pt;">• default list level 1</p>
-
+• default list level 1
 
 <br/>
-<p style="margin-bottom:0pt;">⮚ arrow bullet</p>
+⮚ arrow bullet
 
+— hyphen bullet
 
-<p style="margin-top:0pt;margin-bottom:0pt;">— hyphen bullet</p>
+▪ square bullet
 
+❖ diamond bullet
 
-<p style="margin-top:0pt;margin-bottom:0pt;">▪ square bullet</p>
+✔ checkmark bulet
 
+• fancy bullet
 
-<p style="margin-top:0pt;margin-bottom:0pt;">❖ diamond bullet</p>
+1: numbered 1:
 
+2: numbered 2:
 
-<p style="margin-top:0pt;margin-bottom:0pt;">✔ checkmark bulet</p>
+3: numbered 3:
 
+a. letter a
 
-<p style="margin-top:0pt;">• fancy bullet</p>
+b. letter b
 
+i. roman i
 
-<p style="margin-bottom:0pt;">1: numbered 1:</p>
+ii. roman ii
 
+1\. numbered 1.
 
-<p style="margin-top:0pt;margin-bottom:0pt;">2: numbered 2:</p>
+2\. numbered 2.
 
+I. Roman I.
 
-<p style="margin-top:0pt;margin-bottom:0pt;">3: numbered 3:</p>
+II. Roman II
 
+III. Roman III.
 
-<p style="margin-top:0pt;margin-bottom:0pt;">a. letter a</p>
+IV. Roman IV.
 
+a. letter a.
 
-<p style="margin-top:0pt;margin-bottom:0pt;">b. letter b</p>
+i. roman i.
 
+1\. numbered 1.
 
-<p style="margin-left:36pt;margin-top:0pt;margin-bottom:0pt;">i. roman i</p>
+1st. Item 1st.
 
+2nd. Item 2nd.
 
-<p style="margin-left:36pt;margin-top:0pt;margin-bottom:0pt;">ii. roman ii</p>
+3rd. Item 3rd.
 
+4th. Item 4th.
 
-<p style="margin-left:72pt;margin-top:0pt;margin-bottom:0pt;">1. numbered 1.</p>
-
-
-<p style="margin-left:72pt;margin-top:0pt;">2. numbered 2.</p>
-
-
-<p style="margin-bottom:0pt;">I. Roman I.</p>
-
-
-<p style="margin-top:0pt;margin-bottom:0pt;">II. Roman II</p>
-
-
-<p style="margin-top:0pt;margin-bottom:0pt;">III. Roman III.</p>
-
-
-<p style="margin-top:0pt;margin-bottom:0pt;">IV. Roman IV.</p>
-
-
-<p style="margin-top:0pt;margin-bottom:0pt;">a. letter a.</p>
-
-
-<p style="margin-left:36pt;margin-top:0pt;margin-bottom:0pt;">i. roman i.</p>
-
-
-<p style="margin-left:72pt;margin-top:0pt;">1. numbered 1.</p>
-
-
-<p style="margin-bottom:0pt;">1st. Item 1st.</p>
-
-
-<p style="margin-top:0pt;margin-bottom:0pt;">2nd. Item 2nd.</p>
-
-
-<p style="margin-top:0pt;margin-bottom:0pt;">3rd. Item 3rd.</p>
-
-
-<p style="margin-top:0pt;margin-bottom:0pt;">4th. Item 4th.</p>
-
-
-<p style="margin-top:0pt;">5th. Item 5th.</p>
-
+5th. Item 5th.
 
 <br/>
-<p style="margin-bottom:0pt;">one. Comic one.</p>
+one. Comic one.
 
+two. Comic two.
 
-<p style="margin-top:0pt;margin-bottom:0pt;">two. Comic two.</p>
+three. Comic three.
 
+four. Comic four.
 
-<p style="margin-top:0pt;margin-bottom:0pt;">three. Comic three.</p>
+cinq. Comic cinq.
 
+kuusi. Comic kuusi.
 
-<p style="margin-top:0pt;margin-bottom:0pt;">four. Comic four.</p>
+syv. Comic syv.
 
+otto. Comic otto.
 
-<p style="margin-top:0pt;margin-bottom:0pt;">cinq. Comic cinq.</p>
+εννέα. Comic eννέα.
 
+εννέα χιλιάδες εννιακόσια ενενήντα εννέα. Comic Εννέα χιλιάδες εννιακόσια ενενήντα εννέα.
 
-<p style="margin-top:0pt;margin-bottom:0pt;">kuusi. Comic kuusi.</p>
+dix mille. Comic dix mille.
 
+001:  Item 001
 
-<p style="margin-top:0pt;margin-bottom:0pt;">syv. Comic syv.</p>
+002:  Item 002
 
+003:  Item 003
 
-<p style="margin-top:0pt;margin-bottom:0pt;">otto. Comic otto.</p>
+004:  Item 004
 
+1:  Fancy 1
 
-<p style="margin-top:0pt;">εννέα. Comic eννέα.</p>
-
-
-<p style="margin-bottom:0pt;">εννέα χιλιάδες εννιακόσια ενενήντα εννέα. Comic Εννέα χιλιάδες εννιακόσια ενενήντα εννέα.</p>
-
-
-<p style="margin-top:0pt;">dix mille. Comic dix mille.</p>
-
-
-<p style="margin-bottom:0pt;">001:  Item 001</p>
-
-
-<p style="margin-top:0pt;margin-bottom:0pt;">002:  Item 002</p>
-
-
-<p style="margin-top:0pt;margin-bottom:0pt;">003:  Item 003</p>
-
-
-<p style="margin-top:0pt;">004:  Item 004</p>
-
-
-<p style="margin-bottom:0pt;">1:  Fancy 1</p>
-
-
-<p style="margin-top:0pt;">2:  Fancy 2</p>
-
+2:  Fancy 2
 
 <br/>
-<p style="margin-top:18pt;margin-bottom:4pt;">1 Heading 1</p>
+1 Heading 1
 
+1.1 Heading 1.1
 
-<p style="margin-top:8pt;margin-bottom:4pt;">1.1 Heading 1.1</p>
+1.1.1 Heading 1.1.1
 
+1.1.1.1 <i>Heading 1.1.1.1</i>
 
-<p style="margin-top:8pt;margin-bottom:4pt;">1.1.1 Heading 1.1.1</p>
+1.1.1.1.1 Heading 1.1.1.1.1
 
+1.1.1.1.1.1 <i>Heading 1.1.1.1.1.1</i>
 
-<p style="margin-top:4pt;margin-bottom:2pt;">1.1.1.1 <i>Heading 1.1.1.1</i></p>
+1.1.1.1.1.1.1 Heading 1.1.1.1.1.1.1
 
+1.1.1.1.1.1.1.1 <i>Heading 1.1.1.1.1.1.1.1</i>
 
-<p style="margin-top:4pt;margin-bottom:2pt;">1.1.1.1.1 Heading 1.1.1.1.1</p>
+1.1.1.1.1.1.1.1.1 Heading 1.1.1.1.1.1.1.1.1
 
+1\) Multi level 1
 
-<p style="margin-top:2pt;margin-bottom:0pt;">1.1.1.1.1.1 <i>Heading 1.1.1.1.1.1</i></p>
+a) Multi level (a)
 
+i) Multi level (i)
 
-<p style="margin-top:2pt;margin-bottom:0pt;">1.1.1.1.1.1.1 Heading 1.1.1.1.1.1.1</p>
+(1) Multi level (1)
 
+(a) Multi level (a)
 
-<p style="margin-bottom:0pt;">1.1.1.1.1.1.1.1 <i>Heading 1.1.1.1.1.1.1.1</i></p>
+(i) Multi level (i)
 
+1\. Multi level 1.
 
-<p style="margin-left:7.2pt;margin-bottom:0pt;">1.1.1.1.1.1.1.1.1 Heading 1.1.1.1.1.1.1.1.1</p>
+a.  Multi level a.
 
-
-<p style="margin-bottom:0pt;">1) Multi level 1</p>
-
-
-<p style="margin-top:0pt;margin-bottom:0pt;">a) Multi level (a)</p>
-
-
-<p style="margin-top:0pt;margin-bottom:0pt;">i) Multi level (i)</p>
-
-
-<p style="margin-top:0pt;margin-bottom:0pt;">(1) Multi level (1)</p>
-
-
-<p style="margin-left:18pt;margin-top:0pt;margin-bottom:0pt;">(a) Multi level (a)</p>
-
-
-<p style="margin-left:36pt;margin-top:0pt;margin-bottom:0pt;">(i) Multi level (i)</p>
-
-
-<p style="margin-left:54pt;margin-top:0pt;margin-bottom:0pt;">1. Multi level 1.</p>
-
-
-<p style="margin-left:72pt;margin-top:0pt;margin-bottom:0pt;">a.  Multi level a.</p>
-
-
-<p style="margin-left:90pt;margin-top:0pt;">i. Multi level i.</p>
-
+i. Multi level i.
 
 <br/>
-<p style="margin-bottom:0pt;">1:  Original 1</p>
+1:  Original 1
 
+2:  Original 2
 
-<p style="margin-top:0pt;margin-bottom:0pt;">2:  Original 2</p>
+3:  Original 3
 
+4:  Deleted 4
 
-<p style="margin-top:0pt;margin-bottom:0pt;">3:  Original 3</p>
+5:  Original 6
 
+6:  Delete 8
 
-<p style="margin-top:0pt;margin-bottom:0pt;">4:  Deleted 4</p>
-
-
-<p style="margin-top:0pt;margin-bottom:0pt;">5:  Original 6</p>
-
-
-<p style="margin-top:0pt;margin-bottom:0pt;">6:  Delete 8</p>
-
-
-<p style="margin-top:0pt;">7:  Original 9</p>
+7:  Original 9
