@@ -1,6 +1,7 @@
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using DocxportNet.API;
 using DocxportNet.Fields;
 using DocxportNet.Fields.Eval;
 using DocxportNet.Fields.Resolution;
@@ -9,6 +10,7 @@ using DocxportNet.Tests.Utils;
 using DocxportNet.Visitors.Html;
 using DocxportNet.Visitors.Markdown;
 using DocxportNet.Walker;
+using System.Xml.Linq;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
@@ -279,6 +281,142 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
         Assert.DoesNotContain("data-docx-part=", html, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void HtmlExport_MarkupClassifier_AcceptRejectInlineAndSplit()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r>
+      <w:rPr><w:u w:val="single"/></w:rPr>
+      <w:t>Inserted</w:t>
+    </w:r>
+    <w:r>
+      <w:rPr><w:strike/></w:rPr>
+      <w:t>Deleted</w:t>
+    </w:r>
+  </w:p>
+</w:body>
+""";
+
+        var acceptConfig = DxpHtmlVisitorConfig.CreateRichConfig();
+        acceptConfig.TrackedChangeMode = DxpTrackedChangeMode.AcceptChanges;
+        acceptConfig.MarkupChangeClassifier = DxpMarkupChangeClassifiers.UnderlineInsertedStrikeDeleted();
+        string accepted = ExportHtmlFromBodyXml(bodyXml, acceptConfig);
+
+        Assert.Contains("Inserted", accepted, StringComparison.Ordinal);
+        Assert.DoesNotContain("Deleted", accepted, StringComparison.Ordinal);
+        Assert.DoesNotContain("class=\"dxp-underline\"", accepted, StringComparison.Ordinal);
+        Assert.DoesNotContain("class=\"dxp-strike\"", accepted, StringComparison.Ordinal);
+
+        var rejectConfig = DxpHtmlVisitorConfig.CreateRichConfig();
+        rejectConfig.TrackedChangeMode = DxpTrackedChangeMode.RejectChanges;
+        rejectConfig.MarkupChangeClassifier = DxpMarkupChangeClassifiers.UnderlineInsertedStrikeDeleted();
+        string rejected = ExportHtmlFromBodyXml(bodyXml, rejectConfig);
+
+        Assert.DoesNotContain("Inserted", rejected, StringComparison.Ordinal);
+        Assert.Contains("Deleted", rejected, StringComparison.Ordinal);
+        Assert.DoesNotContain("class=\"dxp-underline\"", rejected, StringComparison.Ordinal);
+        Assert.DoesNotContain("class=\"dxp-strike\"", rejected, StringComparison.Ordinal);
+
+        var inlineConfig = DxpHtmlVisitorConfig.CreateRichConfig();
+        inlineConfig.TrackedChangeMode = DxpTrackedChangeMode.InlineChanges;
+        inlineConfig.MarkupChangeClassifier = DxpMarkupChangeClassifiers.UnderlineInsertedStrikeDeleted();
+        string inline = ExportHtmlFromBodyXml(bodyXml, inlineConfig);
+
+        Assert.Contains("dxp-inserted", inline, StringComparison.Ordinal);
+        Assert.Contains("dxp-deleted", inline, StringComparison.Ordinal);
+        Assert.DoesNotContain("class=\"dxp-underline\"", inline, StringComparison.Ordinal);
+        Assert.DoesNotContain("class=\"dxp-strike\"", inline, StringComparison.Ordinal);
+
+        var splitConfig = DxpHtmlVisitorConfig.CreateRichConfig();
+        splitConfig.TrackedChangeMode = DxpTrackedChangeMode.SplitChanges;
+        splitConfig.MarkupChangeClassifier = DxpMarkupChangeClassifiers.UnderlineInsertedStrikeDeleted();
+        string split = ExportHtmlFromBodyXml(bodyXml, splitConfig);
+
+        Assert.Contains("dxp-split", split, StringComparison.Ordinal);
+        Assert.Contains("Inserted", split, StringComparison.Ordinal);
+        Assert.Contains("Deleted", split, StringComparison.Ordinal);
+        Assert.DoesNotContain("class=\"dxp-underline\"", split, StringComparison.Ordinal);
+        Assert.DoesNotContain("class=\"dxp-strike\"", split, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void HtmlExport_MarkupClassifier_DoubleStrikeRejectsAsDeleted()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r>
+      <w:rPr><w:dstrike/></w:rPr>
+      <w:t>DoubleDeleted</w:t>
+    </w:r>
+  </w:p>
+</w:body>
+""";
+
+        var acceptConfig = DxpHtmlVisitorConfig.CreateRichConfig();
+        acceptConfig.TrackedChangeMode = DxpTrackedChangeMode.AcceptChanges;
+        acceptConfig.MarkupChangeClassifier = DxpMarkupChangeClassifiers.UnderlineInsertedStrikeDeleted();
+        string accepted = ExportHtmlFromBodyXml(bodyXml, acceptConfig);
+        Assert.DoesNotContain("DoubleDeleted", accepted, StringComparison.Ordinal);
+
+        var rejectConfig = DxpHtmlVisitorConfig.CreateRichConfig();
+        rejectConfig.TrackedChangeMode = DxpTrackedChangeMode.RejectChanges;
+        rejectConfig.MarkupChangeClassifier = DxpMarkupChangeClassifiers.UnderlineInsertedStrikeDeleted();
+        string rejected = ExportHtmlFromBodyXml(bodyXml, rejectConfig);
+        Assert.Contains("DoubleDeleted", rejected, StringComparison.Ordinal);
+        Assert.DoesNotContain("class=\"dxp-strike\"", rejected, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void HtmlExport_MarkupClassifier_RealTrackedChangesWin()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:ins w:id="1" w:author="Tester" w:date="2024-01-01T00:00:00Z">
+      <w:r>
+        <w:rPr><w:strike/></w:rPr>
+        <w:t>TrackedInsert</w:t>
+      </w:r>
+    </w:ins>
+  </w:p>
+</w:body>
+""";
+
+        var rejectConfig = DxpHtmlVisitorConfig.CreateRichConfig();
+        rejectConfig.TrackedChangeMode = DxpTrackedChangeMode.RejectChanges;
+        rejectConfig.MarkupChangeClassifier = DxpMarkupChangeClassifiers.UnderlineInsertedStrikeDeleted();
+        string rejected = ExportHtmlFromBodyXml(bodyXml, rejectConfig);
+
+        Assert.DoesNotContain("TrackedInsert", rejected, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void HtmlExport_MarkupClassifier_PreservesOtherStyles()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r>
+      <w:rPr><w:b/><w:u w:val="single"/></w:rPr>
+      <w:t>BoldInsert</w:t>
+    </w:r>
+  </w:p>
+</w:body>
+""";
+
+        var config = DxpHtmlVisitorConfig.CreateRichConfig();
+        config.TrackedChangeMode = DxpTrackedChangeMode.AcceptChanges;
+        config.MarkupChangeClassifier = DxpMarkupChangeClassifiers.UnderlineInsertedStrikeDeleted();
+        string html = ExportHtmlFromBodyXml(bodyXml, config);
+
+        Assert.Contains("dxp-bold", html, StringComparison.Ordinal);
+        Assert.Contains("BoldInsert", html, StringComparison.Ordinal);
+        Assert.DoesNotContain("class=\"dxp-underline\"", html, StringComparison.Ordinal);
+    }
+
     private void VerifyAgainstFixture(
         Sample sample,
         DxpHtmlVisitorConfig baseConfig,
@@ -339,7 +477,8 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
             StylesheetHref = source.StylesheetHref,
             EmbedDefaultStylesheet = source.EmbedDefaultStylesheet,
             RootCssClass = source.RootCssClass,
-            TrackedChangeMode = mode
+            TrackedChangeMode = mode,
+            MarkupChangeClassifier = source.MarkupChangeClassifier
         };
     }
 
@@ -419,5 +558,34 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
 
         new DxpWalker(Logger).Accept(docxPath, pipeline);
         return writer.ToString();
+    }
+
+    private string ExportHtmlFromBodyXml(
+        string bodyXml,
+        DxpHtmlVisitorConfig config,
+        Action<WordprocessingDocument>? configureDocument = null)
+    {
+        using var stream = new MemoryStream();
+        using (var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document, true))
+        {
+            var main = doc.AddMainDocumentPart();
+            var xml = XDocument.Parse(bodyXml);
+            var body = new Body();
+            body.AddNamespaceDeclaration("w", "http://schemas.openxmlformats.org/wordprocessingml/2006/main");
+            body.AddNamespaceDeclaration("w14", "http://schemas.microsoft.com/office/word/2010/wordml");
+            body.InnerXml = string.Concat(xml.Root!.Nodes());
+            main.Document = new Document(body);
+            main.Document.Save();
+            configureDocument?.Invoke(doc);
+        }
+
+        stream.Position = 0;
+
+        using var readDoc = WordprocessingDocument.Open(stream, false);
+        return TestCompare.Normalize(DxpExport.ExportToString(
+            readDoc,
+            new DxpHtmlVisitor(config, Logger),
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.None },
+            Logger));
     }
 }

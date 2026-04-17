@@ -76,6 +76,7 @@ public sealed record DxpHtmlVisitorConfig
     public bool EmbedDefaultStylesheet = true;
     public string RootCssClass = "dxp-root";
     public DxpTrackedChangeMode TrackedChangeMode = DxpTrackedChangeMode.InlineChanges;
+    public Func<DxpMarkupChangeContext, DxpMarkupChangeDecision?>? MarkupChangeClassifier = null;
     public DxpHeaderFooterSelection HeaderSelection = DxpHeaderFooterSelection.First;
     public DxpHeaderFooterSelection FooterSelection = DxpHeaderFooterSelection.First;
 
@@ -101,7 +102,7 @@ public sealed record DxpHtmlVisitorConfig
     public static DxpHtmlVisitorConfig CreateConfig() => CreateRichConfig();
 }
 
-public sealed class DxpHtmlVisitor : DxpVisitor, DxpITextVisitor, IDxpHeaderFooterSelectionProvider, IDisposable, DxpIFieldEvalProvider
+public sealed class DxpHtmlVisitor : DxpVisitor, DxpITextVisitor, IDxpHeaderFooterSelectionProvider, IDisposable, DxpIFieldEvalProvider, DxpIMarkupChangeClassifierProvider
 {
     private TextWriter _sinkWriter;
     private StreamWriter? _ownedStreamWriter;
@@ -115,6 +116,7 @@ public sealed class DxpHtmlVisitor : DxpVisitor, DxpITextVisitor, IDxpHeaderFoot
     private readonly Stack<StringBuilder> _complexFieldInstructions = new();
 
     public DxpFieldEval FieldEval => _fieldEval;
+    public Func<DxpMarkupChangeContext, DxpMarkupChangeDecision?>? MarkupChangeClassifier => _config.MarkupChangeClassifier;
 
     public DxpHtmlVisitor(TextWriter writer, DxpHtmlVisitorConfig config, ILogger? logger, DxpFieldEval? fieldEval = null)
         : base(logger)
