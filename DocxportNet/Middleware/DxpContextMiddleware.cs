@@ -19,11 +19,13 @@ public sealed class DxpContextMiddleware : DxpLoggingMiddleware
     public override DxpIVisitor Next { get; }
     private OpenXmlPart? _mainPart;
     private readonly ILogger? _logger;
+    private readonly Func<DxpMarkupChangeContext, DxpMarkupChangeDecision?>? _markupChangeClassifier;
 
     public DxpContextMiddleware(DxpIVisitor next, ILogger? logger = null) : base(logger, "DxpContextTracker")
     {
         _logger = logger;
 		Next = next ?? throw new ArgumentNullException(nameof(next));
+        _markupChangeClassifier = ResolveMarkupChangeClassifier(next);
     }
 
     public override IDisposable VisitDocumentBegin(WordprocessingDocument doc, DxpIDocumentContext documentContext)
@@ -154,6 +156,23 @@ public sealed class DxpContextMiddleware : DxpLoggingMiddleware
 
         bool hasRenderable = r.ChildElements.Any(child =>
             child is Text or DeletedText or NoBreakHyphen or TabChar or Break or CarriageReturn or Drawing);
+        DxpStyleEffectiveRunStyle renderStyle = style;
+        IDisposable syntheticChangeScope = DxpDisposable.Empty;
+
+        if (hasRenderable && para != null && d.KeepAccept == d.KeepReject)
+        {
+            var decision = TryClassifyMarkupChange(r, para, style, d);
+            if (decision != null)
+            {
+                renderStyle = decision.RenderStyle;
+                syntheticChangeScope = decision.ChangeKind switch {
+                    DxpMarkupChangeKind.Inserted => doc.PushChangeScope(keepAccept: true, keepReject: false, changeInfo: d.CurrentChangeInfo),
+                    DxpMarkupChangeKind.Deleted => doc.PushChangeScope(keepAccept: false, keepReject: true, changeInfo: d.CurrentChangeInfo),
+                    _ => DxpDisposable.Empty
+                };
+            }
+        }
+
         if (_logger?.IsEnabled(LogLevel.Debug) == true)
         {
             var runText = string.Concat(r.Elements<Text>().Select(t => t.Text));
@@ -166,11 +185,11 @@ public sealed class DxpContextMiddleware : DxpLoggingMiddleware
                 runText);
         }
         if (para != null && hasRenderable)
-            doc.StyleTracker.ApplyStyle(style, d, Next);
+            doc.StyleTracker.ApplyStyle(renderStyle, d, Next);
 
-        var runScope = doc.PushRun(r, style, language, out _);
+        var runScope = doc.PushRun(r, renderStyle, language, out _);
         var inner = Next.VisitRunBegin(r, d);
-        return new DxpAfterScope(inner, runScope.Dispose);
+        return new DxpAroundScope(inner, runScope.Dispose, syntheticChangeScope.Dispose);
     }
 
     public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
@@ -490,6 +509,37 @@ public sealed class DxpContextMiddleware : DxpLoggingMiddleware
         }
 
         return new DxpChangeInfo(author ?? current.Author, date ?? current.Date);
+    }
+
+    private DxpMarkupChangeDecision? TryClassifyMarkupChange(Run run, Paragraph paragraph, DxpStyleEffectiveRunStyle style, DxpIDocumentContext d)
+    {
+        if (_markupChangeClassifier == null)
+            return null;
+
+        var context = new DxpMarkupChangeContext(
+            Run: run,
+            Paragraph: paragraph,
+            ResolvedStyle: style,
+            RunProperties: run.RunProperties,
+            RunStyleId: run.RunProperties?.RunStyle?.Val?.Value,
+            ParagraphStyleChain: d.Styles.GetParagraphStyleChain(paragraph),
+            DocumentContext: d);
+
+        return _markupChangeClassifier(context);
+    }
+
+    private static Func<DxpMarkupChangeContext, DxpMarkupChangeDecision?>? ResolveMarkupChangeClassifier(DxpIVisitor visitor)
+    {
+        DxpIVisitor? current = visitor;
+        while (current != null)
+        {
+            if (current is DxpIMarkupChangeClassifierProvider provider && provider.MarkupChangeClassifier != null)
+                return provider.MarkupChangeClassifier;
+
+            current = current is DxpMiddleware middleware ? middleware.Next : null;
+        }
+
+        return null;
     }
 
     private sealed class DxpAfterScope : IDisposable

@@ -86,6 +86,7 @@ public sealed record DxpMarkdownVisitorConfig
     public bool EmitCustomProperties = true;
     public bool EmitTimeline = false;
     public DxpTrackedChangeMode TrackedChangeMode = DxpTrackedChangeMode.InlineChanges;
+    public Func<DxpMarkupChangeContext, DxpMarkupChangeDecision?>? MarkupChangeClassifier = null;
 
     public static DxpMarkdownVisitorConfig CreateRichConfig() => new();
     public static DxpMarkdownVisitorConfig CreatePlainConfig() => new() {
@@ -113,7 +114,7 @@ public sealed record DxpMarkdownVisitorConfig
 }
 
 
-public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposable, DxpIFieldEvalProvider
+public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposable, DxpIFieldEvalProvider, DxpIMarkupChangeClassifierProvider
 {
     private TextWriter _sinkWriter;
     private StreamWriter? _ownedStreamWriter;
@@ -125,6 +126,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
     private readonly DxpFieldEval _fieldEval;
 
     public DxpFieldEval FieldEval => _fieldEval;
+    public Func<DxpMarkupChangeContext, DxpMarkupChangeDecision?>? MarkupChangeClassifier => _config.MarkupChangeClassifier;
 
     public DxpMarkdownVisitor(TextWriter writer, DxpMarkdownVisitorConfig config, ILogger? logger, DxpFieldEval? fieldEval = null)
         : base(logger)
