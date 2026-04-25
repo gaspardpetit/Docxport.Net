@@ -274,6 +274,13 @@ internal sealed class DxpEvalGenericFieldFrame : DxpMiddleware, DxpIFieldEvalFra
                 : new DxpValueFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
             return frame;
         }
+        if (DxpFieldEvalFrameFactory.IsNextInstruction(instructionText))
+        {
+            DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
+                ? new DxpNextFieldCachedFrame()
+                : new DxpValueFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
+            return frame;
+        }
         if (DxpFieldEvalFrameFactory.IsSkipIfInstruction(instructionText))
         {
             DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
@@ -283,6 +290,11 @@ internal sealed class DxpEvalGenericFieldFrame : DxpMiddleware, DxpIFieldEvalFra
         }
         if (DxpFieldEvalFrameFactory.IsDocPropertyInstruction(instructionText) ||
             DxpFieldEvalFrameFactory.IsMergeFieldInstruction(instructionText) ||
+            DxpFieldEvalFrameFactory.IsMergeRecInstruction(instructionText) ||
+            DxpFieldEvalFrameFactory.IsMergeSeqInstruction(instructionText) ||
+            DxpFieldEvalFrameFactory.IsGreetingLineInstruction(instructionText) ||
+            DxpFieldEvalFrameFactory.IsAddressBlockInstruction(instructionText) ||
+            DxpFieldEvalFrameFactory.IsDatabaseInstruction(instructionText) ||
             DxpFieldEvalFrameFactory.IsSeqInstruction(instructionText) ||
             DxpFieldEvalFrameFactory.IsDateTimeInstruction(instructionText) ||
             DxpFieldEvalFrameFactory.IsCompareInstruction(instructionText) ||
@@ -300,6 +312,17 @@ internal sealed class DxpEvalGenericFieldFrame : DxpMiddleware, DxpIFieldEvalFra
                 DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
                     ? new DxpMergeFieldCachedFrame(Next)
                     : new DxpMergeFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
+                return frame;
+            }
+            if (DxpFieldEvalFrameFactory.IsMergeRecInstruction(instructionText) ||
+                DxpFieldEvalFrameFactory.IsMergeSeqInstruction(instructionText) ||
+                DxpFieldEvalFrameFactory.IsGreetingLineInstruction(instructionText) ||
+                DxpFieldEvalFrameFactory.IsAddressBlockInstruction(instructionText) ||
+                DxpFieldEvalFrameFactory.IsDatabaseInstruction(instructionText))
+            {
+                DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
+                    ? new DxpSimpleFieldCachedFrame(Next)
+                    : new DxpValueFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
                 return frame;
             }
             if (DxpFieldEvalFrameFactory.IsSeqInstruction(instructionText))
