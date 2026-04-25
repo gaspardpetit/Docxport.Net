@@ -267,6 +267,13 @@ internal sealed class DxpEvalGenericFieldFrame : DxpMiddleware, DxpIFieldEvalFra
                 : new DxpAskFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
             return frame;
         }
+        if (DxpFieldEvalFrameFactory.IsFillInInstruction(instructionText))
+        {
+            DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
+                ? new DxpSimpleFieldCachedFrame(Next)
+                : new DxpValueFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
+            return frame;
+        }
         if (DxpFieldEvalFrameFactory.IsSkipIfInstruction(instructionText))
         {
             DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache

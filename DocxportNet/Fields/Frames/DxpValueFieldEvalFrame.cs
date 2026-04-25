@@ -7,6 +7,7 @@ using DocxportNet.Fields.Formatting;
 using DocxportNet.Middleware;
 using DocxportNet.Walker;
 using Microsoft.Extensions.Logging;
+using System.Text;
 
 namespace DocxportNet.Fields.Frames;
 
@@ -21,6 +22,7 @@ internal class DxpValueFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame
     private string? _instructionText;
     private Run? _codeRun;
     private List<Run?>? _cachedResultRuns;
+    private StringBuilder? _cachedResultText;
 
     public override DxpIVisitor? Next { get; }
 
@@ -67,6 +69,11 @@ internal class DxpValueFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame
 
     public override void VisitComplexFieldCachedResultText(string text, DxpIDocumentContext d)
     {
+        if (_inCachedResult && !string.IsNullOrEmpty(text))
+        {
+            _cachedResultText ??= new StringBuilder();
+            _cachedResultText.Append(text);
+        }
         return;
     }
 
@@ -97,26 +104,51 @@ internal class DxpValueFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame
 
     public override void VisitText(Text t, DxpIDocumentContext d)
     {
+        if (_inCachedResult)
+        {
+            _cachedResultText ??= new StringBuilder();
+            _cachedResultText.Append(t.Text);
+        }
         return;
     }
 
     public override void VisitBreak(Break br, DxpIDocumentContext d)
     {
+        if (_inCachedResult)
+        {
+            _cachedResultText ??= new StringBuilder();
+            _cachedResultText.Append('\n');
+        }
         return;
     }
 
     public override void VisitTab(TabChar tab, DxpIDocumentContext d)
     {
+        if (_inCachedResult)
+        {
+            _cachedResultText ??= new StringBuilder();
+            _cachedResultText.Append('\t');
+        }
         return;
     }
 
     public override void VisitCarriageReturn(CarriageReturn cr, DxpIDocumentContext d)
     {
+        if (_inCachedResult)
+        {
+            _cachedResultText ??= new StringBuilder();
+            _cachedResultText.Append('\n');
+        }
         return;
     }
 
     public override void VisitNoBreakHyphen(NoBreakHyphen nbh, DxpIDocumentContext d)
     {
+        if (_inCachedResult)
+        {
+            _cachedResultText ??= new StringBuilder();
+            _cachedResultText.Append('-');
+        }
         return;
     }
 
@@ -125,7 +157,8 @@ internal class DxpValueFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame
         if (string.IsNullOrWhiteSpace(_instructionText))
             return false;
 
-        var result = _eval.EvalAsync(new DxpFieldInstruction(_instructionText!), d).GetAwaiter().GetResult();
+        var cachedResultText = _cachedResultText?.ToString();
+        var result = _eval.EvalAsync(new DxpFieldInstruction(_instructionText!, cachedResultText), d).GetAwaiter().GetResult();
         if (!_emitResult)
             return true;
         if (result.Status == DxpFieldEvalStatus.Skipped)

@@ -17,6 +17,20 @@ public sealed class DxpFieldEval
     private readonly DxpFieldEvalOptions _options;
     private readonly IDxpFieldValueResolver _resolver;
     private readonly ILogger? _logger;
+    private sealed record DxpPromptFieldSpec(
+        string MemoryKey,
+        string? PromptText,
+        string? DefaultText,
+        bool HasDefault,
+        bool AskOnce,
+        string? CachedText,
+        string? PriorResponseText,
+        bool HasPriorResponse);
+    private sealed record DxpPromptResolution(
+        string Text,
+        DxpFieldEvalStatus Status,
+        bool RememberForAskOnce,
+        bool RememberAsPriorResponse);
 
     public DxpFieldEvalContext Context { get; } = new();
 
@@ -81,6 +95,10 @@ public sealed class DxpFieldEval
                     var skipResult = await EvalSkipIfAsync(parse.Ast, skipOutput, documentContext);
                     if (skipResult != null)
                         return skipResult;
+                }
+                else if (fieldType.Equals("FILLIN", StringComparison.OrdinalIgnoreCase))
+                {
+                    return await EvalFillInAsync(instruction, parse.Ast, documentContext);
                 }
                 else
                 {
@@ -491,35 +509,21 @@ public sealed class DxpFieldEval
                     if (tokens.Count > 0)
                     {
                         string bookmark = tokens[0];
-                        string prompt = tokens.Count > 1 ? tokens[1] : string.Empty;
-                        var switches = ParseNonFormatSwitches(ast.RawText);
-                        bool onlyOnce = switches.ContainsKey('o');
-                        string? defaultValue = switches.TryGetValue('d', out var def) ? def : null;
-
-                        if (onlyOnce && Context.TryGetBookmarkNodes(bookmark, out _))
-                        {
-                            value = new DxpFieldValue(string.Empty);
-                            return (true, value);
-                        }
-
-                        if (!string.IsNullOrEmpty(prompt))
-                            prompt = await ResolveValueAsync(prompt, documentContext);
-                        if (!string.IsNullOrEmpty(defaultValue))
-                        {
-                            var resolvedDefault = await ResolveValueAsync(defaultValue!, documentContext);
-                            defaultValue = resolvedDefault;
-                        }
-
-                        DxpFieldValue? response = null;
-                        if (_delegates.AskAsync != null)
-                            response = await _delegates.AskAsync(prompt, Context);
-                        else if (_logger?.IsEnabled(LogLevel.Debug) == true)
-                            _logger.LogDebug("ASK delegate not configured; using default value.");
-
-                        string resolved = response?.StringValue
-                            ?? (response?.NumberValue?.ToString(Context.Culture ?? CultureInfo.CurrentCulture))
-                            ?? defaultValue
-                            ?? string.Empty;
+                        var promptSpec = await CreatePromptFieldSpecAsync(
+                            ast.RawText,
+                            ast,
+                            1,
+                            cachedText: null,
+                            documentContext);
+                        var resolution = await ResolvePromptFieldAsync(
+                            promptSpec,
+                            allowCacheOnNull: false,
+                            _delegates.AskAsync == null
+                                ? null
+                                : prompt => _delegates.AskAsync(prompt ?? string.Empty, Context));
+                        string resolved = resolution?.Text ?? string.Empty;
+                        if (resolution != null)
+                            RememberPromptResponse(promptSpec, resolution);
 
                         Context.SetBookmarkNodes(bookmark, DxpFieldNodeBuffer.FromText(resolved));
                         value = new DxpFieldValue(string.Empty);
@@ -648,6 +652,127 @@ public sealed class DxpFieldEval
         }
         return new DxpFieldEvalResult(DxpFieldEvalStatus.Resolved, string.Empty);
     }
+
+    private async Task<DxpFieldEvalResult> EvalFillInAsync(
+        DxpFieldInstruction instruction,
+        DxpFieldAst ast,
+        DxpIDocumentContext? documentContext)
+    {
+        var promptSpec = await CreatePromptFieldSpecAsync(
+            instruction.InstructionText,
+            ast,
+            0,
+            instruction.CachedResult,
+            documentContext);
+
+        try
+        {
+            var resolution = await ResolvePromptFieldAsync(
+                promptSpec,
+                allowCacheOnNull: _options.UseCacheOnNull,
+                _delegates.FillInAsync == null
+                    ? null
+                    : _ => _delegates.FillInAsync(
+                        new DxpFillInRequest(
+                            instruction.InstructionText,
+                            promptSpec.PromptText,
+                            promptSpec.CachedText,
+                            promptSpec.DefaultText,
+                            promptSpec.AskOnce,
+                            promptSpec.PriorResponseText),
+                        Context));
+            if (resolution == null)
+                return new DxpFieldEvalResult(DxpFieldEvalStatus.Skipped, null);
+
+            RememberPromptResponse(promptSpec, resolution);
+
+            if (resolution.Status == DxpFieldEvalStatus.UsedCache)
+                return new DxpFieldEvalResult(DxpFieldEvalStatus.UsedCache, resolution.Text);
+
+            string text = _formatter.Format(new DxpFieldValue(resolution.Text), ast.FormatSpecs, Context);
+            _logger?.LogInformation("Resolved field '{FieldType}'.", "FILLIN");
+            return new DxpFieldEvalResult(DxpFieldEvalStatus.Resolved, text);
+        }
+        catch when (_options.UseCacheOnError && HasUsablePromptCache(promptSpec.CachedText))
+        {
+            _logger?.LogInformation(
+                "Using cached result for FILLIN instruction '{Instruction}' after callback error.",
+                instruction.InstructionText);
+            return new DxpFieldEvalResult(DxpFieldEvalStatus.UsedCache, promptSpec.CachedText);
+        }
+    }
+
+    private async Task<DxpPromptFieldSpec> CreatePromptFieldSpecAsync(
+        string instructionText,
+        DxpFieldAst ast,
+        int promptTokenIndex,
+        string? cachedText,
+        DxpIDocumentContext? documentContext)
+    {
+        var tokens = string.IsNullOrWhiteSpace(ast.ArgumentsText)
+            ? new List<string>()
+            : TokenizeArgs(ast.ArgumentsText);
+        string? promptText = tokens.Count > promptTokenIndex
+            ? await ResolveValueAsync(tokens[promptTokenIndex], documentContext)
+            : null;
+
+        var switches = ParseNonFormatSwitches(ast.RawText);
+        bool hasDefault = switches.TryGetValue('d', out var defaultText);
+        if (hasDefault)
+            defaultText = await ResolveValueAsync(defaultText ?? string.Empty, documentContext);
+
+        bool hasPriorResponse = Context.TryGetLastPromptResponse(out var priorResponseText);
+        return new DxpPromptFieldSpec(
+            NormalizePromptFieldKey(instructionText),
+            promptText,
+            defaultText,
+            hasDefault,
+            switches.ContainsKey('o'),
+            cachedText,
+            priorResponseText,
+            hasPriorResponse);
+    }
+
+    private async Task<DxpPromptResolution?> ResolvePromptFieldAsync(
+        DxpPromptFieldSpec spec,
+        bool allowCacheOnNull,
+        Func<string?, Task<DxpFieldValue?>>? callback)
+    {
+        if (spec.AskOnce && Context.TryGetPromptOnceResponse(spec.MemoryKey, out var onceText))
+            return new DxpPromptResolution(onceText ?? string.Empty, DxpFieldEvalStatus.Resolved, false, false);
+
+        if (callback != null)
+        {
+            var response = await callback(spec.PromptText);
+            if (response != null)
+                return new DxpPromptResolution(ToDefaultString(response.Value), DxpFieldEvalStatus.Resolved, spec.AskOnce, true);
+        }
+
+        if (allowCacheOnNull && HasUsablePromptCache(spec.CachedText))
+            return new DxpPromptResolution(spec.CachedText!, DxpFieldEvalStatus.UsedCache, spec.AskOnce, false);
+
+        if (spec.HasDefault)
+            return new DxpPromptResolution(spec.DefaultText ?? string.Empty, DxpFieldEvalStatus.Resolved, spec.AskOnce, false);
+
+        if (spec.HasPriorResponse)
+            return new DxpPromptResolution(spec.PriorResponseText ?? string.Empty, DxpFieldEvalStatus.Resolved, spec.AskOnce, false);
+
+        return null;
+    }
+
+    private void RememberPromptResponse(DxpPromptFieldSpec spec, DxpPromptResolution resolution)
+    {
+        if (resolution.RememberAsPriorResponse)
+            Context.SetLastPromptResponse(resolution.Text);
+        if (resolution.RememberForAskOnce)
+            Context.RememberPromptOnceResponse(spec.MemoryKey, resolution.Text);
+    }
+
+    private static bool HasUsablePromptCache(string? cachedText)
+        => !string.IsNullOrWhiteSpace(cachedText);
+
+    private static string NormalizePromptFieldKey(string instructionText)
+        => instructionText.Trim();
 
     private void AdvanceMergeCursor(bool skipOutput)
     {
@@ -1281,6 +1406,7 @@ public sealed class DxpFieldEval
             || fieldType.Equals("NUMCHARS", StringComparison.OrdinalIgnoreCase)
             || fieldType.Equals("SEQ", StringComparison.OrdinalIgnoreCase)
             || fieldType.Equals("ASK", StringComparison.OrdinalIgnoreCase)
+            || fieldType.Equals("FILLIN", StringComparison.OrdinalIgnoreCase)
             || fieldType.Equals("DATABASE", StringComparison.OrdinalIgnoreCase);
     }
 

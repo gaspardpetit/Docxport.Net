@@ -72,6 +72,248 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     }
 
     [Fact]
+    public async Task EvalAsync_FillIn_UsesCache_WhenNoCallbackConfigured()
+    {
+        var eval = new DxpFieldEval(options: new DxpFieldEvalOptions { UseCacheOnNull = true }, logger: Logger);
+
+        var result = await eval.EvalAsync(new DxpFieldInstruction("FILLIN \"Prompt\"", "cached"));
+
+        Assert.Equal(DxpFieldEvalStatus.UsedCache, result.Status);
+        Assert.Equal("cached", result.Text);
+    }
+
+    [Fact]
+    public async Task EvalAsync_FillIn_Skips_WhenNoCallbackAndNoCache()
+    {
+        var eval = new DxpFieldEval(options: new DxpFieldEvalOptions { UseCacheOnNull = true }, logger: Logger);
+
+        var result = await eval.EvalAsync(new DxpFieldInstruction("FILLIN \"Prompt\""));
+
+        Assert.Equal(DxpFieldEvalStatus.Skipped, result.Status);
+        Assert.Null(result.Text);
+    }
+
+    [Fact]
+    public async Task EvalAsync_FillIn_UsesCallbackValue()
+    {
+        DxpFillInRequest? captured = null;
+        var eval = new DxpFieldEval(
+            delegates: new DxpFieldEvalDelegates {
+                FillInAsync = (request, _) => {
+                    captured = request;
+                    return Task.FromResult<DxpFieldValue?>(new DxpFieldValue("resolved"));
+                }
+            },
+            logger: Logger);
+
+        var result = await eval.EvalAsync(new DxpFieldInstruction("FILLIN \"Prompt\"", "cached"));
+
+        Assert.Equal(DxpFieldEvalStatus.Resolved, result.Status);
+        Assert.Equal("resolved", result.Text);
+        Assert.NotNull(captured);
+        Assert.Equal("FILLIN \"Prompt\"", captured!.InstructionText);
+        Assert.Equal("Prompt", captured.PromptText);
+        Assert.Equal("cached", captured.CachedResultText);
+        Assert.Null(captured.DefaultText);
+        Assert.False(captured.AskOnce);
+        Assert.Null(captured.PriorResponseText);
+    }
+
+    [Fact]
+    public async Task EvalAsync_FillIn_CallbackCanReturnCachedValue()
+    {
+        var eval = new DxpFieldEval(
+            delegates: new DxpFieldEvalDelegates {
+                FillInAsync = (request, _) => Task.FromResult<DxpFieldValue?>(new DxpFieldValue(request.CachedResultText ?? string.Empty))
+            },
+            logger: Logger);
+
+        var result = await eval.EvalAsync(new DxpFieldInstruction("FILLIN \"Prompt\"", "cached"));
+
+        Assert.Equal(DxpFieldEvalStatus.Resolved, result.Status);
+        Assert.Equal("cached", result.Text);
+    }
+
+    [Fact]
+    public async Task EvalAsync_FillIn_CallbackNullUsesCacheFallback()
+    {
+        var eval = new DxpFieldEval(
+            delegates: new DxpFieldEvalDelegates {
+                FillInAsync = (_, _) => Task.FromResult<DxpFieldValue?>(null)
+            },
+            logger: Logger);
+
+        var result = await eval.EvalAsync(new DxpFieldInstruction("FILLIN \"Prompt\"", "cached"));
+
+        Assert.Equal(DxpFieldEvalStatus.UsedCache, result.Status);
+        Assert.Equal("cached", result.Text);
+    }
+
+    [Fact]
+    public async Task EvalAsync_FillIn_CallbackNullSkipsWhenUseCacheOnNullIsDisabled()
+    {
+        var eval = new DxpFieldEval(
+            delegates: new DxpFieldEvalDelegates {
+                FillInAsync = (_, _) => Task.FromResult<DxpFieldValue?>(null)
+            },
+            options: new DxpFieldEvalOptions { UseCacheOnNull = false },
+            logger: Logger);
+
+        var result = await eval.EvalAsync(new DxpFieldInstruction("FILLIN \"Prompt\"", "cached"));
+
+        Assert.Equal(DxpFieldEvalStatus.Skipped, result.Status);
+        Assert.Null(result.Text);
+    }
+
+    [Fact]
+    public async Task EvalAsync_FillIn_UsesDefaultWhenCacheIsBlank()
+    {
+        DxpFillInRequest? captured = null;
+        var eval = new DxpFieldEval(
+            delegates: new DxpFieldEvalDelegates {
+                FillInAsync = (request, _) => {
+                    captured = request;
+                    return Task.FromResult<DxpFieldValue?>(null);
+                }
+            },
+            logger: Logger);
+
+        var result = await eval.EvalAsync(new DxpFieldInstruction("FILLIN \"Prompt\" \\d \"Fallback\"", "   "));
+
+        Assert.Equal(DxpFieldEvalStatus.Resolved, result.Status);
+        Assert.Equal("Fallback", result.Text);
+        Assert.NotNull(captured);
+        Assert.Equal("Fallback", captured!.DefaultText);
+    }
+
+    [Fact]
+    public async Task EvalAsync_FillIn_ReusesPriorResponseWhenDefaultIsOmitted()
+    {
+        int calls = 0;
+        var eval = new DxpFieldEval(
+            delegates: new DxpFieldEvalDelegates {
+                FillInAsync = (_, _) => Task.FromResult<DxpFieldValue?>(calls++ == 0 ? new DxpFieldValue("First") : null)
+            },
+            logger: Logger);
+
+        var first = await eval.EvalAsync(new DxpFieldInstruction("FILLIN \"Prompt 1\""));
+        var second = await eval.EvalAsync(new DxpFieldInstruction("FILLIN \"Prompt 2\""));
+
+        Assert.Equal("First", first.Text);
+        Assert.Equal("First", second.Text);
+    }
+
+    [Fact]
+    public async Task EvalAsync_FillIn_CacheFallbackDoesNotSeedPriorResponse()
+    {
+        var eval = new DxpFieldEval(
+            delegates: new DxpFieldEvalDelegates {
+                FillInAsync = (_, _) => Task.FromResult<DxpFieldValue?>(null)
+            },
+            logger: Logger);
+
+        var first = await eval.EvalAsync(new DxpFieldInstruction("FILLIN \"Prompt 1\"", "cached"));
+        var second = await eval.EvalAsync(new DxpFieldInstruction("FILLIN \"Prompt 2\""));
+
+        Assert.Equal(DxpFieldEvalStatus.UsedCache, first.Status);
+        Assert.Equal("cached", first.Text);
+        Assert.Equal(DxpFieldEvalStatus.Skipped, second.Status);
+        Assert.Null(second.Text);
+    }
+
+    [Fact]
+    public async Task EvalAsync_FillIn_WithOReusesRememberedResponseAcrossRecordReset()
+    {
+        int calls = 0;
+        var eval = new DxpFieldEval(
+            delegates: new DxpFieldEvalDelegates {
+                FillInAsync = (request, _) => Task.FromResult<DxpFieldValue?>(calls++ == 0 ? new DxpFieldValue("Once") : new DxpFieldValue("Later"))
+            },
+            logger: Logger);
+
+        var first = await eval.EvalAsync(new DxpFieldInstruction("FILLIN \"Prompt\" \\o"));
+        eval.Context.ResetForRecord();
+        var second = await eval.EvalAsync(new DxpFieldInstruction("FILLIN \"Prompt\" \\o"));
+
+        Assert.Equal("Once", first.Text);
+        Assert.Equal("Once", second.Text);
+    }
+
+    [Fact]
+    public async Task EvalAsync_FillIn_EmptyStringCallbackIsExplicitAnswer()
+    {
+        var eval = new DxpFieldEval(
+            delegates: new DxpFieldEvalDelegates {
+                FillInAsync = (_, _) => Task.FromResult<DxpFieldValue?>(new DxpFieldValue(string.Empty))
+            },
+            logger: Logger);
+
+        var result = await eval.EvalAsync(new DxpFieldInstruction("FILLIN \"Prompt\" \\d \"Fallback\"", "cached"));
+
+        Assert.Equal(DxpFieldEvalStatus.Resolved, result.Status);
+        Assert.Equal(string.Empty, result.Text);
+    }
+
+    [Fact]
+    public async Task EvalAsync_FillIn_CallbackErrorUsesCache_WhenEnabled()
+    {
+        var eval = new DxpFieldEval(
+            delegates: new DxpFieldEvalDelegates {
+                FillInAsync = (_, _) => throw new InvalidOperationException("boom")
+            },
+            options: new DxpFieldEvalOptions { UseCacheOnError = true },
+            logger: Logger);
+
+        var result = await eval.EvalAsync(new DxpFieldInstruction("FILLIN \"Prompt\"", "cached"));
+
+        Assert.Equal(DxpFieldEvalStatus.UsedCache, result.Status);
+        Assert.Equal("cached", result.Text);
+    }
+
+    [Fact]
+    public async Task EvalAsync_FillIn_CallbackErrorWithoutCacheThrows()
+    {
+        var eval = new DxpFieldEval(
+            delegates: new DxpFieldEvalDelegates {
+                FillInAsync = (_, _) => throw new InvalidOperationException("boom")
+            },
+            options: new DxpFieldEvalOptions { UseCacheOnError = true },
+            logger: Logger);
+
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => eval.EvalAsync(new DxpFieldInstruction("FILLIN \"Prompt\"")));
+
+        Assert.Equal("boom", ex.Message);
+    }
+
+    [Fact]
+    public async Task EvalAsync_FillIn_AppliesGeneralFormattingToCallbackValue()
+    {
+        var eval = new DxpFieldEval(
+            delegates: new DxpFieldEvalDelegates {
+                FillInAsync = (_, _) => Task.FromResult<DxpFieldValue?>(new DxpFieldValue("mixed case"))
+            },
+            logger: Logger);
+
+        var result = await eval.EvalAsync(new DxpFieldInstruction("FILLIN \"Prompt\" \\* Upper"));
+
+        Assert.Equal(DxpFieldEvalStatus.Resolved, result.Status);
+        Assert.Equal("MIXED CASE", result.Text);
+    }
+
+    [Fact]
+    public async Task EvalAsync_FillIn_DoesNotFailWhenErrorOnUnsupportedIsEnabled()
+    {
+        var eval = new DxpFieldEval(
+            options: new DxpFieldEvalOptions { ErrorOnUnsupported = true, UseCacheOnNull = true },
+            logger: Logger);
+
+        var result = await eval.EvalAsync(new DxpFieldInstruction("FILLIN \"Prompt\"", "cached"));
+
+        Assert.Equal(DxpFieldEvalStatus.UsedCache, result.Status);
+        Assert.Equal("cached", result.Text);
+    }
+
+    [Fact]
     public async Task EvalAsync_DateAndTimeUseNowProvider()
     {
         var eval = new DxpFieldEval(logger: Logger);
@@ -813,6 +1055,32 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     }
 
     [Fact]
+    public void Walker_EvalMode_FillInWithMergeformat_UsesCachedResultRunStyles()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Expect merge: </w:t></w:r>
+    <w:fldSimple w:instr=" FILLIN &quot;Prompt&quot; \* MERGEFORMAT ">
+      <w:r><w:rPr><w:b/></w:rPr><w:t>cached</w:t></w:r>
+      <w:r><w:t>result</w:t></w:r>
+    </w:fldSimple>
+  </w:p>
+</w:body>
+""";
+
+        var eval = new DxpFieldEval(
+            delegates: new DxpFieldEvalDelegates {
+                FillInAsync = (_, _) => Task.FromResult<DxpFieldValue?>(new DxpFieldValue("one"))
+            },
+            logger: Logger);
+
+        var actual = ExportRunMarkupEvaluatedFromBodyXml(bodyXml, eval);
+        var expected = TestCompare.Normalize("Expect merge: <b>on</b>e\n\n");
+        Assert.Equal(expected, TestCompare.Normalize(actual));
+    }
+
+    [Fact]
     public async Task EvalAsync_MergeFieldUsesResolverAndSwitches()
     {
         var eval = new DxpFieldEval(new DxpFieldEvalDelegates {
@@ -1056,18 +1324,48 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     }
 
     [Fact]
-    public async Task EvalAsync_AskWithORespectsExisting()
+    public async Task EvalAsync_AskWithBlankDefaultStoresBlankBookmark()
     {
         var eval = new DxpFieldEval(new DxpFieldEvalDelegates {
-            AskAsync = (prompt, ctx) => Task.FromResult<DxpFieldValue?>(new DxpFieldValue("New"))
+            AskAsync = (prompt, ctx) => Task.FromResult<DxpFieldValue?>(null)
         }, logger: Logger);
-        eval.Context.SetBookmarkNodes("Answer", DxpFieldNodeBuffer.FromText("Existing"));
 
-        var asked = await eval.EvalAsync(new DxpFieldInstruction("ASK Answer \"Prompt\" \\o"));
+        var asked = await eval.EvalAsync(new DxpFieldInstruction("ASK Answer \"Prompt\" \\d \"\""));
         var result = await eval.EvalAsync(new DxpFieldInstruction("REF Answer"));
 
         Assert.Equal(string.Empty, asked.Text);
-        Assert.Equal("Existing", result.Text);
+        Assert.Equal(string.Empty, result.Text);
+    }
+
+    [Fact]
+    public async Task EvalAsync_AskWithoutDefaultReusesPriorResponse()
+    {
+        int calls = 0;
+        var eval = new DxpFieldEval(new DxpFieldEvalDelegates {
+            AskAsync = (prompt, ctx) => Task.FromResult<DxpFieldValue?>(calls++ == 0 ? new DxpFieldValue("First") : null)
+        }, logger: Logger);
+
+        _ = await eval.EvalAsync(new DxpFieldInstruction("ASK FirstBookmark \"Prompt 1\""));
+        _ = await eval.EvalAsync(new DxpFieldInstruction("ASK SecondBookmark \"Prompt 2\""));
+        var second = await eval.EvalAsync(new DxpFieldInstruction("REF SecondBookmark"));
+
+        Assert.Equal("First", second.Text);
+    }
+
+    [Fact]
+    public async Task EvalAsync_AskWithOReusesRememberedResponseAcrossRecordReset()
+    {
+        int calls = 0;
+        var eval = new DxpFieldEval(new DxpFieldEvalDelegates {
+            AskAsync = (prompt, ctx) => Task.FromResult<DxpFieldValue?>(calls++ == 0 ? new DxpFieldValue("Once") : new DxpFieldValue("Later"))
+        }, logger: Logger);
+
+        _ = await eval.EvalAsync(new DxpFieldInstruction("ASK Answer \"Prompt\" \\o"));
+        eval.Context.ResetForRecord();
+        _ = await eval.EvalAsync(new DxpFieldInstruction("ASK Answer \"Prompt\" \\o"));
+        var result = await eval.EvalAsync(new DxpFieldInstruction("REF Answer"));
+
+        Assert.Equal("Once", result.Text);
     }
 
     [Fact]
@@ -2031,6 +2329,221 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         }) + "\n\n");
 
         var actual = TestCompare.Normalize(ExportPlainTextCachedFromBodyXml(bodyXml));
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void Walker_CacheMode_FillIn_ReplaysCachedSimpleFieldContent()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Expect: </w:t></w:r>
+    <w:fldSimple w:instr=" FILLIN &quot;Prompt&quot; \* MERGEFORMAT ">
+      <w:r><w:t>one</w:t></w:r>
+      <w:r><w:t xml:space="preserve"> two</w:t></w:r>
+    </w:fldSimple>
+  </w:p>
+</w:body>
+""";
+
+        var actual = TestCompare.Normalize(ExportPlainTextCachedFromBodyXml(bodyXml));
+        var expected = TestCompare.Normalize("Expect: one two\n\n");
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void Walker_EvalMode_FillIn_UsesCachedTextWhenNoCallbackConfigured()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Expect: </w:t></w:r>
+    <w:fldSimple w:instr=" FILLIN &quot;Prompt&quot; \* MERGEFORMAT ">
+      <w:r><w:t>cached</w:t></w:r>
+      <w:r><w:t xml:space="preserve"> value</w:t></w:r>
+    </w:fldSimple>
+  </w:p>
+</w:body>
+""";
+
+        var actual = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml));
+        var expected = TestCompare.Normalize("Expect: cached value\n\n");
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void Walker_EvalMode_FillIn_UsesSharedCallbackValue()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Expect: </w:t></w:r>
+    <w:fldSimple w:instr=" FILLIN &quot;Prompt&quot; ">
+      <w:r><w:t>cached</w:t></w:r>
+    </w:fldSimple>
+  </w:p>
+</w:body>
+""";
+
+        DxpFillInRequest? captured = null;
+        var eval = new DxpFieldEval(
+            delegates: new DxpFieldEvalDelegates {
+                FillInAsync = (request, _) => {
+                    captured = request;
+                    return Task.FromResult<DxpFieldValue?>(new DxpFieldValue("resolved"));
+                }
+            },
+            logger: Logger);
+
+        var actual = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml, eval));
+        var expected = TestCompare.Normalize("Expect: resolved\n\n");
+        Assert.Equal(expected, actual);
+        Assert.NotNull(captured);
+        Assert.Equal("Prompt", captured!.PromptText);
+        Assert.Equal("cached", captured.CachedResultText);
+        Assert.Null(captured.DefaultText);
+        Assert.False(captured.AskOnce);
+        Assert.Null(captured.PriorResponseText);
+    }
+
+    [Fact]
+    public void Walker_EvalMode_FillIn_CallbackNullUsesCachedOutput()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t>Expect:</w:t></w:r>
+    <w:fldSimple w:instr=" FILLIN &quot;Prompt&quot; ">
+      <w:r><w:t>cached</w:t></w:r>
+    </w:fldSimple>
+  </w:p>
+</w:body>
+""";
+
+        var eval = new DxpFieldEval(
+            delegates: new DxpFieldEvalDelegates {
+                FillInAsync = (_, _) => Task.FromResult<DxpFieldValue?>(null)
+            },
+            logger: Logger);
+
+        var actual = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml, eval));
+        var expected = TestCompare.Normalize("Expect:cached\n\n");
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void Walker_EvalMode_FillIn_UsesDefaultWhenCacheIsBlank()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Expect: </w:t></w:r>
+    <w:fldSimple w:instr=" FILLIN &quot;Prompt&quot; \d &quot;Fallback&quot; ">
+      <w:r><w:t xml:space="preserve">   </w:t></w:r>
+    </w:fldSimple>
+  </w:p>
+</w:body>
+""";
+
+        var eval = new DxpFieldEval(
+            delegates: new DxpFieldEvalDelegates {
+                FillInAsync = (_, _) => Task.FromResult<DxpFieldValue?>(null)
+            },
+            logger: Logger);
+
+        var actual = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml, eval));
+        var expected = TestCompare.Normalize("Expect: Fallback\n\n");
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void Walker_EvalMode_FillIn_WithOReusesRememberedResponseAcrossRecordReset()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Expect: </w:t></w:r>
+    <w:fldSimple w:instr=" FILLIN &quot;Prompt&quot; \o ">
+      <w:r><w:t>cached</w:t></w:r>
+    </w:fldSimple>
+  </w:p>
+</w:body>
+""";
+
+        int calls = 0;
+        var eval = new DxpFieldEval(
+            delegates: new DxpFieldEvalDelegates {
+                FillInAsync = (_, _) => Task.FromResult<DxpFieldValue?>(calls++ == 0 ? new DxpFieldValue("Once") : new DxpFieldValue("Later"))
+            },
+            logger: Logger);
+
+        var first = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml, eval));
+        eval.Context.ResetForRecord();
+        var second = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml, eval));
+
+        Assert.Equal(TestCompare.Normalize("Expect: Once\n\n"), first);
+        Assert.Equal(TestCompare.Normalize("Expect: Once\n\n"), second);
+    }
+
+    [Fact]
+    public void Walker_EvalMode_AskWithOReusesRememberedResponseAcrossRecordReset()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> ASK Answer "Prompt" \o </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:t xml:space="preserve">Expect: </w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> REF Answer </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+</w:body>
+""";
+
+        int calls = 0;
+        var eval = new DxpFieldEval(new DxpFieldEvalDelegates {
+            AskAsync = (prompt, ctx) => Task.FromResult<DxpFieldValue?>(calls++ == 0 ? new DxpFieldValue("Once") : new DxpFieldValue("Later"))
+        }, logger: Logger);
+
+        var first = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml, eval));
+        eval.Context.ResetForRecord();
+        var second = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml, eval));
+
+        Assert.Equal(TestCompare.Normalize("Expect: Once\n\n"), first);
+        Assert.Equal(TestCompare.Normalize("Expect: Once\n\n"), second);
+    }
+
+    [Fact]
+    public void Walker_EvalMode_FillIn_CallbackErrorUsesCacheWhenEnabled()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Expect: </w:t></w:r>
+    <w:fldSimple w:instr=" FILLIN &quot;Prompt&quot; ">
+      <w:r><w:t>cached</w:t></w:r>
+      <w:r><w:t xml:space="preserve"> value</w:t></w:r>
+    </w:fldSimple>
+  </w:p>
+</w:body>
+""";
+
+        var eval = new DxpFieldEval(
+            delegates: new DxpFieldEvalDelegates {
+                FillInAsync = (_, _) => throw new InvalidOperationException("boom")
+            },
+            options: new DxpFieldEvalOptions { UseCacheOnError = true },
+            logger: Logger);
+
+        var actual = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml, eval));
+        var expected = TestCompare.Normalize("Expect: cached value\n\n");
         Assert.Equal(expected, actual);
     }
 
