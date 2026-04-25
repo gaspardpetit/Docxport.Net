@@ -40,6 +40,12 @@ internal sealed class DxpFieldEvalFrameFactory
                 ? new DxpAskFieldCachedFrame(next)
                 : new DxpAskFieldEvalFrame(next, eval, logger, instruction);
         }
+        if (IsFillInInstruction(instruction))
+        {
+            return mode == DxpEvalFieldMode.Cache
+                ? new DxpSimpleFieldCachedFrame(next)
+                : new DxpValueFieldEvalFrame(next, eval, logger, instruction);
+        }
         if (IsSkipIfInstruction(instruction))
         {
             return mode == DxpEvalFieldMode.Cache
@@ -148,6 +154,9 @@ internal sealed class DxpFieldEvalFrameFactory
 
     internal static bool IsAskInstruction(string? instruction)
         => StartsWithField(instruction, "ASK");
+
+    internal static bool IsFillInInstruction(string? instruction)
+        => StartsWithField(instruction, "FILLIN");
 
     internal static bool IsDocumentMetricInstruction(string? instruction)
     {

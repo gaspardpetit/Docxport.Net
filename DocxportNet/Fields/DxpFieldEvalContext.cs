@@ -17,6 +17,9 @@ public sealed partial class DxpFieldEvalContext
     private readonly Dictionary<string, int> _sequences = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, string> _numberedItems = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, int> _sequenceResetKeys = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, string> _promptOnceResponses = new(StringComparer.Ordinal);
+    private string? _lastPromptResponse;
+    private bool _hasLastPromptResponse;
 
     public Func<DateTimeOffset> NowProvider { get; private set; } = () => DateTimeOffset.Now;
     public CultureInfo? Culture { get; set; } = CultureInfo.CurrentCulture;
@@ -122,6 +125,24 @@ public sealed partial class DxpFieldEvalContext
     public void SetNumberedItem(string name, string value) => _numberedItems[name] = value;
     public bool TryGetNumberedItem(string name, out string? value)
         => _numberedItems.TryGetValue(name, out value);
+
+    public void SetLastPromptResponse(string value)
+    {
+        _lastPromptResponse = value;
+        _hasLastPromptResponse = true;
+    }
+
+    public bool TryGetLastPromptResponse(out string? value)
+    {
+        value = _lastPromptResponse;
+        return _hasLastPromptResponse;
+    }
+
+    public void RememberPromptOnceResponse(string fieldKey, string value)
+        => _promptOnceResponses[fieldKey] = value;
+
+    public bool TryGetPromptOnceResponse(string fieldKey, out string? value)
+        => _promptOnceResponses.TryGetValue(fieldKey, out value);
 
     public Task InitWithDocumentAsync(WordprocessingDocument document, CancellationToken cancellationToken = default)
     {
