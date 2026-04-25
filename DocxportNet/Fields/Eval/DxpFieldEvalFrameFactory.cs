@@ -146,6 +146,24 @@ internal sealed class DxpFieldEvalFrameFactory
     internal static bool IsMergeFieldInstruction(string? instruction)
         => StartsWithField(instruction, "MERGEFIELD");
 
+    internal static bool IsMergeRecInstruction(string? instruction)
+        => StartsWithField(instruction, "MERGEREC");
+
+    internal static bool IsMergeSeqInstruction(string? instruction)
+        => StartsWithField(instruction, "MERGESEQ");
+
+    internal static bool IsGreetingLineInstruction(string? instruction)
+        => StartsWithField(instruction, "GREETINGLINE");
+
+    internal static bool IsAddressBlockInstruction(string? instruction)
+        => StartsWithField(instruction, "ADDRESSBLOCK");
+
+    internal static bool IsDatabaseInstruction(string? instruction)
+        => StartsWithField(instruction, "DATABASE");
+
+    internal static bool IsNextInstruction(string? instruction)
+        => StartsWithField(instruction, "NEXT");
+
     internal static bool IsSeqInstruction(string? instruction)
         => StartsWithField(instruction, "SEQ");
 

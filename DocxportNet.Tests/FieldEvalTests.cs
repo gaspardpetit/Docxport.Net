@@ -2353,6 +2353,266 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     }
 
     [Fact]
+    public void Walker_CacheMode_ReplaysCachedResults_ForMergeRecMergeSeqGreetingAddressAndDatabase()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Expect: </w:t></w:r>
+    <w:fldSimple w:instr=" MERGEREC "><w:r><w:t>2</w:t></w:r></w:fldSimple>
+    <w:r><w:t>|</w:t></w:r>
+    <w:fldSimple w:instr=" MERGESEQ "><w:r><w:t>5</w:t></w:r></w:fldSimple>
+    <w:r><w:t>|</w:t></w:r>
+    <w:fldSimple w:instr=" GREETINGLINE ">
+      <w:r><w:t>Dear Dr. Smith,</w:t></w:r>
+    </w:fldSimple>
+    <w:r><w:t>|</w:t></w:r>
+    <w:fldSimple w:instr=" ADDRESSBLOCK ">
+      <w:r><w:t>Acme Co.</w:t></w:r>
+      <w:r><w:br/></w:r>
+      <w:r><w:t>123 Main St</w:t></w:r>
+    </w:fldSimple>
+    <w:r><w:t>|</w:t></w:r>
+    <w:fldSimple w:instr=" DATABASE &quot;SELECT&quot; ">
+      <w:r><w:t>Id</w:t></w:r>
+      <w:r><w:tab/></w:r>
+      <w:r><w:t>Name</w:t></w:r>
+    </w:fldSimple>
+  </w:p>
+</w:body>
+""";
+
+        var actual = TestCompare.Normalize(ExportPlainTextCachedFromBodyXml(bodyXml));
+        var expected = TestCompare.Normalize("Expect: 2|5|Dear Dr. Smith,|Acme Co.\n123 Main St|Id\tName\n\n");
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void Walker_CacheMode_DatabaseDoesNotInvokeProvider()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Expect: </w:t></w:r>
+    <w:fldSimple w:instr=" DATABASE &quot;SELECT&quot; ">
+      <w:r><w:t>cached</w:t></w:r>
+      <w:r><w:t xml:space="preserve"> rows</w:t></w:r>
+    </w:fldSimple>
+  </w:p>
+</w:body>
+""";
+
+        var eval = new DxpFieldEval(logger: Logger);
+        var provider = new MockDatabaseProvider {
+            Result = new DxpDatabaseResult(
+                new[] { new DxpDatabaseColumn("Id") },
+                new[] { new DxpFieldValue?[] { new DxpFieldValue(1) } })
+        };
+        eval.Context.DatabaseProvider = provider;
+
+        var actual = TestCompare.Normalize(ExportPlainTextCachedFromBodyXml(bodyXml, eval));
+        var expected = TestCompare.Normalize("Expect: cached rows\n\n");
+        Assert.Equal(expected, actual);
+        Assert.Null(provider.LastRequest);
+    }
+
+    [Fact]
+    public void Walker_CacheMode_NextDoesNotEmitOutputOrAdvanceState()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t>Before</w:t></w:r>
+    <w:fldSimple w:instr=" NEXT ">
+      <w:r><w:t>cached</w:t></w:r>
+    </w:fldSimple>
+    <w:r><w:t>After</w:t></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var eval = new DxpFieldEval(logger: Logger);
+        var cursor = new TrackingMergeRecordCursor(2);
+        eval.Context.MergeCursor = cursor;
+
+        var actual = TestCompare.Normalize(ExportPlainTextCachedFromBodyXml(bodyXml, eval));
+        var expected = TestCompare.Normalize("BeforeAfter\n\n");
+        Assert.Equal(expected, actual);
+        Assert.Equal(0, cursor.Index);
+        Assert.Equal(0, cursor.MoveNextCalls);
+    }
+
+    [Fact]
+    public void Walker_EvalMode_MergeRecAndMergeSeq_UseMergeContext()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Expect: </w:t></w:r>
+    <w:fldSimple w:instr=" MERGEREC "><w:r><w:t>cached</w:t></w:r></w:fldSimple>
+    <w:r><w:t>-</w:t></w:r>
+    <w:fldSimple w:instr=" MERGESEQ "><w:r><w:t>cached</w:t></w:r></w:fldSimple>
+  </w:p>
+</w:body>
+""";
+
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.MergeCursor = new ListMergeRecordCursor(new[] {
+            new Dictionary<string, DxpFieldValue>(StringComparer.OrdinalIgnoreCase)
+        });
+        eval.Context.IncrementMergeSequence();
+        eval.Context.IncrementMergeSequence();
+        eval.Context.IncrementMergeSequence();
+
+        var actual = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml, eval));
+        var expected = TestCompare.Normalize("Expect: 1-3\n\n");
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void Walker_EvalMode_GreetingLine_UsesMergeMacroProvider()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Expect: </w:t></w:r>
+    <w:fldSimple w:instr=" GREETINGLINE ">
+      <w:r><w:t>cached</w:t></w:r>
+    </w:fldSimple>
+  </w:p>
+</w:body>
+""";
+
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.Culture = new CultureInfo("en-US");
+        eval.Context.MergeMacroProvider = new EnglishMergeMacroProvider();
+        eval.Context.MergeCursor = new ListMergeRecordCursor(new[] {
+            new Dictionary<string, DxpFieldValue>(StringComparer.OrdinalIgnoreCase) {
+                ["Title"] = new DxpFieldValue("Dr."),
+                ["LastName"] = new DxpFieldValue("Smith")
+            }
+        });
+
+        var actual = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml, eval));
+        var expected = TestCompare.Normalize("Expect: Dear Dr. Smith,\n\n");
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void Walker_EvalMode_AddressBlock_UsesMergeMacroProvider()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Expect: </w:t></w:r>
+    <w:fldSimple w:instr=" ADDRESSBLOCK ">
+      <w:r><w:t>cached</w:t></w:r>
+    </w:fldSimple>
+  </w:p>
+</w:body>
+""";
+
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.Culture = new CultureInfo("en-US");
+        eval.Context.MergeMacroProvider = new EnglishMergeMacroProvider();
+        eval.Context.MergeCursor = new ListMergeRecordCursor(new[] {
+            new Dictionary<string, DxpFieldValue>(StringComparer.OrdinalIgnoreCase) {
+                ["Company"] = new DxpFieldValue("Acme Co."),
+                ["Address1"] = new DxpFieldValue("123 Main St"),
+                ["City"] = new DxpFieldValue("Springfield"),
+                ["State"] = new DxpFieldValue("IL"),
+                ["PostalCode"] = new DxpFieldValue("62704"),
+                ["Country"] = new DxpFieldValue("USA")
+            }
+        });
+
+        var actual = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml, eval));
+        var expected = TestCompare.Normalize("Expect: Acme Co.\n123 Main St\nSPRINGFIELD IL  62704\nUSA\n\n");
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void Walker_EvalMode_Database_UsesConfiguredProvider()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Expect: </w:t></w:r>
+    <w:fldSimple w:instr=" DATABASE &quot;SELECT&quot; Id &quot;7&quot; ">
+      <w:r><w:t>cached</w:t></w:r>
+    </w:fldSimple>
+  </w:p>
+</w:body>
+""";
+
+        var provider = new MockDatabaseProvider {
+            Result = new DxpDatabaseResult(
+                new[] {
+                    new DxpDatabaseColumn("Id"),
+                    new DxpDatabaseColumn("Name")
+                },
+                new[] {
+                    new DxpFieldValue?[] { new DxpFieldValue(1), new DxpFieldValue("Alpha") }
+                })
+        };
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.DatabaseProvider = provider;
+
+        var actual = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml, eval));
+        var expected = TestCompare.Normalize("Expect: Id\tName\n1\tAlpha\n\n");
+        Assert.Equal(expected, actual);
+        Assert.NotNull(provider.LastRequest);
+    }
+
+    [Fact]
+    public void Walker_EvalMode_Next_AdvancesMergeStateForSubsequentFields()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> MERGEFIELD Name </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:t>-</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> NEXT </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> MERGEFIELD Name </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var docBytes = BuildDocBytesFromBodyXml(bodyXml);
+        var records = new List<Dictionary<string, DxpFieldValue>>
+        {
+            new(StringComparer.OrdinalIgnoreCase) { ["Name"] = new DxpFieldValue("Alpha") },
+            new(StringComparer.OrdinalIgnoreCase) { ["Name"] = new DxpFieldValue("Beta") },
+            new(StringComparer.OrdinalIgnoreCase) { ["Name"] = new DxpFieldValue("Gamma") }
+        };
+
+        using var stream = new MemoryStream(docBytes);
+        using var doc = WordprocessingDocument.Open(stream, false);
+        var outputs = DxpExport.ExportToStrings(
+            doc,
+            new ListMergeRecordCursor(records),
+            eval => new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateAcceptConfig(), Logger, eval),
+            logger: Logger);
+
+        Assert.Equal(3, outputs.Count);
+        Assert.Equal("Alpha-Beta\n\n", outputs[0]);
+        Assert.Equal("Beta-Gamma\n\n", outputs[1]);
+        Assert.Equal("Gamma-\n\n", outputs[2]);
+    }
+
+    [Fact]
     public void Walker_EvalMode_FillIn_UsesCachedTextWhenNoCallbackConfigured()
     {
         const string bodyXml = """
@@ -3354,7 +3614,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         return stream.ToArray();
     }
 
-    private string ExportPlainTextCachedFromBodyXml(string bodyXml)
+    private string ExportPlainTextCachedFromBodyXml(string bodyXml, DxpFieldEval? fieldEval = null)
     {
         using var stream = new MemoryStream();
         using (var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document, true))
@@ -3371,7 +3631,8 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
 
         stream.Position = 0;
 
-        var visitor = new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateAcceptConfig(), Logger);
+        var eval = fieldEval ?? new DxpFieldEval(logger: Logger);
+        var visitor = new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateAcceptConfig(), Logger, eval);
         using var writer = new StringWriter();
         visitor.SetOutput(writer);
 
