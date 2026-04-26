@@ -30,6 +30,7 @@ public class DxpParagraphContext : DxpIParagraphContext
         null,
         new DxpComputedParagraphStyle(
             MarginLeftPt: null,
+            TextIndentPt: null,
             MarginTopPt: null,
             MarginBottomPt: null,
             TextAlign: null,

@@ -1,6 +1,9 @@
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
+using DocxportNet.Walker;
+using DocxportNet.Walker.Context;
+using System.Linq;
 using System.Text;
 
 namespace DocxportNet.Fields;
@@ -10,6 +13,7 @@ public sealed class DxpFieldNodeBuffer
     private interface IReplayNode
     {
         void Replay(DxpIVisitor visitor, DxpIDocumentContext context);
+        OpenXmlElement CreateElement(bool forRoot);
         void AppendText(StringBuilder sb);
     }
 
@@ -30,6 +34,14 @@ public sealed class DxpFieldNodeBuffer
             visitor.VisitText(t, context);
         }
 
+        public OpenXmlElement CreateElement(bool forRoot)
+        {
+            var t = new Text(_text);
+            if (NeedsPreserveSpace(_text))
+                t.Space = SpaceProcessingModeValues.Preserve;
+            return t;
+        }
+
         public void AppendText(StringBuilder sb) => sb.Append(_text);
     }
 
@@ -47,31 +59,70 @@ public sealed class DxpFieldNodeBuffer
             visitor.VisitDeletedText(new DeletedText(_text), context);
         }
 
+        public OpenXmlElement CreateElement(bool forRoot) => new DeletedText(_text);
+
         public void AppendText(StringBuilder sb) => sb.Append(_text);
     }
 
     private sealed class BreakNode : IReplayNode
     {
         public void Replay(DxpIVisitor visitor, DxpIDocumentContext context) => visitor.VisitBreak(new Break(), context);
+        public OpenXmlElement CreateElement(bool forRoot) => new Break();
         public void AppendText(StringBuilder sb) => sb.Append('\n');
     }
 
     private sealed class TabNode : IReplayNode
     {
         public void Replay(DxpIVisitor visitor, DxpIDocumentContext context) => visitor.VisitTab(new TabChar(), context);
+        public OpenXmlElement CreateElement(bool forRoot) => new TabChar();
         public void AppendText(StringBuilder sb) => sb.Append('\t');
     }
 
     private sealed class CarriageReturnNode : IReplayNode
     {
         public void Replay(DxpIVisitor visitor, DxpIDocumentContext context) => visitor.VisitCarriageReturn(new CarriageReturn(), context);
+        public OpenXmlElement CreateElement(bool forRoot) => new CarriageReturn();
         public void AppendText(StringBuilder sb) => sb.Append('\n');
     }
 
     private sealed class NoBreakHyphenNode : IReplayNode
     {
         public void Replay(DxpIVisitor visitor, DxpIDocumentContext context) => visitor.VisitNoBreakHyphen(new NoBreakHyphen(), context);
+        public OpenXmlElement CreateElement(bool forRoot) => new NoBreakHyphen();
         public void AppendText(StringBuilder sb) => sb.Append('-');
+    }
+
+    private sealed class ParagraphNode : IReplayNode
+    {
+        private readonly Paragraph _paragraph;
+        private readonly DxpFieldNodeBuffer _children;
+
+        public ParagraphNode(Paragraph paragraph, DxpFieldNodeBuffer children)
+        {
+            _paragraph = paragraph;
+            _children = children;
+        }
+
+        public void Replay(DxpIVisitor visitor, DxpIDocumentContext context)
+        {
+            using (visitor.VisitBlockBegin(_paragraph, context))
+            using (visitor.VisitParagraphBegin(_paragraph, context, context.CurrentParagraph))
+                _children.Replay(visitor, context);
+        }
+
+        public OpenXmlElement CreateElement(bool forRoot)
+        {
+            var paragraph = (Paragraph)_paragraph.CloneNode(false);
+            if (_paragraph.ParagraphProperties != null && paragraph.ParagraphProperties == null)
+                paragraph.ParagraphProperties = (ParagraphProperties)_paragraph.ParagraphProperties.CloneNode(true);
+
+            foreach (var child in _children.CreateElements(forRoot: false))
+                paragraph.AppendChild(child);
+
+            return paragraph;
+        }
+
+        public void AppendText(StringBuilder sb) => _children.AppendText(sb);
     }
 
     private sealed class RunNode : IReplayNode
@@ -89,6 +140,33 @@ public sealed class DxpFieldNodeBuffer
         {
             using (visitor.VisitRunBegin(_run, context))
                 _children.Replay(visitor, context);
+        }
+
+        public OpenXmlElement CreateElement(bool forRoot)
+        {
+            var run = (Run)_run.CloneNode(false);
+            if (_run.RunProperties != null && run.RunProperties == null)
+                run.RunProperties = (RunProperties)_run.RunProperties.CloneNode(true);
+
+            foreach (var child in _children.CreateElements(forRoot: false))
+                run.AppendChild(child);
+
+            if (forRoot && _run.Parent is Paragraph paragraph)
+            {
+                var paraClone = (Paragraph)paragraph.CloneNode(false);
+                if (paragraph.ParagraphProperties != null && paraClone.ParagraphProperties == null)
+                    paraClone.ParagraphProperties = (ParagraphProperties)paragraph.ParagraphProperties.CloneNode(true);
+                paraClone.AppendChild(run);
+                return paraClone;
+            }
+            else if (forRoot)
+            {
+                var paragraphWrapper = new Paragraph();
+                paragraphWrapper.AppendChild(run);
+                return paragraphWrapper;
+            }
+
+            return run;
         }
 
         public void AppendText(StringBuilder sb) => _children.AppendText(sb);
@@ -128,6 +206,31 @@ public sealed class DxpFieldNodeBuffer
                 _children.Replay(visitor, context);
         }
 
+        public OpenXmlElement CreateElement(bool forRoot)
+        {
+            var link = (Hyperlink)_link.CloneNode(false);
+            foreach (var child in _children.CreateElements(forRoot: false))
+                link.AppendChild(child);
+            if (forRoot)
+            {
+                if (_link.Parent is Paragraph paragraph)
+                {
+                    var paraClone = (Paragraph)paragraph.CloneNode(false);
+                    if (paragraph.ParagraphProperties != null && paraClone.ParagraphProperties == null)
+                        paraClone.ParagraphProperties = (ParagraphProperties)paragraph.ParagraphProperties.CloneNode(true);
+                    paraClone.AppendChild(link);
+                    return paraClone;
+                }
+                else
+                {
+                    var paragraphWrapper = new Paragraph();
+                    paragraphWrapper.AppendChild(link);
+                    return paragraphWrapper;
+                }
+            }
+            return link;
+        }
+
         public void AppendText(StringBuilder sb) => _children.AppendText(sb);
 
         public bool TryGetFirstRunProperties(out RunProperties? props) => _children.TryGetFirstRunProperties(out props);
@@ -153,6 +256,69 @@ public sealed class DxpFieldNodeBuffer
 
     public void Replay(DxpIVisitor visitor, DxpIDocumentContext context)
     {
+        if (context is DxpDocumentContext docContext)
+        {
+            bool hasParagraphRoots = _nodes.Any(static n => n is ParagraphNode);
+
+            if (!hasParagraphRoots)
+            {
+                var paragraph = CreateSyntheticParagraph(_nodes, docContext);
+                foreach (var element in CreateElements(forRoot: false))
+                    paragraph.AppendChild(element);
+                docContext.Walker.WalkSyntheticFieldInlineContent(paragraph, docContext, visitor);
+                return;
+            }
+
+            var pendingInline = new List<IReplayNode>();
+
+            void FlushInline()
+            {
+                if (pendingInline.Count == 0)
+                    return;
+
+                Paragraph paragraph;
+                var firstRoot = pendingInline[0].CreateElement(forRoot: true);
+                if (firstRoot is Paragraph sourceParagraph)
+                {
+                    paragraph = (Paragraph)sourceParagraph.CloneNode(false);
+                    if (sourceParagraph.ParagraphProperties != null && paragraph.ParagraphProperties == null)
+                        paragraph.ParagraphProperties = (ParagraphProperties)sourceParagraph.ParagraphProperties.CloneNode(true);
+                }
+                else if (firstRoot.Ancestors<Paragraph>().FirstOrDefault() is Paragraph ancestorParagraph)
+                {
+                    paragraph = (Paragraph)ancestorParagraph.CloneNode(false);
+                    if (ancestorParagraph.ParagraphProperties != null && paragraph.ParagraphProperties == null)
+                        paragraph.ParagraphProperties = (ParagraphProperties)ancestorParagraph.ParagraphProperties.CloneNode(true);
+                }
+                else
+                {
+                    paragraph = new Paragraph();
+                }
+
+                foreach (var inline in pendingInline)
+                    paragraph.AppendChild(inline.CreateElement(forRoot: false));
+
+                docContext.Walker.WalkSyntheticFieldElement(paragraph, docContext, visitor);
+                pendingInline.Clear();
+            }
+
+            foreach (var node in _nodes)
+            {
+                if (node is ParagraphNode)
+                {
+                    FlushInline();
+                    var element = node.CreateElement(forRoot: true);
+                    docContext.Walker.WalkSyntheticFieldElement(element, docContext, visitor);
+                    continue;
+                }
+
+                pendingInline.Add(node);
+            }
+
+            FlushInline();
+            return;
+        }
+
         foreach (var node in _nodes)
             node.Replay(visitor, context);
     }
@@ -184,11 +350,14 @@ public sealed class DxpFieldNodeBuffer
         segments = new List<(string text, RunProperties? props)>();
         foreach (var node in _nodes)
         {
-            if (node is HyperlinkNode)
+            if (node is HyperlinkNode or ParagraphNode)
                 return false;
             if (node is RunNode runNode)
             {
-                segments.Add((runNode.GetText(), runNode.CloneRunProperties()));
+                var text = runNode.GetText();
+                if (string.IsNullOrEmpty(text))
+                    continue;
+                segments.Add((text, runNode.CloneRunProperties()));
                 continue;
             }
         }
@@ -202,6 +371,13 @@ public sealed class DxpFieldNodeBuffer
     internal void AddTab() => _nodes.Add(new TabNode());
     internal void AddCarriageReturn() => _nodes.Add(new CarriageReturnNode());
     internal void AddNoBreakHyphen() => _nodes.Add(new NoBreakHyphenNode());
+
+    internal DxpFieldNodeBuffer BeginParagraph(Paragraph paragraph)
+    {
+        var child = new DxpFieldNodeBuffer();
+        _nodes.Add(new ParagraphNode((Paragraph)paragraph.CloneNode(false), child));
+        return child;
+    }
 
     internal DxpFieldNodeBuffer BeginRun(Run run)
     {
@@ -230,8 +406,49 @@ public sealed class DxpFieldNodeBuffer
 
     private void AppendText(StringBuilder sb)
     {
+        bool first = true;
         foreach (var node in _nodes)
+        {
+            if (!first && node is ParagraphNode)
+                sb.AppendLine();
             node.AppendText(sb);
+            first = false;
+        }
+    }
+
+    private List<OpenXmlElement> CreateElements(bool forRoot)
+        => _nodes.Select(n => n.CreateElement(forRoot)).ToList();
+
+    private static Paragraph CreateSyntheticParagraph(IReadOnlyList<IReplayNode> nodes, DxpDocumentContext? docContext)
+    {
+        if (docContext?.CurrentParagraph?.Properties != null)
+        {
+            var fromContext = new Paragraph();
+            fromContext.ParagraphProperties = (ParagraphProperties)docContext.CurrentParagraph.Properties.CloneNode(true);
+            return fromContext;
+        }
+
+        if (nodes.Count > 0)
+        {
+            var firstRoot = nodes[0].CreateElement(forRoot: true);
+            if (firstRoot is Paragraph sourceParagraph)
+            {
+                var cloned = (Paragraph)sourceParagraph.CloneNode(false);
+                if (sourceParagraph.ParagraphProperties != null && cloned.ParagraphProperties == null)
+                    cloned.ParagraphProperties = (ParagraphProperties)sourceParagraph.ParagraphProperties.CloneNode(true);
+                return cloned;
+            }
+
+            if (firstRoot.Ancestors<Paragraph>().FirstOrDefault() is Paragraph ancestorParagraph)
+            {
+                var cloned = (Paragraph)ancestorParagraph.CloneNode(false);
+                if (ancestorParagraph.ParagraphProperties != null && cloned.ParagraphProperties == null)
+                    cloned.ParagraphProperties = (ParagraphProperties)ancestorParagraph.ParagraphProperties.CloneNode(true);
+                return cloned;
+            }
+        }
+
+        return new Paragraph();
     }
 
     private static bool NeedsPreserveSpace(string text)

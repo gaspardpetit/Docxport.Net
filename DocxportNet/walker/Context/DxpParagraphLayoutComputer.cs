@@ -21,6 +21,7 @@ internal static class DxpParagraphLayoutComputer
         foreach (var stop in tabs.Elements<TabStop>())
         {
             var kind = stop.Val?.Value;
+            var leader = stop.Leader?.Value;
             var pos = stop.Position?.Value;
             if (pos == null || pos.Value <= 0)
                 continue;
@@ -29,7 +30,10 @@ internal static class DxpParagraphLayoutComputer
             if (k == null)
                 continue;
 
-            stops.Add(new DxpComputedTabStop(k.Value, DxpTwipValue.ToPoints((int)pos.Value)));
+            stops.Add(new DxpComputedTabStop(
+                k.Value,
+                DxpTwipValue.ToPoints((int)pos.Value),
+                MapLeader(leader)));
         }
 
         stops.Sort((a, b) => a.PositionPt.CompareTo(b.PositionPt));
@@ -47,5 +51,20 @@ internal static class DxpParagraphLayoutComputer
         if (kind == TabStopValues.Left)
             return DxpComputedTabStopKind.Left;
         return null;
+    }
+
+    private static DxpComputedTabLeaderKind MapLeader(TabStopLeaderCharValues? leader)
+    {
+        if (leader == TabStopLeaderCharValues.Dot)
+            return DxpComputedTabLeaderKind.Dot;
+        if (leader == TabStopLeaderCharValues.Hyphen)
+            return DxpComputedTabLeaderKind.Hyphen;
+        if (leader == TabStopLeaderCharValues.Underscore)
+            return DxpComputedTabLeaderKind.Underscore;
+        if (leader == TabStopLeaderCharValues.Heavy)
+            return DxpComputedTabLeaderKind.Heavy;
+        if (leader == TabStopLeaderCharValues.MiddleDot)
+            return DxpComputedTabLeaderKind.MiddleDot;
+        return DxpComputedTabLeaderKind.None;
     }
 }

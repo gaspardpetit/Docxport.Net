@@ -2417,6 +2417,50 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     }
 
     [Fact]
+    public void Walker_CacheMode_DefaultFallback_ReplaysCachedResults_ForUnknownTocPageAndPageRefFields()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Unknown: </w:t></w:r>
+    <w:fldSimple w:instr=" FOO ">
+      <w:r><w:t>cached unknown</w:t></w:r>
+    </w:fldSimple>
+  </w:p>
+  <w:p>
+    <w:r><w:t xml:space="preserve">TOC: </w:t></w:r>
+    <w:fldSimple w:instr=" TOC \o &quot;1-3&quot; ">
+      <w:r><w:t>Heading 1</w:t></w:r>
+      <w:r><w:tab/></w:r>
+      <w:r><w:t>3</w:t></w:r>
+    </w:fldSimple>
+  </w:p>
+  <w:p>
+    <w:r><w:t xml:space="preserve">Page: </w:t></w:r>
+    <w:fldSimple w:instr=" PAGE ">
+      <w:r><w:t>4</w:t></w:r>
+    </w:fldSimple>
+  </w:p>
+  <w:p>
+    <w:r><w:t xml:space="preserve">PageRef: </w:t></w:r>
+    <w:fldSimple w:instr=" PAGEREF Bookmark1 \h ">
+      <w:r><w:t>7</w:t></w:r>
+    </w:fldSimple>
+  </w:p>
+</w:body>
+""";
+
+        var actual = TestCompare.Normalize(ExportPlainTextCachedFromBodyXml(bodyXml));
+        var expected = TestCompare.Normalize(string.Join("\n\n", new[] {
+            "Unknown: cached unknown",
+            "TOC: Heading 1\t3",
+            "Page: 4",
+            "PageRef: 7"
+        }) + "\n\n");
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
     public void Walker_CacheMode_NextDoesNotEmitOutputOrAdvanceState()
     {
         const string bodyXml = """

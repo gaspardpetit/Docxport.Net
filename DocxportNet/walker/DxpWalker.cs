@@ -2186,6 +2186,68 @@ public class DxpWalker
 
     // Visitor asks: “Do I support this Choice?” If yes, we process it and stop.
     // If none are accepted, we process Fallback (if present). Else drop content per MCE.
+    internal void WalkSyntheticFieldElement(OpenXmlElement element, DxpDocumentContext d, DxpIVisitor v)
+    {
+        switch (element)
+        {
+            case Paragraph paragraph:
+                WalkBlock(paragraph, d, v);
+                break;
+            case Table table:
+                WalkBlock(table, d, v);
+                break;
+            case Run run:
+                WalkRun(run, d, v);
+                break;
+            case Hyperlink hyperlink:
+                WalkHyperlink(hyperlink, d, v);
+                break;
+            case BookmarkStart bookmarkStart:
+                v.VisitBookmarkStart(bookmarkStart, d);
+                break;
+            case BookmarkEnd bookmarkEnd:
+                v.VisitBookmarkEnd(bookmarkEnd, d);
+                break;
+            case Text text:
+                v.VisitText(text, d);
+                break;
+            case DeletedText deletedText:
+                v.VisitDeletedText(deletedText, d);
+                break;
+            case Break br:
+                v.VisitBreak(br, d);
+                break;
+            case TabChar tab:
+                v.VisitTab(tab, d);
+                break;
+            case CarriageReturn carriageReturn:
+                v.VisitCarriageReturn(carriageReturn, d);
+                break;
+            case NoBreakHyphen noBreakHyphen:
+                v.VisitNoBreakHyphen(noBreakHyphen, d);
+                break;
+            default:
+                WalkUnknown("SyntheticFieldElement", element, d, v);
+                break;
+        }
+    }
+
+    internal void WalkSyntheticFieldInlineContent(Paragraph paragraph, DxpDocumentContext d, DxpIVisitor v)
+    {
+        var previousParagraph = d.CurrentParagraph;
+        var paragraphContext = d.CreateParagraphContext(paragraph, advanceAccept: false, advanceReject: false);
+        d.CurrentParagraph = paragraphContext;
+        try
+        {
+            foreach (var child in paragraph.ChildElements)
+                WalkParagraphChild(child, d, v);
+        }
+        finally
+        {
+            d.CurrentParagraph = previousParagraph;
+        }
+    }
+
     private void WalkAlternateContent(AlternateContent ac, DxpDocumentContext d, DxpIVisitor v)
     {
         using (v.VisitAlternateContentBegin(ac, d))

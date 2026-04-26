@@ -71,22 +71,6 @@ internal sealed class DxpRefFieldEvalFrame : DxpValueFieldEvalFrame
         if (Next == null)
             return;
 
-        if (buffer.TryGetRunSegments(out var segments))
-        {
-            foreach (var segment in segments)
-            {
-                if (string.IsNullOrEmpty(segment.text))
-                    continue;
-                var run = new Run();
-                if (segment.props != null)
-                    run.RunProperties = (RunProperties)segment.props.CloneNode(true);
-                var paragraph = new Paragraph();
-                paragraph.AppendChild(run);
-                DxpFieldFrames.EmitTextInRun(segment.text, d, run, Next);
-            }
-            return;
-        }
-
         buffer.Replay(Next, d);
     }
 

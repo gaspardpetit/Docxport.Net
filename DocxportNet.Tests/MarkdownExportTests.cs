@@ -259,6 +259,50 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
     }
 
     [Fact]
+    public void MarkdownExport_CacheMode_DefaultFieldFallback_ReplaysCachedResults_AndSuppressesOnlyTruePageFields()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Unknown: </w:t></w:r>
+    <w:fldSimple w:instr=" FOO ">
+      <w:r><w:t>cached unknown</w:t></w:r>
+    </w:fldSimple>
+  </w:p>
+  <w:p>
+    <w:r><w:t xml:space="preserve">TOC: </w:t></w:r>
+    <w:fldSimple w:instr=" TOC \o &quot;1-3&quot; ">
+      <w:r><w:t>Heading 1</w:t></w:r>
+      <w:r><w:tab/></w:r>
+      <w:r><w:t>3</w:t></w:r>
+    </w:fldSimple>
+  </w:p>
+  <w:p>
+    <w:r><w:t xml:space="preserve">Page: </w:t></w:r>
+    <w:fldSimple w:instr=" PAGE ">
+      <w:r><w:t>4</w:t></w:r>
+    </w:fldSimple>
+  </w:p>
+  <w:p>
+    <w:r><w:t xml:space="preserve">PageRef: </w:t></w:r>
+    <w:fldSimple w:instr=" PAGEREF Bookmark1 \h ">
+      <w:r><w:t>7</w:t></w:r>
+    </w:fldSimple>
+  </w:p>
+</w:body>
+""";
+
+        var markdown = TestCompare.Normalize(ExportMarkdownCachedFromBodyXml(bodyXml, DxpMarkdownVisitorConfig.CreateRichConfig()));
+
+        Assert.Contains("Unknown: cached unknown", markdown, StringComparison.Ordinal);
+        Assert.Contains("TOC: Heading 1", markdown, StringComparison.Ordinal);
+        Assert.Contains("3", markdown, StringComparison.Ordinal);
+        Assert.Contains("Page:", markdown, StringComparison.Ordinal);
+        Assert.DoesNotContain("Page: 4", markdown, StringComparison.Ordinal);
+        Assert.Contains("PageRef: 7", markdown, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void MarkdownExport_MarkupClassifier_AcceptRejectInlineAndSplit()
     {
         const string bodyXml = """
@@ -552,6 +596,45 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
             new DxpMarkdownVisitor(config, Logger),
             new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.None },
             Logger));
+    }
+
+    private string ExportMarkdownCachedFromBodyXml(
+        string bodyXml,
+        DxpMarkdownVisitorConfig config,
+        Action<WordprocessingDocument>? configureDocument = null)
+    {
+        using var stream = new MemoryStream();
+        using (var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document, true))
+        {
+            var main = doc.AddMainDocumentPart();
+            var xml = XDocument.Parse(bodyXml);
+            var body = new Body();
+            body.AddNamespaceDeclaration("w", "http://schemas.openxmlformats.org/wordprocessingml/2006/main");
+            body.AddNamespaceDeclaration("w14", "http://schemas.microsoft.com/office/word/2010/wordml");
+            body.InnerXml = string.Concat(xml.Root!.Nodes());
+            main.Document = new Document(body);
+            main.Document.Save();
+            configureDocument?.Invoke(doc);
+        }
+
+        stream.Position = 0;
+
+        var visitor = new DxpMarkdownVisitor(config, Logger);
+        using var writer = new StringWriter();
+        visitor.SetOutput(writer);
+
+        if (visitor is not Fields.DxpIFieldEvalProvider provider)
+            throw new XunitException("DxpMarkdownVisitor should provide field evaluation context.");
+
+        var pipeline = DxpVisitorMiddleware.Chain(
+            visitor,
+            next => new Walker.DxpFieldEvalMiddleware(next, provider.FieldEval, DxpEvalFieldMode.Cache, logger: Logger),
+            next => new DxpContextMiddleware(next));
+
+        using (var readDoc = WordprocessingDocument.Open(stream, false))
+            new Walker.DxpWalker(Logger).Accept(readDoc, pipeline);
+
+        return writer.ToString();
     }
 
     private static DxpMarkdownVisitorConfig CloneConfig(DxpMarkdownVisitorConfig source, DxpTrackedChangeMode mode)

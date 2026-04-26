@@ -21,8 +21,8 @@ internal class DxpValueFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame
     private bool _inCachedResult;
     private string? _instructionText;
     private Run? _codeRun;
-    private List<Run?>? _cachedResultRuns;
-    private StringBuilder? _cachedResultText;
+    private readonly DxpEvalFieldNodeBufferRecorder _recorder = new();
+    private DxpFieldNodeBuffer? _cachedResultBuffer;
 
     public override DxpIVisitor? Next { get; }
 
@@ -60,6 +60,7 @@ internal class DxpValueFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame
     public override void VisitComplexFieldSeparate(FieldChar separate, DxpIDocumentContext d)
     {
         _inCachedResult = true;
+        BeginCachedCapture();
     }
 
     public override void VisitComplexFieldEnd(FieldChar end, DxpIDocumentContext d)
@@ -70,85 +71,71 @@ internal class DxpValueFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame
     public override void VisitComplexFieldCachedResultText(string text, DxpIDocumentContext d)
     {
         if (_inCachedResult && !string.IsNullOrEmpty(text))
-        {
-            _cachedResultText ??= new StringBuilder();
-            _cachedResultText.Append(text);
-        }
+            _recorder.VisitText(new Text(text), d);
         return;
     }
 
     public override IDisposable VisitSimpleFieldBegin(SimpleField fld, DxpIDocumentContext d)
     {
         _inCachedResult = true;
+        BeginCachedCapture();
         return DxpDisposable.Create(() => {
             Evaluate(d);
             _inCachedResult = false;
         });
     }
 
+    public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
+        => _inCachedResult ? _recorder.VisitParagraphBegin(p, d, paragraph) : DxpDisposable.Empty;
+
     public override IDisposable VisitRunBegin(Run r, DxpIDocumentContext d)
     {
-        if (_inCachedResult && DxpFieldEvalRules.HasRenderableContent(r))
-        {
-            _cachedResultRuns ??= new List<Run?>();
-            _cachedResultRuns.Add(DxpRunCloner.CloneRunWithParagraphAncestor(r));
-        }
+        if (!_inCachedResult)
+            return DxpDisposable.Empty;
 
-        return DxpDisposable.Empty;
+        return _recorder.VisitRunBegin(r, d);
     }
 
     public override IDisposable VisitHyperlinkBegin(Hyperlink link, DxpLinkAnchor? target, DxpIDocumentContext d)
     {
-        return DxpDisposable.Empty;
+        if (!_inCachedResult)
+            return DxpDisposable.Empty;
+
+        return _recorder.VisitHyperlinkBegin(link, target, d);
     }
 
     public override void VisitText(Text t, DxpIDocumentContext d)
     {
         if (_inCachedResult)
-        {
-            _cachedResultText ??= new StringBuilder();
-            _cachedResultText.Append(t.Text);
-        }
+            _recorder.VisitText(t, d);
         return;
     }
 
     public override void VisitBreak(Break br, DxpIDocumentContext d)
     {
         if (_inCachedResult)
-        {
-            _cachedResultText ??= new StringBuilder();
-            _cachedResultText.Append('\n');
-        }
+            _recorder.VisitBreak(br, d);
         return;
     }
 
     public override void VisitTab(TabChar tab, DxpIDocumentContext d)
     {
         if (_inCachedResult)
-        {
-            _cachedResultText ??= new StringBuilder();
-            _cachedResultText.Append('\t');
-        }
+            _recorder.VisitTab(tab, d);
         return;
     }
 
     public override void VisitCarriageReturn(CarriageReturn cr, DxpIDocumentContext d)
     {
         if (_inCachedResult)
-        {
-            _cachedResultText ??= new StringBuilder();
-            _cachedResultText.Append('\n');
-        }
+            _recorder.VisitCarriageReturn(cr, d);
         return;
     }
 
     public override void VisitNoBreakHyphen(NoBreakHyphen nbh, DxpIDocumentContext d)
     {
         if (_inCachedResult)
-        {
-            _cachedResultText ??= new StringBuilder();
-            _cachedResultText.Append('-');
-        }
+            _recorder.VisitNoBreakHyphen(nbh, d);
         return;
     }
 
@@ -157,7 +144,7 @@ internal class DxpValueFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame
         if (string.IsNullOrWhiteSpace(_instructionText))
             return false;
 
-        var cachedResultText = _cachedResultText?.ToString();
+        var cachedResultText = _cachedResultBuffer?.ToPlainText();
         var result = _eval.EvalAsync(new DxpFieldInstruction(_instructionText!, cachedResultText), d).GetAwaiter().GetResult();
         if (!_emitResult)
             return true;
@@ -175,6 +162,12 @@ internal class DxpValueFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame
         var parser = new DxpFieldParser();
         var parse = parser.Parse(_instructionText!);
         IReadOnlyList<IDxpFieldFormatSpec> formatSpecs = parse.Ast.FormatSpecs;
-        return DxpFieldFrames.EmitTextWithMergeFormat(resultText, formatSpecs, _cachedResultRuns, _codeRun, d, Next, _logger);
+        return DxpFieldFrames.EmitTextWithMergeFormat(resultText, formatSpecs, _cachedResultBuffer, _codeRun, d, Next, _logger);
+    }
+
+    private void BeginCachedCapture()
+    {
+        _cachedResultBuffer = new DxpFieldNodeBuffer();
+        _recorder.Reset(_cachedResultBuffer);
     }
 }

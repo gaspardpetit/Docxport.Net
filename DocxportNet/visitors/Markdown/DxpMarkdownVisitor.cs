@@ -124,6 +124,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
     private DxpMarkdownVisitorConfig _config;
     private DxpMarkdownVisitorState _state = new();
     private readonly DxpFieldEval _fieldEval;
+    private readonly DxpFieldParser _fieldParser = new();
 
     public DxpFieldEval FieldEval => _fieldEval;
     public Func<DxpMarkupChangeContext, DxpMarkupChangeDecision?>? MarkupChangeClassifier => _config.MarkupChangeClassifier;
@@ -205,19 +206,14 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
     public override void VisitText(Text t, DxpIDocumentContext d)
     {
-        string text = t.Text;
-        if (_state.AllCaps)
+        if (!_config.EmitPageNumbers &&
+            d.CurrentFields.IsInFieldResult &&
+            IsPageNumberField(d.CurrentFields.Current?.InstructionText))
         {
-            var culture = CultureInfo.InvariantCulture;
-            text = text.ToUpper(culture);
+            return;
         }
 
-        if (_state.PendingAlignedTabKind != null)
-            _state.PendingAlignedTabSegmentWidthPt += EstimateTextWidthPt(text, _state.CurrentFontSizePt);
-        else if (_state.InParagraph)
-            _state.CurrentLineXPt += EstimateTextWidthPt(text, _state.CurrentFontSizePt);
-
-        Write(d, text);
+        WriteRenderableText(t.Text, d);
     }
 
     private static double EstimateTextWidthPt(string text, double fontSizePt)
@@ -579,7 +575,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
     public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
     {
         _state.TabIndex = 0;
-        _state.CurrentLineXPt = 0.0;
+        _state.CurrentLineXPt = paragraph.ComputedStyle.TextIndentPt ?? 0.0;
         _state.InParagraph = true;
         _state.PendingAlignedTabKind = null;
         _state.PendingAlignedTabBuffer.Clear();
@@ -815,10 +811,10 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
         if (!_config.EmitPageNumbers)
         {
             var instr = d.CurrentFields.Current?.InstructionText;
-            if (LooksLikePageField(instr))
+            if (IsPageNumberField(instr))
                 return;
         }
-        Write(d, text);
+        WriteRenderableText(text, d);
     }
 
     public override void VisitComplexFieldEnd(FieldChar end, DxpIDocumentContext d)
@@ -1264,13 +1260,34 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
         return DxpDisposable.Empty;
     }
 
-    private static bool LooksLikePageField(string? instr)
+    private bool IsPageNumberField(string? instr)
     {
-        if (string.IsNullOrEmpty(instr))
+        if (string.IsNullOrWhiteSpace(instr))
             return false;
-        return instr!.IndexOf("PAGE", StringComparison.OrdinalIgnoreCase) >= 0
-            || instr.IndexOf("NUMPAGES", StringComparison.OrdinalIgnoreCase) >= 0
-            || instr.IndexOf("SECTIONPAGES", StringComparison.OrdinalIgnoreCase) >= 0;
+
+        var fieldType = _fieldParser.Parse(instr).Ast.FieldType;
+        return string.Equals(fieldType, "PAGE", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(fieldType, "NUMPAGES", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(fieldType, "SECTIONPAGES", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private void WriteRenderableText(string text, DxpIDocumentContext d)
+    {
+        if (string.IsNullOrEmpty(text))
+            return;
+
+        if (_state.AllCaps)
+        {
+            var culture = CultureInfo.InvariantCulture;
+            text = text.ToUpper(culture);
+        }
+
+        if (_state.PendingAlignedTabKind != null)
+            _state.PendingAlignedTabSegmentWidthPt += EstimateTextWidthPt(text, _state.CurrentFontSizePt);
+        else if (_state.InParagraph)
+            _state.CurrentLineXPt += EstimateTextWidthPt(text, _state.CurrentFontSizePt);
+
+        Write(d, text);
     }
 
     IDisposable DxpIVisitor.VisitDrawingBegin(Drawing drw, DxpDrawingInfo? info, DxpIDocumentContext d)

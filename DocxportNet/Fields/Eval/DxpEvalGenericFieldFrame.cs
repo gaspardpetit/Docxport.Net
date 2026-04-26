@@ -1,3 +1,4 @@
+using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
 using DocxportNet.Core;
@@ -10,6 +11,8 @@ namespace DocxportNet.Fields.Eval;
 
 internal sealed class DxpEvalGenericFieldFrame : DxpMiddleware, DxpIFieldEvalFrame
 {
+    private static readonly DxpFieldEvalFrameFactory FrameFactory = new();
+
     public bool Evaluated { get; set; }
     public string? InstructionText { get; set; }
     public Run? CodeRun { get; set; }
@@ -23,6 +26,7 @@ internal sealed class DxpEvalGenericFieldFrame : DxpMiddleware, DxpIFieldEvalFra
     private bool _suppressContent;
     private bool _seenSeparate;
     private bool _inResult;
+    private DxpIFieldEvalFrame? _liveCacheDelegate;
     private readonly List<FieldEvent> _events = new();
     private readonly Stack<IDisposable> _replayScopes = new();
 
@@ -51,7 +55,8 @@ internal sealed class DxpEvalGenericFieldFrame : DxpMiddleware, DxpIFieldEvalFra
     {
         if (string.IsNullOrEmpty(text) || _inResult)
             return;
-        _events.Add(FieldEvent.Instruction(instr, text));
+        if (_mode != DxpEvalFieldMode.Cache)
+            _events.Add(FieldEvent.Instruction(instr, text));
         AppendInstructionText(text);
     }
 
@@ -62,11 +67,26 @@ internal sealed class DxpEvalGenericFieldFrame : DxpMiddleware, DxpIFieldEvalFra
             _seenSeparate = true;
             _inResult = true;
         }
+
+        if (_mode == DxpEvalFieldMode.Cache)
+        {
+            _liveCacheDelegate = CreateDelegateFrame(InstructionText);
+            _liveCacheDelegate?.VisitComplexFieldSeparate(separate, d);
+            return;
+        }
+
         _events.Add(FieldEvent.Separate(separate));
     }
 
     public override void VisitComplexFieldEnd(FieldChar end, DxpIDocumentContext d)
     {
+        if (_liveCacheDelegate != null)
+        {
+            _liveCacheDelegate.VisitComplexFieldEnd(end, d);
+            _liveCacheDelegate = null;
+            return;
+        }
+
         _events.Add(FieldEvent.End(end));
         ReplayEvents(d);
     }
@@ -75,7 +95,16 @@ internal sealed class DxpEvalGenericFieldFrame : DxpMiddleware, DxpIFieldEvalFra
     {
         if (_mode != DxpEvalFieldMode.Cache)
             return;
-        if (!_inResult || _suppressContent || EvalContext.FieldDepth > 1)
+        if (!_inResult || _suppressContent)
+            return;
+
+        if (_liveCacheDelegate != null)
+        {
+            _liveCacheDelegate.VisitComplexFieldCachedResultText(text, d);
+            return;
+        }
+
+        if (EvalContext.FieldDepth > 1)
             return;
 
         if (_logger?.IsEnabled(LogLevel.Debug) == true)
@@ -88,6 +117,12 @@ internal sealed class DxpEvalGenericFieldFrame : DxpMiddleware, DxpIFieldEvalFra
 
     public override IDisposable VisitSimpleFieldBegin(SimpleField fld, DxpIDocumentContext d)
     {
+        if (_mode == DxpEvalFieldMode.Cache)
+        {
+            _liveCacheDelegate = CreateDelegateFrame(InstructionText);
+            return _liveCacheDelegate?.VisitSimpleFieldBegin(fld, d) ?? DxpDisposable.Empty;
+        }
+
         _events.Add(FieldEvent.SimpleBegin(fld));
         return DxpDisposable.Create(() => {
             _events.Add(FieldEvent.SimpleEnd());
@@ -97,6 +132,8 @@ internal sealed class DxpEvalGenericFieldFrame : DxpMiddleware, DxpIFieldEvalFra
 
     public override IDisposable VisitRunBegin(Run r, DxpIDocumentContext d)
     {
+        if (_liveCacheDelegate != null && _inResult)
+            return _liveCacheDelegate.VisitRunBegin(r, d);
         if (!_inResult)
             return DxpDisposable.Empty;
         _events.Add(FieldEvent.RunBegin(r));
@@ -105,6 +142,8 @@ internal sealed class DxpEvalGenericFieldFrame : DxpMiddleware, DxpIFieldEvalFra
 
     public override IDisposable VisitHyperlinkBegin(Hyperlink link, DxpLinkAnchor? target, DxpIDocumentContext d)
     {
+        if (_liveCacheDelegate != null && _inResult)
+            return _liveCacheDelegate.VisitHyperlinkBegin(link, target, d);
         if (!_inResult)
             return DxpDisposable.Empty;
         _events.Add(FieldEvent.HyperlinkBegin(link, target));
@@ -113,10 +152,16 @@ internal sealed class DxpEvalGenericFieldFrame : DxpMiddleware, DxpIFieldEvalFra
 
     public override void VisitText(Text t, DxpIDocumentContext d)
     {
+        if (_liveCacheDelegate != null && _inResult)
+        {
+            _liveCacheDelegate.VisitText(t, d);
+            return;
+        }
         if (!_inResult)
         {
             AppendInstructionText(t.Text);
-            _events.Add(FieldEvent.Text(t));
+            if (_mode != DxpEvalFieldMode.Cache)
+                _events.Add(FieldEvent.Text(t));
             return;
         }
         _events.Add(FieldEvent.Text(t));
@@ -124,10 +169,16 @@ internal sealed class DxpEvalGenericFieldFrame : DxpMiddleware, DxpIFieldEvalFra
 
     public override void VisitBreak(Break br, DxpIDocumentContext d)
     {
+        if (_liveCacheDelegate != null && _inResult)
+        {
+            _liveCacheDelegate.VisitBreak(br, d);
+            return;
+        }
         if (!_inResult)
         {
             AppendInstructionText("\n");
-            _events.Add(FieldEvent.Break(br));
+            if (_mode != DxpEvalFieldMode.Cache)
+                _events.Add(FieldEvent.Break(br));
             return;
         }
         _events.Add(FieldEvent.Break(br));
@@ -135,10 +186,16 @@ internal sealed class DxpEvalGenericFieldFrame : DxpMiddleware, DxpIFieldEvalFra
 
     public override void VisitTab(TabChar tab, DxpIDocumentContext d)
     {
+        if (_liveCacheDelegate != null && _inResult)
+        {
+            _liveCacheDelegate.VisitTab(tab, d);
+            return;
+        }
         if (!_inResult)
         {
             AppendInstructionText("\t");
-            _events.Add(FieldEvent.Tab(tab));
+            if (_mode != DxpEvalFieldMode.Cache)
+                _events.Add(FieldEvent.Tab(tab));
             return;
         }
         _events.Add(FieldEvent.Tab(tab));
@@ -146,10 +203,16 @@ internal sealed class DxpEvalGenericFieldFrame : DxpMiddleware, DxpIFieldEvalFra
 
     public override void VisitCarriageReturn(CarriageReturn cr, DxpIDocumentContext d)
     {
+        if (_liveCacheDelegate != null && _inResult)
+        {
+            _liveCacheDelegate.VisitCarriageReturn(cr, d);
+            return;
+        }
         if (!_inResult)
         {
             AppendInstructionText("\n");
-            _events.Add(FieldEvent.CarriageReturn(cr));
+            if (_mode != DxpEvalFieldMode.Cache)
+                _events.Add(FieldEvent.CarriageReturn(cr));
             return;
         }
         _events.Add(FieldEvent.CarriageReturn(cr));
@@ -157,18 +220,39 @@ internal sealed class DxpEvalGenericFieldFrame : DxpMiddleware, DxpIFieldEvalFra
 
     public override void VisitNoBreakHyphen(NoBreakHyphen nbh, DxpIDocumentContext d)
     {
+        if (_liveCacheDelegate != null && _inResult)
+        {
+            _liveCacheDelegate.VisitNoBreakHyphen(nbh, d);
+            return;
+        }
         if (!_inResult)
         {
             AppendInstructionText("-");
-            _events.Add(FieldEvent.NoBreakHyphen(nbh));
+            if (_mode != DxpEvalFieldMode.Cache)
+                _events.Add(FieldEvent.NoBreakHyphen(nbh));
             return;
         }
         _events.Add(FieldEvent.NoBreakHyphen(nbh));
     }
 
+    public override IDisposable VisitBlockBegin(OpenXmlElement child, DxpIDocumentContext d)
+    {
+        if (_liveCacheDelegate != null && _inResult)
+            return _liveCacheDelegate.VisitBlockBegin(child, d);
+        if (_inResult)
+            return DxpDisposable.Empty;
+        return Next.VisitBlockBegin(child, d);
+    }
+
     public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
     {
-        return Next.VisitParagraphBegin(p, d, paragraph);
+        if (_liveCacheDelegate != null && _inResult)
+            return _liveCacheDelegate.VisitParagraphBegin(p, d, paragraph);
+        if (!_inResult)
+            return Next.VisitParagraphBegin(p, d, paragraph);
+
+        _events.Add(FieldEvent.ParagraphBegin(p, paragraph));
+        return DxpDisposable.Create(() => _events.Add(FieldEvent.ParagraphEnd()));
     }
 
     protected override bool ShouldForwardContent(DxpIDocumentContext d)
@@ -229,140 +313,7 @@ internal sealed class DxpEvalGenericFieldFrame : DxpMiddleware, DxpIFieldEvalFra
     }
 
     private DxpIFieldEvalFrame? CreateDelegateFrame(string? instructionText)
-    {
-        if (string.IsNullOrWhiteSpace(instructionText))
-            return null;
-        if (DxpFieldEvalFrameFactory.IsSetInstruction(instructionText))
-        {
-			DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
-                ? new DxpSetFieldCachedFrame(EvalContext, _logger)
-                : new DxpSetFieldEvalFrame(_eval, EvalContext, _logger, instructionText);
-            return frame;
-        }
-        if (DxpFieldEvalFrameFactory.IsRefInstruction(instructionText))
-        {
-			DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
-                ? new DxpRefFieldCachedFrame(Next)
-                : new DxpRefFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
-            return frame;
-        }
-        if (DxpFieldEvalFrameFactory.IsDocVariableInstruction(instructionText))
-        {
-			DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
-                ? new DxpDocVariableFieldCachedFrame(Next)
-                : new DxpDocVariableFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
-            return frame;
-        }
-        if (DxpFieldEvalFrameFactory.IsIfInstruction(instructionText))
-        {
-			DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
-                ? new DxpIFFieldCachedFrame(Next)
-                : new DxpIFFieldEvalFrame(Next, _eval, _logger, CodeRun);
-            return frame;
-        }
-        if (DxpFieldEvalFrameFactory.IsAskInstruction(instructionText))
-        {
-            DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
-                ? new DxpAskFieldCachedFrame(Next)
-                : new DxpAskFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
-            return frame;
-        }
-        if (DxpFieldEvalFrameFactory.IsFillInInstruction(instructionText))
-        {
-            DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
-                ? new DxpSimpleFieldCachedFrame(Next)
-                : new DxpValueFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
-            return frame;
-        }
-        if (DxpFieldEvalFrameFactory.IsNextInstruction(instructionText))
-        {
-            DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
-                ? new DxpNextFieldCachedFrame()
-                : new DxpValueFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
-            return frame;
-        }
-        if (DxpFieldEvalFrameFactory.IsSkipIfInstruction(instructionText))
-        {
-            DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
-                ? new DxpSkipIfFieldCachedFrame(Next)
-                : new DxpSkipIfFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
-            return frame;
-        }
-        if (DxpFieldEvalFrameFactory.IsDocPropertyInstruction(instructionText) ||
-            DxpFieldEvalFrameFactory.IsMergeFieldInstruction(instructionText) ||
-            DxpFieldEvalFrameFactory.IsMergeRecInstruction(instructionText) ||
-            DxpFieldEvalFrameFactory.IsMergeSeqInstruction(instructionText) ||
-            DxpFieldEvalFrameFactory.IsGreetingLineInstruction(instructionText) ||
-            DxpFieldEvalFrameFactory.IsAddressBlockInstruction(instructionText) ||
-            DxpFieldEvalFrameFactory.IsDatabaseInstruction(instructionText) ||
-            DxpFieldEvalFrameFactory.IsSeqInstruction(instructionText) ||
-            DxpFieldEvalFrameFactory.IsDateTimeInstruction(instructionText) ||
-            DxpFieldEvalFrameFactory.IsCompareInstruction(instructionText) ||
-            DxpFieldEvalFrameFactory.IsDocumentMetricInstruction(instructionText))
-        {
-            if (DxpFieldEvalFrameFactory.IsDocPropertyInstruction(instructionText))
-            {
-                DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
-                    ? new DxpDocPropertyFieldCachedFrame(Next)
-                    : new DxpDocPropertyFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
-                return frame;
-            }
-            if (DxpFieldEvalFrameFactory.IsMergeFieldInstruction(instructionText))
-            {
-                DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
-                    ? new DxpMergeFieldCachedFrame(Next)
-                    : new DxpMergeFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
-                return frame;
-            }
-            if (DxpFieldEvalFrameFactory.IsMergeRecInstruction(instructionText) ||
-                DxpFieldEvalFrameFactory.IsMergeSeqInstruction(instructionText) ||
-                DxpFieldEvalFrameFactory.IsGreetingLineInstruction(instructionText) ||
-                DxpFieldEvalFrameFactory.IsAddressBlockInstruction(instructionText) ||
-                DxpFieldEvalFrameFactory.IsDatabaseInstruction(instructionText))
-            {
-                DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
-                    ? new DxpSimpleFieldCachedFrame(Next)
-                    : new DxpValueFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
-                return frame;
-            }
-            if (DxpFieldEvalFrameFactory.IsSeqInstruction(instructionText))
-            {
-                DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
-                    ? new DxpSeqFieldCachedFrame(Next)
-                    : new DxpSeqFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
-                return frame;
-            }
-            if (DxpFieldEvalFrameFactory.IsDateTimeInstruction(instructionText))
-            {
-                DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
-                    ? new DxpDateTimeFieldCachedFrame(Next)
-                    : new DxpDateTimeFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
-                return frame;
-            }
-            if (DxpFieldEvalFrameFactory.IsCompareInstruction(instructionText))
-            {
-                DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
-                    ? new DxpCompareFieldCachedFrame(Next)
-                    : new DxpCompareFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
-                return frame;
-            }
-            if (DxpFieldEvalFrameFactory.IsDocumentMetricInstruction(instructionText))
-            {
-                DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
-                    ? new DxpSimpleFieldCachedFrame(Next)
-                    : new DxpValueFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
-                return frame;
-            }
-        }
-        if (DxpFieldEvalFrameFactory.IsFormulaInstruction(instructionText))
-        {
-            DxpIFieldEvalFrame frame = _mode == DxpEvalFieldMode.Cache
-                ? new DxpFormulaFieldCachedFrame(Next)
-                : new DxpFormulaFieldEvalFrame(Next, _eval, _logger, instructionText, CodeRun);
-            return frame;
-        }
-        return null;
-    }
+        => FrameFactory.Create(instructionText, Next, _eval, EvalContext, _logger, _mode);
 
     private sealed class FieldEvent
     {
@@ -392,6 +343,8 @@ internal sealed class DxpEvalGenericFieldFrame : DxpMiddleware, DxpIFieldEvalFra
         public static FieldEvent NoBreakHyphen(NoBreakHyphen nbh) => new(FieldEventKind.NoBreakHyphen, nbh);
         public static FieldEvent SimpleBegin(SimpleField fld) => new(FieldEventKind.SimpleBegin, fld);
         public static FieldEvent SimpleEnd() => new(FieldEventKind.SimpleEnd);
+        public static FieldEvent ParagraphBegin(Paragraph paragraph, DxpIParagraphContext paragraphContext) => new(FieldEventKind.ParagraphBegin, paragraph, paragraphContext);
+        public static FieldEvent ParagraphEnd() => new(FieldEventKind.ParagraphEnd);
 
         public void Replay(DxpIVisitor visitor, DxpIDocumentContext d, Stack<IDisposable> scopes)
         {
@@ -445,6 +398,13 @@ internal sealed class DxpEvalGenericFieldFrame : DxpMiddleware, DxpIFieldEvalFra
                     if (scopes.Count > 0)
                         scopes.Pop().Dispose();
                     break;
+                case FieldEventKind.ParagraphBegin:
+                    scopes.Push(visitor.VisitParagraphBegin((Paragraph)Data1!, d, (DxpIParagraphContext)Data2!));
+                    break;
+                case FieldEventKind.ParagraphEnd:
+                    if (scopes.Count > 0)
+                        scopes.Pop().Dispose();
+                    break;
             }
         }
     }
@@ -465,6 +425,8 @@ internal sealed class DxpEvalGenericFieldFrame : DxpMiddleware, DxpIFieldEvalFra
         CarriageReturn,
         NoBreakHyphen,
         SimpleBegin,
-        SimpleEnd
+        SimpleEnd,
+        ParagraphBegin,
+        ParagraphEnd
     }
 }

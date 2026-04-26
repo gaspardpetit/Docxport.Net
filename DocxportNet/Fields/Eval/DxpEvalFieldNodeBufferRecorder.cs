@@ -27,6 +27,16 @@ internal sealed class DxpEvalFieldNodeBufferRecorder : DxpVisitor
     private DxpFieldNodeBuffer Current => _stack.Peek();
     private Run? CurrentRun => _runStack.Peek();
 
+    public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
+    {
+        var clone = (Paragraph)p.CloneNode(false);
+        if (p.ParagraphProperties != null && clone.ParagraphProperties == null)
+            clone.ParagraphProperties = (ParagraphProperties)p.ParagraphProperties.CloneNode(true);
+        var child = Current.BeginParagraph(clone);
+        _stack.Push(child);
+        return DxpDisposable.Create(() => _stack.Pop());
+    }
+
     public override IDisposable VisitRunBegin(Run r, DxpIDocumentContext d)
     {
         var run = DxpRunCloner.CloneRunWithParagraphAncestor(r);

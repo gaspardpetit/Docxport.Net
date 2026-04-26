@@ -14,7 +14,7 @@ public static class DxpComputedParagraphStyleCssExtensions
 
     public static string? ToCss(this DxpComputedParagraphStyle style, bool includeTextAlign = true)
     {
-        if (style.MarginLeftPt == null && style.MarginTopPt == null && style.MarginBottomPt == null && style.TextAlign == null && style.LineHeightCss == null && style.Borders == null && style.BackgroundColorCss == null)
+        if (style.MarginLeftPt == null && style.TextIndentPt == null && style.MarginTopPt == null && style.MarginBottomPt == null && style.TextAlign == null && style.LineHeightCss == null && style.Borders == null && style.BackgroundColorCss == null)
             return null;
 
         var sb = new StringBuilder();
@@ -22,6 +22,9 @@ public static class DxpComputedParagraphStyleCssExtensions
         // Keep existing ordering used by visitors (margin-left then text-align).
         if (style.MarginLeftPt is double ml && ml > 0.0001)
             AppendCssProperty(sb, "margin-left", ml.ToString("0.###", CultureInfo.InvariantCulture) + "pt");
+
+        if (style.TextIndentPt is double ti && Math.Abs(ti) > 0.0001)
+            AppendCssProperty(sb, "text-indent", ti.ToString("0.###", CultureInfo.InvariantCulture) + "pt");
 
         if (style.MarginTopPt is double mt)
             AppendCssProperty(sb, "margin-top", mt.ToString("0.###", CultureInfo.InvariantCulture) + "pt");
