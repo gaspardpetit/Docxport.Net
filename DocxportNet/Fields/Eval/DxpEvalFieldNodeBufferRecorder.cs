@@ -56,7 +56,7 @@ internal sealed class DxpEvalFieldNodeBufferRecorder : DxpVisitor
         if (run != null)
         {
             var text = new Text(t.Text);
-            if (DxpFieldEvalMiddleware.NeedsPreserveSpace(t.Text))
+            if (DxpFieldMiddlewareBase.NeedsPreserveSpace(t.Text))
                 text.Space = SpaceProcessingModeValues.Preserve;
             run.AppendChild(text);
         }

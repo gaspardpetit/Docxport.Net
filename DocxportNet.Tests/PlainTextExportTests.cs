@@ -148,7 +148,7 @@ public class PlainTextExportTests : TestBase<PlainTextExportTests>
 
         var pipeline = DxpVisitorMiddleware.Chain(
             visitor,
-            next => new DxpFieldEvalMiddleware(next, provider.FieldEval, DxpEvalFieldMode.Cache, logger: Logger),
+            next => DxpFieldEvalMiddleware.CreateCachedFieldMiddleware(next, provider.FieldEval, logger: Logger),
             next => new DxpContextMiddleware(next));
 
         new DxpWalker(Logger).Accept(docxPath, pipeline);

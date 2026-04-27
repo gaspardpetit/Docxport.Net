@@ -2,6 +2,9 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentFormat.OpenXml.Packaging;
 using DocxportNet.Tests.Utils;
 using DocxportNet.Visitors.Html;
+using DocxportNet.Visitors.PlainText;
+using DocxportNet.Walker;
+using DocxportNet.Middleware;
 using Xunit.Abstractions;
 
 namespace DocxportNet.Tests;
@@ -44,6 +47,44 @@ public sealed class FieldEvalMiddlewareRegressionTests : TestBase<FieldEvalMiddl
         Assert.Contains("<strong class=\"dxp-bold\">VALUE</strong>", html, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void Factory_EvaluateMiddleware_EmitsStyledValue()
+    {
+        using var doc = CreateDocVariableDoc("TokenLabel", "VALUE");
+        var visitor = new DxpHtmlVisitor(DxpHtmlVisitorConfig.CreateRichConfig(), Logger);
+        visitor.FieldEval.Context.SetDocVariable("TokenLabel", "VALUE");
+        using var writer = new StringWriter();
+        visitor.SetOutput(writer);
+
+        var pipeline = DxpVisitorMiddleware.Chain(
+            visitor,
+            next => DxpFieldEvalMiddleware.CreateEvaluatedFieldMiddleware(next, visitor.FieldEval, logger: Logger),
+            next => new DxpContextMiddleware(next, Logger));
+
+        new DxpWalker(Logger).Accept(doc, pipeline);
+
+        string html = TestCompare.Normalize(writer.ToString());
+        Assert.Contains("<strong class=\"dxp-bold\">VALUE</strong>", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Factory_CachedMiddleware_ReplaysCachedValue()
+    {
+        using var doc = CreateSimpleFieldDoc(" FOO ", "cached text");
+        var visitor = new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateAcceptConfig(), Logger);
+        using var writer = new StringWriter();
+        visitor.SetOutput(writer);
+
+        var pipeline = DxpVisitorMiddleware.Chain(
+            visitor,
+            next => DxpFieldEvalMiddleware.CreateCachedFieldMiddleware(next, visitor.FieldEval, logger: Logger),
+            next => new DxpContextMiddleware(next, Logger));
+
+        new DxpWalker(Logger).Accept(doc, pipeline);
+
+        Assert.Contains("cached text", writer.ToString(), StringComparison.Ordinal);
+    }
+
     private static WordprocessingDocument CreateDocVariableDoc(string name, string value)
     {
         var stream = new MemoryStream();
@@ -60,6 +101,23 @@ public sealed class FieldEvalMiddlewareRegressionTests : TestBase<FieldEvalMiddl
             );
 
             mainPart.Document.Body!.Append(paragraph);
+            mainPart.Document.Save();
+            document.Save();
+        }
+
+        stream.Position = 0;
+        return WordprocessingDocument.Open(stream, false);
+    }
+
+    private static WordprocessingDocument CreateSimpleFieldDoc(string instruction, string cachedText)
+    {
+        var stream = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(stream, DocumentFormat.OpenXml.WordprocessingDocumentType.Document, true))
+        {
+            var mainPart = document.AddMainDocumentPart();
+            var field = new SimpleField { Instruction = instruction };
+            field.Append(new Run(new Text(cachedText)));
+            mainPart.Document = new Document(new Body(new Paragraph(field)));
             mainPart.Document.Save();
             document.Save();
         }

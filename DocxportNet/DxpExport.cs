@@ -483,12 +483,17 @@ public static class DxpExport
         {
             return DxpVisitorMiddleware.Chain(
                 visitor,
-                next => new DxpFieldEvalMiddleware(
-                    next,
-                    provider.FieldEval,
-                    mode == DxpFieldEvalExportMode.Cache ? DxpEvalFieldMode.Cache : DxpEvalFieldMode.Evaluate,
-                    includeCustomProperties: true,
-                    logger: logger),
+                next => mode == DxpFieldEvalExportMode.Cache
+                    ? DxpFieldEvalMiddleware.CreateCachedFieldMiddleware(
+                        next,
+                        provider.FieldEval,
+                        includeCustomProperties: true,
+                        logger: logger)
+                    : DxpFieldEvalMiddleware.CreateEvaluatedFieldMiddleware(
+                        next,
+                        provider.FieldEval,
+                        includeCustomProperties: true,
+                        logger: logger),
                 next => new DxpContextMiddleware(next, logger));
         }
 

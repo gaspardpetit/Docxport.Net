@@ -562,7 +562,7 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
 
         var pipeline = DxpVisitorMiddleware.Chain(
             visitor,
-            next => new Walker.DxpFieldEvalMiddleware(next, provider.FieldEval, DxpEvalFieldMode.Cache, logger: Logger),
+            next => Walker.DxpFieldEvalMiddleware.CreateCachedFieldMiddleware(next, provider.FieldEval, logger: Logger),
             next => new DxpContextMiddleware(next));
 
         new Walker.DxpWalker(Logger).Accept(docxPath, pipeline);
@@ -628,7 +628,7 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
 
         var pipeline = DxpVisitorMiddleware.Chain(
             visitor,
-            next => new Walker.DxpFieldEvalMiddleware(next, provider.FieldEval, DxpEvalFieldMode.Cache, logger: Logger),
+            next => Walker.DxpFieldEvalMiddleware.CreateCachedFieldMiddleware(next, provider.FieldEval, logger: Logger),
             next => new DxpContextMiddleware(next));
 
         using (var readDoc = WordprocessingDocument.Open(stream, false))
