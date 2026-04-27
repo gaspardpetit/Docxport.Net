@@ -149,7 +149,7 @@ internal static class DxpFieldEvalIfRunner
         if (runClone.RunProperties == null && runProps != null)
             runClone.RunProperties = (RunProperties)runProps.CloneNode(true);
         var t = new Text(text);
-        if (DxpFieldEvalMiddleware.NeedsPreserveSpace(text))
+        if (DxpFieldMiddlewareBase.NeedsPreserveSpace(text))
             t.Space = SpaceProcessingModeValues.Preserve;
         runClone.AppendChild(t);
         var child = buffer.BeginRun(runClone);

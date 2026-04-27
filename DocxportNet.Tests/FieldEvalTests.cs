@@ -3075,9 +3075,9 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     }
 
     [Theory]
-    [InlineData(DxpEvalFieldMode.Evaluate)]
-    [InlineData(DxpEvalFieldMode.Cache)]
-    public void Walker_FieldEval_InlineIfWithDocVariable_PreservesParagraphRunBackground(DxpEvalFieldMode mode)
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Walker_FieldEval_InlineIfWithDocVariable_PreservesParagraphRunBackground(bool useCachedMiddleware)
     {
         const string bodyXml = """
 <w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml">
@@ -3231,7 +3231,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
             ResolveDocVariableAsync = (name, ctx) => Task.FromResult<DxpFieldValue?>(name == "GREENTECH" ? new DxpFieldValue("OK") : null)
         }, logger: Logger);
 
-        var html = ExportHtmlFromBodyXml(bodyXml, mode, eval);
+        var html = ExportHtmlFromBodyXml(bodyXml, useCachedMiddleware, eval);
 
         Assert.Contains("OK", html, StringComparison.Ordinal);
         Assert.Contains("align-right", html, StringComparison.Ordinal);
@@ -3241,9 +3241,9 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     }
 
 	[Theory]
-	[InlineData(DxpEvalFieldMode.Evaluate)]
-	[InlineData(DxpEvalFieldMode.Cache)]
-	public void Walker_FieldEval_InlineIfWithDocVariableDateFormat_FormatsDate(DxpEvalFieldMode mode)
+	[InlineData(false)]
+	[InlineData(true)]
+	public void Walker_FieldEval_InlineIfWithDocVariableDateFormat_FormatsDate(bool useCachedMiddleware)
 	{
 		const string bodyXml = """
 <w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml">
@@ -3452,9 +3452,9 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
 			}
 		}, logger: Logger);
 
-		var html = ExportHtmlFromBodyXml(bodyXml, mode, eval);
+		var html = ExportHtmlFromBodyXml(bodyXml, useCachedMiddleware, eval);
 
-		if (mode == DxpEvalFieldMode.Evaluate)
+		if (!useCachedMiddleware)
 			Assert.Contains("January 4, 2014", html, StringComparison.Ordinal);
 		else
 			Assert.Contains("Erreur ! Aucune variable de document fournie.", html, StringComparison.Ordinal);
@@ -3483,7 +3483,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         eval.Context.TableResolver = resolver;
         var visitor = DxpVisitorMiddleware.Chain(
             new DxpVisitor(Logger),
-            next => new DxpFieldEvalMiddleware(next, eval, logger: Logger),
+            next => DxpFieldEvalMiddleware.CreateEvaluatedFieldMiddleware(next, eval, logger: Logger),
             next => new DxpContextMiddleware(next, Logger));
 
         using (var readDoc = WordprocessingDocument.Open(stream, false))
@@ -3519,13 +3519,13 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         var eval = new DxpFieldEval(logger: Logger);
         eval.Context.Culture = new CultureInfo("en-US");
         var resolver = new CapturingRefResolver(new DxpRefIndexResolver(), Logger);
-        var options = new DxpEvalFieldMiddlewareOptions
+        var options = new DxpEvaluateFieldMiddlewareOptions
         {
             RefResolver = resolver
         };
         var visitor = DxpVisitorMiddleware.Chain(
             new DxpVisitor(Logger),
-            next => new DxpFieldEvalMiddleware(next, eval, logger: Logger, options: options),
+            next => DxpFieldEvalMiddleware.CreateEvaluatedFieldMiddleware(next, eval, logger: Logger, options: options),
             next => new DxpContextMiddleware(next, Logger));
 
         using (var readDoc = WordprocessingDocument.Open(stream, false))
@@ -3685,7 +3685,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
 
         var pipeline = DxpVisitorMiddleware.Chain(
             visitor,
-            next => new DxpFieldEvalMiddleware(next, provider.FieldEval, DxpEvalFieldMode.Cache, logger: Logger),
+            next => DxpFieldEvalMiddleware.CreateCachedFieldMiddleware(next, provider.FieldEval, logger: Logger),
             next => new DxpContextMiddleware(next, Logger));
 
         using (var readDoc = WordprocessingDocument.Open(stream, false))
@@ -3725,10 +3725,9 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
 
         var pipeline = DxpVisitorMiddleware.Chain(
             visitor,
-            next => new DxpFieldEvalMiddleware(
+            next => DxpFieldEvalMiddleware.CreateEvaluatedFieldMiddleware(
                 next,
                 provider.FieldEval,
-                DxpEvalFieldMode.Evaluate,
                 includeDocumentProperties: true,
                 includeCustomProperties: includeCustomProperties,
                 logger: Logger),
@@ -3762,7 +3761,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
 
         var pipeline = DxpVisitorMiddleware.Chain(
             visitor,
-            next => new DxpFieldEvalMiddleware(next, eval, DxpEvalFieldMode.Evaluate, logger: Logger),
+            next => DxpFieldEvalMiddleware.CreateEvaluatedFieldMiddleware(next, eval, logger: Logger),
             next => new DxpContextMiddleware(next, Logger));
 
         using (var readDoc = WordprocessingDocument.Open(stream, false))
@@ -3771,7 +3770,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         return visitor.ToString();
     }
 
-    private string ExportHtmlFromBodyXml(string bodyXml, DxpEvalFieldMode mode, DxpFieldEval? fieldEval = null)
+    private string ExportHtmlFromBodyXml(string bodyXml, bool useCachedMiddleware, DxpFieldEval? fieldEval = null)
     {
         using var stream = new MemoryStream();
         using (var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document, true))
@@ -3798,7 +3797,9 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
 
         var pipeline = DxpVisitorMiddleware.Chain(
             visitor,
-            next => new DxpFieldEvalMiddleware(next, provider.FieldEval, mode, logger: Logger),
+            next => useCachedMiddleware
+                ? DxpFieldEvalMiddleware.CreateCachedFieldMiddleware(next, provider.FieldEval, logger: Logger)
+                : DxpFieldEvalMiddleware.CreateEvaluatedFieldMiddleware(next, provider.FieldEval, logger: Logger),
             next => new DxpContextMiddleware(next, Logger));
 
         using (var readDoc = WordprocessingDocument.Open(stream, false))

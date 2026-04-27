@@ -1,104 +1,12 @@
-using DocxportNet.API;
-using DocxportNet.Fields.Frames;
-using Microsoft.Extensions.Logging;
-
 namespace DocxportNet.Fields.Eval;
 
-internal sealed class DxpFieldEvalFrameFactory
+internal static class DxpFieldInstructionClassifier
 {
-    public DxpIFieldEvalFrame? Create(
-        string? instruction,
-        DxpIVisitor next,
-        DxpFieldEval eval,
-        DxpFieldEvalContext context,
-        ILogger? logger,
-        DxpEvalFieldMode mode)
-    {
-        if (mode == DxpEvalFieldMode.Cache)
-        {
-            if (IsSetInstruction(instruction))
-                return new DxpSetFieldCachedFrame(context, logger);
-
-            if (IsNextInstruction(instruction))
-                return new DxpNextFieldCachedFrame();
-
-            return new DxpSimpleFieldCachedFrame(next, instruction);
-        }
-
-        if (IsRefInstruction(instruction))
-            return new DxpRefFieldEvalFrame(next, eval, logger, instruction);
-
-        if (IsDocVariableInstruction(instruction))
-            return new DxpDocVariableFieldEvalFrame(next, eval, logger, instruction);
-
-        if (IsIfInstruction(instruction))
-            return new DxpIFFieldEvalFrame(next, eval, logger);
-
-        if (IsSetInstruction(instruction))
-            return new DxpSetFieldEvalFrame(eval, context, logger, instruction);
-
-        if (IsAskInstruction(instruction))
-            return new DxpAskFieldEvalFrame(next, eval, logger, instruction);
-
-        if (IsFillInInstruction(instruction))
-            return new DxpValueFieldEvalFrame(next, eval, logger, instruction);
-
-        if (IsNextInstruction(instruction))
-            return new DxpValueFieldEvalFrame(next, eval, logger, instruction);
-
-        if (IsSkipIfInstruction(instruction))
-            return new DxpSkipIfFieldEvalFrame(next, eval, logger, instruction);
-
-        if (IsDocPropertyInstruction(instruction) ||
-            IsMergeFieldInstruction(instruction) ||
-            IsMergeRecInstruction(instruction) ||
-            IsMergeSeqInstruction(instruction) ||
-            IsGreetingLineInstruction(instruction) ||
-            IsAddressBlockInstruction(instruction) ||
-            IsDatabaseInstruction(instruction) ||
-            IsSeqInstruction(instruction) ||
-            IsDateTimeInstruction(instruction) ||
-            IsCompareInstruction(instruction) ||
-            IsDocumentMetricInstruction(instruction))
-        {
-            if (IsDocPropertyInstruction(instruction))
-                return new DxpDocPropertyFieldEvalFrame(next, eval, logger, instruction);
-
-            if (IsMergeFieldInstruction(instruction))
-                return new DxpMergeFieldEvalFrame(next, eval, logger, instruction);
-
-            if (IsMergeRecInstruction(instruction) ||
-                IsMergeSeqInstruction(instruction) ||
-                IsGreetingLineInstruction(instruction) ||
-                IsAddressBlockInstruction(instruction) ||
-                IsDatabaseInstruction(instruction) ||
-                IsDocumentMetricInstruction(instruction))
-            {
-                return new DxpValueFieldEvalFrame(next, eval, logger, instruction);
-            }
-
-            if (IsSeqInstruction(instruction))
-                return new DxpSeqFieldEvalFrame(next, eval, logger, instruction);
-
-            if (IsDateTimeInstruction(instruction))
-                return new DxpDateTimeFieldEvalFrame(next, eval, logger, instruction);
-
-            if (IsCompareInstruction(instruction))
-                return new DxpCompareFieldEvalFrame(next, eval, logger, instruction);
-        }
-        if (IsFormulaInstruction(instruction))
-            return new DxpFormulaFieldEvalFrame(next, eval, logger, instruction);
-
-        if (logger?.IsEnabled(LogLevel.Debug) == true)
-            logger.LogDebug("FieldFrameFactory: no evaluate frame for instruction '{Instruction}'.", instruction ?? string.Empty);
-        return null;
-    }
-
     internal static bool IsSetInstruction(string? instruction)
     {
         if (string.IsNullOrWhiteSpace(instruction))
             return false;
-        var trimmed = instruction!.TrimStart();
+        var trimmed = instruction.TrimStart();
         if (!trimmed.StartsWith("SET", StringComparison.OrdinalIgnoreCase))
             return false;
         return trimmed.Length == 3 || char.IsWhiteSpace(trimmed[3]);
@@ -108,7 +16,7 @@ internal sealed class DxpFieldEvalFrameFactory
     {
         if (string.IsNullOrWhiteSpace(instruction))
             return false;
-        var trimmed = instruction!.TrimStart();
+        var trimmed = instruction.TrimStart();
         if (!trimmed.StartsWith("REF", StringComparison.OrdinalIgnoreCase))
             return false;
         return trimmed.Length == 3 || char.IsWhiteSpace(trimmed[3]);
@@ -118,7 +26,7 @@ internal sealed class DxpFieldEvalFrameFactory
     {
         if (string.IsNullOrWhiteSpace(instruction))
             return false;
-        var trimmed = instruction!.TrimStart();
+        var trimmed = instruction.TrimStart();
         if (!trimmed.StartsWith("DOCVARIABLE", StringComparison.OrdinalIgnoreCase))
             return false;
         return trimmed.Length == 11 || char.IsWhiteSpace(trimmed[11]);
@@ -128,7 +36,7 @@ internal sealed class DxpFieldEvalFrameFactory
     {
         if (string.IsNullOrWhiteSpace(instruction))
             return false;
-        var trimmed = instruction!.TrimStart();
+        var trimmed = instruction.TrimStart();
         if (!trimmed.StartsWith("IF", StringComparison.OrdinalIgnoreCase))
             return false;
         return trimmed.Length == 2 || char.IsWhiteSpace(trimmed[2]);
@@ -203,7 +111,7 @@ internal sealed class DxpFieldEvalFrameFactory
     {
         if (string.IsNullOrWhiteSpace(instruction))
             return false;
-        var trimmed = instruction!.TrimStart();
+        var trimmed = instruction.TrimStart();
         return trimmed.Length > 0 && trimmed[0] == '=';
     }
 
@@ -211,7 +119,7 @@ internal sealed class DxpFieldEvalFrameFactory
     {
         if (string.IsNullOrWhiteSpace(instruction))
             return false;
-        var trimmed = instruction!.TrimStart();
+        var trimmed = instruction.TrimStart();
         if (!trimmed.StartsWith(fieldType, StringComparison.OrdinalIgnoreCase))
             return false;
         return trimmed.Length == fieldType.Length || char.IsWhiteSpace(trimmed[fieldType.Length]);
