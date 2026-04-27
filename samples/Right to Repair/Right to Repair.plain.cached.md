@@ -139,55 +139,55 @@ The relaxation of TPM rules in Canada aligns with similar measures already imple
 Here in Canada, the adoption of Bill C-244 represents another step in establishing the right to repair goods. This measure builds on another federal bill, C-59,<a href="#fn-28" id="fnref-28">[27]</a> which also received assent last June and amended the <i>Competition Act</i> to empower courts to compel suppliers to sell diagnosis or repair tools. At the provincial level, Quebec became the first province to enact right-to-repair legislation last year.<b> <a href="#fn-30" id="fnref-30">[29]</a></b> In the coming months, it remains to be seen whether the new section 41.121 of the Copyright Act (CA) will unlock the repair market. For the moment, the measure strikes us as somewhat timid.
 
 <div class="footnote" id="fn-2">
-1 PARLIAMENT OF CANADA, LEGISinfo: C-244: <i>An Act to amend the Copyright Act (diagnosis, maintenance and repair)</i>, Parliament of Canada, online: .
+1 PARLIAMENT OF CANADA, LEGISinfo: C-244: <i>An Act to amend the Copyright Act (diagnosis, maintenance and repair)</i>, Parliament of Canada, online: <u>https://www.parl.ca/legisinfo/en/bill/44-1/c-244</u>.
 
 </div>
 <div class="footnote" id="fn-3">
-2 PARLIAMENT OF CANADA, LEGISinfo: C-272, <i>An Act to amend the Copyright Act (diagnosis, maintenance and repair)</i>, Parliament of Canada, online:
+2 PARLIAMENT OF CANADA, LEGISinfo: C-272, <i>An Act to amend the Copyright Act (diagnosis, maintenance and repair)</i>, Parliament of Canada, online: <u>https://www.parl.ca/legisinfo/en/bill/43-2/c-272.</u>
 
 </div>
 <div class="footnote" id="fn-4">
-3<i> </i>, 2017 FC 246, [2018] 1 FCR 509.
+3<i> <u>Nintendo of America Inc. </u></i><u>v.<i> King</i></u>, 2017 FC 246, [2018] 1 FCR 509.
 
 </div>
 <div class="footnote" id="fn-5">
-4<i> WIPO Copyright Treaty</i>, December 20, 1996, article 11, online: .
+4<i> WIPO Copyright Treaty</i>, December 20, 1996, article 11, online: <u>https://www.wipo.int/wipolex/en/treaties/textdetails/12740</u>.
 
 </div>
 <div class="footnote" id="fn-6">
-5<i> Copyright Modernization Act</i>, S.C. 2012, c. 20, assented to on 2012-06-29, online: ; Canada Gazette, Vol. 146,No. 23 – November 7, 2012, SI/2012-85 <i>Order Fixing Various Dates as the Dates on which Certain Provisions of the Act Come into Force</i>, P.C. 2012-1392, October 25, 2012, online: .
+5<i> Copyright Modernization Act</i>, S.C. 2012, c. 20, assented to on 2012-06-29, online: <u>https://laws-lois.justice.gc.ca/eng/AnnualStatutes/2012_20/FullText.html</u>; Canada Gazette, Vol. 146,No. 23 – November 7, 2012, SI/2012-85 <i>Order Fixing Various Dates as the Dates on which Certain Provisions of the Act Come into Force</i>, P.C. 2012-1392, October 25, 2012, online: <u>https: //canadagazette.gc.ca/rp-pr/p2/2012/2012-11-07/html/si-tr85-fra.html</u>.
 
 </div>
 <div class="footnote" id="fn-7">
-6 Graham J. Reynolds, “Of Lock-Breaking and Stock Taking - IP, Climate Change, and the Right to Repair in Canada,” in 2023 101-1 <i>Canadian Bar Review</i> 32, 2023 CanLIIDocs 1144, p. 54, online: .
+6 Graham J. Reynolds, “Of Lock-Breaking and Stock Taking - IP, Climate Change, and the Right to Repair in Canada,” in 2023 101-1 <i>Canadian Bar Review</i> 32, 2023 CanLIIDocs 1144, p. 54, online: <u>https://canlii.ca/t/7n4cj</u>.
 
 </div>
 <div class="footnote" id="fn-8">
-7 Committee on Industry and Technology, 5 December 2022, Catherine Lovrics, <i>Open Parliament</i>, online: ; Committee on Industry and Technology, 15 February 2023, Viviane Lapointe, <i>Open Parliament</i>, online: ; Committee on Industry and Technology, 15 February 2023, Andy  Fillmore, <i>Open Parliament</i>, online: ; Committee on Industry and Technology, 15 february 2023, Patrick Blanar, online: .
+7 Committee on Industry and Technology, 5 December 2022, Catherine Lovrics, <i>Open Parliament</i>, online: <u>https://openparliament.ca/committees/industry/44-1/49/catherine-lovrics-2/</u>; Committee on Industry and Technology, 15 February 2023, Viviane Lapointe, <i>Open Parliament</i>, online: <u>https://openparliament.ca/committees/industry/44-1/59/viviane-lapointe-5/</u>; Committee on Industry and Technology, 15 February 2023, Andy  Fillmore, <i>Open Parliament</i>, online: <u>https://openparliament.ca/committees/industry/44-1/59/andy-fillmore-6/</u>; Committee on Industry and Technology, 15 february 2023, Patrick Blanar, online: <u>https://openparliament.ca/committees/industry/44-1/59/patrick-blanar-1/</u>.
 
 </div>
 <div class="footnote" id="fn-9">
-8 Entertainment Software Association of Canada, <i>Bill C-244 – An Act to amend the Copyright Act (diagnosis, maintenance and repair),</i> online:.
+8 Entertainment Software Association of Canada, <i>Bill C-244 – An Act to amend the Copyright Act (diagnosis, maintenance and repair),</i> online:<u> https://www.ourcommons.ca/Content/Committee/441/INDU/Brief/BR12209146/br-external/EntertainmentSoftwareAssociationOfCanada-e.pdf</u>.
 
 </div>
 <div class="footnote" id="fn-10">
-9 Committee on Industry and Technology, February 8, 2023, Paul Fogolin, online: .
+9 Committee on Industry and Technology, February 8, 2023, Paul Fogolin, online: <u>https://openparliament.ca/committees/industry/44-1/57/paul-fogolin-1/</u>.
 
 </div>
 <div class="footnote" id="fn-11">
-10 Committee on Industry and Technology, February 8, 2023, Charles Bernard, online: .
+10 Committee on Industry and Technology, February 8, 2023, Charles Bernard, online: <u>https://openparliament.ca/committees/industry/44-1/57/charles-bernard-1/</u>.
 
 </div>
 <div class="footnote" id="fn-12">
-11 Industry and Technology Committee, December 5, 2022, Catherine Lovrics, online:.
+11 Industry and Technology Committee, December 5, 2022, Catherine Lovrics, online:<u> https://openparliament.ca/committees/industry/44-1/49/catherine-lovrics-2/</u>.
 
 </div>
 <div class="footnote" id="fn-13">
-12 Emma Fillman,<i> “</i>Comprehensive Right to Repair:<i> </i>The Fight Against Planned Obsolescence in Canada,” (2023) 32 Dalhousie J Legal Stud 123, p. 145. online<u>.</u>
+12 Emma Fillman,<i> “</i>Comprehensive Right to Repair:<i> </i>The Fight Against Planned Obsolescence in Canada,” (2023) 32 Dalhousie J Legal Stud 123, p. 145. online<u> https://digitalcommons.schulichlaw.dal.ca/djls/vol32/iss1/5/.</u>
 
 </div>
 <div class="footnote" id="fn-14">
-13 Irene Calboli, “The right to repair: Recent Developments in the USA<i>,” World Intellectual Property Organization Magazine</i>, August 2023, online:.
+13 Irene Calboli, “The right to repair: Recent Developments in the USA<i>,” World Intellectual Property Organization Magazine</i>, August 2023, online:<u> https://www.wipo.int/wipo_magazine_digital/en/2023/article_0023.html</u>.
 
 </div>
 <div class="footnote" id="fn-15">
@@ -195,57 +195,57 @@ Here in Canada, the adoption of Bill C-244 represents another step in establishi
 <div class="footnote" id="fn-16">
 </div>
 <div class="footnote" id="fn-17">
-16 Emma Fillman, “Comprehensive Right to Repair:<i> </i>The Fight Against Planned Obsolescence in Canada,” (2023) 32 Dalhousie J Legal Stud 123, pp. 142 and following, online<u>.</u>
+16 Emma Fillman, “Comprehensive Right to Repair:<i> </i>The Fight Against Planned Obsolescence in Canada,” (2023) 32 Dalhousie J Legal Stud 123, pp. 142 and following, online<u> https://digitalcommons.schulichlaw.dal.ca/djls/vol32/iss1/5/.</u>
 
 </div>
 <div class="footnote" id="fn-18">
-17 Committee on Industry and Technology, February 8, 2023, Shannon Sereda, online:.
+17 Committee on Industry and Technology, February 8, 2023, Shannon Sereda, online:<u> https://openparliament.ca/committees/industry/44-1/57/shannon-sereda-1/</u>.
 
 </div>
 <div class="footnote" id="fn-19">
-18 Committee on Industry and Technology, February 8, 2023, Anthony D. Rosborough, online:.
+18 Committee on Industry and Technology, February 8, 2023, Anthony D. Rosborough, online:<u> https://openparliament.ca/committees/industry/44-1/57/anthony-d-rosborough-1/</u>.
 
 </div>
 <div class="footnote" id="fn-20">
-19 Copyright Office, Library of Congress, E<i>xemption to Prohibition on Circumvention of Copyright Protection Systems for Access Control Technologies</i>, Federal Register, October 28, 2024, online:.
+19 Copyright Office, Library of Congress, E<i>xemption to Prohibition on Circumvention of Copyright Protection Systems for Access Control Technologies</i>, Federal Register, October 28, 2024, online:<u> https://www.federalregister.gov/documents/2024/10/28/2024-24563/exemption-to-prohibition-on-circumvention-of-copyright-protection-systems-for-access-control</u>.
 
 </div>
 <div class="footnote" id="fn-21">
-20 Copyright Office, Library of Congress, <i>Exemption to Prohibition on Circumvention of Copyright Protection Systems for Access Control Technologies</i>, Federal Register, October 26, 2018, online:.
+20 Copyright Office, Library of Congress, <i>Exemption to Prohibition on Circumvention of Copyright Protection Systems for Access Control Technologies</i>, Federal Register, October 26, 2018, online:<u> https://www.federalregister.gov/documents/2018/10/26/2018-23241/exemption-to-prohibition-on-circumvention-of-copyright-protection-systems-for-access-control</u>.
 
 </div>
 <div class="footnote" id="fn-22">
-21 Federal Trade Commission, <i>Nixing the Fix: An FTC Report to Congress on Repair Restrictions</i>, May 2021, online:.
+21 Federal Trade Commission, <i>Nixing the Fix: An FTC Report to Congress on Repair Restrictions</i>, May 2021, online:<u> https://www.ftc.gov/system/files/documents/reports/nixing-fix-ftc-report-congress-repair-restrictions/nixing_the_fix_report_final_5521_630pm-508_002.pdf</u>.
 
 </div>
 <div class="footnote" id="fn-23">
-22 The White House, <i>Executive Order on Promoting Competition in the American Economy</i>, July 9, 2021, online: .
+22 The White House, <i>Executive Order on Promoting Competition in the American Economy</i>, July 9, 2021, online: <u>https://www.whitehouse.gov/briefing-room/presidential-actions/2021/07/09/executive-order-on-promoting-competition-in-the-american-economy/</u>.
 
 </div>
 <div class="footnote" id="fn-24">
-23 X, Jon Campbell, December 29, 2022, online:; Colorado General Assembly, <i>Consumer Right to Repair Agricultural Equipment</i>, April 25, 2023, online:; Minnesota Legislature, Minnesota Session Laws, 93<sup>rd</sup> Legislature, Chapter 57 – S.F. No. 2744, online:; Sidley, “California Becomes Third U.S.<i> </i>State to Join the Right-to-Repair Movement,” October 24, 2023, online:.
+23 X, Jon Campbell, December 29, 2022, online:<u> https://twitter.com/JonCampbellNY/status/1608327624526548993</u>; Colorado General Assembly, <i>Consumer Right to Repair Agricultural Equipment</i>, April 25, 2023, online:<u> https://leg.colorado.gov/bills/hb23-1011</u>; Minnesota Legislature, Minnesota Session Laws, 93<sup>rd</sup> Legislature, Chapter 57 – S.F. No. 2744, online:<u> https://www.revisor.mn.gov/laws/2023/0/Session+Law/Chapter/57/</u>; Sidley, “California Becomes Third U.S.<i> </i>State to Join the Right-to-Repair Movement,” October 24, 2023, online:<u> https://www.sidley.com/en/insights/newsupdates/2023/10/california-becomes-third-us-state-to-join-the-right-to-repair-movement</u>.
 
 </div>
 <div class="footnote" id="fn-25">
-24 John Deere, <i>Memorandum of Undestanding</i>, January 8, 2023, online: .
+24 John Deere, <i>Memorandum of Undestanding</i>, January 8, 2023, online: <u>https://www.fb.org/files/AFBF_John_Deere_MOU.pdf</u>.
 
 </div>
 <div class="footnote" id="fn-26">
-25 The Verge, “Surprise:<i> </i>Apple now supports California’s right to repair,” August 23, 2023, online: .
+25 The Verge, “Surprise:<i> </i>Apple now supports California’s right to repair,” August 23, 2023, online: <u>https://www.theverge.com/2023/8/23/23843506/apple-california-right-to-repair-sb-244</u>.
 
 </div>
 <div class="footnote" id="fn-27">
-26 Irene Calboli, “The right to repair: Recent Developments in the USA,”<i> World Intellectual Property Organization Magazine</i>, online:.
+26 Irene Calboli, “The right to repair: Recent Developments in the USA,”<i> World Intellectual Property Organization Magazine</i>, online:<u> https://www.wipo.int/wipo_magazine_digital/en/2023/article_0023.html</u>.
 
 </div>
 <div class="footnote" id="fn-28">
-27 PARLIAMENT OF CANADA, LEGISinfo: C-59: <i>An Act to implement certain provisions of the fall economic statement tabled in Parliament on November 21, 2023 and certain provisions of the budget tabled in Parliament on March 28, 2023</i>; Parliament of Canada, online:<i>.</i>
+27 PARLIAMENT OF CANADA, LEGISinfo: C-59: <i>An Act to implement certain provisions of the fall economic statement tabled in Parliament on November 21, 2023 and certain provisions of the budget tabled in Parliament on March 28, 2023</i>; Parliament of Canada, online:<i><u> </u></i><u>https://www.parl.ca/legisinfo/en/bill/44-1/c-59</u><i>.</i>
 
 </div>
 <div class="footnote" id="fn-29">
 </div>
 <div class="footnote" id="fn-30">
-29 Québec National Assembly, Bill 29, <i>An Act to protect consumers from planned obsolescence and to promote the durability, repairability and maintenance of goods, </i>online: <u>.</u>
+29 Québec National Assembly, Bill 29, <i>An Act to protect consumers from planned obsolescence and to promote the durability, repairability and maintenance of goods, </i>online: <u>https://www.assnat.qc.ca/en/travaux-parlementaires/projets-loi/projet-loi-29-43-1.html.</u>
 
 </div>
 <div class="footer" style="border-top:1px solid #000;">

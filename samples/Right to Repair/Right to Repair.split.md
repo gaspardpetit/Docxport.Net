@@ -43,22 +43,22 @@
 <p style="text-align:justify;">Section 41.121, as introduced by C-244, has three paragraphs:</p>
 
 
-<p style="margin-top:6pt;margin-bottom:6pt;text-align:justify;border-top:0.5pt solid #000000;border-right:0.5pt solid #000000;border-left:0.5pt solid #000000;background-color:#FFFFFF;"><b><span style="color:#000000">Diagnosis, maintenance and repair</span></b></p>
+<p style="margin-left:36pt;margin-top:6pt;margin-bottom:6pt;text-align:justify;border-top:0.5pt solid #000000;border-right:0.5pt solid #000000;border-left:0.5pt solid #000000;background-color:#FFFFFF;"><b><span style="color:#000000">Diagnosis, maintenance and repair</span></b></p>
 
 
-<p style="margin-top:6pt;margin-bottom:6pt;border-right:0.5pt solid #000000;border-left:0.5pt solid #000000;background-color:#FFFFFF;"><span style="color:#000000">41.121 (1) Paragraph 41.1(1)(a) does not apply to a person who circumvents a technological protection measure for the sole purpose of maintaining or repairing a product, including any related diagnosing, if the work, performer’s performance fixed in a sound recording or sound recording to which the technological protection measure controls access forms a part of the product.</span></p>
+<p style="margin-left:36pt;margin-top:6pt;margin-bottom:6pt;border-right:0.5pt solid #000000;border-left:0.5pt solid #000000;background-color:#FFFFFF;"><span style="color:#000000">41.121 (1) Paragraph 41.1(1)(a) does not apply to a person who circumvents a technological protection measure for the sole purpose of maintaining or repairing a product, including any related diagnosing, if the work, performer’s performance fixed in a sound recording or sound recording to which the technological protection measure controls access forms a part of the product.</span></p>
 
 
-<p style="margin-top:6pt;margin-bottom:6pt;text-align:justify;border-right:0.5pt solid #000000;border-left:0.5pt solid #000000;background-color:#FFFFFF;"><b><span style="color:#000000">For greater certainty</span></b></p>
+<p style="margin-left:36pt;margin-top:6pt;margin-bottom:6pt;text-align:justify;border-right:0.5pt solid #000000;border-left:0.5pt solid #000000;background-color:#FFFFFF;"><b><span style="color:#000000">For greater certainty</span></b></p>
 
 
-<p style="margin-top:6pt;margin-bottom:6pt;border-right:0.5pt solid #000000;border-left:0.5pt solid #000000;background-color:#FFFFFF;"><span style="color:#000000">(2) For greater certainty, subsection (1) applies to a person who circumvents a technological protection measure in the circumstances referred to in that subsection for another person.</span></p>
+<p style="margin-left:36pt;margin-top:6pt;margin-bottom:6pt;border-right:0.5pt solid #000000;border-left:0.5pt solid #000000;background-color:#FFFFFF;"><span style="color:#000000">(2) For greater certainty, subsection (1) applies to a person who circumvents a technological protection measure in the circumstances referred to in that subsection for another person.</span></p>
 
 
-<p style="margin-top:6pt;margin-bottom:6pt;text-align:justify;border-right:0.5pt solid #000000;border-left:0.5pt solid #000000;background-color:#FFFFFF;"><b><span style="color:#000000">Non-application</span></b></p>
+<p style="margin-left:36pt;margin-top:6pt;margin-bottom:6pt;text-align:justify;border-right:0.5pt solid #000000;border-left:0.5pt solid #000000;background-color:#FFFFFF;"><b><span style="color:#000000">Non-application</span></b></p>
 
 
-<p style="margin-top:6pt;margin-bottom:6pt;border-right:0.5pt solid #000000;border-bottom:0.5pt solid #000000;border-left:0.5pt solid #000000;background-color:#FFFFFF;"><span style="color:#000000">(3) A person acting in the circumstances referred to in subsection (1) is not entitled to benefit from the exception under that subsection if the person does an act that constitutes an infringement of copyright.</span></p>
+<p style="margin-left:36pt;margin-top:6pt;margin-bottom:6pt;border-right:0.5pt solid #000000;border-bottom:0.5pt solid #000000;border-left:0.5pt solid #000000;background-color:#FFFFFF;"><span style="color:#000000">(3) A person acting in the circumstances referred to in subsection (1) is not entitled to benefit from the exception under that subsection if the person does an act that constitutes an infringement of copyright.</span></p>
 
 
 <p style="text-align:justify;">Under the new section, the protection afforded to TPMs is set aside for maintenance and repair purposes, including the related diagnosing. Subsection 41.121(2) adds that the exception also applies to a person, such as a professional repairer, who repairs a product for another person. Subsection 41.121(3) further adds that the exception applies only to situations where there is no copyright infringement; for example, copyright infringement would be a person circumventing TPMs to repair a product, but taking advantage of the situation to make an illicit copy of a computer program.</p>
@@ -133,7 +133,7 @@
 <p style="margin-top:6pt;margin-bottom:6pt;text-align:justify;background-color:#FFFFFF;"><b><i><span style="color:#000000">circumvent </span></i></b><span style="color:#000000">means,</span></p>
 
 
-<p style="margin-top:5pt;margin-bottom:5pt;text-align:justify;line-height:1;background-color:#FFFFFF;"><b><span style="color:#000000">a)</span></b><span style="color:#000000">&#9;(a) in respect of a technological protection measure within the meaning of paragraph (a) of the definition technological protection measure, to descramble a scrambled work or decrypt an encrypted work or to otherwise avoid, bypass, remove, deactivate or impair the technological protection measure, unless it is done with the authority of the copyright owner; and</span></p>
+<p style="margin-left:25.9pt;text-indent:-25.9pt;margin-top:5pt;margin-bottom:5pt;text-align:justify;line-height:1;background-color:#FFFFFF;"><b><span style="color:#000000">a)</span></b><span style="color:#000000">&#9;(a) in respect of a technological protection measure within the meaning of paragraph (a) of the definition technological protection measure, to descramble a scrambled work or decrypt an encrypted work or to otherwise avoid, bypass, remove, deactivate or impair the technological protection measure, unless it is done with the authority of the copyright owner; and</span></p>
 
 
 </td>
@@ -149,17 +149,17 @@
 <p style="margin-top:6pt;margin-bottom:6pt;text-align:justify;background-color:#FFFFFF;"><b><i><span style="color:#000000">circumvent </span></i></b><span style="color:#000000">means,</span></p>
 
 
-<p style="margin-top:5pt;margin-bottom:5pt;text-align:justify;line-height:1;"><b><span style="color:#000000">a)</span></b><span style="color:#000000">&#9;(a) in respect of a technological protection measure within the meaning of paragraph (a) of the definition technological protection measure, to descramble a scrambled work </span><b><u><span style="color:#000000">or computer program</span></u></b><span style="color:#000000">, or decrypt an encrypted work or computer program or to otherwise avoid, bypass, remove, deactivate or impair the technological protection measure, unless it is done with the authority of the copyright owner; and</span></p>
+<p style="margin-left:25.9pt;text-indent:-25.9pt;margin-top:5pt;margin-bottom:5pt;text-align:justify;line-height:1;"><b><span style="color:#000000">a)</span></b><span style="color:#000000">&#9;(a) in respect of a technological protection measure within the meaning of paragraph (a) of the definition technological protection measure, to descramble a scrambled work </span><b><u><span style="color:#000000">or computer program</span></u></b><span style="color:#000000">, or decrypt an encrypted work or computer program or to otherwise avoid, bypass, remove, deactivate or impair the technological protection measure, unless it is done with the authority of the copyright owner; and</span></p>
 
 
 </td>
   </tr>
   <tr>
-    <td style="border-top:none;border-right:0.5pt solid #000000;border-bottom:none;border-left:0.5pt solid #000000;"><p style="margin-top:5pt;margin-bottom:5pt;text-align:justify;line-height:1;background-color:#FFFFFF;"><b><span style="color:#000000">b) </span>&#9;</b><span style="color:#000000">…</span></p>
+    <td style="border-top:none;border-right:0.5pt solid #000000;border-bottom:none;border-left:0.5pt solid #000000;"><p style="margin-left:25.9pt;text-indent:-25.9pt;margin-top:5pt;margin-bottom:5pt;text-align:justify;line-height:1;background-color:#FFFFFF;"><b><span style="color:#000000">b) </span>&#9;</b><span style="color:#000000">…</span></p>
 
 
 </td>
-    <td style="border-top:none;border-right:0.5pt solid #000000;border-bottom:none;border-left:0.5pt solid #000000;"><p style="margin-top:5pt;margin-bottom:5pt;text-align:justify;line-height:1;background-color:#FFFFFF;"><b><span style="color:#000000">b)</span>&#9;</b><span style="color:#000000">…</span></p>
+    <td style="border-top:none;border-right:0.5pt solid #000000;border-bottom:none;border-left:0.5pt solid #000000;"><p style="margin-left:25.9pt;text-indent:-25.9pt;margin-top:5pt;margin-bottom:5pt;text-align:justify;line-height:1;background-color:#FFFFFF;"><b><span style="color:#000000">b)</span>&#9;</b><span style="color:#000000">…</span></p>
 
 
 </td>
@@ -168,23 +168,24 @@
     <td style="border-top:none;border-right:0.5pt solid #000000;border-bottom:none;border-left:0.5pt solid #000000;"><p style="margin-top:6pt;margin-bottom:6pt;text-align:justify;background-color:#FFFFFF;"><b><i><span style="color:#000000">technological protection measure </span></i></b><span style="color:#000000">means any effective technology, device or component that, in the ordinary course of its operation, </span></p>
 
 
-<p style="margin-top:5pt;margin-bottom:5pt;text-align:justify;line-height:1;background-color:#FFFFFF;"><b><span style="color:#000000">a)</span>&#9;</b><span style="color:#000000">controls access to a work, to a performer’s performance fixed in a sound recording or to a sound recording and whose use is authorized by the copyright owner; or</span></p>
+<p style="margin-left:25.9pt;text-indent:-25.9pt;margin-top:5pt;margin-bottom:5pt;text-align:justify;line-height:1;background-color:#FFFFFF;"><b><span style="color:#000000">a)</span>&#9;</b><span style="color:#000000">controls access to a work, to a performer’s performance fixed in a sound recording or to a sound recording and whose use is authorized by the copyright owner; or</span></p>
 
 
 </td>
     <td style="border-top:none;border-right:0.5pt solid #000000;border-bottom:none;border-left:0.5pt solid #000000;"><p style="margin-top:6pt;margin-bottom:6pt;text-align:justify;background-color:#FFFFFF;"><b><i><span style="color:#000000">technological protection measure </span></i></b><span style="color:#000000">means any effective technology, device or component that, in the ordinary course of its operation,</span></p>
 
 
-<p style="margin-top:5pt;margin-bottom:5pt;text-align:justify;line-height:1;background-color:#FFFFFF;"><b><span style="color:#000000">a)</span>&#9;</b><span style="color:#000000">controls access to a work, </span><b><u><span style="color:#000000">including a computer program</span></u></b><span style="color:#000000">, to a performer’s performance fixed in a sound recording or to a sound recording and whose use is authorized by the copyright owner;</span></p>
+<p style="margin-left:26pt;text-indent:-26pt;margin-top:5pt;margin-bottom:5pt;text-align:justify;line-height:1;background-color:#FFFFFF;"><b><span style="color:#000000">a)</span>&#9;</b><span style="color:#000000">controls access to a work, </span><b><u><span style="color:#000000">including a computer program</span></u></b><span style="color:#000000">, to a performer’s performance fixed in a sound recording or to a sound recording and whose use is authorized by the copyright owner;</span></p>
 
 
 </td>
   </tr>
   <tr>
-    <td style="border-top:none;border-right:0.5pt solid #000000;border-bottom:0.5pt solid #000000;border-left:0.5pt solid #000000;"><b><span style="color:#000000">b)</span>&#9;</b><span style="color:#000000">…</span>
+    <td style="border-top:none;border-right:0.5pt solid #000000;border-bottom:0.5pt solid #000000;border-left:0.5pt solid #000000;"><p style="margin-left:26pt;text-indent:-26pt;"><b><span style="color:#000000">b)</span>&#9;</b><span style="color:#000000">…</span></p>
+
 
 </td>
-    <td style="border-top:none;border-right:0.5pt solid #000000;border-bottom:0.5pt solid #000000;border-left:0.5pt solid #000000;"><p style="margin-top:5pt;margin-bottom:5pt;text-align:justify;line-height:1;background-color:#FFFFFF;"><b><span style="color:#000000">b)</span>&#9;</b><span style="color:#000000">…</span></p>
+    <td style="border-top:none;border-right:0.5pt solid #000000;border-bottom:0.5pt solid #000000;border-left:0.5pt solid #000000;"><p style="margin-left:25.9pt;text-indent:-25.9pt;margin-top:5pt;margin-bottom:5pt;text-align:justify;line-height:1;background-color:#FFFFFF;"><b><span style="color:#000000">b)</span>&#9;</b><span style="color:#000000">…</span></p>
 
 
 </td>

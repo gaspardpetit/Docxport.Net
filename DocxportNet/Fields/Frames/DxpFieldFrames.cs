@@ -6,6 +6,7 @@ using DocxportNet.Fields.Formatting;
 using DocxportNet.Walker;
 using DocxportNet.Walker.Context;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace DocxportNet.Fields.Frames;
 
@@ -55,12 +56,7 @@ class DxpFieldFrames
 		if (sink == null)
 			return;
 
-		var t = new Text(text);
-		if (DxpFieldEvalMiddleware.NeedsPreserveSpace(text))
-			t.Space = SpaceProcessingModeValues.Preserve;
-		run.AppendChild(t);
-
-        EmitRun(run, d, sink);
+        BuildTextInRunBuffer(text, run).Replay(sink, d);
 	}
 
 	public static Run NewSyntheticRun(Run? sourceRun, RunProperties? runProperties)
@@ -75,19 +71,28 @@ class DxpFieldFrames
 		return run;
 	}
 
-	public static void EmitTextMergeformatWithRuns(
-        string text,
-        DxpIDocumentContext d,
-        IReadOnlyList<Run?>? runs,
-		DxpIVisitor sink)
+	public static DxpFieldNodeBuffer BuildTextInRunBuffer(string text, Run run)
 	{
+        var buffer = new DxpFieldNodeBuffer();
+        var child = buffer.BeginRun(run);
+        child.AddText(text);
+        return buffer;
+	}
+
+	public static DxpFieldNodeBuffer BuildTextMergeformatWithRuns(
+        string text,
+        IReadOnlyList<Run?>? runs)
+	{
+        var buffer = new DxpFieldNodeBuffer();
+
 		if (string.IsNullOrEmpty(text))
-			return;
+			return buffer;
 
 		if (runs == null || runs.Count == 0)
 		{
-            EmitTextInRun(text, d, NewSyntheticRun(null, null), sink);
-			return;
+            var child = buffer.BeginRun(NewSyntheticRun(null, null));
+            child.AddText(text);
+			return buffer;
 		}
 
 		int segmentCount = runs.Count;
@@ -96,14 +101,17 @@ class DxpFieldFrames
 		for (int i = 0; i < segments.Count; i++)
 		{
 			Run? segmentRun = runs != null && i < runs.Count ? runs[i] : null;
-            EmitTextInRun(segments[i], d, NewSyntheticRun(segmentRun, null), sink);
+            var child = buffer.BeginRun(NewSyntheticRun(segmentRun, null));
+            child.AddText(segments[i]);
 		}
+
+        return buffer;
 	}
 
     internal static bool EmitTextWithMergeFormat(
 		string resultText,
 		IReadOnlyList<IDxpFieldFormatSpec> formatSpecs,
-		List<Run?>? cachedResultRuns,
+		DxpFieldNodeBuffer? cachedResultBuffer,
 		Run? codeRun,
 		DxpIDocumentContext d,
 		DxpIVisitor? sink,
@@ -119,34 +127,33 @@ class DxpFieldFrames
 		if (hasMergeFormatting)
 		{
 			RunProperties? runProps = null;
-			IReadOnlyList<Run?>? mergeRuns = null;
+            List<(string text, RunProperties? props)>? segments = null;
 
-			if (hasMergeFormat && cachedResultRuns != null && cachedResultRuns.Count > 0)
-			{
-				mergeRuns = cachedResultRuns;
-			}
+			if (hasMergeFormat && cachedResultBuffer != null && cachedResultBuffer.TryGetRunSegments(out var cachedSegments))
+				segments = cachedSegments;
 			else if (hasCharFormat && codeRun?.RunProperties != null)
 			{
 				runProps = codeRun.RunProperties;
 			}
-
-			if (hasMergeFormat && cachedResultRuns != null && cachedResultRuns.Count > 0)
-				mergeRuns = cachedResultRuns;
-			else if (hasCharFormat && codeRun?.RunProperties != null)
-				runProps = codeRun.RunProperties;
 
 			if (hasCharFormat && runProps == null && logger?.IsEnabled(LogLevel.Debug) == true)
 				logger.LogDebug("CHARFORMAT requested but no field code run properties captured.");
 
-			if (mergeRuns != null)
-                EmitTextMergeformatWithRuns(resultText, d, mergeRuns, sink);
+			if (segments != null)
+            {
+                var runs = segments.Select(s => {
+                    var run = NewSyntheticRun(null, s.props);
+                    return run;
+                }).Cast<Run?>().ToList();
+                BuildTextMergeformatWithRuns(resultText, runs).Replay(sink, d);
+            }
 			else
-                EmitTextInRun(resultText, d, NewSyntheticRun(codeRun, runProps ?? codeRun?.RunProperties), sink);
+                BuildTextInRunBuffer(resultText, NewSyntheticRun(codeRun, runProps ?? codeRun?.RunProperties)).Replay(sink, d);
 			return true;
 		}
 		else
 		{
-            EmitTextInRun(resultText, d, NewSyntheticRun(codeRun, codeRun?.RunProperties), sink);
+            BuildTextInRunBuffer(resultText, NewSyntheticRun(codeRun, codeRun?.RunProperties)).Replay(sink, d);
 			return true;
 		}
 	}

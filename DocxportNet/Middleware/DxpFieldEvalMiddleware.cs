@@ -1,3 +1,4 @@
+using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
@@ -200,6 +201,12 @@ public sealed partial class DxpFieldEvalMiddleware : DxpLoggingMiddleware
         Next.VisitText(t, d);
     }
 
+    public override IDisposable VisitBlockBegin(OpenXmlElement child, DxpIDocumentContext d)
+    {
+        var target = _currentAdapter ?? Next;
+        return target.VisitBlockBegin(child, d);
+    }
+
 
     internal static bool NeedsPreserveSpace(string text)
     {
@@ -257,7 +264,8 @@ public sealed partial class DxpFieldEvalMiddleware : DxpLoggingMiddleware
         _context.CurrentOutlineLevelProvider = CreateOutlineLevelProvider(p, d);
         _context.CurrentDocumentOrder = ++_paragraphOrder;
 
-        var inner = Next.VisitParagraphBegin(p, d, paragraph);
+        var target = _currentAdapter ?? Next;
+        var inner = target.VisitParagraphBegin(p, d, paragraph);
         return new DxpCompositeScope(inner, () => {
             _context.Culture = previous;
             _context.CurrentOutlineLevelProvider = previousOutlineProvider;

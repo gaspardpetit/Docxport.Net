@@ -11,17 +11,22 @@ internal static class DxpParagraphStyleComputer
         if (indent.Left.HasValue)
         {
             double pt = DxpTwipValue.ToPoints(indent.Left.Value);
-            var marginLeftPoints = d.CurrentSection.Layout?.MarginLeft?.Inches is double inches
-                ? inches * 72.0
-                : (double?)null;
-            if (marginLeftPoints != null)
-            {
-                pt -= marginLeftPoints.Value;
-                if (pt < 0)
-                    pt = 0;
-            }
             if (pt > 0.0001)
                 marginLeftPt = pt;
+        }
+
+        double? textIndentPt = null;
+        if (indent.FirstLine.HasValue)
+        {
+            double pt = DxpTwipValue.ToPoints(indent.FirstLine.Value);
+            if (Math.Abs(pt) > 0.0001)
+                textIndentPt = pt;
+        }
+        else if (indent.Hanging.HasValue)
+        {
+            double pt = -DxpTwipValue.ToPoints(indent.Hanging.Value);
+            if (Math.Abs(pt) > 0.0001)
+                textIndentPt = pt;
         }
 
         DxpComputedTextAlign? align = null;
@@ -49,6 +54,7 @@ internal static class DxpParagraphStyleComputer
 
         return new DxpComputedParagraphStyle(
             MarginLeftPt: marginLeftPt,
+            TextIndentPt: textIndentPt,
             MarginTopPt: marginTopPt,
             MarginBottomPt: marginBottomPt,
             TextAlign: align,

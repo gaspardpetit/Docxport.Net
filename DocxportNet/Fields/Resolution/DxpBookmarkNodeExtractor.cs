@@ -76,6 +76,26 @@ internal static class DxpBookmarkNodeExtractor
                         pop();
                     return;
                 }
+                case Paragraph paragraph:
+                {
+                    if (activeIds.Count == 0)
+                        break;
+
+                    var cloned = (Paragraph)paragraph.CloneNode(false);
+                    if (paragraph.ParagraphProperties != null && cloned.ParagraphProperties == null)
+                        cloned.ParagraphProperties = (ParagraphProperties)paragraph.ParagraphProperties.CloneNode(true);
+                    var pops = new List<Action>(activeIds.Count);
+                    AddToActive(capture => {
+                        var child = capture.Current.BeginParagraph(cloned);
+                        capture.Stack.Push(child);
+                        pops.Add(() => capture.Stack.Pop());
+                    });
+                    foreach (var child in paragraph.ChildElements)
+                        Visit(child);
+                    foreach (var pop in pops)
+                        pop();
+                    return;
+                }
                 case Hyperlink link:
                 {
                     if (activeIds.Count == 0)

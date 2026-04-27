@@ -10,6 +10,7 @@ public enum DxpComputedTextAlign
 
 public sealed record DxpComputedParagraphStyle(
     double? MarginLeftPt,
+    double? TextIndentPt,
     double? MarginTopPt,
     double? MarginBottomPt,
     DxpComputedTextAlign? TextAlign,

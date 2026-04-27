@@ -6,7 +6,7 @@ namespace DocxportNet.Fields.Eval;
 
 internal sealed class DxpFieldEvalFrameFactory
 {
-    public DxpIFieldEvalFrame Create(
+    public DxpIFieldEvalFrame? Create(
         string? instruction,
         DxpIVisitor next,
         DxpFieldEval eval,
@@ -14,90 +14,84 @@ internal sealed class DxpFieldEvalFrameFactory
         ILogger? logger,
         DxpEvalFieldMode mode)
     {
+        if (mode == DxpEvalFieldMode.Cache)
+        {
+            if (IsSetInstruction(instruction))
+                return new DxpSetFieldCachedFrame(context, logger);
+
+            if (IsNextInstruction(instruction))
+                return new DxpNextFieldCachedFrame();
+
+            return new DxpSimpleFieldCachedFrame(next, instruction);
+        }
+
         if (IsRefInstruction(instruction))
-        {
-            return mode == DxpEvalFieldMode.Cache
-                ? new DxpRefFieldCachedFrame(next)
-                : new DxpRefFieldEvalFrame(next, eval, logger, instruction);
-        }
+            return new DxpRefFieldEvalFrame(next, eval, logger, instruction);
+
         if (IsDocVariableInstruction(instruction))
-            return mode == DxpEvalFieldMode.Cache
-                ? new DxpDocVariableFieldCachedFrame(next)
-                : new DxpDocVariableFieldEvalFrame(next, eval, logger, instruction);
+            return new DxpDocVariableFieldEvalFrame(next, eval, logger, instruction);
+
         if (IsIfInstruction(instruction))
-            return mode == DxpEvalFieldMode.Cache
-                ? new DxpIFFieldCachedFrame(next)
-                : new DxpIFFieldEvalFrame(next, eval, logger);
-		if (IsSetInstruction(instruction))
-        {
-            return mode == DxpEvalFieldMode.Cache
-                ? new DxpSetFieldCachedFrame(context, logger)
-                : new DxpSetFieldEvalFrame(eval, context, logger, instruction);
-        }
+            return new DxpIFFieldEvalFrame(next, eval, logger);
+
+        if (IsSetInstruction(instruction))
+            return new DxpSetFieldEvalFrame(eval, context, logger, instruction);
+
         if (IsAskInstruction(instruction))
-        {
-            return mode == DxpEvalFieldMode.Cache
-                ? new DxpAskFieldCachedFrame(next)
-                : new DxpAskFieldEvalFrame(next, eval, logger, instruction);
-        }
+            return new DxpAskFieldEvalFrame(next, eval, logger, instruction);
+
         if (IsFillInInstruction(instruction))
-        {
-            return mode == DxpEvalFieldMode.Cache
-                ? new DxpSimpleFieldCachedFrame(next)
-                : new DxpValueFieldEvalFrame(next, eval, logger, instruction);
-        }
+            return new DxpValueFieldEvalFrame(next, eval, logger, instruction);
+
+        if (IsNextInstruction(instruction))
+            return new DxpValueFieldEvalFrame(next, eval, logger, instruction);
+
         if (IsSkipIfInstruction(instruction))
-        {
-            return mode == DxpEvalFieldMode.Cache
-                ? new DxpSkipIfFieldCachedFrame(next)
-                : new DxpSkipIfFieldEvalFrame(next, eval, logger, instruction);
-        }
+            return new DxpSkipIfFieldEvalFrame(next, eval, logger, instruction);
+
         if (IsDocPropertyInstruction(instruction) ||
             IsMergeFieldInstruction(instruction) ||
+            IsMergeRecInstruction(instruction) ||
+            IsMergeSeqInstruction(instruction) ||
+            IsGreetingLineInstruction(instruction) ||
+            IsAddressBlockInstruction(instruction) ||
+            IsDatabaseInstruction(instruction) ||
             IsSeqInstruction(instruction) ||
             IsDateTimeInstruction(instruction) ||
-            IsCompareInstruction(instruction))
+            IsCompareInstruction(instruction) ||
+            IsDocumentMetricInstruction(instruction))
         {
             if (IsDocPropertyInstruction(instruction))
-            {
-                return mode == DxpEvalFieldMode.Cache
-                    ? new DxpDocPropertyFieldCachedFrame(next)
-                    : new DxpDocPropertyFieldEvalFrame(next, eval, logger, instruction);
-            }
+                return new DxpDocPropertyFieldEvalFrame(next, eval, logger, instruction);
+
             if (IsMergeFieldInstruction(instruction))
+                return new DxpMergeFieldEvalFrame(next, eval, logger, instruction);
+
+            if (IsMergeRecInstruction(instruction) ||
+                IsMergeSeqInstruction(instruction) ||
+                IsGreetingLineInstruction(instruction) ||
+                IsAddressBlockInstruction(instruction) ||
+                IsDatabaseInstruction(instruction) ||
+                IsDocumentMetricInstruction(instruction))
             {
-                return mode == DxpEvalFieldMode.Cache
-                    ? new DxpMergeFieldCachedFrame(next)
-                    : new DxpMergeFieldEvalFrame(next, eval, logger, instruction);
+                return new DxpValueFieldEvalFrame(next, eval, logger, instruction);
             }
+
             if (IsSeqInstruction(instruction))
-            {
-                return mode == DxpEvalFieldMode.Cache
-                    ? new DxpSeqFieldCachedFrame(next)
-                    : new DxpSeqFieldEvalFrame(next, eval, logger, instruction);
-            }
+                return new DxpSeqFieldEvalFrame(next, eval, logger, instruction);
+
             if (IsDateTimeInstruction(instruction))
-            {
-                return mode == DxpEvalFieldMode.Cache
-                    ? new DxpDateTimeFieldCachedFrame(next)
-                    : new DxpDateTimeFieldEvalFrame(next, eval, logger, instruction);
-            }
+                return new DxpDateTimeFieldEvalFrame(next, eval, logger, instruction);
+
             if (IsCompareInstruction(instruction))
-            {
-                return mode == DxpEvalFieldMode.Cache
-                    ? new DxpCompareFieldCachedFrame(next)
-                    : new DxpCompareFieldEvalFrame(next, eval, logger, instruction);
-            }
+                return new DxpCompareFieldEvalFrame(next, eval, logger, instruction);
         }
         if (IsFormulaInstruction(instruction))
-        {
-            return mode == DxpEvalFieldMode.Cache
-                ? new DxpFormulaFieldCachedFrame(next)
-                : new DxpFormulaFieldEvalFrame(next, eval, logger, instruction);
-        }
+            return new DxpFormulaFieldEvalFrame(next, eval, logger, instruction);
+
         if (logger?.IsEnabled(LogLevel.Debug) == true)
-            logger.LogDebug("FieldFrameFactory: falling back to GenericFieldEvalFrame for instruction '{Instruction}'.", instruction ?? string.Empty);
-        return new DxpEvalGenericFieldFrame(next, eval, context, logger, mode);
+            logger.LogDebug("FieldFrameFactory: no evaluate frame for instruction '{Instruction}'.", instruction ?? string.Empty);
+        return null;
     }
 
     internal static bool IsSetInstruction(string? instruction)

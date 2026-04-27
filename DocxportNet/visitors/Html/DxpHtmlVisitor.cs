@@ -44,6 +44,7 @@ internal sealed class DxpHtmlVisitorState
     public double PendingAlignedTabStartXPt { get; set; }
     public double PendingAlignedTabSegmentWidthPt { get; set; }
     public bool PendingAlignedTabUnderline { get; set; }
+    public DxpComputedTabLeaderKind PendingAlignedTabLeader { get; set; }
     public StringBuilder PendingAlignedTabBuffer { get; } = new();
     public int SuppressFieldDepth { get; set; }
     public bool FootnotesOpen { get; set; }
@@ -404,19 +405,14 @@ body.dxp-root {
 
     public override void VisitText(Text t, DxpIDocumentContext d)
     {
-        string text = t.Text;
-        if (_state.AllCaps)
+        if (!_config.EmitPageNumbers &&
+            d.CurrentFields.IsInFieldResult &&
+            IsPageNumberField(d.CurrentFields.Current?.InstructionText))
         {
-            var culture = CultureInfo.InvariantCulture;
-            text = text.ToUpper(culture);
+            return;
         }
 
-        if (_state.PendingAlignedTabKind != null)
-            _state.PendingAlignedTabSegmentWidthPt += EstimateTextWidthPt(text, _state.CurrentFontSizePt);
-        else if (_state.InParagraph)
-            _state.CurrentLineXPt += EstimateTextWidthPt(text, _state.CurrentFontSizePt);
-
-        Write(d, WebUtility.HtmlEncode(text));
+        WriteRenderableText(t.Text, d);
     }
 
     private static double EstimateTextWidthPt(string text, double fontSizePt)
@@ -849,12 +845,13 @@ body.dxp-root {
     public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
     {
         _state.TabIndex = 0;
-        _state.CurrentLineXPt = 0.0;
+        _state.CurrentLineXPt = paragraph.ComputedStyle.TextIndentPt ?? 0.0;
         _state.InParagraph = true;
         _state.PendingAlignedTabKind = null;
         _state.PendingAlignedTabBuffer.Clear();
         _state.PendingAlignedTabSegmentWidthPt = 0.0;
         _state.PendingAlignedTabUnderline = false;
+        _state.PendingAlignedTabLeader = DxpComputedTabLeaderKind.None;
 
         if (_config.TrackedChangeMode == DxpTrackedChangeMode.SplitChanges)
         {
@@ -957,6 +954,8 @@ body.dxp-root {
         var style = new StringBuilder();
         if (hasComputedCss)
             style.Append(computedParaCss);
+        if (ShouldPreventWrapForTabAlignedParagraph(p, paragraph))
+            style.Append("white-space:nowrap;");
 
         bool previousHeading = _state.InHeading;
         if (isHeading)
@@ -1022,6 +1021,25 @@ body.dxp-root {
         });
     }
 
+    private static bool ShouldPreventWrapForTabAlignedParagraph(Paragraph p, DxpIParagraphContext paragraph)
+    {
+        var stops = paragraph.Layout?.TabStops;
+        if (stops == null || stops.Count == 0)
+            return false;
+
+        int tabIndex = 0;
+        foreach (var _ in p.Descendants<TabChar>())
+        {
+            var stop = tabIndex < stops.Count ? stops[tabIndex] : null;
+            var kind = stop?.Kind ?? DxpComputedTabStopKind.Left;
+            if (kind == DxpComputedTabStopKind.Right || kind == DxpComputedTabStopKind.Center)
+                return true;
+            tabIndex++;
+        }
+
+        return false;
+    }
+
     private void WriteTab(DxpIDocumentContext d)
     {
         var layout = d.CurrentParagraph.Layout;
@@ -1040,7 +1058,11 @@ body.dxp-root {
         var index = _state.TabIndex++;
         var stop = index < stops.Count ? stops[index] : null;
         var kind = stop?.Kind ?? DxpComputedTabStopKind.Left;
+        var leader = stop?.Leader ?? DxpComputedTabLeaderKind.None;
+        double paragraphMarginLeft = d.CurrentParagraph.ComputedStyle.MarginLeftPt ?? 0.0;
         double stopPos = stop?.PositionPt ?? (_state.CurrentLineXPt + 36.0);
+        if (stop != null)
+            stopPos = Math.Max(0.0, stopPos - paragraphMarginLeft);
 
         // For Right/Center tabs, the following segment is aligned to the stop, so we must buffer that segment
         // to estimate its width before emitting the spacer.
@@ -1051,6 +1073,7 @@ body.dxp-root {
             _state.PendingAlignedTabStartXPt = _state.CurrentLineXPt;
             _state.PendingAlignedTabSegmentWidthPt = 0.0;
             _state.PendingAlignedTabUnderline = _state.UnderlineDepth > 0;
+            _state.PendingAlignedTabLeader = leader;
             _state.PendingAlignedTabBuffer.Clear();
             return;
         }
@@ -1069,8 +1092,7 @@ body.dxp-root {
 
         // Common Word pattern: an underlined run with only a tab should render as an underline up to the next tab stop.
         // Text-decoration doesn't paint for empty spans, so render a border-bottom when underline is active.
-        var extraCss = _state.UnderlineDepth > 0 ? "height:1em;border-bottom:1px solid currentColor;" : "";
-        Write(d, $"<span class=\"{cls}\" style=\"display:inline-block;width:{width.ToString("0.###", CultureInfo.InvariantCulture)}pt;{extraCss}\"></span>");
+        WriteLeaderSpacer(d, cls, width, _state.UnderlineDepth > 0, leader);
     }
 
     private void FlushPendingAlignedTab(DxpIDocumentContext d)
@@ -1079,6 +1101,8 @@ body.dxp-root {
             return;
 
         var kind = _state.PendingAlignedTabKind.Value;
+        var underline = _state.PendingAlignedTabUnderline;
+        var leader = _state.PendingAlignedTabLeader;
         double stopPos = _state.PendingAlignedTabStopPosPt;
         double segmentWidth = _state.PendingAlignedTabSegmentWidthPt;
         double startX = _state.PendingAlignedTabStartXPt;
@@ -1102,15 +1126,14 @@ body.dxp-root {
             _ => "dxp-tab"
         };
 
-        var extraCss = _state.PendingAlignedTabUnderline ? "height:1em;border-bottom:1px solid currentColor;" : "";
-
         _state.PendingAlignedTabKind = null;
         _state.PendingAlignedTabUnderline = false;
+        _state.PendingAlignedTabLeader = DxpComputedTabLeaderKind.None;
         var buffered = _state.PendingAlignedTabBuffer.ToString();
         _state.PendingAlignedTabBuffer.Clear();
         _state.PendingAlignedTabSegmentWidthPt = 0.0;
 
-        Write(d, $"<span class=\"{cls}\" style=\"display:inline-block;width:{spacerWidth.ToString("0.###", CultureInfo.InvariantCulture)}pt;{extraCss}\"></span>");
+        WriteLeaderSpacer(d, cls, spacerWidth, underline, leader);
         if (buffered.Length > 0)
             Write(d, buffered);
 
@@ -1120,6 +1143,49 @@ body.dxp-root {
     public override void VisitFootnoteReference(FootnoteReference fr, DxpIFootnoteContext footnote, DxpIDocumentContext d)
     {
         Write(d, $"<a class=\"dxp-footnote-ref\" href=\"#fn-{footnote.Id}\" id=\"fnref-{footnote.Id}\">[{footnote.Index}]</a>");
+    }
+
+    private void WriteLeaderSpacer(
+        DxpIDocumentContext d,
+        string baseClass,
+        double widthPt,
+        bool underline,
+        DxpComputedTabLeaderKind leader)
+    {
+        var css = new StringBuilder("display:inline-block;position:relative;vertical-align:baseline;");
+        css.Append("width:").Append(widthPt.ToString("0.###", CultureInfo.InvariantCulture)).Append("pt;");
+
+        if (underline)
+            css.Append("height:1em;border-bottom:1px solid currentColor;");
+        else
+            AppendLeaderCss(css, leader);
+
+        Write(d, $"<span class=\"{baseClass}\" style=\"{css}\"></span>");
+    }
+
+    private static void AppendLeaderCss(StringBuilder css, DxpComputedTabLeaderKind leader)
+    {
+        switch (leader)
+        {
+            case DxpComputedTabLeaderKind.Dot:
+                css.Append("height:1em;background-repeat:repeat-x;background-position:left calc(100% - 0.12em);");
+                css.Append("background-image:radial-gradient(circle, currentColor 0.8px, transparent 1px);background-size:0.24em 1px;");
+                break;
+            case DxpComputedTabLeaderKind.Hyphen:
+                css.Append("height:1em;background-repeat:repeat-x;background-position:left calc(100% - 0.12em);");
+                css.Append("background-image:linear-gradient(to right, currentColor 0, currentColor 60%, transparent 60%, transparent 100%);background-size:0.5em 1px;");
+                break;
+            case DxpComputedTabLeaderKind.Underscore:
+                css.Append("height:1em;border-bottom:1px solid currentColor;");
+                break;
+            case DxpComputedTabLeaderKind.Heavy:
+                css.Append("height:1em;border-bottom:2px solid currentColor;");
+                break;
+            case DxpComputedTabLeaderKind.MiddleDot:
+                css.Append("height:1em;background-repeat:repeat-x;background-position:left calc(100% - 0.12em);");
+                css.Append("background-image:radial-gradient(circle, currentColor 1.2px, transparent 1.45px);background-size:0.36em 1px;");
+                break;
+        }
     }
 
     public override IDisposable VisitSectionHeaderBegin(Header hdr, object kind, DxpIDocumentContext d)
@@ -1232,10 +1298,10 @@ body.dxp-root {
         if (!_config.EmitPageNumbers)
         {
             var instr = d.CurrentFields.Current?.InstructionText;
-            if (LooksLikePageField(instr))
+            if (IsPageNumberField(instr))
                 return;
         }
-        Write(d, WebUtility.HtmlEncode(text));
+        WriteRenderableText(text, d);
     }
 
     public override void VisitComplexFieldEnd(FieldChar end, DxpIDocumentContext d)
@@ -1925,13 +1991,34 @@ body.dxp-root {
         return "<span>";
     }
 
-    private static bool LooksLikePageField(string? instr)
+    private bool IsPageNumberField(string? instr)
     {
-        if (string.IsNullOrEmpty(instr))
+        if (string.IsNullOrWhiteSpace(instr))
             return false;
-        return instr!.IndexOf("PAGE", StringComparison.OrdinalIgnoreCase) >= 0
-            || instr.IndexOf("NUMPAGES", StringComparison.OrdinalIgnoreCase) >= 0
-            || instr.IndexOf("SECTIONPAGES", StringComparison.OrdinalIgnoreCase) >= 0;
+
+        var fieldType = _fieldParser.Parse(instr).Ast.FieldType;
+        return string.Equals(fieldType, "PAGE", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(fieldType, "NUMPAGES", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(fieldType, "SECTIONPAGES", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private void WriteRenderableText(string text, DxpIDocumentContext d)
+    {
+        if (string.IsNullOrEmpty(text))
+            return;
+
+        if (_state.AllCaps)
+        {
+            var culture = CultureInfo.InvariantCulture;
+            text = text.ToUpper(culture);
+        }
+
+        if (_state.PendingAlignedTabKind != null)
+            _state.PendingAlignedTabSegmentWidthPt += EstimateTextWidthPt(text, _state.CurrentFontSizePt);
+        else if (_state.InParagraph)
+            _state.CurrentLineXPt += EstimateTextWidthPt(text, _state.CurrentFontSizePt);
+
+        Write(d, WebUtility.HtmlEncode(text));
     }
 
     IDisposable DxpIVisitor.VisitDrawingBegin(Drawing drw, DxpDrawingInfo? info, DxpIDocumentContext d)

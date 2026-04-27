@@ -34,13 +34,13 @@ Before Comment
 <p style="line-height:1;"><span style="font-family: Aptos; font-size: 10pt;">Comment with list</span></p>
 
 
-<p style="line-height:1;"><span style="font-family:Symbol"></span> <span style="font-family: Aptos; font-size: 10pt;">Point 1</span></p>
+<p style="margin-left:36pt;text-indent:-18pt;line-height:1;"><span style="font-family:Symbol"></span> <span style="font-family: Aptos; font-size: 10pt;">Point 1</span></p>
 
 
-<p style="line-height:1;"><span style="font-family:Symbol"></span> <span style="font-family: Aptos; font-size: 10pt;">Point 2</span></p>
+<p style="margin-left:36pt;text-indent:-18pt;line-height:1;"><span style="font-family:Symbol"></span> <span style="font-family: Aptos; font-size: 10pt;">Point 2</span></p>
 
 
-<p style="line-height:1;"><span style="font-family:Symbol"></span> <span style="font-family: Aptos; font-size: 10pt;">Point 3</span></p>
+<p style="margin-left:36pt;text-indent:-18pt;line-height:1;"><span style="font-family:Symbol"></span> <span style="font-family: Aptos; font-size: 10pt;">Point 3</span></p>
 
 
   </div>

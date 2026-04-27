@@ -2,11 +2,13 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
+using DocxportNet.Core;
 using DocxportNet.Fields;
 using DocxportNet.Fields.Eval;
 using DocxportNet.Fields.Resolution;
 using DocxportNet.Middleware;
 using DocxportNet.Tests.Utils;
+using DocxportNet.Visitors;
 using DocxportNet.Visitors.Html;
 using DocxportNet.Visitors.Markdown;
 using DocxportNet.Walker;
@@ -173,6 +175,343 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
         Assert.Contains("""<a class="dxp-link" href="https://openparliament.ca/committees/industry/44-1/49/catherine-lovrics-2/">""", html);
         Assert.Contains("https://openparliament.ca/committees/industry/44-1/49/catherine-lovrics-2/", html);
         Assert.DoesNotContain("data-field=\"HYPERLINK &quot;https://openparliament.ca/committees/industry/44-1/49/catherine-lovrics-2/&quot;\"", html);
+    }
+
+    [Fact]
+    public void HtmlExport_CacheMode_DefaultFieldFallback_ReplaysCachedResults_AndSuppressesOnlyTruePageFields()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Unknown: </w:t></w:r>
+    <w:fldSimple w:instr=" FOO ">
+      <w:r><w:t>cached unknown</w:t></w:r>
+    </w:fldSimple>
+  </w:p>
+  <w:p>
+    <w:r><w:t xml:space="preserve">TOC: </w:t></w:r>
+    <w:fldSimple w:instr=" TOC \o &quot;1-3&quot; ">
+      <w:r><w:t>Heading 1</w:t></w:r>
+      <w:r><w:tab/></w:r>
+      <w:r><w:t>3</w:t></w:r>
+    </w:fldSimple>
+  </w:p>
+  <w:p>
+    <w:r><w:t xml:space="preserve">Page: </w:t></w:r>
+    <w:fldSimple w:instr=" PAGE ">
+      <w:r><w:t>4</w:t></w:r>
+    </w:fldSimple>
+  </w:p>
+  <w:p>
+    <w:r><w:t xml:space="preserve">PageRef: </w:t></w:r>
+    <w:fldSimple w:instr=" PAGEREF Bookmark1 \h ">
+      <w:r><w:t>7</w:t></w:r>
+    </w:fldSimple>
+  </w:p>
+</w:body>
+""";
+
+        var html = TestCompare.Normalize(ExportHtmlCachedFromBodyXml(bodyXml, DxpHtmlVisitorConfig.CreateRichConfig()));
+
+        Assert.Contains("Unknown:", html, StringComparison.Ordinal);
+        Assert.Contains("cached unknown", html, StringComparison.Ordinal);
+        Assert.Contains("TOC:", html, StringComparison.Ordinal);
+        Assert.Contains("Heading 1", html, StringComparison.Ordinal);
+        Assert.Contains("3", html, StringComparison.Ordinal);
+        Assert.Contains("Page:", html, StringComparison.Ordinal);
+        Assert.DoesNotContain(">4<", html, StringComparison.Ordinal);
+        Assert.Contains("PageRef:", html, StringComparison.Ordinal);
+        Assert.Contains("7", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void ParagraphLayout_MapsFullLeaderSet()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:pPr><w:tabs><w:tab w:val="right" w:leader="none" w:pos="8640"/></w:tabs></w:pPr>
+    <w:r><w:t>none</w:t></w:r><w:r><w:tab/></w:r><w:r><w:t>1</w:t></w:r>
+  </w:p>
+  <w:p>
+    <w:pPr><w:tabs><w:tab w:val="right" w:leader="dot" w:pos="8640"/></w:tabs></w:pPr>
+    <w:r><w:t>dot</w:t></w:r><w:r><w:tab/></w:r><w:r><w:t>1</w:t></w:r>
+  </w:p>
+  <w:p>
+    <w:pPr><w:tabs><w:tab w:val="right" w:leader="hyphen" w:pos="8640"/></w:tabs></w:pPr>
+    <w:r><w:t>hyphen</w:t></w:r><w:r><w:tab/></w:r><w:r><w:t>1</w:t></w:r>
+  </w:p>
+  <w:p>
+    <w:pPr><w:tabs><w:tab w:val="right" w:leader="underscore" w:pos="8640"/></w:tabs></w:pPr>
+    <w:r><w:t>underscore</w:t></w:r><w:r><w:tab/></w:r><w:r><w:t>1</w:t></w:r>
+  </w:p>
+  <w:p>
+    <w:pPr><w:tabs><w:tab w:val="right" w:leader="heavy" w:pos="8640"/></w:tabs></w:pPr>
+    <w:r><w:t>heavy</w:t></w:r><w:r><w:tab/></w:r><w:r><w:t>1</w:t></w:r>
+  </w:p>
+  <w:p>
+    <w:pPr><w:tabs><w:tab w:val="right" w:leader="middleDot" w:pos="8640"/></w:tabs></w:pPr>
+    <w:r><w:t>middleDot</w:t></w:r><w:r><w:tab/></w:r><w:r><w:t>1</w:t></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var captured = CaptureParagraphTabStops(bodyXml);
+
+        Assert.Collection(
+            captured,
+            stop => Assert.Equal(DxpComputedTabLeaderKind.None, stop.Leader),
+            stop => Assert.Equal(DxpComputedTabLeaderKind.Dot, stop.Leader),
+            stop => Assert.Equal(DxpComputedTabLeaderKind.Hyphen, stop.Leader),
+            stop => Assert.Equal(DxpComputedTabLeaderKind.Underscore, stop.Leader),
+            stop => Assert.Equal(DxpComputedTabLeaderKind.Heavy, stop.Leader),
+            stop => Assert.Equal(DxpComputedTabLeaderKind.MiddleDot, stop.Leader));
+    }
+
+    [Fact]
+    public void HtmlExport_RendersLeaderSpecificTabSpans()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:pPr><w:tabs><w:tab w:val="right" w:leader="dot" w:pos="8640"/></w:tabs></w:pPr>
+    <w:r><w:t>Dot leader</w:t></w:r><w:r><w:tab/></w:r><w:r><w:t>10</w:t></w:r>
+  </w:p>
+  <w:p>
+    <w:pPr><w:tabs><w:tab w:val="right" w:leader="hyphen" w:pos="8640"/></w:tabs></w:pPr>
+    <w:r><w:t>Hyphen leader</w:t></w:r><w:r><w:tab/></w:r><w:r><w:t>11</w:t></w:r>
+  </w:p>
+  <w:p>
+    <w:pPr><w:tabs><w:tab w:val="right" w:leader="underscore" w:pos="8640"/></w:tabs></w:pPr>
+    <w:r><w:t>Underscore leader</w:t></w:r><w:r><w:tab/></w:r><w:r><w:t>12</w:t></w:r>
+  </w:p>
+  <w:p>
+    <w:pPr><w:tabs><w:tab w:val="right" w:leader="heavy" w:pos="8640"/></w:tabs></w:pPr>
+    <w:r><w:t>Heavy leader</w:t></w:r><w:r><w:tab/></w:r><w:r><w:t>13</w:t></w:r>
+  </w:p>
+  <w:p>
+    <w:pPr><w:tabs><w:tab w:val="right" w:leader="middleDot" w:pos="8640"/></w:tabs></w:pPr>
+    <w:r><w:t>Middle dot leader</w:t></w:r><w:r><w:tab/></w:r><w:r><w:t>14</w:t></w:r>
+  </w:p>
+  <w:p>
+    <w:pPr><w:tabs><w:tab w:val="right" w:pos="8640"/></w:tabs></w:pPr>
+    <w:r><w:t>No leader</w:t></w:r><w:r><w:tab/></w:r><w:r><w:t>15</w:t></w:r>
+  </w:p>
+</w:body>
+""";
+
+        string html = ExportHtmlFromBodyXml(bodyXml, DxpHtmlVisitorConfig.CreateRichConfig());
+
+        Assert.Contains("radial-gradient(circle, currentColor 0.8px, transparent 1px)", html, StringComparison.Ordinal);
+        Assert.Contains("linear-gradient(to right, currentColor 0, currentColor 60%, transparent 60%, transparent 100%)", html, StringComparison.Ordinal);
+        Assert.Contains("border-bottom:1px solid currentColor", html, StringComparison.Ordinal);
+        Assert.Contains("border-bottom:2px solid currentColor", html, StringComparison.Ordinal);
+        Assert.Contains("radial-gradient(circle, currentColor 1.2px, transparent 1.45px)", html, StringComparison.Ordinal);
+        Assert.Contains("Dot leader", html, StringComparison.Ordinal);
+        Assert.Contains(">10<", html, StringComparison.Ordinal);
+        Assert.Contains("No leader", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void HtmlExport_ParagraphIndent_EmitsMarginLeftAndTextIndent()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:pPr><w:ind w:left="720" w:hanging="360"/></w:pPr>
+    <w:r><w:t>Indented paragraph</w:t></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var html = TestCompare.Normalize(ExportHtmlFromBodyXml(bodyXml, DxpHtmlVisitorConfig.CreateRichConfig()));
+
+        Assert.Contains("margin-left:36pt;", html, StringComparison.Ordinal);
+        Assert.Contains("text-indent:-18pt;", html, StringComparison.Ordinal);
+        Assert.Contains("Indented paragraph", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void HtmlExport_CacheMode_ComplexFieldReplay_PreservesParagraphTabLeaders()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:pPr>
+      <w:ind w:left="240"/>
+      <w:tabs>
+        <w:tab w:val="right" w:leader="dot" w:pos="8640"/>
+      </w:tabs>
+    </w:pPr>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> TOC \o "1-3" </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>Heading 1</w:t></w:r>
+    <w:r><w:tab/></w:r>
+    <w:r><w:t>3</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var html = TestCompare.Normalize(ExportHtmlCachedFromBodyXml(bodyXml, DxpHtmlVisitorConfig.CreateRichConfig()));
+
+        Assert.Contains("Heading 1", html, StringComparison.Ordinal);
+        Assert.Contains("3", html, StringComparison.Ordinal);
+        Assert.Contains("margin-left:12pt;", html, StringComparison.Ordinal);
+        Assert.Contains("white-space:nowrap;", html, StringComparison.Ordinal);
+        Assert.Contains("radial-gradient(circle, currentColor 0.8px, transparent 1px)", html, StringComparison.Ordinal);
+        Assert.DoesNotContain("&#9;3", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void HtmlExport_LeftTabParagraph_DoesNotForceNowrap()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:pPr>
+      <w:tabs>
+        <w:tab w:val="left" w:pos="2880"/>
+      </w:tabs>
+    </w:pPr>
+    <w:r><w:t>Left</w:t></w:r>
+    <w:r><w:tab/></w:r>
+    <w:r><w:t>Right</w:t></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var html = TestCompare.Normalize(ExportHtmlFromBodyXml(bodyXml, DxpHtmlVisitorConfig.CreateRichConfig()));
+
+        Assert.Contains("Left", html, StringComparison.Ordinal);
+        Assert.Contains("Right", html, StringComparison.Ordinal);
+        Assert.Contains("class=\"dxp-tab\"", html, StringComparison.Ordinal);
+        Assert.DoesNotContain("white-space:nowrap;", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void HtmlExport_CacheMode_TocLikeHyperlinkReplay_UsesAlignedLeaderTab()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:pPr>
+      <w:ind w:left="240"/>
+      <w:tabs>
+        <w:tab w:val="right" w:leader="dot" w:pos="8640"/>
+      </w:tabs>
+    </w:pPr>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> TOC \o "1-3" \h </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:hyperlink w:anchor="Bookmark1" w:history="1">
+      <w:r>
+        <w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr>
+        <w:t>Heading 1</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr><w:webHidden/></w:rPr>
+        <w:tab/>
+      </w:r>
+      <w:r>
+        <w:rPr><w:webHidden/></w:rPr>
+        <w:fldChar w:fldCharType="begin"/>
+      </w:r>
+      <w:r>
+        <w:rPr><w:webHidden/></w:rPr>
+        <w:instrText xml:space="preserve"> PAGEREF Bookmark1 \h </w:instrText>
+      </w:r>
+      <w:r>
+        <w:rPr><w:webHidden/></w:rPr>
+        <w:fldChar w:fldCharType="separate"/>
+      </w:r>
+      <w:r>
+        <w:rPr><w:webHidden/></w:rPr>
+        <w:t>3</w:t>
+      </w:r>
+      <w:r>
+        <w:rPr><w:webHidden/></w:rPr>
+        <w:fldChar w:fldCharType="end"/>
+      </w:r>
+    </w:hyperlink>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+  <w:p>
+    <w:bookmarkStart w:id="0" w:name="Bookmark1"/>
+    <w:r><w:t>Target</w:t></w:r>
+    <w:bookmarkEnd w:id="0"/>
+  </w:p>
+</w:body>
+""";
+
+        var html = TestCompare.Normalize(ExportHtmlCachedFromBodyXml(bodyXml, DxpHtmlVisitorConfig.CreateRichConfig()));
+        Assert.Contains("href=\"#Bookmark1\"", html, StringComparison.Ordinal);
+        Assert.Contains("Heading 1", html, StringComparison.Ordinal);
+        Assert.Contains("3", html, StringComparison.Ordinal);
+        Assert.Contains("dxp-tab dxp-tab-right", html, StringComparison.Ordinal);
+        Assert.Contains("white-space:nowrap;", html, StringComparison.Ordinal);
+        Assert.Contains("radial-gradient(circle, currentColor 0.8px, transparent 1px)", html, StringComparison.Ordinal);
+        Assert.DoesNotContain("Heading 1</span>&#9;3", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void HtmlExport_CacheMode_MultiParagraphTocField_ReplaysParagraphBoundariesAndLeaders()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:pPr>
+      <w:pStyle w:val="TOC1"/>
+      <w:tabs><w:tab w:val="right" w:leader="dot" w:pos="8640"/></w:tabs>
+    </w:pPr>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> TOC \o "1-3" \h </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:hyperlink w:anchor="Bookmark1" w:history="1">
+      <w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>A</w:t></w:r>
+      <w:r><w:rPr><w:webHidden/></w:rPr><w:tab/></w:r>
+      <w:r><w:rPr><w:webHidden/></w:rPr><w:fldChar w:fldCharType="begin"/></w:r>
+      <w:r><w:rPr><w:webHidden/></w:rPr><w:instrText xml:space="preserve"> PAGEREF Bookmark1 \h </w:instrText></w:r>
+      <w:r><w:rPr><w:webHidden/></w:rPr><w:fldChar w:fldCharType="separate"/></w:r>
+      <w:r><w:rPr><w:webHidden/></w:rPr><w:t>1</w:t></w:r>
+      <w:r><w:rPr><w:webHidden/></w:rPr><w:fldChar w:fldCharType="end"/></w:r>
+    </w:hyperlink>
+  </w:p>
+  <w:p>
+    <w:pPr>
+      <w:pStyle w:val="TOC2"/>
+      <w:ind w:left="240"/>
+      <w:tabs><w:tab w:val="right" w:leader="dot" w:pos="8640"/></w:tabs>
+    </w:pPr>
+    <w:hyperlink w:anchor="Bookmark2" w:history="1">
+      <w:r><w:rPr><w:rStyle w:val="Hyperlink"/></w:rPr><w:t>A.1</w:t></w:r>
+      <w:r><w:rPr><w:webHidden/></w:rPr><w:tab/></w:r>
+      <w:r><w:rPr><w:webHidden/></w:rPr><w:fldChar w:fldCharType="begin"/></w:r>
+      <w:r><w:rPr><w:webHidden/></w:rPr><w:instrText xml:space="preserve"> PAGEREF Bookmark2 \h </w:instrText></w:r>
+      <w:r><w:rPr><w:webHidden/></w:rPr><w:fldChar w:fldCharType="separate"/></w:r>
+      <w:r><w:rPr><w:webHidden/></w:rPr><w:t>2</w:t></w:r>
+      <w:r><w:rPr><w:webHidden/></w:rPr><w:fldChar w:fldCharType="end"/></w:r>
+    </w:hyperlink>
+  </w:p>
+  <w:p>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+  <w:p><w:bookmarkStart w:id="0" w:name="Bookmark1"/><w:r><w:t>Target 1</w:t></w:r><w:bookmarkEnd w:id="0"/></w:p>
+  <w:p><w:bookmarkStart w:id="1" w:name="Bookmark2"/><w:r><w:t>Target 2</w:t></w:r><w:bookmarkEnd w:id="1"/></w:p>
+</w:body>
+""";
+
+        var html = TestCompare.Normalize(ExportHtmlCachedFromBodyXml(bodyXml, DxpHtmlVisitorConfig.CreateRichConfig()));
+
+        Assert.Contains("href=\"#Bookmark1\"", html, StringComparison.Ordinal);
+        Assert.Contains("href=\"#Bookmark2\"", html, StringComparison.Ordinal);
+        Assert.Contains("dxp-tab dxp-tab-right", html, StringComparison.Ordinal);
+        Assert.Contains("white-space:nowrap;", html, StringComparison.Ordinal);
+        Assert.Contains("radial-gradient(circle, currentColor 0.8px, transparent 1px)", html, StringComparison.Ordinal);
+        Assert.Contains("margin-left:12pt;", html, StringComparison.Ordinal);
+        Assert.DoesNotContain("A</span>&#9;1", html, StringComparison.Ordinal);
+        Assert.DoesNotContain("A.1</span>&#9;2", html, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -560,6 +899,28 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
         return writer.ToString();
     }
 
+    private IReadOnlyList<DxpComputedTabStop> CaptureParagraphTabStops(string bodyXml)
+    {
+        using var stream = new MemoryStream();
+        using (var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document, true))
+        {
+            var main = doc.AddMainDocumentPart();
+            var xml = XDocument.Parse(bodyXml);
+            var body = new Body();
+            body.AddNamespaceDeclaration("w", "http://schemas.openxmlformats.org/wordprocessingml/2006/main");
+            body.InnerXml = string.Concat(xml.Root!.Nodes());
+            main.Document = new Document(body);
+            main.Document.Save();
+        }
+
+        stream.Position = 0;
+
+        using var readDoc = WordprocessingDocument.Open(stream, false);
+        var visitor = new TabStopCaptureVisitor();
+        new DxpWalker(Logger).Accept(readDoc, new DxpContextMiddleware(visitor));
+        return visitor.Captured;
+    }
+
     private string ExportHtmlFromBodyXml(
         string bodyXml,
         DxpHtmlVisitorConfig config,
@@ -587,5 +948,60 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
             new DxpHtmlVisitor(config, Logger),
             new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.None },
             Logger));
+    }
+
+    private string ExportHtmlCachedFromBodyXml(
+        string bodyXml,
+        DxpHtmlVisitorConfig config,
+        Action<WordprocessingDocument>? configureDocument = null)
+    {
+        using var stream = new MemoryStream();
+        using (var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document, true))
+        {
+            var main = doc.AddMainDocumentPart();
+            var xml = XDocument.Parse(bodyXml);
+            var body = new Body();
+            body.AddNamespaceDeclaration("w", "http://schemas.openxmlformats.org/wordprocessingml/2006/main");
+            body.AddNamespaceDeclaration("w14", "http://schemas.microsoft.com/office/word/2010/wordml");
+            body.InnerXml = string.Concat(xml.Root!.Nodes());
+            main.Document = new Document(body);
+            main.Document.Save();
+            configureDocument?.Invoke(doc);
+        }
+
+        stream.Position = 0;
+
+        var visitor = new DxpHtmlVisitor(config, Logger);
+        using var writer = new StringWriter();
+        visitor.SetOutput(writer);
+
+        if (visitor is not Fields.DxpIFieldEvalProvider provider)
+            throw new XunitException("DxpHtmlVisitor should provide field evaluation context.");
+
+        var pipeline = DxpVisitorMiddleware.Chain(
+            visitor,
+            next => new DxpFieldEvalMiddleware(next, provider.FieldEval, DxpEvalFieldMode.Cache, logger: Logger),
+            next => new DxpContextMiddleware(next));
+
+        using (var readDoc = WordprocessingDocument.Open(stream, false))
+            new DxpWalker(Logger).Accept(readDoc, pipeline);
+
+        return writer.ToString();
+    }
+
+    private sealed class TabStopCaptureVisitor : DxpVisitor
+    {
+        public List<DxpComputedTabStop> Captured { get; } = new();
+
+        public TabStopCaptureVisitor() : base(null)
+        {
+        }
+
+        public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
+        {
+            if (paragraph.Layout?.TabStops.Count > 0)
+                Captured.Add(paragraph.Layout.TabStops[0]);
+            return DxpDisposable.Empty;
+        }
     }
 }

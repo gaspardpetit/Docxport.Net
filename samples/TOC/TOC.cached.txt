@@ -1,0 +1,40 @@
+Author: Petit, Gaspard
+LastModifiedBy: Petit, Gaspard
+Revision: 2
+Created: 2026-04-25 14:50:00Z
+Modified: 2026-04-25 18:58:00Z
+
+Contents
+--------
+
+A	1 (#_Toc228006753)
+
+A.1	1 (#_Toc228006754)
+
+A.2	1 (#_Toc228006755)
+
+B	1 (#_Toc228006756)
+
+B.1	1 (#_Toc228006757)
+
+B.1.1	1 (#_Toc228006758)
+
+
+
+A
+---
+
+A.1
+---
+
+A.2
+---
+
+B
+---
+
+B.1
+---
+
+B.1.1
+-----
