@@ -106,6 +106,78 @@ public sealed class DxpTransformTests : TestBase<DxpTransformTests>
     }
 
     [Fact]
+    public void Transform_VisitsNestedTextboxParagraphsInDepthFirstStructuralOrder()
+    {
+        var recorder = new StructuralParagraphRecorderTransformer();
+        var bytes = CreateFixtureBytesWithNestedTextboxParagraphs();
+
+        _ = DxpTransform.Transform(bytes, recorder, Logger);
+
+        Assert.Equal(
+            new[]
+            {
+                "MainDocument:Before",
+                "MainDocument:HostOuter",
+                "MainDocument:Inner1",
+                "MainDocument:Inner2",
+                "MainDocument:After",
+                "Header:H1",
+                "Footer:F1",
+                "Footnote:FN1",
+                "Endnote:EN1"
+            },
+            recorder.Paragraphs);
+
+        Assert.Equal(recorder.Paragraphs.Count, recorder.Paragraphs.Distinct().Count());
+    }
+
+    [Fact]
+    public void Transform_CanMutateNestedTextboxParagraphsUsingVisitedParagraphIdentity()
+    {
+        var bytes = DxpTransform.Transform(
+            CreateFixtureBytesWithNestedTextboxParagraphs(),
+            new StructuralParagraphMarkerTransformer(),
+            Logger);
+
+        using var doc = OpenRead(bytes);
+        var bodyParagraphs = doc.MainDocumentPart!.Document!.Body!.Elements<Paragraph>().ToList();
+        var nestedTextboxParagraphs = doc.MainDocumentPart.Document.Body!
+            .Descendants<OpenXmlElement>()
+            .Where(static element => element is OpenXmlUnknownElement
+                && string.Equals(element.LocalName, "p", StringComparison.Ordinal)
+                && string.Equals(element.NamespaceUri, "http://schemas.openxmlformats.org/wordprocessingml/2006/main", StringComparison.Ordinal))
+            .ToList();
+
+        Assert.Equal(
+            new[]
+            {
+                "[1]Before",
+                "[2]HostOuter",
+                "[5]After"
+            },
+            bodyParagraphs.Select(GetDirectParagraphText).ToArray());
+
+        Assert.Equal(
+            new[] { "[3]Inner1", "[4]Inner2" },
+            nestedTextboxParagraphs.Select(GetStructuralParagraphText).ToArray());
+    }
+
+    [Fact]
+    public void Transform_PictureWithTextboxStillVisitsNonTextboxDescendants()
+    {
+        var recorder = new NodeNameRecorderTransformer();
+        var bytes = CreateFixtureBytesWithMixedPictureContent();
+
+        _ = DxpTransform.Transform(bytes, recorder, Logger);
+
+        Assert.Contains("MainDocument:Picture", recorder.Nodes);
+        Assert.Contains("MainDocument:Shape", recorder.Nodes);
+        Assert.Contains("MainDocument:OpenXmlUnknownElement", recorder.Nodes);
+        Assert.Contains("MainDocument:InnerTextboxParagraph:Inner1", recorder.Nodes);
+        Assert.Contains("MainDocument:InnerTextboxParagraph:Inner2", recorder.Nodes);
+    }
+
+    [Fact]
     public void Transform_FileHelperWritesOutputWithoutMutatingInput()
     {
         string tempDirectory = Path.Combine(Path.GetTempPath(), "docxport-transform-tests", Guid.NewGuid().ToString("N"));
@@ -230,6 +302,12 @@ public sealed class DxpTransformTests : TestBase<DxpTransformTests>
 
     private static string GetParagraphText(Paragraph paragraph) => paragraph.InnerText;
 
+    private static string GetDirectParagraphText(Paragraph paragraph)
+        => string.Concat(
+            paragraph.Elements<Run>()
+                .SelectMany(static run => run.Elements<Text>())
+                .Select(static text => text.Text));
+
     private static WordprocessingDocument OpenRead(byte[] bytes)
     {
         var stream = new MemoryStream(bytes);
@@ -283,6 +361,100 @@ public sealed class DxpTransformTests : TestBase<DxpTransformTests>
             commentsPart.Comments.Save();
             footnotesPart.Footnotes.Save();
             endnotesPart.Endnotes.Save();
+        }
+
+        return stream.ToArray();
+    }
+
+    private static byte[] CreateFixtureBytesWithNestedTextboxParagraphs()
+    {
+        using var stream = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            var headerPart = main.AddNewPart<HeaderPart>();
+            var footerPart = main.AddNewPart<FooterPart>();
+            var commentsPart = main.AddNewPart<WordprocessingCommentsPart>();
+            var footnotesPart = main.AddNewPart<FootnotesPart>();
+            var endnotesPart = main.AddNewPart<EndnotesPart>();
+
+            headerPart.Header = new Header(new Paragraph(new Run(new Text("H1"))));
+            footerPart.Footer = new Footer(new Paragraph(new Run(new Text("F1"))));
+            commentsPart.Comments = new Comments(
+                new Comment(new Paragraph(new Run(new Text("Comment1")))) { Id = "0", Author = "tester" });
+            footnotesPart.Footnotes = new Footnotes(
+                new Footnote(new Paragraph(new Run(new FootnoteReferenceMark()))) { Id = -1, Type = FootnoteEndnoteValues.Separator },
+                new Footnote(new Paragraph(new Run(new Text("FN1")))) { Id = 1 });
+            endnotesPart.Endnotes = new Endnotes(
+                new Endnote(new Paragraph(new Run(new Text("EN1")))) { Id = 1 });
+
+            string headerId = main.GetIdOfPart(headerPart);
+            string footerId = main.GetIdOfPart(footerPart);
+
+            var textboxContent = new TextBoxContent(
+                new Paragraph(new Run(new Text("Inner1"))),
+                new Paragraph(new Run(new Text("Inner2"))));
+
+            var picture = new Picture(
+                new DocumentFormat.OpenXml.Vml.Shapetype { Id = "_x0000_t202", CoordinateSize = "21600,21600", OptionalNumber = 202, EdgePath = "m,l,21600r21600,l21600,xe" },
+                new DocumentFormat.OpenXml.Vml.Shape(
+                    textboxContent)
+                {
+                    Id = "TextBox1",
+                    Style = "position:absolute;margin-left:0;margin-top:0;width:200pt;height:80pt"
+                });
+
+            main.Document = new Document(
+                new Body(
+                    new Paragraph(new Run(new Text("Before"))),
+                    new Paragraph(
+                        new Run(new Text("HostOuter")),
+                        new Run(picture)),
+                    new Paragraph(new Run(new Text("After"))),
+                    new SectionProperties(
+                        new HeaderReference { Id = headerId, Type = HeaderFooterValues.Default },
+                        new FooterReference { Id = footerId, Type = HeaderFooterValues.Default })));
+
+            main.Document.Save();
+            headerPart.Header.Save();
+            footerPart.Footer.Save();
+            commentsPart.Comments.Save();
+            footnotesPart.Footnotes.Save();
+            endnotesPart.Endnotes.Save();
+        }
+
+        return stream.ToArray();
+    }
+
+    private static byte[] CreateFixtureBytesWithMixedPictureContent()
+    {
+        using var stream = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            var picture = new Picture(
+                new DocumentFormat.OpenXml.Vml.Shapetype
+                {
+                    Id = "_x0000_t202",
+                    CoordinateSize = "21600,21600",
+                    OptionalNumber = 202,
+                    EdgePath = "m,l,21600r21600,l21600,xe"
+                },
+                new DocumentFormat.OpenXml.Vml.Shape(
+                    new DocumentFormat.OpenXml.Vml.TextPath { String = "VisibleNonTextbox" },
+                    new TextBoxContent(
+                        new Paragraph(new Run(new Text("Inner1"))),
+                        new Paragraph(new Run(new Text("Inner2")))))
+                {
+                    Id = "MixedTextBox1",
+                    Style = "position:absolute;margin-left:0;margin-top:0;width:200pt;height:80pt"
+                });
+
+            main.Document = new Document(
+                new Body(
+                    new Paragraph(
+                        new Run(picture))));
+            main.Document.Save();
         }
 
         return stream.ToArray();
@@ -375,5 +547,123 @@ public sealed class DxpTransformTests : TestBase<DxpTransformTests>
                 Context = context;
             return DxpTransformDecision.Keep();
         }
+    }
+
+    private sealed class ParagraphMarkerTransformer : IDxpNodeTransformer
+    {
+        private int _counter;
+
+        public DxpTransformDecision Visit(OpenXmlElement node, DxpTransformContext context)
+        {
+            if (context.PartKind != DxpTransformPartKind.MainDocument || node is not Paragraph paragraph)
+                return DxpTransformDecision.Keep();
+
+            _counter++;
+            var firstRun = paragraph.Elements<Run>().FirstOrDefault();
+            if (firstRun == null)
+            {
+                paragraph.AppendChild(new Run(new Text($"[{_counter}]")));
+                return DxpTransformDecision.Keep();
+            }
+
+            firstRun.InsertAt(new Text($"[{_counter}]"), 0);
+            return DxpTransformDecision.Keep();
+        }
+    }
+
+    private sealed class StructuralParagraphRecorderTransformer : IDxpNodeTransformer
+    {
+        public List<string> Paragraphs { get; } = new();
+
+        public DxpTransformDecision Visit(OpenXmlElement node, DxpTransformContext context)
+        {
+            if (!IsStructuralParagraph(node))
+                return DxpTransformDecision.Keep();
+
+            Paragraphs.Add($"{context.PartKind}:{GetStructuralParagraphText(node)}");
+            return DxpTransformDecision.Keep();
+        }
+    }
+
+    private sealed class StructuralParagraphMarkerTransformer : IDxpNodeTransformer
+    {
+        private int _counter;
+
+        public DxpTransformDecision Visit(OpenXmlElement node, DxpTransformContext context)
+        {
+            if (context.PartKind != DxpTransformPartKind.MainDocument || !IsStructuralParagraph(node))
+                return DxpTransformDecision.Keep();
+
+            _counter++;
+            PrependStructuralParagraphMarker(node, $"[{_counter}]");
+            return DxpTransformDecision.Keep();
+        }
+    }
+
+    private sealed class NodeNameRecorderTransformer : IDxpNodeTransformer
+    {
+        public List<string> Nodes { get; } = new();
+
+        public DxpTransformDecision Visit(OpenXmlElement node, DxpTransformContext context)
+        {
+            if (IsStructuralParagraph(node))
+            {
+                Nodes.Add($"{context.PartKind}:InnerTextboxParagraph:{GetStructuralParagraphText(node)}");
+                return DxpTransformDecision.Keep();
+            }
+
+            Nodes.Add($"{context.PartKind}:{node.GetType().Name}");
+            return DxpTransformDecision.Keep();
+        }
+    }
+
+    private static bool IsStructuralParagraph(OpenXmlElement node)
+        => node is Paragraph
+            || (node is OpenXmlUnknownElement unknown
+                && string.Equals(unknown.LocalName, "p", StringComparison.Ordinal)
+                && string.Equals(unknown.NamespaceUri, "http://schemas.openxmlformats.org/wordprocessingml/2006/main", StringComparison.Ordinal));
+
+    private static string GetStructuralParagraphText(OpenXmlElement node)
+    {
+        if (node is Paragraph paragraph)
+            return GetDirectParagraphText(paragraph);
+
+        return string.Concat(
+            node.Descendants<OpenXmlElement>()
+                .Where(static child => string.Equals(child.LocalName, "t", StringComparison.Ordinal))
+                .Select(static child => child.InnerText));
+    }
+
+    private static void PrependStructuralParagraphMarker(OpenXmlElement node, string marker)
+    {
+        if (node is Paragraph paragraph)
+        {
+            var firstRun = paragraph.Elements<Run>().FirstOrDefault();
+            if (firstRun == null)
+            {
+                paragraph.AppendChild(new Run(new Text(marker)));
+                return;
+            }
+
+            firstRun.InsertAt(new Text(marker), 0);
+            return;
+        }
+
+        var firstText = node.Descendants<OpenXmlUnknownElement>()
+            .FirstOrDefault(static child => string.Equals(child.LocalName, "t", StringComparison.Ordinal));
+
+        if (firstText != null)
+        {
+            string escaped = System.Security.SecurityElement.Escape(marker + firstText.InnerText);
+            if (firstText.Parent is OpenXmlElement parent)
+            {
+                parent.InnerXml = $"<w:t xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\">{escaped}</w:t>";
+                return;
+            }
+
+            return;
+        }
+
+        node.PrependChild(new OpenXmlUnknownElement($"<w:r xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\"><w:t>{System.Security.SecurityElement.Escape(marker)}</w:t></w:r>"));
     }
 }

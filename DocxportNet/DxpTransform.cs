@@ -1,8 +1,10 @@
 using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Office2010.Word.DrawingShape;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.Walker;
 using Microsoft.Extensions.Logging;
+using System.Runtime.CompilerServices;
 
 namespace DocxportNet;
 
@@ -148,7 +150,9 @@ public interface IDxpNodeTransformer
 
 internal sealed class DxpDocumentTransformEngine
 {
+    private const string WordprocessingNamespace = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
     private readonly ILogger? _logger;
+    private readonly HashSet<OpenXmlElement> _seenFallbackNodes = new(ReferenceEqualityComparer.Instance);
 
     public DxpDocumentTransformEngine(ILogger? logger)
     {
@@ -320,19 +324,170 @@ internal sealed class DxpDocumentTransformEngine
         ancestors.Add(node);
         try
         {
-            var current = node.FirstChild;
-            while (current != null)
+            foreach (var child in EnumerateTraversableChildren(node).ToList())
             {
-                var next = current.NextSibling();
-                if (current is OpenXmlElement child)
-                    TransformNode(child, part, partKind, rootName, parentPath, ancestors, ref ordinal, transformer);
-                current = next;
+                TransformNode(child, part, partKind, rootName, parentPath, ancestors, ref ordinal, transformer);
             }
         }
         finally
         {
             ancestors.RemoveAt(ancestors.Count - 1);
         }
+    }
+
+    private IEnumerable<OpenXmlElement> EnumerateTraversableChildren(OpenXmlElement node)
+    {
+        if (IsInsideOpaqueWordprocessingTextBoxSubtree(node))
+            yield break;
+
+        var current = node.FirstChild;
+        while (current != null)
+        {
+            var next = current.NextSibling();
+            if (current is OpenXmlElement child)
+                yield return child;
+            current = next;
+        }
+
+        if (IsWordprocessingTextBoxContent(node))
+        {
+            yield break;
+        }
+
+        if (TryEnumerateTextBoxCarrierChildren(node, out var carrierChildren))
+        {
+            foreach (var child in carrierChildren)
+            {
+                if (_seenFallbackNodes.Add(child) && !IsAlreadyReachableFromNormalChildren(node, child))
+                    yield return child;
+            }
+        }
+    }
+
+    private static bool IsAlreadyReachableFromNormalChildren(OpenXmlElement node, OpenXmlElement candidate)
+    {
+        foreach (var child in node.ChildElements.OfType<OpenXmlElement>())
+        {
+            if (ReferenceEquals(child, candidate))
+                return true;
+
+            if (child.Descendants().Any(descendant => ReferenceEquals(descendant, candidate)))
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool TryEnumerateTextBoxCarrierChildren(OpenXmlElement node, out IReadOnlyList<OpenXmlElement> children)
+    {
+        if (node is Drawing drawing)
+        {
+            children = EnumerateTextBoxContentChildren(
+                drawing.Descendants<TextBoxInfo2>()
+                    .Select(static txbx => txbx.GetFirstChild<TextBoxContent>())
+                    .Where(static content => content != null)
+                    .Select(static content => content!)).ToList();
+            return children.Count > 0;
+        }
+
+        if (node is Picture picture)
+        {
+            children = EnumerateTextBoxContentChildren(
+                picture.Descendants<DocumentFormat.OpenXml.Vml.TextBox>()
+                    .Select(static txbx => txbx.GetFirstChild<TextBoxContent>())
+                    .Where(static content => content != null)
+                    .Select(static content => content!)).ToList();
+            return children.Count > 0;
+        }
+
+        if (IsTextBoxCarrier(node) && TryGetNestedWordprocessingTextBoxContent(node, out var content))
+        {
+            children = EnumerateElementChildren(content).ToList();
+            return children.Count > 0;
+        }
+
+        children = Array.Empty<OpenXmlElement>();
+        return false;
+    }
+
+    private static IEnumerable<OpenXmlElement> EnumerateTextBoxContentChildren(IEnumerable<TextBoxContent> contents)
+    {
+        foreach (var content in contents)
+        {
+            var current = content.FirstChild;
+            while (current != null)
+            {
+                var next = current.NextSibling();
+                if (current is OpenXmlElement child)
+                    yield return child;
+                current = next;
+            }
+        }
+    }
+
+    private static IEnumerable<OpenXmlElement> EnumerateElementChildren(OpenXmlElement node)
+    {
+        var current = node.FirstChild;
+        while (current != null)
+        {
+            var next = current.NextSibling();
+            if (current is OpenXmlElement child)
+                yield return child;
+            current = next;
+        }
+    }
+
+    private static bool TryGetNestedWordprocessingTextBoxContent(OpenXmlElement node, out OpenXmlElement content)
+    {
+        foreach (var descendant in node.Descendants())
+        {
+            if (!IsWordprocessingTextBoxContent(descendant))
+                continue;
+
+            content = descendant;
+            return true;
+        }
+
+        content = null!;
+        return false;
+    }
+
+    private static bool IsWordprocessingTextBoxContent(OpenXmlElement node)
+        => string.Equals(node.LocalName, "txbxContent", StringComparison.Ordinal)
+            && string.Equals(node.NamespaceUri, WordprocessingNamespace, StringComparison.Ordinal);
+
+    private static bool IsTextBoxCarrier(OpenXmlElement node)
+        => node is Picture
+            || node is Drawing
+            || (string.Equals(node.LocalName, "shape", StringComparison.Ordinal)
+                && string.Equals(node.NamespaceUri, "urn:schemas-microsoft-com:vml", StringComparison.Ordinal))
+            || (string.Equals(node.LocalName, "txbx", StringComparison.Ordinal)
+                && node.NamespaceUri.Contains("wordprocessingShape", StringComparison.Ordinal));
+
+    private static bool IsInsideOpaqueWordprocessingTextBoxSubtree(OpenXmlElement node)
+    {
+        if (IsWordprocessingTextBoxContent(node))
+            return false;
+
+        var parent = node.Parent;
+        while (parent != null)
+        {
+            if (IsWordprocessingTextBoxContent(parent))
+                return true;
+
+            parent = parent.Parent;
+        }
+
+        return false;
+    }
+
+    private sealed class ReferenceEqualityComparer : IEqualityComparer<OpenXmlElement>
+    {
+        public static readonly ReferenceEqualityComparer Instance = new();
+
+        public bool Equals(OpenXmlElement? x, OpenXmlElement? y) => ReferenceEquals(x, y);
+
+        public int GetHashCode(OpenXmlElement obj) => RuntimeHelpers.GetHashCode(obj);
     }
 
     private static void ReplaceNode(OpenXmlElement node, IReadOnlyList<OpenXmlElement> replacements)
