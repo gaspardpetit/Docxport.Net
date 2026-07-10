@@ -64,4 +64,10 @@ public class DxpFontSymbolsTests : TestBase<DxpFontSymbolsTests>
         var bullet = DxpFontSymbols.Substitute("Symbol", '\uF0B7');
         Assert.Equal("•", bullet);
     }
+    [Fact]
+    public void Word_symbol_hex_for_micro_maps_to_unicode_micro_sign()
+    {
+        var micro = DxpFontSymbols.TranslateWordSymbol("Symbol", "F06D");
+        Assert.Equal("µ", micro);
+    }
 }
