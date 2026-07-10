@@ -17,7 +17,7 @@ public static class DxpTransform
         if (transformer == null)
             throw new ArgumentNullException(nameof(transformer));
 
-        var engine = new DxpDocumentTransformEngine(logger);
+        var engine = new DxpWordprocessingDocumentTransformEngine(logger);
         engine.Transform(document, transformer);
     }
 
@@ -148,112 +148,61 @@ public interface IDxpNodeTransformer
     DxpTransformDecision Visit(OpenXmlElement node, DxpTransformContext context);
 }
 
-internal sealed class DxpDocumentTransformEngine
+internal sealed class DxpWordprocessingDocumentTransformEngine
 {
-    private const string WordprocessingNamespace = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
     private readonly ILogger? _logger;
-    private readonly HashSet<OpenXmlElement> _seenFallbackNodes = new(ReferenceEqualityComparer.Instance);
 
-    public DxpDocumentTransformEngine(ILogger? logger)
+    public DxpWordprocessingDocumentTransformEngine(ILogger? logger)
     {
         _logger = logger;
     }
 
     public void Transform(WordprocessingDocument document, IDxpNodeTransformer transformer)
     {
-        var mainPart = document.MainDocumentPart ?? throw new InvalidOperationException("DOCX has no MainDocumentPart.");
-        var body = mainPart.Document?.Body ?? throw new InvalidOperationException("DOCX has no main document body.");
+        var enumerator = new DxpWordTransformPartEnumerator();
+        var engine = new DxpOpenXmlTransformEngine(_logger, enumerator);
+        engine.Transform(enumerator.Enumerate(document), transformer);
+    }
+}
 
-        TransformPart(
-            body.ChildElements.OfType<OpenXmlElement>(),
-            mainPart,
-            DxpTransformPartKind.MainDocument,
-            nameof(Body));
-        mainPart.Document!.Save();
+internal interface IDxpTransformTraversalAdapter
+{
+    IEnumerable<OpenXmlElement> EnumerateChildren(OpenXmlElement node);
+}
 
-        foreach (var entry in EnumerateReachableHeaderFooterParts(body, mainPart))
-        {
-            if (entry.root == null)
-                continue;
+internal sealed record DxpTransformPartRoot(
+    OpenXmlPart Part,
+    DxpTransformPartKind PartKind,
+    string RootName,
+    IEnumerable<OpenXmlElement> RootNodes,
+    Action Save);
 
-            TransformPart(
-                entry.root.ChildElements.OfType<OpenXmlElement>(),
-                entry.part,
-                entry.kind,
-                entry.root.LocalName);
-            entry.root.Save();
-        }
+internal sealed class DxpOpenXmlTransformEngine
+{
+    private readonly ILogger? _logger;
+    private readonly IDxpTransformTraversalAdapter _adapter;
 
-        if (mainPart.FootnotesPart?.Footnotes != null)
-        {
-            TransformPart(
-                mainPart.FootnotesPart.Footnotes.Elements<Footnote>()
-                    .Where(static fn => !IsInternalNote(fn.Type?.Value))
-                    .Cast<OpenXmlElement>(),
-                mainPart.FootnotesPart,
-                DxpTransformPartKind.Footnote,
-                mainPart.FootnotesPart.Footnotes.LocalName);
-            mainPart.FootnotesPart.Footnotes.Save();
-        }
+    public DxpOpenXmlTransformEngine(ILogger? logger, IDxpTransformTraversalAdapter adapter)
+    {
+        _logger = logger;
+        _adapter = adapter;
+    }
 
-        if (mainPart.EndnotesPart?.Endnotes != null)
-        {
-            TransformPart(
-                mainPart.EndnotesPart.Endnotes.Elements<Endnote>()
-                    .Where(static en => !IsInternalNote(en.Type?.Value))
-                    .Cast<OpenXmlElement>(),
-                mainPart.EndnotesPart,
-                DxpTransformPartKind.Endnote,
-                mainPart.EndnotesPart.Endnotes.LocalName);
-            mainPart.EndnotesPart.Endnotes.Save();
-        }
-
-        void TransformPart(
-            IEnumerable<OpenXmlElement> rootNodes,
-            OpenXmlPart part,
-            DxpTransformPartKind partKind,
-            string rootName)
+    public void Transform(IEnumerable<DxpTransformPartRoot> partRoots, IDxpNodeTransformer transformer)
+    {
+        foreach (var partRoot in partRoots)
         {
             int ordinal = 0;
             var ancestors = new List<OpenXmlElement>();
-            var current = rootNodes.FirstOrDefault();
+            var current = partRoot.RootNodes.FirstOrDefault();
             while (current != null)
             {
                 var next = current.NextSibling<OpenXmlElement>();
-                TransformNode(current, part, partKind, rootName, parentPath: rootName, ancestors, ref ordinal, transformer);
+                TransformNode(current, partRoot.Part, partRoot.PartKind, partRoot.RootName, partRoot.RootName, ancestors, ref ordinal, transformer);
                 current = next;
             }
-        }
-    }
 
-    private static bool IsInternalNote(FootnoteEndnoteValues? type)
-        => type == FootnoteEndnoteValues.Separator
-            || type == FootnoteEndnoteValues.ContinuationSeparator
-            || type == FootnoteEndnoteValues.ContinuationNotice;
-
-    private IEnumerable<(OpenXmlPart part, OpenXmlPartRootElement? root, DxpTransformPartKind kind)> EnumerateReachableHeaderFooterParts(Body body, MainDocumentPart mainPart)
-    {
-        var seen = new HashSet<Uri>();
-        foreach (var section in DxpSections.SplitDocumentBodyIntoSections(body))
-        {
-            foreach (var child in section.Properties.ChildElements)
-            {
-                switch (child)
-                {
-                    case HeaderReference headerRef when headerRef.Id?.Value != null:
-                    {
-                        if (mainPart.GetPartById(headerRef.Id.Value) is HeaderPart headerPart && seen.Add(headerPart.Uri))
-                            yield return (headerPart, headerPart.Header, DxpTransformPartKind.Header);
-                        break;
-                    }
-                    case FooterReference footerRef when footerRef.Id?.Value != null:
-                    {
-                        if (mainPart.GetPartById(footerRef.Id.Value) is FooterPart footerPart && seen.Add(footerPart.Uri))
-                            yield return (footerPart, footerPart.Footer, DxpTransformPartKind.Footer);
-                        break;
-                    }
-                }
-            }
+            partRoot.Save();
         }
     }
 
@@ -324,10 +273,8 @@ internal sealed class DxpDocumentTransformEngine
         ancestors.Add(node);
         try
         {
-            foreach (var child in EnumerateTraversableChildren(node).ToList())
-            {
+            foreach (var child in _adapter.EnumerateChildren(node).ToList())
                 TransformNode(child, part, partKind, rootName, parentPath, ancestors, ref ordinal, transformer);
-            }
         }
         finally
         {
@@ -335,7 +282,98 @@ internal sealed class DxpDocumentTransformEngine
         }
     }
 
-    private IEnumerable<OpenXmlElement> EnumerateTraversableChildren(OpenXmlElement node)
+    private static void ReplaceNode(OpenXmlElement node, IReadOnlyList<OpenXmlElement> replacements)
+    {
+        var parent = node.Parent;
+        if (parent == null)
+            return;
+
+        OpenXmlElement anchor = node;
+        foreach (var replacement in replacements)
+        {
+            var clone = (OpenXmlElement)replacement.CloneNode(true);
+            anchor = parent.InsertAfter(clone, anchor)!;
+        }
+
+        node.Remove();
+    }
+
+    private static string GetPathSegment(OpenXmlElement node, int siblingIndex)
+        => string.Concat(GetNodeName(node), "[", siblingIndex.ToString(System.Globalization.CultureInfo.InvariantCulture), "]");
+
+    private static string GetNodeName(OpenXmlElement node)
+        => node.GetType().Name;
+
+    private static int GetSiblingIndex(OpenXmlElement parent, OpenXmlElement node)
+    {
+        int index = 0;
+        foreach (var child in parent.ChildElements)
+        {
+            if (ReferenceEquals(child, node))
+                return index;
+            index++;
+        }
+
+        return -1;
+    }
+}
+
+internal sealed class DxpWordTransformPartEnumerator : IDxpTransformTraversalAdapter
+{
+    private const string WordprocessingNamespace = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
+    private readonly HashSet<OpenXmlElement> _seenFallbackNodes = new(ReferenceEqualityComparer.Instance);
+
+    public IEnumerable<DxpTransformPartRoot> Enumerate(WordprocessingDocument document)
+    {
+        var mainPart = document.MainDocumentPart ?? throw new InvalidOperationException("DOCX has no MainDocumentPart.");
+        var body = mainPart.Document?.Body ?? throw new InvalidOperationException("DOCX has no main document body.");
+
+        yield return new DxpTransformPartRoot(
+            mainPart,
+            DxpTransformPartKind.MainDocument,
+            nameof(Body),
+            body.ChildElements.OfType<OpenXmlElement>(),
+            () => mainPart.Document!.Save());
+
+        foreach (var entry in EnumerateReachableHeaderFooterParts(body, mainPart))
+        {
+            if (entry.root == null)
+                continue;
+
+            yield return new DxpTransformPartRoot(
+                entry.part,
+                entry.kind,
+                entry.root.LocalName,
+                entry.root.ChildElements.OfType<OpenXmlElement>(),
+                entry.root.Save);
+        }
+
+        if (mainPart.FootnotesPart?.Footnotes != null)
+        {
+            yield return new DxpTransformPartRoot(
+                mainPart.FootnotesPart,
+                DxpTransformPartKind.Footnote,
+                mainPart.FootnotesPart.Footnotes.LocalName,
+                mainPart.FootnotesPart.Footnotes.Elements<Footnote>()
+                    .Where(static fn => !IsInternalNote(fn.Type?.Value))
+                    .Cast<OpenXmlElement>(),
+                () => mainPart.FootnotesPart.Footnotes.Save());
+        }
+
+        if (mainPart.EndnotesPart?.Endnotes != null)
+        {
+            yield return new DxpTransformPartRoot(
+                mainPart.EndnotesPart,
+                DxpTransformPartKind.Endnote,
+                mainPart.EndnotesPart.Endnotes.LocalName,
+                mainPart.EndnotesPart.Endnotes.Elements<Endnote>()
+                    .Where(static en => !IsInternalNote(en.Type?.Value))
+                    .Cast<OpenXmlElement>(),
+                () => mainPart.EndnotesPart.Endnotes.Save());
+        }
+    }
+
+    public IEnumerable<OpenXmlElement> EnumerateChildren(OpenXmlElement node)
     {
         if (IsInsideOpaqueWordprocessingTextBoxSubtree(node))
             yield break;
@@ -350,9 +388,7 @@ internal sealed class DxpDocumentTransformEngine
         }
 
         if (IsWordprocessingTextBoxContent(node))
-        {
             yield break;
-        }
 
         if (TryEnumerateTextBoxCarrierChildren(node, out var carrierChildren))
         {
@@ -360,6 +396,37 @@ internal sealed class DxpDocumentTransformEngine
             {
                 if (_seenFallbackNodes.Add(child) && !IsAlreadyReachableFromNormalChildren(node, child))
                     yield return child;
+            }
+        }
+    }
+
+    private static bool IsInternalNote(FootnoteEndnoteValues? type)
+        => type == FootnoteEndnoteValues.Separator
+            || type == FootnoteEndnoteValues.ContinuationSeparator
+            || type == FootnoteEndnoteValues.ContinuationNotice;
+
+    private static IEnumerable<(OpenXmlPart part, OpenXmlPartRootElement? root, DxpTransformPartKind kind)> EnumerateReachableHeaderFooterParts(Body body, MainDocumentPart mainPart)
+    {
+        var seen = new HashSet<Uri>();
+        foreach (var section in DxpSections.SplitDocumentBodyIntoSections(body))
+        {
+            foreach (var child in section.Properties.ChildElements)
+            {
+                switch (child)
+                {
+                    case HeaderReference headerRef when headerRef.Id?.Value != null:
+                    {
+                        if (mainPart.GetPartById(headerRef.Id.Value) is HeaderPart headerPart && seen.Add(headerPart.Uri))
+                            yield return (headerPart, headerPart.Header, DxpTransformPartKind.Header);
+                        break;
+                    }
+                    case FooterReference footerRef when footerRef.Id?.Value != null:
+                    {
+                        if (mainPart.GetPartById(footerRef.Id.Value) is FooterPart footerPart && seen.Add(footerPart.Uri))
+                            yield return (footerPart, footerPart.Footer, DxpTransformPartKind.Footer);
+                        break;
+                    }
+                }
             }
         }
     }
@@ -462,7 +529,7 @@ internal sealed class DxpDocumentTransformEngine
             || (string.Equals(node.LocalName, "shape", StringComparison.Ordinal)
                 && string.Equals(node.NamespaceUri, "urn:schemas-microsoft-com:vml", StringComparison.Ordinal))
             || (string.Equals(node.LocalName, "txbx", StringComparison.Ordinal)
-                && node.NamespaceUri.Contains("wordprocessingShape", StringComparison.Ordinal));
+                && node.NamespaceUri.Contains("wordprocessingShape"));
 
     private static bool IsInsideOpaqueWordprocessingTextBoxSubtree(OpenXmlElement node)
     {
@@ -488,40 +555,5 @@ internal sealed class DxpDocumentTransformEngine
         public bool Equals(OpenXmlElement? x, OpenXmlElement? y) => ReferenceEquals(x, y);
 
         public int GetHashCode(OpenXmlElement obj) => RuntimeHelpers.GetHashCode(obj);
-    }
-
-    private static void ReplaceNode(OpenXmlElement node, IReadOnlyList<OpenXmlElement> replacements)
-    {
-        var parent = node.Parent;
-        if (parent == null)
-            return;
-
-        OpenXmlElement anchor = node;
-        foreach (var replacement in replacements)
-        {
-            var clone = (OpenXmlElement)replacement.CloneNode(true);
-            anchor = parent.InsertAfter(clone, anchor)!;
-        }
-
-        node.Remove();
-    }
-
-    private static string GetPathSegment(OpenXmlElement node, int siblingIndex)
-        => string.Concat(GetNodeName(node), "[", siblingIndex.ToString(System.Globalization.CultureInfo.InvariantCulture), "]");
-
-    private static string GetNodeName(OpenXmlElement node)
-        => node.GetType().Name;
-
-    private static int GetSiblingIndex(OpenXmlElement parent, OpenXmlElement node)
-    {
-        int index = 0;
-        foreach (var child in parent.ChildElements)
-        {
-            if (ReferenceEquals(child, node))
-                return index;
-            index++;
-        }
-
-        return -1;
     }
 }
