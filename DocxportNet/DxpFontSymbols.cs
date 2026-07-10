@@ -65,6 +65,33 @@ public static class DxpFontSymbols
 
         return new DxpFontSymbolConverter(table);
     }
+
+    /// <summary>
+    /// Translate a WordprocessingML <w:sym> font/code pair into Unicode when possible.
+    /// Returns null when the value cannot be resolved to printable text.
+    /// </summary>
+    public static string? TranslateWordSymbol(string? fontName, string? charHex, char? replacementForNonPrintable = null)
+    {
+        if (string.IsNullOrWhiteSpace(charHex))
+            return null;
+
+        if (!ushort.TryParse(charHex, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort codeUnit))
+            return null;
+
+        var converter = GetSymbolConverter(fontName);
+        if (converter != null)
+        {
+            var translated = converter.Substitute((char)codeUnit, replacementForNonPrintable);
+            return DxpFontSymbolConverter.IsPrintable(translated)
+                ? translated
+                : replacementForNonPrintable?.ToString();
+        }
+
+        string raw = char.ConvertFromUtf32(codeUnit);
+        return DxpFontSymbolConverter.IsPrintable(raw)
+            ? raw
+            : replacementForNonPrintable?.ToString();
+    }
 }
 
 public class DxpFontSymbolConverter

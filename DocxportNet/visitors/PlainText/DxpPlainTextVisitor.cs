@@ -141,6 +141,13 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor, IDisposab
         Write(dt.Text, d);
     }
 
+    public override void VisitSymbol(SymbolChar sym, DxpIDocumentContext d)
+    {
+        string? translated = DxpFontSymbols.TranslateWordSymbol(sym.Font?.Value, sym.Char?.Value);
+        if (!string.IsNullOrEmpty(translated))
+            Write(translated, d);
+    }
+
     public override void StyleAllCapsBegin(DxpIDocumentContext d) => _state.AllCaps = true;
     public override void StyleAllCapsEnd(DxpIDocumentContext d) => _state.AllCaps = false;
     public override void StyleSmallCapsBegin(DxpIDocumentContext d) => _state.AllCaps = true;

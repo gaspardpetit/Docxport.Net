@@ -216,6 +216,13 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
         WriteRenderableText(t.Text, d);
     }
 
+    public override void VisitSymbol(SymbolChar sym, DxpIDocumentContext d)
+    {
+        string? translated = DxpFontSymbols.TranslateWordSymbol(sym.Font?.Value, sym.Char?.Value);
+        if (!string.IsNullOrEmpty(translated))
+            WriteRenderableText(translated, d);
+    }
+
     private static double EstimateTextWidthPt(string text, double fontSizePt)
     {
         if (string.IsNullOrEmpty(text))
