@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.CustomProperties;
 using DocxportNet.API;
 using DocxportNet.Fields.Resolution;
+using DocxportNet.Fields.Eval;
 
 namespace DocxportNet.Fields;
 
@@ -35,6 +36,9 @@ public sealed partial class DxpFieldEvalContext
     public List<DxpRefHyperlink> RefHyperlinks { get; } = new();
     public List<DxpRefFootnote> RefFootnotes { get; } = new();
     public Func<int>? CurrentOutlineLevelProvider { get; set; }
+    internal Func<int>? CurrentBuiltInHeadingLevelProvider { get; set; }
+    internal Func<string>? CurrentStoryKeyProvider { get; set; }
+    internal DxpAutoNumberContext AutoNumbers { get; } = new();
     public int? CurrentDocumentOrder { get; set; }
     public Expressions.DxpFormulaFunctionRegistry FormulaFunctions { get; set; } = Expressions.DxpFormulaFunctionRegistry.Default;
     public Resolution.IDxpFieldValueResolver? ValueResolver { get; set; }
@@ -58,6 +62,7 @@ public sealed partial class DxpFieldEvalContext
         _sequences.Clear();
         _numberedItems.Clear();
         _sequenceResetKeys.Clear();
+        AutoNumbers.Reset();
         RefHyperlinks.Clear();
         RefFootnotes.Clear();
         MergeRecordAction = DxpMergeRecordAction.None;

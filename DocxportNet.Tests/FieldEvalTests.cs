@@ -2159,6 +2159,31 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     }
 
     [Fact]
+    public async Task EvalAsync_AutoNum_IncrementsWithNumericLabels()
+    {
+        var eval = new DxpFieldEval(logger: Logger);
+
+        var first = await eval.EvalAsync(new DxpFieldInstruction("AUTONUM"));
+        var second = await eval.EvalAsync(new DxpFieldInstruction("AUTONUM"));
+
+        Assert.Equal("1.", first.Text);
+        Assert.Equal("2.", second.Text);
+    }
+
+    [Theory]
+    [InlineData("AUTONUM \\* Roman", "I.")]
+    [InlineData("AUTONUM \\* ALPHABETIC", "A.")]
+    [InlineData("AUTONUM \\s-", "1-")]
+    public async Task EvalAsync_AutoNum_AppliesFormatAndSeparator(string instruction, string expected)
+    {
+        var eval = new DxpFieldEval(logger: Logger);
+
+        var result = await eval.EvalAsync(new DxpFieldInstruction(instruction));
+
+        Assert.Equal(expected, result.Text);
+    }
+
+    [Fact]
     public async Task EvalAsync_FormulaResolvesTableCellRanges()
     {
         var eval = new DxpFieldEval(logger: Logger);

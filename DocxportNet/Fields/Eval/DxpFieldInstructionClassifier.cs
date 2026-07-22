@@ -63,6 +63,11 @@ internal static class DxpFieldInstructionClassifier
     internal static bool IsDatabaseInstruction(string? instruction)
         => StartsWithField(instruction, "DATABASE");
 
+    internal static bool IsAutoNumberInstruction(string? instruction)
+        => StartsWithField(instruction, "AUTONUM")
+            || StartsWithField(instruction, "AUTONUMLGL")
+            || StartsWithField(instruction, "AUTONUMOUT");
+
     internal static bool IsNextInstruction(string? instruction)
         => StartsWithField(instruction, "NEXT");
 
