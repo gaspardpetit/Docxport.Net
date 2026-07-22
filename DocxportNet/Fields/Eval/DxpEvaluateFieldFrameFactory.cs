@@ -43,6 +43,7 @@ internal sealed class DxpEvaluateFieldFrameFactory
             DxpFieldInstructionClassifier.IsMergeSeqInstruction(instruction) ||
             DxpFieldInstructionClassifier.IsGreetingLineInstruction(instruction) ||
             DxpFieldInstructionClassifier.IsAddressBlockInstruction(instruction) ||
+            DxpFieldInstructionClassifier.IsAutoNumberInstruction(instruction) ||
             DxpFieldInstructionClassifier.IsDatabaseInstruction(instruction) ||
             DxpFieldInstructionClassifier.IsSeqInstruction(instruction) ||
             DxpFieldInstructionClassifier.IsDateTimeInstruction(instruction) ||
@@ -59,6 +60,7 @@ internal sealed class DxpEvaluateFieldFrameFactory
                 DxpFieldInstructionClassifier.IsMergeSeqInstruction(instruction) ||
                 DxpFieldInstructionClassifier.IsGreetingLineInstruction(instruction) ||
                 DxpFieldInstructionClassifier.IsAddressBlockInstruction(instruction) ||
+                DxpFieldInstructionClassifier.IsAutoNumberInstruction(instruction) ||
                 DxpFieldInstructionClassifier.IsDatabaseInstruction(instruction) ||
                 DxpFieldInstructionClassifier.IsDocumentMetricInstruction(instruction))
             {

@@ -23,11 +23,12 @@ string? inputPath = null;
 string? outputPath = null;
 string format = "markdown";
 string tracked = "accept";
-bool plainMarkdown = false;
+bool plainOutput = false;
 bool formatExplicit = false;
 var cliVariables = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 string? varsPath = null;
 LogLevel logLevel = LogLevel.Warning;
+DxpFieldEvalExportMode fieldMode = DxpFieldEvalExportMode.Cache;
 
 for (int i = 0; i < args.Length; i++)
 {
@@ -60,7 +61,18 @@ for (int i = 0; i < args.Length; i++)
         tracked = args[++i];
     }
     else if (arg.Equals("--plain", StringComparison.OrdinalIgnoreCase))
-        plainMarkdown = true;
+        plainOutput = true;
+    else if (arg.StartsWith("--fields=", StringComparison.OrdinalIgnoreCase))
+        fieldMode = ParseFieldMode(arg[(arg.IndexOf('=') + 1)..]);
+    else if (arg.Equals("--fields", StringComparison.OrdinalIgnoreCase))
+    {
+        if (i + 1 >= args.Length)
+        {
+            Console.Error.WriteLine("--fields requires a value.");
+            return;
+        }
+        fieldMode = ParseFieldMode(args[++i]);
+    }
     else if (arg.StartsWith("--vars=", StringComparison.OrdinalIgnoreCase))
         varsPath = arg[(arg.IndexOf('=') + 1)..];
     else if (arg.Equals("--vars", StringComparison.OrdinalIgnoreCase))
@@ -169,18 +181,16 @@ switch (format.ToLowerInvariant())
 {
     case "markdown":
     case "md":
-        ExportMarkdown(inputPath, outputPath, trackedMode, plainMarkdown, varsPath, cliVariables, logLevel);
+        ExportMarkdown(inputPath, outputPath, trackedMode, plainOutput, fieldMode, varsPath, cliVariables, logLevel);
         break;
     case "html":
-        if (plainMarkdown)
-            Console.Error.WriteLine("Warning: --plain is only supported for markdown; ignoring.");
-        ExportHtml(inputPath, outputPath, trackedMode, varsPath, cliVariables, logLevel);
+        ExportHtml(inputPath, outputPath, trackedMode, plainOutput, fieldMode, varsPath, cliVariables, logLevel);
         break;
     case "text":
     case "txt":
-        if (plainMarkdown)
-            Console.Error.WriteLine("Warning: --plain is only supported for markdown; ignoring.");
-        ExportPlainText(inputPath, outputPath, trackedMode, varsPath, cliVariables, logLevel);
+        if (plainOutput)
+            Console.Error.WriteLine("Warning: --plain is only supported for markdown/html; ignoring.");
+        ExportPlainText(inputPath, outputPath, trackedMode, fieldMode, varsPath, cliVariables, logLevel);
         break;
     default:
         Console.Error.WriteLine($"Unknown format '{format}'. Expected markdown|html|text.");
@@ -192,20 +202,22 @@ static void ExportMarkdown(
     string inputPath,
     string? outputPath,
     DxpTrackedChangeMode trackedMode,
-    bool plainMarkdown,
+    bool plainOutput,
+    DxpFieldEvalExportMode fieldMode,
     string? varsPath,
     IReadOnlyDictionary<string, string> cliVariables,
     LogLevel logLevel)
 {
-    var config = plainMarkdown ? DxpMarkdownVisitorConfig.CreatePlainConfig() : DxpMarkdownVisitorConfig.CreateRichConfig();
+    var config = plainOutput ? DxpMarkdownVisitorConfig.CreatePlainConfig() : DxpMarkdownVisitorConfig.CreateRichConfig();
     config = config with { TrackedChangeMode = trackedMode };
 
-    string output = outputPath ?? Path.ChangeExtension(inputPath, plainMarkdown ? ".plain.md" : ".md");
+    string output = outputPath ?? Path.ChangeExtension(inputPath, plainOutput ? ".plain.md" : ".md");
     using var loggerFactory = CreateLoggerFactory(logLevel);
     var logger = loggerFactory.CreateLogger("docxport");
     var visitor = new DxpMarkdownVisitor(config, logger);
     ApplyDocVariables(visitor, varsPath, cliVariables);
-    DxpExport.ExportToFile(inputPath, visitor, output, logger);
+    var exportOptions = new DxpExportOptions { FieldEvalMode = fieldMode };
+    DxpExport.ExportToFile(inputPath, visitor, output, exportOptions, logger);
     Console.WriteLine($"Wrote Markdown to {output}");
 }
 
@@ -213,17 +225,20 @@ static void ExportHtml(
     string inputPath,
     string? outputPath,
     DxpTrackedChangeMode trackedMode,
+    bool plainOutput,
+    DxpFieldEvalExportMode fieldMode,
     string? varsPath,
     IReadOnlyDictionary<string, string> cliVariables,
     LogLevel logLevel)
 {
-    var config = DxpHtmlVisitorConfig.CreateRichConfig() with { TrackedChangeMode = trackedMode };
+    var config = (plainOutput ? DxpHtmlVisitorConfig.CreatePlainConfig() : DxpHtmlVisitorConfig.CreateRichConfig()) with { TrackedChangeMode = trackedMode };
     string output = outputPath ?? Path.ChangeExtension(inputPath, trackedMode == DxpTrackedChangeMode.RejectChanges ? ".reject.html" : ".html");
     using var loggerFactory = CreateLoggerFactory(logLevel);
     var logger = loggerFactory.CreateLogger("docxport");
     var visitor = new DxpHtmlVisitor(config, logger);
     ApplyDocVariables(visitor, varsPath, cliVariables);
-    DxpExport.ExportToFile(inputPath, visitor, output, logger);
+    var exportOptions = new DxpExportOptions { FieldEvalMode = fieldMode };
+    DxpExport.ExportToFile(inputPath, visitor, output, exportOptions, logger);
     Console.WriteLine($"Wrote HTML to {output}");
 }
 
@@ -231,6 +246,7 @@ static void ExportPlainText(
     string inputPath,
     string? outputPath,
     DxpTrackedChangeMode trackedMode,
+    DxpFieldEvalExportMode fieldMode,
     string? varsPath,
     IReadOnlyDictionary<string, string> cliVariables,
     LogLevel logLevel)
@@ -244,7 +260,8 @@ static void ExportPlainText(
     var logger = loggerFactory.CreateLogger("docxport");
     var visitor = new DxpPlainTextVisitor(config, logger);
     ApplyDocVariables(visitor, varsPath, cliVariables);
-    DxpExport.ExportToFile(inputPath, visitor, output, logger);
+    var exportOptions = new DxpExportOptions { FieldEvalMode = fieldMode };
+    DxpExport.ExportToFile(inputPath, visitor, output, exportOptions, logger);
     Console.WriteLine($"Wrote text to {output}");
 }
 
@@ -275,6 +292,16 @@ static LogLevel ParseLogLevel(string value)
     };
 }
 
+static DxpFieldEvalExportMode ParseFieldMode(string value)
+{
+    return value.ToLowerInvariant() switch {
+        "none" => DxpFieldEvalExportMode.None,
+        "evaluate" => DxpFieldEvalExportMode.Evaluate,
+        "cache" => DxpFieldEvalExportMode.Cache,
+        _ => DxpFieldEvalExportMode.Cache
+    };
+}
+
 static ILoggerFactory CreateLoggerFactory(LogLevel minimumLevel)
 {
     return LoggerFactory.Create(builder => {
@@ -292,13 +319,14 @@ static void PrintHelp()
 {
     Console.WriteLine($"""
 docxport ({GetVersion()})
-Usage: docxport <input.docx> [--format=markdown|html|text] [--tracked=accept|reject|inline|split] [--plain] [-o|--output=path] [--vars=path] [-D name=value]
+Usage: docxport <input.docx> [--format=markdown|html|text] [--tracked=accept|reject|inline|split] [--plain] [--fields=evaluate|cache|none] [-o|--output=path] [--vars=path] [-D name=value]
 
 Options:
   --format=...   Output format (default: markdown)
                 If --format is omitted, the format is inferred from -o/--output extension (.md/.html/.txt).
   --tracked=...  Tracked change mode (accept, reject, inline, split). Plain text supports accept/reject.
-	--plain        Plain Markdown (only for markdown format)
+    --plain        Plain output for markdown/html (minimal styling/features)
+    --fields=...   Field result mode (evaluate, cache, none). Default: cache.
   -o, --output=...  Output file path (default: swaps extension)
   --vars=...     Load DOCVARIABLE values from a JSON or INI file.
   -D name=value  Define a DOCVARIABLE (repeatable). CLI values override --vars.

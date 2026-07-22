@@ -1,0 +1,197 @@
+<!-- Author: Gaspard Petit -->
+<!-- LastModifiedBy: Gaspard Petit -->
+<!-- Revision: 1 -->
+<!-- Created: 2026-07-22 02:30:00Z -->
+<!-- Modified: 2026-07-22 02:30:00Z -->
+
+##
+
+`AUTONUM \* MERGEFORMAT`
+
+AUTONUM level 1
+
+###
+
+`AUTONUM \* MERGEFORMAT`
+
+AUTONUM level 2
+
+####
+
+`AUTONUM \* MERGEFORMAT`
+
+AUTONUM level 3
+
+
+
+`AUTONUM \* MERGEFORMAT`
+
+AUTONUM level 0
+
+##
+
+`AUTONUM \* Roman \* MERGEFORMAT`
+
+AUTONUM level 1
+
+###
+
+`AUTONUM \* Roman \* MERGEFORMAT`
+
+AUTONUM level 2
+
+####
+
+`AUTONUM \* Roman \* MERGEFORMAT`
+
+AUTONUM level 3
+
+
+
+`AUTONUM \* Roman \* MERGEFORMAT`
+
+AUTONUM level 0
+
+##
+
+`AUTONUM \* ALPHABETIC \* MERGEFORMAT`
+
+AUTONUM level 1
+
+###
+
+`AUTONUM \* ALPHABETIC \* MERGEFORMAT`
+
+AUTONUM level 2
+
+####
+
+`AUTONUM \* ALPHABETIC \* MERGEFORMAT`
+
+AUTONUM level 3
+
+
+
+`AUTONUM \* ALPHABETIC \* MERGEFORMAT`
+
+AUTONUM level 0
+
+##
+
+`AUTONUM \s- \* MERGEFORMAT`
+
+AUTONUM level 1
+
+###
+
+`AUTONUM \s- \* MERGEFORMAT`
+
+AUTONUM level 2
+
+####
+
+`AUTONUM \s- \* MERGEFORMAT`
+
+AUTONUM level 3
+
+
+
+`AUTONUM \s- \* MERGEFORMAT`
+
+AUTONUM level 0
+
+##
+
+`AUTONUMLGL \* MERGEFORMAT`
+
+AUTONUMLGL level 1
+
+###
+
+`AUTONUMLGL \* MERGEFORMAT`
+
+AUTONUMLGL level 2
+
+####
+
+`AUTONUMLGL \* MERGEFORMAT`
+
+AUTONUMLGL level 3
+
+
+
+`AUTONUMLGL \* MERGEFORMAT`
+
+AUTONUMLGL level 0
+
+##
+
+`AUTONUMLGL \e \* MERGEFORMAT`
+
+AUTONUMLGL level 1
+
+###
+
+`AUTONUMLGL \e \* MERGEFORMAT`
+
+AUTONUMLGL level 2
+
+####
+
+`AUTONUMLGL \e \* MERGEFORMAT`
+
+AUTONUMLGL level 3
+
+
+
+`AUTONUMLGL \e \* MERGEFORMAT`
+
+AUTONUMLGL level 0
+
+##
+
+`AUTONUMLGL \s- \* MERGEFORMAT`
+
+AUTONUMLGL level 1
+
+###
+
+`AUTONUMLGL \s- \* MERGEFORMAT`
+
+AUTONUMLGL level 2
+
+####
+
+`AUTONUMLGL \s- \* MERGEFORMAT`
+
+AUTONUMLGL level 3
+
+
+
+`AUTONUMLGL \s- \* MERGEFORMAT`
+
+AUTONUMLGL level 0
+
+##
+
+`AUTONUMOUT \* MERGEFORMAT`
+
+AUTONUMOUT level 1
+
+###
+
+`AUTONUMOUT \* MERGEFORMAT`
+
+AUTONUMOUT level 2
+
+####
+
+`AUTONUMOUT \* MERGEFORMAT`
+
+AUTONUMOUT level 3
+
+
+
+`AUTONUMOUT \* MERGEFORMAT`
+
+AUTONUMOUT level 0

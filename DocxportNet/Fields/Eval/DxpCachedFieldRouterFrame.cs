@@ -5,10 +5,11 @@ using DocxportNet.Core;
 using DocxportNet.Fields.Frames;
 using DocxportNet.Middleware;
 using Microsoft.Extensions.Logging;
+using DocxportNet.Walker;
 
 namespace DocxportNet.Fields.Eval;
 
-internal sealed class DxpCachedFieldRouterFrame : DxpMiddleware, DxpIFieldEvalFrame
+internal sealed class DxpCachedFieldRouterFrame : DxpMiddleware, DxpIFieldEvalFrame, IDxpFieldCodeRunCapture
 {
     private static readonly DxpCachedFieldFrameFactory FrameFactory = new();
 
@@ -19,6 +20,11 @@ internal sealed class DxpCachedFieldRouterFrame : DxpMiddleware, DxpIFieldEvalFr
     private string? _instructionText;
     private bool _seenSeparate;
     private bool _inResult;
+    private bool _autoNumberTracked;
+    private DxpAutoNumberResult? _autoNumberResult;
+    private Run? _codeRun;
+    private bool _hasCachedResultContent;
+    private readonly DxpAutoNumberResolver _autoNumbers;
     private DxpIFieldEvalFrame? _delegate;
 
     public DxpCachedFieldRouterFrame(
@@ -36,6 +42,7 @@ internal sealed class DxpCachedFieldRouterFrame : DxpMiddleware, DxpIFieldEvalFr
         _inResult = initialInResult;
         _seenSeparate = initialSeenSeparate;
         _instructionText = initialInstructionText;
+        _autoNumbers = new DxpAutoNumberResolver(_evalContext);
     }
 
     public override void VisitComplexFieldInstruction(FieldCode instr, string text, DxpIDocumentContext d)
@@ -59,11 +66,18 @@ internal sealed class DxpCachedFieldRouterFrame : DxpMiddleware, DxpIFieldEvalFr
 
     public override void VisitComplexFieldEnd(FieldChar end, DxpIDocumentContext d)
     {
+        TrackAutoNumberIfNeeded(d);
+
         if (_delegate == null)
+        {
+            TryEmitAutoNumberFromInstruction(d);
             return;
+        }
 
         _delegate.VisitComplexFieldEnd(end, d);
         _delegate = null;
+        if (!_hasCachedResultContent)
+            TryEmitAutoNumberFromInstruction(d);
     }
 
     public override void VisitComplexFieldCachedResultText(string text, DxpIDocumentContext d)
@@ -71,15 +85,25 @@ internal sealed class DxpCachedFieldRouterFrame : DxpMiddleware, DxpIFieldEvalFr
         if (!_inResult || _delegate == null)
             return;
 
+        if (!string.IsNullOrEmpty(text))
+            _hasCachedResultContent = true;
+
         _delegate.VisitComplexFieldCachedResultText(text, d);
     }
 
     public override IDisposable VisitSimpleFieldBegin(SimpleField fld, DxpIDocumentContext d)
     {
+        TrackAutoNumberIfNeeded(d);
+
         _inResult = true;
         _seenSeparate = true;
         _delegate = FrameFactory.Create(_instructionText, Next, _evalContext, _logger);
-        return _delegate.VisitSimpleFieldBegin(fld, d);
+        var inner = _delegate.VisitSimpleFieldBegin(fld, d);
+        return DxpDisposable.Create(() => {
+            inner.Dispose();
+            if (!_hasCachedResultContent)
+                TryEmitAutoNumberFromInstruction(d);
+        });
     }
 
     public override IDisposable VisitRunBegin(Run r, DxpIDocumentContext d)
@@ -182,5 +206,38 @@ internal sealed class DxpCachedFieldRouterFrame : DxpMiddleware, DxpIFieldEvalFr
         if (string.IsNullOrEmpty(text))
             return;
         _instructionText = _instructionText == null ? text : _instructionText + text;
+    }
+
+    private void TryEmitAutoNumberFromInstruction(DxpIDocumentContext d)
+    {
+        var result = _autoNumberResult;
+        if (!_autoNumberTracked || result == null || result.Suppressed || string.IsNullOrEmpty(result.Text))
+            return;
+
+        if (_logger?.IsEnabled(LogLevel.Debug) == true)
+            _logger.LogDebug("Cached middleware synthesized automatic number '{Value}'.", result.Text);
+
+        using (Next.VisitRunBegin(_codeRun ?? new Run(), d))
+            Next.VisitText(new Text(result.Text), d);
+    }
+
+    private void TrackAutoNumberIfNeeded(DxpIDocumentContext d)
+    {
+        if (_autoNumberTracked)
+            return;
+        if (string.IsNullOrWhiteSpace(_instructionText))
+            return;
+
+        var result = _autoNumbers.Resolve(_instructionText!, d);
+        if (!result.Handled)
+            return;
+        _autoNumberTracked = true;
+        _autoNumberResult = result;
+    }
+
+    public void TryCaptureCodeRun(Run r)
+    {
+        if (_codeRun == null && !_inResult)
+            _codeRun = DxpRunCloner.CloneRunWithParagraphAncestor(r);
     }
 }

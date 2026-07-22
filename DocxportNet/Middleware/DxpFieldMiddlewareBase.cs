@@ -9,6 +9,7 @@ using DocxportNet.Middleware;
 using DocxportNet.Walker.Context;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 
 namespace DocxportNet.Walker;
 
@@ -75,6 +76,7 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
         }
 
         _paragraphOrder = 0;
+        _context.AutoNumbers.Reset();
         _context.FieldDepth = 0;
         _context.OuterFrame = null;
         return Next.VisitDocumentBegin(doc, documentContext);
@@ -235,10 +237,14 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
     {
         var previous = _context.Culture;
         var previousOutlineProvider = _context.CurrentOutlineLevelProvider;
+        var previousHeadingProvider = _context.CurrentBuiltInHeadingLevelProvider;
+        var previousStoryProvider = _context.CurrentStoryKeyProvider;
         var previousOrder = _context.CurrentDocumentOrder;
         if (TryResolveParagraphCulture(p, d, _logger, out var culture))
             _context.Culture = culture;
         _context.CurrentOutlineLevelProvider = CreateOutlineLevelProvider(p, d);
+        _context.CurrentBuiltInHeadingLevelProvider = CreateBuiltInHeadingLevelProvider(p, d);
+        _context.CurrentStoryKeyProvider = CreateStoryKeyProvider(p, d);
         _context.CurrentDocumentOrder = ++_paragraphOrder;
 
         var target = _currentAdapter ?? Next;
@@ -246,6 +252,8 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
         return new DxpCompositeScope(inner, () => {
             _context.Culture = previous;
             _context.CurrentOutlineLevelProvider = previousOutlineProvider;
+            _context.CurrentBuiltInHeadingLevelProvider = previousHeadingProvider;
+            _context.CurrentStoryKeyProvider = previousStoryProvider;
             _context.CurrentDocumentOrder = previousOrder;
         });
     }
@@ -328,6 +336,36 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
 
         int resolved = level.HasValue ? level.Value + 1 : 0;
         return () => resolved;
+    }
+
+    private static Func<int> CreateBuiltInHeadingLevelProvider(Paragraph p, DxpIDocumentContext d)
+    {
+        int level = 0;
+        foreach (var style in d.Styles.GetParagraphStyleChain(p))
+        {
+            var id = style.StyleId;
+            if (id.StartsWith("Heading", StringComparison.OrdinalIgnoreCase)
+                && int.TryParse(id.Substring("Heading".Length), out var parsed)
+                && parsed is >= 1 and <= 9)
+            {
+                level = parsed;
+                break;
+            }
+        }
+        return () => level;
+    }
+
+    private static Func<string> CreateStoryKeyProvider(Paragraph p, DxpIDocumentContext d)
+    {
+        string part = d.CurrentPart?.Uri.ToString() ?? "main";
+        var textBox = p.Ancestors<TextBoxContent>().FirstOrDefault();
+        if (textBox != null)
+            part += "#textbox:" + RuntimeHelpers.GetHashCode(textBox).ToString(CultureInfo.InvariantCulture);
+        else if (p.Ancestors<Footnote>().FirstOrDefault()?.Id?.Value is long footnoteId)
+            part += "#footnote:" + footnoteId.ToString(CultureInfo.InvariantCulture);
+        else if (p.Ancestors<Endnote>().FirstOrDefault()?.Id?.Value is long endnoteId)
+            part += "#endnote:" + endnoteId.ToString(CultureInfo.InvariantCulture);
+        return () => part;
     }
 
     protected sealed class DxpCompositeScope : IDisposable

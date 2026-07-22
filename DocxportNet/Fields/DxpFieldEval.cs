@@ -16,6 +16,7 @@ public sealed class DxpFieldEval
     private readonly DxpFieldEvalDelegates _delegates;
     private readonly DxpFieldEvalOptions _options;
     private readonly IDxpFieldValueResolver _resolver;
+    private readonly DxpAutoNumberResolver _autoNumbers;
     private readonly ILogger? _logger;
     private sealed record DxpPromptFieldSpec(
         string MemoryKey,
@@ -39,6 +40,7 @@ public sealed class DxpFieldEval
         _delegates = delegates ?? new DxpFieldEvalDelegates();
         _options = options ?? new DxpFieldEvalOptions();
         _logger = logger;
+        _autoNumbers = new DxpAutoNumberResolver(Context);
         _resolver = new DxpChainedFieldValueResolver(
             new DxpContextFieldValueResolver(),
             new DxpDelegateFieldValueResolver(_delegates)
@@ -76,6 +78,12 @@ public sealed class DxpFieldEval
             {
                 string fieldType = parse.Ast.FieldType;
                 bool knownFieldType = IsKnownFieldType(fieldType);
+                var autoNumber = _autoNumbers.Resolve(instruction.InstructionText, documentContext);
+                if (autoNumber.Handled)
+                {
+                    _logger?.LogInformation("Resolved field '{FieldType}'.", fieldType);
+                    return new DxpFieldEvalResult(DxpFieldEvalStatus.Resolved, autoNumber.Text);
+                }
                 if (fieldType.Equals("IF", StringComparison.OrdinalIgnoreCase))
                 {
                     var ifResult = await EvalIfAsync(parse.Ast, documentContext);
@@ -1399,6 +1407,9 @@ public sealed class DxpFieldEval
             || fieldType.Equals("MERGEFIELD", StringComparison.OrdinalIgnoreCase)
             || fieldType.Equals("MERGEREC", StringComparison.OrdinalIgnoreCase)
             || fieldType.Equals("MERGESEQ", StringComparison.OrdinalIgnoreCase)
+            || fieldType.Equals("AUTONUM", StringComparison.OrdinalIgnoreCase)
+            || fieldType.Equals("AUTONUMLGL", StringComparison.OrdinalIgnoreCase)
+            || fieldType.Equals("AUTONUMOUT", StringComparison.OrdinalIgnoreCase)
             || fieldType.Equals("GREETINGLINE", StringComparison.OrdinalIgnoreCase)
             || fieldType.Equals("ADDRESSBLOCK", StringComparison.OrdinalIgnoreCase)
             || fieldType.Equals("NUMPAGES", StringComparison.OrdinalIgnoreCase)
