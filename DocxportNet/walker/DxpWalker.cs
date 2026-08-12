@@ -144,6 +144,7 @@ public class DxpWalker
         _complexFieldInSimpleDepth = 0;
 
         var documentContext = new DxpDocumentContext(this, doc) {
+            ResetStyleBeforeHyperlink = true,
             MainDocumentPart = doc.MainDocumentPart,
             DocumentSettings = doc.MainDocumentPart.DocumentSettingsPart?.Settings,
             CoreProperties = doc.PackageProperties,
@@ -264,7 +265,7 @@ public class DxpWalker
         {
             before?.ReplayInline(visitor, parentContext);
             if (childParagraph != null && childContext != null)
-                WalkSyntheticFieldInlineContent(childParagraph, childContext, visitor);
+                WalkSyntheticFieldInlineContent(childParagraph, childContext, visitor, resetStyleAtEnd: true);
             after?.ReplayInline(visitor, parentContext);
         }
     }
@@ -284,6 +285,7 @@ public class DxpWalker
     private DxpDocumentContext CreateEmbeddedDocumentContext(WordprocessingDocument doc)
     {
         var documentContext = new DxpDocumentContext(this, doc) {
+            ResetStyleBeforeHyperlink = true,
             MainDocumentPart = doc.MainDocumentPart,
             DocumentSettings = doc.MainDocumentPart?.DocumentSettingsPart?.Settings,
             CoreProperties = doc.PackageProperties,
@@ -2405,7 +2407,11 @@ public class DxpWalker
         }
     }
 
-    internal void WalkSyntheticFieldInlineContent(Paragraph paragraph, DxpDocumentContext d, DxpIVisitor v)
+    internal void WalkSyntheticFieldInlineContent(
+        Paragraph paragraph,
+        DxpDocumentContext d,
+        DxpIVisitor v,
+        bool resetStyleAtEnd = false)
     {
         var previousParagraph = d.CurrentParagraph;
         var paragraphContext = d.CreateParagraphContext(paragraph, advanceAccept: false, advanceReject: false);
@@ -2417,6 +2423,8 @@ public class DxpWalker
         }
         finally
         {
+            if (resetStyleAtEnd)
+                d.StyleTracker.ResetStyle(d, v);
             d.CurrentParagraph = previousParagraph;
         }
     }

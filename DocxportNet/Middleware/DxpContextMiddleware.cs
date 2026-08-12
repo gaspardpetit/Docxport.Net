@@ -300,6 +300,13 @@ public sealed class DxpContextMiddleware : DxpLoggingMiddleware
 
     public override IDisposable VisitHyperlinkBegin(Hyperlink link, DxpLinkAnchor? target, DxpIDocumentContext d)
     {
+        if (d is DxpDocumentContext { ResetStyleBeforeHyperlink: true })
+        {
+            // Included content is replayed into an already-open parent pipeline.
+            // Close an earlier run style before opening <a>; otherwise a matching
+            // style inside the link would be closed before </a>.
+            ResetStyle(d);
+        }
         var inner = Next.VisitHyperlinkBegin(link, target, d);
         return new DxpBeforeScope(inner, () => ResetStyle(d));
     }

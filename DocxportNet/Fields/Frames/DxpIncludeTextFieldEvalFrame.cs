@@ -40,13 +40,7 @@ internal sealed class DxpIncludeTextFieldEvalFrame : DxpValueFieldEvalFrame
         }
 
         string path = tokens[0];
-        if (HasHtmlSwitch(parse.Ast.RawText) ||
-            path.EndsWith(".htm", StringComparison.OrdinalIgnoreCase) ||
-            path.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
-        {
-            Logger?.LogInformation("INCLUDETEXT HTML sources are not supported; using cached result.");
-            return ReplayCache(d);
-        }
+        bool htmlSwitch = HasHtmlSwitch(parse.Ast.RawText);
 
         var resolver = EvalContext.IncludeTextResolver;
         if (resolver == null)
@@ -75,10 +69,28 @@ internal sealed class DxpIncludeTextFieldEvalFrame : DxpValueFieldEvalFrame
             return ReplayCache(d);
         }
 
+        byte[] content = source.Content;
+        bool isHtml = htmlSwitch
+            || source.Format == DxpIncludeTextSourceFormat.Html
+            || source.Format == DxpIncludeTextSourceFormat.Auto && IsHtmlPath(path);
+        if (isHtml)
+        {
+            try
+            {
+                content = EvalContext.ConvertHtmlIncludeAsync(source.Content, CancellationToken.None)
+                    .GetAwaiter().GetResult();
+            }
+            catch (Exception ex)
+            {
+                Logger?.LogWarning(ex, "INCLUDETEXT HTML conversion failed for '{Path}'; using cached result.", path);
+                return ReplayCache(d);
+            }
+        }
+
         var expansion = new DxpIncludeTextExpansion(
             path,
             source.Identity,
-            source.Content,
+            content,
             CachedResultBuffer,
             Eval,
             Logger);
@@ -97,7 +109,7 @@ internal sealed class DxpIncludeTextFieldEvalFrame : DxpValueFieldEvalFrame
             WordprocessingDocument? document = null;
             try
             {
-                stream = new MemoryStream(source.Content, writable: false);
+                stream = new MemoryStream(content, writable: false);
                 document = WordprocessingDocument.Open(stream, false);
                 if (document.MainDocumentPart?.Document?.Body == null)
                     throw new InvalidOperationException("DOCX has no main document body.");
@@ -143,6 +155,10 @@ internal sealed class DxpIncludeTextFieldEvalFrame : DxpValueFieldEvalFrame
 
     private static bool HasHtmlSwitch(string rawText)
         => Regex.IsMatch(rawText, @"\\c\s+(?:\""?HTML\""?)", RegexOptions.IgnoreCase);
+
+    private static bool IsHtmlPath(string path)
+        => path.EndsWith(".htm", StringComparison.OrdinalIgnoreCase)
+            || path.EndsWith(".html", StringComparison.OrdinalIgnoreCase);
 
     private static List<string> TokenizeArgs(string text)
     {

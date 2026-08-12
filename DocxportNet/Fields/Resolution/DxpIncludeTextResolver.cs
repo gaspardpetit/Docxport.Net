@@ -2,7 +2,17 @@ namespace DocxportNet.Fields.Resolution;
 
 public sealed record DxpIncludeTextRequest(string Path);
 
-public sealed record DxpIncludeTextSource(string Identity, byte[] Content);
+public enum DxpIncludeTextSourceFormat
+{
+    Auto,
+    Docx,
+    Html
+}
+
+public sealed record DxpIncludeTextSource(string Identity, byte[] Content)
+{
+    public DxpIncludeTextSourceFormat Format { get; init; } = DxpIncludeTextSourceFormat.Auto;
+}
 
 public interface IDxpIncludeTextResolver
 {

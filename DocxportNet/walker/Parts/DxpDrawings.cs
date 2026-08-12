@@ -48,10 +48,12 @@ public class DxpDrawings
 
         var blip = drw.Descendants<DocumentFormat.OpenXml.Drawing.Blip>().FirstOrDefault();
         var relId = blip?.Embed?.Value;
+        var linkRelId = blip?.Link?.Value;
 
         string? contentType = null;
         string? fileName = null;
         string? dataUri = null;
+        string? externalSource = null;
 
         if (!string.IsNullOrEmpty(relId))
         {
@@ -67,7 +69,19 @@ public class DxpDrawings
             catch { /* swallow and return partial info */ }
         }
 
-        return new DxpDrawingInfo(relId, contentType, fileName, altText, dataUri);
+        if (!string.IsNullOrEmpty(linkRelId))
+        {
+            try
+            {
+                externalSource = hostPart.ExternalRelationships
+                    .FirstOrDefault(relationship => relationship.Id == linkRelId)?.Uri.OriginalString;
+            }
+            catch { /* swallow and return partial info */ }
+        }
+
+        return new DxpDrawingInfo(relId, contentType, fileName, altText, dataUri) {
+            ExternalSource = externalSource
+        };
     }
 
     private static string? NormalizeAltText(string? altText)

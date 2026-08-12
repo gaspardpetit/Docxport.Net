@@ -477,6 +477,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
         var alt = HtmlAttr(info?.AltText ?? "image");
         var dataUri = info?.DataUri;
+        var externalSource = info?.ExternalSource;
         var contentType = info?.ContentType ?? "";
 
         if (!string.IsNullOrEmpty(dataUri) && contentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
@@ -486,6 +487,10 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
         else if (!string.IsNullOrEmpty(dataUri))
         {
             Write(d, $"<object data=\"{dataUri}\" type=\"{HtmlAttr(contentType)}\">[DRAWING: {alt}]</object>");
+        }
+        else if (!string.IsNullOrEmpty(externalSource))
+        {
+            Write(d, $"<img src=\"{HtmlAttr(externalSource!)}\" alt=\"{alt}\" />");
         }
         else
         {

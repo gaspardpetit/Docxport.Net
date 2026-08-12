@@ -4,6 +4,7 @@ using DocumentFormat.OpenXml.CustomProperties;
 using DocxportNet.API;
 using DocxportNet.Fields.Resolution;
 using DocxportNet.Fields.Eval;
+using System.Security.Cryptography;
 
 namespace DocxportNet.Fields;
 
@@ -23,6 +24,7 @@ public sealed partial class DxpFieldEvalContext
     private bool _hasLastPromptResponse;
     private readonly Stack<string> _includeTextStack = new();
     private readonly Queue<DxpFieldNodeBuffer> _deferredStructuredFieldResults = new();
+    private readonly Dictionary<string, Lazy<Task<byte[]>>> _htmlIncludeConversions = new(StringComparer.Ordinal);
 
     internal IDxpIncludeTextSpliceCollector? IncludeTextSpliceCollector { get; set; }
     internal bool SuppressCrossParagraphFieldParagraphOutput { get; set; }
@@ -53,6 +55,7 @@ public sealed partial class DxpFieldEvalContext
     public Resolution.IDxpRefResolver? RefResolver { get; set; }
     public Resolution.IDatabaseFieldProvider? DatabaseProvider { get; set; }
     public Resolution.IDxpIncludeTextResolver? IncludeTextResolver { get; set; }
+    public Resolution.IDxpHtmlToDocxConverter HtmlToDocxConverter { get; set; } = new Resolution.DxpHtmlToDocxConverter();
     public int MaxIncludeTextDepth { get; set; } = 8;
     public List<DxpRefHyperlink> RefHyperlinks { get; } = new();
     public List<DxpRefFootnote> RefFootnotes { get; } = new();
@@ -97,6 +100,36 @@ public sealed partial class DxpFieldEvalContext
             return;
         if (string.Equals(_includeTextStack.Peek(), identity, StringComparison.OrdinalIgnoreCase))
             _includeTextStack.Pop();
+    }
+
+    internal async Task<byte[]> ConvertHtmlIncludeAsync(byte[] content, CancellationToken cancellationToken)
+    {
+        string key;
+        using (var sha = SHA256.Create())
+            key = Convert.ToBase64String(sha.ComputeHash(content));
+
+        Lazy<Task<byte[]>> pending;
+        lock (_htmlIncludeConversions)
+        {
+            if (!_htmlIncludeConversions.TryGetValue(key, out pending!))
+            {
+                pending = new Lazy<Task<byte[]>>(
+                    () => HtmlToDocxConverter.ConvertAsync(content, cancellationToken),
+                    LazyThreadSafetyMode.ExecutionAndPublication);
+                _htmlIncludeConversions[key] = pending;
+            }
+        }
+
+        try
+        {
+            return await pending.Value.ConfigureAwait(false);
+        }
+        catch
+        {
+            lock (_htmlIncludeConversions)
+                _htmlIncludeConversions.Remove(key);
+            throw;
+        }
     }
 
     public DateTimeOffset? CreatedDate { get; set; }

@@ -597,6 +597,7 @@ body.dxp-root {
 
         var alt = HtmlAttr(info?.AltText ?? "image");
         var dataUri = info?.DataUri;
+        var externalSource = info?.ExternalSource;
         var contentType = info?.ContentType ?? "";
 
         if (!string.IsNullOrEmpty(dataUri) && contentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
@@ -608,6 +609,12 @@ body.dxp-root {
         else if (!string.IsNullOrEmpty(dataUri))
         {
             Write(d, $"<object data=\"{dataUri}\" type=\"{HtmlAttr(contentType)}\">[DRAWING: {alt}]</object>");
+        }
+        else if (!string.IsNullOrEmpty(externalSource))
+        {
+            var style = BuildDrawingImageStyle(drw, d, _state.InHeader, _state.InFooter);
+            var styleAttr = string.IsNullOrEmpty(style) ? "" : $" style=\"{style}\"";
+            Write(d, $"<img class=\"dxp-image\" src=\"{HtmlAttr(externalSource!)}\" alt=\"{alt}\"{styleAttr} />");
         }
         else
         {

@@ -35,7 +35,11 @@ public sealed class DxpFileSystemIncludeTextResolver : IDxpIncludeTextResolver
                 continue;
 
             return Task.FromResult<DxpIncludeTextSource?>(
-                new DxpIncludeTextSource(candidate, ReadAllBytesShared(candidate)));
+                new DxpIncludeTextSource(candidate, ReadAllBytesShared(candidate)) {
+                    Format = IsHtmlPath(candidate)
+                        ? DxpIncludeTextSourceFormat.Html
+                        : DxpIncludeTextSourceFormat.Docx
+                });
         }
 
         return Task.FromResult<DxpIncludeTextSource?>(null);
@@ -110,6 +114,10 @@ public sealed class DxpFileSystemIncludeTextResolver : IDxpIncludeTextResolver
     }
 
     private static bool IsSeparator(char value) => value is '\\' or '/';
+
+    private static bool IsHtmlPath(string path)
+        => Path.GetExtension(path).Equals(".htm", StringComparison.OrdinalIgnoreCase)
+            || Path.GetExtension(path).Equals(".html", StringComparison.OrdinalIgnoreCase);
 
     private static bool IsUnderRoot(string candidate, string root)
     {

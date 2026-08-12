@@ -38,6 +38,7 @@ internal interface IDxpMutableDocumentContext
 
 public class DxpDocumentContext : DxpIDocumentContext, IDxpMutableDocumentContext
 {
+    internal bool ResetStyleBeforeHyperlink { get; set; }
     private sealed record DxpEditState(bool KeepAccept, bool KeepReject, DxpChangeInfo ChangeInfo);
 
     public DxpFieldFrameContext CurrentFields { get; }

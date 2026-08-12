@@ -6,4 +6,7 @@ public sealed record DxpDrawingInfo(
     string? FileName,
     string? AltText,
     string? DataUri
-);
+)
+{
+    public string? ExternalSource { get; init; }
+}

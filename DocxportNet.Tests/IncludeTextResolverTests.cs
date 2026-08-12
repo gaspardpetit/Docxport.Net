@@ -1,5 +1,6 @@
 using DocxportNet.Fields;
 using DocxportNet.Fields.Resolution;
+using System.Text;
 
 namespace DocxportNet.Tests;
 
@@ -19,6 +20,22 @@ public sealed class IncludeTextResolverTests
         Assert.NotNull(result);
         Assert.Equal(Path.GetFullPath(file), result!.Identity);
         Assert.Equal([1, 2, 3], result.Content);
+        Assert.Equal(DxpIncludeTextSourceFormat.Docx, result.Format);
+    }
+
+    [Theory]
+    [InlineData("Signature.htm")]
+    [InlineData("Signature.HTML")]
+    public async Task ReportsHtmlSourceFormat(string name)
+    {
+        using var fixture = new ResolverFixture();
+        fixture.Write(Encoding.UTF8.GetBytes("<p>signature</p>"), name);
+        var resolver = new DxpFileSystemIncludeTextResolver([fixture.Root]);
+
+        var result = await resolver.ResolveAsync(new DxpIncludeTextRequest(name), new DxpFieldEvalContext());
+
+        Assert.NotNull(result);
+        Assert.Equal(DxpIncludeTextSourceFormat.Html, result!.Format);
     }
 
     [Fact]

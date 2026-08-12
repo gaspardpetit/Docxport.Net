@@ -620,6 +620,8 @@ Microsoft Word supports many additional field codes not covered elsewhere in thi
 
 A complete parser or interpreter should be prepared to encounter these fields and either evaluate them or surface appropriate placeholders or errors depending on context.
 
+Docxport.Net evaluates `INCLUDETEXT` DOCX and HTML sources when an `IDxpIncludeTextResolver` is configured. HTML is converted in memory without fetching external resources; authored image links remain external and valid data images remain embedded. Bookmark-qualified ranges remain unsupported and replay their cached field result.
+
 **Reference:**  
 Microsoft Support – *List of field codes in Word*.  
 https://support.microsoft.com/en-gb/office/list-of-field-codes-in-word-1ad6d91a-55a7-4a8d-b535-cf7888659a51
@@ -1119,5 +1121,4 @@ https://support.microsoft.com/en-us/office/add-citations-in-a-word-document-ab93
 
 Microsoft Learn – Working with bibliographies in Word  
 https://learn.microsoft.com/en-us/office/vba/word/concepts/working-with-word/working-with-bibliographies
-
 

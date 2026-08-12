@@ -181,7 +181,9 @@ High‑level support includes:
 - Formatting switches: `\*` text transforms, `\#` numeric pictures, `\@` date/time pictures
 - Locale‑aware formatting and list‑separator handling
 - Number‑to‑words languages: English, French, German, Spanish, Italian, Portuguese, Danish, Japanese, Thai, Chinese (Simplified)
-- Recursive DOCX `INCLUDETEXT` during export through an opt-in `IDxpIncludeTextResolver` (HTML and bookmark ranges are not yet supported)
+- Recursive DOCX and HTML `INCLUDETEXT` during export through an opt-in `IDxpIncludeTextResolver` (bookmark ranges are not yet supported)
+
+HTML fragments are converted to an in-memory DOCX and use the same block-aware splice pipeline as DOCX fragments. External image references are preserved as authored but are never downloaded by Docxport.Net; valid `data:image` sources remain embedded. Resolvers may set `DxpIncludeTextSource.Format` when an alias or extensionless reference needs an explicit HTML/DOCX hint, and applications may replace `DxpFieldEvalContext.HtmlToDocxConverter` to customize conversion.
 
 Minimal setup (standalone):
 

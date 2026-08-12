@@ -346,7 +346,7 @@ Options:
   -o, --output=...  Output file path (default: swaps extension)
   --vars=...     Load DOCVARIABLE values from a JSON or INI file.
   -D name=value  Define a DOCVARIABLE (repeatable). CLI values override --vars.
-  --include-path=...  Allow and search this directory for INCLUDETEXT DOCX files (repeatable).
+  --include-path=...  Allow and search this directory for INCLUDETEXT DOCX/HTML files (repeatable).
   --log          Enable info-level logging to stderr.
   --log-level=...  Set log level (trace|debug|info|warn|error|critical|none).
   -v, --version  Show CLI version
