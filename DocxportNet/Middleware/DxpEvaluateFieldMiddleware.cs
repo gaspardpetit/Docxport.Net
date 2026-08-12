@@ -48,5 +48,7 @@ internal sealed class DxpEvaluateFieldMiddleware : DxpFieldMiddlewareBase
     {
         _ = documentContext;
         Context.RefResolver ??= _options.RefResolver ?? new DxpRefIndexResolver();
+        if (_options.PreserveLayoutDependentFields)
+            Context.PreserveLayoutDependentFields = true;
     }
 }

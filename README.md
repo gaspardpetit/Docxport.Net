@@ -3,7 +3,7 @@
 
 # Docxport.Net
 
-Docxport.Net is a .NET library for walking DOCX documents and exporting them to friendly formats. Today it focuses on Markdown (rich and plain), with full handling of:
+Docxport.Net is a .NET library for walking DOCX documents and exporting them to friendly formats or rebuilding them as standalone DOCX files, with full handling of:
 
 - Tracked changes (accept/reject/inline views)
 - Lists with proper markers and indentation
@@ -19,6 +19,7 @@ Docxport.Net is a .NET library for walking DOCX documents and exporting them to 
 - Markdown (rich + plain)
 - HTML (rich + plain)
 - Plain text
+- DOCX (package-preserving rebuild with optional field evaluation)
 
 **Document features**
 - Tracked changes: accept/reject/inline/split modes
@@ -88,6 +89,29 @@ string markdown = DxpExport.ExportToString(docxPath, visitor);
 File.WriteAllText(Path.ChangeExtension(docxPath, ".md"), markdown);
 ```
 
+## Resolve fields into a standalone DOCX
+
+The DOCX exporter reuses the source package and rebuilds the main document,
+headers, footers, footnotes, and endnotes from walker events. Data-dependent
+fields can be resolved while Word layout fields such as `PAGE`, `NUMPAGES`,
+`SECTION`, `SECTIONPAGES`, and `PAGEREF` remain native fields for Word to update.
+
+```bash
+docxport template.docx --fields=evaluate --vars=values.json -o resolved.docx
+```
+
+```csharp
+using DocxportNet;
+using DocxportNet.Fields;
+
+var fields = new DxpFieldEval();
+fields.Context.SetDocVariable("Reference", "ABC-123");
+DxpDocxExport.Export("template.docx", "resolved.docx", fieldEval: fields);
+```
+
+`INCLUDETEXT` resolution remains opt-in through an `IDxpIncludeTextResolver`.
+Unsupported or unavailable field sources use the evaluator's existing cached-result behavior.
+
 ## Tracked changes
 
 Visitors can emit different views of tracked changes:
@@ -119,6 +143,11 @@ string rejected = DxpExport.ExportToString(docxPath, rejectVisitor);
 - Presets: `DxpPlainTextVisitorConfig.CreateAcceptConfig()` and `CreateRejectConfig()` (choose tracked change handling).  
 - Focused on readable text output with list markers, comments, and basic structure.
 
+**DOCX**
+- `DxpDocxVisitor` preserves reusable package parts while rebuilding walked document stories.
+- `DxpDocxExport` provides convenient file and byte-array APIs.
+- With field evaluation enabled, layout-dependent fields remain native.
+
 `DxpExport` has overloads for DOCX file paths, in-memory bytes, or an already-open `WordprocessingDocument`, and can return a `string`, a `byte[]`, write straight to a file path, or just drive a visitor that collects data.
 
 ### CLI
@@ -138,7 +167,7 @@ dotnet run --project DocxportNet.Cli -- my.docx -o my.md --tracked=accept
 ./docxport my.docx --format=html --tracked=inline
 ```
 
-Options: `--format=markdown|html|text`, `--tracked=accept|reject|inline|split` (text uses accept/reject), `--plain` (plain markdown), `-o, --output=path` (infers format from extension when `--format` is omitted), `--vars=path` (JSON/INI DOCVARIABLEs), `-D name=value` (repeatable overrides), and `--include-path=directory` (repeatable allowed/search roots for evaluated DOCX and HTML `INCLUDETEXT` fields).
+Options: `--format=markdown|html|text|docx`, `--tracked=accept|reject|inline|split` (text uses accept/reject), `--plain` (plain markdown), `-o, --output=path` (infers format from extension when `--format` is omitted), `--vars=path` (JSON/INI DOCVARIABLEs), `-D name=value` (repeatable overrides), and `--include-path=directory` (repeatable allowed/search roots for evaluated DOCX and HTML `INCLUDETEXT` fields).
 
 ```bash
 docxport my.docx --fields=evaluate --include-path="C:\templates\Word Templates" -o my.md

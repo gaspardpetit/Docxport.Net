@@ -130,6 +130,10 @@ internal static class DxpFieldInstructionClassifier
             || StartsWithField(instruction, "SECTIONPAGES")
             || StartsWithField(instruction, "PAGEREF");
 
+    internal static bool IsPaginationDependentInstruction(string? instruction)
+        => IsLayoutDependentInstruction(instruction)
+            || StartsWithField(instruction, "NUMPAGES");
+
     internal static bool IsSkipIfInstruction(string? instruction)
     {
         if (StartsWithField(instruction, "SKIPIF"))

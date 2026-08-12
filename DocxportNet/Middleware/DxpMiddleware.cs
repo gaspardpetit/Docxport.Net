@@ -288,6 +288,27 @@ public abstract class DxpMiddleware : DxpIVisitor
         Next?.VisitCarriageReturn(cr, d);
     }
 
+    public virtual void VisitCommentRangeStart(CommentRangeStart start, DxpIDocumentContext d)
+    {
+        if (!ShouldForwardContent(d))
+            return;
+        Next?.VisitCommentRangeStart(start, d);
+    }
+
+    public virtual void VisitCommentRangeEnd(CommentRangeEnd end, DxpIDocumentContext d)
+    {
+        if (!ShouldForwardContent(d))
+            return;
+        Next?.VisitCommentRangeEnd(end, d);
+    }
+
+    public virtual void VisitCommentReference(CommentReference reference, DxpIDocumentContext d)
+    {
+        if (!ShouldForwardContent(d))
+            return;
+        Next?.VisitCommentReference(reference, d);
+    }
+
     public virtual IDisposable VisitCommentBegin(DxpCommentInfo c, DxpCommentThread thread, DxpIDocumentContext d)
     {
         if (!ShouldForwardContent(d))

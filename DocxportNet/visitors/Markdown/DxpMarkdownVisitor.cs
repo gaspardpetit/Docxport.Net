@@ -9,6 +9,7 @@ using DocxportNet.Word;
 using System.Text;
 using DocxportNet.Core;
 using DocxportNet.Fields;
+using DocxportNet.Walker;
 
 namespace DocxportNet.Visitors.Markdown;
 
@@ -45,6 +46,7 @@ internal sealed class DxpMarkdownVisitorState
     public Stack<StringBuilder> DeletedCaptures { get; } = new();
     public InlineChangeMode CurrentInlineMode { get; set; } = InlineChangeMode.Unchanged;
     public int SuppressFieldDepth { get; set; }
+    public int SuppressParagraphDepth { get; set; }
 
     // the writer used to print deleted content
     public TextWriter DeletedTextWriter = TextWriter.Null;
@@ -467,12 +469,12 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
         Write(d, "-");
     }
 
-    public override void VisitDrawingBegin(Drawing drw, DxpDrawingInfo? info, DxpIDocumentContext d)
+    public override IDisposable VisitDrawingBegin(Drawing drw, DxpDrawingInfo? info, DxpIDocumentContext d)
     {
         if (_config.EmitImages == false)
         {
             Write(d, "[IMAGE]");
-            return;
+            return DxpDisposable.Empty;
         }
 
         var alt = HtmlAttr(info?.AltText ?? "image");
@@ -497,6 +499,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
             var meta = string.IsNullOrEmpty(contentType) ? "" : $" ({contentType})";
             Write(d, $"[DRAWING: {alt}{meta}]");
         }
+        return DxpDisposable.Empty;
     }
 
     public override IDisposable VisitDocumentBegin(WordprocessingDocument doc, DxpIDocumentContext d)
@@ -586,6 +589,12 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
     public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
     {
+        if (!DxpParagraphs.HasRenderableParagraphContent(p))
+        {
+            _state.SuppressParagraphDepth++;
+            return DxpDisposable.Create(() => _state.SuppressParagraphDepth--);
+        }
+
         _state.TabIndex = 0;
         _state.CurrentLineXPt = paragraph.ComputedStyle.TextIndentPt ?? 0.0;
         _state.InParagraph = true;
@@ -1302,27 +1311,16 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
         Write(d, text);
     }
 
-    IDisposable DxpIVisitor.VisitDrawingBegin(Drawing drw, DxpDrawingInfo? info, DxpIDocumentContext d)
-    {
-        VisitDrawingBegin(drw, info, d);
-        return DxpDisposable.Empty;
-    }
-
-    public new void VisitLegacyPictureBegin(Picture pict, DxpIDocumentContext d)
+    public override IDisposable VisitLegacyPictureBegin(Picture pict, DxpIDocumentContext d)
     {
         if (_config.EmitImages == false)
         {
             Write(d, "[IMAGE]");
-            return;
+            return DxpDisposable.Empty;
         }
 
         var alt = "image";
         Write(d, $"[PICTURE: {alt}]");
-    }
-
-    IDisposable DxpIVisitor.VisitLegacyPictureBegin(Picture pict, DxpIDocumentContext d)
-    {
-        VisitLegacyPictureBegin(pict, d);
         return DxpDisposable.Empty;
     }
 
@@ -1446,7 +1444,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
     private void Write(DxpIDocumentContext d, string str)
     {
-        if (_state.SuppressFieldDepth > 0)
+        if (_state.SuppressFieldDepth > 0 || _state.SuppressParagraphDepth > 0)
             return;
 
         if (_config.TrackedChangeMode == DxpTrackedChangeMode.InlineChanges)

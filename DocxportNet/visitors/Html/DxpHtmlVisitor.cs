@@ -12,6 +12,7 @@ using System.Net;
 using DocxportNet.Visitors.Markdown;
 using DocxportNet.Fields;
 using DocxportNet.Walker.Context;
+using DocxportNet.Walker;
 
 namespace DocxportNet.Visitors.Html;
 
@@ -47,6 +48,7 @@ internal sealed class DxpHtmlVisitorState
     public DxpComputedTabLeaderKind PendingAlignedTabLeader { get; set; }
     public StringBuilder PendingAlignedTabBuffer { get; } = new();
     public int SuppressFieldDepth { get; set; }
+    public int SuppressParagraphDepth { get; set; }
     public bool FootnotesOpen { get; set; }
 
     public TextWriter DeletedTextWriter = TextWriter.Null;
@@ -587,12 +589,12 @@ body.dxp-root {
 
     public override void VisitNoBreakHyphen(NoBreakHyphen h, DxpIDocumentContext d) => Write(d, "-");
 
-    public override void VisitDrawingBegin(Drawing drw, DxpDrawingInfo? info, DxpIDocumentContext d)
+    public override IDisposable VisitDrawingBegin(Drawing drw, DxpDrawingInfo? info, DxpIDocumentContext d)
     {
         if (_config.EmitImages == false)
         {
             Write(d, "<span class=\"dxp-image\">[IMAGE]</span>");
-            return;
+            return DxpDisposable.Empty;
         }
 
         var alt = HtmlAttr(info?.AltText ?? "image");
@@ -621,6 +623,7 @@ body.dxp-root {
             var meta = string.IsNullOrEmpty(contentType) ? "" : $" ({contentType})";
             Write(d, $"<span class=\"dxp-image\">[DRAWING: {alt}{meta}]</span>");
         }
+        return DxpDisposable.Empty;
     }
 
     private static string? BuildDrawingImageStyle(Drawing drw, DxpIDocumentContext d, bool inHeader, bool inFooter)
@@ -828,16 +831,17 @@ body.dxp-root {
     private static double EmuToPoints(long emu) => emu / 12700.0;
     private static double EmuToInches(long emu) => emu / 914400.0;
 
-    public new void VisitLegacyPictureBegin(Picture pict, DxpIDocumentContext d)
+    public override IDisposable VisitLegacyPictureBegin(Picture pict, DxpIDocumentContext d)
     {
         if (_config.EmitImages == false)
         {
             Write(d, "<span class=\"dxp-image\">[IMAGE]</span>");
-            return;
+            return DxpDisposable.Empty;
         }
 
         var alt = "image";
         Write(d, $"<span class=\"dxp-image\">[PICTURE: {alt}]</span>");
+        return DxpDisposable.Empty;
     }
 
     static string HtmlAttr(string s) =>
@@ -858,6 +862,12 @@ body.dxp-root {
 
     public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
     {
+        if (!DxpParagraphs.HasRenderableParagraphContent(p))
+        {
+            _state.SuppressParagraphDepth++;
+            return DxpDisposable.Create(() => _state.SuppressParagraphDepth--);
+        }
+
         _state.TabIndex = 0;
         _state.CurrentLineXPt = paragraph.ComputedStyle.TextIndentPt ?? 0.0;
         _state.InParagraph = true;
@@ -1907,7 +1917,7 @@ body.dxp-root {
 
     private void Write(DxpIDocumentContext d, string str)
     {
-        if (_state.SuppressFieldDepth > 0)
+        if (_state.SuppressFieldDepth > 0 || _state.SuppressParagraphDepth > 0)
             return;
 
         if (_config.TrackedChangeMode == DxpTrackedChangeMode.InlineChanges)
@@ -2035,15 +2045,4 @@ body.dxp-root {
         Write(d, WebUtility.HtmlEncode(text));
     }
 
-    IDisposable DxpIVisitor.VisitDrawingBegin(Drawing drw, DxpDrawingInfo? info, DxpIDocumentContext d)
-    {
-        VisitDrawingBegin(drw, info, d);
-        return DxpDisposable.Empty;
-    }
-
-    IDisposable DxpIVisitor.VisitLegacyPictureBegin(Picture pict, DxpIDocumentContext d)
-    {
-        VisitLegacyPictureBegin(pict, d);
-        return DxpDisposable.Empty;
-    }
 }

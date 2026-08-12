@@ -267,6 +267,9 @@ public interface DxpIVisitor : DxpIStyleVisitor, DxpIFieldVisitor
     void VisitBookmarkStart(BookmarkStart bs, DxpIDocumentContext d);
     void VisitBreak(Break br, DxpIDocumentContext d);
     void VisitCarriageReturn(CarriageReturn cr, DxpIDocumentContext d);
+    void VisitCommentRangeStart(CommentRangeStart start, DxpIDocumentContext d);
+    void VisitCommentRangeEnd(CommentRangeEnd end, DxpIDocumentContext d);
+    void VisitCommentReference(CommentReference reference, DxpIDocumentContext d);
     IDisposable VisitCommentBegin(DxpCommentInfo c, DxpCommentThread thread, DxpIDocumentContext d);
     IDisposable VisitCommentThreadBegin(string anchorId, DxpCommentThread thread, DxpIDocumentContext d);
     void VisitConflictDeletion(ConflictDeletion cDel, DxpIDocumentContext d);

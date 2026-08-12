@@ -556,8 +556,8 @@ public class DxpWalker
                 case CommentReference cref:
                     WalkCommentReference(cref, d, v);
                     break;
-                case CommentRangeEnd:
-                    // nothing to do for inline-at-start policy
+                case CommentRangeEnd cre:
+                    v.VisitCommentRangeEnd(cre, d);
                     break;
                 case PermStart ps:
                     v.VisitPermStart(ps, d);
@@ -749,6 +749,7 @@ public class DxpWalker
                         WalkCommentReference(cref, d, v);
                         break;
                     case CommentRangeEnd cre:
+                        v.VisitCommentRangeEnd(cre, d);
                         break;
                     case PermStart ps:
                         v.VisitPermStart(ps, d);
@@ -921,6 +922,10 @@ public class DxpWalker
             {
                 switch (child)
                 {
+                    // Cell properties are surfaced through DxpITableCellContext.Properties.
+                    case TableCellProperties:
+                        break;
+
                     // ---- Block-level content inside a cell (EG_BlockLevelElts) ----
                     case Paragraph p:
                         sawBlock = true;
@@ -971,6 +976,7 @@ public class DxpWalker
                         WalkCommentReference(cref, d, v);
                         break;
                     case CommentRangeEnd cre:
+                        v.VisitCommentRangeEnd(cre, d);
                         break;
                     case PermStart ps:
                         v.VisitPermStart(ps, d);
@@ -1051,9 +1057,6 @@ public class DxpWalker
 
     private void WalkParagraph(Paragraph p, DxpDocumentContext d, DxpIVisitor v)
     {
-        if (!DxpParagraphs.HasRenderableParagraphContent(p))
-            return;
-
         Deleted? deletedParagraph =
             p.ParagraphProperties?.GetFirstChild<Deleted>() ??
             p.ParagraphProperties?.ParagraphMarkRunProperties?.GetFirstChild<Deleted>();
@@ -1112,6 +1115,7 @@ public class DxpWalker
                         WalkCommentReference(cref, d, v);
                         break;
                     case CommentRangeEnd cre:
+                        v.VisitCommentRangeEnd(cre, d);
                         break;
                     case PermStart ps:
                         v.VisitPermStart(ps, d);
@@ -1268,6 +1272,7 @@ public class DxpWalker
                         WalkCommentReference(cref, d, v);
                         break;
                     case CommentRangeEnd cre:
+                        v.VisitCommentRangeEnd(cre, d);
                         break;
                     case PermStart ps:
                         v.VisitPermStart(ps, d);
@@ -1433,6 +1438,7 @@ public class DxpWalker
                         WalkCommentReference(cref, d, v);
                         break;
                     case CommentRangeEnd cre:
+                        v.VisitCommentRangeEnd(cre, d);
                         break;
                     case PermStart ps:
                         v.VisitPermStart(ps, d);
@@ -1555,6 +1561,7 @@ public class DxpWalker
                                 WalkCommentReference(cref, d, v);
                                 break;
                             case CommentRangeEnd cre:
+                                v.VisitCommentRangeEnd(cre, d);
                                 break;
                             case PermStart ps:
                                 v.VisitPermStart(ps, d);
@@ -1704,6 +1711,7 @@ public class DxpWalker
                             WalkCommentReference(cref, d, v);
                             break;
                         case CommentRangeEnd cre:
+                            v.VisitCommentRangeEnd(cre, d);
                             break;
                         case PermStart ps:
                             v.VisitPermStart(ps, d);
@@ -1834,6 +1842,7 @@ public class DxpWalker
                         WalkCommentReference(cref, d, v);
                         break;
                     case CommentRangeEnd cre:
+                        v.VisitCommentRangeEnd(cre, d);
                         break;
 
                     // ---- Permissions ----
@@ -1984,6 +1993,7 @@ public class DxpWalker
                         WalkCommentReference(cref, d, v);
                         break;
                     case CommentRangeEnd cre:
+                        v.VisitCommentRangeEnd(cre, d);
                         break;
                     case PermStart ps:
                         v.VisitPermStart(ps, d);
@@ -2118,6 +2128,7 @@ public class DxpWalker
                         WalkCommentReference(cref, d, v);
                         break;
                     case CommentRangeEnd cre:
+                        v.VisitCommentRangeEnd(cre, d);
                         break;
                     case PermStart ps:
                         v.VisitPermStart(ps, d);
@@ -2249,6 +2260,7 @@ public class DxpWalker
                         WalkCommentReference(cref, d, v);
                         break;
                     case CommentRangeEnd cre:
+                        v.VisitCommentRangeEnd(cre, d);
                         break;
                     case PermStart ps:
                         v.VisitPermStart(ps, d);
@@ -2710,6 +2722,7 @@ public class DxpWalker
                             WalkCommentReference(cref, d, v);
                             break;
                         case CommentRangeEnd cre:
+                            v.VisitCommentRangeEnd(cre, d);
                             break;
 
                         case AlternateContent ac:
@@ -3054,6 +3067,7 @@ public class DxpWalker
                         WalkCommentReference(cref, d, v);
                         break;
                     case CommentRangeEnd cre:
+                        v.VisitCommentRangeEnd(cre, d);
                         break;
 
                     // Permissions & proofing
@@ -3167,6 +3181,7 @@ public class DxpWalker
                         WalkCommentReference(cref, d, v);
                         break;
                     case CommentRangeEnd cre:
+                        v.VisitCommentRangeEnd(cre, d);
                         break;
 
                     // Permissions & proofing
@@ -3278,6 +3293,7 @@ public class DxpWalker
                         WalkCommentReference(cref, d, v);
                         break;
                     case CommentRangeEnd cre:
+                        v.VisitCommentRangeEnd(cre, d);
                         break;
 
                     // ---- Permissions & proofing anchors ----
@@ -3427,12 +3443,14 @@ public class DxpWalker
 
     private void WalkCommentReference(CommentReference cref, DxpDocumentContext d, DxpIVisitor v)
     {
+        v.VisitCommentReference(cref, d);
         string id = cref.Id?.Value ?? string.Empty;
         WalkCommentThread(id, d, v);
     }
 
     private void WalkCommentRangeStart(CommentRangeStart crs, DxpDocumentContext d, DxpIVisitor v)
     {
+        v.VisitCommentRangeStart(crs, d);
         string id = crs.Id?.Value ?? string.Empty;
         WalkCommentThread(id, d, v);
     }
@@ -3560,8 +3578,8 @@ public class DxpWalker
             case CommentReference cref:
                 WalkCommentReference(cref, d, v);
                 break;
-            case CommentRangeEnd:
-                // nothing to do for inline-at-start policy
+            case CommentRangeEnd cre:
+                v.VisitCommentRangeEnd(cre, d);
                 break;
 
             case CustomXmlRun cxr:

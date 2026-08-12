@@ -159,6 +159,7 @@ public class DxpDocumentContext : DxpIDocumentContext, IDxpMutableDocumentContex
         if (mainPart != null)
         {
             MainDocumentPart = mainPart;
+            CurrentPart = mainPart;
             Footnotes.Init(mainPart);
             Endnotes.Init(mainPart);
             Comments.Init(mainPart);
