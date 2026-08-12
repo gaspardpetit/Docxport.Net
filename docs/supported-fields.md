@@ -41,6 +41,7 @@ Status: feature-complete
 Status: feature-complete (review multi-run bookmarks)
 
 - [x] Resolves bookmark value.
+- [x] Bare bookmark-name fields resolve as implicit REF when the bookmark exists.
 - [x] REF switches: \d \f \h \n \p \r \t \w (via resolver).
 - [x] CHARFORMAT/MERGEFORMAT for rendered output.
 - [x] Multi-run/structured bookmark replay.
@@ -162,11 +163,20 @@ Status: not tracked
 
 ## PAGEREF / NOTEREF
 
-Status: out of scope (requires pagination/layout engine)
+Status: partial (evaluation requires pagination/layout engine)
 
+- [x] PAGEREF replays Word's cached result during evaluated export.
 - [ ] Resolves page number for bookmark (PAGEREF).
 - [ ] Resolves note reference mark for bookmark (NOTEREF).
-- [ ] Regression test present.
+- [x] Cached PAGEREF regression test present.
+
+## PAGE / SECTION / SECTIONPAGES
+
+Status: partial (cached results)
+
+- [x] Evaluated export preserves Word's structured cached result.
+- [ ] Compute page and section values from a layout engine.
+- [x] Simple and complex field regression tests present.
 
 ## GREETINGLINE
 
@@ -200,11 +210,20 @@ Status: partial (pluggable provider; basic TSV rendering)
 
 ## INCLUDETEXT / INCLUDEPICTURE
 
-Status: not tracked
+Status: partial
 
-- [ ] External content resolution (file/URL).
+- [x] Injectable DOCX content resolution.
+- [x] Nested path-producing fields are evaluated before resolution.
+- [x] Recursive DOCX body walking with cycle and depth protection.
+- [x] Cached-result fallback for unavailable or invalid sources.
+- [ ] Bookmark range selection.
+- [ ] HTML/HTM content conversion.
+- [x] Built-in allowed-root resolver with local/UNC suffix remapping.
+- [x] Block-aware parent paragraph splicing with first/last paragraph seam merging.
+- [ ] Fully transactional visitor buffering for failures after child emission begins.
+- [ ] INCLUDEPICTURE external content resolution.
 - [ ] Security/sandbox policy for external loads.
-- [ ] Regression test present.
+- [x] Regression tests present for inline, multi-paragraph, table, recursion, and fallback cases.
 
 ## TOC / TC / INDEX / XE / RD
 

@@ -29,6 +29,8 @@ internal class DxpValueFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame
     protected DxpFieldEval Eval => _eval;
     protected DxpFieldEvalContext EvalContext => _eval.Context;
     protected string? InstructionText => _instructionText;
+    protected ILogger? Logger => _logger;
+    protected DxpFieldNodeBuffer? CachedResultBuffer => _cachedResultBuffer;
 
     public DxpValueFieldEvalFrame(
         DxpIVisitor? next,

@@ -1,3 +1,4 @@
+using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentFormat.OpenXml.Packaging;
 using DocxportNet.Tests.Utils;
@@ -5,6 +6,7 @@ using DocxportNet.Visitors.Html;
 using DocxportNet.Visitors.PlainText;
 using DocxportNet.Walker;
 using DocxportNet.Middleware;
+using DocxportNet.Fields.Resolution;
 using Xunit.Abstractions;
 
 namespace DocxportNet.Tests;
@@ -201,6 +203,288 @@ public sealed class FieldEvalMiddlewareRegressionTests : TestBase<FieldEvalMiddl
         Assert.Contains("I.A.1.a.AUTONUMOUT level 0", text, StringComparison.Ordinal);
     }
 
+    [Fact]
+    public void Eval_IncludeText_WalksChildBodyAndResumesParent()
+    {
+        byte[] child = CreateTextDocBytes("CHILD");
+        using var parent = CreateIncludeTextDoc("child.docx", "CACHE", "BEFORE", "AFTER");
+        var resolver = new MemoryIncludeTextResolver(("child.docx", "child", child));
+
+        string output = ExportIncludeText(parent, resolver, DxpFieldEvalExportMode.Evaluate);
+
+        Assert.Contains("BEFORE", output, StringComparison.Ordinal);
+        Assert.Contains("CHILD", output, StringComparison.Ordinal);
+        Assert.Contains("AFTER", output, StringComparison.Ordinal);
+        Assert.True(output.IndexOf("BEFORE", StringComparison.Ordinal) < output.IndexOf("CHILD", StringComparison.Ordinal));
+        Assert.True(output.IndexOf("CHILD", StringComparison.Ordinal) < output.IndexOf("AFTER", StringComparison.Ordinal));
+        Assert.DoesNotContain("CACHE", output, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Eval_IncludeText_SingleParagraphMergesInlineAndProducesWellFormedHtml()
+    {
+        using var parent = CreateInlineIncludeTextDoc("child.docx", "CACHE", "BEFORE-", "-AFTER");
+        var resolver = new MemoryIncludeTextResolver(("child.docx", "child", CreateTextDocBytes("CHILD")));
+        var visitor = new DxpHtmlVisitor(DxpHtmlVisitorConfig.CreateRichConfig(), Logger);
+        visitor.FieldEval.Context.IncludeTextResolver = resolver;
+
+        string html = DxpExport.ExportToString(parent, visitor,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate }, Logger);
+
+        Assert.Contains("BEFORE-CHILD-AFTER", StripTags(html), StringComparison.Ordinal);
+        Assert.DoesNotContain("<p class=\"dxp-paragraph\"><p", html, StringComparison.Ordinal);
+        _ = System.Xml.Linq.XDocument.Parse(html);
+    }
+
+    [Fact]
+    public void Eval_IncludeText_MultipleParagraphsMergeFirstAndLastSeams()
+    {
+        using var parent = CreateInlineIncludeTextDoc("child.docx", "CACHE", "BEFORE-", "-AFTER");
+        var resolver = new MemoryIncludeTextResolver(("child.docx", "child", CreateTextDocBytes("FIRST", "LAST")));
+
+        string output = ExportIncludeText(parent, resolver, DxpFieldEvalExportMode.Evaluate);
+
+        Assert.Contains("BEFORE-FIRST", output, StringComparison.Ordinal);
+        Assert.Contains("LAST-AFTER", output, StringComparison.Ordinal);
+        Assert.True(output.IndexOf("FIRST", StringComparison.Ordinal) < output.IndexOf("LAST", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void Eval_IncludeText_TableBetweenParagraphSeamsProducesWellFormedHtml()
+    {
+        using var parent = CreateInlineIncludeTextDoc("child.docx", "CACHE", "BEFORE-", "-AFTER");
+        var resolver = new MemoryIncludeTextResolver(("child.docx", "child", CreateParagraphTableParagraphDocBytes()));
+        var visitor = new DxpHtmlVisitor(DxpHtmlVisitorConfig.CreateRichConfig(), Logger);
+        visitor.FieldEval.Context.IncludeTextResolver = resolver;
+
+        string html = DxpExport.ExportToString(parent, visitor,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate }, Logger);
+        string text = StripTags(html);
+
+        _ = System.Xml.Linq.XDocument.Parse(html);
+        Assert.True(text.IndexOf("BEFORE-FIRST", StringComparison.Ordinal) < text.IndexOf("MIDDLE", StringComparison.Ordinal));
+        Assert.True(text.IndexOf("MIDDLE", StringComparison.Ordinal) < text.IndexOf("LAST-AFTER", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void Eval_UnsupportedIncludeTextCacheInsideTableCellProducesWellFormedHtml()
+    {
+        using var stream = new MemoryStream();
+        using (var created = WordprocessingDocument.Create(stream, DocumentFormat.OpenXml.WordprocessingDocumentType.Document, true))
+        {
+            var main = created.AddMainDocumentPart();
+            main.Document = new Document(new Body(new Table(new TableRow(new TableCell(new Paragraph(
+                new Run(new RunProperties(new Bold()), new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new RunProperties(new Bold()), new FieldCode { Text = " INCLUDETEXT \"signature.htm\" \\c HTML " }),
+                new Run(new RunProperties(new Bold()), new FieldChar { FieldCharType = FieldCharValues.Separate }),
+                new Run(new RunProperties(new Bold()), new Text("Error! Not a valid filename.")),
+                new Run(new RunProperties(new Bold()), new FieldChar { FieldCharType = FieldCharValues.End })))))));
+            main.Document.Save();
+        }
+        stream.Position = 0;
+        using var document = WordprocessingDocument.Open(stream, false);
+        var visitor = new DxpHtmlVisitor(DxpHtmlVisitorConfig.CreateRichConfig(), Logger);
+        string html = DxpExport.ExportToString(document, visitor,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate }, Logger);
+
+        _ = System.Xml.Linq.XDocument.Parse(html);
+        Assert.Contains("Error! Not a valid filename.", html, StringComparison.Ordinal);
+        Assert.DoesNotContain("</td>\n</strong>", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Eval_IncludeText_UsesEvaluatedNestedPathAndEvaluatesChildFields()
+    {
+        byte[] child = CreateDocVariableDocBytes("ChildValue", "child-cache");
+        using var parent = CreateNestedIncludeTextDoc("Root", "\\Headers\\Example.docx", "CACHE");
+        var resolver = new MemoryIncludeTextResolver(("C:\\Templates\\Headers\\Example.docx", "child", child));
+        var visitor = new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateAcceptConfig(), Logger);
+        visitor.FieldEval.Context.SetDocVariable("Root", "C:\\Templates");
+        visitor.FieldEval.Context.SetDocVariable("ChildValue", "CHILD-VALUE");
+        visitor.FieldEval.Context.IncludeTextResolver = resolver;
+
+        string output = DxpExport.ExportToString(parent, visitor,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate }, Logger);
+
+        Assert.Equal("C:\\Templates\\Headers\\Example.docx", Assert.Single(resolver.Requests));
+        Assert.Contains("CHILD-VALUE", output, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Eval_IncludeText_RecursesAndStopsCycles()
+    {
+        byte[] cycle = CreateIncludeTextDocBytes("cycle.docx", "CYCLE-CACHE", "CHILD-BEFORE", "CHILD-AFTER");
+        using var parent = CreateIncludeTextDoc("cycle.docx", "PARENT-CACHE");
+        var resolver = new MemoryIncludeTextResolver(("cycle.docx", "cycle", cycle));
+
+        string output = ExportIncludeText(parent, resolver, DxpFieldEvalExportMode.Evaluate);
+
+        Assert.Contains("CHILD-BEFORE", output, StringComparison.Ordinal);
+        Assert.Contains("CYCLE-CACHE", output, StringComparison.Ordinal);
+        Assert.Contains("CHILD-AFTER", output, StringComparison.Ordinal);
+        Assert.Equal(2, resolver.Requests.Count);
+    }
+
+    [Fact]
+    public void Eval_IncludeText_DepthLimitReplaysNestedCache()
+    {
+        byte[] second = CreateTextDocBytes("TOO-DEEP");
+        byte[] first = CreateIncludeTextDocBytes("second.docx", "DEPTH-CACHE");
+        using var parent = CreateIncludeTextDoc("first.docx", "PARENT-CACHE");
+        var resolver = new MemoryIncludeTextResolver(
+            ("first.docx", "first", first),
+            ("second.docx", "second", second));
+        var visitor = new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateAcceptConfig(), Logger);
+        visitor.FieldEval.Context.IncludeTextResolver = resolver;
+        visitor.FieldEval.Context.MaxIncludeTextDepth = 1;
+
+        string output = DxpExport.ExportToString(parent, visitor,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate }, Logger);
+
+        Assert.Contains("DEPTH-CACHE", output, StringComparison.Ordinal);
+        Assert.DoesNotContain("TOO-DEEP", output, StringComparison.Ordinal);
+    }
+
+    [Theory]
+    [InlineData("missing.docx", " INCLUDETEXT \"missing.docx\" ")]
+    [InlineData("page.htm", " INCLUDETEXT \"page.htm\" \\c HTML ")]
+    [InlineData("child.docx", " INCLUDETEXT \"child.docx\" Bookmark1 ")]
+    public void Eval_IncludeText_UnsupportedOrMissingSourceReplaysCache(string path, string instruction)
+    {
+        using var parent = CreateIncludeTextDoc(path, "CACHED", instruction: instruction);
+        var resolver = new MemoryIncludeTextResolver();
+
+        string output = ExportIncludeText(parent, resolver, DxpFieldEvalExportMode.Evaluate);
+
+        Assert.Contains("CACHED", output, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Cache_IncludeText_DoesNotInvokeResolver()
+    {
+        using var parent = CreateIncludeTextDoc("child.docx", "CACHED");
+        var resolver = new MemoryIncludeTextResolver(("child.docx", "child", CreateTextDocBytes("CHILD")));
+
+        string output = ExportIncludeText(parent, resolver, DxpFieldEvalExportMode.Cache);
+
+        Assert.Contains("CACHED", output, StringComparison.Ordinal);
+        Assert.Empty(resolver.Requests);
+    }
+
+    [Fact]
+    public void Eval_IncludeText_MalformedDocxReplaysCache()
+    {
+        using var parent = CreateIncludeTextDoc("broken.docx", "CACHED");
+        var resolver = new MemoryIncludeTextResolver(("broken.docx", "broken", [1, 2, 3, 4]));
+
+        string output = ExportIncludeText(parent, resolver, DxpFieldEvalExportMode.Evaluate);
+
+        Assert.Contains("CACHED", output, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Eval_IncludeText_MalformedDocxReplaysCacheInsideOriginalParagraph()
+    {
+        using var parent = CreateInlineIncludeTextDoc("broken.docx", "CACHED", "BEFORE-", "-AFTER");
+        var resolver = new MemoryIncludeTextResolver(("broken.docx", "broken", [1, 2, 3, 4]));
+        var visitor = new DxpHtmlVisitor(DxpHtmlVisitorConfig.CreateRichConfig(), Logger);
+        visitor.FieldEval.Context.IncludeTextResolver = resolver;
+
+        string html = DxpExport.ExportToString(parent, visitor,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate }, Logger);
+
+        _ = System.Xml.Linq.XDocument.Parse(html);
+        Assert.Contains("BEFORE-CACHED-AFTER", StripTags(html), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Eval_MultipleIncludeTextFieldsProduceWellFormedHtml()
+    {
+        using var parent = CreateTwoIncludeTextDoc();
+        var resolver = new MemoryIncludeTextResolver(
+            ("first.docx", "first", CreateTextDocBytes("FIRST")),
+            ("second.docx", "second", CreateTextDocBytes("SECOND")));
+        var visitor = new DxpHtmlVisitor(DxpHtmlVisitorConfig.CreateRichConfig(), Logger);
+        visitor.FieldEval.Context.IncludeTextResolver = resolver;
+
+        string html = DxpExport.ExportToString(parent, visitor,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate }, Logger);
+
+        _ = System.Xml.Linq.XDocument.Parse(html);
+        string text = StripTags(html);
+        Assert.True(text.IndexOf("BEFORE", StringComparison.Ordinal) < text.IndexOf("FIRST", StringComparison.Ordinal));
+        Assert.True(text.IndexOf("FIRST", StringComparison.Ordinal) < text.IndexOf("BETWEEN", StringComparison.Ordinal));
+        Assert.True(text.IndexOf("BETWEEN", StringComparison.Ordinal) < text.IndexOf("SECOND", StringComparison.Ordinal));
+        Assert.True(text.IndexOf("SECOND", StringComparison.Ordinal) < text.IndexOf("AFTER", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public async Task Eval_ImplicitBookmarkFieldBehavesLikeRef()
+    {
+        var eval = new DocxportNet.Fields.DxpFieldEval(logger: Logger);
+        eval.Context.SetBookmarkNodes("DocPathBMK", DocxportNet.Fields.DxpFieldNodeBuffer.FromText("C:\\Templates"));
+
+        var result = await eval.EvalAsync(new DocxportNet.Fields.DxpFieldInstruction(" DocPathBMK "));
+
+        Assert.Equal(DocxportNet.Fields.DxpFieldEvalStatus.Resolved, result.Status);
+        Assert.Equal("C:\\Templates", result.Text);
+    }
+
+    [Fact]
+    public async Task Eval_UnknownBareFieldWithoutBookmarkUsesCache()
+    {
+        var eval = new DocxportNet.Fields.DxpFieldEval(logger: Logger);
+
+        var result = await eval.EvalAsync(new DocxportNet.Fields.DxpFieldInstruction(" MissingBMK ", "CACHED"));
+
+        Assert.Equal(DocxportNet.Fields.DxpFieldEvalStatus.UsedCache, result.Status);
+        Assert.Equal("CACHED", result.Text);
+    }
+
+    [Fact]
+    public void Eval_ImplicitBookmarkNestedInIncludeTextBuildsPath()
+    {
+        byte[] child = CreateTextDocBytes("CHILD");
+        using var parent = CreateSetAndImplicitBookmarkIncludeDoc();
+        var resolver = new MemoryIncludeTextResolver(("C:\\Templates\\Headers\\Example.docx", "child", child));
+
+        string output = ExportIncludeText(parent, resolver, DxpFieldEvalExportMode.Evaluate);
+
+        Assert.Equal("C:\\Templates\\Headers\\Example.docx", Assert.Single(resolver.Requests));
+        Assert.Contains("CHILD", output, StringComparison.Ordinal);
+    }
+
+    [Theory]
+    [InlineData(" PAGE ", "7")]
+    [InlineData(" SECTION ", "2")]
+    [InlineData(" SECTIONPAGES ", "4")]
+    [InlineData(" PAGEREF Target \\h ", "3")]
+    public void Eval_LayoutDependentSimpleFieldReplaysCachedResult(string instruction, string cached)
+    {
+        using var document = CreateSimpleFieldDoc(instruction, cached);
+        var visitor = new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateAcceptConfig(), Logger);
+
+        string output = DxpExport.ExportToString(document, visitor,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate }, Logger);
+
+        Assert.Contains(cached, output, StringComparison.Ordinal);
+        Assert.DoesNotContain("Error! Invalid field code.", output, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Eval_LayoutDependentComplexFieldReplaysStructuredCachedResult()
+    {
+        using var document = CreateComplexCachedFieldDoc(" PAGE ", "12", bold: true);
+        var visitor = new DxpHtmlVisitor(DxpHtmlVisitorConfig.CreateRichConfig(), Logger);
+
+        string html = DxpExport.ExportToString(document, visitor,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate }, Logger);
+
+        Assert.Contains("12", html, StringComparison.Ordinal);
+        Assert.Contains("dxp-bold", html, StringComparison.Ordinal);
+        Assert.DoesNotContain("Error! Invalid field code.", html, StringComparison.Ordinal);
+    }
+
     private static WordprocessingDocument CreateDocVariableDoc(string name, string value)
     {
         var stream = new MemoryStream();
@@ -238,6 +522,33 @@ public sealed class FieldEvalMiddlewareRegressionTests : TestBase<FieldEvalMiddl
             document.Save();
         }
 
+        stream.Position = 0;
+        return WordprocessingDocument.Open(stream, false);
+    }
+
+    private static WordprocessingDocument CreateComplexCachedFieldDoc(string instruction, string cachedText, bool bold)
+    {
+        var stream = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(stream, DocumentFormat.OpenXml.WordprocessingDocumentType.Document, true))
+        {
+            var mainPart = document.AddMainDocumentPart();
+            RunProperties? properties = bold ? new RunProperties(new Bold()) : null;
+            Run MakeRun(OpenXmlElement child)
+            {
+                var run = new Run();
+                if (properties != null)
+                    run.RunProperties = (RunProperties)properties.CloneNode(true);
+                run.Append(child);
+                return run;
+            }
+            mainPart.Document = new Document(new Body(new Paragraph(
+                MakeRun(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                MakeRun(new FieldCode { Text = instruction }),
+                MakeRun(new FieldChar { FieldCharType = FieldCharValues.Separate }),
+                MakeRun(new Text(cachedText)),
+                MakeRun(new FieldChar { FieldCharType = FieldCharValues.End }))));
+            mainPart.Document.Save();
+        }
         stream.Position = 0;
         return WordprocessingDocument.Open(stream, false);
     }
@@ -330,5 +641,216 @@ public sealed class FieldEvalMiddlewareRegressionTests : TestBase<FieldEvalMiddl
 
         stream.Position = 0;
         return WordprocessingDocument.Open(stream, false);
+    }
+
+    private string ExportIncludeText(
+        WordprocessingDocument document,
+        MemoryIncludeTextResolver resolver,
+        DxpFieldEvalExportMode mode)
+    {
+        var visitor = new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateAcceptConfig(), Logger);
+        visitor.FieldEval.Context.IncludeTextResolver = resolver;
+        return DxpExport.ExportToString(document, visitor, new DxpExportOptions { FieldEvalMode = mode }, Logger);
+    }
+
+    private static WordprocessingDocument CreateIncludeTextDoc(
+        string path,
+        string cached,
+        string? before = null,
+        string? after = null,
+        string? instruction = null)
+    {
+        var stream = new MemoryStream(CreateIncludeTextDocBytes(path, cached, before, after, instruction));
+        return WordprocessingDocument.Open(stream, false);
+    }
+
+    private static WordprocessingDocument CreateInlineIncludeTextDoc(
+        string path, string cached, string before, string after)
+    {
+        var stream = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(stream, DocumentFormat.OpenXml.WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(new Paragraph(
+                new Run(new Text(before)),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldCode { Text = $" INCLUDETEXT \"{path}\" " }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Separate }),
+                new Run(new Text(cached)),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.End }),
+                new Run(new Text(after)))));
+            main.Document.Save();
+        }
+        stream.Position = 0;
+        return WordprocessingDocument.Open(stream, false);
+    }
+
+    private static WordprocessingDocument CreateTwoIncludeTextDoc()
+    {
+        var stream = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(stream, DocumentFormat.OpenXml.WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(new Paragraph(
+                new Run(new Text("BEFORE")),
+                CreateSimpleIncludeTextField("first.docx", "FIRST-CACHE"),
+                new Run(new Text("BETWEEN")),
+                CreateSimpleIncludeTextField("second.docx", "SECOND-CACHE"),
+                new Run(new Text("AFTER")))));
+            main.Document.Save();
+        }
+        stream.Position = 0;
+        return WordprocessingDocument.Open(stream, false);
+    }
+
+    private static SimpleField CreateSimpleIncludeTextField(string path, string cached)
+        => new(new Run(new Text(cached))) { Instruction = $" INCLUDETEXT \"{path}\" " };
+
+    private static byte[] CreateIncludeTextDocBytes(
+        string path,
+        string cached,
+        string? before = null,
+        string? after = null,
+        string? instruction = null)
+    {
+        using var stream = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(stream, DocumentFormat.OpenXml.WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body());
+            if (before != null)
+                main.Document.Body!.Append(new Paragraph(new Run(new Text(before))));
+            main.Document.Body!.Append(new Paragraph(
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldCode { Text = instruction ?? $" INCLUDETEXT \"{path}\" " }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Separate }),
+                new Run(new Text(cached)),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.End })));
+            if (after != null)
+                main.Document.Body!.Append(new Paragraph(new Run(new Text(after))));
+            main.Document.Save();
+        }
+        return stream.ToArray();
+    }
+
+    private static WordprocessingDocument CreateNestedIncludeTextDoc(string variable, string suffix, string cached)
+    {
+        using var stream = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(stream, DocumentFormat.OpenXml.WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(new Paragraph(
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldCode { Text = " INCLUDETEXT \"" }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldCode { Text = $" DOCVARIABLE {variable} " }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.End }),
+                new Run(new FieldCode { Text = suffix + "\" " }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Separate }),
+                new Run(new Text(cached)),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.End }))));
+            main.Document.Save();
+        }
+        stream.Position = 0;
+        return WordprocessingDocument.Open(stream, false);
+    }
+
+    private static byte[] CreateTextDocBytes(params string[] paragraphs)
+    {
+        using var stream = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(stream, DocumentFormat.OpenXml.WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(paragraphs.Select(text => new Paragraph(new Run(new Text(text))))));
+            main.Document.Save();
+        }
+        return stream.ToArray();
+    }
+
+    private static string StripTags(string html)
+        => System.Net.WebUtility.HtmlDecode(System.Text.RegularExpressions.Regex.Replace(html, "<[^>]+>", string.Empty));
+
+    private static byte[] CreateDocVariableDocBytes(string name, string cached)
+    {
+        using var stream = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(stream, DocumentFormat.OpenXml.WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(new Paragraph(
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldCode { Text = $" DOCVARIABLE {name} " }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Separate }),
+                new Run(new Text(cached)),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.End }))));
+            main.Document.Save();
+        }
+        return stream.ToArray();
+    }
+
+    private static byte[] CreateParagraphTableParagraphDocBytes()
+    {
+        using var stream = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(stream, DocumentFormat.OpenXml.WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(
+                new Paragraph(new Run(new Text("FIRST"))),
+                new Table(new TableRow(new TableCell(new Paragraph(new Run(new Text("MIDDLE")))))),
+                new Paragraph(new Run(new Text("LAST")))));
+            main.Document.Save();
+        }
+        return stream.ToArray();
+    }
+
+    private static WordprocessingDocument CreateSetAndImplicitBookmarkIncludeDoc()
+    {
+        using var stream = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(stream, DocumentFormat.OpenXml.WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(
+                new Paragraph(
+                    new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                    new Run(new FieldCode { Text = " SET DocPathBMK \"C:\\Templates\" " }),
+                    new Run(new FieldChar { FieldCharType = FieldCharValues.End })),
+                new Paragraph(
+                    new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                    new Run(new FieldCode { Text = " INCLUDETEXT \"" }),
+                    new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                    new Run(new FieldCode { Text = " DocPathBMK " }),
+                    new Run(new FieldChar { FieldCharType = FieldCharValues.End }),
+                    new Run(new FieldCode { Text = "\\Headers\\Example.docx\" " }),
+                    new Run(new FieldChar { FieldCharType = FieldCharValues.Separate }),
+                    new Run(new Text("CACHE")),
+                    new Run(new FieldChar { FieldCharType = FieldCharValues.End }))));
+            main.Document.Save();
+        }
+        stream.Position = 0;
+        return WordprocessingDocument.Open(stream, false);
+    }
+
+    private sealed class MemoryIncludeTextResolver : IDxpIncludeTextResolver
+    {
+        private readonly Dictionary<string, DxpIncludeTextSource> _sources;
+
+        public MemoryIncludeTextResolver(params (string Path, string Identity, byte[] Content)[] sources)
+        {
+            _sources = sources.ToDictionary(
+                source => source.Path,
+                source => new DxpIncludeTextSource(source.Identity, source.Content),
+                StringComparer.OrdinalIgnoreCase);
+        }
+
+        public List<string> Requests { get; } = new();
+
+        public Task<DxpIncludeTextSource?> ResolveAsync(
+            DxpIncludeTextRequest request,
+            DocxportNet.Fields.DxpFieldEvalContext context,
+            CancellationToken cancellationToken = default)
+        {
+            Requests.Add(request.Path);
+            _sources.TryGetValue(request.Path, out var source);
+            return Task.FromResult(source);
+        }
     }
 }

@@ -74,6 +74,18 @@ public sealed class DxpFieldEval
                 return FallbackToCacheOrSkip(instruction);
             }
 
+            if (parse.Ast.FieldType != null &&
+                string.IsNullOrWhiteSpace(parse.Ast.ArgumentsText) &&
+                !IsKnownFieldType(parse.Ast.FieldType) &&
+                DxpFieldInstructionClassifier.TryGetImplicitRefName(
+                    instruction.InstructionText,
+                    Context,
+                    out string implicitBookmark))
+            {
+                string normalized = $"REF {implicitBookmark}";
+                parse = _parser.Parse(normalized);
+            }
+
             if (parse.Ast.FieldType != null)
             {
                 string fieldType = parse.Ast.FieldType;
