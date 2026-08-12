@@ -340,6 +340,7 @@ public sealed class DxpFieldNodeBuffer
     }
 
     public bool IsEmpty => _nodes.Count == 0;
+    internal bool HasParagraphRoots => _nodes.Any(static node => node is ParagraphNode);
 
     public string ToPlainText()
     {

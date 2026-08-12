@@ -461,6 +461,51 @@ public sealed class FieldEvalMiddlewareRegressionTests : TestBase<FieldEvalMiddl
     }
 
     [Fact]
+    public void Eval_NonEmptyCrossParagraphIfReplaysSelectedBranchAsParagraphs()
+    {
+        using var document = CreateNonEmptyCrossParagraphIfDoc();
+        var visitor = new DxpHtmlVisitor(DxpHtmlVisitorConfig.CreateRichConfig(), Logger);
+
+        string html = DxpExport.ExportToString(document, visitor,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate }, Logger);
+
+        _ = System.Xml.Linq.XDocument.Parse(html);
+        Assert.Matches("<p[^>]*>FIRST</p>", html);
+        Assert.Matches("<p[^>]*>SECOND</p>", html);
+        Assert.True(html.IndexOf("FIRST", StringComparison.Ordinal) < html.IndexOf("SECOND", StringComparison.Ordinal));
+        Assert.True(html.IndexOf("SECOND", StringComparison.Ordinal) < html.IndexOf("AFTER", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void Eval_NestedNonEmptyCrossParagraphIfStaysInsideParentBranch()
+    {
+        using var document = CreateNestedNonEmptyCrossParagraphIfDoc();
+        var visitor = new DxpHtmlVisitor(DxpHtmlVisitorConfig.CreateRichConfig(), Logger);
+
+        string html = DxpExport.ExportToString(document, visitor,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate }, Logger);
+
+        _ = System.Xml.Linq.XDocument.Parse(html);
+        Assert.Matches("<p[^>]*>INNER FIRST</p>", html);
+        Assert.Matches("<p[^>]*>INNER SECOND</p>", html);
+        Assert.DoesNotContain("OUTER TRUE", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Eval_CrossParagraphIfBranchStartingLaterMergesAtOriginalInsertionPoint()
+    {
+        using var document = CreateDelayedBranchCrossParagraphIfDoc();
+        var visitor = new DxpHtmlVisitor(DxpHtmlVisitorConfig.CreateRichConfig(), Logger);
+
+        string html = DxpExport.ExportToString(document, visitor,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate }, Logger);
+
+        _ = System.Xml.Linq.XDocument.Parse(html);
+        Assert.Matches("<p[^>]*>PREFIXRESULT</p>", html);
+        Assert.DoesNotMatch("</p>\\s*<p[^>]*>RESULT", html);
+    }
+
+    [Fact]
     public async Task Eval_UnknownBareFieldWithoutBookmarkUsesCache()
     {
         var eval = new DocxportNet.Fields.DxpFieldEval(logger: Logger);
@@ -756,6 +801,74 @@ public sealed class FieldEvalMiddlewareRegressionTests : TestBase<FieldEvalMiddl
                     new Run(new FieldCode { Text = "\" \"\" " }),
                     new Run(new FieldChar { FieldCharType = FieldCharValues.End }),
                     new Run(new RunProperties(new Bold()), new Text("Following Heading")))));
+            main.Document.Save();
+        }
+        stream.Position = 0;
+        return WordprocessingDocument.Open(stream, false);
+    }
+
+    private static WordprocessingDocument CreateNonEmptyCrossParagraphIfDoc()
+    {
+        var stream = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(stream, DocumentFormat.OpenXml.WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(
+                new Paragraph(
+                    new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                    new Run(new FieldCode { Text = " IF 1 = 1 \"FIRST" })),
+                new Paragraph(new Run(new FieldCode { Text = "SECOND" })),
+                new Paragraph(
+                    new Run(new FieldCode { Text = "\" \"UNSELECTED\" " }),
+                    new Run(new FieldChar { FieldCharType = FieldCharValues.End })),
+                new Paragraph(new Run(new Text("AFTER")))));
+            main.Document.Save();
+        }
+        stream.Position = 0;
+        return WordprocessingDocument.Open(stream, false);
+    }
+
+    private static WordprocessingDocument CreateNestedNonEmptyCrossParagraphIfDoc()
+    {
+        var stream = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(stream, DocumentFormat.OpenXml.WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(
+                new Paragraph(
+                    new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                    new Run(new FieldCode { Text = " IF 1 = 0 \"OUTER TRUE\" \"" }),
+                    new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                    new Run(new FieldCode { Text = " IF 1 = 1 \"INNER FIRST" })),
+                new Paragraph(new Run(new FieldCode { Text = "INNER SECOND" })),
+                new Paragraph(
+                    new Run(new FieldCode { Text = "\" \"INNER FALSE\" " }),
+                    new Run(new FieldChar { FieldCharType = FieldCharValues.End }),
+                    new Run(new FieldCode { Text = "\" " }),
+                    new Run(new FieldChar { FieldCharType = FieldCharValues.End })),
+                new Paragraph(new Run(new Text("AFTER")))));
+            main.Document.Save();
+        }
+        stream.Position = 0;
+        return WordprocessingDocument.Open(stream, false);
+    }
+
+    private static WordprocessingDocument CreateDelayedBranchCrossParagraphIfDoc()
+    {
+        var stream = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(stream, DocumentFormat.OpenXml.WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(
+                new Paragraph(
+                    new Run(new Text("PREFIX")),
+                    new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                    new Run(new FieldCode { Text = " IF 1 = 0 \"TRUE" })),
+                new Paragraph(new Run(new FieldCode { Text = " BRANCH\" \"" })),
+                new Paragraph(
+                    new Run(new FieldCode { Text = "RESULT\" " }),
+                    new Run(new FieldChar { FieldCharType = FieldCharValues.End })),
+                new Paragraph(new Run(new Text("AFTER")))));
             main.Document.Save();
         }
         stream.Position = 0;
