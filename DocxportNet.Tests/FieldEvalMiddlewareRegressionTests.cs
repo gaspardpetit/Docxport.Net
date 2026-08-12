@@ -348,7 +348,6 @@ public sealed class FieldEvalMiddlewareRegressionTests : TestBase<FieldEvalMiddl
     [Theory]
     [InlineData("missing.docx", " INCLUDETEXT \"missing.docx\" ")]
     [InlineData("page.htm", " INCLUDETEXT \"page.htm\" \\c HTML ")]
-    [InlineData("child.docx", " INCLUDETEXT \"child.docx\" Bookmark1 ")]
     public void Eval_IncludeText_UnsupportedOrMissingSourceReplaysCache(string path, string instruction)
     {
         using var parent = CreateIncludeTextDoc(path, "CACHED", instruction: instruction);

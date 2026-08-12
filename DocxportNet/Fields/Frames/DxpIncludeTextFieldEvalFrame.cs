@@ -33,13 +33,16 @@ internal sealed class DxpIncludeTextFieldEvalFrame : DxpValueFieldEvalFrame
         }
 
         var tokens = TokenizeArgs(parse.Ast.ArgumentsText!);
-        if (tokens.Count != 1 || string.IsNullOrWhiteSpace(tokens[0]))
+        if (tokens.Count is < 1 or > 2 || string.IsNullOrWhiteSpace(tokens[0]))
         {
-            Logger?.LogInformation("INCLUDETEXT bookmark selection is not supported; using cached result.");
+            Logger?.LogInformation("INCLUDETEXT arguments are invalid; using cached result.");
             return ReplayCache(d);
         }
 
         string path = tokens[0];
+        string? bookmark = tokens.Count == 2 ? tokens[1] : null;
+        if (bookmark != null && string.IsNullOrWhiteSpace(bookmark))
+            return ReplayCache(d);
         bool htmlSwitch = HasHtmlSwitch(parse.Ast.RawText);
 
         var resolver = EvalContext.IncludeTextResolver;
@@ -91,6 +94,7 @@ internal sealed class DxpIncludeTextFieldEvalFrame : DxpValueFieldEvalFrame
             path,
             source.Identity,
             content,
+            bookmark,
             CachedResultBuffer,
             Eval,
             Logger);
@@ -125,11 +129,23 @@ internal sealed class DxpIncludeTextFieldEvalFrame : DxpValueFieldEvalFrame
             using (stream)
             using (document)
             {
+                IReadOnlyList<DocumentFormat.OpenXml.OpenXmlElement>? blocks = null;
+                if (!string.IsNullOrWhiteSpace(bookmark))
+                {
+                    var body = document.MainDocumentPart!.Document.Body!;
+                    if (!DxpBookmarkRangeProjector.TryProject(body, bookmark!, out var projected, out var error))
+                    {
+                        Logger?.LogWarning("{Error} Using cached INCLUDETEXT result.", error);
+                        return ReplayCache(d);
+                    }
+                    blocks = projected;
+                }
+
                 var pipeline = DxpVisitorMiddleware.Chain(
                     Next,
                     next => DxpFieldEvalMiddleware.CreateEvaluatedFieldMiddleware(next, Eval, logger: Logger),
                     next => new DxpContextMiddleware(next, Logger));
-                new DxpWalker(Logger).AcceptEmbeddedBody(document, pipeline);
+                new DxpWalker(Logger).AcceptEmbeddedBody(document, pipeline, blocks);
                 return true;
             }
         }
