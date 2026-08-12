@@ -134,7 +134,10 @@ public class DxpWalker
         }
     }
 
-    internal void AcceptEmbeddedBody(WordprocessingDocument doc, DxpIVisitor v)
+    internal void AcceptEmbeddedBody(
+        WordprocessingDocument doc,
+        DxpIVisitor v,
+        IReadOnlyList<OpenXmlElement>? selectedBlocks = null)
     {
         if (doc.MainDocumentPart?.Document?.Body is not Body body)
             throw new InvalidOperationException("DOCX has no main document body.");
@@ -166,7 +169,7 @@ public class DxpWalker
             customList,
             DxpTimeline.BuildTimeline(doc));
 
-        foreach (var block in body.ChildElements)
+        foreach (var block in selectedBlocks ?? body.ChildElements)
         {
             if (block is SectionProperties)
                 continue;
@@ -180,14 +183,15 @@ public class DxpWalker
         DxpIDocumentContext parentContext,
         Paragraph parentParagraph,
         DxpFieldNodeBuffer? before,
-        DxpFieldNodeBuffer? after)
+        DxpFieldNodeBuffer? after,
+        IReadOnlyList<OpenXmlElement>? selectedBlocks = null)
     {
         if (doc.MainDocumentPart?.Document?.Body is not Body body)
             throw new InvalidOperationException("DOCX has no main document body.");
         if (parentContext is not DxpDocumentContext parentDocumentContext)
         {
             before?.Replay(v, parentContext);
-            AcceptEmbeddedBody(doc, v);
+            AcceptEmbeddedBody(doc, v, selectedBlocks);
             after?.Replay(v, parentContext);
             return;
         }
@@ -196,7 +200,9 @@ public class DxpWalker
         _complexFieldDepth = 0;
         _complexFieldInSimpleDepth = 0;
         var childContext = CreateEmbeddedDocumentContext(doc);
-        var blocks = body.ChildElements.Where(block => block is not SectionProperties).ToList();
+        var blocks = (selectedBlocks ?? body.ChildElements)
+            .Where(block => block is not SectionProperties)
+            .ToList();
         bool hasBefore = before != null && !before.IsEmpty;
         bool hasAfter = after != null && !after.IsEmpty;
 

@@ -33,6 +33,7 @@ public sealed class DxpHtmlToDocxConverter : IDxpHtmlToDocxConverter
         var parser = new HtmlParser();
         var parsed = await parser.ParseDocumentAsync(text, cancellationToken).ConfigureAwait(false);
         ValidateDataImages(parsed.Images.Select(image => image.GetAttribute("src")));
+        var htmlBookmarks = PrepareHtmlBookmarks(parsed);
         foreach (var element in parsed.QuerySelectorAll("[style]"))
             element.SetAttribute("style", NormalizeCssDeclarations(element.GetAttribute("style") ?? string.Empty));
         foreach (var style in parsed.QuerySelectorAll("style"))
@@ -68,6 +69,7 @@ public sealed class DxpHtmlToDocxConverter : IDxpHtmlToDocxConverter
             };
             await converter.ParseBody(parsed.DocumentElement?.OuterHtml ?? text, cancellationToken).ConfigureAwait(false);
             main.Document ??= new Document(new Body());
+            RestoreHtmlBookmarks(main, htmlBookmarks);
             RestoreExternalImages(main, externalImages);
             main.Document.Save();
         }
@@ -152,6 +154,86 @@ public sealed class DxpHtmlToDocxConverter : IDxpHtmlToDocxConverter
         => Regex.Replace(css, "(?i)(font-family\\s*:\\s*)(['\"])([^;\"',\\s]+)\\2", "$1$3",
             RegexOptions.None, s_regexTimeout);
 
+    private static IReadOnlyList<HtmlBookmark> PrepareHtmlBookmarks(AngleSharp.Dom.IDocument document)
+    {
+        var bookmarks = new List<HtmlBookmark>();
+        if (document.Body == null)
+            return bookmarks;
+
+        foreach (var element in document.Body.QuerySelectorAll("[id]"))
+        {
+            string? name = element.GetAttribute("id");
+            if (string.IsNullOrWhiteSpace(name))
+                continue;
+
+            string token = Guid.NewGuid().ToString("N");
+            var bookmark = new HtmlBookmark(name!, $"DXPBMS{token}", $"DXPBME{token}");
+            element.InsertBefore(document.CreateTextNode(bookmark.StartMarker), element.FirstChild);
+            element.AppendChild(document.CreateTextNode(bookmark.EndMarker));
+            bookmarks.Add(bookmark);
+        }
+        return bookmarks;
+    }
+
+    private static void RestoreHtmlBookmarks(MainDocumentPart main, IReadOnlyList<HtmlBookmark> bookmarks)
+    {
+        uint id = main.Document?.Descendants<BookmarkStart>()
+            .Select(start => uint.TryParse(start.Id?.Value, out uint value) ? value : 0)
+            .DefaultIfEmpty()
+            .Max() + 1 ?? 1;
+        foreach (var bookmark in bookmarks)
+        {
+            var start = new BookmarkStart { Name = bookmark.Name, Id = id.ToString() };
+            var end = new BookmarkEnd { Id = id.ToString() };
+            bool startRestored = ReplaceMarker(main, bookmark.StartMarker, start);
+            bool endRestored = ReplaceMarker(main, bookmark.EndMarker, end);
+            if (!startRestored || !endRestored)
+            {
+                if (start.Parent != null)
+                    start.Remove();
+                if (end.Parent != null)
+                    end.Remove();
+                RemoveMarker(main, bookmark.StartMarker);
+                RemoveMarker(main, bookmark.EndMarker);
+            }
+            id++;
+        }
+    }
+
+    private static bool ReplaceMarker(MainDocumentPart main, string marker, OpenXmlElement replacement)
+    {
+        Text? text = main.Document?.Descendants<Text>()
+            .FirstOrDefault(candidate => candidate.Text.Contains(marker, StringComparison.Ordinal));
+        if (text?.Parent is not Run run || run.Parent == null)
+            return false;
+
+        string before = text.Text.Substring(0, text.Text.IndexOf(marker, StringComparison.Ordinal));
+        string after = text.Text.Substring(before.Length + marker.Length);
+        if (before.Length > 0)
+            run.InsertBeforeSelf(CloneRunWithText(run, before));
+        run.InsertBeforeSelf(replacement);
+        if (after.Length > 0)
+            run.InsertAfterSelf(CloneRunWithText(run, after));
+        run.Remove();
+        return true;
+    }
+
+    private static void RemoveMarker(MainDocumentPart main, string marker)
+    {
+        foreach (var text in main.Document?.Descendants<Text>()
+                     .Where(candidate => candidate.Text.Contains(marker, StringComparison.Ordinal)).ToArray() ?? [])
+            text.Text = text.Text.Replace(marker, string.Empty);
+    }
+
+    private static Run CloneRunWithText(Run source, string value)
+    {
+        var run = new Run();
+        if (source.RunProperties != null)
+            run.RunProperties = (RunProperties)source.RunProperties.CloneNode(true);
+        run.AppendChild(new Text(value) { Space = SpaceProcessingModeValues.Preserve });
+        return run;
+    }
+
     private static void RestoreExternalImages(MainDocumentPart main, IReadOnlyList<ExternalImage> images)
     {
         var drawings = main.Document?.Descendants<Drawing>()
@@ -176,6 +258,7 @@ public sealed class DxpHtmlToDocxConverter : IDxpHtmlToDocxConverter
     }
 
     private sealed record ExternalImage(string Source, string? AltText, string Placeholder);
+    private sealed record HtmlBookmark(string Name, string StartMarker, string EndMarker);
 
     private sealed class NeverFetchWebRequest : IWebRequest
     {
