@@ -31,6 +31,12 @@ internal sealed class DxpEvaluateFieldFrameFactory
         if (DxpFieldInstructionClassifier.IsFillInInstruction(instruction))
             return new DxpValueFieldEvalFrame(next, eval, logger, instruction);
 
+        if (DxpFieldInstructionClassifier.IsIncludeTextInstruction(instruction))
+            return new DxpIncludeTextFieldEvalFrame(next, eval, logger, instruction);
+
+        if (DxpFieldInstructionClassifier.IsLayoutDependentInstruction(instruction))
+            return new DxpLayoutCachedFieldEvalFrame(next, eval, logger, instruction);
+
         if (DxpFieldInstructionClassifier.IsNextInstruction(instruction))
             return new DxpValueFieldEvalFrame(next, eval, logger, instruction);
 
@@ -79,6 +85,9 @@ internal sealed class DxpEvaluateFieldFrameFactory
 
         if (DxpFieldInstructionClassifier.IsFormulaInstruction(instruction))
             return new DxpFormulaFieldEvalFrame(next, eval, logger, instruction);
+
+        if (DxpFieldInstructionClassifier.TryGetImplicitRefName(instruction, context, out string bookmark))
+            return new DxpRefFieldEvalFrame(next, eval, logger, $"REF {bookmark}");
 
         if (logger?.IsEnabled(LogLevel.Debug) == true)
             logger.LogDebug("FieldFrameFactory: no evaluate frame for instruction '{Instruction}'.", instruction ?? string.Empty);

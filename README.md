@@ -45,7 +45,8 @@ Docxport.Net is a .NET library for walking DOCX documents and exporting them to 
 | Utilities | SEQ, COMPARE, ASK, Formula (=) | ◐ |
 | Macros | GREETINGLINE, ADDRESSBLOCK | ◐ |
 | Metrics | NUMPAGES, NUMWORDS, NUMCHARS | ◐ |
-| Indexing | TOC / INDEX / PAGEREF / NOTEREF | ⛔ |
+| Layout-dependent | PAGE, SECTION, SECTIONPAGES, PAGEREF | ◐ (cached result) |
+| Indexing | TOC / INDEX / NOTEREF | ⛔ |
 
 Legend: ✅ full, ◐ partial, ⛔ out of scope  
 Full checklist: [docs/supported-fields.md](docs/supported-fields.md)
@@ -137,7 +138,11 @@ dotnet run --project DocxportNet.Cli -- my.docx -o my.md --tracked=accept
 ./docxport my.docx --format=html --tracked=inline
 ```
 
-Options: `--format=markdown|html|text`, `--tracked=accept|reject|inline|split` (text uses accept/reject), `--plain` (plain markdown), `-o, --output=path` (infers format from extension when `--format` is omitted), `--vars=path` (JSON/INI DOCVARIABLEs), `-D name=value` (repeatable overrides).
+Options: `--format=markdown|html|text`, `--tracked=accept|reject|inline|split` (text uses accept/reject), `--plain` (plain markdown), `-o, --output=path` (infers format from extension when `--format` is omitted), `--vars=path` (JSON/INI DOCVARIABLEs), `-D name=value` (repeatable overrides), and `--include-path=directory` (repeatable allowed/search roots for evaluated DOCX `INCLUDETEXT` fields).
+
+```bash
+docxport my.docx --fields=evaluate --include-path="C:\templates\Word Templates" -o my.md
+```
 
 ## Custom visitors
 
@@ -176,6 +181,7 @@ High‑level support includes:
 - Formatting switches: `\*` text transforms, `\#` numeric pictures, `\@` date/time pictures
 - Locale‑aware formatting and list‑separator handling
 - Number‑to‑words languages: English, French, German, Spanish, Italian, Portuguese, Danish, Japanese, Thai, Chinese (Simplified)
+- Recursive DOCX `INCLUDETEXT` during export through an opt-in `IDxpIncludeTextResolver` (HTML and bookmark ranges are not yet supported)
 
 Minimal setup (standalone):
 

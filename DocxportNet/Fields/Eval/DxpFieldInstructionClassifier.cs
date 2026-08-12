@@ -2,6 +2,23 @@ namespace DocxportNet.Fields.Eval;
 
 internal static class DxpFieldInstructionClassifier
 {
+    internal static bool TryGetImplicitRefName(
+        string? instruction,
+        DxpFieldEvalContext context,
+        out string bookmark)
+    {
+        bookmark = string.Empty;
+        if (string.IsNullOrWhiteSpace(instruction))
+            return false;
+
+        string candidate = instruction!.Trim();
+        if (!IsBookmarkIdentifier(candidate) || !context.TryGetBookmarkNodes(candidate, out _))
+            return false;
+
+        bookmark = candidate;
+        return true;
+    }
+
     internal static bool IsSetInstruction(string? instruction)
     {
         if (string.IsNullOrWhiteSpace(instruction))
@@ -63,6 +80,9 @@ internal static class DxpFieldInstructionClassifier
     internal static bool IsDatabaseInstruction(string? instruction)
         => StartsWithField(instruction, "DATABASE");
 
+    internal static bool IsIncludeTextInstruction(string? instruction)
+        => StartsWithField(instruction, "INCLUDETEXT");
+
     internal static bool IsAutoNumberInstruction(string? instruction)
         => StartsWithField(instruction, "AUTONUM")
             || StartsWithField(instruction, "AUTONUMLGL")
@@ -91,6 +111,12 @@ internal static class DxpFieldInstructionClassifier
             return true;
         return StartsWithField(instruction, "NUMCHARS");
     }
+
+    internal static bool IsLayoutDependentInstruction(string? instruction)
+        => StartsWithField(instruction, "PAGE")
+            || StartsWithField(instruction, "SECTION")
+            || StartsWithField(instruction, "SECTIONPAGES")
+            || StartsWithField(instruction, "PAGEREF");
 
     internal static bool IsSkipIfInstruction(string? instruction)
     {
@@ -128,5 +154,17 @@ internal static class DxpFieldInstructionClassifier
         if (!trimmed.StartsWith(fieldType, StringComparison.OrdinalIgnoreCase))
             return false;
         return trimmed.Length == fieldType.Length || char.IsWhiteSpace(trimmed[fieldType.Length]);
+    }
+
+    private static bool IsBookmarkIdentifier(string value)
+    {
+        if (value.Length == 0 || !char.IsLetter(value[0]))
+            return false;
+        for (int i = 1; i < value.Length; i++)
+        {
+            if (!char.IsLetterOrDigit(value[i]) && value[i] != '_')
+                return false;
+        }
+        return true;
     }
 }

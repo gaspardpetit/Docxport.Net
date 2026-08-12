@@ -21,6 +21,9 @@ public sealed partial class DxpFieldEvalContext
     private readonly Dictionary<string, string> _promptOnceResponses = new(StringComparer.Ordinal);
     private string? _lastPromptResponse;
     private bool _hasLastPromptResponse;
+    private readonly Stack<string> _includeTextStack = new();
+
+    internal IDxpIncludeTextSpliceCollector? IncludeTextSpliceCollector { get; set; }
 
     public Func<DateTimeOffset> NowProvider { get; private set; } = () => DateTimeOffset.Now;
     public CultureInfo? Culture { get; set; } = CultureInfo.CurrentCulture;
@@ -33,6 +36,8 @@ public sealed partial class DxpFieldEvalContext
     public Resolution.IDxpTableValueResolver? TableResolver { get; set; }
     public Resolution.IDxpRefResolver? RefResolver { get; set; }
     public Resolution.IDatabaseFieldProvider? DatabaseProvider { get; set; }
+    public Resolution.IDxpIncludeTextResolver? IncludeTextResolver { get; set; }
+    public int MaxIncludeTextDepth { get; set; } = 8;
     public List<DxpRefHyperlink> RefHyperlinks { get; } = new();
     public List<DxpRefFootnote> RefFootnotes { get; } = new();
     public Func<int>? CurrentOutlineLevelProvider { get; set; }
@@ -44,6 +49,39 @@ public sealed partial class DxpFieldEvalContext
     public Resolution.IDxpFieldValueResolver? ValueResolver { get; set; }
     public IDxpMergeRecordCursor? MergeCursor { get; set; }
     public string? ListSeparator { get; set; }
+
+    internal bool TryEnterIncludeText(string identity, out string? error)
+    {
+        error = null;
+        if (string.IsNullOrWhiteSpace(identity))
+        {
+            error = "INCLUDETEXT resolver returned an empty identity.";
+            return false;
+        }
+
+        if (_includeTextStack.Count >= MaxIncludeTextDepth)
+        {
+            error = $"INCLUDETEXT depth limit reached ({MaxIncludeTextDepth}).";
+            return false;
+        }
+
+        if (_includeTextStack.Contains(identity, StringComparer.OrdinalIgnoreCase))
+        {
+            error = $"Recursive INCLUDETEXT detected for '{identity}'.";
+            return false;
+        }
+
+        _includeTextStack.Push(identity);
+        return true;
+    }
+
+    internal void ExitIncludeText(string identity)
+    {
+        if (_includeTextStack.Count == 0)
+            return;
+        if (string.Equals(_includeTextStack.Peek(), identity, StringComparison.OrdinalIgnoreCase))
+            _includeTextStack.Pop();
+    }
 
     public DateTimeOffset? CreatedDate { get; set; }
     public DateTimeOffset? SavedDate { get; set; }

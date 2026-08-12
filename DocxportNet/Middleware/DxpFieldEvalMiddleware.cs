@@ -33,7 +33,7 @@ public static class DxpFieldEvalMiddleware
         ILogger? logger = null,
         DxpEvaluateFieldMiddlewareOptions? options = null)
         => new DxpEvaluateFieldMiddleware(
-            next,
+            new DocxportNet.Middleware.DxpIncludeTextParagraphMiddleware(next, eval, logger),
             eval,
             includeDocumentProperties,
             includeCustomProperties,

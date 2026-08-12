@@ -1,6 +1,7 @@
 using DocxportNet;
 using DocxportNet.API;
 using DocxportNet.Fields;
+using DocxportNet.Fields.Resolution;
 using DocxportNet.Visitors.Html;
 using DocxportNet.Visitors.Markdown;
 using DocxportNet.Visitors.PlainText;
@@ -26,6 +27,7 @@ string tracked = "accept";
 bool plainOutput = false;
 bool formatExplicit = false;
 var cliVariables = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+var includePaths = new List<string>();
 string? varsPath = null;
 LogLevel logLevel = LogLevel.Warning;
 DxpFieldEvalExportMode fieldMode = DxpFieldEvalExportMode.Cache;
@@ -75,6 +77,17 @@ for (int i = 0; i < args.Length; i++)
     }
     else if (arg.StartsWith("--vars=", StringComparison.OrdinalIgnoreCase))
         varsPath = arg[(arg.IndexOf('=') + 1)..];
+    else if (arg.StartsWith("--include-path=", StringComparison.OrdinalIgnoreCase))
+        includePaths.Add(arg[(arg.IndexOf('=') + 1)..]);
+    else if (arg.Equals("--include-path", StringComparison.OrdinalIgnoreCase))
+    {
+        if (i + 1 >= args.Length)
+        {
+            Console.Error.WriteLine("--include-path requires a directory path.");
+            return;
+        }
+        includePaths.Add(args[++i]);
+    }
     else if (arg.Equals("--vars", StringComparison.OrdinalIgnoreCase))
     {
         if (i + 1 >= args.Length)
@@ -181,16 +194,16 @@ switch (format.ToLowerInvariant())
 {
     case "markdown":
     case "md":
-        ExportMarkdown(inputPath, outputPath, trackedMode, plainOutput, fieldMode, varsPath, cliVariables, logLevel);
+        ExportMarkdown(inputPath, outputPath, trackedMode, plainOutput, fieldMode, varsPath, cliVariables, includePaths, logLevel);
         break;
     case "html":
-        ExportHtml(inputPath, outputPath, trackedMode, plainOutput, fieldMode, varsPath, cliVariables, logLevel);
+        ExportHtml(inputPath, outputPath, trackedMode, plainOutput, fieldMode, varsPath, cliVariables, includePaths, logLevel);
         break;
     case "text":
     case "txt":
         if (plainOutput)
             Console.Error.WriteLine("Warning: --plain is only supported for markdown/html; ignoring.");
-        ExportPlainText(inputPath, outputPath, trackedMode, fieldMode, varsPath, cliVariables, logLevel);
+        ExportPlainText(inputPath, outputPath, trackedMode, fieldMode, varsPath, cliVariables, includePaths, logLevel);
         break;
     default:
         Console.Error.WriteLine($"Unknown format '{format}'. Expected markdown|html|text.");
@@ -206,6 +219,7 @@ static void ExportMarkdown(
     DxpFieldEvalExportMode fieldMode,
     string? varsPath,
     IReadOnlyDictionary<string, string> cliVariables,
+    IReadOnlyList<string> includePaths,
     LogLevel logLevel)
 {
     var config = plainOutput ? DxpMarkdownVisitorConfig.CreatePlainConfig() : DxpMarkdownVisitorConfig.CreateRichConfig();
@@ -215,7 +229,7 @@ static void ExportMarkdown(
     using var loggerFactory = CreateLoggerFactory(logLevel);
     var logger = loggerFactory.CreateLogger("docxport");
     var visitor = new DxpMarkdownVisitor(config, logger);
-    ApplyDocVariables(visitor, varsPath, cliVariables);
+    ApplyFieldContext(visitor, varsPath, cliVariables, includePaths);
     var exportOptions = new DxpExportOptions { FieldEvalMode = fieldMode };
     DxpExport.ExportToFile(inputPath, visitor, output, exportOptions, logger);
     Console.WriteLine($"Wrote Markdown to {output}");
@@ -229,6 +243,7 @@ static void ExportHtml(
     DxpFieldEvalExportMode fieldMode,
     string? varsPath,
     IReadOnlyDictionary<string, string> cliVariables,
+    IReadOnlyList<string> includePaths,
     LogLevel logLevel)
 {
     var config = (plainOutput ? DxpHtmlVisitorConfig.CreatePlainConfig() : DxpHtmlVisitorConfig.CreateRichConfig()) with { TrackedChangeMode = trackedMode };
@@ -236,7 +251,7 @@ static void ExportHtml(
     using var loggerFactory = CreateLoggerFactory(logLevel);
     var logger = loggerFactory.CreateLogger("docxport");
     var visitor = new DxpHtmlVisitor(config, logger);
-    ApplyDocVariables(visitor, varsPath, cliVariables);
+    ApplyFieldContext(visitor, varsPath, cliVariables, includePaths);
     var exportOptions = new DxpExportOptions { FieldEvalMode = fieldMode };
     DxpExport.ExportToFile(inputPath, visitor, output, exportOptions, logger);
     Console.WriteLine($"Wrote HTML to {output}");
@@ -249,6 +264,7 @@ static void ExportPlainText(
     DxpFieldEvalExportMode fieldMode,
     string? varsPath,
     IReadOnlyDictionary<string, string> cliVariables,
+    IReadOnlyList<string> includePaths,
     LogLevel logLevel)
 {
     var textMode = trackedMode == DxpTrackedChangeMode.RejectChanges
@@ -259,7 +275,7 @@ static void ExportPlainText(
     using var loggerFactory = CreateLoggerFactory(logLevel);
     var logger = loggerFactory.CreateLogger("docxport");
     var visitor = new DxpPlainTextVisitor(config, logger);
-    ApplyDocVariables(visitor, varsPath, cliVariables);
+    ApplyFieldContext(visitor, varsPath, cliVariables, includePaths);
     var exportOptions = new DxpExportOptions { FieldEvalMode = fieldMode };
     DxpExport.ExportToFile(inputPath, visitor, output, exportOptions, logger);
     Console.WriteLine($"Wrote text to {output}");
@@ -319,7 +335,7 @@ static void PrintHelp()
 {
     Console.WriteLine($"""
 docxport ({GetVersion()})
-Usage: docxport <input.docx> [--format=markdown|html|text] [--tracked=accept|reject|inline|split] [--plain] [--fields=evaluate|cache|none] [-o|--output=path] [--vars=path] [-D name=value]
+Usage: docxport <input.docx> [--format=markdown|html|text] [--tracked=accept|reject|inline|split] [--plain] [--fields=evaluate|cache|none] [-o|--output=path] [--vars=path] [-D name=value] [--include-path=directory]
 
 Options:
   --format=...   Output format (default: markdown)
@@ -330,6 +346,7 @@ Options:
   -o, --output=...  Output file path (default: swaps extension)
   --vars=...     Load DOCVARIABLE values from a JSON or INI file.
   -D name=value  Define a DOCVARIABLE (repeatable). CLI values override --vars.
+  --include-path=...  Allow and search this directory for INCLUDETEXT DOCX files (repeatable).
   --log          Enable info-level logging to stderr.
   --log-level=...  Set log level (trace|debug|info|warn|error|critical|none).
   -v, --version  Show CLI version
@@ -346,7 +363,11 @@ static string GetVersion()
     return attr?.InformationalVersion ?? "unknown";
 }
 
-static void ApplyDocVariables(DxpIVisitor visitor, string? varsPath, IReadOnlyDictionary<string, string> cliVariables)
+static void ApplyFieldContext(
+    DxpIVisitor visitor,
+    string? varsPath,
+    IReadOnlyDictionary<string, string> cliVariables,
+    IReadOnlyList<string> includePaths)
 {
     if (visitor is not DxpIFieldEvalProvider provider)
         return;
@@ -357,6 +378,8 @@ static void ApplyDocVariables(DxpIVisitor visitor, string? varsPath, IReadOnlyDi
         context.SetDocVariable(kvp.Key, kvp.Value);
     foreach (var kvp in cliVariables)
         context.SetDocVariable(kvp.Key, kvp.Value);
+    if (includePaths.Count > 0)
+        context.IncludeTextResolver = new DxpFileSystemIncludeTextResolver(includePaths);
 }
 
 static Dictionary<string, string> LoadVariables(string? varsPath)

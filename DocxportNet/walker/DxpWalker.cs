@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml.CustomProperties;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
+using DocxportNet.Fields;
 using DocxportNet.Walker.Context;
 using DocxportNet.Walker.Parts;
 using Microsoft.Extensions.Logging;
@@ -131,6 +132,174 @@ public class DxpWalker
             _logger?.LogDebug(ex, "Walker step failed: {Step} ({ElapsedMs} ms)", "Visit document", visitTimer.ElapsedMilliseconds);
             throw;
         }
+    }
+
+    internal void AcceptEmbeddedBody(WordprocessingDocument doc, DxpIVisitor v)
+    {
+        if (doc.MainDocumentPart?.Document?.Body is not Body body)
+            throw new InvalidOperationException("DOCX has no main document body.");
+
+        _simpleFieldDepth = 0;
+        _complexFieldDepth = 0;
+        _complexFieldInSimpleDepth = 0;
+
+        var documentContext = new DxpDocumentContext(this, doc) {
+            MainDocumentPart = doc.MainDocumentPart,
+            DocumentSettings = doc.MainDocumentPart.DocumentSettingsPart?.Settings,
+            CoreProperties = doc.PackageProperties,
+            ExtendedProperties = doc.ExtendedFilePropertiesPart?.Properties
+        };
+
+        var props = doc.CustomFilePropertiesPart?.Properties;
+        var customList = props != null
+            ? props.Elements<CustomDocumentProperty>()
+                .Select(p => new CustomFileProperty(
+                    p.Name?.Value ?? string.Empty,
+                    p.FirstChild?.LocalName,
+                    p.FirstChild?.InnerText))
+                .ToList()
+            : new List<CustomFileProperty>();
+        documentContext.CustomProperties = customList;
+        documentContext.DocumentProperties = new DxpDocumentProperties(
+            doc.PackageProperties,
+            customList,
+            DxpTimeline.BuildTimeline(doc));
+
+        foreach (var block in body.ChildElements)
+        {
+            if (block is SectionProperties)
+                continue;
+            WalkBlock(block, documentContext, v);
+        }
+    }
+
+    internal void AcceptEmbeddedBodySpliced(
+        WordprocessingDocument doc,
+        DxpIVisitor v,
+        DxpIDocumentContext parentContext,
+        Paragraph parentParagraph,
+        DxpFieldNodeBuffer? before,
+        DxpFieldNodeBuffer? after)
+    {
+        if (doc.MainDocumentPart?.Document?.Body is not Body body)
+            throw new InvalidOperationException("DOCX has no main document body.");
+        if (parentContext is not DxpDocumentContext parentDocumentContext)
+        {
+            before?.Replay(v, parentContext);
+            AcceptEmbeddedBody(doc, v);
+            after?.Replay(v, parentContext);
+            return;
+        }
+
+        _simpleFieldDepth = 0;
+        _complexFieldDepth = 0;
+        _complexFieldInSimpleDepth = 0;
+        var childContext = CreateEmbeddedDocumentContext(doc);
+        var blocks = body.ChildElements.Where(block => block is not SectionProperties).ToList();
+        bool hasBefore = before != null && !before.IsEmpty;
+        bool hasAfter = after != null && !after.IsEmpty;
+
+        if (blocks.Count == 0)
+        {
+            EmitParentParagraph(parentParagraph, parentDocumentContext, v, before, null, null, after);
+            return;
+        }
+
+        if (blocks.Count == 1 && blocks[0] is Paragraph onlyParagraph && (hasBefore || hasAfter))
+        {
+            EmitParentParagraph(parentParagraph, parentDocumentContext, v, before, onlyParagraph, childContext, after);
+            return;
+        }
+
+        int first = 0;
+        int lastExclusive = blocks.Count;
+        if (hasBefore)
+        {
+            if (blocks[0] is Paragraph firstParagraph)
+            {
+                EmitParentParagraph(parentParagraph, parentDocumentContext, v, before, firstParagraph, childContext, null);
+                first = 1;
+            }
+            else
+            {
+                EmitParentParagraph(parentParagraph, parentDocumentContext, v, before, null, null, null);
+            }
+        }
+
+        Paragraph? lastParagraph = null;
+        if (hasAfter && first < lastExclusive && blocks[lastExclusive - 1] is Paragraph paragraph)
+        {
+            lastParagraph = paragraph;
+            lastExclusive--;
+        }
+
+        for (int i = first; i < lastExclusive; i++)
+            WalkBlock(blocks[i], childContext, v);
+
+        if (lastParagraph != null)
+            EmitParentParagraph(parentParagraph, parentDocumentContext, v, null, lastParagraph, childContext, after);
+        else if (hasAfter)
+            EmitParentParagraph(parentParagraph, parentDocumentContext, v, after, null, null, null);
+    }
+
+    private void EmitParentParagraph(
+        Paragraph source,
+        DxpDocumentContext parentContext,
+        DxpIVisitor visitor,
+        DxpFieldNodeBuffer? before,
+        Paragraph? childParagraph,
+        DxpDocumentContext? childContext,
+        DxpFieldNodeBuffer? after)
+    {
+        var paragraph = (Paragraph)source.CloneNode(false);
+        if (source.ParagraphProperties != null && paragraph.ParagraphProperties == null)
+            paragraph.ParagraphProperties = (ParagraphProperties)source.ParagraphProperties.CloneNode(true);
+        var paragraphContext = parentContext.CreateParagraphContext(paragraph, advanceAccept: false, advanceReject: false);
+        using (visitor.VisitBlockBegin(paragraph, parentContext))
+        using (visitor.VisitParagraphBegin(paragraph, parentContext, paragraphContext))
+        {
+            before?.ReplayInline(visitor, parentContext);
+            if (childParagraph != null && childContext != null)
+                WalkSyntheticFieldInlineContent(childParagraph, childContext, visitor);
+            after?.ReplayInline(visitor, parentContext);
+        }
+    }
+
+    internal void ReplayBufferedParentParagraph(
+        Paragraph paragraph,
+        DxpIDocumentContext context,
+        DxpIVisitor visitor,
+        DxpFieldNodeBuffer content)
+    {
+        if (context is DxpDocumentContext documentContext)
+            EmitParentParagraph(paragraph, documentContext, visitor, content, null, null, null);
+        else
+            content.Replay(visitor, context);
+    }
+
+    private DxpDocumentContext CreateEmbeddedDocumentContext(WordprocessingDocument doc)
+    {
+        var documentContext = new DxpDocumentContext(this, doc) {
+            MainDocumentPart = doc.MainDocumentPart,
+            DocumentSettings = doc.MainDocumentPart?.DocumentSettingsPart?.Settings,
+            CoreProperties = doc.PackageProperties,
+            ExtendedProperties = doc.ExtendedFilePropertiesPart?.Properties
+        };
+        var props = doc.CustomFilePropertiesPart?.Properties;
+        var customList = props != null
+            ? props.Elements<CustomDocumentProperty>()
+                .Select(p => new CustomFileProperty(
+                    p.Name?.Value ?? string.Empty,
+                    p.FirstChild?.LocalName,
+                    p.FirstChild?.InnerText))
+                .ToList()
+            : new List<CustomFileProperty>();
+        documentContext.CustomProperties = customList;
+        documentContext.DocumentProperties = new DxpDocumentProperties(
+            doc.PackageProperties,
+            customList,
+            DxpTimeline.BuildTimeline(doc));
+        return documentContext;
     }
 
     private void WalkBibliography(WordprocessingDocument doc, DxpDocumentContext d, DxpIVisitor v)

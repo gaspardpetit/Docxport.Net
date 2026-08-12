@@ -136,6 +136,9 @@ public sealed class DxpFieldNodeBuffer
             _children = children;
         }
 
+        public Run SourceRun => _run;
+        public DxpFieldNodeBuffer Children => _children;
+
         public void Replay(DxpIVisitor visitor, DxpIDocumentContext context)
         {
             using (visitor.VisitRunBegin(_run, context))
@@ -200,6 +203,10 @@ public sealed class DxpFieldNodeBuffer
             _children = children;
         }
 
+        public Hyperlink SourceLink => _link;
+        public DxpLinkAnchor? Target => _target;
+        public DxpFieldNodeBuffer Children => _children;
+
         public void Replay(DxpIVisitor visitor, DxpIDocumentContext context)
         {
             using (visitor.VisitHyperlinkBegin(_link, _target, context))
@@ -234,6 +241,15 @@ public sealed class DxpFieldNodeBuffer
         public void AppendText(StringBuilder sb) => _children.AppendText(sb);
 
         public bool TryGetFirstRunProperties(out RunProperties? props) => _children.TryGetFirstRunProperties(out props);
+    }
+
+    private sealed class IncludeTextNode : IReplayNode
+    {
+        public IncludeTextNode(DxpIncludeTextExpansion expansion) => Expansion = expansion;
+        public DxpIncludeTextExpansion Expansion { get; }
+        public void Replay(DxpIVisitor visitor, DxpIDocumentContext context) { }
+        public OpenXmlElement CreateElement(bool forRoot) => new Run();
+        public void AppendText(StringBuilder sb) { }
     }
 
     private readonly List<IReplayNode> _nodes;
@@ -371,6 +387,90 @@ public sealed class DxpFieldNodeBuffer
     internal void AddTab() => _nodes.Add(new TabNode());
     internal void AddCarriageReturn() => _nodes.Add(new CarriageReturnNode());
     internal void AddNoBreakHyphen() => _nodes.Add(new NoBreakHyphenNode());
+    internal void AddIncludeTextExpansion(DxpIncludeTextExpansion expansion) => _nodes.Add(new IncludeTextNode(expansion));
+
+    internal void Append(DxpFieldNodeBuffer? other)
+    {
+        if (other != null)
+            _nodes.AddRange(other._nodes);
+    }
+
+    internal IReadOnlyList<DxpFieldNodeBufferSplicePart> SplitIncludeTextExpansions()
+    {
+        var result = new List<DxpFieldNodeBufferSplicePart>();
+        var pending = new List<IReplayNode>();
+
+        void Flush()
+        {
+            if (pending.Count == 0)
+                return;
+            result.Add(new DxpFieldNodeBufferSplicePart(new DxpFieldNodeBuffer(new List<IReplayNode>(pending)), null));
+            pending.Clear();
+        }
+
+        foreach (var node in _nodes)
+        {
+            if (node is IncludeTextNode include)
+            {
+                Flush();
+                result.Add(new DxpFieldNodeBufferSplicePart(null, include.Expansion));
+                continue;
+            }
+
+            DxpFieldNodeBuffer? children = node switch
+            {
+                RunNode run => run.Children,
+                HyperlinkNode hyperlink => hyperlink.Children,
+                _ => null
+            };
+            if (children == null || !children.ContainsIncludeTextExpansion())
+            {
+                pending.Add(node);
+                continue;
+            }
+
+            foreach (var part in children.SplitIncludeTextExpansions())
+            {
+                if (part.Inline != null && !part.Inline.IsEmpty)
+                {
+                    IReplayNode wrapped = node switch
+                    {
+                        RunNode run => new RunNode(run.SourceRun, part.Inline),
+                        HyperlinkNode hyperlink => new HyperlinkNode(hyperlink.SourceLink, hyperlink.Target, part.Inline),
+                        _ => throw new InvalidOperationException()
+                    };
+                    pending.Add(wrapped);
+                }
+                if (part.Expansion != null)
+                {
+                    Flush();
+                    result.Add(part);
+                }
+            }
+        }
+        Flush();
+        return result;
+    }
+
+    private bool ContainsIncludeTextExpansion()
+        => _nodes.Any(node => node is IncludeTextNode || node switch
+        {
+            RunNode run => run.Children.ContainsIncludeTextExpansion(),
+            HyperlinkNode hyperlink => hyperlink.Children.ContainsIncludeTextExpansion(),
+            _ => false
+        });
+
+    internal void ReplayInline(DxpIVisitor visitor, DxpIDocumentContext context)
+    {
+        if (context is DxpDocumentContext documentContext)
+        {
+            foreach (var element in CreateElements(forRoot: false))
+                documentContext.Walker.WalkSyntheticFieldElement(element, documentContext, visitor);
+            return;
+        }
+        foreach (var node in _nodes)
+            node.Replay(visitor, context);
+    }
 
     internal DxpFieldNodeBuffer BeginParagraph(Paragraph paragraph)
     {
