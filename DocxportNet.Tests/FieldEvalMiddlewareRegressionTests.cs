@@ -431,6 +431,36 @@ public sealed class FieldEvalMiddlewareRegressionTests : TestBase<FieldEvalMiddl
     }
 
     [Fact]
+    public async Task Eval_ImplicitBookmarkFieldPreservesFormattingSwitches()
+    {
+        var eval = new DocxportNet.Fields.DxpFieldEval(logger: Logger);
+        eval.Context.SetBookmarkNodes("Response", DocxportNet.Fields.DxpFieldNodeBuffer.FromText("mixed Case"));
+
+        var result = await eval.EvalAsync(new DocxportNet.Fields.DxpFieldInstruction(" Response \\* Upper "));
+
+        Assert.Equal(DocxportNet.Fields.DxpFieldEvalStatus.Resolved, result.Status);
+        Assert.Equal("MIXED CASE", result.Text);
+    }
+
+    [Fact]
+    public void Eval_CrossParagraphIfWithFormattedImplicitBookmarkPreservesFollowingHeading()
+    {
+        using var document = CreateCrossParagraphIfDoc();
+        var visitor = new DxpHtmlVisitor(DxpHtmlVisitorConfig.CreateRichConfig(), Logger);
+        visitor.FieldEval.Context.SetBookmarkNodes(
+            "Response",
+            DocxportNet.Fields.DxpFieldNodeBuffer.FromText("WITH"));
+
+        string html = DxpExport.ExportToString(document, visitor,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate }, Logger);
+
+        _ = System.Xml.Linq.XDocument.Parse(html);
+        Assert.DoesNotContain("FIRST ALTERNATIVE", html, StringComparison.Ordinal);
+        Assert.DoesNotContain("SECOND ALTERNATIVE", html, StringComparison.Ordinal);
+        Assert.Matches("<p[^>]*>.*<strong[^>]*>Following Heading</strong>.*</p>", html);
+    }
+
+    [Fact]
     public async Task Eval_UnknownBareFieldWithoutBookmarkUsesCache()
     {
         var eval = new DocxportNet.Fields.DxpFieldEval(logger: Logger);
@@ -697,6 +727,35 @@ public sealed class FieldEvalMiddlewareRegressionTests : TestBase<FieldEvalMiddl
                 new Run(new Text("BETWEEN")),
                 CreateSimpleIncludeTextField("second.docx", "SECOND-CACHE"),
                 new Run(new Text("AFTER")))));
+            main.Document.Save();
+        }
+        stream.Position = 0;
+        return WordprocessingDocument.Open(stream, false);
+    }
+
+    private static WordprocessingDocument CreateCrossParagraphIfDoc()
+    {
+        var stream = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(stream, DocumentFormat.OpenXml.WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(
+                new Paragraph(
+                    new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                    new Run(new FieldCode { Text = " IF " }),
+                    new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                    new Run(new FieldCode { Text = " Response \\* Lower " }),
+                    new Run(new FieldChar { FieldCharType = FieldCharValues.Separate }),
+                    new Run(new Text("Error! Bookmark not defined.")),
+                    new Run(new FieldChar { FieldCharType = FieldCharValues.End }),
+                    new Run(new FieldCode { Text = " <> \"with\" \"FIRST ALTERNATIVE" })),
+                new Paragraph(),
+                new Paragraph(new Run(new FieldCode { Text = "SECOND ALTERNATIVE" })),
+                new Paragraph(),
+                new Paragraph(
+                    new Run(new FieldCode { Text = "\" \"\" " }),
+                    new Run(new FieldChar { FieldCharType = FieldCharValues.End }),
+                    new Run(new RunProperties(new Bold()), new Text("Following Heading")))));
             main.Document.Save();
         }
         stream.Position = 0;

@@ -11,12 +11,24 @@ internal static class DxpFieldInstructionClassifier
         if (string.IsNullOrWhiteSpace(instruction))
             return false;
 
-        string candidate = instruction!.Trim();
+        var parse = new DxpFieldParser().Parse(instruction!);
+        string candidate = parse.Ast.FieldType ?? string.Empty;
+        if (!string.IsNullOrWhiteSpace(parse.Ast.ArgumentsText))
+            return false;
         if (!IsBookmarkIdentifier(candidate) || !context.TryGetBookmarkNodes(candidate, out _))
             return false;
 
         bookmark = candidate;
         return true;
+    }
+
+    internal static string RewriteImplicitRefInstruction(string instruction, string bookmark)
+    {
+        string trimmed = instruction.Trim();
+        string suffix = trimmed.Length > bookmark.Length
+            ? trimmed.Substring(bookmark.Length)
+            : string.Empty;
+        return $"REF {bookmark}{suffix}";
     }
 
     internal static bool IsSetInstruction(string? instruction)

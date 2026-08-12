@@ -41,7 +41,7 @@ Status: feature-complete
 Status: feature-complete (review multi-run bookmarks)
 
 - [x] Resolves bookmark value.
-- [x] Bare bookmark-name fields resolve as implicit REF when the bookmark exists.
+- [x] Bare bookmark-name fields resolve as implicit REF, including formatting switches, when the bookmark exists.
 - [x] REF switches: \d \f \h \n \p \r \t \w (via resolver).
 - [x] CHARFORMAT/MERGEFORMAT for rendered output.
 - [x] Multi-run/structured bookmark replay.
