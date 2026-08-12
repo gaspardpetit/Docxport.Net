@@ -198,15 +198,19 @@ Status: partial (locale-aware providers; simple templates)
 
 ## DATABASE
 
-Status: partial (pluggable provider; basic TSV rendering)
+Status: partial (Word switch parsing; pluggable ADO.NET provider; DOCX table rendering)
 
 - [x] Pluggable database provider interface (optional external providers).
-- [ ] Default provider (e.g., SqlClient / T-SQL).
+- [x] Provider-neutral ADO.NET implementation using a caller-supplied `DbConnection`.
 - [ ] Optional providers (ODBC, PostgreSQL, MySQL).
-- [ ] External data query support (document-level or provider-driven).
-- [ ] Mapping to output rows/records.
-- [ ] Configurable rendering (table/HTML/Markdown).
-- [ ] Regression test present.
+- [x] Word switches `\b`, `\c`, `\d`, `\f`, `\h`, `\l`, `\o`, `\s`, and `\t` are parsed and passed to providers.
+- [x] Provider result columns and rows are mapped to field values.
+- [x] DOCX output emits a Word table, or tab-separated columns for 62 or more columns.
+- [x] Existing text/HTML/Markdown exporters retain their text rendering behavior.
+- [~] Legacy Table AutoFormat (`\l` and most `\b` attributes) is exposed to providers but cannot be reproduced exactly in OOXML.
+- [~] `\o` is exposed to providers; mail-merge insertion-at-start behavior is not yet implemented.
+- [ ] Built-in connection-string interpretation and credential policy.
+- [x] Synthetic regression tests present.
 
 ## INCLUDETEXT / INCLUDEPICTURE
 

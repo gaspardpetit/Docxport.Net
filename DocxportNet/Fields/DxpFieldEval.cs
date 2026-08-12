@@ -555,36 +555,72 @@ public sealed class DxpFieldEval
                 _logger?.LogWarning("ASK field missing arguments.");
                 return (false, value);
             case "DATABASE":
-                if (ast.ArgumentsText != null)
                 {
-                    var tokens = TokenizeArgs(ast.ArgumentsText);
-                    if (tokens.Count > 0)
+                    var execution = await ExecuteDatabaseAsync(
+                        new DxpFieldInstruction(ast.RawText),
+                        documentContext,
+                        cancellationToken);
+                    if (execution != null)
                     {
-                        if (Context.DatabaseProvider == null)
-                        {
-                            _logger?.LogInformation("DATABASE provider not configured; returning empty.");
-                            value = new DxpFieldValue(string.Empty);
-                            return (true, value);
-                        }
-
-                        string query = await ExpandNestedTextAsync(tokens[0], documentContext);
-                        var parameters = await ParseDatabaseParametersAsync(tokens, documentContext);
-                        var options = ParseDatabaseOptions(ast.RawText);
-                        var request = new DxpDatabaseRequest(
-                            query,
-                            parameters.Count > 0 ? parameters : null,
-                            options,
-                            Context.Culture);
-                        var result = await Context.DatabaseProvider.ExecuteAsync(request, cancellationToken);
-                        value = new DxpFieldValue(RenderDatabaseResult(result));
+                        value = new DxpFieldValue(RenderDatabaseResult(
+                            execution.Value.Result,
+                            execution.Value.Request));
                         return (true, value);
                     }
                 }
-                _logger?.LogWarning("DATABASE field missing arguments.");
+                _logger?.LogWarning("DATABASE field missing SQL query (expected the Word \\s switch).");
                 return (false, value);
             default:
                 return (false, value);
         }
+    }
+
+    internal async Task<(DxpDatabaseRequest Request, DxpDatabaseResult? Result)?> ExecuteDatabaseAsync(
+        DxpFieldInstruction instruction,
+        DxpIDocumentContext? documentContext,
+        CancellationToken cancellationToken = default)
+    {
+        var spec = DxpDatabaseFieldParser.Parse(instruction.InstructionText);
+        if (string.IsNullOrWhiteSpace(spec.QueryText))
+            return null;
+
+        string query = await ExpandNestedTextAsync(spec.QueryText!, documentContext);
+        string? dataSource = spec.DataSource == null
+            ? null
+            : await ExpandNestedTextAsync(spec.DataSource, documentContext);
+        string? connectionInfo = spec.ConnectionInfo == null
+            ? null
+            : await ExpandNestedTextAsync(spec.ConnectionInfo, documentContext);
+
+        Dictionary<string, DxpFieldValue>? parameters = null;
+        if (spec.PositionalArguments.Count > 1)
+        {
+            var tokens = spec.PositionalArguments.ToList();
+            parameters = await ParseDatabaseParametersAsync(tokens, documentContext);
+        }
+
+        var request = new DxpDatabaseRequest(
+            query,
+            parameters is { Count: > 0 } ? parameters : null,
+            spec.Options,
+            Context.Culture,
+            dataSource,
+            connectionInfo,
+            spec.IncludeColumnHeadings,
+            spec.FirstRecord,
+            spec.LastRecord,
+            spec.TableFormat,
+            spec.TableFormatAttributes,
+            spec.InsertAtMergeStart);
+
+        if (Context.DatabaseProvider == null)
+        {
+            _logger?.LogInformation("DATABASE provider not configured; returning empty.");
+            return (request, null);
+        }
+
+        var result = await Context.DatabaseProvider.ExecuteAsync(request, cancellationToken);
+        return (request, result);
     }
 
     private async Task<DxpFieldEvalResult?> EvalIfAsync(DxpFieldAst ast, DxpIDocumentContext? documentContext)
@@ -1250,26 +1286,14 @@ public sealed class DxpFieldEval
         return parameters;
     }
 
-    private IReadOnlyDictionary<string, string?>? ParseDatabaseOptions(string rawText)
-    {
-        var switches = ParseNonFormatSwitches(rawText);
-        if (switches.Count == 0)
-            return null;
-
-        var options = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
-        foreach (var kvp in switches)
-            options[kvp.Key.ToString()] = kvp.Value;
-        return options;
-    }
-
-    private string RenderDatabaseResult(DxpDatabaseResult? result)
+    private string RenderDatabaseResult(DxpDatabaseResult? result, DxpDatabaseRequest request)
     {
         if (result == null || result.Rows.Count == 0)
             return string.Empty;
 
         var sb = new System.Text.StringBuilder();
         int columnCount = result.Columns.Count;
-        if (columnCount > 0)
+        if (request.IncludeColumnHeadings && columnCount > 0)
         {
             var header = new string[columnCount];
             for (int i = 0; i < columnCount; i++)
@@ -1277,7 +1301,7 @@ public sealed class DxpFieldEval
             AppendDatabaseLine(sb, header);
         }
 
-        foreach (var row in result.Rows)
+        foreach (var row in SelectDatabaseRows(result.Rows, request))
         {
             int cellCount = columnCount > 0 ? columnCount : row.Count;
             var cells = new string[cellCount];
@@ -1290,6 +1314,19 @@ public sealed class DxpFieldEval
         }
 
         return sb.ToString();
+    }
+
+    internal string FormatDatabaseCellValue(DxpFieldValue? value) => FormatDatabaseCell(value);
+
+    internal static IEnumerable<IReadOnlyList<DxpFieldValue?>> SelectDatabaseRows(
+        IReadOnlyList<IReadOnlyList<DxpFieldValue?>> rows,
+        DxpDatabaseRequest request)
+    {
+        int first = Math.Max(1, request.FirstRecord ?? 1);
+        int last = Math.Min(rows.Count, request.LastRecord ?? rows.Count);
+        if (last < first)
+            return Enumerable.Empty<IReadOnlyList<DxpFieldValue?>>();
+        return rows.Skip(first - 1).Take(last - first + 1);
     }
 
     private static void AppendDatabaseLine(System.Text.StringBuilder sb, IReadOnlyList<string> cells)

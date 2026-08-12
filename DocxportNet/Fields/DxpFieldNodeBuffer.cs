@@ -252,6 +252,22 @@ public sealed class DxpFieldNodeBuffer
         public void AppendText(StringBuilder sb) { }
     }
 
+    private sealed class BlockNode : IReplayNode
+    {
+        private readonly OpenXmlElement _element;
+
+        public BlockNode(OpenXmlElement element) => _element = element.CloneNode(true);
+
+        public void Replay(DxpIVisitor visitor, DxpIDocumentContext context)
+        {
+            if (context is DxpDocumentContext documentContext)
+                documentContext.Walker.WalkSyntheticFieldElement(_element.CloneNode(true), documentContext, visitor);
+        }
+
+        public OpenXmlElement CreateElement(bool forRoot) => _element.CloneNode(true);
+        public void AppendText(StringBuilder sb) => sb.Append(_element.InnerText);
+    }
+
     private readonly List<IReplayNode> _nodes;
 
     public DxpFieldNodeBuffer() : this(new List<IReplayNode>())
@@ -270,13 +286,20 @@ public sealed class DxpFieldNodeBuffer
         return buffer;
     }
 
+    internal static DxpFieldNodeBuffer FromBlock(OpenXmlElement block)
+    {
+        var buffer = new DxpFieldNodeBuffer();
+        buffer._nodes.Add(new BlockNode(block));
+        return buffer;
+    }
+
     public void Replay(DxpIVisitor visitor, DxpIDocumentContext context)
     {
         if (context is DxpDocumentContext docContext)
         {
-            bool hasParagraphRoots = _nodes.Any(static n => n is ParagraphNode);
+            bool hasBlockRoots = _nodes.Any(static n => n is ParagraphNode or BlockNode);
 
-            if (!hasParagraphRoots)
+            if (!hasBlockRoots)
             {
                 var paragraph = CreateSyntheticParagraph(_nodes, docContext);
                 foreach (var element in CreateElements(forRoot: false))
@@ -320,7 +343,7 @@ public sealed class DxpFieldNodeBuffer
 
             foreach (var node in _nodes)
             {
-                if (node is ParagraphNode)
+                if (node is ParagraphNode or BlockNode)
                 {
                     FlushInline();
                     var element = node.CreateElement(forRoot: true);
@@ -341,6 +364,7 @@ public sealed class DxpFieldNodeBuffer
 
     public bool IsEmpty => _nodes.Count == 0;
     internal bool HasParagraphRoots => _nodes.Any(static node => node is ParagraphNode);
+    internal bool HasBlockRoots => _nodes.Any(static node => node is ParagraphNode or BlockNode);
 
     public string ToPlainText()
     {
