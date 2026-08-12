@@ -604,7 +604,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
         string innerText = p.InnerText;
 
-        if (string.IsNullOrWhiteSpace(innerText))
+        if (string.IsNullOrEmpty(innerText))
         {
             return DxpDisposable.Create(() => {
                 WriteLine(d);

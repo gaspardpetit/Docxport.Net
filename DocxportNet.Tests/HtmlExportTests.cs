@@ -85,6 +85,24 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
     }
 
     [Fact]
+    public void HtmlExport_NonBreakingSpaceRetainsParagraphWrapper()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p><w:r><w:t>Before</w:t></w:r></w:p>
+  <w:p><w:r><w:t xml:space="preserve">&#160;</w:t></w:r></w:p>
+  <w:p><w:r><w:t>After</w:t></w:r></w:p>
+</w:body>
+""";
+
+        string html = ExportHtmlFromBodyXml(bodyXml, DxpHtmlVisitorConfig.CreateRichConfig());
+
+        _ = XDocument.Parse(html);
+        Assert.Contains("<p class=\"dxp-paragraph\">&#160;</p>", html, StringComparison.Ordinal);
+        Assert.DoesNotContain("</p>\n&#160;\n<p", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void HtmlExport_RendersFootnotesInsideSectionBeforeFooter()
     {
         using var stream = new MemoryStream();

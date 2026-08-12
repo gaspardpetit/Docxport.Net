@@ -68,6 +68,26 @@ public sealed class IncludeTextResolverTests
         Assert.Null(result);
     }
 
+    [Fact]
+    public async Task ReadsTemplateThatIsOpenForEditing()
+    {
+        using var fixture = new ResolverFixture();
+        string file = fixture.Write([13, 14, 15], "Bodies", "Open.docx");
+        var resolver = new DxpFileSystemIncludeTextResolver([fixture.Root]);
+        using var editingStream = new FileStream(
+            file,
+            FileMode.Open,
+            FileAccess.ReadWrite,
+            FileShare.ReadWrite);
+
+        var result = await resolver.ResolveAsync(
+            new DxpIncludeTextRequest(Path.Combine("Bodies", "Open.docx")),
+            new DxpFieldEvalContext());
+
+        Assert.NotNull(result);
+        Assert.Equal([13, 14, 15], result!.Content);
+    }
+
     private sealed class ResolverFixture : IDisposable
     {
         public ResolverFixture()
