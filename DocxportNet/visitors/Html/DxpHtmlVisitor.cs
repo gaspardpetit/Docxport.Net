@@ -874,7 +874,7 @@ body.dxp-root {
         var indent = paragraph.Indent;
 
         string innerText = p.InnerText;
-        if (string.IsNullOrWhiteSpace(innerText))
+        if (string.IsNullOrEmpty(innerText))
         {
             return DxpDisposable.Create(() => WriteLine(d));
         }

@@ -1,4 +1,5 @@
 using System.Text;
+using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.Fields.Eval;
 
 namespace DocxportNet.Fields.Frames;
@@ -14,8 +15,37 @@ internal sealed class DxpIFCaptureState
     public readonly DxpFieldNodeBuffer TrueBuffer = new();
     public readonly DxpFieldNodeBuffer FalseBuffer = new();
     public readonly DxpEvalFieldNodeBufferRecorder Recorder = new();
+    private DxpFieldNodeBuffer? _paragraphOwner;
+    private DxpFieldNodeBuffer? _paragraphBuffer;
 
     public DxpFieldNodeBuffer? GetCurrentBuffer()
+    {
+        var root = GetCurrentRootBuffer();
+        return ReferenceEquals(root, _paragraphOwner) ? _paragraphBuffer : root;
+    }
+
+    public void BeginParagraph(Paragraph paragraph)
+    {
+        var root = GetCurrentRootBuffer();
+        // A branch that starts on this instruction paragraph is still an inline
+        // field result at the field's original insertion point. Only a paragraph
+        // boundary encountered after branch content has begun belongs to the result.
+        _paragraphOwner = root != null && !root.IsEmpty ? root : null;
+        _paragraphBuffer = _paragraphOwner?.BeginParagraph(paragraph);
+    }
+
+    public bool AppendStructuredResult(DxpFieldNodeBuffer buffer)
+    {
+        var root = GetCurrentRootBuffer();
+        if (root == null)
+            return false;
+        root.Append(buffer);
+        _paragraphOwner = null;
+        _paragraphBuffer = null;
+        return true;
+    }
+
+    private DxpFieldNodeBuffer? GetCurrentRootBuffer()
     {
         return TokenIndex switch
         {

@@ -87,7 +87,11 @@ internal sealed class DxpEvaluateFieldFrameFactory
             return new DxpFormulaFieldEvalFrame(next, eval, logger, instruction);
 
         if (DxpFieldInstructionClassifier.TryGetImplicitRefName(instruction, context, out string bookmark))
-            return new DxpRefFieldEvalFrame(next, eval, logger, $"REF {bookmark}");
+            return new DxpRefFieldEvalFrame(
+                next,
+                eval,
+                logger,
+                DxpFieldInstructionClassifier.RewriteImplicitRefInstruction(instruction!, bookmark));
 
         if (logger?.IsEnabled(LogLevel.Debug) == true)
             logger.LogDebug("FieldFrameFactory: no evaluate frame for instruction '{Instruction}'.", instruction ?? string.Empty);

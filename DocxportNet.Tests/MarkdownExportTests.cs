@@ -133,6 +133,22 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
     }
 
     [Fact]
+    public void MarkdownExport_NonBreakingSpaceRetainsParagraphSeparation()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p><w:r><w:t>Before</w:t></w:r></w:p>
+  <w:p><w:r><w:rPr><w:rFonts w:ascii="Arial"/><w:sz w:val="20"/></w:rPr><w:t xml:space="preserve">&#160;</w:t></w:r></w:p>
+  <w:p><w:r><w:t>After</w:t></w:r></w:p>
+</w:body>
+""";
+
+        string markdown = ExportMarkdownFromBodyXml(bodyXml, DxpMarkdownVisitorConfig.CreateRichConfig());
+
+        Assert.Matches("<span[^>]*>\u00A0</span>\\r?\\n\\r?\\n", markdown);
+    }
+
+    [Fact]
     public void MarkdownExport_EmitRichLayoutHtml_RichModeEmitsParagraphWrapper()
     {
         const string bodyXml = """

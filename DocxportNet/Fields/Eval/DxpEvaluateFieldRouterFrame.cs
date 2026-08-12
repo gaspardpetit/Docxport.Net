@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DocxportNet.Fields.Eval;
 
-internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEvalFrame, IDxpFieldCodeRunCapture
+internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEvalFrame, IDxpFieldCodeRunCapture, IDxpStructuredFieldResultSink
 {
     private static readonly DxpEvaluateFieldFrameFactory FrameFactory = new();
 
@@ -161,7 +161,16 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
     public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
     {
         if (!_inResult)
-            return Next.VisitParagraphBegin(p, d, paragraph);
+        {
+            _events.Add(FieldEvent.ParagraphBegin(p, paragraph));
+            if (EvalContext.SuppressCrossParagraphFieldParagraphOutput)
+                return DxpDisposable.Create(() => _events.Add(FieldEvent.ParagraphEnd()));
+            var inner = Next.VisitParagraphBegin(p, d, paragraph);
+            return DxpDisposable.Create(() => {
+                _events.Add(FieldEvent.ParagraphEnd());
+                inner.Dispose();
+            });
+        }
 
         _events.Add(FieldEvent.ParagraphBegin(p, paragraph));
         return DxpDisposable.Create(() => _events.Add(FieldEvent.ParagraphEnd()));
@@ -223,6 +232,12 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
             CodeRun = DxpRunCloner.CloneRunWithParagraphAncestor(r);
     }
 
+    public bool TryRecordStructuredFieldResult(DxpFieldNodeBuffer buffer)
+    {
+        _events.Add(FieldEvent.StructuredResult(buffer));
+        return true;
+    }
+
     private sealed class FieldEvent
     {
         private FieldEvent(FieldEventKind kind, object? data1 = null, object? data2 = null)
@@ -252,6 +267,7 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         public static FieldEvent SimpleEnd() => new(FieldEventKind.SimpleEnd);
         public static FieldEvent ParagraphBegin(Paragraph paragraph, DxpIParagraphContext paragraphContext) => new(FieldEventKind.ParagraphBegin, paragraph, paragraphContext);
         public static FieldEvent ParagraphEnd() => new(FieldEventKind.ParagraphEnd);
+        public static FieldEvent StructuredResult(DxpFieldNodeBuffer buffer) => new(FieldEventKind.StructuredResult, buffer);
 
         public void Replay(DxpIVisitor visitor, DxpIDocumentContext d, Stack<IDisposable> scopes)
         {
@@ -309,6 +325,10 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
                     if (scopes.Count > 0)
                         scopes.Pop().Dispose();
                     break;
+                case FieldEventKind.StructuredResult:
+                    if (visitor is IDxpStructuredFieldResultSink sink)
+                        sink.TryRecordStructuredFieldResult((DxpFieldNodeBuffer)Data1!);
+                    break;
             }
         }
     }
@@ -330,6 +350,7 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         SimpleBegin,
         SimpleEnd,
         ParagraphBegin,
-        ParagraphEnd
+        ParagraphEnd,
+        StructuredResult
     }
 }

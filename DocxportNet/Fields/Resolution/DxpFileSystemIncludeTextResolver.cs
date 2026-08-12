@@ -35,10 +35,24 @@ public sealed class DxpFileSystemIncludeTextResolver : IDxpIncludeTextResolver
                 continue;
 
             return Task.FromResult<DxpIncludeTextSource?>(
-                new DxpIncludeTextSource(candidate, File.ReadAllBytes(candidate)));
+                new DxpIncludeTextSource(candidate, ReadAllBytesShared(candidate)));
         }
 
         return Task.FromResult<DxpIncludeTextSource?>(null);
+    }
+
+    private static byte[] ReadAllBytesShared(string path)
+    {
+        using var input = new FileStream(
+            path,
+            FileMode.Open,
+            FileAccess.Read,
+            FileShare.ReadWrite | FileShare.Delete);
+        using var output = input.Length <= int.MaxValue
+            ? new MemoryStream((int)input.Length)
+            : new MemoryStream();
+        input.CopyTo(output);
+        return output.ToArray();
     }
 
     private IEnumerable<string> CandidatePaths(string requestedPath)

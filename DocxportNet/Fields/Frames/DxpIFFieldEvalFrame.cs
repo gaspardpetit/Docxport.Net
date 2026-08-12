@@ -10,7 +10,7 @@ using System.Text;
 
 namespace DocxportNet.Fields.Frames;
 
-internal sealed class DxpIFFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame
+internal sealed class DxpIFFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame, IDxpStructuredFieldResultSink
 {
 	private readonly ILogger? _logger;
 
@@ -63,7 +63,7 @@ internal sealed class DxpIFFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame
 		FlushLiteralBuffer();
 		if (_ifState != null)
 			DxpFieldEvalIfRunner.TryEvaluateAndEmit(_ifState, _instructionText ?? string.Empty, _eval, d, Next,
-				DxpFieldEvalRules.GetEvaluationErrorText, EmitEvaluatedText);
+				DxpFieldEvalRules.GetEvaluationErrorText, EmitEvaluatedText, TryDeferStructuredResult);
 	}
 
 	public override void VisitComplexFieldCachedResultText(string text, DxpIDocumentContext d)
@@ -79,7 +79,7 @@ internal sealed class DxpIFFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame
 			FlushLiteralBuffer();
 			if (_ifState != null)
 				DxpFieldEvalIfRunner.TryEvaluateAndEmit(_ifState, _instructionText ?? string.Empty, _eval, d, Next, 
-					DxpFieldEvalRules.GetEvaluationErrorText, EmitEvaluatedText);
+					DxpFieldEvalRules.GetEvaluationErrorText, EmitEvaluatedText, TryDeferStructuredResult);
 			_inCachedResult = false;
 		});
 	}
@@ -96,6 +96,17 @@ internal sealed class DxpIFFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame
 
 	public override IDisposable VisitHyperlinkBegin(Hyperlink link, DxpLinkAnchor? target, DxpIDocumentContext d)
 	{
+		return DxpDisposable.Empty;
+	}
+
+	public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
+	{
+		if (_inCachedResult)
+			return DxpDisposable.Empty;
+
+		FlushLiteralBuffer();
+		var state = DxpFieldEvalIfRunner.EnsureIfState(ref _ifState);
+		state.BeginParagraph(p);
 		return DxpDisposable.Empty;
 	}
 
@@ -197,4 +208,25 @@ internal sealed class DxpIFFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame
 		var run = DxpFieldFrames.NewSyntheticRun(fallbackRun, runProperties);
 		DxpFieldFrames.EmitTextInRun(text, d, run, Next);
 	}
+
+	private bool TryDeferStructuredResult(DxpFieldNodeBuffer buffer)
+	{
+		if (Next is IDxpStructuredFieldResultSink sink && sink.TryRecordStructuredFieldResult(buffer))
+			return true;
+		if (_eval.Context.FieldDepth != 1 || !buffer.HasParagraphRoots)
+			return false;
+		_eval.Context.DeferStructuredFieldResult(buffer);
+		return true;
+	}
+
+	public bool TryRecordStructuredFieldResult(DxpFieldNodeBuffer buffer)
+	{
+		FlushLiteralBuffer();
+		return DxpFieldEvalIfRunner.EnsureIfState(ref _ifState).AppendStructuredResult(buffer);
+	}
+}
+
+internal interface IDxpStructuredFieldResultSink
+{
+	bool TryRecordStructuredFieldResult(DxpFieldNodeBuffer buffer);
 }

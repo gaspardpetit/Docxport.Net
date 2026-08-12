@@ -82,7 +82,9 @@ public sealed class DxpFieldEval
                     Context,
                     out string implicitBookmark))
             {
-                string normalized = $"REF {implicitBookmark}";
+                string normalized = DxpFieldInstructionClassifier.RewriteImplicitRefInstruction(
+                    instruction.InstructionText,
+                    implicitBookmark);
                 parse = _parser.Parse(normalized);
             }
 

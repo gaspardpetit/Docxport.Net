@@ -22,8 +22,24 @@ public sealed partial class DxpFieldEvalContext
     private string? _lastPromptResponse;
     private bool _hasLastPromptResponse;
     private readonly Stack<string> _includeTextStack = new();
+    private readonly Queue<DxpFieldNodeBuffer> _deferredStructuredFieldResults = new();
 
     internal IDxpIncludeTextSpliceCollector? IncludeTextSpliceCollector { get; set; }
+    internal bool SuppressCrossParagraphFieldParagraphOutput { get; set; }
+
+    internal void DeferStructuredFieldResult(DxpFieldNodeBuffer result)
+        => _deferredStructuredFieldResults.Enqueue(result);
+
+    internal bool TryTakeDeferredStructuredFieldResult(out DxpFieldNodeBuffer? result)
+    {
+        if (_deferredStructuredFieldResults.Count == 0)
+        {
+            result = null;
+            return false;
+        }
+        result = _deferredStructuredFieldResults.Dequeue();
+        return true;
+    }
 
     public Func<DateTimeOffset> NowProvider { get; private set; } = () => DateTimeOffset.Now;
     public CultureInfo? Culture { get; set; } = CultureInfo.CurrentCulture;

@@ -109,7 +109,8 @@ internal static class DxpFieldEvalIfRunner
         DxpIDocumentContext documentContext,
         DxpIVisitor? next,
         Func<string, string> errorTextProvider,
-        Action<string, DxpIDocumentContext, RunProperties?> emitText)
+        Action<string, DxpIDocumentContext, RunProperties?> emitText,
+        Func<DxpFieldNodeBuffer, bool>? deferStructuredResult = null)
     {
         if (string.IsNullOrWhiteSpace(instructionText))
             return false;
@@ -135,7 +136,8 @@ internal static class DxpFieldEvalIfRunner
             return true;
         }
 
-        selected.Replay(next, documentContext);
+        if (deferStructuredResult?.Invoke(selected) != true)
+            selected.Replay(next, documentContext);
         return true;
     }
 

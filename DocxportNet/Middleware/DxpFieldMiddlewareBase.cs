@@ -30,6 +30,7 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
     private readonly Stack<DxpIVisitor> _frameAdapters = new();
     private DxpIFieldEvalFrame? _outerFrame;
     private DxpIVisitor? _currentAdapter;
+    private IDisposable? _openCrossParagraphFieldParagraph;
 
     protected DxpFieldMiddlewareBase(
         DxpIVisitor next,
@@ -79,7 +80,10 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
         _context.AutoNumbers.Reset();
         _context.FieldDepth = 0;
         _context.OuterFrame = null;
-        return Next.VisitDocumentBegin(doc, documentContext);
+        _openCrossParagraphFieldParagraph?.Dispose();
+        _openCrossParagraphFieldParagraph = null;
+        var inner = Next.VisitDocumentBegin(doc, documentContext);
+        return new DxpCompositeScope(inner, () => ReplayDeferredStructuredResults(documentContext));
     }
 
     private DxpIFieldEvalFrame? CurrentField => _fieldFrames.Count > 0 ? _fieldFrames.Peek() : null;
@@ -235,6 +239,11 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
 
     public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
     {
+        // A multiline field may finish in a paragraph whose downstream paragraph/style
+        // scopes were suppressed by an enclosing field. Replaying its block result from
+        // that paragraph's Dispose would then nest blocks in those still-active scopes.
+        // The next paragraph boundary is the first reliably block-safe emission point.
+        ReplayDeferredStructuredResults(d);
         var previous = _context.Culture;
         var previousOutlineProvider = _context.CurrentOutlineLevelProvider;
         var previousHeadingProvider = _context.CurrentBuiltInHeadingLevelProvider;
@@ -248,14 +257,50 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
         _context.CurrentDocumentOrder = ++_paragraphOrder;
 
         var target = _currentAdapter ?? Next;
-        var inner = target.VisitParagraphBegin(p, d, paragraph);
-        return new DxpCompositeScope(inner, () => {
+        bool suppressOutput = _openCrossParagraphFieldParagraph != null;
+        bool previousSuppression = _context.SuppressCrossParagraphFieldParagraphOutput;
+        _context.SuppressCrossParagraphFieldParagraphOutput = suppressOutput;
+        IDisposable inner;
+        try
+        {
+            inner = target.VisitParagraphBegin(p, d, paragraph);
+        }
+        finally
+        {
+            _context.SuppressCrossParagraphFieldParagraphOutput = previousSuppression;
+        }
+        var combined = new DxpDisposeThenScope(inner, () => {
             _context.Culture = previous;
             _context.CurrentOutlineLevelProvider = previousOutlineProvider;
             _context.CurrentBuiltInHeadingLevelProvider = previousHeadingProvider;
             _context.CurrentStoryKeyProvider = previousStoryProvider;
             _context.CurrentDocumentOrder = previousOrder;
         });
+        return DocxportNet.Core.DxpDisposable.Create(() => {
+            if (ShouldKeepCurrentParagraphOpen() && _openCrossParagraphFieldParagraph == null)
+            {
+                _openCrossParagraphFieldParagraph = combined;
+                return;
+            }
+
+            combined.Dispose();
+            if (_context.FieldDepth == 0 && _openCrossParagraphFieldParagraph != null)
+            {
+                var open = _openCrossParagraphFieldParagraph;
+                _openCrossParagraphFieldParagraph = null;
+                open.Dispose();
+            }
+        });
+    }
+
+    private bool ShouldKeepCurrentParagraphOpen()
+        => CurrentField is DxpEvaluateFieldRouterFrame router
+            && DxpFieldInstructionClassifier.IsIfInstruction(router.InstructionText);
+
+    private void ReplayDeferredStructuredResults(DxpIDocumentContext d)
+    {
+        while (_context.TryTakeDeferredStructuredFieldResult(out var deferred) && deferred != null)
+            deferred.Replay(Next, d);
     }
 
     public override IDisposable VisitRunBegin(Run r, DxpIDocumentContext d)
@@ -387,6 +432,28 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
             _disposed = true;
             _onDispose();
             _inner.Dispose();
+        }
+    }
+
+    private sealed class DxpDisposeThenScope : IDisposable
+    {
+        private readonly IDisposable _inner;
+        private readonly Action _afterDispose;
+        private bool _disposed;
+
+        public DxpDisposeThenScope(IDisposable inner, Action afterDispose)
+        {
+            _inner = inner;
+            _afterDispose = afterDispose;
+        }
+
+        public void Dispose()
+        {
+            if (_disposed)
+                return;
+            _disposed = true;
+            _inner.Dispose();
+            _afterDispose();
         }
     }
 }

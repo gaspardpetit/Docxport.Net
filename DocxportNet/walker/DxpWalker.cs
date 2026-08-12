@@ -254,6 +254,10 @@ public class DxpWalker
         var paragraph = (Paragraph)source.CloneNode(false);
         if (source.ParagraphProperties != null && paragraph.ParagraphProperties == null)
             paragraph.ParagraphProperties = (ParagraphProperties)source.ParagraphProperties.CloneNode(true);
+        // The content below is replayed dynamically rather than appended to this
+        // shell. Visitors inspect InnerText at paragraph begin to decide whether a
+        // wrapper is needed, so give the shell a non-emitted renderability marker.
+        paragraph.AppendChild(new Run(new Text("\u200B")));
         var paragraphContext = parentContext.CreateParagraphContext(paragraph, advanceAccept: false, advanceReject: false);
         using (visitor.VisitBlockBegin(paragraph, parentContext))
         using (visitor.VisitParagraphBegin(paragraph, parentContext, paragraphContext))
