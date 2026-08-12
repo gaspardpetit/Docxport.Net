@@ -396,6 +396,40 @@ public sealed class DocxExportTests : TestBase<DocxExportTests>
         Assert.Empty(new OpenXmlValidator().Validate(output));
     }
 
+    [Fact]
+    public void EvaluatedExport_UsesNestedDatabaseResultAsSetScalar()
+    {
+        byte[] sourceBytes = CreateDocument(body => body.Append(
+            new Paragraph(
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldCode(" SET Lookup ") { Space = SpaceProcessingModeValues.Preserve }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldCode(" DATABASE \\s \"SELECT Value FROM Items\" ") { Space = SpaceProcessingModeValues.Preserve }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Separate }),
+                new Run(new Text("cached database")),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.End }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Separate }),
+                new Run(new Text("cached set")),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.End })),
+            new Paragraph(new SimpleField(new Run(new Text("cached ref"))) { Instruction = " REF Lookup " })));
+        var eval = new DxpFieldEval();
+        eval.Context.DatabaseProvider = new FixedDatabaseProvider(
+            new DxpDatabaseResult(
+                [new DxpDatabaseColumn("Value")],
+                [new DxpFieldValue?[] { new("resolved lookup") }]));
+
+        byte[] outputBytes = DxpDocxExport.Export(sourceBytes,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate }, Logger, eval);
+
+        using var output = Open(outputBytes);
+        var body = output.MainDocumentPart!.Document.Body!;
+        Assert.Contains("resolved lookup", body.InnerText, StringComparison.Ordinal);
+        Assert.Empty(body.Elements<Table>());
+        Assert.Empty(body.Descendants<FieldChar>());
+        Assert.Empty(body.Descendants<SimpleField>());
+        Assert.Empty(new OpenXmlValidator().Validate(output));
+    }
+
     private static byte[] CreateDocument(Action<Body> populate)
     {
         using var stream = new MemoryStream();

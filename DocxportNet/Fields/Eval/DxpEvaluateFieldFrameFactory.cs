@@ -38,7 +38,7 @@ internal sealed class DxpEvaluateFieldFrameFactory
         if (DxpFieldInstructionClassifier.IsIncludeTextInstruction(instruction))
             return new DxpIncludeTextFieldEvalFrame(next, eval, logger, instruction);
 
-        if (context.EmitStructuredDatabaseResults &&
+        if (context.EmitStructuredDatabaseResults && context.FieldDepth <= 1 &&
             DxpFieldInstructionClassifier.IsDatabaseInstruction(instruction))
             return new DxpDatabaseFieldEvalFrame(next, eval, instruction!);
 
