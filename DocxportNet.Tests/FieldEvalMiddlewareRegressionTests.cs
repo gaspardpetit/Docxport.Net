@@ -521,6 +521,48 @@ public sealed class FieldEvalMiddlewareRegressionTests : TestBase<FieldEvalMiddl
         Assert.Equal(expected, value.StringValue);
     }
 
+    [Theory]
+    [InlineData(true, "chosen")]
+    [InlineData(false, "alternate")]
+    public void Eval_IfWithQuotedNestedSetExecutesOnlySelectedBranch(bool condition, string expected)
+    {
+        using var document = CreateIfWithNestedFieldsDoc(
+            condition,
+            "SET Selection \"chosen\"",
+            "SET Selection \"alternate\"",
+            "REF Selection",
+            quoteBranches: true);
+        var visitor = new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateAcceptConfig(), Logger);
+
+        string text = DxpExport.ExportToString(
+            document,
+            visitor,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate },
+            Logger);
+
+        Assert.EndsWith("|" + expected, text.TrimEnd(), StringComparison.Ordinal);
+        Assert.True(visitor.FieldEval.Context.TryGetBookmarkValue("Selection", out var value));
+        Assert.Equal(expected, value.StringValue);
+    }
+
+    [Fact]
+    public void Eval_IfWithNestedValueInsideQuotedSetExecutesSelectedBranch()
+    {
+        using var document = CreateIfWithNestedSetValueDoc();
+        var visitor = new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateAcceptConfig(), Logger);
+        visitor.FieldEval.Context.SetDocVariable("InputVersion", "v2_");
+
+        string text = DxpExport.ExportToString(
+            document,
+            visitor,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate },
+            Logger);
+
+        Assert.EndsWith("|v2_", text.TrimEnd(), StringComparison.Ordinal);
+        Assert.True(visitor.FieldEval.Context.TryGetBookmarkValue("Version", out var value));
+        Assert.Equal("v2_", value.StringValue);
+    }
+
     [Fact]
     public void Eval_IfResolvesOnlySelectedNestedValueField()
     {
@@ -916,7 +958,8 @@ public sealed class FieldEvalMiddlewareRegressionTests : TestBase<FieldEvalMiddl
         bool condition,
         string trueInstruction,
         string falseInstruction,
-        string? trailingInstruction = null)
+        string? trailingInstruction = null,
+        bool quoteBranches = false)
     {
         var stream = new MemoryStream();
         using (var document = WordprocessingDocument.Create(
@@ -927,18 +970,19 @@ public sealed class FieldEvalMiddlewareRegressionTests : TestBase<FieldEvalMiddl
             var main = document.AddMainDocumentPart();
             var paragraph = new Paragraph(
                 new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
-                new Run(new FieldCode { Text = $" IF 1 = {(condition ? 1 : 0)} " }),
+                new Run(new FieldCode { Text = $" IF 1 = {(condition ? 1 : 0)} {(quoteBranches ? "\"" : "")}" }),
                 new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
                 new Run(new FieldCode { Text = " " + trueInstruction + " " }),
                 new Run(new FieldChar { FieldCharType = FieldCharValues.Separate }),
                 new Run(new Text("true cache")),
                 new Run(new FieldChar { FieldCharType = FieldCharValues.End }),
-                new Run(new FieldCode { Text = " " }),
+                new Run(new FieldCode { Text = quoteBranches ? "\" \"" : " " }),
                 new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
                 new Run(new FieldCode { Text = " " + falseInstruction + " " }),
                 new Run(new FieldChar { FieldCharType = FieldCharValues.Separate }),
                 new Run(new Text("false cache")),
                 new Run(new FieldChar { FieldCharType = FieldCharValues.End }),
+                quoteBranches ? new Run(new FieldCode { Text = "\"" }) : new Run(),
                 new Run(new FieldChar { FieldCharType = FieldCharValues.Separate }),
                 new Run(new Text("cached branch result")),
                 new Run(new FieldChar { FieldCharType = FieldCharValues.End }));
@@ -986,6 +1030,43 @@ public sealed class FieldEvalMiddlewareRegressionTests : TestBase<FieldEvalMiddl
                     Instruction = " REF Selection "
                 });
             main.Document = new Document(new Body(paragraph));
+            main.Document.Save();
+        }
+        stream.Position = 0;
+        return WordprocessingDocument.Open(stream, false);
+    }
+
+    private static WordprocessingDocument CreateIfWithNestedSetValueDoc()
+    {
+        var stream = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(
+            stream,
+            DocumentFormat.OpenXml.WordprocessingDocumentType.Document,
+            true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(new Paragraph(
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldCode { Text = " IF " }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldCode { Text = " DOCVARIABLE InputVersion " }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.End }),
+                new Run(new FieldCode { Text = " = \" \" \"" }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldCode { Text = " SET Version \"\" " }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.End }),
+                new Run(new FieldCode { Text = "\" \"" }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldCode { Text = " SET Version \"" }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldCode { Text = " DOCVARIABLE InputVersion " }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.End }),
+                new Run(new FieldCode { Text = "\" " }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.End }),
+                new Run(new FieldCode { Text = "\"" }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.End }),
+                new Run(new Text("|")),
+                new SimpleField(new Run(new Text("cache"))) { Instruction = " REF Version " })));
             main.Document.Save();
         }
         stream.Position = 0;

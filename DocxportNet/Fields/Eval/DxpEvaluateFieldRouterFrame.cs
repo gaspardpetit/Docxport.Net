@@ -273,6 +273,9 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         string instruction = InstructionText ?? string.Empty;
         FieldEvent[] events = _events.ToArray();
         bool isSimpleField = _isSimpleField;
+        DxpFieldValue? capturedSetScalar = _capturedSetScalar;
+        bool capturedSetScalarIsExact = _capturedSetScalarIsExact;
+        int nestedSetResultCount = _nestedSetResultCount;
         return new DxpDeferredField(instruction, (visitor, context) => {
             var router = new DxpEvaluateFieldRouterFrame(
                 visitor,
@@ -283,6 +286,9 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
                 initialSeenSeparate: isSimpleField,
                 initialInstructionText: isSimpleField ? instruction : null,
                 allowDeferredCapture: false);
+            router._capturedSetScalar = capturedSetScalar;
+            router._capturedSetScalarIsExact = capturedSetScalarIsExact;
+            router._nestedSetResultCount = nestedSetResultCount;
             var scopes = new Stack<IDisposable>();
             foreach (var fieldEvent in events)
                 fieldEvent.Replay(router, context, scopes);
