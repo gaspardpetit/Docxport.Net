@@ -40,6 +40,8 @@ internal static class DxpFieldEvalIfRunner
             if (ch == '"')
             {
                 state.InQuote = !state.InQuote;
+                if (state.InQuote)
+                    state.MarkCurrentBranchObserved();
                 if (!state.InQuote)
                     state.JustClosedQuote = true;
                 continue;
@@ -85,6 +87,8 @@ internal static class DxpFieldEvalIfRunner
             state.CurrentToken.Append(ch);
             state.JustClosedQuote = false;
             var nextTarget = state.GetCurrentBuffer();
+            if (nextTarget != null)
+                state.MarkCurrentBranchObserved();
             if (nextTarget != currentTarget)
             {
                 if (currentTarget != null && bufferText.Length > 0)
@@ -128,6 +132,8 @@ internal static class DxpFieldEvalIfRunner
         var selected = ifResult.Value.Condition ? state.TrueBuffer : state.FalseBuffer;
         if (selected.IsEmpty)
         {
+            if (state.WasBranchObserved(ifResult.Value.Condition))
+                return true;
             var evalResult = eval.EvalAsync(new DxpFieldInstruction(instructionText), documentContext).GetAwaiter().GetResult();
             if (evalResult.Status == DxpFieldEvalStatus.Resolved && evalResult.Text != null)
                 emitText(evalResult.Text, documentContext, null);

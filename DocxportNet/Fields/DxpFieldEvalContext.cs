@@ -33,6 +33,9 @@ public sealed partial class DxpFieldEvalContext
     internal void DeferStructuredFieldResult(DxpFieldNodeBuffer result)
         => _deferredStructuredFieldResults.Enqueue(result);
 
+    internal bool HasDeferredStructuredFieldResults
+        => _deferredStructuredFieldResults.Count > 0;
+
     internal bool TryTakeDeferredStructuredFieldResult(out DxpFieldNodeBuffer? result)
     {
         if (_deferredStructuredFieldResults.Count == 0)
