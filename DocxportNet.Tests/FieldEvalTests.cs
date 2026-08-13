@@ -397,6 +397,25 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         Assert.Equal("février 1, 2026", result.Text);
     }
 
+    [Theory]
+    [InlineData("2026-11-30", "November 30, 2026 00:00")]
+    [InlineData("2026-11-30T14:25:30Z", "November 30, 2026 14:25")]
+    [InlineData("2026-11-30T14:25:30-05:00", "November 30, 2026 14:25")]
+    public async Task EvalAsync_ImplicitBookmarkDateFormatCoercesIsoDateText(
+        string source,
+        string expected)
+    {
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.Culture = CultureInfo.GetCultureInfo("en-CA");
+        eval.Context.SetBookmarkNodes("InitialDate", DxpFieldNodeBuffer.FromText(source));
+
+        var result = await eval.EvalAsync(
+            new DxpFieldInstruction("InitialDate \\@ \"MMMM d, yyyy HH:mm\""));
+
+        Assert.Equal(DxpFieldEvalStatus.Resolved, result.Status);
+        Assert.Equal(expected, result.Text);
+    }
+
     [Fact]
     public async Task EvalAsync_IfStringComparisonAndWildcard()
     {
