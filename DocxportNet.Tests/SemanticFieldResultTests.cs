@@ -224,6 +224,25 @@ public sealed class SemanticFieldResultTests : TestBase<SemanticFieldResultTests
     }
 
     [Fact]
+    public void OuterSetCachedErrorDoesNotBecomePartOfNestedDatabaseQuery()
+    {
+        var provider = new RecordingDatabaseProvider();
+        var eval = new DxpFieldEval(new DxpFieldEvalDelegates
+        {
+            ResolveDocVariableAsync = (name, _) => Task.FromResult<DxpFieldValue?>(
+                name == "SyntheticKey" ? new DxpFieldValue("ABC-123") : null)
+        }, logger: Logger);
+        eval.Context.DatabaseProvider = provider;
+
+        using var output = Open(DxpDocxExport.Export(
+            CreateSetWithNestedDatabaseAndOuterCacheDocument(), SemanticOptions(), Logger, eval));
+
+        Assert.Equal("SELECT Value FROM SyntheticData WHERE ItemKey = 'ABC-123'", provider.QueryText);
+        Assert.DoesNotContain("Error!", provider.QueryText, StringComparison.Ordinal);
+        Assert.Empty(new OpenXmlValidator().Validate(output));
+    }
+
+    [Fact]
     public void InlineTextAroundNestedBlockIsNormalizedAcrossExporters()
     {
         byte[] source = CreateDatabaseWithInlineSiblingsDocument();
@@ -539,6 +558,21 @@ public sealed class SemanticFieldResultTests : TestBase<SemanticFieldResultTests
                     Code("\" "),
                     End(),
                 Code("\" \"\" "),
+                End())));
+
+    private static byte[] CreateSetWithNestedDatabaseAndOuterCacheDocument()
+        => CreateDocument(body => body.Append(
+            new Paragraph(
+                Begin(),
+                Code(" SET SyntheticBookmark "),
+                    Begin(),
+                    Code(" DATABASE \\s \"SELECT Value FROM SyntheticData WHERE ItemKey = '"),
+                        Begin(), Code(" DOCVARIABLE SyntheticKey "), Separate(),
+                        new Run(new Text("STALE-KEY")), End(),
+                    Code("'\" "),
+                    End(),
+                Separate(),
+                new Run(new Text("Error! Bookmark not defined.")),
                 End())));
 
     private static byte[] CreateDatabaseWithInlineSiblingsDocument()
