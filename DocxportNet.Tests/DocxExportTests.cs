@@ -251,7 +251,7 @@ public sealed class DocxExportTests : TestBase<DocxExportTests>
     }
 
     [Fact]
-    public void EvaluatedExport_ConvertsDocVariableNewlinesToInlineWordBreaks()
+    public void EvaluatedExport_ConvertsDocVariableNewlinesToParagraphs()
     {
         byte[] sourceBytes = CreateDocument(body => body.AppendChild(
             new Paragraph(new SimpleField(new Run(new Text("cached"))) {
@@ -268,8 +268,8 @@ public sealed class DocxExportTests : TestBase<DocxExportTests>
 
         using var output = Open(outputBytes);
         Body body = output.MainDocumentPart!.Document.Body!;
-        Assert.Single(body.Elements<Paragraph>());
-        Assert.Equal(3, body.Descendants<Break>().Count());
+        Assert.Equal(4, body.Elements<Paragraph>().Count(static paragraph => paragraph.InnerText.Length > 0));
+        Assert.Empty(body.Descendants<Break>());
         Assert.Equal(["Street", "Suite", "City", "Country"],
             body.Descendants<Text>().Select(static text => text.Text));
         Assert.All(body.Descendants<Text>(), static text =>
@@ -489,7 +489,7 @@ public sealed class DocxExportTests : TestBase<DocxExportTests>
                 Instruction = " DOCVARIABLE Multiline "
             })));
         var eval = new DxpFieldEval();
-        eval.Context.SetDocVariable("Multiline", "A\tB\r\nC\nD\rE");
+        eval.Context.SetDocVariable("Multiline", "A\tB\r\nC\nD\rE\vF");
 
         byte[] outputBytes = DxpDocxExport.Export(sourceBytes,
             new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate }, Logger, eval);
@@ -497,9 +497,10 @@ public sealed class DocxExportTests : TestBase<DocxExportTests>
         using var output = Open(outputBytes);
         var body = output.MainDocumentPart!.Document.Body!;
         Assert.Single(body.Descendants<TabChar>());
-        Assert.Equal(3, body.Descendants<Break>().Count());
+        Assert.Equal(4, body.Elements<Paragraph>().Count(static paragraph => paragraph.InnerText.Length > 0));
+        Assert.Single(body.Descendants<Break>());
         Assert.DoesNotContain(body.Descendants<Text>(), text =>
-            text.Text.IndexOfAny(['\r', '\n', '\t']) >= 0);
+            text.Text.IndexOfAny(['\r', '\n', '\t', '\v']) >= 0);
         Assert.Empty(new OpenXmlValidator().Validate(output));
     }
 

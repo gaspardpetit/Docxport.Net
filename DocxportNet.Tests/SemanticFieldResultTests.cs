@@ -125,6 +125,61 @@ public sealed class SemanticFieldResultTests : TestBase<SemanticFieldResultTests
     }
 
     [Fact]
+    public void MultilineDocVariableUsesParagraphsInsteadOfSoftBreaks()
+    {
+        byte[] source = CreateDocument(body => body.Append(new Table(
+            new TableProperties(new TableWidth { Width = "0", Type = TableWidthUnitValues.Auto }),
+            new TableGrid(new GridColumn()),
+            new TableRow(new TableCell(new Paragraph(
+                new ParagraphProperties(new Justification { Val = JustificationValues.Both }),
+                Begin(), Code(" DOCVARIABLE SyntheticAddress "), End()))))));
+        var eval = new DxpFieldEval(new DxpFieldEvalDelegates
+        {
+            ResolveDocVariableAsync = (name, _) => Task.FromResult<DxpFieldValue?>(
+                name == "SyntheticAddress"
+                    ? new DxpFieldValue("100 Example Road\rSuite 200\rExample City\r")
+                    : null)
+        }, logger: Logger);
+
+        byte[] docx = DxpDocxExport.Export(source, SemanticOptions(), Logger, eval);
+        using (var output = Open(docx))
+        {
+            TableCell cell = Assert.Single(output.MainDocumentPart!.Document.Body!.Descendants<TableCell>());
+            Paragraph[] paragraphs = cell.Elements<Paragraph>()
+                .Where(static paragraph => paragraph.InnerText.Length > 0)
+                .ToArray();
+            Assert.Equal(3, cell.Elements<Paragraph>().Count());
+            Assert.Equal(new[] { "100 Example Road", "Suite 200", "Example City" },
+                paragraphs.Select(static paragraph => paragraph.InnerText));
+            Assert.All(paragraphs, paragraph =>
+                Assert.Equal(JustificationValues.Both, paragraph.ParagraphProperties?.Justification?.Val?.Value));
+            Assert.Empty(cell.Descendants<Break>());
+            var validationErrors = new OpenXmlValidator().Validate(output).ToArray();
+            Assert.True(validationErrors.Length == 0,
+                string.Join(Environment.NewLine, validationErrors.Select(error =>
+                    $"{error.Description} Path={error.Path?.XPath}")));
+        }
+
+        string html = DxpExport.ExportToString(
+            source,
+            new DxpHtmlVisitor(DxpHtmlVisitorConfig.CreateRichConfig(), Logger, eval),
+            SemanticOptions(),
+            Logger);
+        Assert.DoesNotContain("<br", html, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("100 Example Road", html, StringComparison.Ordinal);
+        Assert.Contains("Suite 200", html, StringComparison.Ordinal);
+
+        string markdown = DxpExport.ExportToString(
+            source,
+            new DxpMarkdownVisitor(DxpMarkdownVisitorConfig.CreateRichConfig(), Logger, eval),
+            SemanticOptions(),
+            Logger);
+        Assert.DoesNotContain("  \n", markdown, StringComparison.Ordinal);
+        Assert.Contains("100 Example Road", markdown, StringComparison.Ordinal);
+        Assert.Contains("Suite 200", markdown, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void NestedIfComposesWithAdjacentLiteralInSourceOrder()
     {
         byte[] source = CreateNestedIfDocument();

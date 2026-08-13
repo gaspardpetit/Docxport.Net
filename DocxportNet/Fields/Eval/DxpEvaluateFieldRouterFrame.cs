@@ -341,7 +341,9 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
             new DxpFieldExpression(
                 _expressionParts.ToArray(),
                 DxpFieldExpressionSource.Capture(CodeRun, EvalContext),
-                _cachedResult.Length == 0 ? null : _cachedResult.ToString()), context).GetAwaiter().GetResult();
+                _cachedResult.Length == 0 ? null : _cachedResult.ToString(),
+                DxpFieldExpressionSource.CaptureParagraphFormat(
+                    CodeRun?.Ancestors<Paragraph>().FirstOrDefault())), context).GetAwaiter().GetResult();
         if (result.Status == DxpFieldEvalStatus.Failed)
             return false;
 
@@ -411,7 +413,9 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
             new DxpFieldExpression(
                 _expressionParts.ToArray(),
                 DxpFieldExpressionSource.Capture(CodeRun, EvalContext),
-                _cachedResult.Length == 0 ? null : _cachedResult.ToString()),
+                _cachedResult.Length == 0 ? null : _cachedResult.ToString(),
+                DxpFieldExpressionSource.CaptureParagraphFormat(
+                    CodeRun?.Ancestors<Paragraph>().FirstOrDefault())),
             (visitor, context) => {
                 var router = new DxpEvaluateFieldRouterFrame(
                     visitor,

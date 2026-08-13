@@ -14,7 +14,8 @@ namespace DocxportNet.Visitors.Docx;
 /// stories surfaced by <see cref="Walker.DxpWalker"/> from visitor events.
 /// Unsupported events are intentionally left to <see cref="Visitors.DxpVisitor"/>.
 /// </summary>
-public sealed class DxpDocxVisitor : DxpVisitor, IDisposable, DxpIFieldEvalProvider, DxpIPreserveLayoutFields
+public sealed class DxpDocxVisitor : DxpVisitor, IDisposable, DxpIFieldEvalProvider, DxpIPreserveLayoutFields,
+    IDxpDeferredStructuredResultTarget
 {
     private readonly Stack<OpenXmlCompositeElement> _parents = new();
     private Stream? _output;
@@ -160,6 +161,19 @@ public sealed class DxpDocxVisitor : DxpVisitor, IDisposable, DxpIFieldEvalProvi
                 reference.Remove();
         }
         return AppendContainer(shell);
+    }
+
+    void IDxpDeferredStructuredResultTarget.PrepareForStructuredFieldResult()
+    {
+        if (_parents.Count == 0)
+            return;
+        OpenXmlCompositeElement parent = _parents.Peek();
+        if (parent.LastChild is Paragraph placeholder &&
+            placeholder.InnerText.Length == 0 &&
+            placeholder.ChildElements.All(static child =>
+                child is ParagraphProperties ||
+                child is Run run && run.ChildElements.All(static runChild => runChild is RunProperties)))
+            placeholder.Remove();
     }
 
     public override IDisposable VisitRunBegin(Run r, DxpIDocumentContext d)

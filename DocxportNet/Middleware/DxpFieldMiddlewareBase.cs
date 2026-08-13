@@ -368,6 +368,18 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
         });
     }
 
+    public override IDisposable VisitTableCellBegin(
+        TableCell tc,
+        DxpITableCellContext cell,
+        DxpIDocumentContext d)
+    {
+        IDisposable inner = Next.VisitTableCellBegin(tc, cell, d);
+        // A cell can end immediately after the paragraph that produced a structured
+        // field result. Flush while the downstream cell scope is still active so its
+        // paragraphs cannot escape into the containing row or document body.
+        return new DxpCompositeScope(inner, () => ReplayDeferredStructuredResults(d));
+    }
+
     private bool ShouldKeepCurrentParagraphOpen()
         => CurrentField is DxpEvaluateFieldRouterFrame router
             && DxpFieldInstructionClassifier.IsIfInstruction(router.InstructionText);
@@ -375,7 +387,24 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
     private void ReplayDeferredStructuredResults(DxpIDocumentContext d)
     {
         while (_context.TryTakeDeferredStructuredFieldResult(out var deferred) && deferred != null)
+        {
+            PrepareStructuredFieldResultSink(_next);
             deferred.Replay(_next, d);
+        }
+    }
+
+    private static void PrepareStructuredFieldResultSink(DxpIVisitor visitor)
+    {
+        DxpIVisitor? current = visitor;
+        while (current != null)
+        {
+            if (current is IDxpDeferredStructuredResultTarget sink)
+            {
+                sink.PrepareForStructuredFieldResult();
+                return;
+            }
+            current = (current as DxpMiddleware)?.Next;
+        }
     }
 
     public override IDisposable VisitRunBegin(Run r, DxpIDocumentContext d)
