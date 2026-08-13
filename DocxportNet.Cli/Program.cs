@@ -6,7 +6,9 @@ using DocxportNet.Visitors.Html;
 using DocxportNet.Visitors.Markdown;
 using DocxportNet.Visitors.PlainText;
 using DocxportNet.Visitors.Docx;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
+using System.Data.Common;
 using System.Text.Json;
 
 if (args.Length == 0 || args.Contains("--help") || args.Contains("-h"))
@@ -29,6 +31,7 @@ bool plainOutput = false;
 bool formatExplicit = false;
 var cliVariables = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 var includePaths = new List<string>();
+var databaseConnections = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 string? varsPath = null;
 LogLevel logLevel = LogLevel.Warning;
 DxpFieldEvalExportMode fieldMode = DxpFieldEvalExportMode.Cache;
@@ -88,6 +91,23 @@ for (int i = 0; i < args.Length; i++)
             return;
         }
         includePaths.Add(args[++i]);
+    }
+    else if (arg.StartsWith("--database=", StringComparison.OrdinalIgnoreCase))
+    {
+        if (!TryAddDatabase(arg[(arg.IndexOf('=') + 1)..], databaseConnections, out string? error))
+        {
+            Console.Error.WriteLine(error);
+            return;
+        }
+    }
+    else if (arg.Equals("--database", StringComparison.OrdinalIgnoreCase))
+    {
+        string? error = null;
+        if (i + 1 >= args.Length || !TryAddDatabase(args[++i], databaseConnections, out error))
+        {
+            Console.Error.WriteLine(error ?? "--database requires a SQL Server connection string or LABEL=CONNECTION_STRING.");
+            return;
+        }
     }
     else if (arg.Equals("--vars", StringComparison.OrdinalIgnoreCase))
     {
@@ -197,21 +217,21 @@ switch (format.ToLowerInvariant())
 {
     case "markdown":
     case "md":
-        ExportMarkdown(inputPath, outputPath, trackedMode, plainOutput, fieldMode, varsPath, cliVariables, includePaths, logLevel);
+        ExportMarkdown(inputPath, outputPath, trackedMode, plainOutput, fieldMode, varsPath, cliVariables, includePaths, databaseConnections, logLevel);
         break;
     case "html":
-        ExportHtml(inputPath, outputPath, trackedMode, plainOutput, fieldMode, varsPath, cliVariables, includePaths, logLevel);
+        ExportHtml(inputPath, outputPath, trackedMode, plainOutput, fieldMode, varsPath, cliVariables, includePaths, databaseConnections, logLevel);
         break;
     case "text":
     case "txt":
         if (plainOutput)
             Console.Error.WriteLine("Warning: --plain is only supported for markdown/html; ignoring.");
-        ExportPlainText(inputPath, outputPath, trackedMode, fieldMode, varsPath, cliVariables, includePaths, logLevel);
+        ExportPlainText(inputPath, outputPath, trackedMode, fieldMode, varsPath, cliVariables, includePaths, databaseConnections, logLevel);
         break;
     case "docx":
         if (plainOutput)
             Console.Error.WriteLine("Warning: --plain is only supported for markdown/html; ignoring.");
-        ExportDocx(inputPath, outputPath, fieldMode, varsPath, cliVariables, includePaths, logLevel);
+        ExportDocx(inputPath, outputPath, fieldMode, varsPath, cliVariables, includePaths, databaseConnections, logLevel);
         break;
     default:
         Console.Error.WriteLine($"Unknown format '{format}'. Expected markdown|html|text|docx.");
@@ -226,6 +246,7 @@ static void ExportDocx(
     string? varsPath,
     IReadOnlyDictionary<string, string> cliVariables,
     IReadOnlyList<string> includePaths,
+    IReadOnlyDictionary<string, string> databaseConnections,
     LogLevel logLevel)
 {
     string output = outputPath ?? Path.Combine(
@@ -234,7 +255,7 @@ static void ExportDocx(
     using var loggerFactory = CreateLoggerFactory(logLevel);
     var logger = loggerFactory.CreateLogger("docxport");
     var visitor = new DxpDocxVisitor(logger);
-    ApplyFieldContext(visitor, varsPath, cliVariables, includePaths);
+    ApplyFieldContext(visitor, varsPath, cliVariables, includePaths, databaseConnections);
     var exportOptions = new DxpExportOptions { FieldEvalMode = fieldMode };
     DxpExport.ExportToFile(inputPath, visitor, output, exportOptions, logger);
     Console.WriteLine($"Wrote DOCX to {output}");
@@ -249,6 +270,7 @@ static void ExportMarkdown(
     string? varsPath,
     IReadOnlyDictionary<string, string> cliVariables,
     IReadOnlyList<string> includePaths,
+    IReadOnlyDictionary<string, string> databaseConnections,
     LogLevel logLevel)
 {
     var config = plainOutput ? DxpMarkdownVisitorConfig.CreatePlainConfig() : DxpMarkdownVisitorConfig.CreateRichConfig();
@@ -258,7 +280,7 @@ static void ExportMarkdown(
     using var loggerFactory = CreateLoggerFactory(logLevel);
     var logger = loggerFactory.CreateLogger("docxport");
     var visitor = new DxpMarkdownVisitor(config, logger);
-    ApplyFieldContext(visitor, varsPath, cliVariables, includePaths);
+    ApplyFieldContext(visitor, varsPath, cliVariables, includePaths, databaseConnections);
     var exportOptions = new DxpExportOptions { FieldEvalMode = fieldMode };
     DxpExport.ExportToFile(inputPath, visitor, output, exportOptions, logger);
     Console.WriteLine($"Wrote Markdown to {output}");
@@ -273,6 +295,7 @@ static void ExportHtml(
     string? varsPath,
     IReadOnlyDictionary<string, string> cliVariables,
     IReadOnlyList<string> includePaths,
+    IReadOnlyDictionary<string, string> databaseConnections,
     LogLevel logLevel)
 {
     var config = (plainOutput ? DxpHtmlVisitorConfig.CreatePlainConfig() : DxpHtmlVisitorConfig.CreateRichConfig()) with { TrackedChangeMode = trackedMode };
@@ -280,7 +303,7 @@ static void ExportHtml(
     using var loggerFactory = CreateLoggerFactory(logLevel);
     var logger = loggerFactory.CreateLogger("docxport");
     var visitor = new DxpHtmlVisitor(config, logger);
-    ApplyFieldContext(visitor, varsPath, cliVariables, includePaths);
+    ApplyFieldContext(visitor, varsPath, cliVariables, includePaths, databaseConnections);
     var exportOptions = new DxpExportOptions { FieldEvalMode = fieldMode };
     DxpExport.ExportToFile(inputPath, visitor, output, exportOptions, logger);
     Console.WriteLine($"Wrote HTML to {output}");
@@ -294,6 +317,7 @@ static void ExportPlainText(
     string? varsPath,
     IReadOnlyDictionary<string, string> cliVariables,
     IReadOnlyList<string> includePaths,
+    IReadOnlyDictionary<string, string> databaseConnections,
     LogLevel logLevel)
 {
     var textMode = trackedMode == DxpTrackedChangeMode.RejectChanges
@@ -304,7 +328,7 @@ static void ExportPlainText(
     using var loggerFactory = CreateLoggerFactory(logLevel);
     var logger = loggerFactory.CreateLogger("docxport");
     var visitor = new DxpPlainTextVisitor(config, logger);
-    ApplyFieldContext(visitor, varsPath, cliVariables, includePaths);
+    ApplyFieldContext(visitor, varsPath, cliVariables, includePaths, databaseConnections);
     var exportOptions = new DxpExportOptions { FieldEvalMode = fieldMode };
     DxpExport.ExportToFile(inputPath, visitor, output, exportOptions, logger);
     Console.WriteLine($"Wrote text to {output}");
@@ -364,7 +388,7 @@ static void PrintHelp()
 {
     Console.WriteLine($"""
 docxport ({GetVersion()})
-Usage: docxport <input.docx> [--format=markdown|html|text|docx] [--tracked=accept|reject|inline|split] [--plain] [--fields=evaluate|cache|none] [-o|--output=path] [--vars=path] [-D name=value] [--include-path=directory]
+Usage: docxport <input.docx> [--format=markdown|html|text|docx] [--tracked=accept|reject|inline|split] [--plain] [--fields=evaluate|cache|none] [-o|--output=path] [--vars=path] [-D name=value] [--include-path=directory] [--database=[LABEL=]CONNECTION_STRING]
 
 Options:
   --format=...   Output format (default: markdown)
@@ -376,6 +400,9 @@ Options:
   --vars=...     Load DOCVARIABLE values from a JSON or INI file.
   -D name=value  Define a DOCVARIABLE (repeatable). CLI values override --vars.
   --include-path=...  Allow and search this directory for INCLUDETEXT DOCX/HTML files (repeatable).
+  --database=...  Configure a default SQL Server connection string, or LABEL=CONNECTION_STRING
+                  to map a DATABASE field's \d source (repeatable). LABEL matches the full source,
+                  filename, or filename without extension; * explicitly denotes the fallback.
   --log          Enable info-level logging to stderr.
   --log-level=...  Set log level (trace|debug|info|warn|error|critical|none).
   -v, --version  Show CLI version
@@ -396,7 +423,8 @@ static void ApplyFieldContext(
     DxpIVisitor visitor,
     string? varsPath,
     IReadOnlyDictionary<string, string> cliVariables,
-    IReadOnlyList<string> includePaths)
+    IReadOnlyList<string> includePaths,
+    IReadOnlyDictionary<string, string> databaseConnections)
 {
     if (visitor is not DxpIFieldEvalProvider provider)
         return;
@@ -409,6 +437,93 @@ static void ApplyFieldContext(
         context.SetDocVariable(kvp.Key, kvp.Value);
     if (includePaths.Count > 0)
         context.IncludeTextResolver = new DxpFileSystemIncludeTextResolver(includePaths);
+    if (databaseConnections.Count > 0)
+    {
+        context.DatabaseProvider = new DxpDbConnectionDatabaseFieldProvider((request, _) => {
+            string connectionString = SelectDatabaseConnection(request, databaseConnections);
+            return Task.FromResult<DbConnection>(new SqlConnection(connectionString));
+        });
+    }
+}
+
+static bool TryAddDatabase(
+    string specification,
+    IDictionary<string, string> connections,
+    out string? error)
+{
+    if (TryParseConnectionString(specification, out string defaultConnection))
+    {
+        connections["*"] = defaultConnection;
+        error = null;
+        return true;
+    }
+
+    int equals = specification.IndexOf('=');
+    if (equals <= 0 || equals == specification.Length - 1)
+    {
+        error = "--database requires a SQL Server connection string or LABEL=CONNECTION_STRING.";
+        return false;
+    }
+
+    string label = specification[..equals].Trim();
+    string connectionString = specification[(equals + 1)..].Trim();
+    if (label.Length == 0 || !TryParseConnectionString(connectionString, out string validatedConnection))
+    {
+        error = "--database requires a valid SQL Server connection string, optionally prefixed with LABEL=.";
+        return false;
+    }
+
+    connections[label] = validatedConnection;
+    error = null;
+    return true;
+}
+
+static bool TryParseConnectionString(string value, out string connectionString)
+{
+    try
+    {
+        var builder = new SqlConnectionStringBuilder(value.Trim());
+        if (builder.Count == 0)
+        {
+            connectionString = string.Empty;
+            return false;
+        }
+        connectionString = builder.ConnectionString;
+        return true;
+    }
+    catch (ArgumentException)
+    {
+        connectionString = string.Empty;
+        return false;
+    }
+}
+
+static string SelectDatabaseConnection(
+    DxpDatabaseRequest request,
+    IReadOnlyDictionary<string, string> connections)
+{
+    string? source = request.DataSource;
+    if (!string.IsNullOrWhiteSpace(source))
+    {
+        if (connections.TryGetValue(source, out string? exact))
+            return exact;
+
+        string normalized = source.Replace('\\', Path.DirectorySeparatorChar)
+            .Replace('/', Path.DirectorySeparatorChar);
+        string filename = Path.GetFileName(normalized);
+        if (connections.TryGetValue(filename, out string? byFilename))
+            return byFilename;
+
+        string stem = Path.GetFileNameWithoutExtension(filename);
+        if (connections.TryGetValue(stem, out string? byStem))
+            return byStem;
+    }
+
+    if (connections.TryGetValue("*", out string? fallback))
+        return fallback;
+
+    throw new InvalidOperationException(
+        $"No --database mapping matches DATABASE source '{source ?? "<none>"}', and no '*' fallback was configured.");
 }
 
 static Dictionary<string, string> LoadVariables(string? varsPath)
