@@ -9,11 +9,17 @@ public sealed record DxpSemanticFieldResult(
     DxpFieldEvalStatus Status,
     DxpSemanticContent Content,
     DxpFieldValue? Value = null,
-    Exception? Error = null)
+    Exception? Error = null,
+    DxpSemanticSourceProvenance? Source = null)
 {
     public static DxpSemanticFieldResult Empty(DxpFieldEvalStatus status = DxpFieldEvalStatus.Resolved)
         => new(status, DxpSemanticContent.Empty);
 }
+
+public sealed record DxpSemanticSourceProvenance(
+    string? StoryKey,
+    int? DocumentOrder,
+    string? ParagraphId);
 
 public sealed record DxpSemanticContent(IReadOnlyList<DxpSemanticNode> Nodes)
 {

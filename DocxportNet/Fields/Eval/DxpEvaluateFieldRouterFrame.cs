@@ -274,7 +274,9 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
 
         var evaluator = new DxpSemanticFieldEvaluator(_eval);
         DxpSemanticFieldResult result = evaluator.EvaluateExpressionAsync(
-            new DxpFieldExpression(_expressionParts.ToArray()), context).GetAwaiter().GetResult();
+            new DxpFieldExpression(
+                _expressionParts.ToArray(),
+                DxpFieldExpressionSource.Capture(CodeRun, EvalContext)), context).GetAwaiter().GetResult();
         if (result.Status == DxpFieldEvalStatus.Failed)
             return false;
 
@@ -324,7 +326,9 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         int nestedSetResultCount = _nestedSetResultCount;
         return new DxpDeferredField(
             instruction,
-            new DxpFieldExpression(_expressionParts.ToArray()),
+            new DxpFieldExpression(
+                _expressionParts.ToArray(),
+                DxpFieldExpressionSource.Capture(CodeRun, EvalContext)),
             (visitor, context) => {
                 var router = new DxpEvaluateFieldRouterFrame(
                     visitor,

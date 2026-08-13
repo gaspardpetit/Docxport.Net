@@ -20,11 +20,15 @@ internal sealed class DxpSemanticFieldEvaluator
         CancellationToken cancellationToken = default)
         => EvaluateFieldAsync(instructionText, documentContext, cancellationToken, 0);
 
-    internal Task<DxpSemanticFieldResult> EvaluateExpressionAsync(
+    internal async Task<DxpSemanticFieldResult> EvaluateExpressionAsync(
         DxpFieldExpression expression,
         DxpIDocumentContext? documentContext = null,
         CancellationToken cancellationToken = default)
-        => EvaluateExpressionAsync(expression, documentContext, cancellationToken, 0);
+    {
+        DxpSemanticFieldResult result = await EvaluateExpressionAsync(
+            expression, documentContext, cancellationToken, 0);
+        return result with { Source = expression.Source };
+    }
 
     private async Task<DxpSemanticFieldResult> EvaluateExpressionAsync(
         DxpFieldExpression expression,

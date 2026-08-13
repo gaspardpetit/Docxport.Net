@@ -107,7 +107,9 @@ internal sealed class DxpIFFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame, I
 
 		var evaluator = new DxpSemanticFieldEvaluator(_eval);
 		DxpSemanticFieldResult result = evaluator.EvaluateExpressionAsync(
-			new DxpFieldExpression(_semanticExpressionParts.ToArray()), context).GetAwaiter().GetResult();
+			new DxpFieldExpression(
+				_semanticExpressionParts.ToArray(),
+				DxpFieldExpressionSource.Capture(_codeRun, _eval.Context)), context).GetAwaiter().GetResult();
 		if (result.Status == DxpFieldEvalStatus.Failed)
 			return false;
 		DxpFieldNodeBuffer buffer = DxpSemanticFieldResultAdapter.BuildBuffer(
