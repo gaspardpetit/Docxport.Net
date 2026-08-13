@@ -5,7 +5,8 @@ namespace DocxportNet.Fields.Semantic;
 internal sealed record DxpFieldExpression(
     IReadOnlyList<DxpFieldExpressionPart> Parts,
     DxpSemanticSourceProvenance? Source = null,
-    string? CachedResult = null)
+    string? CachedResult = null,
+    DxpSemanticParagraphFormat? SourceParagraphFormat = null)
 {
     public static DxpFieldExpression FromText(string text)
         => new(new DxpFieldExpressionPart[] { new DxpFieldExpressionText(text) });

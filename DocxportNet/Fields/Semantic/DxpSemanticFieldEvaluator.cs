@@ -66,7 +66,8 @@ internal sealed class DxpSemanticFieldEvaluator
         if (tokens.Count == 1 && DxpFieldInstructionClassifier.TryGetImplicitRefName(
                 fieldType, _eval.Context, out string bookmark))
             return await EvaluateScalarAsync(
-                " REF " + bookmark + " ", documentContext, cancellationToken);
+                " REF " + bookmark + " ", documentContext, cancellationToken,
+                paragraphFormat: expression.SourceParagraphFormat);
 
         return await EvaluateScalarExpressionAsync(expression, documentContext, cancellationToken);
     }
@@ -183,7 +184,8 @@ internal sealed class DxpSemanticFieldEvaluator
             await EvaluateInstructionTextAsync(expression, documentContext, cancellationToken, 1),
             documentContext,
             cancellationToken,
-            expression.CachedResult);
+            expression.CachedResult,
+            expression.SourceParagraphFormat);
     }
 
     private async Task<string> EvaluateInstructionTextAsync(
@@ -611,14 +613,54 @@ internal sealed class DxpSemanticFieldEvaluator
         string instructionText,
         DxpIDocumentContext? documentContext,
         CancellationToken cancellationToken,
-        string? cachedResult = null)
+        string? cachedResult = null,
+        DxpSemanticParagraphFormat? paragraphFormat = null)
     {
         DxpFieldEvalResult result = await _eval.EvalAsync(
             new DxpFieldInstruction(instructionText, cachedResult), documentContext, cancellationToken);
-        var builder = new DxpSemanticContentBuilder();
-        if (result.Text != null)
-            builder.AppendTextWithControls(result.Text);
-        return new DxpSemanticFieldResult(result.Status, builder.Build(), result.Value, result.Error);
+        bool preservesParagraphs = string.Equals(
+            _parser.Parse(instructionText).Ast.FieldType,
+            "DOCVARIABLE",
+            StringComparison.OrdinalIgnoreCase);
+        return new DxpSemanticFieldResult(
+            result.Status,
+            ScalarContentFromText(result.Text, paragraphFormat, preservesParagraphs),
+            result.Value,
+            result.Error);
+    }
+
+    private static DxpSemanticContent ScalarContentFromText(
+        string? text,
+        DxpSemanticParagraphFormat? paragraphFormat,
+        bool preservesParagraphs)
+    {
+        if (!preservesParagraphs || string.IsNullOrEmpty(text))
+            return ContentFromText(text);
+
+        string value = text!;
+        if (value.IndexOfAny(new[] { '\r', '\n' }) < 0)
+            return ContentFromText(value);
+        var content = new DxpSemanticContentBuilder();
+        int start = 0;
+        for (int index = 0; index <= value.Length; index++)
+        {
+            if (index < value.Length && value[index] is not ('\r' or '\n'))
+                continue;
+            // A terminal separator closes the final paragraph; it does not begin an
+            // additional empty paragraph (SQL address values commonly end this way).
+            if (index == value.Length && start == value.Length)
+                break;
+
+            var paragraph = new DxpSemanticContentBuilder();
+            paragraph.AppendTextWithControls(value.Substring(start, index - start));
+            content.Append(new DxpSemanticParagraph(paragraph.Build(), paragraphFormat));
+
+            if (index < value.Length && value[index] == '\r' &&
+                index + 1 < value.Length && value[index + 1] == '\n')
+                index++;
+            start = index + 1;
+        }
+        return content.Build();
     }
 
     private static bool TryReadNestedField(

@@ -16,12 +16,14 @@ internal sealed class DxpSemanticContentBuilder
         for (int index = 0; index < text.Length; index++)
         {
             char ch = text[index];
-            if (ch is not ('\r' or '\n' or '\t'))
+            if (ch is not ('\r' or '\n' or '\t' or '\v'))
                 continue;
             if (index > start)
                 _nodes.Add(new DxpSemanticText(text.Substring(start, index - start), format));
             if (ch == '\t')
                 _nodes.Add(new DxpSemanticTab(format));
+            else if (ch == '\v')
+                _nodes.Add(new DxpSemanticBreak(format));
             else
             {
                 _nodes.Add(new DxpSemanticBreak(format));
