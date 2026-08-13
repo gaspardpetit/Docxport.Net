@@ -192,6 +192,8 @@ internal sealed class DxpSemanticFieldEvaluator
         }
         if (source == null || source.Content.Length == 0)
             return IncludeFallback(expression, error: false);
+        if (!_eval.Context.CanEnterIncludeText(source.Identity, out _))
+            return IncludeFallback(expression, error: false);
 
         byte[] content = source.Content;
         string rawText = string.Concat(expression.Parts
@@ -453,10 +455,36 @@ internal sealed class DxpSemanticFieldEvaluator
         if (columnCount == 0)
             return DxpSemanticFieldResult.Empty();
 
+        var selectedRows = DxpFieldEval.SelectDatabaseRows(result.Rows, request).ToList();
+        if (!request.IncludeColumnHeadings && selectedRows.Count == 1 &&
+            selectedRows[0].Count == 1 && selectedRows[0][0].HasValue)
+        {
+            DxpFieldValue value = selectedRows[0][0]!.Value;
+            string text = _eval.FormatDatabaseCellValue(value);
+            return new DxpSemanticFieldResult(
+                DxpFieldEvalStatus.Resolved,
+                ContentFromText(text),
+                value);
+        }
+
+        if (columnCount >= 62)
+        {
+            var content = new DxpSemanticContentBuilder();
+            if (request.IncludeColumnHeadings && result.Columns.Count > 0)
+                AppendTabbedDatabaseRow(content, result.Columns.Select(static column => column.Name), columnCount);
+            foreach (var row in selectedRows)
+            {
+                if (!content.Build().IsEmpty)
+                    content.Append(new DxpSemanticBreak());
+                AppendTabbedDatabaseRow(content, row.Select(_eval.FormatDatabaseCellValue), columnCount);
+            }
+            return new DxpSemanticFieldResult(DxpFieldEvalStatus.Resolved, content.Build());
+        }
+
         var rows = new List<DxpSemanticTableRow>();
         if (request.IncludeColumnHeadings && result.Columns.Count > 0)
             rows.Add(BuildRow(result.Columns.Select(static column => column.Name), columnCount));
-        foreach (var row in DxpFieldEval.SelectDatabaseRows(result.Rows, request))
+        foreach (var row in selectedRows)
             rows.Add(BuildRow(row.Select(_eval.FormatDatabaseCellValue), columnCount));
         if (rows.Count == 0)
             return DxpSemanticFieldResult.Empty();
@@ -469,6 +497,20 @@ internal sealed class DxpSemanticFieldEvaluator
         return new DxpSemanticFieldResult(
             DxpFieldEvalStatus.Resolved,
             new DxpSemanticContent(new DxpSemanticNode[] { table }));
+    }
+
+    private static void AppendTabbedDatabaseRow(
+        DxpSemanticContentBuilder content,
+        IEnumerable<string> values,
+        int columnCount)
+    {
+        int index = 0;
+        foreach (string value in values.Take(columnCount))
+        {
+            if (index++ > 0)
+                content.Append(new DxpSemanticTab());
+            content.Append(new DxpSemanticText(value));
+        }
     }
 
     private static DxpSemanticTableRow BuildRow(IEnumerable<string> values, int columnCount)

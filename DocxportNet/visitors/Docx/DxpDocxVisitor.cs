@@ -644,6 +644,12 @@ public sealed class DxpDocxVisitor : DxpVisitor, IDisposable, DxpIFieldEvalProvi
                     PromoteNestedParagraphs(paragraph);
             }
 
+            foreach (var paragraph in root.Descendants<Paragraph>()
+                         .Where(p => p.ChildElements.Any(element => element is Table))
+                         .Reverse()
+                         .ToArray())
+                PromoteNestedTables(paragraph);
+
             uint nextBookmarkId = 1;
             var bookmarkIds = new Dictionary<string, Stack<string>>(StringComparer.Ordinal);
             foreach (var marker in root.Descendants().Where(element => element is BookmarkStart or BookmarkEnd))
@@ -714,6 +720,32 @@ public sealed class DxpDocxVisitor : DxpVisitor, IDisposable, DxpIFieldEvalProvi
                 current.AppendChild(child.CloneNode(true));
         }
 
+        if (current.ChildElements.Any(element => element is not ParagraphProperties))
+            paragraph.InsertBeforeSelf(current);
+        paragraph.Remove();
+    }
+
+    private static void PromoteNestedTables(Paragraph paragraph)
+    {
+        if (paragraph.Parent is not OpenXmlCompositeElement)
+            return;
+        Paragraph current = (Paragraph)paragraph.CloneNode(false);
+        if (paragraph.ParagraphProperties != null)
+            current.AppendChild(paragraph.ParagraphProperties.CloneNode(true));
+        foreach (var child in paragraph.ChildElements.Where(child => child is not ParagraphProperties).ToArray())
+        {
+            if (child is Table table)
+            {
+                if (current.ChildElements.Any(element => element is not ParagraphProperties))
+                    paragraph.InsertBeforeSelf(current);
+                paragraph.InsertBeforeSelf(table.CloneNode(true));
+                current = (Paragraph)paragraph.CloneNode(false);
+                if (paragraph.ParagraphProperties != null)
+                    current.AppendChild(paragraph.ParagraphProperties.CloneNode(true));
+            }
+            else
+                current.AppendChild(child.CloneNode(true));
+        }
         if (current.ChildElements.Any(element => element is not ParagraphProperties))
             paragraph.InsertBeforeSelf(current);
         paragraph.Remove();
