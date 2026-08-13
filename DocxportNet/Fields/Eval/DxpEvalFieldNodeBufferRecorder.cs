@@ -7,7 +7,7 @@ using DocxportNet.Walker;
 
 namespace DocxportNet.Fields.Eval;
 
-internal sealed class DxpEvalFieldNodeBufferRecorder : DxpVisitor
+internal sealed class DxpEvalFieldNodeBufferRecorder : DxpVisitor, IDxpIncludeTextResultSink
 {
     private readonly Stack<DxpFieldNodeBuffer> _stack = new();
     private readonly Stack<Run?> _runStack = new();
@@ -27,7 +27,7 @@ internal sealed class DxpEvalFieldNodeBufferRecorder : DxpVisitor
     private DxpFieldNodeBuffer Current => _stack.Peek();
     private Run? CurrentRun => _runStack.Peek();
 
-    internal void RecordInclude(DxpIncludeTextExpansion expansion)
+    public void RecordInclude(DxpIncludeTextExpansion expansion)
         => Current.AddIncludeTextExpansion(expansion);
 
     public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)

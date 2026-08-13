@@ -2,6 +2,7 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
 using DocxportNet.Walker;
+using Microsoft.Extensions.Logging;
 
 namespace DocxportNet.Fields.Semantic;
 
@@ -11,16 +12,20 @@ internal static class DxpSemanticFieldResultAdapter
         DxpSemanticFieldResult result,
         DxpIVisitor visitor,
         DxpIDocumentContext context,
-        Run? sourceRun = null)
+        Run? sourceRun = null,
+        DxpFieldEval? eval = null,
+        ILogger? logger = null)
     {
         if (result.Content.IsEmpty)
             return;
-        BuildBuffer(result.Content, sourceRun).Replay(visitor, context);
+        BuildBuffer(result.Content, sourceRun, eval, logger).Replay(visitor, context);
     }
 
     internal static DxpFieldNodeBuffer BuildBuffer(
         DxpSemanticContent content,
-        Run? sourceRun = null)
+        Run? sourceRun = null,
+        DxpFieldEval? eval = null,
+        ILogger? logger = null)
     {
         var root = new DxpFieldNodeBuffer();
         DxpFieldNodeBuffer? inlineRoot = null;
@@ -47,6 +52,22 @@ internal static class DxpSemanticFieldResultAdapter
             {
                 FlushInline();
                 root.Append(DxpFieldNodeBuffer.FromBlock(BuildTable(table, sourceRun)));
+                continue;
+            }
+            if (node is DxpSemanticInclude include)
+            {
+                FlushInline();
+                if (eval != null)
+                {
+                    root.AddIncludeTextExpansion(new DxpIncludeTextExpansion(
+                        include.Path,
+                        include.Identity,
+                        include.Content,
+                        include.Bookmark,
+                        CachedResult: null,
+                        eval,
+                        logger));
+                }
                 continue;
             }
 

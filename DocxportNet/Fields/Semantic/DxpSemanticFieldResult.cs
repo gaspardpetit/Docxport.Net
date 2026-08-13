@@ -19,7 +19,8 @@ public sealed record DxpSemanticContent(IReadOnlyList<DxpSemanticNode> Nodes)
 {
     public static DxpSemanticContent Empty { get; } = new(Array.Empty<DxpSemanticNode>());
     public bool IsEmpty => Nodes.Count == 0;
-    public bool HasBlocks => Nodes.Any(static node => node is DxpSemanticParagraph or DxpSemanticTable);
+    public bool HasBlocks => Nodes.Any(static node =>
+        node is DxpSemanticParagraph or DxpSemanticTable or DxpSemanticInclude);
 }
 
 public abstract record DxpSemanticNode;
@@ -28,6 +29,11 @@ public sealed record DxpSemanticText(string Text) : DxpSemanticNode;
 public sealed record DxpSemanticBreak : DxpSemanticNode;
 public sealed record DxpSemanticTab : DxpSemanticNode;
 public sealed record DxpSemanticParagraph(DxpSemanticContent Content) : DxpSemanticNode;
+public sealed record DxpSemanticInclude(
+    string Path,
+    string Identity,
+    byte[] Content,
+    string? Bookmark = null) : DxpSemanticNode;
 
 public sealed record DxpSemanticTable(
     IReadOnlyList<DxpSemanticTableRow> Rows,

@@ -22,6 +22,7 @@ internal sealed class DxpIFFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame, I
 	private Run? _currentInstructionRun;
 	private StringBuilder? _literalBuffer;
 	private bool _hasPendingLiteral;
+	private readonly List<DxpFieldExpressionPart> _semanticExpressionParts = new();
 
 	public override DxpIVisitor? Next { get; }
 
@@ -44,6 +45,7 @@ internal sealed class DxpIFFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame, I
 		FlushLiteralBuffer();
 		var state = DxpFieldEvalIfRunner.EnsureIfState(ref _ifState);
 		_instructionText = _instructionText == null ? text : _instructionText + text;
+		_semanticExpressionParts.Add(new DxpFieldExpressionText(text));
 		var instrRun = instr.Parent as Run;
 		var runProps = instrRun?.RunProperties;
 
@@ -76,6 +78,11 @@ internal sealed class DxpIFFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame, I
 
 	public override IDisposable VisitSimpleFieldBegin(SimpleField fld, DxpIDocumentContext d)
 	{
+		if (_semanticExpressionParts.Count == 0 && !string.IsNullOrEmpty(fld.Instruction?.Value))
+		{
+			_instructionText = fld.Instruction!.Value;
+			_semanticExpressionParts.Add(new DxpFieldExpressionText(fld.Instruction.Value));
+		}
 		DxpFieldEvalIfRunner.EnsureIfState(ref _ifState);
 		_inCachedResult = true;
 		return DxpDisposable.Create(() => {
@@ -98,17 +105,13 @@ internal sealed class DxpIFFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame, I
 			string.IsNullOrWhiteSpace(_instructionText))
 			return false;
 
-		var condition = _eval.EvaluateIfConditionAsync(
-			_instructionText!, context).GetAwaiter().GetResult();
-		if (condition == null || !condition.Value.Success)
-			return false;
-		IReadOnlyList<DxpSemanticBranchPart> selected = condition.Value.Condition
-			? _ifState.TrueSemanticParts
-			: _ifState.FalseSemanticParts;
 		var evaluator = new DxpSemanticFieldEvaluator(_eval);
-		DxpSemanticFieldResult result = evaluator.EvaluateBranchAsync(
-			selected, context).GetAwaiter().GetResult();
-		DxpFieldNodeBuffer buffer = DxpSemanticFieldResultAdapter.BuildBuffer(result.Content, _codeRun);
+		DxpSemanticFieldResult result = evaluator.EvaluateExpressionAsync(
+			new DxpFieldExpression(_semanticExpressionParts.ToArray()), context).GetAwaiter().GetResult();
+		if (result.Status == DxpFieldEvalStatus.Failed)
+			return false;
+		DxpFieldNodeBuffer buffer = DxpSemanticFieldResultAdapter.BuildBuffer(
+			result.Content, _codeRun, _eval, _logger);
 		if (!buffer.IsEmpty && (!buffer.HasBlockRoots || !TryDeferStructuredResult(buffer)))
 			buffer.Replay(Next, context);
 		return true;
@@ -137,6 +140,8 @@ internal sealed class DxpIFFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame, I
 		FlushLiteralBuffer();
 		var state = DxpFieldEvalIfRunner.EnsureIfState(ref _ifState);
 		state.BeginParagraph(p);
+		if (_semanticExpressionParts.Count > 0)
+			_semanticExpressionParts.Add(new DxpFieldExpressionParagraph());
 		return DxpDisposable.Empty;
 	}
 
@@ -145,6 +150,7 @@ internal sealed class DxpIFFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame, I
 		if (!_inCachedResult)
 		{
 			BufferLiteralToken(t.Text);
+			_semanticExpressionParts.Add(new DxpFieldExpressionText(t.Text));
 			return;
 		}
 		return;
@@ -155,6 +161,7 @@ internal sealed class DxpIFFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame, I
 		if (!_inCachedResult)
 		{
 			BufferLiteralToken("\n");
+			_semanticExpressionParts.Add(new DxpFieldExpressionText("\n"));
 			return;
 		}
 		return;
@@ -165,6 +172,7 @@ internal sealed class DxpIFFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame, I
 		if (!_inCachedResult)
 		{
 			BufferLiteralToken("\t");
+			_semanticExpressionParts.Add(new DxpFieldExpressionText("\t"));
 			return;
 		}
 		return;
@@ -175,6 +183,7 @@ internal sealed class DxpIFFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame, I
 		if (!_inCachedResult)
 		{
 			BufferLiteralToken("\n");
+			_semanticExpressionParts.Add(new DxpFieldExpressionText("\n"));
 			return;
 		}
 		return;
@@ -185,6 +194,7 @@ internal sealed class DxpIFFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame, I
 		if (!_inCachedResult)
 		{
 			BufferLiteralToken("-");
+			_semanticExpressionParts.Add(new DxpFieldExpressionText("-"));
 			return;
 		}
 		return;
@@ -259,6 +269,12 @@ internal sealed class DxpIFFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame, I
 	{
 		FlushLiteralBuffer();
 		var state = DxpFieldEvalIfRunner.EnsureIfState(ref _ifState);
+		if (_eval.Context.UseSemanticFieldResults)
+		{
+			_semanticExpressionParts.Add(new DxpFieldExpressionChild(field.Expression));
+			state.CompleteDeferredFieldToken();
+			return true;
+		}
 		bool captured = state.AppendDeferredField(field);
 		if (!captured)
 		{

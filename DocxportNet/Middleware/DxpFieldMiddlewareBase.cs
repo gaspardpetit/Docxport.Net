@@ -88,6 +88,18 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
         return new DxpCompositeScope(inner, () => ReplayDeferredStructuredResults(documentContext));
     }
 
+    public override IDisposable VisitSectionBegin(
+        SectionProperties properties,
+        SectionLayout layout,
+        DxpIDocumentContext documentContext)
+    {
+        var inner = Next.VisitSectionBegin(properties, layout, documentContext);
+        // A block-valued field in the final paragraph has no following paragraph
+        // boundary at which it can be emitted. Flush it while the exporter's
+        // section/body scope is still open.
+        return new DxpCompositeScope(inner, () => ReplayDeferredStructuredResults(documentContext));
+    }
+
     private DxpIFieldEvalFrame? CurrentField => _fieldFrames.Count > 0 ? _fieldFrames.Peek() : null;
 
     private void PushAdapterForFrame(DxpIFieldEvalFrame frame)
