@@ -339,6 +339,97 @@ public sealed class DocxExportTests : TestBase<DocxExportTests>
         Assert.Empty(new OpenXmlValidator().Validate(output));
     }
 
+    [Fact]
+    public void EvaluatedExport_RendersSyntheticDatabaseResultAsWordTable()
+    {
+        byte[] sourceBytes = CreateDocument(body => body.Append(
+            new Paragraph(new SimpleField(new Run(new Text("cached"))) {
+                Instruction = " DATABASE \\s \"SELECT Value FROM Items\" \\h "
+            }),
+            new Paragraph(new Run(new Text("after")))));
+        var eval = new DxpFieldEval();
+        eval.Context.DatabaseProvider = new SyntheticDatabaseProvider();
+
+        byte[] outputBytes = DxpDocxExport.Export(sourceBytes,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate }, Logger, eval);
+
+        using var output = Open(outputBytes);
+        var body = output.MainDocumentPart!.Document.Body!;
+        var table = Assert.Single(body.Elements<Table>());
+        var rows = table.Elements<TableRow>().ToArray();
+        Assert.Equal(3, rows.Length);
+        Assert.Equal("Value", rows[0].InnerText);
+        Assert.Equal("alpha", rows[1].InnerText);
+        Assert.Equal("beta", rows[2].InnerText);
+        Assert.Contains("after", body.InnerText, StringComparison.Ordinal);
+        Assert.Empty(body.Descendants<FieldChar>());
+        Assert.Empty(body.Descendants<SimpleField>());
+        Assert.Empty(new OpenXmlValidator().Validate(output));
+    }
+
+    [Fact]
+    public void EvaluatedExport_RendersSixtyTwoDatabaseColumnsAsTabs()
+    {
+        byte[] sourceBytes = CreateDocument(body => body.Append(
+            new Paragraph(new SimpleField(new Run(new Text("cached"))) {
+                Instruction = " DATABASE \\s \"SELECT synthetic columns\" "
+            }),
+            new Paragraph(new Run(new Text("after")))));
+        var columns = Enumerable.Range(1, 62)
+            .Select(index => new DxpDatabaseColumn($"C{index}"))
+            .ToArray();
+        var values = Enumerable.Range(1, 62)
+            .Select(index => (DxpFieldValue?)new DxpFieldValue(index.ToString()))
+            .ToArray();
+        var eval = new DxpFieldEval();
+        eval.Context.DatabaseProvider = new FixedDatabaseProvider(
+            new DxpDatabaseResult(columns, [values]));
+
+        byte[] outputBytes = DxpDocxExport.Export(sourceBytes,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate }, Logger, eval);
+
+        using var output = Open(outputBytes);
+        var body = output.MainDocumentPart!.Document.Body!;
+        Assert.Empty(body.Elements<Table>());
+        Assert.Equal(61, body.Descendants<TabChar>().Count());
+        Assert.Contains("after", body.InnerText, StringComparison.Ordinal);
+        Assert.Empty(new OpenXmlValidator().Validate(output));
+    }
+
+    [Fact]
+    public void EvaluatedExport_UsesNestedDatabaseResultAsSetScalar()
+    {
+        byte[] sourceBytes = CreateDocument(body => body.Append(
+            new Paragraph(
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldCode(" SET Lookup ") { Space = SpaceProcessingModeValues.Preserve }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldCode(" DATABASE \\s \"SELECT Value FROM Items\" ") { Space = SpaceProcessingModeValues.Preserve }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Separate }),
+                new Run(new Text("cached database")),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.End }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Separate }),
+                new Run(new Text("cached set")),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.End })),
+            new Paragraph(new SimpleField(new Run(new Text("cached ref"))) { Instruction = " Lookup \\# \"#,##0.00\" " })));
+        var eval = new DxpFieldEval();
+        eval.Context.DatabaseProvider = new FixedDatabaseProvider(
+            new DxpDatabaseResult(
+                [new DxpDatabaseColumn("Value")],
+                [new DxpFieldValue?[] { new("900") }]));
+
+        byte[] outputBytes = DxpDocxExport.Export(sourceBytes,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate }, Logger, eval);
+
+        using var output = Open(outputBytes);
+        var body = output.MainDocumentPart!.Document.Body!;
+        Assert.Contains("900.00", body.InnerText, StringComparison.Ordinal);
+        Assert.Empty(body.Elements<Table>());
+        Assert.Empty(body.Descendants<FieldChar>());
+        Assert.Empty(body.Descendants<SimpleField>());
+        Assert.Empty(new OpenXmlValidator().Validate(output));
+    }
+
     private static byte[] CreateDocument(Action<Body> populate)
     {
         using var stream = new MemoryStream();
@@ -360,6 +451,27 @@ public sealed class DocxExportTests : TestBase<DocxExportTests>
             DxpFieldEvalContext context,
             CancellationToken cancellationToken = default)
             => Task.FromResult<DxpIncludeTextSource?>(new DxpIncludeTextSource("synthetic-child", content));
+    }
+
+    private sealed class SyntheticDatabaseProvider : IDatabaseFieldProvider
+    {
+        public Task<DxpDatabaseResult?> ExecuteAsync(
+            DxpDatabaseRequest request,
+            CancellationToken cancellationToken)
+            => Task.FromResult<DxpDatabaseResult?>(new DxpDatabaseResult(
+                [new DxpDatabaseColumn("Value")],
+                [
+                    new DxpFieldValue?[] { new("alpha") },
+                    new DxpFieldValue?[] { new("beta") }
+                ]));
+    }
+
+    private sealed class FixedDatabaseProvider(DxpDatabaseResult result) : IDatabaseFieldProvider
+    {
+        public Task<DxpDatabaseResult?> ExecuteAsync(
+            DxpDatabaseRequest request,
+            CancellationToken cancellationToken)
+            => Task.FromResult<DxpDatabaseResult?>(result);
     }
 
     private static WordprocessingDocument Open(byte[] bytes)

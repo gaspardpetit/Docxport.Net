@@ -213,7 +213,7 @@ internal sealed class DxpIFFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame, I
 	{
 		if (Next is IDxpStructuredFieldResultSink sink && sink.TryRecordStructuredFieldResult(buffer))
 			return true;
-		if (_eval.Context.FieldDepth != 1 || !buffer.HasParagraphRoots)
+		if (_eval.Context.FieldDepth != 1 || !buffer.HasBlockRoots)
 			return false;
 		_eval.Context.DeferStructuredFieldResult(buffer);
 		return true;

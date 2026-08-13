@@ -102,8 +102,49 @@ public readonly struct DxpFieldValue
         var styles = System.Globalization.DateTimeStyles.AllowWhiteSpaces | System.Globalization.DateTimeStyles.AssumeLocal;
         if (DateTimeOffset.TryParse(text, culture, styles, out dateTime))
             return true;
-        if (DateTimeOffset.TryParse(text, System.Globalization.CultureInfo.InvariantCulture, styles, out dateTime))
+
+        // ISO dates are culture-independent. For other numeric dates, only
+        // infer day/month order when one component cannot possibly be a month.
+        if (DateTimeOffset.TryParseExact(text.Trim(),
+            ["yyyy-M-d", "yyyy-MM-dd"],
+            System.Globalization.CultureInfo.InvariantCulture, styles, out dateTime))
             return true;
+
+        var match = System.Text.RegularExpressions.Regex.Match(
+            text, @"^\s*(\d{1,2})\s*([/.-])\s*(\d{1,2})\s*\2\s*(\d{4})\s*$");
+        if (match.Success &&
+            int.TryParse(match.Groups[1].Value, out int first) &&
+            int.TryParse(match.Groups[3].Value, out int second) &&
+            int.TryParse(match.Groups[4].Value, out int year))
+        {
+            int month;
+            int day;
+            if (first > 12 && second is >= 1 and <= 12)
+            {
+                day = first;
+                month = second;
+            }
+            else if (second > 12 && first is >= 1 and <= 12)
+            {
+                month = first;
+                day = second;
+            }
+            else
+            {
+                dateTime = default;
+                return false;
+            }
+
+            if (DateTime.TryParseExact($"{year:0000}-{month:00}-{day:00}", "yyyy-MM-dd",
+                System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.None, out DateTime parsed))
+            {
+                dateTime = new DateTimeOffset(parsed);
+                return true;
+            }
+        }
+
+        dateTime = default;
         return false;
     }
 }

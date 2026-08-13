@@ -33,7 +33,7 @@ Docxport.Net is a .NET library for walking DOCX documents and exporting them to 
 - Word field evaluator with nested fields + formatting switches (`\*` `\#` `\@`)
 - Mail‑merge control: `NEXT` / `NEXTIF` / `SKIPIF`, `MERGEREC` / `MERGESEQ`
 - Merge macros: `GREETINGLINE` / `ADDRESSBLOCK` (locale‑aware templates)
-- Pluggable `DATABASE` provider (bring your own DB connector)
+- Pluggable `DATABASE` provider, including a provider-neutral ADO.NET adapter
 - Full checklist: [docs/supported-fields.md](docs/supported-fields.md)
 
 ## Field support (high‑level)

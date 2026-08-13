@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DocxportNet.Fields.Eval;
 
-internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEvalFrame, IDxpFieldCodeRunCapture, IDxpStructuredFieldResultSink
+internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEvalFrame, IDxpFieldCodeRunCapture, IDxpStructuredFieldResultSink, IDxpNestedFieldResultSink
 {
     private static readonly DxpEvaluateFieldFrameFactory FrameFactory = new();
 
@@ -238,6 +238,19 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         return true;
     }
 
+    public bool TryRecordNestedFieldResult(string value)
+    {
+        string? fieldType = new DxpFieldParser().Parse(InstructionText ?? string.Empty).Ast.FieldType;
+        if (!string.Equals(fieldType, "SET", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        bool needsSpace = !string.IsNullOrEmpty(InstructionText) &&
+            !char.IsWhiteSpace(InstructionText![InstructionText.Length - 1]);
+        string escaped = value.Replace("\"", "\\\"");
+        AppendInstructionText((needsSpace ? " " : string.Empty) + $"\"{escaped}\"");
+        return true;
+    }
+
     private sealed class FieldEvent
     {
         private FieldEvent(FieldEventKind kind, object? data1 = null, object? data2 = null)
@@ -353,4 +366,9 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         ParagraphEnd,
         StructuredResult
     }
+}
+
+internal interface IDxpNestedFieldResultSink
+{
+    bool TryRecordNestedFieldResult(string value);
 }

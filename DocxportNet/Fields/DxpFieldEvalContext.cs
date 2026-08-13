@@ -69,6 +69,7 @@ public sealed partial class DxpFieldEvalContext
     public IDxpMergeRecordCursor? MergeCursor { get; set; }
     public string? ListSeparator { get; set; }
     internal bool PreserveLayoutDependentFields { get; set; }
+    internal bool EmitStructuredDatabaseResults { get; set; }
 
     internal bool TryEnterIncludeText(string identity, out string? error)
     {

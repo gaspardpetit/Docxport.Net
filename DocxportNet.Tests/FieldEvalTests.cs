@@ -370,6 +370,53 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     }
 
     [Fact]
+    public async Task EvalAsync_ImplicitBookmarkDateFormatCoercesUnambiguousDayFirstText()
+    {
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.Culture = CultureInfo.GetCultureInfo("en-CA");
+        eval.Context.SetBookmarkNodes("InitialDate", DxpFieldNodeBuffer.FromText("30/11/2026"));
+
+        var result = await eval.EvalAsync(
+            new DxpFieldInstruction("InitialDate \\@ \"MMMM d, yyyy\""));
+
+        Assert.Equal(DxpFieldEvalStatus.Resolved, result.Status);
+        Assert.Equal("November 30, 2026", result.Text);
+    }
+
+    [Fact]
+    public async Task EvalAsync_ImplicitBookmarkDateFormatUsesConfiguredCultureForAmbiguousText()
+    {
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.Culture = CultureInfo.GetCultureInfo("fr-FR");
+        eval.Context.SetBookmarkNodes("InitialDate", DxpFieldNodeBuffer.FromText("01/02/2026"));
+
+        var result = await eval.EvalAsync(
+            new DxpFieldInstruction("InitialDate \\@ \"MMMM d, yyyy\""));
+
+        Assert.Equal(DxpFieldEvalStatus.Resolved, result.Status);
+        Assert.Equal("février 1, 2026", result.Text);
+    }
+
+    [Theory]
+    [InlineData("2026-11-30", "November 30, 2026 00:00")]
+    [InlineData("2026-11-30T14:25:30Z", "November 30, 2026 14:25")]
+    [InlineData("2026-11-30T14:25:30-05:00", "November 30, 2026 14:25")]
+    public async Task EvalAsync_ImplicitBookmarkDateFormatCoercesIsoDateText(
+        string source,
+        string expected)
+    {
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.Culture = CultureInfo.GetCultureInfo("en-CA");
+        eval.Context.SetBookmarkNodes("InitialDate", DxpFieldNodeBuffer.FromText(source));
+
+        var result = await eval.EvalAsync(
+            new DxpFieldInstruction("InitialDate \\@ \"MMMM d, yyyy HH:mm\""));
+
+        Assert.Equal(DxpFieldEvalStatus.Resolved, result.Status);
+        Assert.Equal(expected, result.Text);
+    }
+
+    [Fact]
     public async Task EvalAsync_IfStringComparisonAndWildcard()
     {
         var eval = new DxpFieldEval(logger: Logger);
@@ -1426,6 +1473,38 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
 
         Assert.Equal(DxpFieldEvalStatus.Resolved, result.Status);
         Assert.Equal(string.Empty, result.Text);
+    }
+
+    [Fact]
+    public async Task EvalAsync_DatabaseParsesWordSwitchesAndRecordRange()
+    {
+        var provider = new MockDatabaseProvider {
+            Result = new DxpDatabaseResult(
+                [new DxpDatabaseColumn("Value")],
+                [
+                    new DxpFieldValue?[] { new("first") },
+                    new DxpFieldValue?[] { new("second") },
+                    new DxpFieldValue?[] { new("third") }
+                ])
+        };
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.DatabaseProvider = provider;
+
+        var result = await eval.EvalAsync(new DxpFieldInstruction(
+            "DATABASE \\d \"source.data\" \\c \"Provider=Synthetic\" " +
+            "\\s \"SELECT * FROM \\\"Items\\\"\" \\h \\f \"2\" \\t \"2\" \\l \"3\" \\b \"17\" \\o"));
+
+        Assert.Equal("Value\nsecond", result.Text);
+        var request = Assert.IsType<DxpDatabaseRequest>(provider.LastRequest);
+        Assert.Equal("source.data", request.DataSource);
+        Assert.Equal("Provider=Synthetic", request.ConnectionInfo);
+        Assert.Equal("SELECT * FROM \"Items\"", request.QueryText);
+        Assert.True(request.IncludeColumnHeadings);
+        Assert.Equal(2, request.FirstRecord);
+        Assert.Equal(2, request.LastRecord);
+        Assert.Equal(3, request.TableFormat);
+        Assert.Equal(17, request.TableFormatAttributes);
+        Assert.True(request.InsertAtMergeStart);
     }
 
     private sealed class CustomResolver : IDxpFieldValueResolver
@@ -2631,6 +2710,39 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
         var expected = TestCompare.Normalize("Expect: Id\tName\n1\tAlpha\n\n");
         Assert.Equal(expected, actual);
         Assert.NotNull(provider.LastRequest);
+    }
+
+    [Fact]
+    public void Walker_EvalMode_Database_AssemblesSplitWordInstruction()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> DATABASE \d &quot;synthetic.data&quot; \c &quot;Provider=Synthetic&quot; </w:instrText></w:r>
+    <w:r><w:instrText xml:space="preserve"> \s &quot;select Label from \&quot;Items\&quot;&quot; </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>cached</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+  </w:p>
+</w:body>
+""";
+
+        var provider = new MockDatabaseProvider {
+            Result = new DxpDatabaseResult(
+                [new DxpDatabaseColumn("Label")],
+                [new DxpFieldValue?[] { new("alpha") }])
+        };
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.DatabaseProvider = provider;
+
+        var actual = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml, eval));
+
+        Assert.Equal(TestCompare.Normalize("alpha\n\n"), actual);
+        var request = Assert.IsType<DxpDatabaseRequest>(provider.LastRequest);
+        Assert.Equal("select Label from \"Items\"", request.QueryText);
+        Assert.Equal("synthetic.data", request.DataSource);
+        Assert.Equal("Provider=Synthetic", request.ConnectionInfo);
     }
 
     [Fact]

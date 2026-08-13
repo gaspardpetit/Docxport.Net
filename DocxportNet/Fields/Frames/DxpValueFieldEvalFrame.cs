@@ -161,6 +161,10 @@ internal class DxpValueFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame
             resultText = DxpFieldEvalRules.GetEvaluationErrorText(_instructionText!);
         }
 
+        if (EvalContext.FieldDepth > 1 && Next is IDxpNestedFieldResultSink nestedSink &&
+            nestedSink.TryRecordNestedFieldResult(resultText))
+            return true;
+
         var parser = new DxpFieldParser();
         var parse = parser.Parse(_instructionText!);
         IReadOnlyList<IDxpFieldFormatSpec> formatSpecs = parse.Ast.FormatSpecs;
