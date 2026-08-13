@@ -370,6 +370,19 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     }
 
     [Fact]
+    public async Task EvalAsync_IfAcceptsOperatorAdjacentToQuotedOperand()
+    {
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.SetBookmarkNodes("Choice", DxpFieldNodeBuffer.FromText("1"));
+
+        var result = await eval.EvalAsync(
+            new DxpFieldInstruction("IF Choice =\"0\" \"None\" \"Selected\""));
+
+        Assert.Equal(DxpFieldEvalStatus.Resolved, result.Status);
+        Assert.Equal("Selected", result.Text);
+    }
+
+    [Fact]
     public async Task EvalAsync_ImplicitBookmarkDateFormatCoercesUnambiguousDayFirstText()
     {
         var eval = new DxpFieldEval(logger: Logger);

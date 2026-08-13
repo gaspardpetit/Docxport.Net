@@ -949,6 +949,7 @@ public sealed class DxpFieldEval
         left = op = right = trueText = string.Empty;
         falseText = null;
         var tokens = TokenizeArgs(argsText);
+        NormalizeCompactComparison(tokens);
         if (tokens.Count < 4)
             return false;
 
@@ -965,12 +966,33 @@ public sealed class DxpFieldEval
     {
         left = op = right = string.Empty;
         var tokens = TokenizeArgs(argsText);
+        NormalizeCompactComparison(tokens);
         if (tokens.Count < 3)
             return false;
         left = tokens[0];
         op = tokens[1];
         right = tokens[2];
         return true;
+    }
+
+    private static void NormalizeCompactComparison(List<string> tokens)
+    {
+        if (tokens.Count < 2)
+            return;
+
+        string compact = tokens[1];
+        string? op = compact.StartsWith("<>", StringComparison.Ordinal) ||
+            compact.StartsWith(">=", StringComparison.Ordinal) ||
+            compact.StartsWith("<=", StringComparison.Ordinal)
+                ? compact.Substring(0, 2)
+                : compact.Length > 0 && compact[0] is '=' or '>' or '<'
+                    ? compact.Substring(0, 1)
+                    : null;
+        if (op == null || compact.Length == op.Length)
+            return;
+
+        tokens[1] = op;
+        tokens.Insert(2, compact.Substring(op.Length));
     }
 
     private List<string> TokenizeArgs(string text)
