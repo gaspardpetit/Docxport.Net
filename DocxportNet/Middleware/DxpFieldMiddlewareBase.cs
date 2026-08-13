@@ -31,6 +31,11 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
     private DxpIFieldEvalFrame? _outerFrame;
     private DxpIVisitor? _currentAdapter;
     private IDisposable? _openCrossParagraphFieldParagraph;
+    private Paragraph? _openCrossParagraphSourceParagraph;
+    private Paragraph? _activeSourceParagraph;
+    private DxpIDocumentContext? _activeDocumentContext;
+    private DxpIParagraphContext? _activeParagraphContext;
+    private IDisposable? _activeClosingParagraphTail;
     private bool _suppressCrossParagraphContinuationParagraphs;
 
     protected DxpFieldMiddlewareBase(
@@ -83,6 +88,12 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
         _context.OuterFrame = null;
         _openCrossParagraphFieldParagraph?.Dispose();
         _openCrossParagraphFieldParagraph = null;
+        _openCrossParagraphSourceParagraph = null;
+        _activeSourceParagraph = null;
+        _activeDocumentContext = null;
+        _activeParagraphContext = null;
+        _activeClosingParagraphTail?.Dispose();
+        _activeClosingParagraphTail = null;
         _suppressCrossParagraphContinuationParagraphs = false;
         var inner = Next.VisitDocumentBegin(doc, documentContext);
         return new DxpCompositeScope(inner, () => ReplayDeferredStructuredResults(documentContext));
@@ -171,6 +182,30 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
     {
         _currentAdapter?.VisitComplexFieldEnd(end, d);
         PopCurrentField(d);
+
+        // A field may begin at the end of one paragraph and close at the start of
+        // another. Its selected result belongs to the opening paragraph, but literal
+        // content following the end marker belongs to the closing source paragraph.
+        // Switch the downstream paragraph scope as soon as the outer field closes so
+        // that this trailing content cannot be appended to the opening paragraph.
+        if (_context.FieldDepth == 0 &&
+            _openCrossParagraphFieldParagraph != null &&
+            _activeSourceParagraph != null &&
+            !ReferenceEquals(_activeSourceParagraph, _openCrossParagraphSourceParagraph) &&
+            _activeDocumentContext != null &&
+            _activeParagraphContext != null)
+        {
+            var open = _openCrossParagraphFieldParagraph;
+            _openCrossParagraphFieldParagraph = null;
+            _openCrossParagraphSourceParagraph = null;
+            open.Dispose();
+
+            _suppressCrossParagraphContinuationParagraphs = false;
+            _activeClosingParagraphTail = _next.VisitParagraphBegin(
+                _activeSourceParagraph,
+                _activeDocumentContext,
+                _activeParagraphContext);
+        }
     }
 
     public override IDisposable VisitSimpleFieldBegin(SimpleField fld, DxpIDocumentContext d)
@@ -280,6 +315,9 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
         _context.CurrentBuiltInHeadingLevelProvider = CreateBuiltInHeadingLevelProvider(p, d);
         _context.CurrentStoryKeyProvider = CreateStoryKeyProvider(p, d);
         _context.CurrentDocumentOrder = ++_paragraphOrder;
+        _activeSourceParagraph = p;
+        _activeDocumentContext = d;
+        _activeParagraphContext = paragraph;
 
         var target = _currentAdapter ?? Next;
         bool suppressOutput = _openCrossParagraphFieldParagraph != null ||
@@ -303,9 +341,16 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
             _context.CurrentDocumentOrder = previousOrder;
         });
         return DocxportNet.Core.DxpDisposable.Create(() => {
+            _activeClosingParagraphTail?.Dispose();
+            _activeClosingParagraphTail = null;
+
             if (ShouldKeepCurrentParagraphOpen() && _openCrossParagraphFieldParagraph == null)
             {
                 _openCrossParagraphFieldParagraph = combined;
+                _openCrossParagraphSourceParagraph = p;
+                _activeSourceParagraph = null;
+                _activeDocumentContext = null;
+                _activeParagraphContext = null;
                 return;
             }
 
@@ -314,8 +359,12 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
             {
                 var open = _openCrossParagraphFieldParagraph;
                 _openCrossParagraphFieldParagraph = null;
+                _openCrossParagraphSourceParagraph = null;
                 open.Dispose();
             }
+            _activeSourceParagraph = null;
+            _activeDocumentContext = null;
+            _activeParagraphContext = null;
         });
     }
 

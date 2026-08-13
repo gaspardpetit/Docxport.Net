@@ -99,6 +99,32 @@ public sealed class SemanticFieldResultTests : TestBase<SemanticFieldResultTests
     }
 
     [Fact]
+    public void SetWithEqualsTokenAssignsLiteralEqualsLikeWord()
+    {
+        // Word does not treat '=' as an assignment separator in SET. In the malformed
+        // legacy form below it becomes the bookmark value and the later token is ignored.
+        byte[] source = CreateDocument(body => body.Append(new Paragraph(
+            Begin(),
+            Code(" SET SyntheticBookmark = \"Yes\" "),
+            End(),
+            Begin(),
+            Code(" REF SyntheticBookmark "),
+            End())));
+
+        string output = DxpExport.ExportToString(
+            source,
+            new DxpPlainTextVisitor(
+                DxpPlainTextVisitorConfig.CreateAcceptConfig(),
+                Logger,
+                new DxpFieldEval(logger: Logger)),
+            SemanticOptions(),
+            Logger);
+
+        Assert.Equal("=", output.TrimEnd());
+        Assert.DoesNotContain("Error! Invalid field code.", output, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void NestedIfComposesWithAdjacentLiteralInSourceOrder()
     {
         byte[] source = CreateNestedIfDocument();
@@ -201,6 +227,61 @@ public sealed class SemanticFieldResultTests : TestBase<SemanticFieldResultTests
         Assert.Equal("Synthetic_2026_E.docx", resolver.RequestedPath);
         Assert.Contains("Before INCLUDED After", output.MainDocumentPart!.Document.Body!.InnerText,
             StringComparison.Ordinal);
+        Assert.Empty(new OpenXmlValidator().Validate(output));
+    }
+
+    [Fact]
+    public void IncludedCrossParagraphFieldPreservesClosingParagraphAndCharacterStyle()
+    {
+        const string styleId = "SyntheticHeadingCharacter";
+        byte[] included = CreateStyledCrossParagraphIncludeDocument(styleId);
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.IncludeTextResolver = new RecordingIncludeResolver(included);
+
+        byte[] source = CreateDocument(body => body.Append(new Paragraph(
+            Begin(), Code(" INCLUDETEXT \"SyntheticBody.docx\" "), End())));
+        using var output = Open(DxpDocxExport.Export(source, SemanticOptions(), Logger, eval));
+
+        Paragraph[] visible = output.MainDocumentPart!.Document.Body!
+            .Elements<Paragraph>()
+            .Where(static paragraph => paragraph.InnerText.Length > 0)
+            .ToArray();
+        Assert.Collection(visible,
+            paragraph => Assert.Equal("Synthetic sentence.", paragraph.InnerText),
+            paragraph => Assert.Equal("Transfer", paragraph.InnerText));
+
+        Run styled = Assert.Single(visible[1].Elements<Run>(), static run => run.InnerText == "Transfe");
+        Assert.Equal(styleId, styled.RunProperties?.RunStyle?.Val?.Value);
+        Style imported = Assert.Single(
+            output.MainDocumentPart.StyleDefinitionsPart!.Styles!.Elements<Style>(),
+            style => style.StyleId?.Value == styleId);
+        Assert.NotNull(imported.StyleRunProperties?.Bold);
+        Assert.NotNull(imported.StyleRunProperties?.Underline);
+        Assert.Empty(new OpenXmlValidator().Validate(output));
+    }
+
+    [Fact]
+    public void AdjacentResolvedIncludesDoNotLeakTheirCachedErrors()
+    {
+        var resolver = new SelectiveIncludeResolver(new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["SyntheticHeader.docx"] = CreateDocument(body =>
+                body.Append(new Paragraph(new Run(new Text("HEADER"))))),
+            ["SyntheticBody.docx"] = CreateDocument(body =>
+                body.Append(new Paragraph(new Run(new Text("BODY")))))
+        });
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.IncludeTextResolver = resolver;
+
+        using var output = Open(DxpDocxExport.Export(
+            CreateAdjacentIncludeDocument(), SemanticOptions(), Logger, eval));
+        string text = output.MainDocumentPart!.Document.Body!.InnerText;
+
+        Assert.Contains("HEADER", text, StringComparison.Ordinal);
+        Assert.Contains("BODY", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("HEADER-CACHE", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("BODY-CACHE", text, StringComparison.Ordinal);
+        Assert.Equal(1, text.Split("MISSING-CACHE", StringSplitOptions.None).Length - 1);
         Assert.Empty(new OpenXmlValidator().Validate(output));
     }
 
@@ -562,6 +643,47 @@ public sealed class SemanticFieldResultTests : TestBase<SemanticFieldResultTests
                 Code(" After\" \"\" "),
                 End())));
 
+    private static byte[] CreateStyledCrossParagraphIncludeDocument(string styleId)
+    {
+        using var stream = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document, true))
+        {
+            MainDocumentPart main = document.AddMainDocumentPart();
+            StyleDefinitionsPart stylesPart = main.AddNewPart<StyleDefinitionsPart>();
+            stylesPart.Styles = new Styles(new Style(
+                new StyleName { Val = "Synthetic heading character" },
+                new StyleRunProperties(new Bold(), new Underline { Val = UnderlineValues.Single }))
+            {
+                Type = StyleValues.Character,
+                StyleId = styleId
+            });
+            main.Document = new Document(new Body(
+                new Paragraph(
+                    new Run(new Text("Synthetic sentence.")),
+                    Begin(), Code(" IF 1 = 0 \"OMIT\" \"")),
+                new Paragraph(Code("\" ")),
+                new Paragraph(
+                    End(),
+                    new Run(new RunProperties(new RunStyle { Val = styleId }), new Text("Transfe")),
+                    new Run(new RunProperties(new Bold(), new Underline { Val = UnderlineValues.Single }), new Text("r"))),
+                new SectionProperties()));
+            stylesPart.Styles.Save();
+            main.Document.Save();
+        }
+        return stream.ToArray();
+    }
+
+    private static byte[] CreateAdjacentIncludeDocument()
+        => CreateDocument(body => body.Append(
+            new Paragraph(
+                Begin(), Code(" INCLUDETEXT \"SyntheticHeader.docx\" "), Separate(),
+                new Run(new Text("HEADER-CACHE")), End(),
+                Begin(), Code(" INCLUDETEXT \"SyntheticBody.docx\" "), Separate(),
+                new Run(new Text("BODY-CACHE")), End()),
+            new Paragraph(
+                Begin(), Code(" INCLUDETEXT \"MissingSignature.htm\" \\c HTML "), Separate(),
+                new Run(new Text("MISSING-CACHE")), End())));
+
     private static byte[] CreateComposedDatabaseDocument()
         => CreateDocument(body => body.Append(
             new Paragraph(
@@ -793,6 +915,21 @@ public sealed class SemanticFieldResultTests : TestBase<SemanticFieldResultTests
             {
                 Format = DxpIncludeTextSourceFormat.Docx
             });
+        }
+    }
+
+    private sealed class SelectiveIncludeResolver(IReadOnlyDictionary<string, byte[]> sources) : IDxpIncludeTextResolver
+    {
+        public Task<DxpIncludeTextSource?> ResolveAsync(
+            DxpIncludeTextRequest request,
+            DxpFieldEvalContext context,
+            CancellationToken cancellationToken = default)
+        {
+            _ = context;
+            _ = cancellationToken;
+            return Task.FromResult(sources.TryGetValue(request.Path, out byte[]? content)
+                ? new DxpIncludeTextSource(request.Path, content) { Format = DxpIncludeTextSourceFormat.Docx }
+                : null);
         }
     }
 }
