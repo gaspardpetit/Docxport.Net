@@ -660,6 +660,56 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     }
 
     [Fact]
+    public async Task EvalAsync_MissingDocVariableCanUseCache()
+    {
+        var eval = new DxpFieldEval(
+            options: new DxpFieldEvalOptions {
+                UseCacheOnNull = false,
+                MissingDocVariableBehavior = DxpMissingDocVariableBehavior.UseCache
+            },
+            logger: Logger);
+
+        var result = await eval.EvalAsync(new DxpFieldInstruction(
+            "DOCVARIABLE Missing",
+            "previous value"));
+
+        Assert.Equal(DxpFieldEvalStatus.UsedCache, result.Status);
+        Assert.Equal("previous value", result.Text);
+    }
+
+    [Fact]
+    public async Task EvalAsync_MissingDocVariableUseCacheSkipsWithoutCache()
+    {
+        var eval = new DxpFieldEval(
+            options: new DxpFieldEvalOptions {
+                MissingDocVariableBehavior = DxpMissingDocVariableBehavior.UseCache
+            },
+            logger: Logger);
+
+        var result = await eval.EvalAsync(new DxpFieldInstruction("DOCVARIABLE Missing"));
+
+        Assert.Equal(DxpFieldEvalStatus.Skipped, result.Status);
+        Assert.Null(result.Text);
+    }
+
+    [Fact]
+    public async Task EvalAsync_MissingDocVariableCanSkipCachedResult()
+    {
+        var eval = new DxpFieldEval(
+            options: new DxpFieldEvalOptions {
+                MissingDocVariableBehavior = DxpMissingDocVariableBehavior.Skip
+            },
+            logger: Logger);
+
+        var result = await eval.EvalAsync(new DxpFieldInstruction(
+            "DOCVARIABLE Missing",
+            "previous value"));
+
+        Assert.Equal(DxpFieldEvalStatus.Skipped, result.Status);
+        Assert.Null(result.Text);
+    }
+
+    [Fact]
     public async Task EvalAsync_DocVariableExpandsNestedName()
     {
         var eval = new DxpFieldEval(new DxpFieldEvalDelegates {

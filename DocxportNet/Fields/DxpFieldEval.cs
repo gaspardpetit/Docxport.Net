@@ -122,6 +122,10 @@ public sealed class DxpFieldEval
                 {
                     return await EvalFillInAsync(instruction, parse.Ast, documentContext);
                 }
+                else if (fieldType.Equals("DOCVARIABLE", StringComparison.OrdinalIgnoreCase))
+                {
+                    return await EvalDocVariableAsync(instruction, parse.Ast, documentContext);
+                }
                 else
                 {
                     var builtIn = await TryEvalBuiltInAsync(fieldType, parse.Ast, documentContext, cancellationToken);
@@ -343,45 +347,6 @@ public sealed class DxpFieldEval
                     _logger?.LogWarning("REF field missing arguments.");
                 }
                 value = new DxpFieldValue(RefNotFoundError);
-                return (true, value);
-            case "DOCVARIABLE":
-                if (ast.ArgumentsText != null)
-                {
-                    var tokens = TokenizeArgs(ast.ArgumentsText);
-                    if (tokens.Count > 0)
-                    {
-                        var resolver = Context.ValueResolver ?? _resolver;
-                        var name = await ExpandNestedTextAsync(tokens[0], documentContext);
-                        DxpFieldNodeBuffer? resolvedNodes = null;
-                        if (_delegates.ResolveDocVariableNodesAsync != null)
-                        {
-                            resolvedNodes = await _delegates.ResolveDocVariableNodesAsync(name, Context);
-                            if (resolvedNodes != null)
-                            {
-                                Context.SetDocVariableNodes(name, resolvedNodes);
-                                value = new DxpFieldValue(resolvedNodes.ToPlainText());
-                                return (true, value);
-                            }
-                        }
-
-                        var resolved = await resolver.ResolveAsync(name, DxpFieldValueKindHint.DocVariable, Context);
-                        if (resolved == null)
-                        {
-                            value = new DxpFieldValue(DocVariableMissingError);
-                            if (_logger?.IsEnabled(LogLevel.Debug) == true)
-                                _logger.LogDebug("DOCVARIABLE '{Name}' not resolved; using error text.", name);
-                        }
-                        else
-                        {
-                            value = resolved.Value;
-                        }
-
-                        Context.SetDocVariableNodes(name, DxpFieldNodeBuffer.FromText(ToDefaultString(value)));
-                        return (true, value);
-                    }
-                }
-                _logger?.LogWarning("DOCVARIABLE field missing arguments.");
-                value = new DxpFieldValue(DocVariableMissingError);
                 return (true, value);
             case "DOCPROPERTY":
                 if (ast.ArgumentsText != null)
@@ -664,6 +629,82 @@ public sealed class DxpFieldEval
             ? _formatter.Format(value, ast.FormatSpecs, Context)
             : await ResolveValueAsync(branch, documentContext);
         return new DxpFieldEvalResult(DxpFieldEvalStatus.Resolved, text, Value: value);
+    }
+
+    private async Task<DxpFieldEvalResult> EvalDocVariableAsync(
+        DxpFieldInstruction instruction,
+        DxpFieldAst ast,
+        DxpIDocumentContext? documentContext)
+    {
+        var tokens = ast.ArgumentsText == null
+            ? new List<string>()
+            : TokenizeArgs(ast.ArgumentsText);
+        if (tokens.Count == 0)
+        {
+            _logger?.LogWarning("DOCVARIABLE field missing arguments.");
+            var error = new DxpFieldValue(DocVariableMissingError);
+            return new DxpFieldEvalResult(
+                DxpFieldEvalStatus.Resolved,
+                _formatter.Format(error, ast.FormatSpecs, Context),
+                Value: error);
+        }
+
+        string name = await ExpandNestedTextAsync(tokens[0], documentContext);
+        if (_delegates.ResolveDocVariableNodesAsync != null)
+        {
+            DxpFieldNodeBuffer? nodes = await _delegates.ResolveDocVariableNodesAsync(name, Context);
+            if (nodes != null)
+            {
+                Context.SetDocVariableNodes(name, nodes);
+                var nodeValue = new DxpFieldValue(nodes.ToPlainText());
+                return new DxpFieldEvalResult(
+                    DxpFieldEvalStatus.Resolved,
+                    _formatter.Format(nodeValue, ast.FormatSpecs, Context),
+                    Value: nodeValue);
+            }
+        }
+
+        var resolver = Context.ValueResolver ?? _resolver;
+        DxpFieldValue? resolved = await resolver.ResolveAsync(
+            name,
+            DxpFieldValueKindHint.DocVariable,
+            Context);
+        if (resolved.HasValue)
+        {
+            Context.SetDocVariableNodes(
+                name,
+                DxpFieldNodeBuffer.FromText(ToDefaultString(resolved.Value)));
+            return new DxpFieldEvalResult(
+                DxpFieldEvalStatus.Resolved,
+                _formatter.Format(resolved.Value, ast.FormatSpecs, Context),
+                Value: resolved.Value);
+        }
+
+        switch (_options.MissingDocVariableBehavior)
+        {
+            case DxpMissingDocVariableBehavior.UseCache when instruction.CachedResult != null:
+                _logger?.LogInformation(
+                    "DOCVARIABLE '{Name}' not resolved; using cached result.",
+                    name);
+                return new DxpFieldEvalResult(
+                    DxpFieldEvalStatus.UsedCache,
+                    instruction.CachedResult);
+            case DxpMissingDocVariableBehavior.UseCache:
+            case DxpMissingDocVariableBehavior.Skip:
+                _logger?.LogInformation(
+                    "DOCVARIABLE '{Name}' not resolved; skipping.",
+                    name);
+                return new DxpFieldEvalResult(DxpFieldEvalStatus.Skipped, null);
+            default:
+                var error = new DxpFieldValue(DocVariableMissingError);
+                Context.SetDocVariableNodes(name, DxpFieldNodeBuffer.FromText(DocVariableMissingError));
+                if (_logger?.IsEnabled(LogLevel.Debug) == true)
+                    _logger.LogDebug("DOCVARIABLE '{Name}' not resolved; using error text.", name);
+                return new DxpFieldEvalResult(
+                    DxpFieldEvalStatus.Resolved,
+                    _formatter.Format(error, ast.FormatSpecs, Context),
+                    Value: error);
+        }
     }
 
     internal readonly record struct DxpIfConditionResult(bool Success, bool Condition, string? TrueText, string? FalseText);
