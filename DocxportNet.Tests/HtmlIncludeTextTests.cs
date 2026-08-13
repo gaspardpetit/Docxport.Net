@@ -103,6 +103,27 @@ public sealed class HtmlIncludeTextTests
     }
 
     [Fact]
+    public void NestedFieldsInIncludeCacheDoNotBecomeBookmarkArguments()
+    {
+        using var parent = CreateParentWithNestedCachedField("fragment.html");
+        var resolver = new PathResolver(new Dictionary<string, DxpIncludeTextSource>
+        {
+            ["fragment.html"] = new("html", Encoding.UTF8.GetBytes("<p>RESOLVED</p>"))
+            {
+                Format = DxpIncludeTextSourceFormat.Html
+            }
+        });
+        var visitor = new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateAcceptConfig());
+        visitor.FieldEval.Context.IncludeTextResolver = resolver;
+
+        string output = DxpExport.ExportToString(parent, visitor,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate });
+
+        Assert.Contains("RESOLVED", output, StringComparison.Ordinal);
+        Assert.DoesNotContain("CACHE", output, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void HtmlConversion_IsCachedByContentWithinEvaluationSession()
     {
         byte[] html = Encoding.UTF8.GetBytes("<p>SAME</p>");
@@ -291,6 +312,30 @@ public sealed class HtmlIncludeTextTests
             var main = document.AddMainDocumentPart();
             main.Document = new Document(new Body(
                 new Paragraph(Field(first)), new Paragraph(Field(second))));
+            main.Document.Save();
+        }
+        stream.Position = 0;
+        return WordprocessingDocument.Open(stream, false);
+    }
+
+    private static WordprocessingDocument CreateParentWithNestedCachedField(string path)
+    {
+        var stream = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(stream,
+            DocumentFormat.OpenXml.WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(new Paragraph(
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldCode { Text = $" INCLUDETEXT \"{path}\" " }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Separate }),
+                new Run(new Text("CACHE-")),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldCode { Text = " DATE \\@ \"yyyy\" " }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Separate }),
+                new Run(new Text("2000")),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.End }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.End }))));
             main.Document.Save();
         }
         stream.Position = 0;

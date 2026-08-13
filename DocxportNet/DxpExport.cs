@@ -496,7 +496,7 @@ public static class DxpExport
                         logger: logger,
                         options: new DxpEvaluateFieldMiddlewareOptions {
                             PreserveLayoutDependentFields = visitor is DxpIPreserveLayoutFields,
-                            EmitStructuredDatabaseResults = visitor is DxpIPreserveLayoutFields
+                            EmitStructuredDatabaseResults = visitor is DxpIPreserveLayoutFields,
                         }),
                 next => new DxpContextMiddleware(next, logger));
         }

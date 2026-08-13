@@ -181,6 +181,11 @@ for (int i = 0; i < args.Length; i++)
     }
     else if (arg.Equals("--log", StringComparison.OrdinalIgnoreCase))
         logLevel = LogLevel.Information;
+    else if (arg.StartsWith("-", StringComparison.Ordinal))
+    {
+        Console.Error.WriteLine($"Unknown option: {arg}");
+        return;
+    }
     else if (inputPath is null)
         inputPath = arg;
 }

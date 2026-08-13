@@ -103,7 +103,9 @@ internal static class DxpFieldEvalIfRunner
         }
 
         if (currentTarget != null && bufferText.Length > 0)
+        {
             AppendBufferText(currentTarget, bufferText.ToString(), run, runProps);
+        }
     }
 
     public static bool TryEvaluateAndEmit(

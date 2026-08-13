@@ -89,4 +89,5 @@ internal sealed class DxpIFCaptureState
             _ => null
         };
     }
+
 }

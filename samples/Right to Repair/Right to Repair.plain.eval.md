@@ -139,55 +139,55 @@ The relaxation of TPM rules in Canada aligns with similar measures already imple
 Here in Canada, the adoption of Bill C-244 represents another step in establishing the right to repair goods. This measure builds on another federal bill, C-59,<a href="#fn-28" id="fnref-28">[27]</a> which also received assent last June and amended the <i>Competition Act</i> to empower courts to compel suppliers to sell diagnosis or repair tools. At the provincial level, Quebec became the first province to enact right-to-repair legislation last year.<b> <a href="#fn-30" id="fnref-30">[29]</a></b> In the coming months, it remains to be seen whether the new section 41.121 of the Copyright Act (CA) will unlock the repair market. For the moment, the measure strikes us as somewhat timid.
 
 <div class="footnote" id="fn-2">
-1 PARLIAMENT OF CANADA, LEGISinfo: C-244: <i>An Act to amend the Copyright Act (diagnosis, maintenance and repair)</i>, Parliament of Canada, online: Error! Invalid field code..
+1 PARLIAMENT OF CANADA, LEGISinfo: C-244: <i>An Act to amend the Copyright Act (diagnosis, maintenance and repair)</i>, Parliament of Canada, online: https://www.parl.ca/legisinfo/en/bill/44-1/c-244.
 
 </div>
 <div class="footnote" id="fn-3">
-2 PARLIAMENT OF CANADA, LEGISinfo: C-272, <i>An Act to amend the Copyright Act (diagnosis, maintenance and repair)</i>, Parliament of Canada, online: Error! Invalid field code.
+2 PARLIAMENT OF CANADA, LEGISinfo: C-272, <i>An Act to amend the Copyright Act (diagnosis, maintenance and repair)</i>, Parliament of Canada, online: https://www.parl.ca/legisinfo/en/bill/43-2/c-272.
 
 </div>
 <div class="footnote" id="fn-4">
-3<i> Error! Invalid field code.</i>, 2017 FC 246, [2018] 1 FCR 509.
+3<i> </i>Nintendo of America Inc. v. King, 2017 FC 246, [2018] 1 FCR 509.
 
 </div>
 <div class="footnote" id="fn-5">
-4<i> WIPO Copyright Treaty</i>, December 20, 1996, article 11, online: Error! Invalid field code..
+4<i> WIPO Copyright Treaty</i>, December 20, 1996, article 11, online: https://www.wipo.int/wipolex/en/treaties/textdetails/12740.
 
 </div>
 <div class="footnote" id="fn-6">
-5<i> Copyright Modernization Act</i>, S.C. 2012, c. 20, assented to on 2012-06-29, online: Error! Invalid field code.; Canada Gazette, Vol. 146,No. 23 – November 7, 2012, SI/2012-85 <i>Order Fixing Various Dates as the Dates on which Certain Provisions of the Act Come into Force</i>, P.C. 2012-1392, October 25, 2012, online: Error! Invalid field code..
+5<i> Copyright Modernization Act</i>, S.C. 2012, c. 20, assented to on 2012-06-29, online: https://laws-lois.justice.gc.ca/eng/AnnualStatutes/2012_20/FullText.html; Canada Gazette, Vol. 146,No. 23 – November 7, 2012, SI/2012-85 <i>Order Fixing Various Dates as the Dates on which Certain Provisions of the Act Come into Force</i>, P.C. 2012-1392, October 25, 2012, online: https: //canadagazette.gc.ca/rp-pr/p2/2012/2012-11-07/html/si-tr85-fra.html.
 
 </div>
 <div class="footnote" id="fn-7">
-6 Graham J. Reynolds, “Of Lock-Breaking and Stock Taking - IP, Climate Change, and the Right to Repair in Canada,” in 2023 101-1 <i>Canadian Bar Review</i> 32, 2023 CanLIIDocs 1144, p. 54, online: Error! Invalid field code..
+6 Graham J. Reynolds, “Of Lock-Breaking and Stock Taking - IP, Climate Change, and the Right to Repair in Canada,” in 2023 101-1 <i>Canadian Bar Review</i> 32, 2023 CanLIIDocs 1144, p. 54, online: https://canlii.ca/t/7n4cj.
 
 </div>
 <div class="footnote" id="fn-8">
-7 Committee on Industry and Technology, 5 December 2022, Catherine Lovrics, <i>Open Parliament</i>, online: Error! Invalid field code.; Committee on Industry and Technology, 15 February 2023, Viviane Lapointe, <i>Open Parliament</i>, online: Error! Invalid field code.; Committee on Industry and Technology, 15 February 2023, Andy  Fillmore, <i>Open Parliament</i>, online: Error! Invalid field code.; Committee on Industry and Technology, 15 february 2023, Patrick Blanar, online: Error! Invalid field code..
+7 Committee on Industry and Technology, 5 December 2022, Catherine Lovrics, <i>Open Parliament</i>, online: https://openparliament.ca/committees/industry/44-1/49/catherine-lovrics-2/; Committee on Industry and Technology, 15 February 2023, Viviane Lapointe, <i>Open Parliament</i>, online: https://openparliament.ca/committees/industry/44-1/59/viviane-lapointe-5/; Committee on Industry and Technology, 15 February 2023, Andy  Fillmore, <i>Open Parliament</i>, online: https://openparliament.ca/committees/industry/44-1/59/andy-fillmore-6/; Committee on Industry and Technology, 15 february 2023, Patrick Blanar, online: https://openparliament.ca/committees/industry/44-1/59/patrick-blanar-1/.
 
 </div>
 <div class="footnote" id="fn-9">
-8 Entertainment Software Association of Canada, <i>Bill C-244 – An Act to amend the Copyright Act (diagnosis, maintenance and repair),</i> online:Error! Invalid field code..
+8 Entertainment Software Association of Canada, <i>Bill C-244 – An Act to amend the Copyright Act (diagnosis, maintenance and repair),</i> online: https://www.ourcommons.ca/Content/Committee/441/INDU/Brief/BR12209146/br-external/EntertainmentSoftwareAssociationOfCanada-e.pdf.
 
 </div>
 <div class="footnote" id="fn-10">
-9 Committee on Industry and Technology, February 8, 2023, Paul Fogolin, online: Error! Invalid field code..
+9 Committee on Industry and Technology, February 8, 2023, Paul Fogolin, online: https://openparliament.ca/committees/industry/44-1/57/paul-fogolin-1/.
 
 </div>
 <div class="footnote" id="fn-11">
-10 Committee on Industry and Technology, February 8, 2023, Charles Bernard, online: Error! Invalid field code..
+10 Committee on Industry and Technology, February 8, 2023, Charles Bernard, online: https://openparliament.ca/committees/industry/44-1/57/charles-bernard-1/.
 
 </div>
 <div class="footnote" id="fn-12">
-11 Industry and Technology Committee, December 5, 2022, Catherine Lovrics, online:Error! Invalid field code..
+11 Industry and Technology Committee, December 5, 2022, Catherine Lovrics, online: https://openparliament.ca/committees/industry/44-1/49/catherine-lovrics-2/.
 
 </div>
 <div class="footnote" id="fn-13">
-12 Emma Fillman,<i> “</i>Comprehensive Right to Repair:<i> </i>The Fight Against Planned Obsolescence in Canada,” (2023) 32 Dalhousie J Legal Stud 123, p. 145. onlineError! Invalid field code.<u>.</u>
+12 Emma Fillman,<i> “</i>Comprehensive Right to Repair:<i> </i>The Fight Against Planned Obsolescence in Canada,” (2023) 32 Dalhousie J Legal Stud 123, p. 145. online https://digitalcommons.schulichlaw.dal.ca/djls/vol32/iss1/5/<u>.</u>
 
 </div>
 <div class="footnote" id="fn-14">
-13 Irene Calboli, “The right to repair: Recent Developments in the USA<i>,” World Intellectual Property Organization Magazine</i>, August 2023, online:Error! Invalid field code..
+13 Irene Calboli, “The right to repair: Recent Developments in the USA<i>,” World Intellectual Property Organization Magazine</i>, August 2023, online: https://www.wipo.int/wipo_magazine_digital/en/2023/article_0023.html.
 
 </div>
 <div class="footnote" id="fn-15">
@@ -195,57 +195,57 @@ Here in Canada, the adoption of Bill C-244 represents another step in establishi
 <div class="footnote" id="fn-16">
 </div>
 <div class="footnote" id="fn-17">
-16 Emma Fillman, “Comprehensive Right to Repair:<i> </i>The Fight Against Planned Obsolescence in Canada,” (2023) 32 Dalhousie J Legal Stud 123, pp. 142 and following, onlineError! Invalid field code.<u>.</u>
+16 Emma Fillman, “Comprehensive Right to Repair:<i> </i>The Fight Against Planned Obsolescence in Canada,” (2023) 32 Dalhousie J Legal Stud 123, pp. 142 and following, online https://digitalcommons.schulichlaw.dal.ca/djls/vol32/iss1/5/<u>.</u>
 
 </div>
 <div class="footnote" id="fn-18">
-17 Committee on Industry and Technology, February 8, 2023, Shannon Sereda, online:Error! Invalid field code..
+17 Committee on Industry and Technology, February 8, 2023, Shannon Sereda, online: https://openparliament.ca/committees/industry/44-1/57/shannon-sereda-1/.
 
 </div>
 <div class="footnote" id="fn-19">
-18 Committee on Industry and Technology, February 8, 2023, Anthony D. Rosborough, online:Error! Invalid field code..
+18 Committee on Industry and Technology, February 8, 2023, Anthony D. Rosborough, online: https://openparliament.ca/committees/industry/44-1/57/anthony-d-rosborough-1/.
 
 </div>
 <div class="footnote" id="fn-20">
-19 Copyright Office, Library of Congress, E<i>xemption to Prohibition on Circumvention of Copyright Protection Systems for Access Control Technologies</i>, Federal Register, October 28, 2024, online:Error! Invalid field code..
+19 Copyright Office, Library of Congress, E<i>xemption to Prohibition on Circumvention of Copyright Protection Systems for Access Control Technologies</i>, Federal Register, October 28, 2024, online: https://www.federalregister.gov/documents/2024/10/28/2024-24563/exemption-to-prohibition-on-circumvention-of-copyright-protection-systems-for-access-control.
 
 </div>
 <div class="footnote" id="fn-21">
-20 Copyright Office, Library of Congress, <i>Exemption to Prohibition on Circumvention of Copyright Protection Systems for Access Control Technologies</i>, Federal Register, October 26, 2018, online:Error! Invalid field code..
+20 Copyright Office, Library of Congress, <i>Exemption to Prohibition on Circumvention of Copyright Protection Systems for Access Control Technologies</i>, Federal Register, October 26, 2018, online: https://www.federalregister.gov/documents/2018/10/26/2018-23241/exemption-to-prohibition-on-circumvention-of-copyright-protection-systems-for-access-control.
 
 </div>
 <div class="footnote" id="fn-22">
-21 Federal Trade Commission, <i>Nixing the Fix: An FTC Report to Congress on Repair Restrictions</i>, May 2021, online:Error! Invalid field code..
+21 Federal Trade Commission, <i>Nixing the Fix: An FTC Report to Congress on Repair Restrictions</i>, May 2021, online: https://www.ftc.gov/system/files/documents/reports/nixing-fix-ftc-report-congress-repair-restrictions/nixing_the_fix_report_final_5521_630pm-508_002.pdf.
 
 </div>
 <div class="footnote" id="fn-23">
-22 The White House, <i>Executive Order on Promoting Competition in the American Economy</i>, July 9, 2021, online: Error! Invalid field code..
+22 The White House, <i>Executive Order on Promoting Competition in the American Economy</i>, July 9, 2021, online: https://www.whitehouse.gov/briefing-room/presidential-actions/2021/07/09/executive-order-on-promoting-competition-in-the-american-economy/.
 
 </div>
 <div class="footnote" id="fn-24">
-23 X, Jon Campbell, December 29, 2022, online:Error! Invalid field code.; Colorado General Assembly, <i>Consumer Right to Repair Agricultural Equipment</i>, April 25, 2023, online:Error! Invalid field code.; Minnesota Legislature, Minnesota Session Laws, 93<sup>rd</sup> Legislature, Chapter 57 – S.F. No. 2744, online:Error! Invalid field code.; Sidley, “California Becomes Third U.S.<i> </i>State to Join the Right-to-Repair Movement,” October 24, 2023, online:Error! Invalid field code..
+23 X, Jon Campbell, December 29, 2022, online: https://twitter.com/JonCampbellNY/status/1608327624526548993; Colorado General Assembly, <i>Consumer Right to Repair Agricultural Equipment</i>, April 25, 2023, online: https://leg.colorado.gov/bills/hb23-1011; Minnesota Legislature, Minnesota Session Laws, 93<sup>rd</sup> Legislature, Chapter 57 – S.F. No. 2744, online: https://www.revisor.mn.gov/laws/2023/0/Session+Law/Chapter/57/; Sidley, “California Becomes Third U.S.<i> </i>State to Join the Right-to-Repair Movement,” October 24, 2023, online: https://www.sidley.com/en/insights/newsupdates/2023/10/california-becomes-third-us-state-to-join-the-right-to-repair-movement.
 
 </div>
 <div class="footnote" id="fn-25">
-24 John Deere, <i>Memorandum of Undestanding</i>, January 8, 2023, online: Error! Invalid field code..
+24 John Deere, <i>Memorandum of Undestanding</i>, January 8, 2023, online: https://www.fb.org/files/AFBF_John_Deere_MOU.pdf.
 
 </div>
 <div class="footnote" id="fn-26">
-25 The Verge, “Surprise:<i> </i>Apple now supports California’s right to repair,” August 23, 2023, online: Error! Invalid field code..
+25 The Verge, “Surprise:<i> </i>Apple now supports California’s right to repair,” August 23, 2023, online: https://www.theverge.com/2023/8/23/23843506/apple-california-right-to-repair-sb-244.
 
 </div>
 <div class="footnote" id="fn-27">
-26 Irene Calboli, “The right to repair: Recent Developments in the USA,”<i> World Intellectual Property Organization Magazine</i>, online:Error! Invalid field code..
+26 Irene Calboli, “The right to repair: Recent Developments in the USA,”<i> World Intellectual Property Organization Magazine</i>, online: https://www.wipo.int/wipo_magazine_digital/en/2023/article_0023.html.
 
 </div>
 <div class="footnote" id="fn-28">
-27 PARLIAMENT OF CANADA, LEGISinfo: C-59: <i>An Act to implement certain provisions of the fall economic statement tabled in Parliament on November 21, 2023 and certain provisions of the budget tabled in Parliament on March 28, 2023</i>; Parliament of Canada, online:Error! Invalid field code.<i>.</i>
+27 PARLIAMENT OF CANADA, LEGISinfo: C-59: <i>An Act to implement certain provisions of the fall economic statement tabled in Parliament on November 21, 2023 and certain provisions of the budget tabled in Parliament on March 28, 2023</i>; Parliament of Canada, online: https://www.parl.ca/legisinfo/en/bill/44-1/c-59<i>.</i>
 
 </div>
 <div class="footnote" id="fn-29">
 </div>
 <div class="footnote" id="fn-30">
-29 Québec National Assembly, Bill 29, <i>An Act to protect consumers from planned obsolescence and to promote the durability, repairability and maintenance of goods, </i>online: Error! Invalid field code.<u>.</u>
+29 Québec National Assembly, Bill 29, <i>An Act to protect consumers from planned obsolescence and to promote the durability, repairability and maintenance of goods, </i>online: https://www.assnat.qc.ca/en/travaux-parlementaires/projets-loi/projet-loi-29-43-1.html<u>.</u>
 
 </div>
 <div class="footer" style="border-top:1px solid #000;">

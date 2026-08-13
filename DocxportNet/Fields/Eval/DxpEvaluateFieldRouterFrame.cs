@@ -3,9 +3,11 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
 using DocxportNet.Core;
 using DocxportNet.Fields.Frames;
+using DocxportNet.Fields.Semantic;
 using DocxportNet.Middleware;
 using DocxportNet.Walker;
 using Microsoft.Extensions.Logging;
+using System.Text;
 
 namespace DocxportNet.Fields.Eval;
 
@@ -31,6 +33,10 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
     private int _nestedSetResultCount;
     private readonly bool _isSimpleField;
     private readonly bool _allowDeferredCapture;
+    private readonly List<DxpFieldExpressionPart> _expressionParts = new();
+    private readonly StringBuilder _cachedResult = new();
+    private readonly DxpFieldNodeBuffer _cachedResultBuffer = new();
+    private readonly DxpEvalFieldNodeBufferRecorder _cachedResultRecorder = new();
 
     public DxpEvaluateFieldRouterFrame(
         DxpIVisitor next,
@@ -52,6 +58,11 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         InstructionText = initialInstructionText;
         _isSimpleField = initialInResult && initialSeenSeparate;
         _allowDeferredCapture = allowDeferredCapture;
+        _cachedResultRecorder.Reset(_cachedResultBuffer);
+        if (_isSimpleField && !string.IsNullOrEmpty(initialInstructionText))
+            _expressionParts.Add(new DxpFieldExpressionText(
+                initialInstructionText,
+                DxpFieldExpressionSource.CaptureRunFormat(CodeRun)));
     }
 
     public override void VisitComplexFieldInstruction(FieldCode instr, string text, DxpIDocumentContext d)
@@ -60,6 +71,9 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
             return;
         _events.Add(FieldEvent.Instruction(instr, text));
         AppendInstructionText(text);
+        _expressionParts.Add(new DxpFieldExpressionText(
+            text,
+            DxpFieldExpressionSource.CaptureRunFormat(instr.Parent as Run)));
     }
 
     public override void VisitComplexFieldSeparate(FieldChar separate, DxpIDocumentContext d)
@@ -71,6 +85,13 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         }
 
         _events.Add(FieldEvent.Separate(separate));
+    }
+
+    public override void VisitComplexFieldCachedResultText(string text, DxpIDocumentContext d)
+    {
+        if (!string.IsNullOrEmpty(text))
+            _cachedResult.Append(text);
+        _events.Add(FieldEvent.CachedResultText(text));
     }
 
     public override void VisitComplexFieldEnd(FieldChar end, DxpIDocumentContext d)
@@ -93,7 +114,11 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         if (!_inResult)
             return DxpDisposable.Empty;
         _events.Add(FieldEvent.RunBegin(r));
-        return DxpDisposable.Create(() => _events.Add(FieldEvent.RunEnd()));
+        IDisposable cachedScope = _cachedResultRecorder.VisitRunBegin(r, d);
+        return DxpDisposable.Create(() => {
+            cachedScope.Dispose();
+            _events.Add(FieldEvent.RunEnd());
+        });
     }
 
     public override IDisposable VisitHyperlinkBegin(Hyperlink link, DxpLinkAnchor? target, DxpIDocumentContext d)
@@ -101,7 +126,11 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         if (!_inResult)
             return DxpDisposable.Empty;
         _events.Add(FieldEvent.HyperlinkBegin(link, target));
-        return DxpDisposable.Create(() => _events.Add(FieldEvent.HyperlinkEnd()));
+        IDisposable cachedScope = _cachedResultRecorder.VisitHyperlinkBegin(link, target, d);
+        return DxpDisposable.Create(() => {
+            cachedScope.Dispose();
+            _events.Add(FieldEvent.HyperlinkEnd());
+        });
     }
 
     public override void VisitText(Text t, DxpIDocumentContext d)
@@ -110,8 +139,14 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         {
             AppendInstructionText(t.Text);
             _events.Add(FieldEvent.Text(t));
+            _expressionParts.Add(new DxpFieldExpressionText(
+                t.Text,
+                DxpFieldExpressionSource.CaptureRunFormat(t.Parent as Run)));
             return;
         }
+        if (!string.IsNullOrEmpty(t.Text))
+            _cachedResult.Append(t.Text);
+        _cachedResultRecorder.VisitText(t, d);
         _events.Add(FieldEvent.Text(t));
     }
 
@@ -121,8 +156,12 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         {
             AppendInstructionText("\n");
             _events.Add(FieldEvent.Break(br));
+            _expressionParts.Add(new DxpFieldExpressionText(
+                "\n",
+                DxpFieldExpressionSource.CaptureRunFormat(br.Parent as Run)));
             return;
         }
+        _cachedResultRecorder.VisitBreak(br, d);
         _events.Add(FieldEvent.Break(br));
     }
 
@@ -132,8 +171,12 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         {
             AppendInstructionText("\t");
             _events.Add(FieldEvent.Tab(tab));
+            _expressionParts.Add(new DxpFieldExpressionText(
+                "\t",
+                DxpFieldExpressionSource.CaptureRunFormat(tab.Parent as Run)));
             return;
         }
+        _cachedResultRecorder.VisitTab(tab, d);
         _events.Add(FieldEvent.Tab(tab));
     }
 
@@ -143,8 +186,12 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         {
             AppendInstructionText("\n");
             _events.Add(FieldEvent.CarriageReturn(cr));
+            _expressionParts.Add(new DxpFieldExpressionText(
+                "\n",
+                DxpFieldExpressionSource.CaptureRunFormat(cr.Parent as Run)));
             return;
         }
+        _cachedResultRecorder.VisitCarriageReturn(cr, d);
         _events.Add(FieldEvent.CarriageReturn(cr));
     }
 
@@ -154,8 +201,12 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         {
             AppendInstructionText("-");
             _events.Add(FieldEvent.NoBreakHyphen(nbh));
+            _expressionParts.Add(new DxpFieldExpressionText(
+                "-",
+                DxpFieldExpressionSource.CaptureRunFormat(nbh.Parent as Run)));
             return;
         }
+        _cachedResultRecorder.VisitNoBreakHyphen(nbh, d);
         _events.Add(FieldEvent.NoBreakHyphen(nbh));
     }
 
@@ -171,6 +222,9 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         if (!_inResult)
         {
             _events.Add(FieldEvent.ParagraphBegin(p, paragraph));
+            if (_expressionParts.Count > 0)
+                _expressionParts.Add(new DxpFieldExpressionParagraph(
+                    DxpFieldExpressionSource.CaptureParagraphFormat(p)));
             if (EvalContext.SuppressCrossParagraphFieldParagraphOutput)
                 return DxpDisposable.Create(() => _events.Add(FieldEvent.ParagraphEnd()));
             var inner = Next.VisitParagraphBegin(p, d, paragraph);
@@ -181,7 +235,11 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         }
 
         _events.Add(FieldEvent.ParagraphBegin(p, paragraph));
-        return DxpDisposable.Create(() => _events.Add(FieldEvent.ParagraphEnd()));
+        IDisposable cachedScope = _cachedResultRecorder.VisitParagraphBegin(p, d, paragraph);
+        return DxpDisposable.Create(() => {
+            cachedScope.Dispose();
+            _events.Add(FieldEvent.ParagraphEnd());
+        });
     }
 
     protected override bool ShouldForwardContent(DxpIDocumentContext d)
@@ -220,6 +278,12 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
             return;
         }
 
+        if (TryReplaySemanticExpression(d))
+        {
+            _events.Clear();
+            return;
+        }
+
         DxpIFieldEvalFrame? delegateFrame = FrameFactory.Create(InstructionText, Next, _eval, EvalContext, _logger);
         if (delegateFrame == null)
         {
@@ -246,6 +310,64 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         _events.Clear();
     }
 
+    private bool TryReplaySemanticExpression(DxpIDocumentContext context)
+    {
+        if (EvalContext.PreserveLayoutDependentFields &&
+            DxpFieldInstructionClassifier.IsPaginationDependentInstruction(InstructionText))
+            return false;
+        // These top-level fields still need event-backed document artifacts that
+        // are richer than a scalar semantic value: bookmark run structure,
+        // MERGEFORMAT's cached run styles, and the tab/newline form of DATABASE
+        // for exporters that did not request a structured table. They are
+        // specialized adapters within the single evaluation pipeline, not a
+        // selectable legacy mode.
+        bool hasNestedInstructionField = _expressionParts.Any(
+            static part => part is DxpFieldExpressionChild);
+        if (EvalContext.FieldDepth <= 1 &&
+            (!hasNestedInstructionField &&
+             (DxpFieldInstructionClassifier.IsRefInstruction(InstructionText) ||
+              DxpFieldInstructionClassifier.IsSetInstruction(InstructionText)) ||
+             !EvalContext.EmitStructuredDatabaseResults &&
+             DxpFieldInstructionClassifier.IsDatabaseInstruction(InstructionText)))
+            return false;
+
+        var evaluator = new DxpSemanticFieldEvaluator(_eval);
+        DxpSemanticFieldResult result = evaluator.EvaluateExpressionAsync(
+            new DxpFieldExpression(
+                _expressionParts.ToArray(),
+                DxpFieldExpressionSource.Capture(CodeRun, EvalContext),
+                _cachedResult.Length == 0 ? null : _cachedResult.ToString()), context).GetAwaiter().GetResult();
+        if (result.Status == DxpFieldEvalStatus.Failed)
+            return false;
+
+        Evaluated = true;
+        DxpFieldNodeBuffer buffer = DxpSemanticFieldResultAdapter.BuildBuffer(
+            result.Content, CodeRun, _eval, _logger);
+        if (buffer.IsEmpty)
+            return true;
+        if (HasMergeFormatSwitch(InstructionText) && !buffer.HasBlockRoots)
+        {
+            var parse = new DxpFieldParser().Parse(InstructionText ?? string.Empty);
+            return DxpFieldFrames.EmitTextWithMergeFormat(
+                buffer.ToPlainText(),
+                parse.Ast.FormatSpecs,
+                _cachedResultBuffer,
+                CodeRun,
+                context,
+                Next,
+                _logger);
+        }
+        if (buffer.HasBlockRoots && EvalContext.FieldDepth == 1 &&
+            EvalContext.IncludeTextSpliceCollector == null)
+            EvalContext.DeferStructuredFieldResult(buffer);
+        else
+            buffer.Replay(Next, context);
+        return true;
+    }
+
+    private static bool HasMergeFormatSwitch(string? instruction)
+        => instruction?.IndexOf("\\* MERGEFORMAT", StringComparison.OrdinalIgnoreCase) >= 0;
+
     public void TryCaptureCodeRun(Run r)
     {
         if (CodeRun == null && !_inResult)
@@ -261,10 +383,13 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
     public bool TryRecordDeferredField(DxpDeferredField field, DxpIDocumentContext context)
     {
         _ = context;
-        if (!DxpFieldInstructionClassifier.IsIfInstruction(InstructionText))
-            return false;
-
         _events.Add(FieldEvent.DeferredField(field));
+        // Nested fields in a field's cached result are display content, not part
+        // of its instruction. Associating them with the instruction can turn all
+        // later cached fields into spurious arguments (notably an INCLUDETEXT
+        // bookmark name).
+        if (!_inResult)
+            _expressionParts.Add(new DxpFieldExpressionChild(field.Expression));
         return true;
     }
 
@@ -276,25 +401,32 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         DxpFieldValue? capturedSetScalar = _capturedSetScalar;
         bool capturedSetScalarIsExact = _capturedSetScalarIsExact;
         int nestedSetResultCount = _nestedSetResultCount;
-        return new DxpDeferredField(instruction, (visitor, context) => {
-            var router = new DxpEvaluateFieldRouterFrame(
-                visitor,
-                _eval,
-                EvalContext,
-                _logger,
-                initialInResult: isSimpleField,
-                initialSeenSeparate: isSimpleField,
-                initialInstructionText: isSimpleField ? instruction : null,
-                allowDeferredCapture: false);
-            router._capturedSetScalar = capturedSetScalar;
-            router._capturedSetScalarIsExact = capturedSetScalarIsExact;
-            router._nestedSetResultCount = nestedSetResultCount;
-            var scopes = new Stack<IDisposable>();
-            foreach (var fieldEvent in events)
-                fieldEvent.Replay(router, context, scopes);
-            while (scopes.Count > 0)
-                scopes.Pop().Dispose();
-        });
+        return new DxpDeferredField(
+            instruction,
+            new DxpFieldExpression(
+                _expressionParts.ToArray(),
+                DxpFieldExpressionSource.Capture(CodeRun, EvalContext),
+                _cachedResult.Length == 0 ? null : _cachedResult.ToString()),
+            (visitor, context) => {
+                var router = new DxpEvaluateFieldRouterFrame(
+                    visitor,
+                    _eval,
+                    EvalContext,
+                    _logger,
+                    initialInResult: isSimpleField,
+                    initialSeenSeparate: isSimpleField,
+                    initialInstructionText: isSimpleField ? instruction : null,
+                    allowDeferredCapture: false);
+                router._capturedSetScalar = capturedSetScalar;
+                router._capturedSetScalarIsExact = capturedSetScalarIsExact;
+                router._nestedSetResultCount = nestedSetResultCount;
+                var scopes = new Stack<IDisposable>();
+                foreach (var fieldEvent in events)
+                    fieldEvent.Replay(router, context, scopes);
+                while (scopes.Count > 0)
+                    scopes.Pop().Dispose();
+            },
+            capturedSetScalarIsExact ? capturedSetScalar : null);
     }
 
     public bool TryRecordNestedFieldResult(DxpFieldEvalResult result)
@@ -340,6 +472,7 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         public static FieldEvent HyperlinkBegin(Hyperlink link, DxpLinkAnchor? target) => new(FieldEventKind.HyperlinkBegin, link, target);
         public static FieldEvent HyperlinkEnd() => new(FieldEventKind.HyperlinkEnd);
         public static FieldEvent Text(Text text) => new(FieldEventKind.Text, text);
+        public static FieldEvent CachedResultText(string text) => new(FieldEventKind.CachedResultText, text);
         public static FieldEvent Break(Break br) => new(FieldEventKind.Break, br);
         public static FieldEvent Tab(TabChar tab) => new(FieldEventKind.Tab, tab);
         public static FieldEvent CarriageReturn(CarriageReturn cr) => new(FieldEventKind.CarriageReturn, cr);
@@ -380,6 +513,9 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
                     break;
                 case FieldEventKind.Text:
                     visitor.VisitText((Text)Data1!, d);
+                    break;
+                case FieldEventKind.CachedResultText:
+                    visitor.VisitComplexFieldCachedResultText((string)Data1!, d);
                     break;
                 case FieldEventKind.Break:
                     visitor.VisitBreak((Break)Data1!, d);
@@ -429,6 +565,7 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         HyperlinkBegin,
         HyperlinkEnd,
         Text,
+        CachedResultText,
         Break,
         Tab,
         CarriageReturn,
@@ -453,12 +590,18 @@ internal sealed class DxpDeferredField
 
     public DxpDeferredField(
         string instructionText,
-        Action<DxpIVisitor, DxpIDocumentContext> replay)
+        DxpFieldExpression expression,
+        Action<DxpIVisitor, DxpIDocumentContext> replay,
+        DxpFieldValue? capturedScalar = null)
     {
         InstructionText = instructionText;
+        Expression = expression;
         _replay = replay;
+        CapturedScalar = capturedScalar;
     }
 
     public string InstructionText { get; }
+    public DxpFieldExpression Expression { get; }
+    public DxpFieldValue? CapturedScalar { get; }
     public void Replay(DxpIVisitor visitor, DxpIDocumentContext context) => _replay(visitor, context);
 }

@@ -77,14 +77,50 @@ internal sealed record DxpIncludeTextExpansion(
 
                 var pipeline = DocxportNet.Middleware.DxpVisitorMiddleware.Chain(
                     visitor,
-                    next => DxpFieldEvalMiddleware.CreateEvaluatedFieldMiddleware(next, Eval, logger: Logger),
+                    next => DxpFieldEvalMiddleware.CreateEvaluatedFieldMiddleware(
+                        next,
+                        Eval,
+                        logger: Logger,
+                        options: new DocxportNet.Fields.Eval.DxpEvaluateFieldMiddlewareOptions
+                        {
+                            PreserveLayoutDependentFields = Eval.Context.PreserveLayoutDependentFields,
+                            EmitStructuredDatabaseResults = Eval.Context.EmitStructuredDatabaseResults
+                        }),
                     next => new DocxportNet.Middleware.DxpContextMiddleware(next, Logger));
                 new DxpWalker(Logger).AcceptEmbeddedBodySpliced(document, pipeline, parentContext, parentParagraph, before, after, blocks);
+                // Embedded bodies do not open a document/section visitor scope. Flush a
+                // structured result produced by their final paragraph here, since there
+                // is no following paragraph boundary to do so.
+                while (Eval.Context.TryTakeDeferredStructuredFieldResult(out var deferred) && deferred != null)
+                    EmitDeferred(deferred, visitor, parentContext, parentParagraph);
             }
         }
         finally
         {
             Eval.Context.ExitIncludeText(Identity);
+        }
+    }
+
+    private static void EmitDeferred(
+        DxpFieldNodeBuffer buffer,
+        DxpIVisitor visitor,
+        DxpIDocumentContext context,
+        DocumentFormat.OpenXml.Wordprocessing.Paragraph parentParagraph)
+    {
+        var parts = buffer.SplitIncludeTextExpansions();
+        if (parts.Count == 3 && parts[1].Expansion != null)
+        {
+            parts[1].Expansion!.Emit(visitor, context, parentParagraph,
+                parts[0].Inline, parts[2].Inline);
+            return;
+        }
+
+        foreach (var part in parts)
+        {
+            if (part.Inline != null)
+                part.Inline.Replay(visitor, context);
+            else
+                part.Expansion?.Emit(visitor, context, parentParagraph, null, null);
         }
     }
 

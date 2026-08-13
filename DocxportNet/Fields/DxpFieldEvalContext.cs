@@ -77,6 +77,14 @@ public sealed partial class DxpFieldEvalContext
 
     internal bool TryEnterIncludeText(string identity, out string? error)
     {
+        if (!CanEnterIncludeText(identity, out error))
+            return false;
+        _includeTextStack.Push(identity);
+        return true;
+    }
+
+    internal bool CanEnterIncludeText(string identity, out string? error)
+    {
         error = null;
         if (string.IsNullOrWhiteSpace(identity))
         {
@@ -96,7 +104,6 @@ public sealed partial class DxpFieldEvalContext
             return false;
         }
 
-        _includeTextStack.Push(identity);
         return true;
     }
 

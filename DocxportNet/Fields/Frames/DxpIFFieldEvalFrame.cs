@@ -229,7 +229,7 @@ internal sealed class DxpIFFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame, I
 	{
 		FlushLiteralBuffer();
 		var state = DxpFieldEvalIfRunner.EnsureIfState(ref _ifState);
-		bool captured = state.AppendDeferredAction((visitor, d) => field.Replay(visitor, d));
+		bool captured = state.AppendDeferredAction((visitor, replayContext) => field.Replay(visitor, replayContext));
 		if (!captured)
 		{
 			field.Replay(this, context);
@@ -240,7 +240,11 @@ internal sealed class DxpIFFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame, I
 			!char.IsWhiteSpace(_instructionText![_instructionText!.Length - 1])
 			? " "
 			: string.Empty;
-		var segment = $"{prefix}{{ {field.InstructionText.Trim()} }}";
+		// This textual form is only the compatibility serialization of the
+		// nested field tree. Quotes belonging to the child must not terminate
+		// the surrounding quoted IF branch.
+		string nestedInstruction = field.InstructionText.Trim();
+		var segment = $"{prefix}{{ {nestedInstruction} }}";
 		_instructionText = (_instructionText ?? string.Empty) + segment + " ";
 		state.CompleteDeferredFieldToken();
 		return true;

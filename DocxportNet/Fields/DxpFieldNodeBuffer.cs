@@ -247,7 +247,13 @@ public sealed class DxpFieldNodeBuffer
     {
         public IncludeTextNode(DxpIncludeTextExpansion expansion) => Expansion = expansion;
         public DxpIncludeTextExpansion Expansion { get; }
-        public void Replay(DxpIVisitor visitor, DxpIDocumentContext context) { }
+        public void Replay(DxpIVisitor visitor, DxpIDocumentContext context)
+        {
+            if (Expansion.Eval.Context.IncludeTextSpliceCollector?.Record(Expansion) == true)
+                return;
+            if (visitor is IDxpIncludeTextResultSink sink)
+                sink.RecordInclude(Expansion);
+        }
         public OpenXmlElement CreateElement(bool forRoot) => new Run();
         public void AppendText(StringBuilder sb) { }
     }
@@ -310,10 +316,11 @@ public sealed class DxpFieldNodeBuffer
         {
             bool hasBlockRoots = _nodes.Any(static n => n is ParagraphNode or BlockNode);
             bool hasDeferredActions = _nodes.Any(static n => n is DeferredActionNode);
+            bool hasIncludeText = _nodes.Any(static n => n is IncludeTextNode);
 
             if (!hasBlockRoots)
             {
-                if (hasDeferredActions)
+                if (hasDeferredActions || hasIncludeText)
                 {
                     foreach (var node in _nodes)
                         node.Replay(visitor, context);
@@ -362,10 +369,10 @@ public sealed class DxpFieldNodeBuffer
 
             foreach (var node in _nodes)
             {
-                if (node is ParagraphNode or BlockNode or DeferredActionNode)
+                if (node is ParagraphNode or BlockNode or DeferredActionNode or IncludeTextNode)
                 {
                     FlushInline();
-                    if (node is DeferredActionNode)
+                    if (node is DeferredActionNode or IncludeTextNode)
                     {
                         node.Replay(visitor, context);
                         continue;
@@ -393,7 +400,8 @@ public sealed class DxpFieldNodeBuffer
 
     public bool IsEmpty => _nodes.Count == 0;
     internal bool HasParagraphRoots => _nodes.Any(static node => node is ParagraphNode);
-    internal bool HasBlockRoots => _nodes.Any(static node => node is ParagraphNode or BlockNode);
+    internal bool HasBlockRoots => _nodes.Any(static node =>
+        node is ParagraphNode or BlockNode or IncludeTextNode);
 
     public string ToPlainText()
     {
@@ -639,4 +647,9 @@ public sealed class DxpFieldNodeBuffer
         }
         return false;
     }
+}
+
+internal interface IDxpIncludeTextResultSink
+{
+    void RecordInclude(DxpIncludeTextExpansion expansion);
 }

@@ -34,6 +34,7 @@ public sealed class DxpFieldEval
         bool RememberAsPriorResponse);
 
     public DxpFieldEvalContext Context { get; } = new();
+    internal DxpFieldEvalOptions Options => _options;
 
     public DxpFieldEval(DxpFieldEvalDelegates? delegates = null, DxpFieldEvalOptions? options = null, ILogger? logger = null)
     {
@@ -708,6 +709,14 @@ public sealed class DxpFieldEval
     }
 
     internal readonly record struct DxpIfConditionResult(bool Success, bool Condition, string? TrueText, string? FalseText);
+
+    internal Task<DxpFieldValue> ResolveSemanticValueAsync(
+        string token,
+        DxpIDocumentContext? documentContext = null)
+        => ResolveValueWithTypeAsync(token, documentContext);
+
+    internal bool EvaluateSemanticComparison(DxpFieldValue left, string op, DxpFieldValue right)
+        => EvaluateComparison(ToDefaultString(left), op, ToDefaultString(right));
 
     internal async Task<DxpIfConditionResult?> EvaluateIfConditionAsync(
         string instructionText,
