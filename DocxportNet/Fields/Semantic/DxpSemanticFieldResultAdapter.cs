@@ -116,8 +116,6 @@ internal static class DxpSemanticFieldResultAdapter
         int columnCount = semantic.Rows.Select(static row => row.Cells.Count).DefaultIfEmpty().Max();
         var properties = new TableProperties(
             new TableWidth { Width = "0", Type = TableWidthUnitValues.Auto });
-        if (semantic.AutoFit)
-            properties.AppendChild(new TableLayout { Type = TableLayoutValues.Autofit });
         if (semantic.ShowBorders)
         {
             properties.AppendChild(new TableBorders(
@@ -125,6 +123,8 @@ internal static class DxpSemanticFieldResultAdapter
                 NewBorder<BottomBorder>(), NewBorder<RightBorder>(),
                 NewBorder<InsideHorizontalBorder>(), NewBorder<InsideVerticalBorder>()));
         }
+        if (semantic.AutoFit)
+            properties.AppendChild(new TableLayout { Type = TableLayoutValues.Autofit });
 
         var table = new Table(properties, new TableGrid(
             Enumerable.Range(0, columnCount).Select(static _ => new GridColumn())));

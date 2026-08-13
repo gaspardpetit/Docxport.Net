@@ -6,4 +6,4 @@
 
 <b><i>Claim Objections</i></b>
 
-5.	Claim<b> 1 is</b> objected to because of the following informalities: The claim is listed as original while it is currently amended. Appropriate correction is required.
+5.	Claim 1 is objected to because of the following informalities: The claim is listed as original while it is currently amended. Appropriate correction is required.

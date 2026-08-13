@@ -9,7 +9,7 @@
 <p style="text-align:center;line-height:2;"><a id="HEADING_CLAIM_OBJECTIONS_" data-bookmark-id="0"></a><b><i>Claim Objections</i></b></p>
 
 
-<a id="FP_07_29_01" data-bookmark-id="1"></a>5.&#9;Claim<b> 1 is</b> objected to because of the following informalities: The claim is listed as original while it is currently amended. Appropriate correction is required.
+<a id="FP_07_29_01" data-bookmark-id="1"></a>5.&#9;Claim 1 is objected to because of the following informalities: The claim is listed as original while it is currently amended. Appropriate correction is required.
 
 </div>
 </div>

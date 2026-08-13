@@ -190,67 +190,67 @@
 
 </div>
 <div class="footnote" id="fn-2">
-<p style="margin-bottom:0pt;line-height:1;">1<span style="font-family: Aptos Display; font-size: 9pt;"> PARLIAMENT OF CANADA, LEGISinfo: C-244: <i>An Act to amend the Copyright Act (diagnosis, maintenance and repair)</i>, Parliament of Canada, online: Error! Invalid field code..</span></p>
+<p style="margin-bottom:0pt;line-height:1;">1<span style="font-family: Aptos Display; font-size: 9pt;"> PARLIAMENT OF CANADA, LEGISinfo: C-244: <i>An Act to amend the Copyright Act (diagnosis, maintenance and repair)</i>, Parliament of Canada, online: https://www.parl.ca/legisinfo/en/bill/44-1/c-244.</span></p>
 
 
 </div>
 <div class="footnote" id="fn-3">
-<p style="margin-bottom:0pt;line-height:1;">2<span style="font-family: Aptos Display; font-size: 9pt;"> PARLIAMENT OF CANADA, LEGISinfo: C-272, <i>An Act to amend the Copyright Act (diagnosis, maintenance and repair)</i>, Parliament of Canada, online: Error! Invalid field code.</span></p>
+<p style="margin-bottom:0pt;line-height:1;">2<span style="font-family: Aptos Display; font-size: 9pt;"> PARLIAMENT OF CANADA, LEGISinfo: C-272, <i>An Act to amend the Copyright Act (diagnosis, maintenance and repair)</i>, Parliament of Canada, online: https://www.parl.ca/legisinfo/en/bill/43-2/c-272.</span></p>
 
 
 </div>
 <div class="footnote" id="fn-4">
-<p style="margin-bottom:0pt;line-height:1;">3<span style="font-family: Aptos Display; font-size: 9pt;"><i> Error! Invalid field code.</i>, 2017 FC 246, [2018] 1 FCR 509.</span></p>
+<p style="margin-bottom:0pt;line-height:1;">3<span style="font-family: Aptos Display; font-size: 9pt;"><i> </i>Nintendo of America Inc. v. King, 2017 FC 246, [2018] 1 FCR 509.</span></p>
 
 
 </div>
 <div class="footnote" id="fn-5">
-<p style="margin-bottom:0pt;line-height:1;">4<span style="font-family: Aptos Display; font-size: 9pt;"><i> WIPO Copyright Treaty</i>, December 20, 1996, article 11, online: Error! Invalid field code..</span></p>
+<p style="margin-bottom:0pt;line-height:1;">4<span style="font-family: Aptos Display; font-size: 9pt;"><i> WIPO Copyright Treaty</i>, December 20, 1996, article 11, online: https://www.wipo.int/wipolex/en/treaties/textdetails/12740.</span></p>
 
 
 </div>
 <div class="footnote" id="fn-6">
-<p style="margin-bottom:0pt;line-height:1;">5<span style="font-family: Aptos Display; font-size: 9pt;"><i> Copyright Modernization Act</i>, S.C. 2012, c. 20, assented to on 2012-06-29, online: Error! Invalid field code.; Canada Gazette, Vol. 146,No. 23 – November 7, 2012, SI/2012-85 <i>Order Fixing Various Dates as the Dates on which Certain Provisions of the Act Come into Force</i>, P.C. 2012-1392, October 25, 2012, online: Error! Invalid field code.. </span></p>
+<p style="margin-bottom:0pt;line-height:1;">5<span style="font-family: Aptos Display; font-size: 9pt;"><i> Copyright Modernization Act</i>, S.C. 2012, c. 20, assented to on 2012-06-29, online: https://laws-lois.justice.gc.ca/eng/AnnualStatutes/2012_20/FullText.html; Canada Gazette, Vol. 146,No. 23 – November 7, 2012, SI/2012-85 <i>Order Fixing Various Dates as the Dates on which Certain Provisions of the Act Come into Force</i>, P.C. 2012-1392, October 25, 2012, online: https: //canadagazette.gc.ca/rp-pr/p2/2012/2012-11-07/html/si-tr85-fra.html. </span></p>
 
 
 </div>
 <div class="footnote" id="fn-7">
-<p style="margin-bottom:0pt;line-height:1;">6<span style="font-family: Aptos Display; font-size: 9pt;"> <span style="color:#333333;background-color:#FFFFFF">Graham J. Reynolds, </span><span style="color:#333333;background-color:#FFFFFF">“</span><span style="color:#333333;background-color:#FFFFFF">Of Lock-Breaking and Stock Taking - IP, Climate Change, and the Right to Repair in Canada</span><span style="color:#333333;background-color:#FFFFFF">,</span><span style="color:#333333;background-color:#FFFFFF">”</span><span style="color:#333333;background-color:#FFFFFF"> in 2023 101-1 </span><i><span style="color:#333333;background-color:#FFFFFF">Canadian Bar Review</span></i><span style="color:#333333;background-color:#FFFFFF"> 32, 2023 CanLIIDocs 1144, p. 54, online: </span>Error! Invalid field code.<span style="color:#333333;background-color:#FFFFFF">.</span></span></p>
+<p style="margin-bottom:0pt;line-height:1;">6<span style="font-family: Aptos Display; font-size: 9pt;"> <span style="color:#333333;background-color:#FFFFFF">Graham J. Reynolds, </span><span style="color:#333333;background-color:#FFFFFF">“</span><span style="color:#333333;background-color:#FFFFFF">Of Lock-Breaking and Stock Taking - IP, Climate Change, and the Right to Repair in Canada</span><span style="color:#333333;background-color:#FFFFFF">,</span><span style="color:#333333;background-color:#FFFFFF">”</span><span style="color:#333333;background-color:#FFFFFF"> in 2023 101-1 </span><i><span style="color:#333333;background-color:#FFFFFF">Canadian Bar Review</span></i><span style="color:#333333;background-color:#FFFFFF"> 32, 2023 CanLIIDocs 1144, p. 54, online: </span>https://canlii.ca/t/7n4cj<span style="color:#333333;background-color:#FFFFFF">.</span></span></p>
 
 
 </div>
 <div class="footnote" id="fn-8">
-<p style="margin-bottom:0pt;line-height:1;">7<span style="font-family: Aptos Display; font-size: 9pt;"> Committee on Industry and Technology, </span><span style="font-family: Aptos; font-size: 9pt;">5</span><span style="font-family: Aptos Display; font-size: 9pt;"> December</span><span style="font-family: Aptos; font-size: 9pt;"> 2022, Catherine Lovrics, <i>Open Parliament</i>, </span><span style="font-family: Aptos Display; font-size: 9pt;">online</span><span style="font-family: Aptos; font-size: 9pt;">: Error! Invalid field code.</span><span style="font-family: Aptos Display; font-size: 9pt;">; Committee on Industry and Technology, 1</span><span style="font-family: Aptos; font-size: 9pt;">5</span><span style="font-family: Aptos Display; font-size: 9pt;"> February 2023</span><span style="font-family: Aptos; font-size: 9pt;">, </span><span style="font-family: Aptos Display; font-size: 9pt;">Viviane Lapointe</span><span style="font-family: Aptos; font-size: 9pt;">, <i>Open Parliament</i>, </span><span style="font-family: Aptos Display; font-size: 9pt;">online</span><span style="font-family: Aptos; font-size: 9pt;">: Error! Invalid field code.</span><span style="font-family: Aptos Display; font-size: 9pt;">; Committee on Industry and Technology, 1</span><span style="font-family: Aptos; font-size: 9pt;">5</span><span style="font-family: Aptos Display; font-size: 9pt;"> February 2023</span><span style="font-family: Aptos; font-size: 9pt;">, </span><span style="font-family: Aptos Display; font-size: 9pt;">Andy  Fillmore</span><span style="font-family: Aptos; font-size: 9pt;">, <i>Open Parliament</i>, </span><span style="font-family: Aptos Display; font-size: 9pt;">online</span><span style="font-family: Aptos; font-size: 9pt;">: Error! Invalid field code.</span><span style="font-family: Aptos Display; font-size: 9pt;">; Committee on Industry and Technology, 1</span><span style="font-family: Aptos; font-size: 9pt;">5</span><span style="font-family: Aptos Display; font-size: 9pt;"> february 2023, Patrick Blanar, online: Error! Invalid field code..</span></p>
+<p style="margin-bottom:0pt;line-height:1;">7<span style="font-family: Aptos Display; font-size: 9pt;"> Committee on Industry and Technology, </span><span style="font-family: Aptos; font-size: 9pt;">5</span><span style="font-family: Aptos Display; font-size: 9pt;"> December</span><span style="font-family: Aptos; font-size: 9pt;"> 2022, Catherine Lovrics, <i>Open Parliament</i>, </span><span style="font-family: Aptos Display; font-size: 9pt;">online</span><span style="font-family: Aptos; font-size: 9pt;">: </span><span style="font-family: Aptos Display; font-size: 9pt;">https://openparliament.ca/committees/industry/44-1/49/catherine-lovrics-2/; Committee on Industry and Technology, 1</span><span style="font-family: Aptos; font-size: 9pt;">5</span><span style="font-family: Aptos Display; font-size: 9pt;"> February 2023</span><span style="font-family: Aptos; font-size: 9pt;">, </span><span style="font-family: Aptos Display; font-size: 9pt;">Viviane Lapointe</span><span style="font-family: Aptos; font-size: 9pt;">, <i>Open Parliament</i>, </span><span style="font-family: Aptos Display; font-size: 9pt;">online</span><span style="font-family: Aptos; font-size: 9pt;">: </span><span style="font-family: Aptos Display; font-size: 9pt;">https://openparliament.ca/committees/industry/44-1/59/viviane-lapointe-5/; Committee on Industry and Technology, 1</span><span style="font-family: Aptos; font-size: 9pt;">5</span><span style="font-family: Aptos Display; font-size: 9pt;"> February 2023</span><span style="font-family: Aptos; font-size: 9pt;">, </span><span style="font-family: Aptos Display; font-size: 9pt;">Andy  Fillmore</span><span style="font-family: Aptos; font-size: 9pt;">, <i>Open Parliament</i>, </span><span style="font-family: Aptos Display; font-size: 9pt;">online</span><span style="font-family: Aptos; font-size: 9pt;">: </span><span style="font-family: Aptos Display; font-size: 9pt;">https://openparliament.ca/committees/industry/44-1/59/andy-fillmore-6/; Committee on Industry and Technology, 1</span><span style="font-family: Aptos; font-size: 9pt;">5</span><span style="font-family: Aptos Display; font-size: 9pt;"> february 2023, Patrick Blanar, online: https://openparliament.ca/committees/industry/44-1/59/patrick-blanar-1/.</span></p>
 
 
 </div>
 <div class="footnote" id="fn-9">
-<p style="margin-bottom:0pt;line-height:1;">8<span style="font-family: Aptos Display; font-size: 9pt;"> Entertainment Software Association of Canada, <i>Bill C-244 – An Act to amend the Copyright Act (diagnosis, maintenance and repair),</i> online:Error! Invalid field code..</span></p>
+<p style="margin-bottom:0pt;line-height:1;">8<span style="font-family: Aptos Display; font-size: 9pt;"> Entertainment Software Association of Canada, <i>Bill C-244 – An Act to amend the Copyright Act (diagnosis, maintenance and repair),</i> online: https://www.ourcommons.ca/Content/Committee/441/INDU/Brief/BR12209146/br-external/EntertainmentSoftwareAssociationOfCanada-e.pdf.</span></p>
 
 
 </div>
 <div class="footnote" id="fn-10">
-<p style="margin-bottom:0pt;line-height:1;">9<span style="font-family: Aptos Display; font-size: 9pt;"> Committee on Industry and Technology, February 8, 2023, Paul Fogolin, online: Error! Invalid field code..</span></p>
+<p style="margin-bottom:0pt;line-height:1;">9<span style="font-family: Aptos Display; font-size: 9pt;"> Committee on Industry and Technology, February 8, 2023, Paul Fogolin, online: https://openparliament.ca/committees/industry/44-1/57/paul-fogolin-1/.</span></p>
 
 
 </div>
 <div class="footnote" id="fn-11">
-<p style="margin-bottom:0pt;line-height:1;">10<span style="font-family: Aptos Display; font-size: 9pt;"> Committee on Industry and Technology, February 8, 2023, Charles Bernard, online: Error! Invalid field code..</span></p>
+<p style="margin-bottom:0pt;line-height:1;">10<span style="font-family: Aptos Display; font-size: 9pt;"> Committee on Industry and Technology, February 8, 2023, Charles Bernard, online: https://openparliament.ca/committees/industry/44-1/57/charles-bernard-1/.</span></p>
 
 
 </div>
 <div class="footnote" id="fn-12">
-<p style="margin-bottom:0pt;line-height:1;">11<span style="font-family: Aptos Display; font-size: 9pt;"> Industry and Technology Committee, December </span><span style="font-family: Aptos; font-size: 9pt;">5</span><span style="font-family: Aptos Display; font-size: 9pt;">,</span><span style="font-family: Aptos; font-size: 9pt;"> 2022, Catherine Lovrics</span><span style="font-family: Aptos Display; font-size: 9pt;">, online:Error! Invalid field code..</span></p>
+<p style="margin-bottom:0pt;line-height:1;">11<span style="font-family: Aptos Display; font-size: 9pt;"> Industry and Technology Committee, December </span><span style="font-family: Aptos; font-size: 9pt;">5</span><span style="font-family: Aptos Display; font-size: 9pt;">,</span><span style="font-family: Aptos; font-size: 9pt;"> 2022, Catherine Lovrics</span><span style="font-family: Aptos Display; font-size: 9pt;">, online: https://openparliament.ca/committees/industry/44-1/49/catherine-lovrics-2/.</span></p>
 
 
 </div>
 <div class="footnote" id="fn-13">
-<p style="margin-bottom:0pt;line-height:1;">12<span style="font-family: Aptos Display; font-size: 9pt;"> Emma Fillman,<i> “</i>Comprehensive Right to Repair:<i> </i>The Fight Against Planned Obsolescence in Canada,” (2023) 32 Dalhousie J Legal Stud 123, p. 145.<span style="color:#000000"> </span><span style="color:#000000">online</span>Error! Invalid field code.<u>.</u></span></p>
+<p style="margin-bottom:0pt;line-height:1;">12<span style="font-family: Aptos Display; font-size: 9pt;"> Emma Fillman,<i> “</i>Comprehensive Right to Repair:<i> </i>The Fight Against Planned Obsolescence in Canada,” (2023) 32 Dalhousie J Legal Stud 123, p. 145.<span style="color:#000000"> </span><span style="color:#000000">online</span> https://digitalcommons.schulichlaw.dal.ca/djls/vol32/iss1/5/<u>.</u></span></p>
 
 
 </div>
 <div class="footnote" id="fn-14">
-<p style="margin-bottom:0pt;line-height:1;">13<span style="font-family: Aptos Display; font-size: 9pt;"> Irene Calboli, “The right to repair: Recent Developments in the USA<i>,” World Intellectual Property Organization Magazine</i>, August 2023, online:Error! Invalid field code..</span></p>
+<p style="margin-bottom:0pt;line-height:1;">13<span style="font-family: Aptos Display; font-size: 9pt;"> Irene Calboli, “The right to repair: Recent Developments in the USA<i>,” World Intellectual Property Organization Magazine</i>, August 2023, online: https://www.wipo.int/wipo_magazine_digital/en/2023/article_0023.html.</span></p>
 
 
 </div>
@@ -259,69 +259,69 @@
 <div class="footnote" id="fn-16">
 </div>
 <div class="footnote" id="fn-17">
-<p style="margin-bottom:0pt;line-height:1;">16<span style="font-family: Aptos Display; font-size: 9pt;"><span style="color:#000000"> Emma Fillman, “Comprehensive Right to Repair:</span><i><span style="color:#000000"> </span></i><span style="color:#000000">The Fight Against Planned Obsolescence in Canada,” (2023) 32 Dalhousie J Legal Stud 123, pp. 142 and following, online</span>Error! Invalid field code.<u>.</u></span></p>
+<p style="margin-bottom:0pt;line-height:1;">16<span style="font-family: Aptos Display; font-size: 9pt;"><span style="color:#000000"> Emma Fillman, “Comprehensive Right to Repair:</span><i><span style="color:#000000"> </span></i><span style="color:#000000">The Fight Against Planned Obsolescence in Canada,” (2023) 32 Dalhousie J Legal Stud 123, pp. 142 and following, online</span> https://digitalcommons.schulichlaw.dal.ca/djls/vol32/iss1/5/<u>.</u></span></p>
 
 
 </div>
 <div class="footnote" id="fn-18">
-<p style="margin-bottom:0pt;line-height:1;">17<span style="font-family: Aptos Display; font-size: 9pt;"> Committee on Industry and Technology, February 8, 2023, Shannon Sereda, online:Error! Invalid field code..</span></p>
+<p style="margin-bottom:0pt;line-height:1;">17<span style="font-family: Aptos Display; font-size: 9pt;"> Committee on Industry and Technology, February 8, 2023, Shannon Sereda, online: https://openparliament.ca/committees/industry/44-1/57/shannon-sereda-1/.</span></p>
 
 
 </div>
 <div class="footnote" id="fn-19">
-<p style="margin-bottom:0pt;line-height:1;">18<span style="font-family: Aptos Display; font-size: 9pt;"> Committee on Industry and Technology, February 8, 2023, Anthony D. Rosborough, online:Error! Invalid field code..</span></p>
+<p style="margin-bottom:0pt;line-height:1;">18<span style="font-family: Aptos Display; font-size: 9pt;"> Committee on Industry and Technology, February 8, 2023, Anthony D. Rosborough, online: https://openparliament.ca/committees/industry/44-1/57/anthony-d-rosborough-1/.</span></p>
 
 
 </div>
 <div class="footnote" id="fn-20">
-<p style="margin-bottom:0pt;line-height:1;">19<span style="font-family: Aptos Display; font-size: 9pt;"> Copyright Office, Library of Congress, E<i>xemption to Prohibition on Circumvention of Copyright Protection Systems for Access Control Technologies</i>, Federal Register, October 28, 2024, online:Error! Invalid field code..</span></p>
+<p style="margin-bottom:0pt;line-height:1;">19<span style="font-family: Aptos Display; font-size: 9pt;"> Copyright Office, Library of Congress, E<i>xemption to Prohibition on Circumvention of Copyright Protection Systems for Access Control Technologies</i>, Federal Register, October 28, 2024, online: https://www.federalregister.gov/documents/2024/10/28/2024-24563/exemption-to-prohibition-on-circumvention-of-copyright-protection-systems-for-access-control.</span></p>
 
 
 </div>
 <div class="footnote" id="fn-21">
-<p style="margin-bottom:0pt;line-height:1;">20<span style="font-family: Aptos Display; font-size: 9pt;"> Copyright Office, Library of Congress, <i>Exemption to Prohibition on Circumvention of Copyright Protection Systems for Access Control Technologies</i>, Federal Register, October 26, 2018, online:Error! Invalid field code..</span></p>
+<p style="margin-bottom:0pt;line-height:1;">20<span style="font-family: Aptos Display; font-size: 9pt;"> Copyright Office, Library of Congress, <i>Exemption to Prohibition on Circumvention of Copyright Protection Systems for Access Control Technologies</i>, Federal Register, October 26, 2018, online: https://www.federalregister.gov/documents/2018/10/26/2018-23241/exemption-to-prohibition-on-circumvention-of-copyright-protection-systems-for-access-control.</span></p>
 
 
 </div>
 <div class="footnote" id="fn-22">
-<p style="margin-bottom:0pt;line-height:1;">21<span style="font-family: Aptos Display; font-size: 9pt;"> Federal Trade Commission, <i>Nixing the Fix: An FTC Report to Congress on Repair Restrictions</i>, May 2021, online:Error! Invalid field code..</span></p>
+<p style="margin-bottom:0pt;line-height:1;">21<span style="font-family: Aptos Display; font-size: 9pt;"> Federal Trade Commission, <i>Nixing the Fix: An FTC Report to Congress on Repair Restrictions</i>, May 2021, online: https://www.ftc.gov/system/files/documents/reports/nixing-fix-ftc-report-congress-repair-restrictions/nixing_the_fix_report_final_5521_630pm-508_002.pdf.</span></p>
 
 
 </div>
 <div class="footnote" id="fn-23">
-<p style="margin-bottom:0pt;line-height:1;">22<span style="font-family: Aptos Display; font-size: 9pt;"> The White House, <i>Executive Order on Promoting Competition in the American Economy</i>, July 9, 2021, online: Error! Invalid field code..</span></p>
+<p style="margin-bottom:0pt;line-height:1;">22<span style="font-family: Aptos Display; font-size: 9pt;"> The White House, <i>Executive Order on Promoting Competition in the American Economy</i>, July 9, 2021, online: https://www.whitehouse.gov/briefing-room/presidential-actions/2021/07/09/executive-order-on-promoting-competition-in-the-american-economy/.</span></p>
 
 
 </div>
 <div class="footnote" id="fn-24">
-<p style="margin-bottom:0pt;line-height:1;">23<span style="font-family: Aptos Display; font-size: 9pt;"> X, Jon Campbell, December 29, 2022, online:Error! Invalid field code.; Colorado General Assembly, <i>Consumer Right to Repair Agricultural Equipment</i>, April 25, 2023, online:Error! Invalid field code.; Minnesota Legislature, Minnesota Session Laws, 93<sup>rd</sup> Legislature, Chapter 57 – S.F. No. 2744, online:Error! Invalid field code.; Sidley, “California Becomes Third U.S.<i> </i>State to Join the Right-to-Repair Movement,” October 24, 2023, online:Error! Invalid field code..</span></p>
+<p style="margin-bottom:0pt;line-height:1;">23<span style="font-family: Aptos Display; font-size: 9pt;"> X, Jon Campbell, December 29, 2022, online: https://twitter.com/JonCampbellNY/status/1608327624526548993; Colorado General Assembly, <i>Consumer Right to Repair Agricultural Equipment</i>, April 25, 2023, online: https://leg.colorado.gov/bills/hb23-1011; Minnesota Legislature, Minnesota Session Laws, 93<sup>rd</sup> Legislature, Chapter 57 – S.F. No. 2744, online: https://www.revisor.mn.gov/laws/2023/0/Session+Law/Chapter/57/; Sidley, “California Becomes Third U.S.<i> </i>State to Join the Right-to-Repair Movement,” October 24, 2023, online: https://www.sidley.com/en/insights/newsupdates/2023/10/california-becomes-third-us-state-to-join-the-right-to-repair-movement.</span></p>
 
 
 </div>
 <div class="footnote" id="fn-25">
-<p style="margin-bottom:0pt;line-height:1;">24<span style="font-family: Aptos Display; font-size: 9pt;"> John Deere, <i>Memorandum of Undestanding</i>, January 8, 2023, online: Error! Invalid field code..</span></p>
+<p style="margin-bottom:0pt;line-height:1;">24<span style="font-family: Aptos Display; font-size: 9pt;"> John Deere, <i>Memorandum of Undestanding</i>, January 8, 2023, online: https://www.fb.org/files/AFBF_John_Deere_MOU.pdf.</span></p>
 
 
 </div>
 <div class="footnote" id="fn-26">
-<p style="margin-bottom:0pt;line-height:1;">25<span style="font-family: Aptos Display; font-size: 9pt;"> The Verge, “Surprise:<i> </i>Apple now supports California’s right to repair,” August 23, 2023, online: Error! Invalid field code..</span></p>
+<p style="margin-bottom:0pt;line-height:1;">25<span style="font-family: Aptos Display; font-size: 9pt;"> The Verge, “Surprise:<i> </i>Apple now supports California’s right to repair,” August 23, 2023, online: https://www.theverge.com/2023/8/23/23843506/apple-california-right-to-repair-sb-244.</span></p>
 
 
 </div>
 <div class="footnote" id="fn-27">
-<p style="margin-bottom:0pt;line-height:1;">26<span style="font-family: Aptos Display; font-size: 9pt;"> Irene Calboli, “The right to repair: Recent Developments in the USA,”<i> World Intellectual Property Organization Magazine</i>, online:Error! Invalid field code.. </span></p>
+<p style="margin-bottom:0pt;line-height:1;">26<span style="font-family: Aptos Display; font-size: 9pt;"> Irene Calboli, “The right to repair: Recent Developments in the USA,”<i> World Intellectual Property Organization Magazine</i>, online: https://www.wipo.int/wipo_magazine_digital/en/2023/article_0023.html. </span></p>
 
 
 </div>
 <div class="footnote" id="fn-28">
-<p style="margin-bottom:0pt;line-height:1;">27<span style="font-family: Aptos Display; font-size: 9pt;"> PARLIAMENT OF CANADA, LEGISinfo: C-59: <i>An Act to implement certain provisions of the fall economic statement tabled in Parliament on November 21, 2023 and certain provisions of the budget tabled in Parliament on March 28, 2023</i>; Parliament of Canada, online:Error! Invalid field code.<i>.</i></span></p>
+<p style="margin-bottom:0pt;line-height:1;">27<span style="font-family: Aptos Display; font-size: 9pt;"> PARLIAMENT OF CANADA, LEGISinfo: C-59: <i>An Act to implement certain provisions of the fall economic statement tabled in Parliament on November 21, 2023 and certain provisions of the budget tabled in Parliament on March 28, 2023</i>; Parliament of Canada, online: https://www.parl.ca/legisinfo/en/bill/44-1/c-59<i>.</i></span></p>
 
 
 </div>
 <div class="footnote" id="fn-29">
 </div>
 <div class="footnote" id="fn-30">
-<p style="margin-bottom:0pt;line-height:1;">29<span style="font-family: Aptos Display; font-size: 9pt;"> Québec National Assembly, Bill 29, <i>An Act to protect consumers from planned obsolescence and to promote the durability, repairability and maintenance of goods, </i>online: Error! Invalid field code.<u>.</u></span></p>
+<p style="margin-bottom:0pt;line-height:1;">29<span style="font-family: Aptos Display; font-size: 9pt;"> Québec National Assembly, Bill 29, <i>An Act to protect consumers from planned obsolescence and to promote the durability, repairability and maintenance of goods, </i>online: https://www.assnat.qc.ca/en/travaux-parlementaires/projets-loi/projet-loi-29-43-1.html<u>.</u></span></p>
 
 
 </div>

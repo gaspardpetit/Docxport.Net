@@ -42,6 +42,7 @@ internal sealed class DxpSemanticFieldEvaluator
                 DxpSemanticContent.Empty,
                 Error: new InvalidOperationException("Maximum nested field depth exceeded."));
 
+        expression = ExpandLiteralNestedFields(expression);
         var tokens = DxpFieldExpressionTokenizer.Tokenize(expression).ToList();
         if (tokens.Count == 0 || string.IsNullOrWhiteSpace(tokens[0].LiteralText))
             return DxpSemanticFieldResult.Empty(DxpFieldEvalStatus.Skipped);
@@ -68,6 +69,63 @@ internal sealed class DxpSemanticFieldEvaluator
                 " REF " + bookmark + " ", documentContext, cancellationToken);
 
         return await EvaluateScalarExpressionAsync(expression, documentContext, cancellationToken);
+    }
+
+    private static DxpFieldExpression ExpandLiteralNestedFields(DxpFieldExpression expression)
+    {
+        if (!expression.Parts.All(static part => part is DxpFieldExpressionText))
+            return expression;
+
+        string text = string.Concat(expression.Parts
+            .Cast<DxpFieldExpressionText>()
+            .Select(static part => part.Text));
+        var parts = new List<DxpFieldExpressionPart>();
+        int literalStart = 0;
+        bool inQuote = false;
+        for (int index = 0; index < text.Length; index++)
+        {
+            if (text[index] == '"')
+            {
+                inQuote = !inQuote;
+                continue;
+            }
+            if (inQuote || text[index] != '{')
+                continue;
+
+            int depth = 1;
+            bool nestedQuote = false;
+            int end = index + 1;
+            for (; end < text.Length && depth > 0; end++)
+            {
+                char ch = text[end];
+                if (ch == '"')
+                {
+                    nestedQuote = !nestedQuote;
+                    continue;
+                }
+                if (nestedQuote)
+                    continue;
+                if (ch == '{') depth++;
+                else if (ch == '}') depth--;
+            }
+            if (depth != 0)
+                continue;
+
+            if (index > literalStart)
+                parts.Add(new DxpFieldExpressionText(
+                    text.Substring(literalStart, index - literalStart)));
+            string nested = text.Substring(index + 1, end - index - 2);
+            parts.Add(new DxpFieldExpressionChild(
+                ExpandLiteralNestedFields(DxpFieldExpression.FromText(nested))));
+            index = end - 1;
+            literalStart = end;
+        }
+
+        if (parts.Count == 0)
+            return expression;
+        if (literalStart < text.Length)
+            parts.Add(new DxpFieldExpressionText(text.Substring(literalStart)));
+        return expression with { Parts = parts };
     }
 
     private async Task<DxpSemanticFieldResult> EvaluateIfExpressionAsync(
@@ -148,9 +206,10 @@ internal sealed class DxpSemanticFieldEvaluator
                 case DxpFieldExpressionChild child:
                     DxpSemanticFieldResult result = await EvaluateExpressionAsync(
                         child.Expression, documentContext, cancellationToken, depth);
-                    text.Append(result.Value.HasValue
-                        ? ValueToText(result.Value.Value)
-                        : ToPlainText(result.Content));
+                    string rendered = ToPlainText(result.Content);
+                    text.Append(rendered.Length != 0
+                        ? rendered
+                        : result.Value.HasValue ? ValueToText(result.Value.Value) : string.Empty);
                     break;
             }
         }
@@ -164,13 +223,16 @@ internal sealed class DxpSemanticFieldEvaluator
         CancellationToken cancellationToken,
         int depth)
     {
-        if (tokens.Count is < 2 or > 3)
+        var arguments = tokens.Skip(1)
+            .TakeWhile(static token => token.LiteralText?.StartsWith("\\", StringComparison.Ordinal) != true)
+            .ToList();
+        if (arguments.Count is < 1 or > 2)
             return IncludeFallback(expression, error: false);
         string path = ValueToText(await EvaluateTemplateValueAsync(
-            tokens[1], documentContext, cancellationToken, depth));
-        string? bookmark = tokens.Count == 3
+            arguments[0], documentContext, cancellationToken, depth));
+        string? bookmark = arguments.Count == 2
             ? ValueToText(await EvaluateTemplateValueAsync(
-                tokens[2], documentContext, cancellationToken, depth))
+                arguments[1], documentContext, cancellationToken, depth))
             : null;
         if (string.IsNullOrWhiteSpace(path) ||
             bookmark != null && string.IsNullOrWhiteSpace(bookmark))
@@ -259,7 +321,12 @@ internal sealed class DxpSemanticFieldEvaluator
         {
             DxpSemanticFieldResult result = await EvaluateExpressionAsync(
                 child.Expression, documentContext, cancellationToken, depth);
-            return result.Value ?? new DxpFieldValue(ToPlainText(result.Content));
+            // String switches (for example \* Lower) change the value Word uses
+            // in an enclosing expression. Preserve native numeric/date kinds,
+            // but use the rendered semantic text for strings.
+            if (result.Value is { } value && value.Kind != DxpFieldValueKind.String)
+                return value;
+            return new DxpFieldValue(ToPlainText(result.Content));
         }
 
         DxpSemanticContent content = await EvaluateTemplateContentAsync(
@@ -279,6 +346,7 @@ internal sealed class DxpSemanticFieldEvaluator
         var root = new DxpSemanticContentBuilder();
         DxpSemanticContentBuilder? paragraph = null;
         DxpSemanticParagraphFormat? paragraphFormat = null;
+        bool hasSelectedContent = false;
 
         void FlushParagraph()
         {
@@ -293,6 +361,11 @@ internal sealed class DxpSemanticFieldEvaluator
         {
             if (part is DxpFieldTemplateParagraph paragraphBoundary)
             {
+                // A branch may begin in a later source paragraph than the IF.
+                // Leading source boundaries position the field code; they do
+                // not create a new result paragraph at the insertion point.
+                if (!hasSelectedContent)
+                    continue;
                 FlushParagraph();
                 paragraph = new DxpSemanticContentBuilder();
                 paragraphFormat = paragraphBoundary.Format;
@@ -301,6 +374,8 @@ internal sealed class DxpSemanticFieldEvaluator
             if (part is DxpFieldTemplateText text)
             {
                 (paragraph ?? root).AppendTextWithControls(text.Text, text.Format);
+                if (text.Text.Length > 0)
+                    hasSelectedContent = true;
                 continue;
             }
 
@@ -310,6 +385,8 @@ internal sealed class DxpSemanticFieldEvaluator
             if (paragraph != null && result.Content.HasBlocks)
                 FlushParagraph();
             (paragraph ?? root).Append(result.Content);
+            if (!result.Content.IsEmpty)
+                hasSelectedContent = true;
         }
         FlushParagraph();
         return root.Build();

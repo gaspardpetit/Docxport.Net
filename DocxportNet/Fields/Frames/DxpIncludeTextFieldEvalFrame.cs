@@ -143,7 +143,16 @@ internal sealed class DxpIncludeTextFieldEvalFrame : DxpValueFieldEvalFrame
 
                 var pipeline = DxpVisitorMiddleware.Chain(
                     Next,
-                    next => DxpFieldEvalMiddleware.CreateEvaluatedFieldMiddleware(next, Eval, logger: Logger),
+                    next => DxpFieldEvalMiddleware.CreateEvaluatedFieldMiddleware(
+                        next,
+                        Eval,
+                        logger: Logger,
+                        options: new DocxportNet.Fields.Eval.DxpEvaluateFieldMiddlewareOptions
+                        {
+                            PreserveLayoutDependentFields = EvalContext.PreserveLayoutDependentFields,
+                            EmitStructuredDatabaseResults = EvalContext.EmitStructuredDatabaseResults,
+                            UseSemanticFieldResults = EvalContext.UseSemanticFieldResults
+                        }),
                     next => new DxpContextMiddleware(next, Logger));
                 new DxpWalker(Logger).AcceptEmbeddedBody(document, pipeline, blocks);
                 return true;

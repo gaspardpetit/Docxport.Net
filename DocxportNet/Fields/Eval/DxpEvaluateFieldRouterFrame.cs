@@ -312,7 +312,8 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
             result.Content, CodeRun, _eval, _logger);
         if (buffer.IsEmpty)
             return true;
-        if (buffer.HasBlockRoots && EvalContext.FieldDepth == 1)
+        if (buffer.HasBlockRoots && EvalContext.FieldDepth == 1 &&
+            EvalContext.IncludeTextSpliceCollector == null)
             EvalContext.DeferStructuredFieldResult(buffer);
         else
             buffer.Replay(Next, context);
@@ -339,7 +340,12 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
             return false;
 
         _events.Add(FieldEvent.DeferredField(field));
-        _expressionParts.Add(new DxpFieldExpressionChild(field.Expression));
+        // Nested fields in a field's cached result are display content, not part
+        // of its instruction. Associating them with the instruction can turn all
+        // later cached fields into spurious arguments (notably an INCLUDETEXT
+        // bookmark name).
+        if (!_inResult)
+            _expressionParts.Add(new DxpFieldExpressionChild(field.Expression));
         return true;
     }
 

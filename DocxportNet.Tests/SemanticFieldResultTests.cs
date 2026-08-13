@@ -7,6 +7,7 @@ using DocxportNet.Fields.Resolution;
 using DocxportNet.Tests.Utils;
 using DocxportNet.Visitors.Html;
 using DocxportNet.Visitors.Markdown;
+using DocxportNet.Visitors.PlainText;
 using Xunit.Abstractions;
 
 namespace DocxportNet.Tests;
@@ -14,6 +15,39 @@ namespace DocxportNet.Tests;
 public sealed class SemanticFieldResultTests : TestBase<SemanticFieldResultTests>
 {
     public SemanticFieldResultTests(ITestOutputHelper output) : base(output) { }
+
+    [Fact]
+    public void SemanticPipelineIsDefaultAndLegacyPipelineRemainsExplicitlyAvailable()
+    {
+        byte[] source = CreateDocument(body => body.Append(new Paragraph(
+            Begin(),
+            Code(" IF { REF MissingBookmark } = \"\" \"Empty\" \"Not Empty\" "),
+            Separate(),
+            new Run(new Text("CACHE")),
+            End())));
+
+        string semantic = DxpExport.ExportToString(
+            source,
+            new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateAcceptConfig(), Logger,
+                new DxpFieldEval(logger: Logger)),
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate },
+            Logger);
+        string legacy = DxpExport.ExportToString(
+            source,
+            new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateAcceptConfig(), Logger,
+                new DxpFieldEval(logger: Logger)),
+            new DxpExportOptions
+            {
+                FieldEvalMode = DxpFieldEvalExportMode.Evaluate,
+                UseSemanticFieldResults = false
+            },
+            Logger);
+
+        Assert.Contains("Not Empty", semantic, StringComparison.Ordinal);
+        Assert.Contains("Not Empty", legacy, StringComparison.Ordinal);
+        Assert.DoesNotContain("CACHE", semantic, StringComparison.Ordinal);
+        Assert.DoesNotContain("CACHE", legacy, StringComparison.Ordinal);
+    }
 
     [Fact]
     public void NestedDatabaseInSelectedIfRemainsStructuredAcrossExporters()

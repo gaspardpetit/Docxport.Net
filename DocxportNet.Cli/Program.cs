@@ -28,7 +28,7 @@ string? outputPath = null;
 string format = "markdown";
 string tracked = "accept";
 bool plainOutput = false;
-bool semanticFields = false;
+bool semanticFields = true;
 bool formatExplicit = false;
 var cliVariables = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 var includePaths = new List<string>();
@@ -405,8 +405,8 @@ Options:
   --tracked=...  Tracked change mode (accept, reject, inline, split). Plain text supports accept/reject.
     --plain        Plain output for markdown/html (minimal styling/features)
     --fields=...   Field result mode (evaluate, cache, none). Default: cache.
-  --semantic-fields  Use the semantic field-result pipeline.
-  --legacy-fields    Explicitly use the legacy field pipeline (current default).
+  --semantic-fields  Explicitly use the semantic field-result pipeline (default).
+  --legacy-fields    Use the temporary legacy field-pipeline fallback.
   -o, --output=...  Output file path (default: swaps extension)
   --vars=...     Load DOCVARIABLE values from a JSON or INI file.
   -D name=value  Define a DOCVARIABLE (repeatable). CLI values override --vars.

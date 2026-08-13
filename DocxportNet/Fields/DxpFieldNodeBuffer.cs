@@ -400,7 +400,8 @@ public sealed class DxpFieldNodeBuffer
 
     public bool IsEmpty => _nodes.Count == 0;
     internal bool HasParagraphRoots => _nodes.Any(static node => node is ParagraphNode);
-    internal bool HasBlockRoots => _nodes.Any(static node => node is ParagraphNode or BlockNode);
+    internal bool HasBlockRoots => _nodes.Any(static node =>
+        node is ParagraphNode or BlockNode or IncludeTextNode);
 
     public string ToPlainText()
     {
