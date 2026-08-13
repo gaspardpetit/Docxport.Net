@@ -50,7 +50,7 @@ internal sealed class DxpSetFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame
 			return;
 
 		var setResult = _fieldEvaluator.EvalAsync(new DxpFieldInstruction(InstructionText!), d).GetAwaiter().GetResult();
-		var text = setResult.Text ?? string.Empty;
+		var text = CapturedScalar?.StringValue ?? setResult.Text ?? string.Empty;
 		_evaluationContext.SetBookmarkNodes(setName, DxpFieldNodeBuffer.FromText(text));
 		DxpFieldValue? value = CapturedScalar ?? setResult.Value;
 		if (value.HasValue)
