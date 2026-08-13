@@ -370,6 +370,34 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     }
 
     [Fact]
+    public async Task EvalAsync_ImplicitBookmarkDateFormatCoercesUnambiguousDayFirstText()
+    {
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.Culture = CultureInfo.GetCultureInfo("en-CA");
+        eval.Context.SetBookmarkNodes("InitialDate", DxpFieldNodeBuffer.FromText("30/11/2026"));
+
+        var result = await eval.EvalAsync(
+            new DxpFieldInstruction("InitialDate \\@ \"MMMM d, yyyy\""));
+
+        Assert.Equal(DxpFieldEvalStatus.Resolved, result.Status);
+        Assert.Equal("November 30, 2026", result.Text);
+    }
+
+    [Fact]
+    public async Task EvalAsync_ImplicitBookmarkDateFormatUsesConfiguredCultureForAmbiguousText()
+    {
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.Culture = CultureInfo.GetCultureInfo("fr-FR");
+        eval.Context.SetBookmarkNodes("InitialDate", DxpFieldNodeBuffer.FromText("01/02/2026"));
+
+        var result = await eval.EvalAsync(
+            new DxpFieldInstruction("InitialDate \\@ \"MMMM d, yyyy\""));
+
+        Assert.Equal(DxpFieldEvalStatus.Resolved, result.Status);
+        Assert.Equal("février 1, 2026", result.Text);
+    }
+
+    [Fact]
     public async Task EvalAsync_IfStringComparisonAndWildcard()
     {
         var eval = new DxpFieldEval(logger: Logger);
