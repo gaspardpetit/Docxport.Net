@@ -84,8 +84,7 @@ internal sealed record DxpIncludeTextExpansion(
                         options: new DocxportNet.Fields.Eval.DxpEvaluateFieldMiddlewareOptions
                         {
                             PreserveLayoutDependentFields = Eval.Context.PreserveLayoutDependentFields,
-                            EmitStructuredDatabaseResults = Eval.Context.EmitStructuredDatabaseResults,
-                            UseSemanticFieldResults = Eval.Context.UseSemanticFieldResults
+                            EmitStructuredDatabaseResults = Eval.Context.EmitStructuredDatabaseResults
                         }),
                     next => new DocxportNet.Middleware.DxpContextMiddleware(next, Logger));
                 new DxpWalker(Logger).AcceptEmbeddedBodySpliced(document, pipeline, parentContext, parentParagraph, before, after, blocks);

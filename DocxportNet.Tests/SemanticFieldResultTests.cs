@@ -17,7 +17,7 @@ public sealed class SemanticFieldResultTests : TestBase<SemanticFieldResultTests
     public SemanticFieldResultTests(ITestOutputHelper output) : base(output) { }
 
     [Fact]
-    public void SemanticPipelineIsDefaultAndLegacyPipelineRemainsExplicitlyAvailable()
+    public void SemanticPipelineIsUsedByDefault()
     {
         byte[] source = CreateDocument(body => body.Append(new Paragraph(
             Begin(),
@@ -32,21 +32,8 @@ public sealed class SemanticFieldResultTests : TestBase<SemanticFieldResultTests
                 new DxpFieldEval(logger: Logger)),
             new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate },
             Logger);
-        string legacy = DxpExport.ExportToString(
-            source,
-            new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateAcceptConfig(), Logger,
-                new DxpFieldEval(logger: Logger)),
-            new DxpExportOptions
-            {
-                FieldEvalMode = DxpFieldEvalExportMode.Evaluate,
-                UseSemanticFieldResults = false
-            },
-            Logger);
-
         Assert.Contains("Not Empty", semantic, StringComparison.Ordinal);
-        Assert.Contains("Not Empty", legacy, StringComparison.Ordinal);
         Assert.DoesNotContain("CACHE", semantic, StringComparison.Ordinal);
-        Assert.DoesNotContain("CACHE", legacy, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -404,8 +391,7 @@ public sealed class SemanticFieldResultTests : TestBase<SemanticFieldResultTests
 
     private static DxpExportOptions SemanticOptions() => new()
     {
-        FieldEvalMode = DxpFieldEvalExportMode.Evaluate,
-        UseSemanticFieldResults = true
+        FieldEvalMode = DxpFieldEvalExportMode.Evaluate
     };
 
     private DxpFieldEval CreateEval()

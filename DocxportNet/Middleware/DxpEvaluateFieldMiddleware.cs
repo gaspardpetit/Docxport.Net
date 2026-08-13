@@ -49,7 +49,6 @@ internal sealed class DxpEvaluateFieldMiddleware : DxpFieldMiddlewareBase
         _ = documentContext;
         Context.RefResolver ??= _options.RefResolver ?? new DxpRefIndexResolver();
         Context.EmitStructuredDatabaseResults = _options.EmitStructuredDatabaseResults;
-        Context.UseSemanticFieldResults = _options.UseSemanticFieldResults;
         if (_options.PreserveLayoutDependentFields)
             Context.PreserveLayoutDependentFields = true;
     }

@@ -28,7 +28,6 @@ string? outputPath = null;
 string format = "markdown";
 string tracked = "accept";
 bool plainOutput = false;
-bool semanticFields = true;
 bool formatExplicit = false;
 var cliVariables = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 var includePaths = new List<string>();
@@ -69,10 +68,6 @@ for (int i = 0; i < args.Length; i++)
     }
     else if (arg.Equals("--plain", StringComparison.OrdinalIgnoreCase))
         plainOutput = true;
-    else if (arg.Equals("--semantic-fields", StringComparison.OrdinalIgnoreCase))
-        semanticFields = true;
-    else if (arg.Equals("--legacy-fields", StringComparison.OrdinalIgnoreCase))
-        semanticFields = false;
     else if (arg.StartsWith("--fields=", StringComparison.OrdinalIgnoreCase))
         fieldMode = ParseFieldMode(arg[(arg.IndexOf('=') + 1)..]);
     else if (arg.Equals("--fields", StringComparison.OrdinalIgnoreCase))
@@ -186,6 +181,11 @@ for (int i = 0; i < args.Length; i++)
     }
     else if (arg.Equals("--log", StringComparison.OrdinalIgnoreCase))
         logLevel = LogLevel.Information;
+    else if (arg.StartsWith("-", StringComparison.Ordinal))
+    {
+        Console.Error.WriteLine($"Unknown option: {arg}");
+        return;
+    }
     else if (inputPath is null)
         inputPath = arg;
 }
@@ -222,21 +222,21 @@ switch (format.ToLowerInvariant())
 {
     case "markdown":
     case "md":
-        ExportMarkdown(inputPath, outputPath, trackedMode, plainOutput, fieldMode, semanticFields, varsPath, cliVariables, includePaths, databaseConnections, logLevel);
+        ExportMarkdown(inputPath, outputPath, trackedMode, plainOutput, fieldMode, varsPath, cliVariables, includePaths, databaseConnections, logLevel);
         break;
     case "html":
-        ExportHtml(inputPath, outputPath, trackedMode, plainOutput, fieldMode, semanticFields, varsPath, cliVariables, includePaths, databaseConnections, logLevel);
+        ExportHtml(inputPath, outputPath, trackedMode, plainOutput, fieldMode, varsPath, cliVariables, includePaths, databaseConnections, logLevel);
         break;
     case "text":
     case "txt":
         if (plainOutput)
             Console.Error.WriteLine("Warning: --plain is only supported for markdown/html; ignoring.");
-        ExportPlainText(inputPath, outputPath, trackedMode, fieldMode, semanticFields, varsPath, cliVariables, includePaths, databaseConnections, logLevel);
+        ExportPlainText(inputPath, outputPath, trackedMode, fieldMode, varsPath, cliVariables, includePaths, databaseConnections, logLevel);
         break;
     case "docx":
         if (plainOutput)
             Console.Error.WriteLine("Warning: --plain is only supported for markdown/html; ignoring.");
-        ExportDocx(inputPath, outputPath, fieldMode, semanticFields, varsPath, cliVariables, includePaths, databaseConnections, logLevel);
+        ExportDocx(inputPath, outputPath, fieldMode, varsPath, cliVariables, includePaths, databaseConnections, logLevel);
         break;
     default:
         Console.Error.WriteLine($"Unknown format '{format}'. Expected markdown|html|text|docx.");
@@ -248,7 +248,6 @@ static void ExportDocx(
     string inputPath,
     string? outputPath,
     DxpFieldEvalExportMode fieldMode,
-    bool semanticFields,
     string? varsPath,
     IReadOnlyDictionary<string, string> cliVariables,
     IReadOnlyList<string> includePaths,
@@ -262,7 +261,7 @@ static void ExportDocx(
     var logger = loggerFactory.CreateLogger("docxport");
     var visitor = new DxpDocxVisitor(logger);
     ApplyFieldContext(visitor, varsPath, cliVariables, includePaths, databaseConnections);
-    var exportOptions = new DxpExportOptions { FieldEvalMode = fieldMode, UseSemanticFieldResults = semanticFields };
+    var exportOptions = new DxpExportOptions { FieldEvalMode = fieldMode };
     DxpExport.ExportToFile(inputPath, visitor, output, exportOptions, logger);
     Console.WriteLine($"Wrote DOCX to {output}");
 }
@@ -273,7 +272,6 @@ static void ExportMarkdown(
     DxpTrackedChangeMode trackedMode,
     bool plainOutput,
     DxpFieldEvalExportMode fieldMode,
-    bool semanticFields,
     string? varsPath,
     IReadOnlyDictionary<string, string> cliVariables,
     IReadOnlyList<string> includePaths,
@@ -288,7 +286,7 @@ static void ExportMarkdown(
     var logger = loggerFactory.CreateLogger("docxport");
     var visitor = new DxpMarkdownVisitor(config, logger);
     ApplyFieldContext(visitor, varsPath, cliVariables, includePaths, databaseConnections);
-    var exportOptions = new DxpExportOptions { FieldEvalMode = fieldMode, UseSemanticFieldResults = semanticFields };
+    var exportOptions = new DxpExportOptions { FieldEvalMode = fieldMode };
     DxpExport.ExportToFile(inputPath, visitor, output, exportOptions, logger);
     Console.WriteLine($"Wrote Markdown to {output}");
 }
@@ -299,7 +297,6 @@ static void ExportHtml(
     DxpTrackedChangeMode trackedMode,
     bool plainOutput,
     DxpFieldEvalExportMode fieldMode,
-    bool semanticFields,
     string? varsPath,
     IReadOnlyDictionary<string, string> cliVariables,
     IReadOnlyList<string> includePaths,
@@ -312,7 +309,7 @@ static void ExportHtml(
     var logger = loggerFactory.CreateLogger("docxport");
     var visitor = new DxpHtmlVisitor(config, logger);
     ApplyFieldContext(visitor, varsPath, cliVariables, includePaths, databaseConnections);
-    var exportOptions = new DxpExportOptions { FieldEvalMode = fieldMode, UseSemanticFieldResults = semanticFields };
+    var exportOptions = new DxpExportOptions { FieldEvalMode = fieldMode };
     DxpExport.ExportToFile(inputPath, visitor, output, exportOptions, logger);
     Console.WriteLine($"Wrote HTML to {output}");
 }
@@ -322,7 +319,6 @@ static void ExportPlainText(
     string? outputPath,
     DxpTrackedChangeMode trackedMode,
     DxpFieldEvalExportMode fieldMode,
-    bool semanticFields,
     string? varsPath,
     IReadOnlyDictionary<string, string> cliVariables,
     IReadOnlyList<string> includePaths,
@@ -338,7 +334,7 @@ static void ExportPlainText(
     var logger = loggerFactory.CreateLogger("docxport");
     var visitor = new DxpPlainTextVisitor(config, logger);
     ApplyFieldContext(visitor, varsPath, cliVariables, includePaths, databaseConnections);
-    var exportOptions = new DxpExportOptions { FieldEvalMode = fieldMode, UseSemanticFieldResults = semanticFields };
+    var exportOptions = new DxpExportOptions { FieldEvalMode = fieldMode };
     DxpExport.ExportToFile(inputPath, visitor, output, exportOptions, logger);
     Console.WriteLine($"Wrote text to {output}");
 }
@@ -405,8 +401,6 @@ Options:
   --tracked=...  Tracked change mode (accept, reject, inline, split). Plain text supports accept/reject.
     --plain        Plain output for markdown/html (minimal styling/features)
     --fields=...   Field result mode (evaluate, cache, none). Default: cache.
-  --semantic-fields  Explicitly use the semantic field-result pipeline (default).
-  --legacy-fields    Use the temporary legacy field-pipeline fallback.
   -o, --output=...  Output file path (default: swaps extension)
   --vars=...     Load DOCVARIABLE values from a JSON or INI file.
   -D name=value  Define a DOCVARIABLE (repeatable). CLI values override --vars.

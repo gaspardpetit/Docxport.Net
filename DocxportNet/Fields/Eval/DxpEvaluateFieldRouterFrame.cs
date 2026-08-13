@@ -35,6 +35,8 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
     private readonly bool _allowDeferredCapture;
     private readonly List<DxpFieldExpressionPart> _expressionParts = new();
     private readonly StringBuilder _cachedResult = new();
+    private readonly DxpFieldNodeBuffer _cachedResultBuffer = new();
+    private readonly DxpEvalFieldNodeBufferRecorder _cachedResultRecorder = new();
 
     public DxpEvaluateFieldRouterFrame(
         DxpIVisitor next,
@@ -56,6 +58,7 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         InstructionText = initialInstructionText;
         _isSimpleField = initialInResult && initialSeenSeparate;
         _allowDeferredCapture = allowDeferredCapture;
+        _cachedResultRecorder.Reset(_cachedResultBuffer);
         if (_isSimpleField && !string.IsNullOrEmpty(initialInstructionText))
             _expressionParts.Add(new DxpFieldExpressionText(
                 initialInstructionText,
@@ -111,7 +114,11 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         if (!_inResult)
             return DxpDisposable.Empty;
         _events.Add(FieldEvent.RunBegin(r));
-        return DxpDisposable.Create(() => _events.Add(FieldEvent.RunEnd()));
+        IDisposable cachedScope = _cachedResultRecorder.VisitRunBegin(r, d);
+        return DxpDisposable.Create(() => {
+            cachedScope.Dispose();
+            _events.Add(FieldEvent.RunEnd());
+        });
     }
 
     public override IDisposable VisitHyperlinkBegin(Hyperlink link, DxpLinkAnchor? target, DxpIDocumentContext d)
@@ -119,7 +126,11 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         if (!_inResult)
             return DxpDisposable.Empty;
         _events.Add(FieldEvent.HyperlinkBegin(link, target));
-        return DxpDisposable.Create(() => _events.Add(FieldEvent.HyperlinkEnd()));
+        IDisposable cachedScope = _cachedResultRecorder.VisitHyperlinkBegin(link, target, d);
+        return DxpDisposable.Create(() => {
+            cachedScope.Dispose();
+            _events.Add(FieldEvent.HyperlinkEnd());
+        });
     }
 
     public override void VisitText(Text t, DxpIDocumentContext d)
@@ -135,6 +146,7 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         }
         if (!string.IsNullOrEmpty(t.Text))
             _cachedResult.Append(t.Text);
+        _cachedResultRecorder.VisitText(t, d);
         _events.Add(FieldEvent.Text(t));
     }
 
@@ -149,6 +161,7 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
                 DxpFieldExpressionSource.CaptureRunFormat(br.Parent as Run)));
             return;
         }
+        _cachedResultRecorder.VisitBreak(br, d);
         _events.Add(FieldEvent.Break(br));
     }
 
@@ -163,6 +176,7 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
                 DxpFieldExpressionSource.CaptureRunFormat(tab.Parent as Run)));
             return;
         }
+        _cachedResultRecorder.VisitTab(tab, d);
         _events.Add(FieldEvent.Tab(tab));
     }
 
@@ -177,6 +191,7 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
                 DxpFieldExpressionSource.CaptureRunFormat(cr.Parent as Run)));
             return;
         }
+        _cachedResultRecorder.VisitCarriageReturn(cr, d);
         _events.Add(FieldEvent.CarriageReturn(cr));
     }
 
@@ -191,6 +206,7 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
                 DxpFieldExpressionSource.CaptureRunFormat(nbh.Parent as Run)));
             return;
         }
+        _cachedResultRecorder.VisitNoBreakHyphen(nbh, d);
         _events.Add(FieldEvent.NoBreakHyphen(nbh));
     }
 
@@ -219,7 +235,11 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         }
 
         _events.Add(FieldEvent.ParagraphBegin(p, paragraph));
-        return DxpDisposable.Create(() => _events.Add(FieldEvent.ParagraphEnd()));
+        IDisposable cachedScope = _cachedResultRecorder.VisitParagraphBegin(p, d, paragraph);
+        return DxpDisposable.Create(() => {
+            cachedScope.Dispose();
+            _events.Add(FieldEvent.ParagraphEnd());
+        });
     }
 
     protected override bool ShouldForwardContent(DxpIDocumentContext d)
@@ -292,10 +312,23 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
 
     private bool TryReplaySemanticExpression(DxpIDocumentContext context)
     {
-        if (!EvalContext.UseSemanticFieldResults)
-            return false;
         if (EvalContext.PreserveLayoutDependentFields &&
             DxpFieldInstructionClassifier.IsPaginationDependentInstruction(InstructionText))
+            return false;
+        // These top-level fields still need event-backed document artifacts that
+        // are richer than a scalar semantic value: bookmark run structure,
+        // MERGEFORMAT's cached run styles, and the tab/newline form of DATABASE
+        // for exporters that did not request a structured table. They are
+        // specialized adapters within the single evaluation pipeline, not a
+        // selectable legacy mode.
+        bool hasNestedInstructionField = _expressionParts.Any(
+            static part => part is DxpFieldExpressionChild);
+        if (EvalContext.FieldDepth <= 1 &&
+            (!hasNestedInstructionField &&
+             (DxpFieldInstructionClassifier.IsRefInstruction(InstructionText) ||
+              DxpFieldInstructionClassifier.IsSetInstruction(InstructionText)) ||
+             !EvalContext.EmitStructuredDatabaseResults &&
+             DxpFieldInstructionClassifier.IsDatabaseInstruction(InstructionText)))
             return false;
 
         var evaluator = new DxpSemanticFieldEvaluator(_eval);
@@ -312,6 +345,18 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
             result.Content, CodeRun, _eval, _logger);
         if (buffer.IsEmpty)
             return true;
+        if (HasMergeFormatSwitch(InstructionText) && !buffer.HasBlockRoots)
+        {
+            var parse = new DxpFieldParser().Parse(InstructionText ?? string.Empty);
+            return DxpFieldFrames.EmitTextWithMergeFormat(
+                buffer.ToPlainText(),
+                parse.Ast.FormatSpecs,
+                _cachedResultBuffer,
+                CodeRun,
+                context,
+                Next,
+                _logger);
+        }
         if (buffer.HasBlockRoots && EvalContext.FieldDepth == 1 &&
             EvalContext.IncludeTextSpliceCollector == null)
             EvalContext.DeferStructuredFieldResult(buffer);
@@ -319,6 +364,9 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
             buffer.Replay(Next, context);
         return true;
     }
+
+    private static bool HasMergeFormatSwitch(string? instruction)
+        => instruction?.IndexOf("\\* MERGEFORMAT", StringComparison.OrdinalIgnoreCase) >= 0;
 
     public void TryCaptureCodeRun(Run r)
     {
@@ -335,10 +383,6 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
     public bool TryRecordDeferredField(DxpDeferredField field, DxpIDocumentContext context)
     {
         _ = context;
-        bool parentIsIf = DxpFieldInstructionClassifier.IsIfInstruction(InstructionText);
-        if (!parentIsIf && !EvalContext.UseSemanticFieldResults)
-            return false;
-
         _events.Add(FieldEvent.DeferredField(field));
         // Nested fields in a field's cached result are display content, not part
         // of its instruction. Associating them with the instruction can turn all
