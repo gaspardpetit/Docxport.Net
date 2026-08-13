@@ -84,6 +84,9 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
     public virtual void VisitBookmarkStart(BookmarkStart bs, DxpIDocumentContext d) => Ignored(nameof(VisitBookmarkStart), bs);
     public virtual void VisitBreak(Break br, DxpIDocumentContext d) => Ignored(nameof(VisitBreak), br);
     public virtual void VisitCarriageReturn(CarriageReturn cr, DxpIDocumentContext d) => Ignored(nameof(VisitCarriageReturn), cr);
+    public virtual void VisitCommentRangeStart(CommentRangeStart start, DxpIDocumentContext d) => Ignored(nameof(VisitCommentRangeStart), start);
+    public virtual void VisitCommentRangeEnd(CommentRangeEnd end, DxpIDocumentContext d) => Ignored(nameof(VisitCommentRangeEnd), end);
+    public virtual void VisitCommentReference(CommentReference reference, DxpIDocumentContext d) => Ignored(nameof(VisitCommentReference), reference);
 
     public virtual IDisposable VisitDeletedRunBegin(DeletedRun dr, DxpIDocumentContext d)
     {
@@ -143,7 +146,11 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
 
     public virtual void VisitText(Text t, DxpIDocumentContext d) => Ignored(nameof(VisitText), t);
 
-    public virtual void VisitDrawingBegin(Drawing drw, DxpDrawingInfo? info, DxpIDocumentContext d) => Ignored(nameof(VisitDrawingBegin), d);
+    public virtual IDisposable VisitDrawingBegin(Drawing drw, DxpDrawingInfo? info, DxpIDocumentContext d)
+    {
+        Ignored(nameof(VisitDrawingBegin), drw);
+        return DxpDisposable.Empty;
+    }
 
     public virtual void VisitFootnoteReference(FootnoteReference fr, DxpIFootnoteContext footnote, DxpIDocumentContext d) => Ignored(nameof(VisitFootnoteReference), fr);
 
@@ -191,7 +198,11 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
     public virtual void VisitDeletedFieldCode(DeletedFieldCode dfc, DxpIDocumentContext d) => Ignored(nameof(VisitDeletedFieldCode), dfc);
     public virtual void VisitEmbeddedObject(EmbeddedObject obj, DxpIDocumentContext d) => Ignored(nameof(VisitEmbeddedObject), obj);
 
-    public virtual void VisitLegacyPictureBegin(Picture pict, DxpIDocumentContext d) => Ignored(nameof(VisitLegacyPictureBegin), pict);
+    public virtual IDisposable VisitLegacyPictureBegin(Picture pict, DxpIDocumentContext d)
+    {
+        Ignored(nameof(VisitLegacyPictureBegin), pict);
+        return DxpDisposable.Empty;
+    }
     public virtual IDisposable VisitRubyContentBegin(RubyContentType rc, bool isBase, DxpIDocumentContext d)
     {
         Ignored(nameof(VisitRubyContentBegin), rc);
@@ -358,18 +369,6 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
     public virtual IDisposable VisitEndnoteBegin(Endnote item1, long item3, int item2, DxpIDocumentContext d)
     {
         Ignored(nameof(VisitEndnoteBegin), item1);
-        return DxpDisposable.Empty;
-    }
-
-    IDisposable DxpIVisitor.VisitDrawingBegin(Drawing drw, DxpDrawingInfo? info, DxpIDocumentContext d)
-    {
-        Ignored("IDocxVisitor.VisitDrawingBegin", drw);
-        return DxpDisposable.Empty;
-    }
-
-    IDisposable DxpIVisitor.VisitLegacyPictureBegin(Picture pict, DxpIDocumentContext d)
-    {
-        Ignored("IDocxVisitor.VisitLegacyPictureBegin", pict);
         return DxpDisposable.Empty;
     }
 

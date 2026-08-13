@@ -493,7 +493,10 @@ public static class DxpExport
                         next,
                         provider.FieldEval,
                         includeCustomProperties: true,
-                        logger: logger),
+                        logger: logger,
+                        options: new DxpEvaluateFieldMiddlewareOptions {
+                            PreserveLayoutDependentFields = visitor is DxpIPreserveLayoutFields
+                        }),
                 next => new DxpContextMiddleware(next, logger));
         }
 

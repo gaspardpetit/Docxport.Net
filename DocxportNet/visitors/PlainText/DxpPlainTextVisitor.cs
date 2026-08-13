@@ -9,6 +9,7 @@ using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using DocxportNet.Fields;
+using DocxportNet.Walker;
 
 namespace DocxportNet.Visitors.PlainText;
 
@@ -238,6 +239,12 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
     public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
     {
+        if (!DxpParagraphs.HasRenderableParagraphContent(p))
+        {
+            _state.SuppressDepth++;
+            return DxpDisposable.Create(() => _state.SuppressDepth--);
+        }
+
         bool emit = ShouldEmit(d);
         var indent = paragraph.Indent;
 
@@ -506,26 +513,16 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor, IDisposab
         return sb.ToString().TrimEnd('\n');
     }
 
-    public override void VisitDrawingBegin(Drawing drw, DxpDrawingInfo? info, DxpIDocumentContext d)
+    public override IDisposable VisitDrawingBegin(Drawing drw, DxpDrawingInfo? info, DxpIDocumentContext d)
     {
         string alt = info?.AltText ?? "image";
         Write($"{_config.ImagePlaceholder}: {alt}", d);
-    }
-
-    IDisposable DxpIVisitor.VisitDrawingBegin(Drawing drw, DxpDrawingInfo? info, DxpIDocumentContext d)
-    {
-        VisitDrawingBegin(drw, info, d);
         return DxpDisposable.Empty;
     }
 
-    public new void VisitLegacyPictureBegin(Picture pict, DxpIDocumentContext d)
+    public override IDisposable VisitLegacyPictureBegin(Picture pict, DxpIDocumentContext d)
     {
         Write($"{_config.ImagePlaceholder}: image", d);
-    }
-
-    IDisposable DxpIVisitor.VisitLegacyPictureBegin(Picture pict, DxpIDocumentContext d)
-    {
-        VisitLegacyPictureBegin(pict, d);
         return DxpDisposable.Empty;
     }
 
