@@ -1,6 +1,7 @@
 using System.Text;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.Fields.Eval;
+using DocxportNet.Fields.Semantic;
 
 namespace DocxportNet.Fields.Frames;
 
@@ -16,6 +17,8 @@ internal sealed class DxpIFCaptureState
     public readonly StringBuilder CurrentToken = new();
     public readonly DxpFieldNodeBuffer TrueBuffer = new();
     public readonly DxpFieldNodeBuffer FalseBuffer = new();
+    public readonly List<DxpSemanticBranchPart> TrueSemanticParts = new();
+    public readonly List<DxpSemanticBranchPart> FalseSemanticParts = new();
     public readonly DxpEvalFieldNodeBufferRecorder Recorder = new();
     private DxpFieldNodeBuffer? _paragraphOwner;
     private DxpFieldNodeBuffer? _paragraphBuffer;
@@ -45,6 +48,8 @@ internal sealed class DxpIFCaptureState
         // boundary encountered after branch content has begun belongs to the result.
         _paragraphOwner = root != null && !root.IsEmpty ? root : null;
         _paragraphBuffer = _paragraphOwner?.BeginParagraph(paragraph);
+        if (_paragraphOwner != null)
+            GetCurrentSemanticParts()?.Add(new DxpSemanticBranchParagraphStart());
     }
 
     public bool AppendStructuredResult(DxpFieldNodeBuffer buffer)
@@ -71,6 +76,33 @@ internal sealed class DxpIFCaptureState
         return true;
     }
 
+    public bool AppendDeferredField(DxpDeferredField field)
+    {
+        List<DxpSemanticBranchPart>? parts = GetCurrentSemanticParts();
+        if (parts == null)
+            return false;
+        parts.Add(new DxpSemanticBranchField(field));
+        return AppendDeferredAction((visitor, context) => field.Replay(visitor, context));
+    }
+
+    public void AppendSemanticText(DxpFieldNodeBuffer target, string text)
+    {
+        DxpFieldNodeBuffer semanticOwner = ReferenceEquals(target, _paragraphBuffer) && _paragraphOwner != null
+            ? _paragraphOwner
+            : target;
+        List<DxpSemanticBranchPart>? parts = ReferenceEquals(semanticOwner, TrueBuffer)
+            ? TrueSemanticParts
+            : ReferenceEquals(semanticOwner, FalseBuffer)
+                ? FalseSemanticParts
+                : GetCurrentSemanticParts();
+        if (parts == null || string.IsNullOrEmpty(text))
+            return;
+        if (parts.Count > 0 && parts[^1] is DxpSemanticBranchText previous)
+            parts[^1] = new DxpSemanticBranchText(previous.Text + text);
+        else
+            parts.Add(new DxpSemanticBranchText(text));
+    }
+
     public void CompleteDeferredFieldToken()
     {
         if (InQuote)
@@ -89,4 +121,12 @@ internal sealed class DxpIFCaptureState
             _ => null
         };
     }
+
+    private List<DxpSemanticBranchPart>? GetCurrentSemanticParts()
+        => TokenIndex switch
+        {
+            3 => TrueSemanticParts,
+            4 => FalseSemanticParts,
+            _ => null
+        };
 }

@@ -265,6 +265,16 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
             return false;
 
         _events.Add(FieldEvent.DeferredField(field));
+        if (EvalContext.UseSemanticFieldResults)
+        {
+            // Preserve the recursive instruction shape as a compatibility
+            // serialization for conditions containing child fields.
+            string prefix = !string.IsNullOrEmpty(InstructionText) &&
+                !char.IsWhiteSpace(InstructionText![InstructionText!.Length - 1])
+                    ? " "
+                    : string.Empty;
+            AppendInstructionText($"{prefix}{{ {field.InstructionText.Trim()} }} ");
+        }
         return true;
     }
 
@@ -276,25 +286,28 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         DxpFieldValue? capturedSetScalar = _capturedSetScalar;
         bool capturedSetScalarIsExact = _capturedSetScalarIsExact;
         int nestedSetResultCount = _nestedSetResultCount;
-        return new DxpDeferredField(instruction, (visitor, context) => {
-            var router = new DxpEvaluateFieldRouterFrame(
-                visitor,
-                _eval,
-                EvalContext,
-                _logger,
-                initialInResult: isSimpleField,
-                initialSeenSeparate: isSimpleField,
-                initialInstructionText: isSimpleField ? instruction : null,
-                allowDeferredCapture: false);
-            router._capturedSetScalar = capturedSetScalar;
-            router._capturedSetScalarIsExact = capturedSetScalarIsExact;
-            router._nestedSetResultCount = nestedSetResultCount;
-            var scopes = new Stack<IDisposable>();
-            foreach (var fieldEvent in events)
-                fieldEvent.Replay(router, context, scopes);
-            while (scopes.Count > 0)
-                scopes.Pop().Dispose();
-        });
+        return new DxpDeferredField(
+            instruction,
+            (visitor, context) => {
+                var router = new DxpEvaluateFieldRouterFrame(
+                    visitor,
+                    _eval,
+                    EvalContext,
+                    _logger,
+                    initialInResult: isSimpleField,
+                    initialSeenSeparate: isSimpleField,
+                    initialInstructionText: isSimpleField ? instruction : null,
+                    allowDeferredCapture: false);
+                router._capturedSetScalar = capturedSetScalar;
+                router._capturedSetScalarIsExact = capturedSetScalarIsExact;
+                router._nestedSetResultCount = nestedSetResultCount;
+                var scopes = new Stack<IDisposable>();
+                foreach (var fieldEvent in events)
+                    fieldEvent.Replay(router, context, scopes);
+                while (scopes.Count > 0)
+                    scopes.Pop().Dispose();
+            },
+            capturedSetScalarIsExact ? capturedSetScalar : null);
     }
 
     public bool TryRecordNestedFieldResult(DxpFieldEvalResult result)
@@ -453,12 +466,15 @@ internal sealed class DxpDeferredField
 
     public DxpDeferredField(
         string instructionText,
-        Action<DxpIVisitor, DxpIDocumentContext> replay)
+        Action<DxpIVisitor, DxpIDocumentContext> replay,
+        DxpFieldValue? capturedScalar = null)
     {
         InstructionText = instructionText;
         _replay = replay;
+        CapturedScalar = capturedScalar;
     }
 
     public string InstructionText { get; }
+    public DxpFieldValue? CapturedScalar { get; }
     public void Replay(DxpIVisitor visitor, DxpIDocumentContext context) => _replay(visitor, context);
 }

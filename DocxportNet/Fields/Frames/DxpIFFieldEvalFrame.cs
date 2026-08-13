@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
 using DocxportNet.Core;
 using DocxportNet.Fields.Eval;
+using DocxportNet.Fields.Semantic;
 using DocxportNet.Middleware;
 using DocxportNet.Walker;
 using Microsoft.Extensions.Logging;
@@ -61,6 +62,8 @@ internal sealed class DxpIFFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame, I
 	public override void VisitComplexFieldEnd(FieldChar end, DxpIDocumentContext d)
 	{
 		FlushLiteralBuffer();
+		if (TryEvaluateSemantic(d))
+			return;
 		if (_ifState != null)
 			DxpFieldEvalIfRunner.TryEvaluateAndEmit(_ifState, _instructionText ?? string.Empty, _eval, d, Next,
 				DxpFieldEvalRules.GetEvaluationErrorText, EmitEvaluatedText, TryDeferStructuredResult);
@@ -77,11 +80,38 @@ internal sealed class DxpIFFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame, I
 		_inCachedResult = true;
 		return DxpDisposable.Create(() => {
 			FlushLiteralBuffer();
+			if (TryEvaluateSemantic(d))
+			{
+				_inCachedResult = false;
+				return;
+			}
 			if (_ifState != null)
 				DxpFieldEvalIfRunner.TryEvaluateAndEmit(_ifState, _instructionText ?? string.Empty, _eval, d, Next, 
 					DxpFieldEvalRules.GetEvaluationErrorText, EmitEvaluatedText, TryDeferStructuredResult);
 			_inCachedResult = false;
 		});
+	}
+
+	private bool TryEvaluateSemantic(DxpIDocumentContext context)
+	{
+		if (!_eval.Context.UseSemanticFieldResults || Next == null || _ifState == null ||
+			string.IsNullOrWhiteSpace(_instructionText))
+			return false;
+
+		var condition = _eval.EvaluateIfConditionAsync(
+			_instructionText!, context).GetAwaiter().GetResult();
+		if (condition == null || !condition.Value.Success)
+			return false;
+		IReadOnlyList<DxpSemanticBranchPart> selected = condition.Value.Condition
+			? _ifState.TrueSemanticParts
+			: _ifState.FalseSemanticParts;
+		var evaluator = new DxpSemanticFieldEvaluator(_eval);
+		DxpSemanticFieldResult result = evaluator.EvaluateBranchAsync(
+			selected, context).GetAwaiter().GetResult();
+		DxpFieldNodeBuffer buffer = DxpSemanticFieldResultAdapter.BuildBuffer(result.Content, _codeRun);
+		if (!buffer.IsEmpty && (!buffer.HasBlockRoots || !TryDeferStructuredResult(buffer)))
+			buffer.Replay(Next, context);
+		return true;
 	}
 
 	public override IDisposable VisitRunBegin(Run r, DxpIDocumentContext d)
@@ -229,19 +259,27 @@ internal sealed class DxpIFFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame, I
 	{
 		FlushLiteralBuffer();
 		var state = DxpFieldEvalIfRunner.EnsureIfState(ref _ifState);
-		bool captured = state.AppendDeferredAction((visitor, d) => field.Replay(visitor, d));
+		bool captured = state.AppendDeferredField(field);
 		if (!captured)
 		{
 			field.Replay(this, context);
 			return true;
 		}
 
-		var prefix = !string.IsNullOrEmpty(_instructionText) &&
+		bool semantic = _eval.Context.UseSemanticFieldResults;
+		bool isBranchContent = semantic && state.InQuote;
+		var prefix = !isBranchContent && !string.IsNullOrEmpty(_instructionText) &&
 			!char.IsWhiteSpace(_instructionText![_instructionText!.Length - 1])
 			? " "
 			: string.Empty;
-		var segment = $"{prefix}{{ {field.InstructionText.Trim()} }}";
-		_instructionText = (_instructionText ?? string.Empty) + segment + " ";
+		// This textual form is only the compatibility serialization of the
+		// nested field tree. Quotes belonging to the child must not terminate
+		// the surrounding quoted IF branch.
+		string nestedInstruction = semantic
+			? field.InstructionText.Trim().Replace("\"", "\\\"")
+			: field.InstructionText.Trim();
+		var segment = $"{prefix}{{ {nestedInstruction} }}";
+		_instructionText = (_instructionText ?? string.Empty) + segment + (isBranchContent ? string.Empty : " ");
 		state.CompleteDeferredFieldToken();
 		return true;
 	}

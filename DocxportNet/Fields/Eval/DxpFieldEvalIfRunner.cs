@@ -94,6 +94,7 @@ internal static class DxpFieldEvalIfRunner
                 if (currentTarget != null && bufferText.Length > 0)
                 {
                     AppendBufferText(currentTarget, bufferText.ToString(), run, runProps);
+                    state.AppendSemanticText(currentTarget, bufferText.ToString());
                     bufferText.Clear();
                 }
                 currentTarget = nextTarget;
@@ -103,7 +104,10 @@ internal static class DxpFieldEvalIfRunner
         }
 
         if (currentTarget != null && bufferText.Length > 0)
+        {
             AppendBufferText(currentTarget, bufferText.ToString(), run, runProps);
+            state.AppendSemanticText(currentTarget, bufferText.ToString());
+        }
     }
 
     public static bool TryEvaluateAndEmit(
