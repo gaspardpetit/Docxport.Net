@@ -107,7 +107,7 @@ public sealed class DxpFieldNodeBuffer
         {
             using (visitor.VisitBlockBegin(_paragraph, context))
             using (visitor.VisitParagraphBegin(_paragraph, context, context.CurrentParagraph))
-                _children.Replay(visitor, context);
+                _children.ReplayDirect(visitor, context);
         }
 
         public OpenXmlElement CreateElement(bool forRoot)
@@ -142,7 +142,7 @@ public sealed class DxpFieldNodeBuffer
         public void Replay(DxpIVisitor visitor, DxpIDocumentContext context)
         {
             using (visitor.VisitRunBegin(_run, context))
-                _children.Replay(visitor, context);
+                _children.ReplayDirect(visitor, context);
         }
 
         public OpenXmlElement CreateElement(bool forRoot)
@@ -210,7 +210,7 @@ public sealed class DxpFieldNodeBuffer
         public void Replay(DxpIVisitor visitor, DxpIDocumentContext context)
         {
             using (visitor.VisitHyperlinkBegin(_link, _target, context))
-                _children.Replay(visitor, context);
+                _children.ReplayDirect(visitor, context);
         }
 
         public OpenXmlElement CreateElement(bool forRoot)
@@ -268,6 +268,16 @@ public sealed class DxpFieldNodeBuffer
         public void AppendText(StringBuilder sb) => sb.Append(_element.InnerText);
     }
 
+    private sealed class DeferredActionNode : IReplayNode
+    {
+        private readonly Action<DxpIVisitor, DxpIDocumentContext> _action;
+
+        public DeferredActionNode(Action<DxpIVisitor, DxpIDocumentContext> action) => _action = action;
+        public void Replay(DxpIVisitor visitor, DxpIDocumentContext context) => _action(visitor, context);
+        public OpenXmlElement CreateElement(bool forRoot) => new Run();
+        public void AppendText(StringBuilder sb) { }
+    }
+
     private readonly List<IReplayNode> _nodes;
 
     public DxpFieldNodeBuffer() : this(new List<IReplayNode>())
@@ -299,9 +309,17 @@ public sealed class DxpFieldNodeBuffer
         if (context is DxpDocumentContext docContext)
         {
             bool hasBlockRoots = _nodes.Any(static n => n is ParagraphNode or BlockNode);
+            bool hasDeferredActions = _nodes.Any(static n => n is DeferredActionNode);
 
             if (!hasBlockRoots)
             {
+                if (hasDeferredActions)
+                {
+                    foreach (var node in _nodes)
+                        node.Replay(visitor, context);
+                    return;
+                }
+
                 var paragraph = CreateSyntheticParagraph(_nodes, docContext);
                 foreach (var element in CreateElements(forRoot: false))
                     paragraph.AppendChild(element);
@@ -344,9 +362,14 @@ public sealed class DxpFieldNodeBuffer
 
             foreach (var node in _nodes)
             {
-                if (node is ParagraphNode or BlockNode)
+                if (node is ParagraphNode or BlockNode or DeferredActionNode)
                 {
                     FlushInline();
+                    if (node is DeferredActionNode)
+                    {
+                        node.Replay(visitor, context);
+                        continue;
+                    }
                     var element = node.CreateElement(forRoot: true);
                     docContext.Walker.WalkSyntheticFieldElement(element, docContext, visitor);
                     continue;
@@ -359,6 +382,11 @@ public sealed class DxpFieldNodeBuffer
             return;
         }
 
+        ReplayDirect(visitor, context);
+    }
+
+    private void ReplayDirect(DxpIVisitor visitor, DxpIDocumentContext context)
+    {
         foreach (var node in _nodes)
             node.Replay(visitor, context);
     }
@@ -414,6 +442,8 @@ public sealed class DxpFieldNodeBuffer
     internal void AddCarriageReturn() => _nodes.Add(new CarriageReturnNode());
     internal void AddNoBreakHyphen() => _nodes.Add(new NoBreakHyphenNode());
     internal void AddIncludeTextExpansion(DxpIncludeTextExpansion expansion) => _nodes.Add(new IncludeTextNode(expansion));
+    internal void AddDeferredAction(Action<DxpIVisitor, DxpIDocumentContext> action) =>
+        _nodes.Add(new DeferredActionNode(action));
 
     internal void Append(DxpFieldNodeBuffer? other)
     {

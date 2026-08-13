@@ -10,7 +10,7 @@ using System.Text;
 
 namespace DocxportNet.Fields.Frames;
 
-internal sealed class DxpIFFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame, IDxpStructuredFieldResultSink
+internal sealed class DxpIFFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame, IDxpStructuredFieldResultSink, IDxpDeferredFieldSink
 {
 	private readonly ILogger? _logger;
 
@@ -224,9 +224,35 @@ internal sealed class DxpIFFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame, I
 		FlushLiteralBuffer();
 		return DxpFieldEvalIfRunner.EnsureIfState(ref _ifState).AppendStructuredResult(buffer);
 	}
+
+	public bool TryRecordDeferredField(DxpDeferredField field, DxpIDocumentContext context)
+	{
+		FlushLiteralBuffer();
+		var state = DxpFieldEvalIfRunner.EnsureIfState(ref _ifState);
+		bool captured = state.AppendDeferredAction((visitor, d) => field.Replay(visitor, d));
+		if (!captured)
+		{
+			field.Replay(this, context);
+			return true;
+		}
+
+		var prefix = !string.IsNullOrEmpty(_instructionText) &&
+			!char.IsWhiteSpace(_instructionText![_instructionText!.Length - 1])
+			? " "
+			: string.Empty;
+		var segment = $"{prefix}{{ {field.InstructionText.Trim()} }}";
+		_instructionText = (_instructionText ?? string.Empty) + segment + " ";
+		state.CompleteDeferredFieldToken();
+		return true;
+	}
 }
 
 internal interface IDxpStructuredFieldResultSink
 {
 	bool TryRecordStructuredFieldResult(DxpFieldNodeBuffer buffer);
+}
+
+internal interface IDxpDeferredFieldSink
+{
+	bool TryRecordDeferredField(DxpDeferredField field, DxpIDocumentContext context);
 }

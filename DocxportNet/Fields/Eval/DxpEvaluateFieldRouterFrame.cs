@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DocxportNet.Fields.Eval;
 
-internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEvalFrame, IDxpFieldCodeRunCapture, IDxpStructuredFieldResultSink, IDxpNestedFieldResultSink
+internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEvalFrame, IDxpFieldCodeRunCapture, IDxpStructuredFieldResultSink, IDxpNestedFieldResultSink, IDxpDeferredFieldSink
 {
     private static readonly DxpEvaluateFieldFrameFactory FrameFactory = new();
 
@@ -29,6 +29,8 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
     private DxpFieldValue? _capturedSetScalar;
     private bool _capturedSetScalarIsExact;
     private int _nestedSetResultCount;
+    private readonly bool _isSimpleField;
+    private readonly bool _allowDeferredCapture;
 
     public DxpEvaluateFieldRouterFrame(
         DxpIVisitor next,
@@ -37,7 +39,8 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         ILogger? logger,
         bool initialInResult = false,
         bool initialSeenSeparate = false,
-        string? initialInstructionText = null)
+        string? initialInstructionText = null,
+        bool allowDeferredCapture = true)
         : base()
     {
         Next = next ?? throw new ArgumentNullException(nameof(next));
@@ -47,6 +50,8 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         _inResult = initialInResult;
         _seenSeparate = initialSeenSeparate;
         InstructionText = initialInstructionText;
+        _isSimpleField = initialInResult && initialSeenSeparate;
+        _allowDeferredCapture = allowDeferredCapture;
     }
 
     public override void VisitComplexFieldInstruction(FieldCode instr, string text, DxpIDocumentContext d)
@@ -206,6 +211,15 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
 
     private void ReplayEvents(DxpIDocumentContext d)
     {
+        if (_allowDeferredCapture &&
+            Next is IDxpDeferredFieldSink deferredSink &&
+            !string.IsNullOrWhiteSpace(InstructionText) &&
+            deferredSink.TryRecordDeferredField(CreateDeferredField(), d))
+        {
+            _events.Clear();
+            return;
+        }
+
         DxpIFieldEvalFrame? delegateFrame = FrameFactory.Create(InstructionText, Next, _eval, EvalContext, _logger);
         if (delegateFrame == null)
         {
@@ -242,6 +256,39 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
     {
         _events.Add(FieldEvent.StructuredResult(buffer));
         return true;
+    }
+
+    public bool TryRecordDeferredField(DxpDeferredField field, DxpIDocumentContext context)
+    {
+        _ = context;
+        if (!DxpFieldInstructionClassifier.IsIfInstruction(InstructionText))
+            return false;
+
+        _events.Add(FieldEvent.DeferredField(field));
+        return true;
+    }
+
+    private DxpDeferredField CreateDeferredField()
+    {
+        string instruction = InstructionText ?? string.Empty;
+        FieldEvent[] events = _events.ToArray();
+        bool isSimpleField = _isSimpleField;
+        return new DxpDeferredField(instruction, (visitor, context) => {
+            var router = new DxpEvaluateFieldRouterFrame(
+                visitor,
+                _eval,
+                EvalContext,
+                _logger,
+                initialInResult: isSimpleField,
+                initialSeenSeparate: isSimpleField,
+                initialInstructionText: isSimpleField ? instruction : null,
+                allowDeferredCapture: false);
+            var scopes = new Stack<IDisposable>();
+            foreach (var fieldEvent in events)
+                fieldEvent.Replay(router, context, scopes);
+            while (scopes.Count > 0)
+                scopes.Pop().Dispose();
+        });
     }
 
     public bool TryRecordNestedFieldResult(DxpFieldEvalResult result)
@@ -296,6 +343,7 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         public static FieldEvent ParagraphBegin(Paragraph paragraph, DxpIParagraphContext paragraphContext) => new(FieldEventKind.ParagraphBegin, paragraph, paragraphContext);
         public static FieldEvent ParagraphEnd() => new(FieldEventKind.ParagraphEnd);
         public static FieldEvent StructuredResult(DxpFieldNodeBuffer buffer) => new(FieldEventKind.StructuredResult, buffer);
+        public static FieldEvent DeferredField(DxpDeferredField field) => new(FieldEventKind.DeferredField, field);
 
         public void Replay(DxpIVisitor visitor, DxpIDocumentContext d, Stack<IDisposable> scopes)
         {
@@ -357,6 +405,10 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
                     if (visitor is IDxpStructuredFieldResultSink sink)
                         sink.TryRecordStructuredFieldResult((DxpFieldNodeBuffer)Data1!);
                     break;
+                case FieldEventKind.DeferredField:
+                    if (visitor is IDxpDeferredFieldSink deferredSink)
+                        deferredSink.TryRecordDeferredField((DxpDeferredField)Data1!, d);
+                    break;
             }
         }
     }
@@ -379,11 +431,28 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         SimpleEnd,
         ParagraphBegin,
         ParagraphEnd,
-        StructuredResult
+        StructuredResult,
+        DeferredField
     }
 }
 
 internal interface IDxpNestedFieldResultSink
 {
     bool TryRecordNestedFieldResult(DxpFieldEvalResult result);
+}
+
+internal sealed class DxpDeferredField
+{
+    private readonly Action<DxpIVisitor, DxpIDocumentContext> _replay;
+
+    public DxpDeferredField(
+        string instructionText,
+        Action<DxpIVisitor, DxpIDocumentContext> replay)
+    {
+        InstructionText = instructionText;
+        _replay = replay;
+    }
+
+    public string InstructionText { get; }
+    public void Replay(DxpIVisitor visitor, DxpIDocumentContext context) => _replay(visitor, context);
 }

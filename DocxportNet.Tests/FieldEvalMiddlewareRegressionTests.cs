@@ -504,6 +504,105 @@ public sealed class FieldEvalMiddlewareRegressionTests : TestBase<FieldEvalMiddl
         Assert.DoesNotMatch("</p>\\s*<p[^>]*>RESULT", html);
     }
 
+    [Theory]
+    [InlineData(true, "chosen")]
+    [InlineData(false, "alternate")]
+    public void Eval_IfWithNestedSetExecutesOnlySelectedBranch(bool condition, string expected)
+    {
+        using var document = CreateIfWithNestedSetDoc(condition);
+        var visitor = new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateAcceptConfig(), Logger);
+        var options = new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate };
+
+        string text = DxpExport.ExportToString(document, visitor, options, Logger);
+
+        Assert.DoesNotContain("Error! Invalid field code.", text, StringComparison.Ordinal);
+        Assert.EndsWith("|" + expected, text.TrimEnd(), StringComparison.Ordinal);
+        Assert.True(visitor.FieldEval.Context.TryGetBookmarkValue("Selection", out var value));
+        Assert.Equal(expected, value.StringValue);
+    }
+
+    [Fact]
+    public void Eval_IfResolvesOnlySelectedNestedValueField()
+    {
+        var requests = new List<string>();
+        var eval = new DocxportNet.Fields.DxpFieldEval(new DocxportNet.Fields.DxpFieldEvalDelegates {
+            ResolveDocVariableAsync = (name, _) => {
+                requests.Add(name);
+                return Task.FromResult<DocxportNet.Fields.DxpFieldValue?>(new(name.ToLowerInvariant()));
+            }
+        }, logger: Logger);
+        using var document = CreateIfWithNestedFieldsDoc(
+            condition: true,
+            trueInstruction: "DOCVARIABLE Chosen",
+            falseInstruction: "DOCVARIABLE Ignored");
+        var visitor = new DxpPlainTextVisitor(
+            DxpPlainTextVisitorConfig.CreateAcceptConfig(),
+            Logger,
+            eval);
+
+        string text = DxpExport.ExportToString(
+            document,
+            visitor,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate },
+            Logger);
+
+        Assert.Equal("chosen", text.Trim());
+        Assert.Contains("Chosen", requests);
+        Assert.DoesNotContain("Ignored", requests);
+    }
+
+    [Theory]
+    [InlineData(true, "first prompt")]
+    [InlineData(false, "second prompt")]
+    public void Eval_IfInvokesOnlySelectedNestedAsk(bool condition, string expectedPrompt)
+    {
+        var prompts = new List<string>();
+        var eval = new DocxportNet.Fields.DxpFieldEval(new DocxportNet.Fields.DxpFieldEvalDelegates {
+            AskAsync = (prompt, _) => {
+                prompts.Add(prompt);
+                return Task.FromResult<DocxportNet.Fields.DxpFieldValue?>(new(prompt));
+            }
+        }, logger: Logger);
+        using var document = CreateIfWithNestedFieldsDoc(
+            condition,
+            "ASK Reply \"first prompt\"",
+            "ASK Reply \"second prompt\"",
+            "REF Reply");
+        var visitor = new DxpPlainTextVisitor(
+            DxpPlainTextVisitorConfig.CreateAcceptConfig(),
+            Logger,
+            eval);
+
+        string text = DxpExport.ExportToString(
+            document,
+            visitor,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate },
+            Logger);
+
+        Assert.Equal([expectedPrompt], prompts);
+        Assert.EndsWith("|" + expectedPrompt, text.TrimEnd(), StringComparison.Ordinal);
+    }
+
+    [Theory]
+    [InlineData(true, "inner")]
+    [InlineData(false, "outer-alternative")]
+    public void Eval_NestedIfDefersItsSetUntilOuterBranchIsSelected(bool condition, string expected)
+    {
+        using var document = CreateNestedIfWithSetDoc(condition);
+        var visitor = new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateAcceptConfig(), Logger);
+
+        string text = DxpExport.ExportToString(
+            document,
+            visitor,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate },
+            Logger);
+
+        Assert.DoesNotContain("Error! Invalid field code.", text, StringComparison.Ordinal);
+        Assert.EndsWith("|" + expected, text.TrimEnd(), StringComparison.Ordinal);
+        Assert.True(visitor.FieldEval.Context.TryGetBookmarkValue("Selection", out var value));
+        Assert.Equal(expected, value.StringValue);
+    }
+
     [Fact]
     public async Task Eval_UnknownBareFieldWithoutBookmarkUsesCache()
     {
@@ -800,6 +899,93 @@ public sealed class FieldEvalMiddlewareRegressionTests : TestBase<FieldEvalMiddl
                     new Run(new FieldCode { Text = "\" \"\" " }),
                     new Run(new FieldChar { FieldCharType = FieldCharValues.End }),
                     new Run(new RunProperties(new Bold()), new Text("Following Heading")))));
+            main.Document.Save();
+        }
+        stream.Position = 0;
+        return WordprocessingDocument.Open(stream, false);
+    }
+
+    private static WordprocessingDocument CreateIfWithNestedSetDoc(bool condition)
+        => CreateIfWithNestedFieldsDoc(
+            condition,
+            "SET Selection \"chosen\"",
+            "SET Selection \"alternate\"",
+            "REF Selection");
+
+    private static WordprocessingDocument CreateIfWithNestedFieldsDoc(
+        bool condition,
+        string trueInstruction,
+        string falseInstruction,
+        string? trailingInstruction = null)
+    {
+        var stream = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(
+            stream,
+            DocumentFormat.OpenXml.WordprocessingDocumentType.Document,
+            true))
+        {
+            var main = document.AddMainDocumentPart();
+            var paragraph = new Paragraph(
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldCode { Text = $" IF 1 = {(condition ? 1 : 0)} " }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldCode { Text = " " + trueInstruction + " " }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Separate }),
+                new Run(new Text("true cache")),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.End }),
+                new Run(new FieldCode { Text = " " }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldCode { Text = " " + falseInstruction + " " }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Separate }),
+                new Run(new Text("false cache")),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.End }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Separate }),
+                new Run(new Text("cached branch result")),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.End }));
+            if (trailingInstruction != null)
+            {
+                paragraph.Append(
+                    new Run(new Text("|")),
+                    new SimpleField(new Run(new Text("trailing cache"))) {
+                        Instruction = " " + trailingInstruction + " "
+                    });
+            }
+            main.Document = new Document(new Body(paragraph));
+            main.Document.Save();
+        }
+        stream.Position = 0;
+        return WordprocessingDocument.Open(stream, false);
+    }
+
+    private static WordprocessingDocument CreateNestedIfWithSetDoc(bool condition)
+    {
+        var stream = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(
+            stream,
+            DocumentFormat.OpenXml.WordprocessingDocumentType.Document,
+            true))
+        {
+            var main = document.AddMainDocumentPart();
+            var paragraph = new Paragraph(
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldCode { Text = $" IF 1 = {(condition ? 1 : 0)} " }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldCode { Text = " IF 1 = 1 " }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldCode { Text = " SET Selection \"inner\" " }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.End }),
+                new Run(new FieldCode { Text = " \"\" " }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.End }),
+                new Run(new FieldCode { Text = " " }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldCode { Text = " SET Selection \"outer-alternative\" " }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.End }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.End }),
+                new Run(new Text("|")),
+                new SimpleField(new Run(new Text("selection cache"))) {
+                    Instruction = " REF Selection "
+                });
+            main.Document = new Document(new Body(paragraph));
             main.Document.Save();
         }
         stream.Position = 0;

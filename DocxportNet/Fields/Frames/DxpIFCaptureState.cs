@@ -45,6 +45,26 @@ internal sealed class DxpIFCaptureState
         return true;
     }
 
+    public bool AppendDeferredAction(Action<DocxportNet.API.DxpIVisitor, DocxportNet.API.DxpIDocumentContext> action)
+    {
+        var root = GetCurrentRootBuffer();
+        if (root == null)
+            return false;
+        root.AddDeferredAction(action);
+        _paragraphOwner = null;
+        _paragraphBuffer = null;
+        return true;
+    }
+
+    public void CompleteDeferredFieldToken()
+    {
+        if (InQuote)
+            return;
+        TokenIndex++;
+        CurrentToken.Clear();
+        JustClosedQuote = false;
+    }
+
     private DxpFieldNodeBuffer? GetCurrentRootBuffer()
     {
         return TokenIndex switch
