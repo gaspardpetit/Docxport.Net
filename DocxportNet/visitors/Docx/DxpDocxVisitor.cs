@@ -24,6 +24,8 @@ public sealed class DxpDocxVisitor : DxpVisitor, IDisposable, DxpIFieldEvalProvi
     private bool _completed;
     private Footnotes? _rebuiltFootnotes;
     private Endnotes? _rebuiltEndnotes;
+    private Comments? _rebuiltComments;
+    private readonly HashSet<string> _rebuiltCommentIds = new(StringComparer.Ordinal);
     public DxpFieldEval FieldEval { get; }
 
     public DxpDocxVisitor(ILogger? logger = null, DxpFieldEval? fieldEval = null) : base(logger)
@@ -237,12 +239,30 @@ public sealed class DxpDocxVisitor : DxpVisitor, IDisposable, DxpIFieldEvalProvi
 
     public override IDisposable VisitLegacyPictureBegin(Picture pict, DxpIDocumentContext d)
     {
-        AppendCloneWithExternalRelationships(pict, d);
-        return SuppressScope();
+        // Preserve the opaque VML carrier, but rebuild its WordprocessingML
+        // textbox content so fields inside the textbox pass through the same
+        // pipeline as fields in the main story.
+        var clone = (Picture)pict.CloneNode(true);
+        RemapExternalRelationships(clone, d.CurrentPart);
+        var textBoxContent = clone.Descendants<TextBoxContent>().FirstOrDefault();
+        if (textBoxContent == null)
+        {
+            if (_suppressDepth == 0 && _parents.Count > 0)
+                _parents.Peek().AppendChild(clone);
+            return SuppressScope();
+        }
+
+        textBoxContent.RemoveAllChildren();
+        if (_suppressDepth > 0 || _parents.Count == 0)
+            return SuppressScope();
+
+        _parents.Peek().AppendChild(clone);
+        _parents.Push(textBoxContent);
+        return DxpDisposable.Create(() => _parents.Pop());
     }
 
     public override IDisposable VisitTextBoxContentBegin(TextBoxContent txbx, DxpIDocumentContext d)
-        => SuppressScope();
+        => DxpDisposable.Empty;
 
     public override void VisitOMath(DocumentFormat.OpenXml.Math.OfficeMath oMath, DxpIDocumentContext d) => AppendClone(oMath);
     public override void VisitOMathParagraph(DocumentFormat.OpenXml.Math.Paragraph oMathPara, DxpIDocumentContext d) => AppendClone(oMathPara);
@@ -263,7 +283,38 @@ public sealed class DxpDocxVisitor : DxpVisitor, IDisposable, DxpIFieldEvalProvi
     public override void VisitCommentRangeEnd(CommentRangeEnd end, DxpIDocumentContext d) => AppendClone(end);
     public override void VisitCommentReference(CommentReference reference, DxpIDocumentContext d) => AppendClone(reference);
     public override IDisposable VisitCommentThreadBegin(string anchorId, DxpCommentThread thread, DxpIDocumentContext d)
-        => SuppressScope();
+        => DxpDisposable.Empty;
+    public override IDisposable VisitCommentBegin(DxpCommentInfo info, DxpCommentThread thread, DxpIDocumentContext d)
+    {
+        _ = thread;
+        var part = _outputDocument?.MainDocumentPart?.WordprocessingCommentsPart;
+        if (part == null || !_rebuiltCommentIds.Add(info.Id))
+            return SuppressScope();
+
+        if (_rebuiltComments == null)
+        {
+            var sourceRoot = info.Blocks.FirstOrDefault()?.Ancestors<Comments>().FirstOrDefault();
+            _rebuiltComments = sourceRoot != null
+                ? (Comments)sourceRoot.CloneNode(true)
+                : new Comments();
+            _rebuiltComments.RemoveAllChildren();
+            part.Comments = _rebuiltComments;
+        }
+
+        var sourceComment = info.Blocks.FirstOrDefault()?.Ancestors<Comment>().FirstOrDefault();
+        var comment = sourceComment != null
+            ? (Comment)sourceComment.CloneNode(true)
+            : new Comment
+            {
+                Id = info.Id,
+                Author = info.Author,
+                Initials = info.Initials,
+                Date = info.DateUtc
+            };
+        comment.RemoveAllChildren();
+        _rebuiltComments.AppendChild(comment);
+        return PushRoot(comment);
+    }
     public override void VisitPermStart(PermStart ps, DxpIDocumentContext d) => AppendClone(ps);
     public override void VisitPermEnd(PermEnd pe, DxpIDocumentContext d) => AppendClone(pe);
     public override void VisitProofError(ProofError pe, DxpIDocumentContext d) => AppendClone(pe);
@@ -472,6 +523,7 @@ public sealed class DxpDocxVisitor : DxpVisitor, IDisposable, DxpIFieldEvalProvi
             part.Footer?.Save();
         _outputDocument.MainDocumentPart?.FootnotesPart?.Footnotes?.Save();
         _outputDocument.MainDocumentPart?.EndnotesPart?.Endnotes?.Save();
+        _outputDocument.MainDocumentPart?.WordprocessingCommentsPart?.Comments?.Save();
         _outputDocument.Dispose();
         _outputDocument = null;
         _sourceParts.Clear();
@@ -486,11 +538,25 @@ public sealed class DxpDocxVisitor : DxpVisitor, IDisposable, DxpIFieldEvalProvi
             .. document.MainDocumentPart?.HeaderParts.Select(part => part.Header) ?? [],
             .. document.MainDocumentPart?.FooterParts.Select(part => part.Footer) ?? [],
             document.MainDocumentPart?.FootnotesPart?.Footnotes,
-            document.MainDocumentPart?.EndnotesPart?.Endnotes
+            document.MainDocumentPart?.EndnotesPart?.Endnotes,
+            document.MainDocumentPart?.WordprocessingCommentsPart?.Comments
         ];
 
         foreach (var root in roots.OfType<OpenXmlPartRootElement>())
         {
+            if (root is Comments)
+            {
+                foreach (var element in root.Descendants())
+                {
+                    foreach (var attribute in element.GetAttributes()
+                                 .Where(attribute => attribute.NamespaceUri.StartsWith(
+                                     "http://schemas.microsoft.com/office/word/2010/",
+                                     StringComparison.Ordinal))
+                                 .ToArray())
+                        element.RemoveAttribute(attribute.LocalName, attribute.NamespaceUri);
+                }
+            }
+
             foreach (var tableLook in root.Descendants<TableLook>())
             {
                 foreach (string name in new[] { "firstRow", "lastRow", "firstColumn", "lastColumn", "noHBand", "noVBand" })

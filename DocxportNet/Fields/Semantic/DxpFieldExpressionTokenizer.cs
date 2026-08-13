@@ -9,6 +9,7 @@ internal static class DxpFieldExpressionTokenizer
         var tokens = new List<DxpFieldExpressionToken>();
         var current = new List<DxpFieldTemplatePart>();
         var literal = new StringBuilder();
+        DxpSemanticRunFormat? literalFormat = null;
         bool inQuote = false;
         bool justClosedQuote = false;
 
@@ -16,8 +17,9 @@ internal static class DxpFieldExpressionTokenizer
         {
             if (literal.Length == 0)
                 return;
-            current.Add(new DxpFieldTemplateText(literal.ToString()));
+            current.Add(new DxpFieldTemplateText(literal.ToString(), literalFormat));
             literal.Clear();
+            literalFormat = null;
         }
 
         void FlushToken(bool allowEmpty = false)
@@ -38,14 +40,18 @@ internal static class DxpFieldExpressionTokenizer
                 justClosedQuote = false;
                 continue;
             }
-            if (part is DxpFieldExpressionParagraph)
+            if (part is DxpFieldExpressionParagraph paragraph)
             {
                 FlushLiteral();
-                current.Add(new DxpFieldTemplateParagraph());
+                current.Add(new DxpFieldTemplateParagraph(paragraph.Format));
                 continue;
             }
 
-            string text = ((DxpFieldExpressionText)part).Text;
+            var expressionText = (DxpFieldExpressionText)part;
+            if (literal.Length > 0 && literalFormat != expressionText.Format)
+                FlushLiteral();
+            literalFormat = expressionText.Format;
+            string text = expressionText.Text;
             for (int index = 0; index < text.Length; index++)
             {
                 char ch = text[index];
@@ -71,6 +77,8 @@ internal static class DxpFieldExpressionTokenizer
                     continue;
                 }
 
+                if (literal.Length == 0)
+                    literalFormat = expressionText.Format;
                 literal.Append(ch);
                 justClosedQuote = false;
             }

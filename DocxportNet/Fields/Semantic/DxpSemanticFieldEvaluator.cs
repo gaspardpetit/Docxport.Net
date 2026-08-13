@@ -54,8 +54,7 @@ internal sealed class DxpSemanticFieldEvaluator
         if (fieldType.Equals("DATABASE", StringComparison.OrdinalIgnoreCase))
             return await EvaluateDatabaseAsync(
                 await EvaluateInstructionTextAsync(expression, documentContext, cancellationToken, depth + 1),
-                documentContext,
-                cancellationToken);
+                documentContext, cancellationToken, expression.CachedResult);
         if (fieldType.Equals("INCLUDETEXT", StringComparison.OrdinalIgnoreCase))
             return await EvaluateIncludeTextExpressionAsync(
                 expression, tokens, documentContext, cancellationToken, depth + 1);
@@ -125,7 +124,8 @@ internal sealed class DxpSemanticFieldEvaluator
         return await EvaluateScalarAsync(
             await EvaluateInstructionTextAsync(expression, documentContext, cancellationToken, 1),
             documentContext,
-            cancellationToken);
+            cancellationToken,
+            expression.CachedResult);
     }
 
     private async Task<string> EvaluateInstructionTextAsync(
@@ -165,7 +165,7 @@ internal sealed class DxpSemanticFieldEvaluator
         int depth)
     {
         if (tokens.Count is < 2 or > 3)
-            return DxpSemanticFieldResult.Empty(DxpFieldEvalStatus.Skipped);
+            return IncludeFallback(expression, error: false);
         string path = ValueToText(await EvaluateTemplateValueAsync(
             tokens[1], documentContext, cancellationToken, depth));
         string? bookmark = tokens.Count == 3
@@ -174,15 +174,24 @@ internal sealed class DxpSemanticFieldEvaluator
             : null;
         if (string.IsNullOrWhiteSpace(path) ||
             bookmark != null && string.IsNullOrWhiteSpace(bookmark))
-            return DxpSemanticFieldResult.Empty(DxpFieldEvalStatus.Skipped);
+            return IncludeFallback(expression, error: false);
 
         IDxpIncludeTextResolver? resolver = _eval.Context.IncludeTextResolver;
         if (resolver == null)
-            return DxpSemanticFieldResult.Empty(DxpFieldEvalStatus.Skipped);
-        DxpIncludeTextSource? source = await resolver.ResolveAsync(
-            new DxpIncludeTextRequest(path), _eval.Context, cancellationToken);
+            return IncludeFallback(expression, error: false);
+
+        DxpIncludeTextSource? source;
+        try
+        {
+            source = await resolver.ResolveAsync(
+                new DxpIncludeTextRequest(path), _eval.Context, cancellationToken);
+        }
+        catch (Exception exception) when (_eval.Options.UseCacheOnError)
+        {
+            return IncludeFallback(expression, error: true, exception);
+        }
         if (source == null || source.Content.Length == 0)
-            return DxpSemanticFieldResult.Empty(DxpFieldEvalStatus.Skipped);
+            return IncludeFallback(expression, error: false);
 
         byte[] content = source.Content;
         string rawText = string.Concat(expression.Parts
@@ -194,7 +203,16 @@ internal sealed class DxpSemanticFieldEvaluator
                 (path.EndsWith(".htm", StringComparison.OrdinalIgnoreCase) ||
                  path.EndsWith(".html", StringComparison.OrdinalIgnoreCase));
         if (isHtml)
-            content = await _eval.Context.ConvertHtmlIncludeAsync(content, cancellationToken);
+        {
+            try
+            {
+                content = await _eval.Context.ConvertHtmlIncludeAsync(content, cancellationToken);
+            }
+            catch (Exception exception) when (_eval.Options.UseCacheOnError)
+            {
+                return IncludeFallback(expression, error: true, exception);
+            }
+        }
 
         return new DxpSemanticFieldResult(
             DxpFieldEvalStatus.Resolved,
@@ -202,6 +220,31 @@ internal sealed class DxpSemanticFieldEvaluator
             {
                 new DxpSemanticInclude(path, source.Identity, content, bookmark)
             }));
+    }
+
+    private DxpSemanticFieldResult IncludeFallback(
+        DxpFieldExpression expression,
+        bool error,
+        Exception? exception = null)
+    {
+        bool useCache = error ? _eval.Options.UseCacheOnError : _eval.Options.UseCacheOnNull;
+        if (useCache && expression.CachedResult != null)
+        {
+            return new DxpSemanticFieldResult(
+                DxpFieldEvalStatus.UsedCache,
+                new DxpSemanticContent(new DxpSemanticNode[]
+                {
+                    new DxpSemanticText(expression.CachedResult)
+                }),
+                new DxpFieldValue(expression.CachedResult),
+                exception,
+                expression.Source);
+        }
+        return new DxpSemanticFieldResult(
+            error ? DxpFieldEvalStatus.Failed : DxpFieldEvalStatus.Skipped,
+            DxpSemanticContent.Empty,
+            Error: exception,
+            Source: expression.Source);
     }
 
     private async Task<DxpFieldValue> EvaluateTemplateValueAsync(
@@ -233,26 +276,29 @@ internal sealed class DxpSemanticFieldEvaluator
     {
         var root = new DxpSemanticContentBuilder();
         DxpSemanticContentBuilder? paragraph = null;
+        DxpSemanticParagraphFormat? paragraphFormat = null;
 
         void FlushParagraph()
         {
             if (paragraph == null)
                 return;
-            root.Append(new DxpSemanticParagraph(paragraph.Build()));
+            root.Append(new DxpSemanticParagraph(paragraph.Build(), paragraphFormat));
             paragraph = null;
+            paragraphFormat = null;
         }
 
         foreach (DxpFieldTemplatePart part in template.Parts)
         {
-            if (part is DxpFieldTemplateParagraph)
+            if (part is DxpFieldTemplateParagraph paragraphBoundary)
             {
                 FlushParagraph();
                 paragraph = new DxpSemanticContentBuilder();
+                paragraphFormat = paragraphBoundary.Format;
                 continue;
             }
             if (part is DxpFieldTemplateText text)
             {
-                (paragraph ?? root).AppendTextWithControls(text.Text);
+                (paragraph ?? root).AppendTextWithControls(text.Text, text.Format);
                 continue;
             }
 
@@ -320,70 +366,6 @@ internal sealed class DxpSemanticFieldEvaluator
             }
         }
         return text.ToString();
-    }
-
-    internal async Task<DxpSemanticFieldResult> EvaluateBranchAsync(
-        IReadOnlyList<DxpSemanticBranchPart> parts,
-        DxpIDocumentContext? documentContext = null,
-        CancellationToken cancellationToken = default)
-    {
-        var content = new DxpSemanticContentBuilder();
-        DxpSemanticContentBuilder? paragraph = null;
-
-        void FlushParagraph()
-        {
-            if (paragraph == null)
-                return;
-            content.Append(new DxpSemanticParagraph(paragraph.Build()));
-            paragraph = null;
-        }
-
-        foreach (DxpSemanticBranchPart part in parts)
-        {
-            if (part is DxpSemanticBranchParagraphStart)
-            {
-                FlushParagraph();
-                paragraph = new DxpSemanticContentBuilder();
-                continue;
-            }
-            if (part is DxpSemanticBranchText text)
-            {
-                (paragraph ?? content).AppendTextWithControls(text.Text);
-                continue;
-            }
-
-            var field = ((DxpSemanticBranchField)part).Field;
-            DxpSemanticFieldResult nested = await EvaluateDeferredAsync(
-                field, documentContext, cancellationToken);
-            if (nested.Status == DxpFieldEvalStatus.Failed)
-                return nested;
-            if (paragraph != null && nested.Content.HasBlocks)
-                FlushParagraph();
-            (paragraph ?? content).Append(nested.Content);
-        }
-        FlushParagraph();
-        return new DxpSemanticFieldResult(DxpFieldEvalStatus.Resolved, content.Build());
-    }
-
-    private async Task<DxpSemanticFieldResult> EvaluateDeferredAsync(
-        DxpDeferredField field,
-        DxpIDocumentContext? documentContext,
-        CancellationToken cancellationToken)
-    {
-        var parse = _parser.Parse(field.InstructionText);
-        if (parse.Ast.FieldType?.Equals("SET", StringComparison.OrdinalIgnoreCase) == true &&
-            field.CapturedScalar.HasValue &&
-            DxpFieldTokenization.TryGetFirstToken(parse.Ast.ArgumentsText, out string bookmark))
-        {
-            DxpFieldValue value = field.CapturedScalar.Value;
-            string text = ValueToText(value);
-            _eval.Context.SetBookmarkValue(bookmark, value);
-            _eval.Context.SetBookmarkNodes(bookmark, DxpFieldNodeBuffer.FromText(text));
-            return DxpSemanticFieldResult.Empty();
-        }
-
-        return await EvaluateFieldAsync(
-            field.InstructionText, documentContext, cancellationToken, 0);
     }
 
     private async Task<DxpSemanticFieldResult> EvaluateFieldAsync(
@@ -454,12 +436,14 @@ internal sealed class DxpSemanticFieldEvaluator
     private async Task<DxpSemanticFieldResult> EvaluateDatabaseAsync(
         string instructionText,
         DxpIDocumentContext? documentContext,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        string? cachedResult = null)
     {
         var execution = await _eval.ExecuteDatabaseAsync(
-            new DxpFieldInstruction(instructionText), documentContext, cancellationToken);
+            new DxpFieldInstruction(instructionText, cachedResult), documentContext, cancellationToken);
         if (execution?.Result == null)
-            return DxpSemanticFieldResult.Empty(DxpFieldEvalStatus.Skipped);
+            return await EvaluateScalarAsync(
+                instructionText, documentContext, cancellationToken, cachedResult);
 
         DxpDatabaseRequest request = execution.Value.Request;
         DxpDatabaseResult result = execution.Value.Result;
@@ -507,10 +491,11 @@ internal sealed class DxpSemanticFieldEvaluator
     private async Task<DxpSemanticFieldResult> EvaluateScalarAsync(
         string instructionText,
         DxpIDocumentContext? documentContext,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        string? cachedResult = null)
     {
         DxpFieldEvalResult result = await _eval.EvalAsync(
-            new DxpFieldInstruction(instructionText), documentContext, cancellationToken);
+            new DxpFieldInstruction(instructionText, cachedResult), documentContext, cancellationToken);
         var builder = new DxpSemanticContentBuilder();
         if (result.Text != null)
             builder.AppendTextWithControls(result.Text);

@@ -7,7 +7,7 @@ internal sealed class DxpSemanticContentBuilder
     public void Append(DxpSemanticContent content) => _nodes.AddRange(content.Nodes);
     public void Append(DxpSemanticNode node) => _nodes.Add(node);
 
-    public void AppendTextWithControls(string? text)
+    public void AppendTextWithControls(string? text, DxpSemanticRunFormat? format = null)
     {
         if (string.IsNullOrEmpty(text))
             return;
@@ -19,19 +19,19 @@ internal sealed class DxpSemanticContentBuilder
             if (ch is not ('\r' or '\n' or '\t'))
                 continue;
             if (index > start)
-                _nodes.Add(new DxpSemanticText(text.Substring(start, index - start)));
+                _nodes.Add(new DxpSemanticText(text.Substring(start, index - start), format));
             if (ch == '\t')
-                _nodes.Add(new DxpSemanticTab());
+                _nodes.Add(new DxpSemanticTab(format));
             else
             {
-                _nodes.Add(new DxpSemanticBreak());
+                _nodes.Add(new DxpSemanticBreak(format));
                 if (ch == '\r' && index + 1 < text.Length && text[index + 1] == '\n')
                     index++;
             }
             start = index + 1;
         }
         if (start < text.Length)
-            _nodes.Add(new DxpSemanticText(text.Substring(start)));
+            _nodes.Add(new DxpSemanticText(text.Substring(start), format));
     }
 
     public DxpSemanticContent Build() => new(_nodes.ToArray());

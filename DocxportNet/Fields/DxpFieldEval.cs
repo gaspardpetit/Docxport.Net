@@ -34,6 +34,7 @@ public sealed class DxpFieldEval
         bool RememberAsPriorResponse);
 
     public DxpFieldEvalContext Context { get; } = new();
+    internal DxpFieldEvalOptions Options => _options;
 
     public DxpFieldEval(DxpFieldEvalDelegates? delegates = null, DxpFieldEvalOptions? options = null, ILogger? logger = null)
     {

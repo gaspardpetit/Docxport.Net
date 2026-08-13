@@ -187,7 +187,9 @@ public sealed class DocxExportTests : TestBase<DocxExportTests>
         Assert.Equal(sourceBody.Descendants<CommentRangeEnd>().Count(), outputBody.Descendants<CommentRangeEnd>().Count());
         Assert.Equal(sourceBody.Descendants<CommentReference>().Count(), outputBody.Descendants<CommentReference>().Count());
         Assert.DoesNotContain(outputBody.Descendants<Paragraph>(), static paragraph => paragraph.Parent is Paragraph);
-        Assert.Empty(new OpenXmlValidator().Validate(output));
+        var errors = new OpenXmlValidator().Validate(output).ToArray();
+        Assert.True(errors.Length == 0, string.Join(Environment.NewLine,
+            errors.Select(error => $"{error.Description} Path={error.Path?.XPath}")));
     }
 
     [Fact]

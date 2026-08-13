@@ -21,6 +21,23 @@ public sealed record DxpSemanticSourceProvenance(
     int? DocumentOrder,
     string? ParagraphId);
 
+public sealed record DxpSemanticRunFormat(
+    bool? Bold = null,
+    bool? Italic = null,
+    bool? Strike = null,
+    string? Underline = null,
+    string? Color = null,
+    string? FontSizeHalfPoints = null,
+    string? StyleId = null,
+    string? Language = null);
+
+public sealed record DxpSemanticParagraphFormat(
+    string? StyleId = null,
+    string? Alignment = null,
+    int? OutlineLevel = null,
+    int? NumberingId = null,
+    int? NumberingLevel = null);
+
 public sealed record DxpSemanticContent(IReadOnlyList<DxpSemanticNode> Nodes)
 {
     public static DxpSemanticContent Empty { get; } = new(Array.Empty<DxpSemanticNode>());
@@ -31,10 +48,12 @@ public sealed record DxpSemanticContent(IReadOnlyList<DxpSemanticNode> Nodes)
 
 public abstract record DxpSemanticNode;
 
-public sealed record DxpSemanticText(string Text) : DxpSemanticNode;
-public sealed record DxpSemanticBreak : DxpSemanticNode;
-public sealed record DxpSemanticTab : DxpSemanticNode;
-public sealed record DxpSemanticParagraph(DxpSemanticContent Content) : DxpSemanticNode;
+public sealed record DxpSemanticText(string Text, DxpSemanticRunFormat? Format = null) : DxpSemanticNode;
+public sealed record DxpSemanticBreak(DxpSemanticRunFormat? Format = null) : DxpSemanticNode;
+public sealed record DxpSemanticTab(DxpSemanticRunFormat? Format = null) : DxpSemanticNode;
+public sealed record DxpSemanticParagraph(
+    DxpSemanticContent Content,
+    DxpSemanticParagraphFormat? Format = null) : DxpSemanticNode;
 public sealed record DxpSemanticInclude(
     string Path,
     string Identity,

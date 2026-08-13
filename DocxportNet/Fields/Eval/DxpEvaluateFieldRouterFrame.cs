@@ -7,6 +7,7 @@ using DocxportNet.Fields.Semantic;
 using DocxportNet.Middleware;
 using DocxportNet.Walker;
 using Microsoft.Extensions.Logging;
+using System.Text;
 
 namespace DocxportNet.Fields.Eval;
 
@@ -33,6 +34,7 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
     private readonly bool _isSimpleField;
     private readonly bool _allowDeferredCapture;
     private readonly List<DxpFieldExpressionPart> _expressionParts = new();
+    private readonly StringBuilder _cachedResult = new();
 
     public DxpEvaluateFieldRouterFrame(
         DxpIVisitor next,
@@ -55,7 +57,9 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         _isSimpleField = initialInResult && initialSeenSeparate;
         _allowDeferredCapture = allowDeferredCapture;
         if (_isSimpleField && !string.IsNullOrEmpty(initialInstructionText))
-            _expressionParts.Add(new DxpFieldExpressionText(initialInstructionText));
+            _expressionParts.Add(new DxpFieldExpressionText(
+                initialInstructionText,
+                DxpFieldExpressionSource.CaptureRunFormat(CodeRun)));
     }
 
     public override void VisitComplexFieldInstruction(FieldCode instr, string text, DxpIDocumentContext d)
@@ -64,7 +68,9 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
             return;
         _events.Add(FieldEvent.Instruction(instr, text));
         AppendInstructionText(text);
-        _expressionParts.Add(new DxpFieldExpressionText(text));
+        _expressionParts.Add(new DxpFieldExpressionText(
+            text,
+            DxpFieldExpressionSource.CaptureRunFormat(instr.Parent as Run)));
     }
 
     public override void VisitComplexFieldSeparate(FieldChar separate, DxpIDocumentContext d)
@@ -76,6 +82,13 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         }
 
         _events.Add(FieldEvent.Separate(separate));
+    }
+
+    public override void VisitComplexFieldCachedResultText(string text, DxpIDocumentContext d)
+    {
+        if (!string.IsNullOrEmpty(text))
+            _cachedResult.Append(text);
+        _events.Add(FieldEvent.CachedResultText(text));
     }
 
     public override void VisitComplexFieldEnd(FieldChar end, DxpIDocumentContext d)
@@ -115,9 +128,13 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         {
             AppendInstructionText(t.Text);
             _events.Add(FieldEvent.Text(t));
-            _expressionParts.Add(new DxpFieldExpressionText(t.Text));
+            _expressionParts.Add(new DxpFieldExpressionText(
+                t.Text,
+                DxpFieldExpressionSource.CaptureRunFormat(t.Parent as Run)));
             return;
         }
+        if (!string.IsNullOrEmpty(t.Text))
+            _cachedResult.Append(t.Text);
         _events.Add(FieldEvent.Text(t));
     }
 
@@ -127,7 +144,9 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         {
             AppendInstructionText("\n");
             _events.Add(FieldEvent.Break(br));
-            _expressionParts.Add(new DxpFieldExpressionText("\n"));
+            _expressionParts.Add(new DxpFieldExpressionText(
+                "\n",
+                DxpFieldExpressionSource.CaptureRunFormat(br.Parent as Run)));
             return;
         }
         _events.Add(FieldEvent.Break(br));
@@ -139,7 +158,9 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         {
             AppendInstructionText("\t");
             _events.Add(FieldEvent.Tab(tab));
-            _expressionParts.Add(new DxpFieldExpressionText("\t"));
+            _expressionParts.Add(new DxpFieldExpressionText(
+                "\t",
+                DxpFieldExpressionSource.CaptureRunFormat(tab.Parent as Run)));
             return;
         }
         _events.Add(FieldEvent.Tab(tab));
@@ -151,7 +172,9 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         {
             AppendInstructionText("\n");
             _events.Add(FieldEvent.CarriageReturn(cr));
-            _expressionParts.Add(new DxpFieldExpressionText("\n"));
+            _expressionParts.Add(new DxpFieldExpressionText(
+                "\n",
+                DxpFieldExpressionSource.CaptureRunFormat(cr.Parent as Run)));
             return;
         }
         _events.Add(FieldEvent.CarriageReturn(cr));
@@ -163,7 +186,9 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         {
             AppendInstructionText("-");
             _events.Add(FieldEvent.NoBreakHyphen(nbh));
-            _expressionParts.Add(new DxpFieldExpressionText("-"));
+            _expressionParts.Add(new DxpFieldExpressionText(
+                "-",
+                DxpFieldExpressionSource.CaptureRunFormat(nbh.Parent as Run)));
             return;
         }
         _events.Add(FieldEvent.NoBreakHyphen(nbh));
@@ -182,7 +207,8 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         {
             _events.Add(FieldEvent.ParagraphBegin(p, paragraph));
             if (_expressionParts.Count > 0)
-                _expressionParts.Add(new DxpFieldExpressionParagraph());
+                _expressionParts.Add(new DxpFieldExpressionParagraph(
+                    DxpFieldExpressionSource.CaptureParagraphFormat(p)));
             if (EvalContext.SuppressCrossParagraphFieldParagraphOutput)
                 return DxpDisposable.Create(() => _events.Add(FieldEvent.ParagraphEnd()));
             var inner = Next.VisitParagraphBegin(p, d, paragraph);
@@ -276,7 +302,8 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         DxpSemanticFieldResult result = evaluator.EvaluateExpressionAsync(
             new DxpFieldExpression(
                 _expressionParts.ToArray(),
-                DxpFieldExpressionSource.Capture(CodeRun, EvalContext)), context).GetAwaiter().GetResult();
+                DxpFieldExpressionSource.Capture(CodeRun, EvalContext),
+                _cachedResult.Length == 0 ? null : _cachedResult.ToString()), context).GetAwaiter().GetResult();
         if (result.Status == DxpFieldEvalStatus.Failed)
             return false;
 
@@ -328,7 +355,8 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
             instruction,
             new DxpFieldExpression(
                 _expressionParts.ToArray(),
-                DxpFieldExpressionSource.Capture(CodeRun, EvalContext)),
+                DxpFieldExpressionSource.Capture(CodeRun, EvalContext),
+                _cachedResult.Length == 0 ? null : _cachedResult.ToString()),
             (visitor, context) => {
                 var router = new DxpEvaluateFieldRouterFrame(
                     visitor,
@@ -394,6 +422,7 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         public static FieldEvent HyperlinkBegin(Hyperlink link, DxpLinkAnchor? target) => new(FieldEventKind.HyperlinkBegin, link, target);
         public static FieldEvent HyperlinkEnd() => new(FieldEventKind.HyperlinkEnd);
         public static FieldEvent Text(Text text) => new(FieldEventKind.Text, text);
+        public static FieldEvent CachedResultText(string text) => new(FieldEventKind.CachedResultText, text);
         public static FieldEvent Break(Break br) => new(FieldEventKind.Break, br);
         public static FieldEvent Tab(TabChar tab) => new(FieldEventKind.Tab, tab);
         public static FieldEvent CarriageReturn(CarriageReturn cr) => new(FieldEventKind.CarriageReturn, cr);
@@ -434,6 +463,9 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
                     break;
                 case FieldEventKind.Text:
                     visitor.VisitText((Text)Data1!, d);
+                    break;
+                case FieldEventKind.CachedResultText:
+                    visitor.VisitComplexFieldCachedResultText((string)Data1!, d);
                     break;
                 case FieldEventKind.Break:
                     visitor.VisitBreak((Break)Data1!, d);
@@ -483,6 +515,7 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         HyperlinkBegin,
         HyperlinkEnd,
         Text,
+        CachedResultText,
         Break,
         Tab,
         CarriageReturn,

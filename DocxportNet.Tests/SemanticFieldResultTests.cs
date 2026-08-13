@@ -56,7 +56,10 @@ public sealed class SemanticFieldResultTests : TestBase<SemanticFieldResultTests
         using var output = Open(docx);
         Assert.Empty(output.MainDocumentPart!.Document.Body!.Descendants<Table>());
         Assert.DoesNotContain("Alice", output.MainDocumentPart.Document.Body.InnerText, StringComparison.Ordinal);
-        Assert.Empty(new OpenXmlValidator().Validate(output));
+        var validationErrors = new OpenXmlValidator().Validate(output).ToArray();
+        Assert.True(validationErrors.Length == 0,
+            string.Join(Environment.NewLine, validationErrors.Select(error =>
+                $"{error.Description} Path={error.Path?.XPath}")));
     }
 
     [Fact]
@@ -245,6 +248,126 @@ public sealed class SemanticFieldResultTests : TestBase<SemanticFieldResultTests
         Assert.Empty(new OpenXmlValidator().Validate(output));
     }
 
+    [Fact]
+    public void SelectedLiteralPreservesFragmentFormattingAcrossExporters()
+    {
+        byte[] source = CreateFormattedLiteralDocument();
+
+        using (var output = Open(DxpDocxExport.Export(source, SemanticOptions(), Logger, new DxpFieldEval(logger: Logger))))
+        {
+            Run bold = Assert.Single(output.MainDocumentPart!.Document.Body!.Descendants<Run>(),
+                static run => run.InnerText.Trim() == "bold");
+            Run italic = Assert.Single(output.MainDocumentPart.Document.Body.Descendants<Run>(),
+                static run => run.InnerText.Trim() == "italic");
+            Assert.NotNull(bold.RunProperties?.Bold);
+            Assert.NotNull(italic.RunProperties?.Italic);
+            Assert.Empty(new OpenXmlValidator().Validate(output));
+        }
+
+        string html = DxpExport.ExportToString(source,
+            new DxpHtmlVisitor(DxpHtmlVisitorConfig.CreateRichConfig(), Logger, new DxpFieldEval(logger: Logger)),
+            SemanticOptions(), Logger);
+        Assert.Contains("<strong class=\"dxp-bold\">", html, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("<em class=\"dxp-italic\">", html, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("bold", html, StringComparison.Ordinal);
+        Assert.Contains("italic", html, StringComparison.Ordinal);
+
+        string markdown = DxpExport.ExportToString(source,
+            new DxpMarkdownVisitor(DxpMarkdownVisitorConfig.CreateRichConfig(), Logger, new DxpFieldEval(logger: Logger)),
+            SemanticOptions(), Logger);
+        Assert.Contains("<b>", markdown, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("<i>", markdown, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("bold", markdown, StringComparison.Ordinal);
+        Assert.Contains("italic", markdown, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void CrossParagraphLiteralPreservesParagraphFormatting()
+    {
+        byte[] source = CreateDocument(body => body.Append(
+            new Paragraph(Begin(), Code(" IF 1 = 1 \"FIRST")),
+            new Paragraph(
+                new ParagraphProperties(
+                    new ParagraphStyleId { Val = "SyntheticStyle" },
+                    new Justification { Val = JustificationValues.Center }),
+                Code("SECOND\" \"\" "), End())));
+
+        using var output = Open(DxpDocxExport.Export(
+            source, SemanticOptions(), Logger, new DxpFieldEval(logger: Logger)));
+
+        Paragraph second = Assert.Single(output.MainDocumentPart!.Document.Body!.Elements<Paragraph>(),
+            static paragraph => paragraph.InnerText == "SECOND");
+        Assert.Equal("SyntheticStyle", second.ParagraphProperties?.ParagraphStyleId?.Val?.Value);
+        Assert.Equal(JustificationValues.Center, second.ParagraphProperties?.Justification?.Val?.Value);
+        Assert.Empty(new OpenXmlValidator().Validate(output));
+    }
+
+    [Theory]
+    [InlineData(DxpMissingDocVariableBehavior.Error, "Error! No document variable supplied.")]
+    [InlineData(DxpMissingDocVariableBehavior.UseCache, "CACHED")]
+    [InlineData(DxpMissingDocVariableBehavior.Skip, "")]
+    public void MissingDocVariablePolicyIsHonoredBySemanticEvaluation(
+        DxpMissingDocVariableBehavior behavior,
+        string expected)
+    {
+        var eval = new DxpFieldEval(options: new DxpFieldEvalOptions
+        {
+            MissingDocVariableBehavior = behavior
+        }, logger: Logger);
+
+        using var output = Open(DxpDocxExport.Export(
+            CreateCachedDocVariableDocument(nestedInIf: false), SemanticOptions(), Logger, eval));
+
+        Assert.Equal(expected, output.MainDocumentPart!.Document.Body!.InnerText);
+        Assert.Empty(new OpenXmlValidator().Validate(output));
+    }
+
+    [Fact]
+    public void NestedMissingDocVariableCanUseItsOwnCachedResult()
+    {
+        var eval = new DxpFieldEval(options: new DxpFieldEvalOptions
+        {
+            MissingDocVariableBehavior = DxpMissingDocVariableBehavior.UseCache
+        }, logger: Logger);
+
+        using var output = Open(DxpDocxExport.Export(
+            CreateCachedDocVariableDocument(nestedInIf: true), SemanticOptions(), Logger, eval));
+
+        Assert.Equal("CACHED", output.MainDocumentPart!.Document.Body!.InnerText);
+        Assert.Empty(new OpenXmlValidator().Validate(output));
+    }
+
+    [Fact]
+    public void SemanticFieldsResolveAcrossBodyHeaderFooterTableAndTextBoxStories()
+    {
+        using var output = Open(DxpDocxExport.Export(
+            CreateMultiStoryDocument(), SemanticOptions(), Logger, new DxpFieldEval(logger: Logger)));
+
+        Assert.Contains("BODY", output.MainDocumentPart!.Document.Body!.InnerText, StringComparison.Ordinal);
+        Assert.Contains("CELL", output.MainDocumentPart.Document.Body.InnerText, StringComparison.Ordinal);
+        Assert.Contains("TEXTBOX", output.MainDocumentPart.Document.Body.InnerText, StringComparison.Ordinal);
+        Assert.Equal("HEADER", output.MainDocumentPart.HeaderParts.Single().Header!.InnerText);
+        Assert.Equal("FOOTER", output.MainDocumentPart.FooterParts.Single().Footer!.InnerText);
+        Assert.DoesNotContain(output.MainDocumentPart.Document.Descendants<FieldCode>(),
+            static code => code.Text.Contains("IF", StringComparison.OrdinalIgnoreCase));
+        var validationErrors = new OpenXmlValidator().Validate(output).ToArray();
+        Assert.True(validationErrors.Length == 0,
+            string.Join(Environment.NewLine, validationErrors.Select(error =>
+                $"{error.Description} Path={error.Path?.XPath}")));
+    }
+
+    [Fact]
+    public void SemanticFieldsResolveInsideComments()
+    {
+        using var output = Open(DxpDocxExport.Export(
+            CreateCommentDocument(), SemanticOptions(), Logger, new DxpFieldEval(logger: Logger)));
+
+        var comments = output.MainDocumentPart!.WordprocessingCommentsPart!.Comments!;
+        Assert.Equal("COMMENT", comments.InnerText);
+        Assert.Empty(comments.Descendants<FieldCode>());
+        Assert.Empty(new OpenXmlValidator().Validate(output));
+    }
+
     private static DxpExportOptions SemanticOptions() => new()
     {
         FieldEvalMode = DxpFieldEvalExportMode.Evaluate,
@@ -407,7 +530,102 @@ public sealed class SemanticFieldResultTests : TestBase<SemanticFieldResultTests
                 Code("AFTER\" \"\" "),
                 End())));
 
+    private static byte[] CreateFormattedLiteralDocument()
+        => CreateDocument(body => body.Append(new Paragraph(
+            Begin(),
+            Code(" IF 1 = 1 \"plain "),
+            new Run(new RunProperties(new Bold()), new FieldCode { Text = "bold" }),
+            new Run(new RunProperties(new Italic()), new FieldCode { Text = " italic" }),
+            Code("\" \"\" "),
+            End())));
+
+    private static byte[] CreateCachedDocVariableDocument(bool nestedInIf)
+        => CreateDocument(body => body.Append(nestedInIf
+            ? new Paragraph(
+                Begin(), Code(" IF 1 = 1 \""),
+                Begin(), Code(" DOCVARIABLE Missing "), Separate(),
+                new Run(new Text("CACHED")), End(),
+                Code("\" \"\" "), End())
+            : new Paragraph(
+                Begin(), Code(" DOCVARIABLE Missing "), Separate(),
+                new Run(new Text("CACHED")), End())));
+
+    private static byte[] CreateMultiStoryDocument()
+    {
+        using var stream = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document, true))
+        {
+            MainDocumentPart main = document.AddMainDocumentPart();
+            HeaderPart header = main.AddNewPart<HeaderPart>();
+            FooterPart footer = main.AddNewPart<FooterPart>();
+            header.Header = new Header(FieldParagraph("HEADER"));
+            footer.Footer = new Footer(FieldParagraph("FOOTER"));
+
+            var textBox = new TextBoxContent(FieldParagraph("TEXTBOX"));
+            var picture = new Picture(
+                new DocumentFormat.OpenXml.Vml.Shape(
+                    new DocumentFormat.OpenXml.Vml.TextBox(textBox))
+                {
+                    Id = "SyntheticTextBox",
+                    Style = "position:absolute;width:100pt;height:30pt"
+                });
+
+            main.Document = new Document(new Body(
+                FieldParagraph("BODY"),
+                new Table(
+                    new TableProperties(),
+                    new TableGrid(new GridColumn()),
+                    new TableRow(new TableCell(FieldParagraph("CELL")))),
+                new Paragraph(new Run(picture)),
+                new SectionProperties(
+                    new HeaderReference
+                    {
+                        Id = main.GetIdOfPart(header),
+                        Type = HeaderFooterValues.Default
+                    },
+                    new FooterReference
+                    {
+                        Id = main.GetIdOfPart(footer),
+                        Type = HeaderFooterValues.Default
+                    })));
+            main.Document.Save();
+            header.Header.Save();
+            footer.Footer.Save();
+        }
+        return stream.ToArray();
+    }
+
+    private static byte[] CreateCommentDocument()
+    {
+        using var stream = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document, true))
+        {
+            MainDocumentPart main = document.AddMainDocumentPart();
+            var commentsPart = main.AddNewPart<WordprocessingCommentsPart>();
+            commentsPart.Comments = new Comments(
+                new Comment(FieldParagraph("COMMENT"))
+                {
+                    Id = "0",
+                    Author = "Synthetic"
+                });
+            main.Document = new Document(new Body(
+                new Paragraph(
+                    new CommentRangeStart { Id = "0" },
+                    new Run(new Text("ANCHOR")),
+                    new CommentRangeEnd { Id = "0" },
+                    new Run(new CommentReference { Id = "0" })),
+                new SectionProperties()));
+            main.Document.Save();
+            commentsPart.Comments.Save();
+        }
+        return stream.ToArray();
+    }
+
+    private static Paragraph FieldParagraph(string value)
+        => new(Begin(), Code($" IF 1 = 1 \"{value}\" \"\" "), End());
+
     private static Run Begin() => new(new FieldChar { FieldCharType = FieldCharValues.Begin });
+    private static Run Separate() => new(new FieldChar { FieldCharType = FieldCharValues.Separate });
     private static Run End() => new(new FieldChar { FieldCharType = FieldCharValues.End });
     private static Run Code(string text) => new(new FieldCode { Text = text });
 

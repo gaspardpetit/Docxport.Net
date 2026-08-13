@@ -71,6 +71,8 @@ for (int i = 0; i < args.Length; i++)
         plainOutput = true;
     else if (arg.Equals("--semantic-fields", StringComparison.OrdinalIgnoreCase))
         semanticFields = true;
+    else if (arg.Equals("--legacy-fields", StringComparison.OrdinalIgnoreCase))
+        semanticFields = false;
     else if (arg.StartsWith("--fields=", StringComparison.OrdinalIgnoreCase))
         fieldMode = ParseFieldMode(arg[(arg.IndexOf('=') + 1)..]);
     else if (arg.Equals("--fields", StringComparison.OrdinalIgnoreCase))
@@ -403,7 +405,8 @@ Options:
   --tracked=...  Tracked change mode (accept, reject, inline, split). Plain text supports accept/reject.
     --plain        Plain output for markdown/html (minimal styling/features)
     --fields=...   Field result mode (evaluate, cache, none). Default: cache.
-  --semantic-fields  Use the experimental composable field-result pipeline.
+  --semantic-fields  Use the semantic field-result pipeline.
+  --legacy-fields    Explicitly use the legacy field pipeline (current default).
   -o, --output=...  Output file path (default: swaps extension)
   --vars=...     Load DOCVARIABLE values from a JSON or INI file.
   -D name=value  Define a DOCVARIABLE (repeatable). CLI values override --vars.
