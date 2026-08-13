@@ -67,8 +67,13 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
 
     public override void VisitComplexFieldInstruction(FieldCode instr, string text, DxpIDocumentContext d)
     {
-        if (string.IsNullOrEmpty(text) || _inResult)
+        if (string.IsNullOrEmpty(text))
             return;
+        if (_inResult)
+        {
+            VisitComplexFieldCachedResultText(text, d);
+            return;
+        }
         _events.Add(FieldEvent.Instruction(instr, text));
         AppendInstructionText(text);
         _expressionParts.Add(new DxpFieldExpressionText(

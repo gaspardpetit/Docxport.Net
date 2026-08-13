@@ -47,8 +47,13 @@ internal sealed class DxpCachedFieldRouterFrame : DxpMiddleware, DxpIFieldEvalFr
 
     public override void VisitComplexFieldInstruction(FieldCode instr, string text, DxpIDocumentContext d)
     {
-        if (string.IsNullOrEmpty(text) || _inResult)
+        if (string.IsNullOrEmpty(text))
             return;
+        if (_inResult)
+        {
+            VisitComplexFieldCachedResultText(text, d);
+            return;
+        }
         AppendInstructionText(text);
     }
 

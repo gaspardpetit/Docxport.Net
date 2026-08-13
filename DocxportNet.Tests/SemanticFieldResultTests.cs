@@ -378,6 +378,21 @@ public sealed class SemanticFieldResultTests : TestBase<SemanticFieldResultTests
     }
 
     [Fact]
+    public void FieldCodeAfterSeparatorIsTreatedAsCachedResultContent()
+    {
+        var eval = new DxpFieldEval(options: new DxpFieldEvalOptions
+        {
+            MissingDocVariableBehavior = DxpMissingDocVariableBehavior.UseCache
+        }, logger: Logger);
+
+        using var output = Open(DxpDocxExport.Export(
+            CreateFieldCodeCachedDocVariableDocument(), SemanticOptions(), Logger, eval));
+
+        Assert.Equal("FIELD-CODE-CACHE", output.MainDocumentPart!.Document.Body!.InnerText);
+        Assert.Empty(new OpenXmlValidator().Validate(output));
+    }
+
+    [Fact]
     public void SemanticFieldsResolveAcrossBodyHeaderFooterTableAndTextBoxStories()
     {
         using var output = Open(DxpDocxExport.Export(
@@ -564,11 +579,22 @@ public sealed class SemanticFieldResultTests : TestBase<SemanticFieldResultTests
         => CreateDocument(body => body.Append(
             new Paragraph(
                 Begin(),
+                Code(" SET SyntheticFirst "),
+                    Begin(),
+                    Code(" DATABASE \\d \"Synthetic.odc\" \\c \"Provider=Synthetic\" \\s \"SELECT Value FROM SyntheticData WHERE FirstKey = '"),
+                        Begin(), Code(" DOCVARIABLE SyntheticKey "), Separate(),
+                        Code("STALE-FIRST-KEY"), End(),
+                    Code("'\" "),
+                    End(),
+                Separate(),
+                new Run(new Text("Error! Bookmark not defined.")),
+                End(),
+                Begin(),
                 Code(" SET SyntheticBookmark "),
                     Begin(),
-                    Code(" DATABASE \\s \"SELECT Value FROM SyntheticData WHERE ItemKey = '"),
+                    Code(" DATABASE \\d \"Synthetic.odc\" \\c \"Provider=Synthetic\" \\s \"SELECT Value FROM SyntheticData WHERE ItemKey = '"),
                         Begin(), Code(" DOCVARIABLE SyntheticKey "), Separate(),
-                        new Run(new Text("STALE-KEY")), End(),
+                        Code("STALE-KEY"), End(),
                     Code("'\" "),
                     End(),
                 Separate(),
@@ -603,6 +629,11 @@ public sealed class SemanticFieldResultTests : TestBase<SemanticFieldResultTests
             : new Paragraph(
                 Begin(), Code(" DOCVARIABLE Missing "), Separate(),
                 new Run(new Text("CACHED")), End())));
+
+    private static byte[] CreateFieldCodeCachedDocVariableDocument()
+        => CreateDocument(body => body.Append(new Paragraph(
+            Begin(), Code(" DOCVARIABLE Missing "), Separate(),
+            Code("FIELD-CODE-CACHE"), End())));
 
     private static byte[] CreateMultiStoryDocument()
     {
