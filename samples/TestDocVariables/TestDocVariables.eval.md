@@ -181,9 +181,7 @@
     <td style="border:0.5pt solid #000000;">MERGEFIELD FirstName \v
 
 </td>
-    <td style="border:0.5pt solid #000000;">A
-n
-a
+    <td style="border:0.5pt solid #000000;">A<br/>n<br/>a
 
 </td>
   </tr>
