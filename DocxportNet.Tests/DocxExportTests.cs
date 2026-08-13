@@ -249,6 +249,33 @@ public sealed class DocxExportTests : TestBase<DocxExportTests>
     }
 
     [Fact]
+    public void EvaluatedExport_ConvertsDocVariableNewlinesToInlineWordBreaks()
+    {
+        byte[] sourceBytes = CreateDocument(body => body.AppendChild(
+            new Paragraph(new SimpleField(new Run(new Text("cached"))) {
+                Instruction = " DOCVARIABLE Address "
+            })));
+        var eval = new DxpFieldEval();
+        eval.Context.SetDocVariable("Address", "Street\r\nSuite\nCity\rCountry");
+
+        byte[] outputBytes = DxpDocxExport.Export(
+            sourceBytes,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate },
+            Logger,
+            eval);
+
+        using var output = Open(outputBytes);
+        Body body = output.MainDocumentPart!.Document.Body!;
+        Assert.Single(body.Elements<Paragraph>());
+        Assert.Equal(3, body.Descendants<Break>().Count());
+        Assert.Equal(["Street", "Suite", "City", "Country"],
+            body.Descendants<Text>().Select(static text => text.Text));
+        Assert.All(body.Descendants<Text>(), static text =>
+            Assert.DoesNotMatch("[\\r\\n]", text.Text));
+        Assert.Empty(new OpenXmlValidator().Validate(output));
+    }
+
+    [Fact]
     public void Passthrough_NormalizesSyntheticLegacyAndMisnestedMarkup()
     {
         byte[] sourceBytes = CreateDocument(body =>

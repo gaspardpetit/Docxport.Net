@@ -282,7 +282,8 @@ public sealed class DxpFieldNodeBuffer
     public static DxpFieldNodeBuffer FromText(string text)
     {
         var buffer = new DxpFieldNodeBuffer();
-        buffer.AddRunText(text);
+        var child = buffer.BeginRun(new Run());
+        child.AddTextWithBreaks(text);
         return buffer;
     }
 
@@ -518,15 +519,26 @@ public sealed class DxpFieldNodeBuffer
         return child;
     }
 
-    private void AddRunText(string text)
+    internal void AddTextWithBreaks(string text)
     {
-        var run = new Run();
-        var t = new Text(text);
-        if (NeedsPreserveSpace(text))
-            t.Space = SpaceProcessingModeValues.Preserve;
-        run.AppendChild(t);
-        var child = BeginRun(run);
-        child.AddText(text);
+        int segmentStart = 0;
+        for (int index = 0; index < text.Length; index++)
+        {
+            if (text[index] is not ('\r' or '\n'))
+                continue;
+
+            if (index > segmentStart)
+                AddText(text.Substring(segmentStart, index - segmentStart));
+            AddBreak();
+            if (text[index] == '\r' && index + 1 < text.Length && text[index + 1] == '\n')
+                index++;
+            segmentStart = index + 1;
+        }
+
+        if (segmentStart < text.Length)
+            AddText(text.Substring(segmentStart));
+        else if (text.Length == 0)
+            AddText(string.Empty);
     }
 
     private void AppendText(StringBuilder sb)

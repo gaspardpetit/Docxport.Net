@@ -174,9 +174,7 @@ TEST MERGEFIELD
     <td>MERGEFIELD FirstName \v
 
 </td>
-    <td>A
-n
-a
+    <td>A<br/>n<br/>a
 
 </td>
   </tr>

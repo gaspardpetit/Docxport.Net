@@ -75,7 +75,7 @@ class DxpFieldFrames
 	{
         var buffer = new DxpFieldNodeBuffer();
         var child = buffer.BeginRun(run);
-        child.AddText(text);
+        child.AddTextWithBreaks(text);
         return buffer;
 	}
 
@@ -87,6 +87,8 @@ class DxpFieldFrames
 
 		if (string.IsNullOrEmpty(text))
 			return buffer;
+
+        text = text.Replace("\r\n", "\n").Replace('\r', '\n');
 
 		if (runs == null || runs.Count == 0)
 		{
@@ -102,7 +104,7 @@ class DxpFieldFrames
 		{
 			Run? segmentRun = runs != null && i < runs.Count ? runs[i] : null;
             var child = buffer.BeginRun(NewSyntheticRun(segmentRun, null));
-            child.AddText(segments[i]);
+            child.AddTextWithBreaks(segments[i]);
 		}
 
         return buffer;
