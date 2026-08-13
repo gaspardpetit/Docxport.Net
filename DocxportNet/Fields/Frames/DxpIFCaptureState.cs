@@ -11,6 +11,8 @@ internal sealed class DxpIFCaptureState
     public bool InQuote;
     public int BraceDepth;
     public bool JustClosedQuote;
+    public bool TrueBranchObserved;
+    public bool FalseBranchObserved;
     public readonly StringBuilder CurrentToken = new();
     public readonly DxpFieldNodeBuffer TrueBuffer = new();
     public readonly DxpFieldNodeBuffer FalseBuffer = new();
@@ -23,6 +25,17 @@ internal sealed class DxpIFCaptureState
         var root = GetCurrentRootBuffer();
         return ReferenceEquals(root, _paragraphOwner) ? _paragraphBuffer : root;
     }
+
+    public void MarkCurrentBranchObserved()
+    {
+        if (TokenIndex == 3)
+            TrueBranchObserved = true;
+        else if (TokenIndex == 4)
+            FalseBranchObserved = true;
+    }
+
+    public bool WasBranchObserved(bool condition)
+        => condition ? TrueBranchObserved : FalseBranchObserved;
 
     public void BeginParagraph(Paragraph paragraph)
     {
@@ -39,6 +52,7 @@ internal sealed class DxpIFCaptureState
         var root = GetCurrentRootBuffer();
         if (root == null)
             return false;
+        MarkCurrentBranchObserved();
         root.Append(buffer);
         _paragraphOwner = null;
         _paragraphBuffer = null;
@@ -50,6 +64,7 @@ internal sealed class DxpIFCaptureState
         var root = GetCurrentRootBuffer();
         if (root == null)
             return false;
+        MarkCurrentBranchObserved();
         root.AddDeferredAction(action);
         _paragraphOwner = null;
         _paragraphBuffer = null;

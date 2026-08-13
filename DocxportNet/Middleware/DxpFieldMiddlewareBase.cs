@@ -31,6 +31,7 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
     private DxpIFieldEvalFrame? _outerFrame;
     private DxpIVisitor? _currentAdapter;
     private IDisposable? _openCrossParagraphFieldParagraph;
+    private bool _suppressCrossParagraphContinuationParagraphs;
 
     protected DxpFieldMiddlewareBase(
         DxpIVisitor next,
@@ -82,6 +83,7 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
         _context.OuterFrame = null;
         _openCrossParagraphFieldParagraph?.Dispose();
         _openCrossParagraphFieldParagraph = null;
+        _suppressCrossParagraphContinuationParagraphs = false;
         var inner = Next.VisitDocumentBegin(doc, documentContext);
         return new DxpCompositeScope(inner, () => ReplayDeferredStructuredResults(documentContext));
     }
@@ -111,6 +113,8 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
         _fieldFrames.Pop();
         PopCurrentAdapter();
         UpdateFrameState();
+        if (_context.FieldDepth == 0)
+            _suppressCrossParagraphContinuationParagraphs = false;
         if (_logger?.IsEnabled(LogLevel.Debug) == true)
             _logger.LogDebug("FieldEnd: depth={Depth}", _context.FieldDepth);
     }
@@ -243,6 +247,15 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
         // scopes were suppressed by an enclosing field. Replaying its block result from
         // that paragraph's Dispose would then nest blocks in those still-active scopes.
         // The next paragraph boundary is the first reliably block-safe emission point.
+        // Close an older paragraph retained for a later cross-paragraph field before
+        // emitting a block that was produced earlier in that same source paragraph.
+        if (_context.HasDeferredStructuredFieldResults && _openCrossParagraphFieldParagraph != null)
+        {
+            var open = _openCrossParagraphFieldParagraph;
+            _openCrossParagraphFieldParagraph = null;
+            _suppressCrossParagraphContinuationParagraphs = true;
+            open.Dispose();
+        }
         ReplayDeferredStructuredResults(d);
         var previous = _context.Culture;
         var previousOutlineProvider = _context.CurrentOutlineLevelProvider;
@@ -257,7 +270,8 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
         _context.CurrentDocumentOrder = ++_paragraphOrder;
 
         var target = _currentAdapter ?? Next;
-        bool suppressOutput = _openCrossParagraphFieldParagraph != null;
+        bool suppressOutput = _openCrossParagraphFieldParagraph != null ||
+            _suppressCrossParagraphContinuationParagraphs;
         bool previousSuppression = _context.SuppressCrossParagraphFieldParagraphOutput;
         _context.SuppressCrossParagraphFieldParagraphOutput = suppressOutput;
         IDisposable inner;
@@ -300,7 +314,7 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
     private void ReplayDeferredStructuredResults(DxpIDocumentContext d)
     {
         while (_context.TryTakeDeferredStructuredFieldResult(out var deferred) && deferred != null)
-            deferred.Replay(Next, d);
+            deferred.Replay(_next, d);
     }
 
     public override IDisposable VisitRunBegin(Run r, DxpIDocumentContext d)

@@ -447,6 +447,38 @@ public sealed class DocxExportTests : TestBase<DocxExportTests>
         Assert.Empty(new OpenXmlValidator().Validate(output));
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void EvaluatedExport_DatabaseBeforeCrossParagraphIfDoesNotLeakIntoField(bool includeRow)
+    {
+        byte[] sourceBytes = CreateDatabaseBeforeEmptyCrossParagraphIfDocument();
+        var provider = new FixedDatabaseProvider(new DxpDatabaseResult(
+            [new DxpDatabaseColumn("Synthetic heading")],
+            includeRow
+                ? [new DxpFieldValue?[] { new("Synthetic value") }]
+                : []));
+        var eval = new DxpFieldEval();
+        eval.Context.DatabaseProvider = provider;
+        eval.Context.SetDocVariable("ShowOptionalText", "NO");
+
+        byte[] outputBytes = DxpDocxExport.Export(sourceBytes,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate }, Logger, eval);
+
+        using var output = Open(outputBytes);
+        var body = output.MainDocumentPart!.Document.Body!;
+        var table = Assert.Single(body.Elements<Table>());
+        Assert.Equal(
+            includeRow ? "Synthetic headingSynthetic value" : "Synthetic heading",
+            table.InnerText);
+        Assert.DoesNotContain("PRIVATE-BRANCH", body.InnerText, StringComparison.Ordinal);
+        Assert.DoesNotContain("TRUE-FRAGMENT", body.InnerText, StringComparison.Ordinal);
+        Assert.DoesNotContain("FALSE-FRAGMENT", body.InnerText, StringComparison.Ordinal);
+        Assert.Contains("AFTER", body.InnerText, StringComparison.Ordinal);
+        Assert.DoesNotContain(body.Descendants<Paragraph>(), p => p.Ancestors<Paragraph>().Any());
+        Assert.Empty(new OpenXmlValidator().Validate(output));
+    }
+
     [Fact]
     public void EvaluatedExport_ConvertsScalarControlsToWordElements()
     {
@@ -562,6 +594,34 @@ public sealed class DocxExportTests : TestBase<DocxExportTests>
                 new Run(new Text("if cache")),
                 new Run(new FieldChar { FieldCharType = FieldCharValues.End })),
             new Paragraph(new Run(new Text("after")))));
+
+    private static byte[] CreateDatabaseBeforeEmptyCrossParagraphIfDocument()
+        => CreateDocument(body => {
+            var databaseAndIf = new Paragraph(
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldCode { Text = " DATABASE \\h \\s \"SELECT SyntheticHeading\" " }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Separate }),
+                new Run(new Text("database cache")),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.End }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldCode { Text = " IF " }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldCode { Text = " DOCVARIABLE ShowOptionalText " }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.End }),
+                new Run(new FieldCode { Text = " = \"YES\" \"" }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldCode { Text = " IF 1 = 1 \"TRUE-FRAGMENT\" \"" }));
+            body.Append(
+                databaseAndIf,
+                new Paragraph(
+                    new Run(new FieldCode { Text = "FALSE-FRAGMENT\" " }),
+                    new Run(new FieldChar { FieldCharType = FieldCharValues.End }),
+                    new Run(new FieldCode { Text = "PRIVATE-BRANCH" })),
+                new Paragraph(
+                    new Run(new FieldCode { Text = "\" \"\" " }),
+                    new Run(new FieldChar { FieldCharType = FieldCharValues.End })),
+                new Paragraph(new Run(new Text("AFTER"))));
+        });
 
     private sealed class SyntheticIncludeResolver(byte[] content) : IDxpIncludeTextResolver
     {
