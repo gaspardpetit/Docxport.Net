@@ -554,14 +554,19 @@ public sealed class DxpFieldNodeBuffer
         int segmentStart = 0;
         for (int index = 0; index < text.Length; index++)
         {
-            if (text[index] is not ('\r' or '\n'))
+            if (text[index] is not ('\r' or '\n' or '\t'))
                 continue;
 
             if (index > segmentStart)
                 AddText(text.Substring(segmentStart, index - segmentStart));
-            AddBreak();
-            if (text[index] == '\r' && index + 1 < text.Length && text[index + 1] == '\n')
-                index++;
+            if (text[index] == '\t')
+                AddTab();
+            else
+            {
+                AddBreak();
+                if (text[index] == '\r' && index + 1 < text.Length && text[index + 1] == '\n')
+                    index++;
+            }
             segmentStart = index + 1;
         }
 

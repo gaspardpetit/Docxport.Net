@@ -155,6 +155,6 @@ internal static class DxpFieldEvalIfRunner
             t.Space = SpaceProcessingModeValues.Preserve;
         runClone.AppendChild(t);
         var child = buffer.BeginRun(runClone);
-        child.AddText(text);
+        child.AddTextWithBreaks(text);
     }
 }

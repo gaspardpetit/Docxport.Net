@@ -90,10 +90,10 @@ class DxpFieldFrames
 
         text = text.Replace("\r\n", "\n").Replace('\r', '\n');
 
-		if (runs == null || runs.Count == 0)
+        if (runs == null || runs.Count == 0)
 		{
             var child = buffer.BeginRun(NewSyntheticRun(null, null));
-            child.AddText(text);
+            child.AddTextWithBreaks(text);
 			return buffer;
 		}
 

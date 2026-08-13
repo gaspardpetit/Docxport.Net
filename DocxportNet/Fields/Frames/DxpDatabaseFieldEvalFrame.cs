@@ -113,7 +113,7 @@ internal sealed class DxpDatabaseFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFr
     private TableRow BuildRow(IEnumerable<string> values, int columnCount)
     {
         var cells = values.Take(columnCount).Select(value =>
-            new TableCell(new Paragraph(new Run(NewText(value))))).ToList();
+            new TableCell(new Paragraph(BuildValueRun(value)))).ToList();
         while (cells.Count < columnCount)
             cells.Add(new TableCell(new Paragraph(new Run(new Text()))));
         return new TableRow(cells);
@@ -127,7 +127,7 @@ internal sealed class DxpDatabaseFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFr
         {
             if (index++ > 0)
                 paragraph.AppendChild(new Run(new TabChar()));
-            paragraph.AppendChild(new Run(NewText(value)));
+            paragraph.AppendChild(BuildValueRun(value));
         }
         return paragraph;
     }
@@ -143,5 +143,34 @@ internal sealed class DxpDatabaseFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFr
                 ? SpaceProcessingModeValues.Preserve
                 : null
         };
+    }
+
+    private static Run BuildValueRun(string? value)
+    {
+        string text = value ?? string.Empty;
+        var run = new Run();
+        int segmentStart = 0;
+        for (int index = 0; index < text.Length; index++)
+        {
+            char ch = text[index];
+            if (ch is not ('\r' or '\n' or '\t'))
+                continue;
+            if (index > segmentStart)
+                run.AppendChild(NewText(text.Substring(segmentStart, index - segmentStart)));
+            if (ch == '\t')
+                run.AppendChild(new TabChar());
+            else
+            {
+                run.AppendChild(new Break());
+                if (ch == '\r' && index + 1 < text.Length && text[index + 1] == '\n')
+                    index++;
+            }
+            segmentStart = index + 1;
+        }
+        if (segmentStart < text.Length)
+            run.AppendChild(NewText(text.Substring(segmentStart)));
+        else if (text.Length == 0)
+            run.AppendChild(new Text());
+        return run;
     }
 }
