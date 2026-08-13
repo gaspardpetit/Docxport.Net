@@ -411,19 +411,19 @@ public sealed class DocxExportTests : TestBase<DocxExportTests>
                 new Run(new FieldChar { FieldCharType = FieldCharValues.Separate }),
                 new Run(new Text("cached set")),
                 new Run(new FieldChar { FieldCharType = FieldCharValues.End })),
-            new Paragraph(new SimpleField(new Run(new Text("cached ref"))) { Instruction = " REF Lookup " })));
+            new Paragraph(new SimpleField(new Run(new Text("cached ref"))) { Instruction = " Lookup \\# \"#,##0.00\" " })));
         var eval = new DxpFieldEval();
         eval.Context.DatabaseProvider = new FixedDatabaseProvider(
             new DxpDatabaseResult(
                 [new DxpDatabaseColumn("Value")],
-                [new DxpFieldValue?[] { new("resolved lookup") }]));
+                [new DxpFieldValue?[] { new("900") }]));
 
         byte[] outputBytes = DxpDocxExport.Export(sourceBytes,
             new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate }, Logger, eval);
 
         using var output = Open(outputBytes);
         var body = output.MainDocumentPart!.Document.Body!;
-        Assert.Contains("resolved lookup", body.InnerText, StringComparison.Ordinal);
+        Assert.Contains("900.00", body.InnerText, StringComparison.Ordinal);
         Assert.Empty(body.Elements<Table>());
         Assert.Empty(body.Descendants<FieldChar>());
         Assert.Empty(body.Descendants<SimpleField>());
