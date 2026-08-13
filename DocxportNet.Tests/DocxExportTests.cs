@@ -395,6 +395,81 @@ public sealed class DocxExportTests : TestBase<DocxExportTests>
     }
 
     [Fact]
+    public void EvaluatedExport_PreservesSelectedNestedDatabaseAsWordTable()
+    {
+        byte[] sourceBytes = CreateNestedDatabaseIfDocument(condition: true);
+        var provider = new FixedDatabaseProvider(new DxpDatabaseResult(
+            [new DxpDatabaseColumn("Name"), new DxpDatabaseColumn("Address")],
+            [
+                new DxpFieldValue?[] { new("Alice"), new("Montreal") },
+                new DxpFieldValue?[] { new("Bob"), new("Toronto\r\nSuite\t2") }
+            ]));
+        var eval = new DxpFieldEval();
+        eval.Context.DatabaseProvider = provider;
+
+        byte[] outputBytes = DxpDocxExport.Export(sourceBytes,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate }, Logger, eval);
+
+        using var output = Open(outputBytes);
+        var body = output.MainDocumentPart!.Document.Body!;
+        var table = Assert.Single(body.Elements<Table>());
+        var rows = table.Elements<TableRow>().ToArray();
+        Assert.Equal(3, rows.Length);
+        Assert.Equal("NameAddress", rows[0].InnerText);
+        Assert.Equal("AliceMontreal", rows[1].InnerText);
+        Assert.Equal("BobTorontoSuite2", rows[2].InnerText);
+        Assert.Single(rows[2].Descendants<Break>());
+        Assert.Single(rows[2].Descendants<TabChar>());
+        Assert.DoesNotContain(body.Descendants<Text>(), text =>
+            text.Text.IndexOfAny(['\r', '\n', '\t']) >= 0);
+        Assert.Equal(1, provider.Calls);
+        Assert.Empty(new OpenXmlValidator().Validate(output));
+    }
+
+    [Fact]
+    public void EvaluatedExport_DoesNotExecuteDatabaseInUnselectedIfBranch()
+    {
+        byte[] sourceBytes = CreateNestedDatabaseIfDocument(condition: false);
+        var provider = new FixedDatabaseProvider(new DxpDatabaseResult(
+            [new DxpDatabaseColumn("Name")],
+            [new DxpFieldValue?[] { new("unused") }]));
+        var eval = new DxpFieldEval();
+        eval.Context.DatabaseProvider = provider;
+
+        byte[] outputBytes = DxpDocxExport.Export(sourceBytes,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate }, Logger, eval);
+
+        using var output = Open(outputBytes);
+        var body = output.MainDocumentPart!.Document.Body!;
+        Assert.Empty(body.Elements<Table>());
+        Assert.Equal(0, provider.Calls);
+        Assert.Contains("after", body.InnerText, StringComparison.Ordinal);
+        Assert.Empty(new OpenXmlValidator().Validate(output));
+    }
+
+    [Fact]
+    public void EvaluatedExport_ConvertsScalarControlsToWordElements()
+    {
+        byte[] sourceBytes = CreateDocument(body => body.Append(
+            new Paragraph(new SimpleField(new Run(new Text("cache"))) {
+                Instruction = " DOCVARIABLE Multiline "
+            })));
+        var eval = new DxpFieldEval();
+        eval.Context.SetDocVariable("Multiline", "A\tB\r\nC\nD\rE");
+
+        byte[] outputBytes = DxpDocxExport.Export(sourceBytes,
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate }, Logger, eval);
+
+        using var output = Open(outputBytes);
+        var body = output.MainDocumentPart!.Document.Body!;
+        Assert.Single(body.Descendants<TabChar>());
+        Assert.Equal(3, body.Descendants<Break>().Count());
+        Assert.DoesNotContain(body.Descendants<Text>(), text =>
+            text.Text.IndexOfAny(['\r', '\n', '\t']) >= 0);
+        Assert.Empty(new OpenXmlValidator().Validate(output));
+    }
+
+    [Fact]
     public void EvaluatedExport_RendersSixtyTwoDatabaseColumnsAsTabs()
     {
         byte[] sourceBytes = CreateDocument(body => body.Append(
@@ -474,6 +549,20 @@ public sealed class DocxExportTests : TestBase<DocxExportTests>
         return stream.ToArray();
     }
 
+    private static byte[] CreateNestedDatabaseIfDocument(bool condition)
+        => CreateDocument(body => body.Append(
+            new Paragraph(
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldCode { Text = $" IF 1 = {(condition ? 1 : 0)} \"" }),
+                new SimpleField(new Run(new Text("database cache"))) {
+                    Instruction = " DATABASE \\s \"SELECT Name, Address FROM SyntheticRows\" \\h "
+                },
+                new Run(new FieldCode { Text = "\" \"\" " }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Separate }),
+                new Run(new Text("if cache")),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.End })),
+            new Paragraph(new Run(new Text("after")))));
+
     private sealed class SyntheticIncludeResolver(byte[] content) : IDxpIncludeTextResolver
     {
         public Task<DxpIncludeTextSource?> ResolveAsync(
@@ -498,10 +587,15 @@ public sealed class DocxExportTests : TestBase<DocxExportTests>
 
     private sealed class FixedDatabaseProvider(DxpDatabaseResult result) : IDatabaseFieldProvider
     {
+        public int Calls { get; private set; }
+
         public Task<DxpDatabaseResult?> ExecuteAsync(
             DxpDatabaseRequest request,
             CancellationToken cancellationToken)
-            => Task.FromResult<DxpDatabaseResult?>(result);
+        {
+            Calls++;
+            return Task.FromResult<DxpDatabaseResult?>(result);
+        }
     }
 
     private static WordprocessingDocument Open(byte[] bytes)
