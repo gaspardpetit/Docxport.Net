@@ -51,7 +51,7 @@ internal static class DxpSemanticFieldResultAdapter
                         include.Identity,
                         include.Content,
                         include.Bookmark,
-                        CachedResult: null,
+                        include.CachedResult == null ? null : DxpFieldNodeBuffer.FromText(include.CachedResult),
                         eval,
                         logger));
                 }

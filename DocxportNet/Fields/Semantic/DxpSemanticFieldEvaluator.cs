@@ -218,7 +218,7 @@ internal sealed class DxpSemanticFieldEvaluator
             DxpFieldEvalStatus.Resolved,
             new DxpSemanticContent(new DxpSemanticNode[]
             {
-                new DxpSemanticInclude(path, source.Identity, content, bookmark)
+                new DxpSemanticInclude(path, source.Identity, content, bookmark, expression.CachedResult)
             }));
     }
 

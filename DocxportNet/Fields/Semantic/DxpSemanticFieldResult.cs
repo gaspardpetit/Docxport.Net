@@ -58,7 +58,8 @@ public sealed record DxpSemanticInclude(
     string Path,
     string Identity,
     byte[] Content,
-    string? Bookmark = null) : DxpSemanticNode;
+    string? Bookmark = null,
+    string? CachedResult = null) : DxpSemanticNode;
 
 public sealed record DxpSemanticTable(
     IReadOnlyList<DxpSemanticTableRow> Rows,
