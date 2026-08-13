@@ -4,6 +4,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
 using DocxportNet.Core;
 using DocxportNet.Fields;
+using DocxportNet.Walker.Context;
 using Microsoft.Extensions.Logging;
 
 namespace DocxportNet.Visitors.Docx;
@@ -149,6 +150,7 @@ public sealed class DxpDocxVisitor : DxpVisitor, IDisposable, DxpIFieldEvalProvi
 
     public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
     {
+        ImportEmbeddedStyle(p.ParagraphProperties?.ParagraphStyleId?.Val?.Value, d);
         var shell = CloneShell(p);
         if (d.CurrentPart != null && !_sourceParts.Contains(d.CurrentPart))
         {
@@ -164,7 +166,54 @@ public sealed class DxpDocxVisitor : DxpVisitor, IDisposable, DxpIFieldEvalProvi
     {
         if (!r.HasChildren && _parents.Count > 0 && _parents.Peek() is Body or TableCell)
             return DxpDisposable.Empty;
+        ImportEmbeddedStyle(r.RunProperties?.RunStyle?.Val?.Value, d);
         return AppendContainer(CloneShell(r));
+    }
+
+    private void ImportEmbeddedStyle(string? styleId, DxpIDocumentContext context)
+    {
+        if (string.IsNullOrWhiteSpace(styleId) ||
+            context.CurrentPart == null ||
+            _sourceParts.Contains(context.CurrentPart) ||
+            context is not DxpDocumentContext childContext)
+            return;
+
+        Styles? sourceStyles = childContext.MainDocumentPart?.StyleDefinitionsPart?.Styles;
+        MainDocumentPart? destinationMain = _outputDocument?.MainDocumentPart;
+        if (sourceStyles == null || destinationMain == null)
+            return;
+
+        StyleDefinitionsPart destinationPart = destinationMain.StyleDefinitionsPart
+            ?? destinationMain.AddNewPart<StyleDefinitionsPart>();
+        destinationPart.Styles ??= new Styles();
+        ImportStyleAndDependencies(styleId!, sourceStyles, destinationPart.Styles, new HashSet<string>(StringComparer.Ordinal));
+    }
+
+    private static void ImportStyleAndDependencies(
+        string styleId,
+        Styles sourceStyles,
+        Styles destinationStyles,
+        HashSet<string> visiting)
+    {
+        if (!visiting.Add(styleId) || destinationStyles.Elements<Style>().Any(style => style.StyleId?.Value == styleId))
+            return;
+
+        Style? source = sourceStyles.Elements<Style>().FirstOrDefault(style => style.StyleId?.Value == styleId);
+        if (source == null)
+            return;
+
+        foreach (string? dependency in new[]
+                 {
+                     source.BasedOn?.Val?.Value,
+                     source.LinkedStyle?.Val?.Value,
+                     source.NextParagraphStyle?.Val?.Value
+                 })
+        {
+            if (!string.IsNullOrWhiteSpace(dependency))
+                ImportStyleAndDependencies(dependency!, sourceStyles, destinationStyles, visiting);
+        }
+
+        destinationStyles.AppendChild((Style)source.CloneNode(true));
     }
 
     public override IDisposable VisitTableBegin(Table t, DxpTableModel model, DxpIDocumentContext d, DxpITableContext table)

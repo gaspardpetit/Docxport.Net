@@ -2390,10 +2390,16 @@ public class DxpWalker
                 WalkBlock(table, d, v);
                 break;
             case Run run:
-                WalkRun(run, d, v);
+                // Buffered inline elements are detached from their source paragraph.
+                // WalkRun deliberately surfaces an ancestor-less run as unknown and
+                // then walks its children, which would emit the run twice. Give the
+                // synthetic run a paragraph ancestor while retaining inline replay.
+                WalkSyntheticFieldInlineContent(
+                    new Paragraph((Run)run.CloneNode(true)), d, v);
                 break;
             case Hyperlink hyperlink:
-                WalkHyperlink(hyperlink, d, v);
+                WalkSyntheticFieldInlineContent(
+                    new Paragraph((Hyperlink)hyperlink.CloneNode(true)), d, v);
                 break;
             case BookmarkStart bookmarkStart:
                 v.VisitBookmarkStart(bookmarkStart, d);
