@@ -12,6 +12,7 @@ internal sealed class DxpSetFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame
 	private readonly DxpFieldEvalContext _evaluationContext;
 
 	public string? InstructionText { get; }
+	internal DxpFieldValue? CapturedScalar { get; set; }
 
 	public DxpSetFieldEvalFrame(DxpFieldEval eval, DxpFieldEvalContext evalContext, ILogger? logger, string? instructionText)
 		: base()
@@ -51,5 +52,8 @@ internal sealed class DxpSetFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame
 		var setResult = _fieldEvaluator.EvalAsync(new DxpFieldInstruction(InstructionText!), d).GetAwaiter().GetResult();
 		var text = setResult.Text ?? string.Empty;
 		_evaluationContext.SetBookmarkNodes(setName, DxpFieldNodeBuffer.FromText(text));
+		DxpFieldValue? value = CapturedScalar ?? setResult.Value;
+		if (value.HasValue)
+			_evaluationContext.SetBookmarkValue(setName, value.Value);
 	}
 }

@@ -53,6 +53,10 @@ public sealed class DxpContextFieldValueResolver : IDxpFieldValueResolver
         }
 
         if ((kind == DxpFieldValueKindHint.Any || kind == DxpFieldValueKindHint.Bookmark) &&
+            context.TryGetBookmarkValue(name, out var bookmarkValue))
+            return Task.FromResult<DxpFieldValue?>(bookmarkValue);
+
+        if ((kind == DxpFieldValueKindHint.Any || kind == DxpFieldValueKindHint.Bookmark) &&
             context.TryGetBookmarkNodes(name, out var bmNodes))
         {
             var text = bmNodes.ToPlainText();

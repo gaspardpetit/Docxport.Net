@@ -127,11 +127,22 @@ public sealed class DxpFieldEval
                     var builtIn = await TryEvalBuiltInAsync(fieldType, parse.Ast, documentContext, cancellationToken);
                     if (builtIn.success)
                     {
-                        string text = fieldType.Equals("MERGEFIELD", StringComparison.OrdinalIgnoreCase)
-                            ? FormatMergeField(builtIn.value, parse.Ast)
-                            : _formatter.Format(builtIn.value, parse.Ast.FormatSpecs, Context);
+                        string text;
+                        if (fieldType.Equals("SET", StringComparison.OrdinalIgnoreCase) &&
+                            parse.Ast.ArgumentsText != null &&
+                            TokenizeArgs(parse.Ast.ArgumentsText) is { Count: > 0 } setTokens &&
+                            Context.TryGetBookmarkNodes(setTokens[0], out var setNodes))
+                        {
+                            text = setNodes.ToPlainText();
+                        }
+                        else
+                        {
+                            text = fieldType.Equals("MERGEFIELD", StringComparison.OrdinalIgnoreCase)
+                                ? FormatMergeField(builtIn.value, parse.Ast)
+                                : _formatter.Format(builtIn.value, parse.Ast.FormatSpecs, Context);
+                        }
                         _logger?.LogInformation("Resolved field '{FieldType}'.", fieldType);
-                        return new DxpFieldEvalResult(DxpFieldEvalStatus.Resolved, text);
+                        return new DxpFieldEvalResult(DxpFieldEvalStatus.Resolved, text, Value: builtIn.value);
                     }
                     if (knownFieldType)
                     {
@@ -243,9 +254,10 @@ public sealed class DxpFieldEval
                     {
                         string name = tokens[0];
                         string rawValue = tokens.Count > 1 ? tokens[1] : string.Empty;
+                        value = await ResolveValueWithTypeAsync(rawValue, documentContext);
                         string resolved = await ResolveValueAsync(rawValue, documentContext);
                         Context.SetBookmarkNodes(name, DxpFieldNodeBuffer.FromText(resolved));
-                        value = new DxpFieldValue(resolved);
+                        Context.SetBookmarkValue(name, value);
                         return (true, value);
                     }
                 }
@@ -293,6 +305,13 @@ public sealed class DxpFieldEval
                                 value = new DxpFieldValue(text);
                                 return (true, value);
                             }
+                        }
+
+                        if (ast.FormatSpecs.Count > 0 &&
+                            Context.TryGetBookmarkValue(bookmark, out var bookmarkValue))
+                        {
+                            value = bookmarkValue;
+                            return (true, value);
                         }
 
                         if (Context.TryGetBookmarkNodes(bookmark, out var bmNodes))
@@ -548,6 +567,7 @@ public sealed class DxpFieldEval
                             RememberPromptResponse(promptSpec, resolution);
 
                         Context.SetBookmarkNodes(bookmark, DxpFieldNodeBuffer.FromText(resolved));
+                        Context.SetBookmarkValue(bookmark, new DxpFieldValue(resolved));
                         value = new DxpFieldValue(string.Empty);
                         return (true, value);
                     }
@@ -562,9 +582,10 @@ public sealed class DxpFieldEval
                         cancellationToken);
                     if (execution != null)
                     {
-                        value = new DxpFieldValue(RenderDatabaseResult(
-                            execution.Value.Result,
-                            execution.Value.Request));
+                        value = TryGetSingleDatabaseValue(execution.Value.Result, execution.Value.Request)
+                            ?? new DxpFieldValue(RenderDatabaseResult(
+                                execution.Value.Result,
+                                execution.Value.Request));
                         return (true, value);
                     }
                 }
@@ -638,10 +659,11 @@ public sealed class DxpFieldEval
         bool condition = EvaluateComparison(leftValue, op, rightValue);
         _logger?.LogInformation("IF evaluated to {Condition}.", condition);
         string branch = condition ? trueText : (falseText ?? string.Empty);
-        string resolvedBranch = await ResolveValueAsync(branch, documentContext);
-        var value = new DxpFieldValue(resolvedBranch);
-        string text = _formatter.Format(value, ast.FormatSpecs, Context);
-        return new DxpFieldEvalResult(DxpFieldEvalStatus.Resolved, text);
+        var value = await ResolveValueWithTypeAsync(branch, documentContext);
+        string text = ast.FormatSpecs.Count > 0
+            ? _formatter.Format(value, ast.FormatSpecs, Context)
+            : await ResolveValueAsync(branch, documentContext);
+        return new DxpFieldEvalResult(DxpFieldEvalStatus.Resolved, text, Value: value);
     }
 
     internal readonly record struct DxpIfConditionResult(bool Success, bool Condition, string? TrueText, string? FalseText);
@@ -683,7 +705,7 @@ public sealed class DxpFieldEval
         _logger?.LogInformation("COMPARE evaluated to {Condition}.", condition);
         var value = new DxpFieldValue(condition ? 1.0 : 0.0);
         string text = _formatter.Format(value, ast.FormatSpecs, Context);
-        return new DxpFieldEvalResult(DxpFieldEvalStatus.Resolved, text);
+        return new DxpFieldEvalResult(DxpFieldEvalStatus.Resolved, text, Value: value);
     }
 
     private async Task<DxpFieldEvalResult?> EvalSkipIfAsync(
@@ -1040,22 +1062,77 @@ public sealed class DxpFieldEval
         if (token.Length >= 2 && token[0] == '"' && token[token.Length - 1] == '"')
             unquoted = token.Substring(1, token.Length - 2);
 
+        if (TryGetSingleNestedInstruction(unquoted, out string nestedInstruction))
+        {
+            DxpFieldEvalResult nested = await EvalAsync(
+                new DxpFieldInstruction(nestedInstruction), documentContext);
+            return nested.Text ?? string.Empty;
+        }
+
+        string expanded = await ExpandNestedFieldsAsync(unquoted, documentContext);
+        var resolver = Context.ValueResolver ?? _resolver;
+        DxpFieldValue? resolvedValue = await resolver.ResolveAsync(expanded, DxpFieldValueKindHint.Any, Context);
+        return resolvedValue.HasValue ? ToDefaultString(resolvedValue.Value) : expanded;
+    }
+
+    private async Task<DxpFieldValue> ResolveValueWithTypeAsync(
+        string token,
+        DxpIDocumentContext? documentContext)
+    {
+        string unquoted = token;
+        if (token.Length >= 2 && token[0] == '"' && token[token.Length - 1] == '"')
+            unquoted = token.Substring(1, token.Length - 2);
+
+        if (TryGetSingleNestedInstruction(unquoted, out string nestedInstruction))
+        {
+            DxpFieldEvalResult nested = await EvalAsync(
+                new DxpFieldInstruction(nestedInstruction), documentContext);
+            if (nested.Value.HasValue)
+                return nested.Value.Value;
+            return new DxpFieldValue(nested.Text ?? string.Empty);
+        }
+
         string expanded = await ExpandNestedFieldsAsync(unquoted, documentContext);
 
         var resolver = Context.ValueResolver ?? _resolver;
         DxpFieldValue? resolvedValue = await resolver.ResolveAsync(expanded, DxpFieldValueKindHint.Any, Context);
         if (resolvedValue.HasValue)
-        {
-            var value = resolvedValue.Value;
-            if (value.StringValue != null)
-                return value.StringValue;
-            if (value.NumberValue != null)
-                return value.NumberValue.Value.ToString(Context.Culture ?? CultureInfo.CurrentCulture);
-        }
+            return resolvedValue.Value;
 
         if (_logger?.IsEnabled(LogLevel.Debug) == true)
             _logger.LogDebug("Value resolver miss for '{Token}'.", expanded);
-        return expanded;
+        return new DxpFieldValue(expanded);
+    }
+
+    private static bool TryGetSingleNestedInstruction(string text, out string instruction)
+    {
+        string trimmed = text.Trim();
+        instruction = string.Empty;
+        if (trimmed.Length < 2 || trimmed[0] != '{')
+            return false;
+
+        int depth = 0;
+        bool inQuote = false;
+        for (int index = 0; index < trimmed.Length; index++)
+        {
+            char ch = trimmed[index];
+            if (ch == '"' && (index == 0 || trimmed[index - 1] != '\\'))
+                inQuote = !inQuote;
+            if (inQuote)
+                continue;
+            if (ch == '{')
+                depth++;
+            else if (ch == '}' && --depth == 0)
+            {
+                if (index != trimmed.Length - 1)
+                    return false;
+                instruction = trimmed.Substring(1, trimmed.Length - 2).Trim();
+                return instruction.Length > 0;
+            }
+            if (depth < 0)
+                return false;
+        }
+        return false;
     }
 
     private async Task<string> ExpandNestedTextAsync(string token, DxpIDocumentContext? documentContext)
@@ -1314,6 +1391,19 @@ public sealed class DxpFieldEval
         }
 
         return sb.ToString();
+    }
+
+    private static DxpFieldValue? TryGetSingleDatabaseValue(
+        DxpDatabaseResult? result,
+        DxpDatabaseRequest request)
+    {
+        if (result == null || request.IncludeColumnHeadings)
+            return null;
+        IReadOnlyList<IReadOnlyList<DxpFieldValue?>> rows =
+            SelectDatabaseRows(result.Rows, request).ToList();
+        if (rows.Count != 1 || rows[0].Count != 1 || !rows[0][0].HasValue)
+            return null;
+        return rows[0][0]!.Value;
     }
 
     internal string FormatDatabaseCellValue(DxpFieldValue? value) => FormatDatabaseCell(value);

@@ -15,6 +15,7 @@ public sealed partial class DxpFieldEvalContext
     private readonly Dictionary<string, string?> _documentProperties = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, DxpFieldValue> _documentPropertyValues = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, DxpFieldNodeBuffer> _bookmarkNodes = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, DxpFieldValue> _bookmarkValues = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, string> _mergeFieldAliases = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, int> _sequences = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, string> _numberedItems = new(StringComparer.OrdinalIgnoreCase);
@@ -148,6 +149,7 @@ public sealed partial class DxpFieldEvalContext
         _docVariables.Clear();
         _docVariableNodes.Clear();
         _bookmarkNodes.Clear();
+        _bookmarkValues.Clear();
         _sequences.Clear();
         _numberedItems.Clear();
         _sequenceResetKeys.Clear();
@@ -199,6 +201,8 @@ public sealed partial class DxpFieldEvalContext
 
     public void SetBookmarkNodes(string name, DxpFieldNodeBuffer nodes) => _bookmarkNodes[name] = nodes;
     public bool TryGetBookmarkNodes(string name, out DxpFieldNodeBuffer nodes) => _bookmarkNodes.TryGetValue(name, out nodes!);
+    public void SetBookmarkValue(string name, DxpFieldValue value) => _bookmarkValues[name] = value;
+    public bool TryGetBookmarkValue(string name, out DxpFieldValue value) => _bookmarkValues.TryGetValue(name, out value);
 
     public void SetMergeFieldAlias(string name, string targetName) => _mergeFieldAliases[name] = targetName;
     public bool TryGetMergeFieldAlias(string name, out string? targetName)
