@@ -162,7 +162,7 @@ internal class DxpValueFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame
         }
 
         if (EvalContext.FieldDepth > 1 && Next is IDxpNestedFieldResultSink nestedSink &&
-            nestedSink.TryRecordNestedFieldResult(resultText))
+            nestedSink.TryRecordNestedFieldResult(result))
             return true;
 
         var parser = new DxpFieldParser();

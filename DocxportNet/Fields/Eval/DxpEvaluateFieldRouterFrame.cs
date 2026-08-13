@@ -26,6 +26,9 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
     private bool _inResult;
     private readonly List<FieldEvent> _events = new();
     private readonly Stack<IDisposable> _replayScopes = new();
+    private DxpFieldValue? _capturedSetScalar;
+    private bool _capturedSetScalarIsExact;
+    private int _nestedSetResultCount;
 
     public DxpEvaluateFieldRouterFrame(
         DxpIVisitor next,
@@ -211,6 +214,9 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
             return;
         }
 
+        if (delegateFrame is DxpSetFieldEvalFrame setFrame && _capturedSetScalarIsExact)
+            setFrame.CapturedScalar = _capturedSetScalar;
+
         if (_logger?.IsEnabled(LogLevel.Debug) == true)
         {
             _logger.LogDebug(
@@ -238,12 +244,21 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         return true;
     }
 
-    public bool TryRecordNestedFieldResult(string value)
+    public bool TryRecordNestedFieldResult(DxpFieldEvalResult result)
     {
         string? fieldType = new DxpFieldParser().Parse(InstructionText ?? string.Empty).Ast.FieldType;
         if (!string.Equals(fieldType, "SET", StringComparison.OrdinalIgnoreCase))
             return false;
 
+        _nestedSetResultCount++;
+        var currentParse = new DxpFieldParser().Parse(InstructionText ?? string.Empty);
+        bool onlySetNamePrecedesResult = currentParse.Ast.ArgumentsText != null &&
+            DxpFieldTokenization.TokenizeArgs(currentParse.Ast.ArgumentsText).Count == 1;
+        _capturedSetScalarIsExact = _nestedSetResultCount == 1 &&
+            onlySetNamePrecedesResult && result.Value.HasValue;
+        _capturedSetScalar = _capturedSetScalarIsExact ? result.Value : null;
+
+        string value = result.Text ?? string.Empty;
         bool needsSpace = !string.IsNullOrEmpty(InstructionText) &&
             !char.IsWhiteSpace(InstructionText![InstructionText.Length - 1]);
         string escaped = value.Replace("\"", "\\\"");
@@ -370,5 +385,5 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
 
 internal interface IDxpNestedFieldResultSink
 {
-    bool TryRecordNestedFieldResult(string value);
+    bool TryRecordNestedFieldResult(DxpFieldEvalResult result);
 }

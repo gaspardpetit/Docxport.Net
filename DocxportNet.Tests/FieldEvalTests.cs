@@ -1465,6 +1465,66 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     }
 
     [Fact]
+    public async Task EvalAsync_DatabaseSingleCellPreservesDateValueThroughSetAndBookmarkFormat()
+    {
+        var dueDate = new DateTimeOffset(2026, 11, 30, 0, 0, 0, TimeSpan.Zero);
+        var provider = new MockDatabaseProvider {
+            Result = new DxpDatabaseResult(
+                [new DxpDatabaseColumn("DueDate", DxpFieldValueKind.DateTime)],
+                [new DxpFieldValue?[] { new(dueDate) }])
+        };
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.Culture = CultureInfo.GetCultureInfo("en-US");
+        eval.Context.DatabaseProvider = provider;
+
+        var set = await eval.EvalAsync(new DxpFieldInstruction(
+            "SET InitialDate \"{ DATABASE \\s \\\"SELECT DueDate\\\" }\""));
+        var formatted = await eval.EvalAsync(new DxpFieldInstruction(
+            "InitialDate \\@ \"MMMM d, yyyy\""));
+
+        Assert.Equal(DxpFieldValueKind.DateTime, set.Value?.Kind);
+        Assert.Equal(dueDate, set.Value?.DateTimeValue);
+        Assert.True(eval.Context.TryGetBookmarkValue("InitialDate", out var stored));
+        Assert.Equal(DxpFieldValueKind.DateTime, stored.Kind);
+        Assert.Equal("November 30, 2026", formatted.Text);
+        Assert.Equal(DxpFieldValueKind.DateTime, formatted.Value?.Kind);
+    }
+
+    [Fact]
+    public async Task EvalAsync_SetPreservesFormulaNumberForLaterNumericFormatting()
+    {
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.Culture = CultureInfo.InvariantCulture;
+
+        var set = await eval.EvalAsync(new DxpFieldInstruction(
+            "SET Total \"{ = 1 + 2 }\""));
+        var formatted = await eval.EvalAsync(new DxpFieldInstruction(
+            "Total \\# \"0.00\""));
+
+        Assert.Equal(DxpFieldValueKind.Number, set.Value?.Kind);
+        Assert.Equal(3, set.Value?.NumberValue);
+        Assert.Equal("3.00", formatted.Text);
+        Assert.Equal(DxpFieldValueKind.Number, formatted.Value?.Kind);
+    }
+
+    [Fact]
+    public async Task EvalAsync_IfPreservesSelectedScalarButCompositionFallsBackToString()
+    {
+        var eval = new DxpFieldEval(logger: Logger);
+
+        var selected = await eval.EvalAsync(new DxpFieldInstruction(
+            "IF 1 = 1 \"{ = 2 + 3 }\" \"none\""));
+        var composed = await eval.EvalAsync(new DxpFieldInstruction(
+            "SET Label \"Amount: { = 2 + 3 }\""));
+
+        Assert.Equal("5", selected.Text);
+        Assert.Equal(DxpFieldValueKind.Number, selected.Value?.Kind);
+        Assert.Equal(5, selected.Value?.NumberValue);
+        Assert.Equal("Amount: 5", composed.Text);
+        Assert.Equal(DxpFieldValueKind.String, composed.Value?.Kind);
+    }
+
+    [Fact]
     public async Task EvalAsync_DatabaseWithoutProviderReturnsEmpty()
     {
         var eval = new DxpFieldEval(logger: Logger);

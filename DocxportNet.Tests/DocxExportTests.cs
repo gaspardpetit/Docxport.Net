@@ -442,8 +442,8 @@ public sealed class DocxExportTests : TestBase<DocxExportTests>
         var eval = new DxpFieldEval();
         eval.Context.DatabaseProvider = new FixedDatabaseProvider(
             new DxpDatabaseResult(
-                [new DxpDatabaseColumn("Value")],
-                [new DxpFieldValue?[] { new("900") }]));
+                [new DxpDatabaseColumn("Value", DxpFieldValueKind.Number)],
+                [new DxpFieldValue?[] { new(900) }]));
 
         byte[] outputBytes = DxpDocxExport.Export(sourceBytes,
             new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate }, Logger, eval);
@@ -454,6 +454,9 @@ public sealed class DocxExportTests : TestBase<DocxExportTests>
         Assert.Empty(body.Elements<Table>());
         Assert.Empty(body.Descendants<FieldChar>());
         Assert.Empty(body.Descendants<SimpleField>());
+        Assert.True(eval.Context.TryGetBookmarkValue("Lookup", out var lookup));
+        Assert.Equal(DxpFieldValueKind.Number, lookup.Kind);
+        Assert.Equal(900, lookup.NumberValue);
         Assert.Empty(new OpenXmlValidator().Validate(output));
     }
 
