@@ -7,6 +7,21 @@ namespace DocxportNet.Tests;
 public class FieldFormattingTests
 {
     [Fact]
+    public void Parser_QuotedDatePictureIgnoresTrailingMalformedFieldText()
+    {
+        var parser = new DxpFieldParser();
+        var parsed = parser.Parse("DOCVARIABLE FilingDate \\@ \"MMMM d, yyyy\"v");
+        var formatter = new DxpFieldFormatter();
+
+        string result = formatter.Format(
+            new DxpFieldValue(new DateTime(2019, 12, 5)),
+            parsed.Ast.FormatSpecs,
+            new DxpFieldEvalContext { Culture = CultureInfo.GetCultureInfo("en-US") });
+
+        Assert.Equal("December 5, 2019", result);
+    }
+
+    [Fact]
     public void Parser_ExtractsFieldTypeAndSwitches()
     {
         var parser = new DxpFieldParser();
