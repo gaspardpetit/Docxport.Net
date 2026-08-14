@@ -164,9 +164,9 @@ public sealed class DxpFieldParser
                 if (trimmed[i] != '"' || trimmed[i - 1] == '\\')
                     continue;
 
-                // A format switch takes one quoted argument. Legacy fields can
-                // contain stray text after its closing quote; that text is not
-                // part of the format picture and must not make the quotes literal.
+                // A format switch takes one quoted argument. Word ignores legacy
+                // suffixes after its closing quote; they are not part of the
+                // format picture and must not make the quotes literal.
                 return trimmed.Substring(1, i - 1).Replace("\\\"", "\"");
             }
         }

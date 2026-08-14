@@ -7,7 +7,7 @@ namespace DocxportNet.Tests;
 public class FieldFormattingTests
 {
     [Fact]
-    public void Parser_QuotedDatePictureIgnoresTrailingMalformedFieldText()
+    public void Parser_QuotedDatePictureIgnoresTrailingLegacyFieldText()
     {
         var parser = new DxpFieldParser();
         var parsed = parser.Parse("DOCVARIABLE FilingDate \\@ \"MMMM d, yyyy\"v");
