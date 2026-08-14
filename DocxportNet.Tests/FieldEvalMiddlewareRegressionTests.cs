@@ -600,9 +600,9 @@ public sealed class FieldEvalMiddlewareRegressionTests : TestBase<FieldEvalMiddl
     {
         var prompts = new List<string>();
         var eval = new DocxportNet.Fields.DxpFieldEval(new DocxportNet.Fields.DxpFieldEvalDelegates {
-            AskAsync = (prompt, _) => {
-                prompts.Add(prompt);
-                return Task.FromResult<DocxportNet.Fields.DxpFieldValue?>(new(prompt));
+            AskAsync = (request, _) => {
+                prompts.Add(request.PromptText ?? string.Empty);
+                return Task.FromResult<DocxportNet.Fields.DxpFieldValue?>(new(request.PromptText ?? string.Empty));
             }
         }, logger: Logger);
         using var document = CreateIfWithNestedFieldsDoc(

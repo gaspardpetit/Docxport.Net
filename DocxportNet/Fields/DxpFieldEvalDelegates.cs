@@ -7,6 +7,6 @@ public sealed class DxpFieldEvalDelegates
     public Func<string, DxpFieldEvalContext, Task<DxpFieldValue?>>? ResolveDocVariableAsync { get; init; }
     public Func<string, DxpFieldEvalContext, Task<DxpFieldValue?>>? ResolveDocumentPropertyAsync { get; init; }
     public Func<string, DxpFieldEvalContext, Task<DxpFieldValue?>>? ResolveMergeFieldAsync { get; init; }
-    public Func<string, DxpFieldEvalContext, Task<DxpFieldValue?>>? AskAsync { get; init; }
+    public Func<DxpAskRequest, DxpFieldEvalContext, Task<DxpFieldValue?>>? AskAsync { get; init; }
     public Func<DxpFillInRequest, DxpFieldEvalContext, Task<DxpFieldValue?>>? FillInAsync { get; init; }
 }
