@@ -157,8 +157,19 @@ public sealed class DxpFieldParser
         if (string.IsNullOrWhiteSpace(value))
             return value;
         string? trimmed = value?.Trim();
-        if (trimmed?.Length >= 2 && trimmed[0] == '"' && trimmed[trimmed.Length - 1] == '"')
-            return trimmed.Substring(1, trimmed.Length - 2);
+        if (trimmed?.Length >= 2 && trimmed[0] == '"')
+        {
+            for (int i = 1; i < trimmed.Length; i++)
+            {
+                if (trimmed[i] != '"' || trimmed[i - 1] == '\\')
+                    continue;
+
+                // A format switch takes one quoted argument. Legacy fields can
+                // contain stray text after its closing quote; that text is not
+                // part of the format picture and must not make the quotes literal.
+                return trimmed.Substring(1, i - 1).Replace("\\\"", "\"");
+            }
+        }
         return trimmed;
     }
 
