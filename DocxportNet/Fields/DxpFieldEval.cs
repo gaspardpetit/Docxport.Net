@@ -527,7 +527,14 @@ public sealed class DxpFieldEval
                             allowCacheOnNull: false,
                             _delegates.AskAsync == null
                                 ? null
-                                : prompt => _delegates.AskAsync(prompt ?? string.Empty, Context));
+                                : _ => _delegates.AskAsync(
+                                    new DxpAskRequest(
+                                        bookmark,
+                                        ast.RawText,
+                                        promptSpec.PromptText,
+                                        promptSpec.DefaultText,
+                                        promptSpec.AskOnce),
+                                    Context));
                         string resolved = resolution?.Text ?? string.Empty;
                         if (resolution != null)
                             RememberPromptResponse(promptSpec, resolution);

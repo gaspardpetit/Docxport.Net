@@ -851,7 +851,7 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
     private DxpFieldEval CreateEvalWithAsk()
     {
         var delegates = new DxpFieldEvalDelegates {
-            AskAsync = (prompt, _) => Task.FromResult<DxpFieldValue?>(prompt switch {
+            AskAsync = (request, _) => Task.FromResult<DxpFieldValue?>(request.PromptText switch {
                 "Name?" => new DxpFieldValue("Bob"),
                 "Hi Bob?" => new DxpFieldValue("Montreal"),
                 _ => null

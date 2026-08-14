@@ -877,7 +877,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
 """;
 
         var eval = new DxpFieldEval(new DxpFieldEvalDelegates {
-            AskAsync = (prompt, _) => Task.FromResult<DxpFieldValue?>(prompt == "Name?" ? new DxpFieldValue("Ana") : null)
+            AskAsync = (request, _) => Task.FromResult<DxpFieldValue?>(request.PromptText == "Name?" ? new DxpFieldValue("Ana") : null)
         }, logger: Logger);
 
         var actual = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml, eval));
@@ -1419,7 +1419,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     public async Task EvalAsync_AskSetsBookmarkAndUsesDefault()
     {
         var eval = new DxpFieldEval(new DxpFieldEvalDelegates {
-            AskAsync = (prompt, ctx) => Task.FromResult<DxpFieldValue?>(prompt == "Name?" ? new DxpFieldValue("Ana") : null)
+            AskAsync = (request, ctx) => Task.FromResult<DxpFieldValue?>(request.PromptText == "Name?" ? new DxpFieldValue("Ana") : null)
         }, logger: Logger);
 
         var asked = await eval.EvalAsync(new DxpFieldInstruction("ASK Name \"Name?\" \\d \"Unknown\""));
@@ -1434,10 +1434,34 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     }
 
     [Fact]
+    public async Task EvalAsync_AskSuppliesStableRequestMetadata()
+    {
+        DxpAskRequest? captured = null;
+        var eval = new DxpFieldEval(new DxpFieldEvalDelegates {
+            AskAsync = (request, _) => {
+                captured = request;
+                return Task.FromResult<DxpFieldValue?>(new("August 1, 2025"));
+            }
+        }, logger: Logger);
+        const string instruction = "ASK DateLO \"Indicate the Office Action date\" \\d \"Unknown\" \\o";
+
+        _ = await eval.EvalAsync(new DxpFieldInstruction(instruction));
+        var result = await eval.EvalAsync(new DxpFieldInstruction("REF DateLO"));
+
+        Assert.NotNull(captured);
+        Assert.Equal("DateLO", captured.BookmarkName);
+        Assert.Equal(instruction, captured.InstructionText);
+        Assert.Equal("Indicate the Office Action date", captured.PromptText);
+        Assert.Equal("Unknown", captured.DefaultText);
+        Assert.True(captured.AskOnce);
+        Assert.Equal("August 1, 2025", result.Text);
+    }
+
+    [Fact]
     public async Task EvalAsync_AskWithBlankDefaultStoresBlankBookmark()
     {
         var eval = new DxpFieldEval(new DxpFieldEvalDelegates {
-            AskAsync = (prompt, ctx) => Task.FromResult<DxpFieldValue?>(null)
+            AskAsync = (request, ctx) => Task.FromResult<DxpFieldValue?>(null)
         }, logger: Logger);
 
         var asked = await eval.EvalAsync(new DxpFieldInstruction("ASK Answer \"Prompt\" \\d \"\""));
@@ -1452,7 +1476,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     {
         int calls = 0;
         var eval = new DxpFieldEval(new DxpFieldEvalDelegates {
-            AskAsync = (prompt, ctx) => Task.FromResult<DxpFieldValue?>(calls++ == 0 ? new DxpFieldValue("First") : null)
+            AskAsync = (request, ctx) => Task.FromResult<DxpFieldValue?>(calls++ == 0 ? new DxpFieldValue("First") : null)
         }, logger: Logger);
 
         _ = await eval.EvalAsync(new DxpFieldInstruction("ASK FirstBookmark \"Prompt 1\""));
@@ -1467,7 +1491,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     {
         int calls = 0;
         var eval = new DxpFieldEval(new DxpFieldEvalDelegates {
-            AskAsync = (prompt, ctx) => Task.FromResult<DxpFieldValue?>(calls++ == 0 ? new DxpFieldValue("Once") : new DxpFieldValue("Later"))
+            AskAsync = (request, ctx) => Task.FromResult<DxpFieldValue?>(calls++ == 0 ? new DxpFieldValue("Once") : new DxpFieldValue("Later"))
         }, logger: Logger);
 
         _ = await eval.EvalAsync(new DxpFieldInstruction("ASK Answer \"Prompt\" \\o"));
@@ -1483,8 +1507,8 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     {
         string? capturedPrompt = null;
         var eval = new DxpFieldEval(new DxpFieldEvalDelegates {
-            AskAsync = (prompt, ctx) => {
-                capturedPrompt = prompt;
+            AskAsync = (request, ctx) => {
+                capturedPrompt = request.PromptText;
                 return Task.FromResult<DxpFieldValue?>(null);
             }
         }, logger: Logger);
@@ -3073,7 +3097,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
 
         int calls = 0;
         var eval = new DxpFieldEval(new DxpFieldEvalDelegates {
-            AskAsync = (prompt, ctx) => Task.FromResult<DxpFieldValue?>(calls++ == 0 ? new DxpFieldValue("Once") : new DxpFieldValue("Later"))
+            AskAsync = (request, ctx) => Task.FromResult<DxpFieldValue?>(calls++ == 0 ? new DxpFieldValue("Once") : new DxpFieldValue("Later"))
         }, logger: Logger);
 
         var first = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml, eval));
