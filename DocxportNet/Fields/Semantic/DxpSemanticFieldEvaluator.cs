@@ -250,6 +250,7 @@ internal sealed class DxpSemanticFieldEvaluator
             source = await resolver.ResolveAsync(
                 new DxpIncludeTextRequest(path), _eval.Context, cancellationToken);
         }
+        catch (OperationCanceledException) { throw; }
         catch (Exception exception) when (_eval.Options.UseCacheOnError)
         {
             return IncludeFallback(expression, error: true, exception);
@@ -274,6 +275,7 @@ internal sealed class DxpSemanticFieldEvaluator
             {
                 content = await _eval.Context.ConvertHtmlIncludeAsync(content, cancellationToken);
             }
+            catch (OperationCanceledException) { throw; }
             catch (Exception exception) when (_eval.Options.UseCacheOnError)
             {
                 return IncludeFallback(expression, error: true, exception);
