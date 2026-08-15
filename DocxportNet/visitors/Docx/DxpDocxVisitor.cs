@@ -22,6 +22,7 @@ public sealed class DxpDocxVisitor : DxpVisitor, IDisposable, DxpIFieldEvalProvi
     private WordprocessingDocument? _outputDocument;
     private readonly HashSet<OpenXmlPart> _sourceParts = new();
     private readonly Dictionary<(OpenXmlPart Part, string RelationshipId), string> _importedRelationships = new();
+    private readonly Dictionary<(MainDocumentPart Part, int NumberId), int> _importedNumbering = new();
     private int _suppressDepth;
     private bool _completed;
     private Footnotes? _rebuiltFootnotes;
@@ -153,6 +154,7 @@ public sealed class DxpDocxVisitor : DxpVisitor, IDisposable, DxpIFieldEvalProvi
     {
         ImportEmbeddedStyle(p.ParagraphProperties?.ParagraphStyleId?.Val?.Value, d);
         var shell = CloneShell(p);
+        ImportEmbeddedNumbering(shell, d);
         if (d.CurrentPart != null && !_sourceParts.Contains(d.CurrentPart))
         {
             foreach (var reference in shell.Descendants()
@@ -201,6 +203,60 @@ public sealed class DxpDocxVisitor : DxpVisitor, IDisposable, DxpIFieldEvalProvi
             ?? destinationMain.AddNewPart<StyleDefinitionsPart>();
         destinationPart.Styles ??= new Styles();
         ImportStyleAndDependencies(styleId!, sourceStyles, destinationPart.Styles, new HashSet<string>(StringComparer.Ordinal));
+
+        Styles? sourceEffects = childContext.MainDocumentPart?.StylesWithEffectsPart?.Styles;
+        if (sourceEffects != null)
+        {
+            StylesWithEffectsPart effectsPart = destinationMain.StylesWithEffectsPart
+                ?? destinationMain.AddNewPart<StylesWithEffectsPart>();
+            effectsPart.Styles ??= new Styles();
+            ImportStyleAndDependencies(styleId!, sourceEffects, effectsPart.Styles,
+                new HashSet<string>(StringComparer.Ordinal));
+        }
+    }
+
+    private void ImportEmbeddedNumbering(Paragraph paragraph, DxpIDocumentContext context)
+    {
+        NumberingId? numberId = paragraph.ParagraphProperties?.NumberingProperties?.NumberingId;
+        if (numberId?.Val?.Value is not int sourceNumberId || context.CurrentPart == null ||
+            _sourceParts.Contains(context.CurrentPart) || context is not DxpDocumentContext childContext ||
+            childContext.MainDocumentPart is not MainDocumentPart sourceMain ||
+            _outputDocument?.MainDocumentPart is not MainDocumentPart destinationMain)
+            return;
+
+        if (_importedNumbering.TryGetValue((sourceMain, sourceNumberId), out int existing))
+        {
+            numberId.Val = existing;
+            return;
+        }
+
+        Numbering? source = sourceMain.NumberingDefinitionsPart?.Numbering;
+        NumberingInstance? instance = source?.Elements<NumberingInstance>()
+            .FirstOrDefault(value => value.NumberID?.Value == sourceNumberId);
+        int? sourceAbstractId = instance?.AbstractNumId?.Val?.Value;
+        AbstractNum? abstractNumber = sourceAbstractId == null ? null : source!.Elements<AbstractNum>()
+            .FirstOrDefault(value => value.AbstractNumberId?.Value == sourceAbstractId.Value);
+        if (instance == null || abstractNumber == null)
+            return;
+
+        NumberingDefinitionsPart destinationPart = destinationMain.NumberingDefinitionsPart
+            ?? destinationMain.AddNewPart<NumberingDefinitionsPart>();
+        destinationPart.Numbering ??= new Numbering();
+        Numbering destination = destinationPart.Numbering;
+        int nextAbstractId = destination.Elements<AbstractNum>()
+            .Select(value => value.AbstractNumberId?.Value ?? -1).DefaultIfEmpty(-1).Max() + 1;
+        int nextNumberId = destination.Elements<NumberingInstance>()
+            .Select(value => value.NumberID?.Value ?? 0).DefaultIfEmpty(0).Max() + 1;
+
+        var abstractClone = (AbstractNum)abstractNumber.CloneNode(true);
+        abstractClone.AbstractNumberId = nextAbstractId;
+        var instanceClone = (NumberingInstance)instance.CloneNode(true);
+        instanceClone.NumberID = nextNumberId;
+        instanceClone.AbstractNumId ??= new AbstractNumId();
+        instanceClone.AbstractNumId.Val = nextAbstractId;
+        destination.Append(abstractClone, instanceClone);
+        _importedNumbering[(sourceMain, sourceNumberId)] = nextNumberId;
+        numberId.Val = nextNumberId;
     }
 
     private static void ImportStyleAndDependencies(
@@ -591,6 +647,7 @@ public sealed class DxpDocxVisitor : DxpVisitor, IDisposable, DxpIFieldEvalProvi
         _outputDocument = null;
         _sourceParts.Clear();
         _importedRelationships.Clear();
+        _importedNumbering.Clear();
     }
 
     private static void NormalizeInvalidBlockMarkup(WordprocessingDocument document)

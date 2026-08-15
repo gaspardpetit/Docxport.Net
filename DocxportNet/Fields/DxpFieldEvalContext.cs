@@ -10,6 +10,8 @@ namespace DocxportNet.Fields;
 
 public sealed partial class DxpFieldEvalContext
 {
+    internal Func<string?, bool>? FieldEvaluationFilter { get; set; }
+    internal CancellationToken CancellationToken { get; set; }
     private readonly Dictionary<string, string?> _docVariables = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, DxpFieldNodeBuffer> _docVariableNodes = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, string?> _documentProperties = new(StringComparer.OrdinalIgnoreCase);

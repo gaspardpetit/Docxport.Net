@@ -317,6 +317,8 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
 
     private bool TryReplaySemanticExpression(DxpIDocumentContext context)
     {
+        if (EvalContext.FieldEvaluationFilter?.Invoke(InstructionText) == false)
+            return false;
         if (EvalContext.PreserveLayoutDependentFields &&
             DxpFieldInstructionClassifier.IsPaginationDependentInstruction(InstructionText))
             return false;
@@ -343,7 +345,8 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
                 DxpFieldExpressionSource.Capture(CodeRun, EvalContext),
                 _cachedResult.Length == 0 ? null : _cachedResult.ToString(),
                 DxpFieldExpressionSource.CaptureParagraphFormat(
-                    CodeRun?.Ancestors<Paragraph>().FirstOrDefault())), context).GetAwaiter().GetResult();
+                    CodeRun?.Ancestors<Paragraph>().FirstOrDefault())), context,
+            EvalContext.CancellationToken).GetAwaiter().GetResult();
         if (result.Status == DxpFieldEvalStatus.Failed)
             return false;
 

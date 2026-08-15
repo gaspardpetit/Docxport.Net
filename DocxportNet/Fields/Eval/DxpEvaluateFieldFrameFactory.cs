@@ -13,6 +13,9 @@ internal sealed class DxpEvaluateFieldFrameFactory
         DxpFieldEvalContext context,
         ILogger? logger)
     {
+        if (context.FieldEvaluationFilter?.Invoke(instruction) == false)
+            return new DxpPassthroughFieldEvalFrame(next);
+
         if (context.PreserveLayoutDependentFields &&
             DxpFieldInstructionClassifier.IsPaginationDependentInstruction(instruction))
             return new DxpPassthroughFieldEvalFrame(next);

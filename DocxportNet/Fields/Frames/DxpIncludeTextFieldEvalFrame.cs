@@ -58,8 +58,9 @@ internal sealed class DxpIncludeTextFieldEvalFrame : DxpValueFieldEvalFrame
             source = resolver.ResolveAsync(
                 new DxpIncludeTextRequest(path),
                 EvalContext,
-                CancellationToken.None).GetAwaiter().GetResult();
+                EvalContext.CancellationToken).GetAwaiter().GetResult();
         }
+        catch (OperationCanceledException) { throw; }
         catch (Exception ex)
         {
             Logger?.LogWarning(ex, "INCLUDETEXT source resolution failed for '{Path}'; using cached result.", path);
@@ -80,9 +81,10 @@ internal sealed class DxpIncludeTextFieldEvalFrame : DxpValueFieldEvalFrame
         {
             try
             {
-                content = EvalContext.ConvertHtmlIncludeAsync(source.Content, CancellationToken.None)
+                content = EvalContext.ConvertHtmlIncludeAsync(source.Content, EvalContext.CancellationToken)
                     .GetAwaiter().GetResult();
             }
+            catch (OperationCanceledException) { throw; }
             catch (Exception ex)
             {
                 Logger?.LogWarning(ex, "INCLUDETEXT HTML conversion failed for '{Path}'; using cached result.", path);
