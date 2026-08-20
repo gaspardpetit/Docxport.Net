@@ -13,7 +13,7 @@ using System.Runtime.CompilerServices;
 
 namespace DocxportNet.Walker;
 
-public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
+public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware, IDxpEmbeddedWalkCompletion
 {
     private readonly DxpIVisitor _next;
     public override DxpIVisitor Next => _currentAdapter ?? _next;
@@ -32,6 +32,7 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
     private DxpIVisitor? _currentAdapter;
     private IDisposable? _openCrossParagraphFieldParagraph;
     private Paragraph? _openCrossParagraphSourceParagraph;
+    private DxpIDocumentContext? _openCrossParagraphDocumentContext;
     private Paragraph? _activeSourceParagraph;
     private DxpIDocumentContext? _activeDocumentContext;
     private DxpIParagraphContext? _activeParagraphContext;
@@ -70,6 +71,28 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
     protected DxpIVisitor GetChainedNext()
         => _currentAdapter ?? _next;
 
+    public bool HasPendingEmbeddedWork(DxpIDocumentContext documentContext)
+        => (_openCrossParagraphFieldParagraph != null &&
+            ReferenceEquals(_openCrossParagraphDocumentContext, documentContext))
+        || (_next is IDxpEmbeddedWalkCompletion completion &&
+            completion.HasPendingEmbeddedWork(documentContext));
+
+    public void CompleteEmbeddedWalk(DxpIDocumentContext documentContext)
+    {
+        if (_openCrossParagraphFieldParagraph != null &&
+            ReferenceEquals(_openCrossParagraphDocumentContext, documentContext))
+        {
+            var open = _openCrossParagraphFieldParagraph;
+            _openCrossParagraphFieldParagraph = null;
+            _openCrossParagraphSourceParagraph = null;
+            _openCrossParagraphDocumentContext = null;
+            open.Dispose();
+        }
+        ReplayDeferredStructuredResults(documentContext);
+        if (_next is IDxpEmbeddedWalkCompletion completion)
+            completion.CompleteEmbeddedWalk(documentContext);
+    }
+
     public override IDisposable VisitDocumentBegin(WordprocessingDocument doc, DxpIDocumentContext documentContext)
     {
         if (!_initialized)
@@ -89,6 +112,7 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
         _openCrossParagraphFieldParagraph?.Dispose();
         _openCrossParagraphFieldParagraph = null;
         _openCrossParagraphSourceParagraph = null;
+        _openCrossParagraphDocumentContext = null;
         _activeSourceParagraph = null;
         _activeDocumentContext = null;
         _activeParagraphContext = null;
@@ -198,6 +222,7 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
             var open = _openCrossParagraphFieldParagraph;
             _openCrossParagraphFieldParagraph = null;
             _openCrossParagraphSourceParagraph = null;
+            _openCrossParagraphDocumentContext = null;
             open.Dispose();
 
             _suppressCrossParagraphContinuationParagraphs = false;
@@ -300,6 +325,7 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
         {
             var open = _openCrossParagraphFieldParagraph;
             _openCrossParagraphFieldParagraph = null;
+            _openCrossParagraphDocumentContext = null;
             _suppressCrossParagraphContinuationParagraphs = true;
             open.Dispose();
         }
@@ -348,6 +374,7 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
             {
                 _openCrossParagraphFieldParagraph = combined;
                 _openCrossParagraphSourceParagraph = p;
+                _openCrossParagraphDocumentContext = d;
                 _activeSourceParagraph = null;
                 _activeDocumentContext = null;
                 _activeParagraphContext = null;
@@ -360,6 +387,7 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware
                 var open = _openCrossParagraphFieldParagraph;
                 _openCrossParagraphFieldParagraph = null;
                 _openCrossParagraphSourceParagraph = null;
+                _openCrossParagraphDocumentContext = null;
                 open.Dispose();
             }
             _activeSourceParagraph = null;

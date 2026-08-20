@@ -134,7 +134,7 @@ public class DxpWalker
         }
     }
 
-    internal void AcceptEmbeddedBody(
+    internal DxpDocumentContext AcceptEmbeddedBody(
         WordprocessingDocument doc,
         DxpIVisitor v,
         IReadOnlyList<OpenXmlElement>? selectedBlocks = null)
@@ -146,28 +146,7 @@ public class DxpWalker
         _complexFieldDepth = 0;
         _complexFieldInSimpleDepth = 0;
 
-        var documentContext = new DxpDocumentContext(this, doc) {
-            ResetStyleBeforeHyperlink = true,
-            MainDocumentPart = doc.MainDocumentPart,
-            DocumentSettings = doc.MainDocumentPart.DocumentSettingsPart?.Settings,
-            CoreProperties = doc.PackageProperties,
-            ExtendedProperties = doc.ExtendedFilePropertiesPart?.Properties
-        };
-
-        var props = doc.CustomFilePropertiesPart?.Properties;
-        var customList = props != null
-            ? props.Elements<CustomDocumentProperty>()
-                .Select(p => new CustomFileProperty(
-                    p.Name?.Value ?? string.Empty,
-                    p.FirstChild?.LocalName,
-                    p.FirstChild?.InnerText))
-                .ToList()
-            : new List<CustomFileProperty>();
-        documentContext.CustomProperties = customList;
-        documentContext.DocumentProperties = new DxpDocumentProperties(
-            doc.PackageProperties,
-            customList,
-            DxpTimeline.BuildTimeline(doc));
+        var documentContext = CreateEmbeddedDocumentContext(doc);
 
         foreach (var block in selectedBlocks ?? body.ChildElements)
         {
@@ -175,9 +154,10 @@ public class DxpWalker
                 continue;
             WalkBlock(block, documentContext, v);
         }
+        return documentContext;
     }
 
-    internal void AcceptEmbeddedBodySpliced(
+    internal DxpIDocumentContext AcceptEmbeddedBodySpliced(
         WordprocessingDocument doc,
         DxpIVisitor v,
         DxpIDocumentContext parentContext,
@@ -193,7 +173,7 @@ public class DxpWalker
             before?.Replay(v, parentContext);
             AcceptEmbeddedBody(doc, v, selectedBlocks);
             after?.Replay(v, parentContext);
-            return;
+            return parentContext;
         }
 
         _simpleFieldDepth = 0;
@@ -209,13 +189,13 @@ public class DxpWalker
         if (blocks.Count == 0)
         {
             EmitParentParagraph(parentParagraph, parentDocumentContext, v, before, null, null, after);
-            return;
+            return childContext;
         }
 
         if (blocks.Count == 1 && blocks[0] is Paragraph onlyParagraph && (hasBefore || hasAfter))
         {
             EmitParentParagraph(parentParagraph, parentDocumentContext, v, before, onlyParagraph, childContext, after);
-            return;
+            return childContext;
         }
 
         int first = 0;
@@ -247,6 +227,7 @@ public class DxpWalker
             EmitParentParagraph(parentParagraph, parentDocumentContext, v, null, lastParagraph, childContext, after);
         else if (hasAfter)
             EmitParentParagraph(parentParagraph, parentDocumentContext, v, after, null, null, null);
+        return childContext;
     }
 
     private void EmitParentParagraph(
@@ -288,7 +269,7 @@ public class DxpWalker
             content.Replay(visitor, context);
     }
 
-    private DxpDocumentContext CreateEmbeddedDocumentContext(WordprocessingDocument doc)
+    internal DxpDocumentContext CreateEmbeddedDocumentContext(WordprocessingDocument doc)
     {
         var documentContext = new DxpDocumentContext(this, doc) {
             ResetStyleBeforeHyperlink = true,

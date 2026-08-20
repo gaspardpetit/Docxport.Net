@@ -316,6 +316,35 @@ public sealed class SemanticFieldResultTests : TestBase<SemanticFieldResultTests
     }
 
     [Fact]
+    public void NestedIncludeInFinalCrossParagraphFieldCompletesBeforeChildPackageCloses()
+    {
+        byte[] grandchild = CreateDocument(body => body.Append(
+            new Paragraph(new Run(new RunProperties(new Bold()), new Text("NESTED-CONTENT")))));
+        byte[] child = CreateDocument(body => body.Append(
+            new Paragraph(
+                new Run(new Text("CHILD-BEFORE")),
+                Begin(), Code(" IF 1 = 0 \"OMIT\" \"")),
+            new Paragraph(Code("\" "), End()),
+            new Paragraph(Begin(), Code(" INCLUDETEXT \"grandchild.docx\" "), End())));
+        byte[] root = CreateDocument(body => body.Append(new Paragraph(
+            Begin(), Code(" INCLUDETEXT \"child.docx\" "), End())));
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.IncludeTextResolver = new SelectiveIncludeResolver(
+            new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["child.docx"] = child,
+                ["grandchild.docx"] = grandchild
+            });
+
+        using var output = Open(DxpDocxExport.Export(root, SemanticOptions(), Logger, eval));
+
+        Run nested = Assert.Single(output.MainDocumentPart!.Document.Body!
+            .Descendants<Run>(), run => run.InnerText == "NESTED-CONTENT");
+        Assert.NotNull(nested.RunProperties?.Bold);
+        Assert.Empty(new OpenXmlValidator().Validate(output));
+    }
+
+    [Fact]
     public void AdjacentResolvedIncludesDoNotLeakTheirCachedErrors()
     {
         var resolver = new SelectiveIncludeResolver(new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase)

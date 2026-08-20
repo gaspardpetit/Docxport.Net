@@ -6,7 +6,9 @@ using Microsoft.Extensions.Logging;
 
 namespace DocxportNet.Middleware;
 
-internal sealed class DxpIncludeTextParagraphMiddleware : DxpMiddleware, IDxpIncludeTextSpliceCollector
+internal sealed class DxpIncludeTextParagraphMiddleware : DxpMiddleware,
+    IDxpIncludeTextSpliceCollector,
+    IDxpEmbeddedWalkCompletion
 {
     private readonly DxpIVisitor _next;
     private readonly DxpFieldEvalContext _context;
@@ -26,6 +28,11 @@ internal sealed class DxpIncludeTextParagraphMiddleware : DxpMiddleware, IDxpInc
     }
 
     public override DxpIVisitor Next => _buffer == null ? _next : _recorder;
+
+    public bool HasPendingEmbeddedWork(DxpIDocumentContext documentContext)
+        => (_buffer != null && ReferenceEquals(_documentContext, documentContext))
+        || (_next is IDxpEmbeddedWalkCompletion completion &&
+            completion.HasPendingEmbeddedWork(documentContext));
 
     public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
     {
@@ -57,6 +64,14 @@ internal sealed class DxpIncludeTextParagraphMiddleware : DxpMiddleware, IDxpInc
     {
         if (_rootParagraphClosed)
             Flush(force: true);
+    }
+
+    public void CompleteEmbeddedWalk(DxpIDocumentContext documentContext)
+    {
+        if (_buffer != null && ReferenceEquals(_documentContext, documentContext))
+            Complete();
+        if (_next is IDxpEmbeddedWalkCompletion completion)
+            completion.CompleteEmbeddedWalk(documentContext);
     }
 
     private void Flush() => Flush(force: false);

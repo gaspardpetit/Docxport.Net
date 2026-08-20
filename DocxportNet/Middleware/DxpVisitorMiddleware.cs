@@ -18,4 +18,13 @@ public static class DxpVisitorMiddleware
 
         return current;
     }
+
+    internal static void CompleteEmbeddedWalk(
+        DxpIVisitor pipeline,
+        DxpIDocumentContext documentContext)
+    {
+        if (pipeline is IDxpEmbeddedWalkCompletion completion &&
+            completion.HasPendingEmbeddedWork(documentContext))
+            completion.CompleteEmbeddedWalk(documentContext);
+    }
 }
