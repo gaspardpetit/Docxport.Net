@@ -1,10 +1,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
-using DocumentFormat.OpenXml.Packaging;
 using DocxportNet.API;
 using DocxportNet.Fields.Resolution;
-using DocxportNet.Middleware;
-using DocxportNet.Walker;
 using Microsoft.Extensions.Logging;
 
 namespace DocxportNet.Fields.Frames;
@@ -111,53 +108,16 @@ internal sealed class DxpIncludeTextFieldEvalFrame : DxpValueFieldEvalFrame
 
         try
         {
-            MemoryStream? stream = null;
-            WordprocessingDocument? document = null;
-            try
-            {
-                stream = new MemoryStream(content, writable: false);
-                document = WordprocessingDocument.Open(stream, false);
-                if (document.MainDocumentPart?.Document?.Body == null)
-                    throw new InvalidOperationException("DOCX has no main document body.");
-            }
-            catch (Exception ex) when (ex is OpenXmlPackageException or FileFormatException or InvalidOperationException)
-            {
-                document?.Dispose();
-                stream?.Dispose();
-                Logger?.LogWarning(ex, "INCLUDETEXT source '{Path}' is not a valid DOCX; using cached result.", path);
-                return ReplayCache(d);
-            }
-
-            using (stream)
-            using (document)
-            {
-                IReadOnlyList<DocumentFormat.OpenXml.OpenXmlElement>? blocks = null;
-                if (!string.IsNullOrWhiteSpace(bookmark))
-                {
-                    var body = document.MainDocumentPart!.Document.Body!;
-                    if (!DxpBookmarkRangeProjector.TryProject(body, bookmark!, out var projected, out var error))
-                    {
-                        Logger?.LogWarning("{Error} Using cached INCLUDETEXT result.", error);
-                        return ReplayCache(d);
-                    }
-                    blocks = projected;
-                }
-
-                var pipeline = DxpVisitorMiddleware.Chain(
-                    Next,
-                    next => DxpFieldEvalMiddleware.CreateEvaluatedFieldMiddleware(
-                        next,
-                        Eval,
-                        logger: Logger,
-                        options: new DocxportNet.Fields.Eval.DxpEvaluateFieldMiddlewareOptions
-                        {
-                            PreserveLayoutDependentFields = EvalContext.PreserveLayoutDependentFields,
-                            EmitStructuredDatabaseResults = EvalContext.EmitStructuredDatabaseResults
-                        }),
-                    next => new DxpContextMiddleware(next, Logger));
-                new DxpWalker(Logger).AcceptEmbeddedBody(document, pipeline, blocks);
-                return true;
-            }
+            return DxpEmbeddedIncludeTextRunner.TryRun(
+                path,
+                content,
+                bookmark,
+                Next,
+                Eval,
+                Logger,
+                static (walker, document, pipeline, blocks) =>
+                    walker.AcceptEmbeddedBody(document, pipeline, blocks))
+                || ReplayCache(d);
         }
         finally
         {

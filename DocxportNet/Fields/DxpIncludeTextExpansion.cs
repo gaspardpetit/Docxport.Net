@@ -39,60 +39,25 @@ internal sealed record DxpIncludeTextExpansion(
 
         try
         {
-            MemoryStream? stream = null;
-            DocumentFormat.OpenXml.Packaging.WordprocessingDocument? document = null;
-            try
+            bool emitted = DxpEmbeddedIncludeTextRunner.TryRun(
+                Path,
+                Content,
+                Bookmark,
+                visitor,
+                Eval,
+                Logger,
+                (walker, document, pipeline, blocks) =>
+                {
+                    DxpIDocumentContext childContext = walker.AcceptEmbeddedBodySpliced(
+                        document, pipeline, parentContext, parentParagraph, before, after, blocks);
+                    while (Eval.Context.TryTakeDeferredStructuredFieldResult(out var deferred) && deferred != null)
+                        EmitDeferred(deferred, visitor, parentContext, parentParagraph);
+                    return childContext;
+                });
+            if (!emitted)
             {
-                stream = new MemoryStream(Content, writable: false);
-                document = DocumentFormat.OpenXml.Packaging.WordprocessingDocument.Open(stream, false);
-                if (document.MainDocumentPart?.Document?.Body == null)
-                    throw new InvalidOperationException("DOCX has no main document body.");
-            }
-            catch (Exception ex) when (ex is DocumentFormat.OpenXml.Packaging.OpenXmlPackageException
-                or FileFormatException
-                or InvalidOperationException)
-            {
-                document?.Dispose();
-                stream?.Dispose();
-                Logger?.LogWarning(ex, "INCLUDETEXT source '{Path}' is not a valid DOCX; using cached result.", Path);
                 EmitCache(visitor, parentContext, parentParagraph, before, after);
                 return;
-            }
-
-            using (stream)
-            using (document)
-            {
-                IReadOnlyList<DocumentFormat.OpenXml.OpenXmlElement>? blocks = null;
-                if (!string.IsNullOrWhiteSpace(Bookmark))
-                {
-                    var body = document.MainDocumentPart!.Document.Body!;
-                    if (!Resolution.DxpBookmarkRangeProjector.TryProject(body, Bookmark!, out var projected, out var error))
-                    {
-                        Logger?.LogWarning("{Error} Using cached INCLUDETEXT result.", error);
-                        EmitCache(visitor, parentContext, parentParagraph, before, after);
-                        return;
-                    }
-                    blocks = projected;
-                }
-
-                var pipeline = DocxportNet.Middleware.DxpVisitorMiddleware.Chain(
-                    visitor,
-                    next => DxpFieldEvalMiddleware.CreateEvaluatedFieldMiddleware(
-                        next,
-                        Eval,
-                        logger: Logger,
-                        options: new DocxportNet.Fields.Eval.DxpEvaluateFieldMiddlewareOptions
-                        {
-                            PreserveLayoutDependentFields = Eval.Context.PreserveLayoutDependentFields,
-                            EmitStructuredDatabaseResults = Eval.Context.EmitStructuredDatabaseResults
-                        }),
-                    next => new DocxportNet.Middleware.DxpContextMiddleware(next, Logger));
-                new DxpWalker(Logger).AcceptEmbeddedBodySpliced(document, pipeline, parentContext, parentParagraph, before, after, blocks);
-                // Embedded bodies do not open a document/section visitor scope. Flush a
-                // structured result produced by their final paragraph here, since there
-                // is no following paragraph boundary to do so.
-                while (Eval.Context.TryTakeDeferredStructuredFieldResult(out var deferred) && deferred != null)
-                    EmitDeferred(deferred, visitor, parentContext, parentParagraph);
             }
         }
         finally

@@ -250,6 +250,34 @@ public sealed class FieldEvalMiddlewareRegressionTests : TestBase<FieldEvalMiddl
     }
 
     [Fact]
+    public void Eval_IncludeText_BlockAndInlineSplicePathsEvaluateEquivalentChildContent()
+    {
+        byte[] child = CreateTextDocBytes("FIRST", "LAST");
+        using var blockParent = CreateIncludeTextDoc("child.docx", "BLOCK-CACHE");
+        using var inlineParent = CreateInlineIncludeTextDoc(
+            "child.docx", "INLINE-CACHE", "BEFORE-", "-AFTER");
+
+        string block = ExportIncludeText(
+            blockParent,
+            new MemoryIncludeTextResolver(("child.docx", "block-child", child)),
+            DxpFieldEvalExportMode.Evaluate);
+        string inline = ExportIncludeText(
+            inlineParent,
+            new MemoryIncludeTextResolver(("child.docx", "inline-child", child)),
+            DxpFieldEvalExportMode.Evaluate);
+
+        Assert.Contains("FIRST", block, StringComparison.Ordinal);
+        Assert.Contains("LAST", block, StringComparison.Ordinal);
+        Assert.Contains("BEFORE-FIRST", inline, StringComparison.Ordinal);
+        Assert.Contains("LAST-AFTER", inline, StringComparison.Ordinal);
+        Assert.Equal(
+            ExtractOrderedMarkers(block, "FIRST", "LAST"),
+            ExtractOrderedMarkers(inline, "FIRST", "LAST"));
+        Assert.DoesNotContain("BLOCK-CACHE", block, StringComparison.Ordinal);
+        Assert.DoesNotContain("INLINE-CACHE", inline, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void Eval_IncludeText_TableBetweenParagraphSeamsProducesWellFormedHtml()
     {
         using var parent = CreateInlineIncludeTextDoc("child.docx", "CACHE", "BEFORE-", "-AFTER");
@@ -1207,6 +1235,9 @@ public sealed class FieldEvalMiddlewareRegressionTests : TestBase<FieldEvalMiddl
 
     private static string StripTags(string html)
         => System.Net.WebUtility.HtmlDecode(System.Text.RegularExpressions.Regex.Replace(html, "<[^>]+>", string.Empty));
+
+    private static string ExtractOrderedMarkers(string text, params string[] markers)
+        => string.Join("|", markers.OrderBy(marker => text.IndexOf(marker, StringComparison.Ordinal)));
 
     private static byte[] CreateDocVariableDocBytes(string name, string cached)
     {
