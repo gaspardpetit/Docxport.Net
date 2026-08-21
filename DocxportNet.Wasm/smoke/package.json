@@ -1,0 +1,20 @@
+{
+  "name": "docxport-consumer-smoke",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node prepare.mjs && vite build --config vite.react.config.js && vite build --config vite.vue.config.js",
+    "test:package": "node test-package.mjs",
+    "test:browser": "node browser-smoke.mjs",
+    "test:pages": "node pages-smoke.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.62.1",
+    "@vitejs/plugin-react": "latest",
+    "@vitejs/plugin-vue": "latest",
+    "vite": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "vue": "latest"
+  }
+}

@@ -1,0 +1,78 @@
+name: WASM Package Smoke Test
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore WASM workload
+        run: dotnet workload restore DocxportNet.Wasm/DocxportNet.Wasm.csproj
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      - name: Publish browser WASM
+        run: dotnet publish DocxportNet.Wasm/DocxportNet.Wasm.csproj --configuration Release
+
+      - name: Pack npm package
+        id: pack
+        working-directory: DocxportNet.Wasm/bin/Release/net10.0/publish/wwwroot
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/artifacts/npm"
+          npm pack --pack-destination "$GITHUB_WORKSPACE/artifacts/npm"
+          npm publish --dry-run --access public
+          PACKAGE_FILE=$(find "$GITHUB_WORKSPACE/artifacts/npm" -maxdepth 1 -type f -name '*.tgz' -printf '%f\n')
+          if [ -z "$PACKAGE_FILE" ] || [ "$(printf '%s\n' "$PACKAGE_FILE" | wc -l)" -ne 1 ]; then
+            echo "Expected exactly one npm package tarball." >&2
+            exit 1
+          fi
+          echo "path=$GITHUB_WORKSPACE/artifacts/npm/$PACKAGE_FILE" >> "$GITHUB_OUTPUT"
+
+      - name: Install packed package and smoke dependencies
+        working-directory: DocxportNet.Wasm/smoke
+        run: |
+          npm ci
+          npm install --no-save --ignore-scripts "${{ steps.pack.outputs.path }}"
+
+      - name: Verify package and build consumers
+        working-directory: DocxportNet.Wasm/smoke
+        run: |
+          npm run test:package
+          npm run build
+
+      - name: Install Chromium
+        working-directory: DocxportNet.Wasm/smoke
+        run: npx playwright install --with-deps chromium
+
+      - name: Run React and Vue browser smoke tests
+        working-directory: DocxportNet.Wasm/smoke
+        run: |
+          npm run test:browser
+          npm run test:pages
+
+      - name: Upload packed package
+        uses: actions/upload-artifact@v4
+        with:
+          name: docxport-npm-package
+          path: ${{ steps.pack.outputs.path }}

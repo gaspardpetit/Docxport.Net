@@ -72,17 +72,18 @@ public static class DxpTimeline
         }
     }
 
-    private static (string? Author, string? Date) ExtractAuthorDate(OpenXmlElement el)
+    private static (string? Author, string? Date) ExtractAuthorDate(OpenXmlElement el) => el switch
     {
-        // TrackChangeType-derived elements expose Author/Date properties; use dynamic lookup with reflection to avoid many casts.
-        var type = el.GetType();
-        var authorProp = type.GetProperty("Author");
-        var dateProp = type.GetProperty("Date");
-
-        string? author = authorProp?.GetValue(el) as string ?? (authorProp?.GetValue(el) as OpenXmlSimpleType)?.InnerText;
-        string? date = dateProp?.GetValue(el) as string ?? (dateProp?.GetValue(el) as OpenXmlSimpleType)?.InnerText;
-        return (author, date);
-    }
+        Inserted value => (value.Author?.Value, value.Date?.InnerText),
+        Deleted value => (value.Author?.Value, value.Date?.InnerText),
+        MoveFromRangeStart value => (value.Author?.Value, value.Date?.InnerText),
+        MoveToRangeStart value => (value.Author?.Value, value.Date?.InnerText),
+        DocumentFormat.OpenXml.Office2010.Word.ConflictInsertion value =>
+            (value.Author?.Value, value.Date?.InnerText),
+        DocumentFormat.OpenXml.Office2010.Word.ConflictDeletion value =>
+            (value.Author?.Value, value.Date?.InnerText),
+        _ => (null, null)
+    };
 
     private static DateTime? ToUtc(DateTime? dt) => dt?.ToUniversalTime();
 

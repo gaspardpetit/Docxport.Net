@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DocxportNet · Browser DOCX exporter</title>
+  <meta name="description" content="Convert DOCX files to HTML, Markdown, or plain text entirely in your browser.">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="DocxportNet home"><span class="brand-mark">D</span><span>Docxport<span>Net</span></span></a>
+    <p>DOCX conversion, entirely in your browser</p>
+    <a class="source-link" href="https://github.com/gaspardpetit/Docxport.Net">Source ↗</a>
+  </header>
+
+  <main class="app-shell">
+    <aside class="controls">
+      <section id="dropZone" class="drop-zone" tabindex="0" role="button" aria-label="Choose or drop a DOCX file">
+        <input id="fileInput" type="file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden>
+        <div class="drop-icon">↓</div>
+        <strong>Drop a DOCX here</strong>
+        <span>or click to choose a file</span>
+      </section>
+
+      <section id="fileCard" class="file-card" hidden>
+        <div class="file-glyph">W</div>
+        <div><strong id="fileName"></strong><span id="fileSize"></span></div>
+        <button id="clearButton" class="icon-button" type="button" title="Clear document">×</button>
+      </section>
+
+      <fieldset>
+        <legend>Export format</legend>
+        <div class="segmented" id="formatControl">
+          <label><input type="radio" name="format" value="html" checked><span>HTML</span></label>
+          <label><input type="radio" name="format" value="markdown"><span>Markdown</span></label>
+          <label><input type="radio" name="format" value="text"><span>Text</span></label>
+        </div>
+      </fieldset>
+
+      <div id="presetField">
+        <label id="presetLabel" class="field-label" for="presetSelect">Preset</label>
+        <select id="presetSelect"><option value="rich">Rich</option><option value="plain">Plain</option></select>
+      </div>
+
+      <details class="advanced">
+        <summary>Advanced settings <span>⌄</span></summary>
+        <div id="advancedSettings" class="settings-grid"></div>
+      </details>
+
+      <div class="privacy-note"><span>◆</span><p><strong>Your file stays local.</strong><br>Conversion runs inside WebAssembly in this browser.</p></div>
+    </aside>
+
+    <section class="workspace">
+      <div class="workspace-toolbar">
+        <div class="view-toggle" role="group" aria-label="Output view">
+          <button type="button" data-view="rendered" class="active">Rendered</button>
+          <button type="button" data-view="raw">Raw</button>
+        </div>
+        <div class="toolbar-actions">
+          <span id="status" class="status">Loading WebAssembly…</span>
+          <button id="copyButton" type="button" disabled>Copy raw output</button>
+        </div>
+      </div>
+      <div id="emptyState" class="empty-state">
+        <div class="document-stack"><span></span><span></span><span>+</span></div>
+        <h1>Your converted document will appear here</h1>
+        <p>Choose a DOCX file, then explore HTML, Markdown, and plain-text exports.</p>
+      </div>
+      <div id="errorState" class="error-state" hidden><strong>Conversion failed</strong><p id="errorMessage"></p></div>
+      <iframe id="renderedOutput" title="Rendered document output" sandbox hidden></iframe>
+      <pre id="rawOutput" tabindex="0" hidden><code></code></pre>
+    </section>
+  </main>
+
+  <script type="module" src="./showcase.js"></script>
+</body>
+</html>

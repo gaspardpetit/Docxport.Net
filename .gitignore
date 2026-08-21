@@ -1,8 +1,12 @@
 ﻿.vs
 **/bin/**
 **/obj/**
+**/node_modules/**
 .vscode
 artifacts
 .nuget
 DocxportNet.Cli/Properties/launchSettings.json
 samples/*/*.test.*
+DocxportNet.Wasm/smoke/dist/
+DocxportNet.Wasm/smoke/react/public/
+DocxportNet.Wasm/smoke/vue/public/

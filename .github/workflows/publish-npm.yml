@@ -1,0 +1,71 @@
+name: Publish npm Package
+
+on:
+  release:
+    types: [ published ]
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout release
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Determine package version
+        id: version
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          if [[ ! "$RELEASE_TAG" =~ ^v([0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?)$ ]]; then
+            echo "Release tag must use vX.Y.Z or vX.Y.Z-prerelease format." >&2
+            exit 1
+          fi
+          echo "version=${BASH_REMATCH[1]}" >> "$GITHUB_OUTPUT"
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore WASM workload
+        run: dotnet workload restore DocxportNet.Wasm/DocxportNet.Wasm.csproj
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+
+      - name: Use npm 11
+        run: npm install --global npm@11
+
+      - name: Publish browser WASM
+        run: dotnet publish DocxportNet.Wasm/DocxportNet.Wasm.csproj --configuration Release
+
+      - name: Set npm package version
+        working-directory: DocxportNet.Wasm/bin/Release/net10.0/publish/wwwroot
+        env:
+          PACKAGE_VERSION: ${{ steps.version.outputs.version }}
+        run: npm version "$PACKAGE_VERSION" --no-git-tag-version --allow-same-version
+
+      - name: Validate package
+        working-directory: DocxportNet.Wasm/bin/Release/net10.0/publish/wwwroot
+        run: npm pack --dry-run
+
+      - name: Publish to npm
+        working-directory: DocxportNet.Wasm/bin/Release/net10.0/publish/wwwroot
+        run: npm publish --access public
+
