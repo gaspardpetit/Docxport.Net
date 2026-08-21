@@ -15,6 +15,9 @@ using DocxportNet.Walker;
 using System.Xml.Linq;
 using Xunit.Abstractions;
 using Xunit.Sdk;
+using A = DocumentFormat.OpenXml.Drawing;
+using PIC = DocumentFormat.OpenXml.Drawing.Pictures;
+using WP = DocumentFormat.OpenXml.Drawing.Wordprocessing;
 
 namespace DocxportNet.Tests;
 
@@ -160,6 +163,160 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
         Assert.True(footnotesIndex > bodyIndex, "Footnotes should render after the body content.");
         Assert.True(footnoteTextIndex > footnotesIndex, "Footnote text should render inside the footnotes block.");
         Assert.True(footerIndex > footnotesIndex, "Footnotes should render before the footer within the section canvas.");
+    }
+
+    [Fact]
+    public void HtmlExport_PositiveMarginsUseNaturalFlowHeaderAndFooterRegions()
+    {
+        string html = ExportHeaderFooterLayout(
+            top: 1440,
+            bottom: 1440,
+            headerDistance: 720,
+            footerDistance: 720,
+            header: new Header(
+                new Paragraph(new Run(new Text("Header line one"))),
+                new Table(new TableRow(new TableCell(new Paragraph(new Run(new Text("Header table"))))))),
+            footer: new Footer(
+                new Paragraph(new Run(new Text("Footer line one"))),
+                new Paragraph(new Run(new Text("Footer line two")))));
+
+        Assert.Contains("class=\"dxp-header\" style=\"min-height:1in;", html, StringComparison.Ordinal);
+        Assert.Contains("margin-bottom:-1in;padding-top:0.5in;flex:0 0 auto;", html, StringComparison.Ordinal);
+        Assert.Contains("class=\"dxp-footer\" style=\"display:flex;flex-direction:column;justify-content:flex-end;min-height:1in;", html, StringComparison.Ordinal);
+        Assert.Contains("margin-top:-1in;padding-bottom:0.5in;flex:0 0 auto;", html, StringComparison.Ordinal);
+        Assert.Contains("flex:0 0 auto", html, StringComparison.Ordinal);
+        Assert.DoesNotContain("class=\"dxp-header\" style=\"height:", html, StringComparison.Ordinal);
+        Assert.DoesNotContain("class=\"dxp-footer\" style=\"display:flex;flex-direction:column;justify-content:flex-end;height:", html, StringComparison.Ordinal);
+
+        Assert.True(html.IndexOf("Header table", StringComparison.Ordinal) < html.IndexOf("Body text", StringComparison.Ordinal));
+        Assert.True(html.IndexOf("Body text", StringComparison.Ordinal) < html.IndexOf("Footer line one", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void HtmlExport_MissingHeaderAndFooterPreserveBodyMargins()
+    {
+        string html = ExportHeaderFooterLayout(
+            top: 1440,
+            bottom: 2160,
+            headerDistance: 720,
+            footerDistance: 720);
+
+        Assert.Contains("class=\"dxp-body\" style=\"flex:1 0 auto;padding-top:1in;padding-bottom:1.5in;\"", html, StringComparison.Ordinal);
+        Assert.DoesNotContain("class=\"dxp-header\"", html, StringComparison.Ordinal);
+        Assert.DoesNotContain("class=\"dxp-footer\"", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void HtmlExport_NegativeMarginsKeepHeaderAndFooterOutOfBodyFlow()
+    {
+        string html = ExportHeaderFooterLayout(
+            top: -1440,
+            bottom: -2160,
+            headerDistance: 720,
+            footerDistance: 360,
+            header: new Header(new Paragraph(new Run(new Text("Overlay header")))),
+            footer: new Footer(new Paragraph(new Run(new Text("Overlay footer")))));
+
+        Assert.Contains("class=\"dxp-header\" style=\"position:absolute;top:0.5in;", html, StringComparison.Ordinal);
+        Assert.Contains("class=\"dxp-footer\" style=\"position:absolute;bottom:0.25in;", html, StringComparison.Ordinal);
+        Assert.Contains("class=\"dxp-body\" style=\"flex:1 0 auto;padding-top:1in;padding-bottom:1.5in;\"", html, StringComparison.Ordinal);
+        Assert.DoesNotContain("class=\"dxp-header\" style=\"min-height:", html, StringComparison.Ordinal);
+        Assert.DoesNotContain("class=\"dxp-footer\" style=\"display:flex", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void HtmlExport_TallInlineHeaderImageExpandsFlowAndPreservesExtent()
+    {
+        string html = ExportHeaderFooterLayout(
+            top: 1440,
+            bottom: 1440,
+            headerDistance: 720,
+            footerDistance: 720,
+            header: CreateHeaderWithInlineImage(5943600L, 3346450L));
+
+        Assert.Contains("class=\"dxp-header\" style=\"min-height:1in;", html, StringComparison.Ordinal);
+        Assert.Contains("margin-bottom:-1in;padding-top:0.5in;flex:0 0 auto;", html, StringComparison.Ordinal);
+        Assert.Contains("class=\"dxp-image\"", html, StringComparison.Ordinal);
+        Assert.Contains("style=\"width:468pt;height:263.5pt;max-width:none;\"", html, StringComparison.Ordinal);
+        Assert.True(html.IndexOf("dxp-image", StringComparison.Ordinal) < html.IndexOf("Body text", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void HtmlExport_EmptyHeaderAndFooterStillPreserveMinimumMargins()
+    {
+        string html = ExportHeaderFooterLayout(
+            top: 1440,
+            bottom: 2160,
+            headerDistance: 720,
+            footerDistance: 360,
+            header: new Header(new Paragraph()),
+            footer: new Footer(new Paragraph()));
+
+        Assert.Contains("class=\"dxp-header\" style=\"min-height:1in;", html, StringComparison.Ordinal);
+        Assert.Contains("margin-bottom:-1in;padding-top:0.5in;flex:0 0 auto;", html, StringComparison.Ordinal);
+        Assert.Contains("class=\"dxp-footer\" style=\"display:flex;flex-direction:column;justify-content:flex-end;min-height:1.5in;", html, StringComparison.Ordinal);
+        Assert.Contains("margin-top:-1.5in;padding-bottom:0.25in;flex:0 0 auto;", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void HtmlExport_HeaderAndFooterOffsetsCanExceedBodyMargins()
+    {
+        string html = ExportHeaderFooterLayout(
+            top: 720,
+            bottom: 720,
+            headerDistance: 1440,
+            footerDistance: 1440,
+            header: new Header(new Paragraph(new Run(new Text("Offset header")))),
+            footer: new Footer(new Paragraph(new Run(new Text("Offset footer")))));
+
+        Assert.Contains("min-height:0.5in;margin-bottom:-0.5in;padding-top:1in;", html, StringComparison.Ordinal);
+        Assert.Contains("min-height:0.5in;margin-top:-0.5in;padding-bottom:1in;", html, StringComparison.Ordinal);
+        Assert.Contains("padding-top:0.5in;padding-bottom:0.5in;", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void HtmlExport_TallInlineFooterImageExpandsFlowAndPreservesExtent()
+    {
+        string html = ExportHeaderFooterLayout(
+            top: 1440,
+            bottom: 1440,
+            headerDistance: 720,
+            footerDistance: 720,
+            footer: new Footer(new Paragraph(new Run(CreateInlineImageDrawing(5943600L, 3346450L)))));
+
+        Assert.Contains("class=\"dxp-footer\" style=\"display:flex;flex-direction:column;justify-content:flex-end;min-height:1in;", html, StringComparison.Ordinal);
+        Assert.Contains("margin-top:-1in;padding-bottom:0.5in;flex:0 0 auto;", html, StringComparison.Ordinal);
+        Assert.Contains("style=\"width:468pt;height:263.5pt;max-width:none;\"", html, StringComparison.Ordinal);
+        Assert.True(html.IndexOf("Body text", StringComparison.Ordinal) < html.LastIndexOf("dxp-image", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void HtmlExport_RendersCropRotationFlipAndAccessibilityMetadata()
+    {
+        string html = ExportHeaderFooterLayout(
+            top: 1440,
+            bottom: 1440,
+            headerDistance: 720,
+            footerDistance: 720,
+            header: new Header(new Paragraph(new Run(CreateInlineImageDrawing(
+                1270000L,
+                635000L,
+                new A.SourceRectangle { Left = 10000, Top = 20000, Right = 30000, Bottom = 10000 },
+                rotation: 5400000,
+                flipHorizontal: true,
+                flipVertical: true,
+                description: "Accessible description",
+                title: "Image title")))));
+
+        Assert.Contains("class=\"dxp-image-frame\"", html, StringComparison.Ordinal);
+        Assert.Contains("width:100pt;height:50pt;overflow:hidden;transform:rotate(90deg) scaleX(-1) scaleY(-1);transform-origin:center;", html, StringComparison.Ordinal);
+        Assert.Contains("alt=\"Accessible description\" title=\"Image title\"", html, StringComparison.Ordinal);
+        Assert.Contains("width:166.667pt;height:71.429pt;left:-16.667pt;top:-14.286pt;", html, StringComparison.Ordinal);
+    }
+
+    [Fact(Skip = "Floating DrawingML requires a positioned overlay and wrap-aware layout model; this change covers inline flow content.")]
+    public void HtmlExport_AnchoredHeaderAndFooterDrawingsRespectWordWrappingExtents()
+    {
     }
 
     [Fact]
@@ -966,6 +1123,126 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
             new DxpHtmlVisitor(config, Logger),
             new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.None },
             Logger));
+    }
+
+    private string ExportHeaderFooterLayout(
+        int top,
+        int bottom,
+        uint headerDistance,
+        uint footerDistance,
+        Header? header = null,
+        Footer? footer = null)
+    {
+        using var stream = new MemoryStream();
+        using (var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document, true))
+        {
+            var main = doc.AddMainDocumentPart();
+            var section = new SectionProperties();
+
+            if (header != null)
+            {
+                var part = main.AddNewPart<HeaderPart>("rIdHeaderLayout");
+                part.Header = header;
+                if (header.Descendants<Drawing>().Any())
+                {
+                    var imagePart = part.AddNewPart<ImagePart>("image/png", "rIdImage1");
+                    using var image = new MemoryStream(Convert.FromBase64String(
+                        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="));
+                    imagePart.FeedData(image);
+                }
+                section.Append(new HeaderReference { Id = main.GetIdOfPart(part), Type = HeaderFooterValues.Default });
+                part.Header.Save();
+            }
+
+            if (footer != null)
+            {
+                var part = main.AddNewPart<FooterPart>("rIdFooterLayout");
+                part.Footer = footer;
+                if (footer.Descendants<Drawing>().Any())
+                {
+                    var imagePart = part.AddNewPart<ImagePart>("image/png", "rIdImage1");
+                    using var image = new MemoryStream(Convert.FromBase64String(
+                        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="));
+                    imagePart.FeedData(image);
+                }
+                section.Append(new FooterReference { Id = main.GetIdOfPart(part), Type = HeaderFooterValues.Default });
+                part.Footer.Save();
+            }
+
+            section.Append(
+                new PageSize { Width = 12240U, Height = 15840U },
+                new PageMargin {
+                    Top = top,
+                    Right = 1440U,
+                    Bottom = bottom,
+                    Left = 1440U,
+                    Header = headerDistance,
+                    Footer = footerDistance,
+                    Gutter = 0U
+                });
+
+            main.Document = new Document(
+                new Body(
+                    new Paragraph(new Run(new Text("Body text"))),
+                    section));
+            main.Document.Save();
+        }
+
+        stream.Position = 0;
+        using var readDoc = WordprocessingDocument.Open(stream, false);
+        return TestCompare.Normalize(DxpExport.ExportToString(
+            readDoc,
+            new DxpHtmlVisitor(DxpHtmlVisitorConfig.CreateRichConfig(), Logger),
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.None },
+            Logger));
+    }
+
+    private static Header CreateHeaderWithInlineImage(long widthEmu, long heightEmu)
+        => new(new Paragraph(new Run(CreateInlineImageDrawing(widthEmu, heightEmu))));
+
+    private static Drawing CreateInlineImageDrawing(
+        long widthEmu,
+        long heightEmu,
+        A.SourceRectangle? sourceRectangle = null,
+        int? rotation = null,
+        bool flipHorizontal = false,
+        bool flipVertical = false,
+        string? description = null,
+        string? title = null)
+    {
+        var transform = new A.Transform2D(
+            new A.Offset { X = 0L, Y = 0L },
+            new A.Extents { Cx = widthEmu, Cy = heightEmu }) {
+            Rotation = rotation,
+            HorizontalFlip = flipHorizontal,
+            VerticalFlip = flipVertical
+        };
+        var picture = new PIC.Picture(
+            new PIC.NonVisualPictureProperties(
+                new PIC.NonVisualDrawingProperties { Id = 1U, Name = "Header image", Description = description, Title = title },
+                new PIC.NonVisualPictureDrawingProperties()),
+            new PIC.BlipFill(
+                new A.Blip { Embed = "rIdImage1" },
+                sourceRectangle ?? new A.SourceRectangle(),
+                new A.Stretch(new A.FillRectangle())),
+            new PIC.ShapeProperties(
+                transform,
+                new A.PresetGeometry(new A.AdjustValueList()) { Preset = A.ShapeTypeValues.Rectangle }));
+
+        var inline = new WP.Inline(
+            new WP.Extent { Cx = widthEmu, Cy = heightEmu },
+            new WP.DocProperties { Id = 1U, Name = "Header image", Description = description, Title = title },
+            new WP.NonVisualGraphicFrameDrawingProperties(new A.GraphicFrameLocks { NoChangeAspect = true }),
+            new A.Graphic(new A.GraphicData(picture) {
+                Uri = "http://schemas.openxmlformats.org/drawingml/2006/picture"
+            })) {
+            DistanceFromTop = 0U,
+            DistanceFromBottom = 0U,
+            DistanceFromLeft = 0U,
+            DistanceFromRight = 0U
+        };
+
+        return new Drawing(inline);
     }
 
     private string ExportHtmlCachedFromBodyXml(

@@ -11,6 +11,9 @@ using DocxportNet.Visitors.Markdown;
 using System.Xml.Linq;
 using Xunit.Abstractions;
 using Xunit.Sdk;
+using A = DocumentFormat.OpenXml.Drawing;
+using PIC = DocumentFormat.OpenXml.Drawing.Pictures;
+using WP = DocumentFormat.OpenXml.Drawing.Wordprocessing;
 
 namespace DocxportNet.Tests;
 
@@ -66,6 +69,31 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
     public void TestDocxToMarkdown_Plain(Sample sample)
     {
         VerifyAgainstFixture(sample, DxpMarkdownVisitorConfig.CreatePlainConfig(), ".plain.md", ".plain.test.md", DxpFieldEvalExportMode.None);
+    }
+
+    [Fact]
+    public void MarkdownExport_RendersSharedCropRotationFlipAndDimensions()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:p /></w:body>
+""";
+        string markdown = ExportMarkdownFromBodyXml(
+            bodyXml,
+            DxpMarkdownVisitorConfig.CreateRichConfig(),
+            doc => {
+                var main = doc.MainDocumentPart!;
+                var imagePart = main.AddImagePart("image/png", "rIdImage1");
+                using var image = new MemoryStream(Convert.FromBase64String(
+                    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="));
+                imagePart.FeedData(image);
+                main.Document!.Body = new Body(new Paragraph(new Run(CreatePresentedImageDrawing())));
+                main.Document.Save();
+            });
+
+        Assert.Contains("class=\"dxp-image-frame\"", markdown, StringComparison.Ordinal);
+        Assert.Contains("width:100pt;height:50pt;overflow:hidden;transform:rotate(90deg) scaleX(-1);", markdown, StringComparison.Ordinal);
+        Assert.Contains("alt=\"Markdown image\" title=\"Markdown title\"", markdown, StringComparison.Ordinal);
+        Assert.Contains("width:166.667pt;height:71.429pt;left:-16.667pt;top:-14.286pt;", markdown, StringComparison.Ordinal);
     }
 
     [Theory]
@@ -612,6 +640,43 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
             new DxpMarkdownVisitor(config, Logger),
             new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.None },
             Logger));
+    }
+
+    private static Drawing CreatePresentedImageDrawing()
+    {
+        var picture = new PIC.Picture(
+            new PIC.NonVisualPictureProperties(
+                new PIC.NonVisualDrawingProperties {
+                    Id = 1U,
+                    Name = "Markdown image",
+                    Description = "Markdown image",
+                    Title = "Markdown title"
+                },
+                new PIC.NonVisualPictureDrawingProperties()),
+            new PIC.BlipFill(
+                new A.Blip { Embed = "rIdImage1" },
+                new A.SourceRectangle { Left = 10000, Top = 20000, Right = 30000, Bottom = 10000 },
+                new A.Stretch(new A.FillRectangle())),
+            new PIC.ShapeProperties(
+                new A.Transform2D(
+                    new A.Offset { X = 0L, Y = 0L },
+                    new A.Extents { Cx = 1270000L, Cy = 635000L }) {
+                    Rotation = 5400000,
+                    HorizontalFlip = true
+                },
+                new A.PresetGeometry(new A.AdjustValueList()) { Preset = A.ShapeTypeValues.Rectangle }));
+
+        return new Drawing(new WP.Inline(
+            new WP.Extent { Cx = 1270000L, Cy = 635000L },
+            new WP.DocProperties {
+                Id = 1U,
+                Name = "Markdown image",
+                Description = "Markdown image",
+                Title = "Markdown title"
+            },
+            new A.Graphic(new A.GraphicData(picture) {
+                Uri = "http://schemas.openxmlformats.org/drawingml/2006/picture"
+            })));
     }
 
     private string ExportMarkdownCachedFromBodyXml(

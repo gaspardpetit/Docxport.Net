@@ -44,7 +44,13 @@ public class DxpDrawings
 
         var docPr = drw.Descendants<DocumentFormat.OpenXml.Drawing.Wordprocessing.DocProperties>()
                      .FirstOrDefault();
-        string? altText = NormalizeAltText(docPr?.Description?.Value ?? docPr?.Title?.Value);
+        var pictureProperties = drw.Descendants<DocumentFormat.OpenXml.Drawing.Pictures.NonVisualDrawingProperties>()
+            .FirstOrDefault();
+        string? altText = NormalizeAltText(docPr?.Description?.Value ?? pictureProperties?.Description?.Value);
+        string? title = NormalizeAltText(docPr?.Title?.Value ?? pictureProperties?.Title?.Value);
+        bool isDecorative = drw.Descendants()
+            .Where(element => string.Equals(element.LocalName, "decorative", StringComparison.OrdinalIgnoreCase))
+            .Any(element => IsOn(element.GetAttributes().FirstOrDefault(attribute => attribute.LocalName == "val").Value));
 
         var blip = drw.Descendants<DocumentFormat.OpenXml.Drawing.Blip>().FirstOrDefault();
         var relId = blip?.Embed?.Value;
@@ -79,9 +85,87 @@ public class DxpDrawings
             catch { /* swallow and return partial info */ }
         }
 
-        return new DxpDrawingInfo(relId, contentType, fileName, altText, dataUri) {
-            ExternalSource = externalSource
+        var presentation = BuildImagePresentation(drw, altText, title, isDecorative);
+        return new DxpDrawingInfo(relId, contentType, fileName, presentation.AlternativeText, dataUri) {
+            ExternalSource = externalSource,
+            Presentation = presentation
         };
+    }
+
+    public static DxpImagePresentation BuildImagePresentation(Drawing drw)
+    {
+        var docPr = drw.Descendants<DocumentFormat.OpenXml.Drawing.Wordprocessing.DocProperties>()
+            .FirstOrDefault();
+        var pictureProperties = drw.Descendants<DocumentFormat.OpenXml.Drawing.Pictures.NonVisualDrawingProperties>()
+            .FirstOrDefault();
+        string? altText = NormalizeAltText(docPr?.Description?.Value ?? pictureProperties?.Description?.Value);
+        string? title = NormalizeAltText(docPr?.Title?.Value ?? pictureProperties?.Title?.Value);
+        bool isDecorative = drw.Descendants()
+            .Where(element => string.Equals(element.LocalName, "decorative", StringComparison.OrdinalIgnoreCase))
+            .Any(element => IsOn(element.GetAttributes().FirstOrDefault(attribute => attribute.LocalName == "val").Value));
+        return BuildImagePresentation(drw, altText, title, isDecorative);
+    }
+
+    private static DxpImagePresentation BuildImagePresentation(
+        Drawing drw,
+        string? altText,
+        string? title,
+        bool isDecorative)
+    {
+        var extent = drw.Descendants<DocumentFormat.OpenXml.Drawing.Wordprocessing.Extent>().FirstOrDefault();
+        double? widthPoints = extent?.Cx is { } cx && cx.Value > 0 ? cx.Value / 12700.0 : null;
+        double? heightPoints = extent?.Cy is { } cy && cy.Value > 0 ? cy.Value / 12700.0 : null;
+
+        var sourceRectangle = drw.Descendants<DocumentFormat.OpenXml.Drawing.SourceRectangle>().FirstOrDefault();
+        var crop = sourceRectangle == null ? null : NormalizeCrop(
+            sourceRectangle.Left?.Value,
+            sourceRectangle.Top?.Value,
+            sourceRectangle.Right?.Value,
+            sourceRectangle.Bottom?.Value);
+
+        var transform = drw.Descendants<DocumentFormat.OpenXml.Drawing.Transform2D>().FirstOrDefault();
+        double rotation = 0;
+        if (transform?.Rotation?.Value is int rotationUnits)
+        {
+            rotation = (rotationUnits / 60000.0) % 360.0;
+            if (rotation < 0)
+                rotation += 360.0;
+        }
+
+        return new DxpImagePresentation {
+            FrameWidthPoints = widthPoints,
+            FrameHeightPoints = heightPoints,
+            Crop = crop,
+            RotationDegrees = rotation,
+            FlipHorizontal = transform?.HorizontalFlip?.Value == true,
+            FlipVertical = transform?.VerticalFlip?.Value == true,
+            AlternativeText = isDecorative ? null : altText,
+            Title = title,
+            IsDecorative = isDecorative
+        };
+    }
+
+    private static DxpImageCrop? NormalizeCrop(int? left, int? top, int? right, int? bottom)
+    {
+        static double Normalize(int? value) => Math.Max(0.0, Math.Min(1.0, (value ?? 0) / 100000.0));
+
+        double l = Normalize(left);
+        double t = Normalize(top);
+        double r = Normalize(right);
+        double b = Normalize(bottom);
+        if (l <= 0 && t <= 0 && r <= 0 && b <= 0)
+            return null;
+        if (1.0 - l - r <= 0.000001 || 1.0 - t - b <= 0.000001)
+            return null;
+        return new DxpImageCrop(l, t, r, b);
+    }
+
+    private static bool IsOn(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return true;
+        return value == "1" || string.Equals(value, "true", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(value, "on", StringComparison.OrdinalIgnoreCase);
     }
 
     private static string? NormalizeAltText(string? altText)
