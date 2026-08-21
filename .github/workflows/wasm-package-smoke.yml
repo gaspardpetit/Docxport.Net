@@ -41,7 +41,6 @@ jobs:
         run: |
           mkdir -p "$GITHUB_WORKSPACE/artifacts/npm"
           npm pack --pack-destination "$GITHUB_WORKSPACE/artifacts/npm"
-          npm publish --dry-run --access public
           PACKAGE_FILE=$(find "$GITHUB_WORKSPACE/artifacts/npm" -maxdepth 1 -type f -name '*.tgz' -printf '%f\n')
           if [ -z "$PACKAGE_FILE" ] || [ "$(printf '%s\n' "$PACKAGE_FILE" | wc -l)" -ne 1 ]; then
             echo "Expected exactly one npm package tarball." >&2
