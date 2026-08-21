@@ -29,8 +29,6 @@ internal sealed class DxpHtmlVisitorState
     public bool FontSpanOpen { get; set; }
     public bool AllCaps { get; set; }
     public bool IsFirstSection { get; set; } = true;
-    public bool SectionHasHeader { get; set; }
-    public bool SectionHasFooter { get; set; }
     public bool InHeader { get; set; }
     public bool InFooter { get; set; }
     public InlineChangeMode CurrentInlineMode { get; set; } = InlineChangeMode.Unchanged;
@@ -597,36 +595,35 @@ body.dxp-root {
             return DxpDisposable.Empty;
         }
 
-        var alt = HtmlAttr(info?.AltText ?? "image");
         var dataUri = info?.DataUri;
         var externalSource = info?.ExternalSource;
         var contentType = info?.ContentType ?? "";
 
         if (!string.IsNullOrEmpty(dataUri) && contentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
         {
-            var style = BuildDrawingImageStyle(drw, d, _state.InHeader, _state.InFooter);
-            var styleAttr = string.IsNullOrEmpty(style) ? "" : $" style=\"{style}\"";
-            Write(d, $"<img class=\"dxp-image\" src=\"{dataUri}\" alt=\"{alt}\"{styleAttr} />");
+            var style = BuildDrawingContextStyle(drw, d, _state.InHeader, _state.InFooter);
+            Write(d, DxpImageHtmlRenderer.Render(dataUri!, info, "dxp-image", style));
         }
         else if (!string.IsNullOrEmpty(dataUri))
         {
+            var alt = HtmlAttr(info?.Presentation?.AlternativeText ?? info?.AltText ?? "image");
             Write(d, $"<object data=\"{dataUri}\" type=\"{HtmlAttr(contentType)}\">[DRAWING: {alt}]</object>");
         }
         else if (!string.IsNullOrEmpty(externalSource))
         {
-            var style = BuildDrawingImageStyle(drw, d, _state.InHeader, _state.InFooter);
-            var styleAttr = string.IsNullOrEmpty(style) ? "" : $" style=\"{style}\"";
-            Write(d, $"<img class=\"dxp-image\" src=\"{HtmlAttr(externalSource!)}\" alt=\"{alt}\"{styleAttr} />");
+            var style = BuildDrawingContextStyle(drw, d, _state.InHeader, _state.InFooter);
+            Write(d, DxpImageHtmlRenderer.Render(externalSource!, info, "dxp-image", style));
         }
         else
         {
+            var alt = HtmlAttr(info?.Presentation?.AlternativeText ?? info?.AltText ?? "image");
             var meta = string.IsNullOrEmpty(contentType) ? "" : $" ({contentType})";
             Write(d, $"<span class=\"dxp-image\">[DRAWING: {alt}{meta}]</span>");
         }
         return DxpDisposable.Empty;
     }
 
-    private static string? BuildDrawingImageStyle(Drawing drw, DxpIDocumentContext d, bool inHeader, bool inFooter)
+    private static string? BuildDrawingContextStyle(Drawing drw, DxpIDocumentContext d, bool inHeader, bool inFooter)
     {
         var sb = new StringBuilder();
 
@@ -639,20 +636,6 @@ body.dxp-root {
             sb.Append(css);
             if (sb.Length > 0 && sb[sb.Length - 1] != ';')
                 sb.Append(';');
-        }
-
-        // Sizing: use wp:extent when available (EMU units).
-        var extent = drw.Descendants<DocumentFormat.OpenXml.Drawing.Wordprocessing.Extent>().FirstOrDefault();
-        if (extent?.Cx != null && extent?.Cy != null)
-        {
-            var widthPt = EmuToPoints(extent.Cx.Value);
-            var heightPt = EmuToPoints(extent.Cy.Value);
-            if (widthPt > 0.01)
-                Append(sb, $"width:{widthPt.ToString("0.###", CultureInfo.InvariantCulture)}pt");
-            if (heightPt > 0.01)
-                Append(sb, $"height:{heightPt.ToString("0.###", CultureInfo.InvariantCulture)}pt");
-            // If we have explicit dimensions, don't let global max-width force scaling.
-            Append(sb, "max-width:none");
         }
 
         // Positioning: for floating drawings (wp:anchor), surface a best-effort approximation.
@@ -828,7 +811,6 @@ body.dxp-root {
     private static string AppendTransform(string? existing, string addition)
         => string.IsNullOrEmpty(existing) ? addition : existing + " " + addition;
 
-    private static double EmuToPoints(long emu) => emu / 12700.0;
     private static double EmuToInches(long emu) => emu / 914400.0;
 
     public override IDisposable VisitLegacyPictureBegin(Picture pict, DxpIDocumentContext d)
@@ -1217,7 +1199,6 @@ body.dxp-root {
         if (_config.EmitSectionHeadersFooters == false)
             return DxpDisposable.Empty;
 
-        _state.SectionHasHeader = true;
         _state.InHeader = true;
 
         var style = new StringBuilder();
@@ -1226,10 +1207,24 @@ body.dxp-root {
         double? headerDistIn = layout?.MarginHeader?.Inches;
         double marginLeftIn = layout?.MarginLeft?.Inches ?? 0.0;
         double marginRightIn = layout?.MarginRight?.Inches ?? 0.0;
-        if (marginTopIn != null)
-            style.Append("height:").Append(marginTopIn.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
-        if (headerDistIn != null)
-            style.Append("padding-top:").Append(headerDistIn.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+        if (marginTopIn is < 0)
+        {
+            style.Append("position:absolute;top:")
+                .Append((headerDistIn ?? 0.0).ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+        }
+        else
+        {
+            // The body reserves the configured top margin. Overlap that reservation so this
+            // region contributes only content extending beyond it: max(top, header + content).
+            if (marginTopIn != null)
+            {
+                style.Append("min-height:").Append(marginTopIn.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+                style.Append("margin-bottom:-").Append(marginTopIn.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+            }
+            if (headerDistIn != null)
+                style.Append("padding-top:").Append(headerDistIn.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+            style.Append("flex:0 0 auto;");
+        }
         if (marginLeftIn > 0.0005 || marginRightIn > 0.0005)
         {
             // Header/footer in Word can use the full page width; don't let section margins clip content.
@@ -1255,7 +1250,6 @@ body.dxp-root {
     {
         CloseFootnotesBlockIfNeeded(d);
 
-        _state.SectionHasFooter = true;
         _state.InFooter = true;
 
         var style = new StringBuilder("display:flex;flex-direction:column;justify-content:flex-end;");
@@ -1264,10 +1258,24 @@ body.dxp-root {
         double? footerDistIn = layout?.MarginFooter?.Inches;
         double marginLeftIn = layout?.MarginLeft?.Inches ?? 0.0;
         double marginRightIn = layout?.MarginRight?.Inches ?? 0.0;
-        if (marginBottomIn != null)
-            style.Append("height:").Append(marginBottomIn.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
-        if (footerDistIn != null)
-            style.Append("padding-bottom:").Append(footerDistIn.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+        if (marginBottomIn is < 0)
+        {
+            style.Clear();
+            style.Append("position:absolute;bottom:")
+                .Append((footerDistIn ?? 0.0).ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+        }
+        else
+        {
+            // Mirror the header calculation at the bottom page edge.
+            if (marginBottomIn != null)
+            {
+                style.Append("min-height:").Append(marginBottomIn.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+                style.Append("margin-top:-").Append(marginBottomIn.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+            }
+            if (footerDistIn != null)
+                style.Append("padding-bottom:").Append(footerDistIn.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+            style.Append("flex:0 0 auto;");
+        }
         if (marginLeftIn > 0.0005 || marginRightIn > 0.0005)
         {
             style.Append("margin-left:-").Append(marginLeftIn.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
@@ -1711,8 +1719,11 @@ body.dxp-root {
         var style = new StringBuilder("flex:1 0 auto;");
 
         double? marginTopInches = d.CurrentSection.Layout?.MarginTop?.Inches;
-        if (marginTopInches != null && _state.SectionHasHeader == false)
-            style.Append("padding-top:").Append(marginTopInches.Value.ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+        double? marginBottomInches = d.CurrentSection.Layout?.MarginBottom?.Inches;
+        if (marginTopInches != null)
+            style.Append("padding-top:").Append(Math.Abs(marginTopInches.Value).ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
+        if (marginBottomInches != null)
+            style.Append("padding-bottom:").Append(Math.Abs(marginBottomInches.Value).ToString("0.###", CultureInfo.InvariantCulture)).Append("in;");
 
         Write(d, $"""<div class="dxp-body" style="{style}">""" + "\n");
 
@@ -1725,9 +1736,6 @@ body.dxp-root {
     {
         if (!_config.EmitDocumentColors)
             return DxpDisposable.Empty;
-
-        _state.SectionHasHeader = false;
-        _state.SectionHasFooter = false;
 
         if (_state.IsFirstSection)
         {

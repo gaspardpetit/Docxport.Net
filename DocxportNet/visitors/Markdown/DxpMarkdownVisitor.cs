@@ -477,25 +477,26 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
             return DxpDisposable.Empty;
         }
 
-        var alt = HtmlAttr(info?.AltText ?? "image");
         var dataUri = info?.DataUri;
         var externalSource = info?.ExternalSource;
         var contentType = info?.ContentType ?? "";
 
         if (!string.IsNullOrEmpty(dataUri) && contentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
         {
-            Write(d, $"<img src=\"{dataUri}\" alt=\"{alt}\" />");
+            Write(d, DxpImageHtmlRenderer.Render(dataUri!, info, "dxp-image"));
         }
         else if (!string.IsNullOrEmpty(dataUri))
         {
+            var alt = HtmlAttr(info?.Presentation?.AlternativeText ?? info?.AltText ?? "image");
             Write(d, $"<object data=\"{dataUri}\" type=\"{HtmlAttr(contentType)}\">[DRAWING: {alt}]</object>");
         }
         else if (!string.IsNullOrEmpty(externalSource))
         {
-            Write(d, $"<img src=\"{HtmlAttr(externalSource!)}\" alt=\"{alt}\" />");
+            Write(d, DxpImageHtmlRenderer.Render(externalSource!, info, "dxp-image"));
         }
         else
         {
+            var alt = HtmlAttr(info?.Presentation?.AlternativeText ?? info?.AltText ?? "image");
             var meta = string.IsNullOrEmpty(contentType) ? "" : $" ({contentType})";
             Write(d, $"[DRAWING: {alt}{meta}]");
         }
