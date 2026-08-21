@@ -167,6 +167,27 @@ dotnet run --project DocxportNet.Cli -- my.docx -o my.md --tracked=accept
 ./docxport my.docx --format=html --tracked=inline
 ```
 
+### Browser WebAssembly
+
+`DocxportNet.Wasm` publishes the exporters as the browser-only `docxport` ESM package. It accepts DOCX data as a `Uint8Array` and returns HTML, Markdown, plain text, or a resolved DOCX without uploading the document.
+
+```powershell
+dotnet workload install wasm-tools
+./DocxportNet.Wasm/build-package.ps1
+cd ./DocxportNet.Wasm/bin/Release/net10.0/publish/wwwroot
+npm pack
+```
+
+Serve that `wwwroot` directory and open `demo/` to run the standalone showcase. See the package README and `index.d.ts` for the JavaScript API and detailed exporter options.
+
+Bundled applications copy the .NET runtime into their public assets before building:
+
+```bash
+npx docxport-copy-assets public/docxport
+```
+
+Then initialize with `createDocxport({ assetBaseUrl: "/docxport/" })`. The package README includes React, Vue, Vite, and generic static-hosting guidance.
+
 Options: `--format=markdown|html|text|docx`, `--tracked=accept|reject|inline|split` (text uses accept/reject), `--plain` (plain markdown), `-o, --output=path` (infers format from extension when `--format` is omitted), `--vars=path` (JSON/INI DOCVARIABLEs), `-D name=value` (repeatable overrides), and `--include-path=directory` (repeatable allowed/search roots for evaluated DOCX and HTML `INCLUDETEXT` fields).
 
 ```bash

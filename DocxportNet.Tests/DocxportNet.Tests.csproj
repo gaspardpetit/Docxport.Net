@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DocxportNet\DocxportNet.csproj" />
+    <ProjectReference Include="..\DocxportNet.Wasm\DocxportNet.Wasm.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,0 +1,40 @@
+{
+  "name": "docxport",
+  "version": "0.1.0",
+  "description": "DOCX conversion and field resolution in the browser using DocxportNet and WebAssembly.",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "browser": "./index.js",
+  "bin": {
+    "docxport-copy-assets": "tools/copy-assets.mjs"
+  },
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "browser": "./index.js",
+      "import": "./index.js",
+      "default": "./index.js"
+    }
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "tools/**",
+    "package-lock.json",
+    "_framework/**",
+    "demo/**",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": ["docx", "markdown", "html", "webassembly", "wasm"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gaspardpetit/Docxport.Net.git"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
