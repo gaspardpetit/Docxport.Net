@@ -13,6 +13,8 @@ Docxport.Net is a .NET library for walking DOCX documents and exporting them to 
 - Images/drawings
 - Bookmarks, hyperlinks, fields, and more
 
+**See the web assembly in action here: https://gaspardpetit.github.io/Docxport.Net/demo/**
+
 ## Support overview
 
 **Output formats**
