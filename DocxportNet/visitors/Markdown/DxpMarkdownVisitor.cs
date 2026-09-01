@@ -88,7 +88,7 @@ public sealed record DxpMarkdownVisitorConfig
     public bool UsePlainComments = false;
     public bool EmitCustomProperties = true;
     public bool EmitTimeline = false;
-    public DxpOmmlOutputFormat? MathOutputFormat = DxpOmmlOutputFormat.UnicodeMath;
+    public DxpOmmlOutputFormat? MathOutputFormat = DxpOmmlOutputFormat.Latex;
     public bool EmitMathDelimiters = true;
     public DxpTrackedChangeMode TrackedChangeMode = DxpTrackedChangeMode.InlineChanges;
     public Func<DxpMarkupChangeContext, DxpMarkupChangeDecision?>? MarkupChangeClassifier = null;

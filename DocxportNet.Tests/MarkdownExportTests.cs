@@ -200,6 +200,10 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
 
         Assert.Contains("Before $x_(2)$ after", markdown, StringComparison.Ordinal);
         Assert.Contains("$$\n(1)/(2)\n$$", markdown, StringComparison.Ordinal);
+
+        string defaultMarkdown = ExportMarkdownFromBodyXml(bodyXml, DxpMarkdownVisitorConfig.CreatePlainConfig());
+        Assert.Contains("Before $x_{2}$ after", defaultMarkdown, StringComparison.Ordinal);
+        Assert.Contains("$$\n\\frac{1}{2}\n$$", defaultMarkdown, StringComparison.Ordinal);
     }
 
     [Fact]
