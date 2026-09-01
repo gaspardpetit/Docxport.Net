@@ -235,6 +235,70 @@ internal sealed class OmmlEquationArray : OmmlNode
     public bool HasControlProperties { get; }
 }
 
+internal sealed class OmmlBox : OmmlNode
+{
+    public OmmlBox(string path, OmmlSequence argument, bool operatorEmulator,
+        bool noBreak, bool differential, int? breakAlignmentAt, bool alignment,
+        bool hasControlProperties) : base(path)
+    {
+        Argument = argument; OperatorEmulator = operatorEmulator; NoBreak = noBreak;
+        Differential = differential; BreakAlignmentAt = breakAlignmentAt;
+        Alignment = alignment; HasControlProperties = hasControlProperties;
+    }
+    public OmmlSequence Argument { get; }
+    public bool OperatorEmulator { get; }
+    public bool NoBreak { get; }
+    public bool Differential { get; }
+    public int? BreakAlignmentAt { get; }
+    public bool Alignment { get; }
+    public bool HasControlProperties { get; }
+}
+
+internal sealed class OmmlBorderBox : OmmlNode
+{
+    public OmmlBorderBox(string path, OmmlSequence argument, bool hideTop,
+        bool hideBottom, bool hideLeft, bool hideRight, bool strikeHorizontal,
+        bool strikeVertical, bool strikeBottomLeftToTopRight,
+        bool strikeTopLeftToBottomRight, bool hasControlProperties) : base(path)
+    {
+        Argument = argument; HideTop = hideTop; HideBottom = hideBottom;
+        HideLeft = hideLeft; HideRight = hideRight;
+        StrikeHorizontal = strikeHorizontal; StrikeVertical = strikeVertical;
+        StrikeBottomLeftToTopRight = strikeBottomLeftToTopRight;
+        StrikeTopLeftToBottomRight = strikeTopLeftToBottomRight;
+        HasControlProperties = hasControlProperties;
+    }
+    public OmmlSequence Argument { get; }
+    public bool HideTop { get; }
+    public bool HideBottom { get; }
+    public bool HideLeft { get; }
+    public bool HideRight { get; }
+    public bool StrikeHorizontal { get; }
+    public bool StrikeVertical { get; }
+    public bool StrikeBottomLeftToTopRight { get; }
+    public bool StrikeTopLeftToBottomRight { get; }
+    public bool HasControlProperties { get; }
+}
+
+internal sealed class OmmlPhantom : OmmlNode
+{
+    public OmmlPhantom(string path, OmmlSequence argument, bool show,
+        bool zeroWidth, bool zeroAscent, bool zeroDescent, bool transparent,
+        bool hasControlProperties) : base(path)
+    {
+        Argument = argument; Show = show; ZeroWidth = zeroWidth;
+        ZeroAscent = zeroAscent; ZeroDescent = zeroDescent;
+        Transparent = transparent; HasControlProperties = hasControlProperties;
+    }
+    public OmmlSequence Argument { get; }
+    public bool Show { get; }
+    public bool ZeroWidth { get; }
+    public bool ZeroAscent { get; }
+    public bool ZeroDescent { get; }
+    public bool Transparent { get; }
+    public bool HasControlProperties { get; }
+}
+
 internal sealed class OmmlUnsupported : OmmlNode
 {
     public OmmlUnsupported(string path, string elementName, string visibleText) : base(path)

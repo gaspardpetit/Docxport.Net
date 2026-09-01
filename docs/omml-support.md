@@ -233,30 +233,45 @@ LaTeX equivalent and therefore remain in the semantic model and MathML metadata.
 
 ### Boxes: `m:box` / `m:boxPr`
 
-- [ ] P1 Preserve the boxed expression even when no visual box is requested.
-- [ ] P1 Apply operator emulation `m:opEmu`.
-- [ ] P1 Apply `m:noBreak`, `m:diff`, `m:brk`, and `m:aln` semantics.
-- [ ] P1 Retain `m:ctrlPr` formatting intent.
-- [ ] P2 Document output-specific approximations for operator emulation and differential spacing.
+- [x] P1 Preserve the boxed expression even when no visual box is requested.
+- [x] P1 Apply operator emulation `m:opEmu`.
+- [x] P1 Apply `m:noBreak`, `m:diff`, `m:brk`, and `m:aln` semantics.
+- [x] P1 Retain `m:ctrlPr` formatting intent.
+- [x] P2 Document output-specific approximations for operator emulation and differential spacing.
 
 ### Border boxes: `m:borderBox` / `m:borderBoxPr`
 
-- [ ] P1 Render a four-sided box by default.
-- [ ] P1 Apply `m:hideTop`, `m:hideBot`, `m:hideLeft`, and `m:hideRight` independently.
-- [ ] P1 Apply horizontal and vertical strikes.
-- [ ] P1 Apply bottom-left-to-top-right and top-left-to-bottom-right diagonal strikes.
-- [ ] P1 Use MathML `menclose` notation values where available.
-- [ ] P1 Provide deterministic LaTeX/text approximations when a border combination has no native representation.
-- [ ] P1 Retain `m:ctrlPr` formatting intent.
+- [x] P1 Render a four-sided box by default.
+- [x] P1 Apply `m:hideTop`, `m:hideBot`, `m:hideLeft`, and `m:hideRight` independently.
+- [x] P1 Apply horizontal and vertical strikes.
+- [x] P1 Apply bottom-left-to-top-right and top-left-to-bottom-right diagonal strikes.
+- [x] P1 Use MathML `menclose` notation values where available.
+- [x] P1 Provide deterministic LaTeX/text approximations when a border combination has no native representation.
+- [x] P1 Retain `m:ctrlPr` formatting intent.
 
 ### Phantoms: `m:phant` / `m:phantPr`
 
-- [ ] P1 Render hidden layout content using MathML phantom/padded constructs.
-- [ ] P1 Apply `m:show` and `m:transp` without silently exposing content that should be invisible.
-- [ ] P1 Apply `m:zeroWid`, `m:zeroAsc`, and `m:zeroDesc` independently.
-- [ ] P1 Define whether readable text includes, annotates, or omits phantom content.
-- [ ] P1 Provide documented LaTeX approximations (`\phantom`, `\hphantom`, `\vphantom`, or equivalent).
-- [ ] P1 Retain `m:ctrlPr` formatting intent.
+- [x] P1 Render hidden layout content using MathML phantom/padded constructs.
+- [x] P1 Apply `m:show` and `m:transp` without silently exposing content that should be invisible.
+- [x] P1 Apply `m:zeroWid`, `m:zeroAsc`, and `m:zeroDesc` independently.
+- [x] P1 Define whether readable text includes, annotates, or omits phantom content.
+- [x] P1 Provide documented LaTeX approximations (`\phantom`, `\hphantom`, `\vphantom`, or equivalent).
+- [x] P1 Retain `m:ctrlPr` formatting intent.
+
+MathML represents border boxes with `menclose`, hidden phantom content with
+`mphantom`, and independently suppressed dimensions with `mpadded`. OMML
+operator-emulation, no-break, differential, and phantom-transparency intent is
+also retained in `data-omml-*` attributes when MathML has no exact equivalent.
+
+LaTeX uses `\boxed` for a plain four-sided border and the MathJax/KaTeX
+`\enclose` extension for arbitrary side and strike combinations. A shown,
+zero-width phantom uses `\mathrlap`, which requires `mathtools`; other phantom
+forms use `\phantom`, `\hphantom`, `\vphantom`, and `\smash`. A box break emits
+`\\` and therefore needs a surrounding multiline environment to affect layout.
+UnicodeMath uses the standard rectangle mask and phantom/smash operators used
+by Plurimath. Readable text describes border notation, includes shown phantom
+content, and omits hidden phantom content. Every non-portable approximation
+produces an `OMML002` warning.
 
 ## Paragraph and document math properties
 
@@ -305,7 +320,7 @@ Word accepts more WordprocessingML inside `m:oMath` than the base schema clearly
 - [ ] P0 Support fractions, roots, scripts, multiscripts, fenced expressions, limits, and tables.
 - [ ] P1 Prefer MathML Core-compatible constructs for browser rendering.
 - [ ] P1 Use `stretchy`, `accent`, `accentunder`, `movablelimits`, and `mathvariant` correctly.
-- [ ] P1 Support `menclose`, `mphantom`, and `mpadded` for advanced layout.
+- [x] P1 Support `menclose`, `mphantom`, and `mpadded` for advanced layout.
 - [ ] P1 Preserve meaningful spacing without copying Word layout measurements blindly.
 - [ ] P1 Produce XML that parses without DTDs or external entities.
 - [ ] P1 Add optional semantics/annotation output only behind an explicit option.
@@ -386,13 +401,13 @@ The corpus is valuable for complex composition and real-world regression coverag
 
 ### Important corpus gaps requiring Docxport fixtures
 
-- [ ] `m:box` and every `m:boxPr` behavior.
+- [x] `m:box` and every `m:boxPr` behavior.
 - [ ] Fraction types `skw`, `lin`, and `noBar` (the reviewed fixtures do not exercise `m:type`).
 - [ ] Delimiter shape `m:shp` and explicit grow-off behavior.
 - [x] Equation-array spacing, distance, and base-justification properties.
 - [x] Matrix left/right column justification, base justification, placeholders, and spacing/gap properties.
-- [ ] Border-box horizontal, vertical, and diagonal strike combinations.
-- [ ] Phantom zero-width/ascent/descent and transparency combinations.
+- [x] Border-box horizontal, vertical, and diagonal strike combinations.
+- [x] Phantom zero-width/ascent/descent and transparency combinations.
 - [ ] `m:argSz`, `m:lit`, `m:nor`, and `m:aln` semantics.
 - [ ] Math paragraph justification and multiple `oMath` children.
 - [ ] Document-level `m:mathPr` defaults.
@@ -429,9 +444,9 @@ The following Plurimath behaviors are intentionally not sufficient as our target
 
 - [ ] Preserve fraction type; the reviewed importer maps every fraction to a conventional fraction.
 - [ ] Preserve bar position; the reviewed importer maps every bar to the same bar function.
-- [ ] Preserve border-side and strike properties; the reviewed importer maps every border box to one `menclose` form.
-- [ ] Preserve box semantics; the reviewed importer unwraps boxes.
-- [ ] Preserve phantom layout semantics; the reviewed importer unwraps phantoms.
+- [x] Preserve border-side and strike properties; the reviewed importer maps every border box to one `menclose` form.
+- [x] Preserve box semantics; the reviewed importer unwraps boxes.
+- [x] Preserve phantom layout semantics; the reviewed importer unwraps phantoms.
 - [ ] Preserve matrix/equation-array layout properties; the reviewed importer primarily retains rows and cells.
 - [ ] Respect `degHide`, rather than deciding square root solely from an empty degree.
 - [ ] Apply delimiter grow/shape behavior, not only boundary and separator characters.
@@ -494,10 +509,10 @@ Complete these goals in order. Goals 3-10 are vertical feature slices: each incl
 
 ### Goal 8: Boxes, border boxes, and phantoms
 
-- [ ] Implement box operator, break, alignment, differential, and no-break semantics.
-- [ ] Implement every border-side and horizontal/vertical/diagonal strike combination.
-- [ ] Implement phantom visibility, transparency, zero-width, zero-ascent, and zero-descent behavior.
-- [ ] Document and diagnose every output-specific approximation.
+- [x] Implement box operator, break, alignment, differential, and no-break semantics.
+- [x] Implement every border-side and horizontal/vertical/diagonal strike combination.
+- [x] Implement phantom visibility, transparency, zero-width, zero-ascent, and zero-descent behavior.
+- [x] Document and diagnose every output-specific approximation.
 
 ### Goal 9: Breaks and equation layout
 

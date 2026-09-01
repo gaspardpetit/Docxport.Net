@@ -194,6 +194,9 @@ internal static class OmmlParser
             "nary" => ParseNary(element, path),
             "m" => ParseMatrix(element, path),
             "eqArr" => ParseEquationArray(element, path),
+            "box" => ParseBox(element, path),
+            "borderBox" => ParseBorderBox(element, path),
+            "phant" => ParsePhantom(element, path),
             _ => ParseUnsupported(element, path),
         }
         : ParseUnsupported(element, path);
@@ -218,6 +221,9 @@ internal static class OmmlParser
             "nary" => ParseNary(element, path),
             "m" => ParseMatrix(element, path),
             "eqArr" => ParseEquationArray(element, path),
+            "box" => ParseBox(element, path),
+            "borderBox" => ParseBorderBox(element, path),
+            "phant" => ParsePhantom(element, path),
             _ => ParseUnsupported(element, path),
         }
         : ParseUnsupported(element, path);
@@ -446,6 +452,69 @@ internal static class OmmlParser
             OnOffProperty(properties, "maxDist", false), OnOffProperty(properties, "objDist", false),
             UnsignedProperty(properties, "rSp"), IntegerProperty(properties, "rSpRule", 0, 0, 4),
             HasControlProperties(properties));
+    }
+
+    private static OmmlBox ParseBox(XElement element, string path)
+    {
+        XElement? properties = MathChild(element, "boxPr");
+        XElement? manualBreak = properties == null ? null : MathChild(properties, "brk");
+        return new OmmlBox(path, ParseArgument(MathChild(element, "e"), path + "/m:e[1]"),
+            OnOffProperty(properties, "opEmu", false), OnOffProperty(properties, "noBreak", false),
+            OnOffProperty(properties, "diff", false), manualBreak == null ? null :
+                ParseInteger((string?)manualBreak.Attribute("alnAt") ??
+                    (string?)manualBreak.Attribute(XName.Get("alnAt", MathNamespace)), 0, 0, 255),
+            OnOffProperty(properties, "aln", false), HasControlProperties(properties));
+    }
+
+    private static OmmlBox ParseBox(OpenXmlElement element, string path)
+    {
+        OpenXmlElement? properties = MathChild(element, "boxPr");
+        OpenXmlElement? manualBreak = properties == null ? null : MathChild(properties, "brk");
+        return new OmmlBox(path, ParseArgument(MathChild(element, "e"), path + "/m:e[1]"),
+            OnOffProperty(properties, "opEmu", false), OnOffProperty(properties, "noBreak", false),
+            OnOffProperty(properties, "diff", false), manualBreak == null ? null :
+                ParseInteger(Attribute(manualBreak, "alnAt"), 0, 0, 255),
+            OnOffProperty(properties, "aln", false), HasControlProperties(properties));
+    }
+
+    private static OmmlBorderBox ParseBorderBox(XElement element, string path)
+    {
+        XElement? properties = MathChild(element, "borderBoxPr");
+        return new OmmlBorderBox(path, ParseArgument(MathChild(element, "e"), path + "/m:e[1]"),
+            OnOffProperty(properties, "hideTop", false), OnOffProperty(properties, "hideBot", false),
+            OnOffProperty(properties, "hideLeft", false), OnOffProperty(properties, "hideRight", false),
+            OnOffProperty(properties, "strikeH", false), OnOffProperty(properties, "strikeV", false),
+            OnOffProperty(properties, "strikeBLTR", false), OnOffProperty(properties, "strikeTLBR", false),
+            HasControlProperties(properties));
+    }
+
+    private static OmmlBorderBox ParseBorderBox(OpenXmlElement element, string path)
+    {
+        OpenXmlElement? properties = MathChild(element, "borderBoxPr");
+        return new OmmlBorderBox(path, ParseArgument(MathChild(element, "e"), path + "/m:e[1]"),
+            OnOffProperty(properties, "hideTop", false), OnOffProperty(properties, "hideBot", false),
+            OnOffProperty(properties, "hideLeft", false), OnOffProperty(properties, "hideRight", false),
+            OnOffProperty(properties, "strikeH", false), OnOffProperty(properties, "strikeV", false),
+            OnOffProperty(properties, "strikeBLTR", false), OnOffProperty(properties, "strikeTLBR", false),
+            HasControlProperties(properties));
+    }
+
+    private static OmmlPhantom ParsePhantom(XElement element, string path)
+    {
+        XElement? properties = MathChild(element, "phantPr");
+        return new OmmlPhantom(path, ParseArgument(MathChild(element, "e"), path + "/m:e[1]"),
+            OnOffProperty(properties, "show", true), OnOffProperty(properties, "zeroWid", false),
+            OnOffProperty(properties, "zeroAsc", false), OnOffProperty(properties, "zeroDesc", false),
+            OnOffProperty(properties, "transp", false), HasControlProperties(properties));
+    }
+
+    private static OmmlPhantom ParsePhantom(OpenXmlElement element, string path)
+    {
+        OpenXmlElement? properties = MathChild(element, "phantPr");
+        return new OmmlPhantom(path, ParseArgument(MathChild(element, "e"), path + "/m:e[1]"),
+            OnOffProperty(properties, "show", true), OnOffProperty(properties, "zeroWid", false),
+            OnOffProperty(properties, "zeroAsc", false), OnOffProperty(properties, "zeroDesc", false),
+            OnOffProperty(properties, "transp", false), HasControlProperties(properties));
     }
 
     private static string CharProperty(XElement? properties, string name, string defaultValue)

@@ -273,6 +273,70 @@ internal static class OmmlWriter
             return;
         }
 
+        if (node is OmmlBox box)
+        {
+            if (box.BreakAlignmentAt.HasValue)
+            {
+                XElement lineBreak = new(math + "mspace", new XAttribute("linebreak", "newline"));
+                lineBreak.SetAttributeValue("data-omml-align-at", Invariant(box.BreakAlignmentAt.Value));
+                parent.Add(lineBreak);
+            }
+            if (box.Alignment) parent.Add(new XElement(math + "malignmark"));
+            if (box.Differential) parent.Add(new XElement(math + "mspace", new XAttribute("width", "0.1667em")));
+
+            XElement rendered;
+            string? operatorText = box.OperatorEmulator ? SimpleText(box.Argument) : null;
+            if (operatorText != null)
+                rendered = new XElement(math + "mo", new XAttribute("form", "infix"), operatorText);
+            else
+            {
+                rendered = new XElement(math + "mrow");
+                AppendMathMl(rendered, box.Argument, compactFractions, isDisplay, options, diagnostics);
+            }
+            rendered.SetAttributeValue("data-omml-operator-emulator", XmlBoolean(box.OperatorEmulator));
+            rendered.SetAttributeValue("data-omml-no-break", XmlBoolean(box.NoBreak));
+            rendered.SetAttributeValue("data-omml-differential", XmlBoolean(box.Differential));
+            parent.Add(rendered);
+            if (box.NoBreak || box.Differential || (box.OperatorEmulator && operatorText == null))
+                AddApproximation(diagnostics, box, "m:box",
+                    "MathML has no exact equivalent for every OMML box spacing/no-break behavior; semantic flags were retained as data attributes.");
+            return;
+        }
+
+        if (node is OmmlBorderBox borderBox)
+        {
+            IReadOnlyList<string> notations = BorderNotations(borderBox);
+            XElement rendered = notations.Count == 0
+                ? new XElement(math + "mrow", new XAttribute("data-omml-border-box", "true"),
+                    new XAttribute("data-omml-notation", "none"))
+                : new XElement(math + "menclose", new XAttribute("notation", string.Join(" ", notations)));
+            AppendMathMl(rendered, borderBox.Argument, compactFractions, isDisplay, options, diagnostics);
+            parent.Add(rendered);
+            return;
+        }
+
+        if (node is OmmlPhantom phantom)
+        {
+            XElement content = new(math + "mrow");
+            AppendMathMl(content, phantom.Argument, compactFractions, isDisplay, options, diagnostics);
+            XElement rendered = phantom.Show ? content : new XElement(math + "mphantom", content);
+            if (phantom.ZeroWidth || phantom.ZeroAscent || phantom.ZeroDescent)
+            {
+                XElement padded = new(math + "mpadded", rendered);
+                if (phantom.ZeroWidth) padded.SetAttributeValue("width", "0");
+                if (phantom.ZeroAscent) padded.SetAttributeValue("height", "0");
+                if (phantom.ZeroDescent) padded.SetAttributeValue("depth", "0");
+                rendered = padded;
+            }
+            rendered.SetAttributeValue("data-omml-show", XmlBoolean(phantom.Show));
+            rendered.SetAttributeValue("data-omml-transparent", XmlBoolean(phantom.Transparent));
+            parent.Add(rendered);
+            if (phantom.Transparent)
+                AddApproximation(diagnostics, phantom, "m:phant",
+                    "MathML cannot reproduce OMML phantom spacing-class transparency exactly; the flag was retained as metadata.");
+            return;
+        }
+
         string fallback = ResolveFallback((OmmlUnsupported)node, options, diagnostics);
         if (fallback.Length != 0)
             parent.Add(new XElement(math + "mtext", fallback));
@@ -513,6 +577,87 @@ internal static class OmmlWriter
             return;
         }
 
+        if (node is OmmlBox box)
+        {
+            string argument = RenderTextual(box.Argument, format, isDisplay, options, diagnostics, escape);
+            if (box.BreakAlignmentAt.HasValue)
+                output.Append(format == DxpOmmlOutputFormat.Latex ? @"\\" : "\n");
+            if (box.Alignment && format is DxpOmmlOutputFormat.Latex or DxpOmmlOutputFormat.UnicodeMath)
+                output.Append('&');
+            if (box.Differential && format != DxpOmmlOutputFormat.Text)
+                output.Append(format == DxpOmmlOutputFormat.Latex ? @"\," : " ");
+            if (format == DxpOmmlOutputFormat.Latex)
+            {
+                if (box.OperatorEmulator) argument = $"\\mathop{{{argument}}}";
+                if (box.NoBreak) argument = $"\\nobreak{{{argument}}}\\nobreak";
+            }
+            output.Append(argument);
+            bool approximated = format switch
+            {
+                DxpOmmlOutputFormat.Latex => box.OperatorEmulator || box.NoBreak || box.Differential,
+                DxpOmmlOutputFormat.UnicodeMath => box.OperatorEmulator || box.NoBreak || box.Differential,
+                DxpOmmlOutputFormat.Text => box.OperatorEmulator || box.NoBreak || box.Differential || box.Alignment,
+                _ => false,
+            };
+            if (approximated)
+                AddApproximation(diagnostics, box, "m:box",
+                    $"{format} cannot exactly reproduce every OMML box spacing/no-break behavior; a deterministic approximation was emitted.");
+            return;
+        }
+
+        if (node is OmmlBorderBox borderBox)
+        {
+            string argument = RenderTextual(borderBox.Argument, format, isDisplay, options, diagnostics, escape);
+            IReadOnlyList<string> notations = BorderNotations(borderBox);
+            if (format == DxpOmmlOutputFormat.Latex)
+            {
+                if (IsPlainFourSidedBorder(borderBox)) output.Append("\\boxed{").Append(argument).Append('}');
+                else
+                {
+                    output.Append("\\enclose{").Append(notations.Count == 0 ? "none" : string.Join(" ", notations))
+                        .Append("}{").Append(argument).Append('}');
+                    AddApproximation(diagnostics, borderBox, "m:borderBox",
+                        "This border combination uses the MathJax/KaTeX \\enclose extension because core LaTeX has no equivalent.");
+                }
+            }
+            else if (format == DxpOmmlOutputFormat.UnicodeMath)
+            {
+                if (IsPlainFourSidedBorder(borderBox)) output.Append('▭').Append('(').Append(argument).Append(')');
+                else output.Append('▭').Append('(').Append(BorderMask(borderBox)).Append('&').Append(argument).Append(')');
+            }
+            else
+            {
+                output.Append("enclose[").Append(notations.Count == 0 ? "none" : string.Join(" ", notations))
+                    .Append("](").Append(argument).Append(')');
+                AddApproximation(diagnostics, borderBox, "m:borderBox",
+                    "Readable text describes the border-box notation instead of reproducing its visual lines.");
+            }
+            return;
+        }
+
+        if (node is OmmlPhantom phantom)
+        {
+            string argument = RenderTextual(phantom.Argument, format, isDisplay, options, diagnostics, escape);
+            if (format == DxpOmmlOutputFormat.Latex)
+                output.Append(LatexPhantom(phantom, argument));
+            else if (format == DxpOmmlOutputFormat.UnicodeMath)
+                output.Append(UnicodeMathPhantom(phantom, argument));
+            else if (phantom.Show)
+                output.Append(argument);
+
+            bool approximated = format switch
+            {
+                DxpOmmlOutputFormat.Latex => phantom.Transparent || (phantom.Show && phantom.ZeroWidth),
+                DxpOmmlOutputFormat.UnicodeMath => phantom.Transparent,
+                DxpOmmlOutputFormat.Text => !phantom.Show || phantom.ZeroWidth || phantom.ZeroAscent || phantom.ZeroDescent || phantom.Transparent,
+                _ => false,
+            };
+            if (approximated)
+                AddApproximation(diagnostics, phantom, "m:phant",
+                    $"{format} cannot exactly reproduce every OMML phantom layout property; the documented deterministic policy was applied.");
+            return;
+        }
+
         output.Append(escape(ResolveFallback((OmmlUnsupported)node, options, diagnostics)));
     }
 
@@ -557,8 +702,81 @@ internal static class OmmlWriter
         OmmlNary nary => ContainsAlignmentMarker(nary.Subscript) || ContainsAlignmentMarker(nary.Superscript) || ContainsAlignmentMarker(nary.Argument),
         OmmlMatrix matrix => matrix.Rows.Any(row => row.Cells.Any(ContainsAlignmentMarker)),
         OmmlEquationArray equationArray => equationArray.Rows.Any(ContainsAlignmentMarker),
+        OmmlBox box => box.Alignment || ContainsAlignmentMarker(box.Argument),
+        OmmlBorderBox borderBox => ContainsAlignmentMarker(borderBox.Argument),
+        OmmlPhantom phantom => ContainsAlignmentMarker(phantom.Argument),
         _ => false,
     };
+
+    private static IReadOnlyList<string> BorderNotations(OmmlBorderBox borderBox)
+    {
+        List<string> result = new();
+        if (!borderBox.HideTop) result.Add("top");
+        if (!borderBox.HideBottom) result.Add("bottom");
+        if (!borderBox.HideLeft) result.Add("left");
+        if (!borderBox.HideRight) result.Add("right");
+        if (borderBox.StrikeHorizontal) result.Add("horizontalstrike");
+        if (borderBox.StrikeVertical) result.Add("verticalstrike");
+        if (borderBox.StrikeBottomLeftToTopRight) result.Add("updiagonalstrike");
+        if (borderBox.StrikeTopLeftToBottomRight) result.Add("downdiagonalstrike");
+        return result;
+    }
+
+    private static bool IsPlainFourSidedBorder(OmmlBorderBox value) =>
+        !value.HideTop && !value.HideBottom && !value.HideLeft && !value.HideRight &&
+        !value.StrikeHorizontal && !value.StrikeVertical &&
+        !value.StrikeBottomLeftToTopRight && !value.StrikeTopLeftToBottomRight;
+
+    private static int BorderMask(OmmlBorderBox value)
+    {
+        int mask = 0;
+        if (!value.HideTop) mask |= 1;
+        if (!value.HideBottom) mask |= 2;
+        if (!value.HideLeft) mask |= 4;
+        if (!value.HideRight) mask |= 8;
+        if (value.StrikeHorizontal) mask |= 16;
+        if (value.StrikeVertical) mask |= 32;
+        if (value.StrikeTopLeftToBottomRight) mask |= 64;
+        if (value.StrikeBottomLeftToTopRight) mask |= 128;
+        return mask;
+    }
+
+    private static string LatexPhantom(OmmlPhantom phantom, string argument)
+    {
+        string vertical = SmashVerticalLatex(phantom, argument);
+        if (!phantom.Show)
+        {
+            if (phantom.ZeroWidth) return $"\\vphantom{{{vertical}}}";
+            if (phantom.ZeroAscent && phantom.ZeroDescent) return $"\\hphantom{{{argument}}}";
+            return $"\\phantom{{{vertical}}}";
+        }
+        return phantom.ZeroWidth ? $"\\mathrlap{{{vertical}}}" : vertical;
+    }
+
+    private static string SmashVerticalLatex(OmmlPhantom phantom, string argument)
+    {
+        if (phantom.ZeroAscent && phantom.ZeroDescent) return $"\\smash{{{argument}}}";
+        if (phantom.ZeroAscent) return $"\\smash[t]{{{argument}}}";
+        if (phantom.ZeroDescent) return $"\\smash[b]{{{argument}}}";
+        return argument;
+    }
+
+    private static string UnicodeMathPhantom(OmmlPhantom phantom, string argument)
+    {
+        if (!phantom.Show && !phantom.ZeroWidth && !phantom.ZeroAscent && !phantom.ZeroDescent)
+            return $"⟡({argument})";
+        if (!phantom.Show && phantom.ZeroWidth && !phantom.ZeroAscent && !phantom.ZeroDescent)
+            return $"⇳({argument})";
+        if (!phantom.Show && !phantom.ZeroWidth && phantom.ZeroAscent && phantom.ZeroDescent)
+            return $"⬄({argument})";
+
+        string result = phantom.Show ? argument : $"⟡({argument})";
+        if (phantom.ZeroAscent && phantom.ZeroDescent) result = $"⬍({result})";
+        else if (phantom.ZeroAscent) result = $"⬆({result})";
+        else if (phantom.ZeroDescent) result = $"⬇({result})";
+        if (phantom.ZeroWidth) result = $"⬌({result})";
+        return result;
+    }
 
     private static string HorizontalAlignment(OmmlHorizontalAlignment alignment) => alignment switch
     { OmmlHorizontalAlignment.Left => "left", OmmlHorizontalAlignment.Right => "right", _ => "center" };
@@ -571,6 +789,10 @@ internal static class OmmlWriter
     private static string XmlBoolean(bool value) => value ? "true" : "false";
     private static string Invariant(uint value) => value.ToString(System.Globalization.CultureInfo.InvariantCulture);
     private static string Invariant(int value) => value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+    private static void AddApproximation(List<DxpOmmlDiagnostic> diagnostics,
+        OmmlNode node, string elementName, string message) => diagnostics.Add(new DxpOmmlDiagnostic(
+            "OMML002", DxpOmmlDiagnosticSeverity.Warning, message, node.Path, elementName));
 
     private static string LatexDelimiter(string value)
     {
