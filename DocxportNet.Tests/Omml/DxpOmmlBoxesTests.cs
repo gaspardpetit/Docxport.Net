@@ -46,7 +46,7 @@ public sealed class DxpOmmlBoxesTests
         AssertApproximation(mathMlResult, "m:box");
 
         DxpOmmlConversionResult latex = DxpOmmlConverter.Convert(omml, DxpOmmlOutputFormat.Latex);
-        Assert.Equal("\\\\&\\,\\nobreak{\\mathop{=}}\\nobreak", latex.Output);
+        Assert.Equal("\\begin{aligned}\\\\&\\,\\nobreak{\\mathop{=}}\\nobreak\\end{aligned}", latex.Output);
         AssertApproximation(latex, "m:box");
         Assert.Equal("\n& =", DxpOmmlConverter.ToUnicodeMath(omml));
         Assert.Equal("\n=", DxpOmmlConverter.ToText(omml));

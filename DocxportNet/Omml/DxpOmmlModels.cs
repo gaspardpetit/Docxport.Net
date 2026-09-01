@@ -16,6 +16,31 @@ public enum DxpOmmlLimitLocation
     SubscriptSuperscript,
 }
 
+/// <summary>Horizontal layout of a display-math paragraph.</summary>
+public enum DxpOmmlJustification
+{
+    Left,
+    Right,
+    Center,
+    CenterGroup,
+}
+
+/// <summary>Placement of a binary operator when an equation wraps.</summary>
+public enum DxpOmmlBreakBinary
+{
+    Before,
+    After,
+    Repeat,
+}
+
+/// <summary>Replacement used when subtraction is repeated across a break.</summary>
+public enum DxpOmmlBreakBinarySubtraction
+{
+    MinusMinus,
+    MinusPlus,
+    PlusMinus,
+}
+
 /// <summary>Controls how valid but unsupported OMML structures are rendered.</summary>
 public enum DxpOmmlFallbackPolicy
 {
@@ -54,6 +79,45 @@ public sealed class DxpOmmlConversionOptions
 
     /// <summary>Requests compact inline fractions, corresponding to Word's document-level smallFrac setting.</summary>
     public bool SmallFractions { get; set; }
+
+    /// <summary>Uses display-math defaults for an inline <c>m:oMath</c>, corresponding to <c>m:dispDef</c>.</summary>
+    public bool DisplayDefaults { get; set; }
+
+    /// <summary>Document math font hint, corresponding to <c>m:mathFont</c>.</summary>
+    public string? MathFont { get; set; }
+
+    /// <summary>Document default for binary operators at line breaks.</summary>
+    public DxpOmmlBreakBinary? BreakBinary { get; set; }
+
+    /// <summary>Document subtraction behavior when a binary operator is repeated across a break.</summary>
+    public DxpOmmlBreakBinarySubtraction? BreakBinarySubtraction { get; set; }
+
+    /// <summary>Document default math-paragraph justification. A local <c>m:jc</c> takes precedence.</summary>
+    public DxpOmmlJustification? DefaultJustification { get; set; }
+
+    /// <summary>Left display-math margin in twentieths of a point.</summary>
+    public uint? LeftMarginTwips { get; set; }
+
+    /// <summary>Right display-math margin in twentieths of a point.</summary>
+    public uint? RightMarginTwips { get; set; }
+
+    /// <summary>Space before a display equation in twentieths of a point.</summary>
+    public uint? PreSpacingTwips { get; set; }
+
+    /// <summary>Space after a display equation in twentieths of a point.</summary>
+    public uint? PostSpacingTwips { get; set; }
+
+    /// <summary>Space between equations in a group in twentieths of a point.</summary>
+    public uint? InterSpacingTwips { get; set; }
+
+    /// <summary>Space between lines within an equation in twentieths of a point.</summary>
+    public uint? IntraSpacingTwips { get; set; }
+
+    /// <summary>Indent applied to wrapped equation lines in twentieths of a point.</summary>
+    public uint? WrapIndentTwips { get; set; }
+
+    /// <summary>Aligns wrapped equation lines to the right margin instead of using <see cref="WrapIndentTwips"/>.</summary>
+    public bool WrapRight { get; set; }
 
     /// <summary>Default limit placement for integral operators when local OMML does not specify it.</summary>
     public DxpOmmlLimitLocation IntegralLimitLocation { get; set; } = DxpOmmlLimitLocation.SubscriptSuperscript;

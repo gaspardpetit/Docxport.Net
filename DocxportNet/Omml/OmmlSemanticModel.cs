@@ -2,14 +2,17 @@ namespace DocxportNet.Omml;
 
 internal sealed class OmmlDocument
 {
-    public OmmlDocument(bool isDisplay, IReadOnlyList<OmmlNode> children)
+    public OmmlDocument(bool isDisplay, IReadOnlyList<OmmlNode> children,
+        DxpOmmlJustification? justification = null)
     {
         IsDisplay = isDisplay;
         Children = children;
+        Justification = justification;
     }
 
     public bool IsDisplay { get; }
     public IReadOnlyList<OmmlNode> Children { get; }
+    public DxpOmmlJustification? Justification { get; }
 }
 
 internal abstract class OmmlNode
@@ -24,7 +27,13 @@ internal sealed class OmmlSequence : OmmlNode
     public IReadOnlyList<OmmlNode> Children { get; }
 }
 
-internal enum OmmlTokenKind { Identifier, Number, Operator, Text }
+internal sealed class OmmlBreak : OmmlNode
+{
+    public OmmlBreak(string path, int? alignmentAt = null) : base(path) => AlignmentAt = alignmentAt;
+    public int? AlignmentAt { get; }
+}
+
+internal enum OmmlTokenKind { Identifier, Number, Operator, Text, LineBreak }
 internal enum OmmlMathScript { Default, Roman, Script, Fraktur, DoubleStruck, SansSerif, Monospace }
 internal enum OmmlMathStyle { Default, Plain, Bold, Italic, BoldItalic }
 
@@ -38,11 +47,12 @@ internal sealed class OmmlToken
 internal sealed class OmmlRun : OmmlNode
 {
     public OmmlRun(string path, IReadOnlyList<OmmlToken> tokens, OmmlMathScript script,
-        OmmlMathStyle style, bool literal, bool normal, bool alignment, string? language, bool rightToLeft)
+        OmmlMathStyle style, bool literal, bool normal, bool alignment, int? breakAlignmentAt,
+        string? language, bool rightToLeft)
         : base(path)
     {
         Tokens = tokens; Script = script; Style = style; Literal = literal; Normal = normal;
-        Alignment = alignment; Language = language; RightToLeft = rightToLeft;
+        Alignment = alignment; BreakAlignmentAt = breakAlignmentAt; Language = language; RightToLeft = rightToLeft;
     }
     public IReadOnlyList<OmmlToken> Tokens { get; }
     public OmmlMathScript Script { get; }
@@ -50,6 +60,7 @@ internal sealed class OmmlRun : OmmlNode
     public bool Literal { get; }
     public bool Normal { get; }
     public bool Alignment { get; }
+    public int? BreakAlignmentAt { get; }
     public string? Language { get; }
     public bool RightToLeft { get; }
 }

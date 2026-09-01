@@ -97,12 +97,20 @@ Plurimath is a behavioral oracle and source of test ideas, not the definition of
 
 ### Manual breaks and alignment
 
-- [ ] P1 Parse `m:brk` and its optional `m:alnAt` alignment index.
-- [ ] P1 Preserve a break as a semantic line boundary in MathML, LaTeX, and text.
-- [ ] P1 Support multiple breaks in a single equation.
-- [ ] P1 Support breaks nested in every structure where Word emits them.
-- [ ] P2 Apply document math settings `m:brkBin` (`before`, `after`, `repeat`).
-- [ ] P2 Apply `m:brkBinSub` (`--`, `-+`, `+-`) when breaking at subtraction.
+- [x] P1 Parse `m:brk` and its optional `m:alnAt` alignment index.
+- [x] P1 Preserve a break as a semantic line boundary in MathML, LaTeX, and text.
+- [x] P1 Support multiple breaks in a single equation.
+- [x] P1 Support breaks nested in every structure where Word emits them.
+
+A run or box `m:brk` is represented by a MathML `mspace` line-break marker;
+its numeric `alnAt` target is retained as `data-omml-align-at`. LaTeX places
+the smallest containing sequence in an `aligned` environment, while
+UnicodeMath and readable text use a newline. Numeric operator targeting has no
+portable LaTeX or plain-text equivalent and produces an `OMML002` warning.
+Paragraph-level `w:br`/`w:cr` boundaries between `m:oMath` children become
+MathML `mtable` rows and LaTeX `aligned` rows.
+- [x] P2 Apply document math settings `m:brkBin` (`before`, `after`, `repeat`).
+- [x] P2 Apply `m:brkBinSub` (`--`, `-+`, `+-`) when breaking at subtraction.
 
 ## OMML structures
 
@@ -266,8 +274,8 @@ also retained in `data-omml-*` attributes when MathML has no exact equivalent.
 LaTeX uses `\boxed` for a plain four-sided border and the MathJax/KaTeX
 `\enclose` extension for arbitrary side and strike combinations. A shown,
 zero-width phantom uses `\mathrlap`, which requires `mathtools`; other phantom
-forms use `\phantom`, `\hphantom`, `\vphantom`, and `\smash`. A box break emits
-`\\` and therefore needs a surrounding multiline environment to affect layout.
+forms use `\phantom`, `\hphantom`, `\vphantom`, and `\smash`. A box break is
+placed in the smallest containing LaTeX `aligned` environment.
 UnicodeMath uses the standard rectangle mask and phantom/smash operators used
 by Plurimath. Readable text describes border notation, includes shown phantom
 content, and omits hidden phantom content. Every non-portable approximation
@@ -277,22 +285,30 @@ produces an `OMML002` warning.
 
 ### Math paragraph: `m:oMathParaPr`
 
-- [ ] P0 Mark `oMathPara` as display math.
-- [ ] P1 Support justification `m:jc`: left, right, center, and centerGroup.
-- [ ] P1 Preserve multiple equations in one math paragraph.
-- [ ] P1 Preserve relative alignment points across equations.
+- [x] P0 Mark `oMathPara` as display math.
+- [x] P1 Support justification `m:jc`: left, right, center, and centerGroup.
+- [x] P1 Preserve multiple equations in one math paragraph.
+- [x] P1 Preserve relative alignment points across equations.
 
 ### Document math settings: `m:mathPr`
 
 These settings normally come from the DOCX settings part. The standalone API should accept them through an optional context/options object rather than requiring a document.
 
-- [ ] P2 Support `m:mathFont` as a formatting hint.
-- [ ] P2 Support `m:brkBin` and `m:brkBinSub`.
-- [ ] P2 Support `m:smallFrac` and `m:dispDef`.
-- [ ] P2 Support left/right margins and default justification.
-- [ ] P2 Support pre-, post-, inter-, and intra-equation spacing.
-- [ ] P2 Support wrap indent and wrap-right behavior.
-- [ ] P2 Support default integral and n-ary limit placement.
+- [x] P2 Support `m:mathFont` as a formatting hint.
+- [x] P2 Support `m:brkBin` and `m:brkBinSub`.
+- [x] P2 Support `m:smallFrac` and `m:dispDef`.
+- [x] P2 Support left/right margins and default justification.
+- [x] P2 Support pre-, post-, inter-, and intra-equation spacing.
+- [x] P2 Support wrap indent and wrap-right behavior.
+- [x] P2 Support default integral and n-ary limit placement.
+
+Standalone callers provide document math settings through
+`DxpOmmlConversionOptions`: font and binary-break hints; compact fractions and
+display defaults; justification; margins and spacing in twips; wrapping; and
+integral/n-ary limit placement. A local `m:oMathParaPr/m:jc` overrides
+`DefaultJustification`, and `WrapRight` overrides the schema-alternative
+`WrapIndentTwips`. MathML retains settings without native equivalents as
+`data-omml-*` metadata; textual formats report those layout approximations.
 
 ## Embedded WordprocessingML
 
@@ -393,7 +409,7 @@ The corpus is valuable for complex composition and real-world regression coverag
 - [x] Matrices and equation arrays: fixtures 156-177.
 - [ ] Mixed complex expressions: fixtures 178 onward and `issue-158.omml`.
 - [ ] Group characters: fixtures 185-186.
-- [ ] Manual breaks across many parent structures: `line_break/*`.
+- [x] Manual breaks across many parent structures: `line_break/*`.
 - [ ] Math styles and scripts: plain/bold/italic/bold-italic plus script, fraktur, double-struck, sans-serif, and monospace examples.
 - [ ] Delimiter variants: parentheses, brackets, braces, bars, double bars, angles, floors, ceilings, and white brackets.
 - [x] Matrix column counts and centered columns.
@@ -409,8 +425,8 @@ The corpus is valuable for complex composition and real-world regression coverag
 - [x] Border-box horizontal, vertical, and diagonal strike combinations.
 - [x] Phantom zero-width/ascent/descent and transparency combinations.
 - [ ] `m:argSz`, `m:lit`, `m:nor`, and `m:aln` semantics.
-- [ ] Math paragraph justification and multiple `oMath` children.
-- [ ] Document-level `m:mathPr` defaults.
+- [x] Math paragraph justification and multiple `oMath` children.
+- [x] Document-level `m:mathPr` defaults.
 - [ ] Embedded hyperlinks, fields, content controls, custom XML, and tracked revisions.
 - [ ] Alternate namespace prefixes and default math namespace.
 - [ ] Malformed XML, missing required arguments, duplicate properties, and unknown elements.
@@ -516,10 +532,10 @@ Complete these goals in order. Goals 3-10 are vertical feature slices: each incl
 
 ### Goal 9: Breaks and equation layout
 
-- [ ] Implement manual breaks and alignment indices across every supported parent structure.
-- [ ] Implement math-paragraph justification, multiple equations, and relative alignment.
-- [ ] Implement optional document math settings and their local-property precedence.
-- [ ] Cover all dedicated upstream line-break fixtures.
+- [x] Implement manual breaks and alignment indices across every supported parent structure.
+- [x] Implement math-paragraph justification, multiple equations, and relative alignment.
+- [x] Implement optional document math settings and their local-property precedence.
+- [x] Cover all dedicated upstream line-break fixtures.
 
 ### Goal 10: Embedded WordprocessingML
 

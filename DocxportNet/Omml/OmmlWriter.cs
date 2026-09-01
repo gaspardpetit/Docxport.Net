@@ -12,7 +12,7 @@ internal static class OmmlWriter
         DxpOmmlOutputFormat format,
         DxpOmmlConversionOptions options)
     {
-        bool isDisplay = options.Display ?? document.IsDisplay;
+        bool isDisplay = options.Display ?? (document.IsDisplay || options.DisplayDefaults);
         List<DxpOmmlDiagnostic> diagnostics = new();
         string output = format switch
         {
@@ -32,14 +32,31 @@ internal static class OmmlWriter
         List<DxpOmmlDiagnostic> diagnostics)
     {
         XNamespace math = MathMlNamespace;
-        XElement row = new(math + "mrow");
-        foreach (OmmlNode node in document.Children)
-            AppendMathMl(row, node, options.SmallFractions && !isDisplay, isDisplay, options, diagnostics);
+        XElement body;
+        if (document.Children.Any(node => node is OmmlBreak))
+        {
+            body = new XElement(math + "mtable");
+            XElement cell = AddMathMlLine(body, math);
+            foreach (OmmlNode node in document.Children)
+            {
+                if (node is OmmlBreak)
+                    cell = AddMathMlLine(body, math);
+                else
+                    AppendMathMl(cell, node, options.SmallFractions && !isDisplay, isDisplay, options, diagnostics);
+            }
+        }
+        else
+        {
+            body = new XElement(math + "mrow");
+            foreach (OmmlNode node in document.Children)
+                AppendMathMl(body, node, options.SmallFractions && !isDisplay, isDisplay, options, diagnostics);
+        }
 
         XElement root = new(
             math + "math",
             new XAttribute("display", isDisplay ? "block" : "inline"),
-            row);
+            body);
+        ApplyMathMlLayout(root, document, options, diagnostics);
         return root.ToString(SaveOptions.DisableFormatting);
     }
 
@@ -61,6 +78,12 @@ internal static class OmmlWriter
             return;
         }
 
+        if (node is OmmlBreak boundary)
+        {
+            AppendMathMlBreak(parent, boundary.AlignmentAt);
+            return;
+        }
+
         if (node is OmmlRun run)
         {
             XElement container = parent;
@@ -73,11 +96,20 @@ internal static class OmmlWriter
                 if (run.RightToLeft) container.SetAttributeValue("dir", "rtl");
                 parent.Add(container);
             }
-            if (run.Alignment) container.Add(new XElement(math + "malignmark"));
-            foreach (OmmlToken token in run.Tokens)
+            if (run.Alignment && !run.BreakAlignmentAt.HasValue) container.Add(new XElement(math + "malignmark"));
+            foreach (RunPiece piece in RunPieces(run, options))
             {
-                if (token.Value == "\u200B") container.Add(new XElement(math + "mspace", new XAttribute("width", "0")));
-                else container.Add(new XElement(math + (token.Kind switch { OmmlTokenKind.Identifier => "mi", OmmlTokenKind.Number => "mn", OmmlTokenKind.Operator => "mo", _ => "mtext" }), token.Value));
+                if (piece.IsBreak)
+                {
+                    AppendMathMlBreak(container, piece.AlignmentAt);
+                    if (run.Alignment && piece.AlignmentAfter)
+                        container.Add(new XElement(math + "malignmark"));
+                }
+                else if (piece.Token is OmmlToken token)
+                {
+                    if (token.Value == "\u200B") container.Add(new XElement(math + "mspace", new XAttribute("width", "0")));
+                    else container.Add(new XElement(math + (token.Kind switch { OmmlTokenKind.Identifier => "mi", OmmlTokenKind.Number => "mn", OmmlTokenKind.Operator => "mo", _ => "mtext" }), token.Value));
+                }
             }
             return;
         }
@@ -275,28 +307,32 @@ internal static class OmmlWriter
 
         if (node is OmmlBox box)
         {
+            string? operatorText = box.OperatorEmulator ? SimpleText(box.Argument) : null;
+            string? operatorAfterBreak = operatorText;
             if (box.BreakAlignmentAt.HasValue)
             {
-                XElement lineBreak = new(math + "mspace", new XAttribute("linebreak", "newline"));
-                lineBreak.SetAttributeValue("data-omml-align-at", Invariant(box.BreakAlignmentAt.Value));
-                parent.Add(lineBreak);
+                if (operatorText != null && IsBreakableBinaryOperator(operatorText) &&
+                    options.BreakBinary is DxpOmmlBreakBinary.After or DxpOmmlBreakBinary.Repeat)
+                {
+                    (string before, string after) = BreakOperators(operatorText, options);
+                    if (before.Length != 0) parent.Add(BoxMathMlOperator(box, before));
+                    operatorAfterBreak = after;
+                }
+                AppendMathMlBreak(parent, box.BreakAlignmentAt);
             }
             if (box.Alignment) parent.Add(new XElement(math + "malignmark"));
             if (box.Differential) parent.Add(new XElement(math + "mspace", new XAttribute("width", "0.1667em")));
 
-            XElement rendered;
-            string? operatorText = box.OperatorEmulator ? SimpleText(box.Argument) : null;
-            if (operatorText != null)
-                rendered = new XElement(math + "mo", new XAttribute("form", "infix"), operatorText);
+            XElement? rendered;
+            if (operatorAfterBreak != null)
+                rendered = operatorAfterBreak.Length == 0 ? null : BoxMathMlOperator(box, operatorAfterBreak);
             else
             {
                 rendered = new XElement(math + "mrow");
                 AppendMathMl(rendered, box.Argument, compactFractions, isDisplay, options, diagnostics);
+                ApplyBoxMathMlAttributes(rendered, box);
             }
-            rendered.SetAttributeValue("data-omml-operator-emulator", XmlBoolean(box.OperatorEmulator));
-            rendered.SetAttributeValue("data-omml-no-break", XmlBoolean(box.NoBreak));
-            rendered.SetAttributeValue("data-omml-differential", XmlBoolean(box.Differential));
-            parent.Add(rendered);
+            if (rendered != null) parent.Add(rendered);
             if (box.NoBreak || box.Differential || (box.OperatorEmulator && operatorText == null))
                 AddApproximation(diagnostics, box, "m:box",
                     "MathML has no exact equivalent for every OMML box spacing/no-break behavior; semantic flags were retained as data attributes.");
@@ -351,8 +387,12 @@ internal static class OmmlWriter
         Func<string, string> escape)
     {
         StringBuilder output = new();
+        bool multilineLatex = format == DxpOmmlOutputFormat.Latex && document.Children.Any(NeedsLatexEnvironment);
+        if (multilineLatex) output.Append(@"\begin{aligned}");
         foreach (OmmlNode node in document.Children)
             AppendTextual(output, node, format, isDisplay, options, diagnostics, escape);
+        if (multilineLatex) output.Append(@"\end{aligned}");
+        AddTextualLayoutDiagnostics(document, format, options, diagnostics);
         return output.ToString();
     }
 
@@ -367,28 +407,36 @@ internal static class OmmlWriter
     {
         if (node is OmmlSequence sequence)
         {
+            bool multilineLatex = format == DxpOmmlOutputFormat.Latex && sequence.Children.Any(NeedsLatexEnvironment);
+            if (multilineLatex) output.Append(@"\begin{aligned}");
             foreach (OmmlNode child in sequence.Children)
                 AppendTextual(output, child, format, isDisplay, options, diagnostics, escape);
+            if (multilineLatex) output.Append(@"\end{aligned}");
+            return;
+        }
+
+        if (node is OmmlBreak boundary)
+        {
+            AppendTextualBreak(output, format, boundary.AlignmentAt);
             return;
         }
 
         if (node is OmmlRun run)
         {
-            string value = string.Concat(run.Tokens.Select(token => token.Value));
+            IReadOnlyList<RunPiece> pieces = RunPieces(run, options);
             if (format == DxpOmmlOutputFormat.Latex)
             {
-                value = EscapeLatex(value);
-                value = ApplyLatexStyle(run, value);
-                if (run.Alignment) output.Append('&');
-                output.Append(value.Replace("\u200B", "{}"));
+                if (run.Alignment && !run.BreakAlignmentAt.HasValue) output.Append('&');
+                AppendStyledLatexRun(output, run, pieces);
             }
             else
             {
-                if (run.Alignment && format == DxpOmmlOutputFormat.UnicodeMath) output.Append('&');
-                if (format == DxpOmmlOutputFormat.UnicodeMath && UnicodeMathStyle(run) is string command)
-                    output.Append($"\\{command}\"{value.Replace("\"", "\\\"")}\"");
-                else output.Append(escape(format == DxpOmmlOutputFormat.Text ? value.Replace("\u200B", string.Empty) : value));
+                if (run.Alignment && !run.BreakAlignmentAt.HasValue && format == DxpOmmlOutputFormat.UnicodeMath) output.Append('&');
+                AppendUnicodeOrTextRun(output, run, pieces, format, escape);
             }
+            if (run.BreakAlignmentAt > 0)
+                AddApproximation(diagnostics, run, "m:brk",
+                    $"{format} preserves the manual line boundary but cannot reproduce OMML's numeric operator alignment index exactly.");
             return;
         }
 
@@ -580,23 +628,34 @@ internal static class OmmlWriter
         if (node is OmmlBox box)
         {
             string argument = RenderTextual(box.Argument, format, isDisplay, options, diagnostics, escape);
+            string? operatorText = box.OperatorEmulator ? SimpleText(box.Argument) : null;
+            string beforeBreak = string.Empty;
+            string afterBreak = argument;
+            if (box.BreakAlignmentAt.HasValue && operatorText != null && IsBreakableBinaryOperator(operatorText) &&
+                options.BreakBinary is DxpOmmlBreakBinary.After or DxpOmmlBreakBinary.Repeat)
+            {
+                (string before, string after) = BreakOperators(operatorText, options);
+                beforeBreak = FormatBoxOperator(before, format, box.NoBreak);
+                afterBreak = FormatBoxOperator(after, format, box.NoBreak);
+            }
+            else if (format == DxpOmmlOutputFormat.Latex)
+            {
+                if (box.OperatorEmulator) afterBreak = $"\\mathop{{{afterBreak}}}";
+                if (box.NoBreak) afterBreak = $"\\nobreak{{{afterBreak}}}\\nobreak";
+            }
+            output.Append(beforeBreak);
             if (box.BreakAlignmentAt.HasValue)
-                output.Append(format == DxpOmmlOutputFormat.Latex ? @"\\" : "\n");
+                AppendTextualBreak(output, format, box.BreakAlignmentAt);
             if (box.Alignment && format is DxpOmmlOutputFormat.Latex or DxpOmmlOutputFormat.UnicodeMath)
                 output.Append('&');
             if (box.Differential && format != DxpOmmlOutputFormat.Text)
                 output.Append(format == DxpOmmlOutputFormat.Latex ? @"\," : " ");
-            if (format == DxpOmmlOutputFormat.Latex)
-            {
-                if (box.OperatorEmulator) argument = $"\\mathop{{{argument}}}";
-                if (box.NoBreak) argument = $"\\nobreak{{{argument}}}\\nobreak";
-            }
-            output.Append(argument);
+            output.Append(afterBreak);
             bool approximated = format switch
             {
-                DxpOmmlOutputFormat.Latex => box.OperatorEmulator || box.NoBreak || box.Differential,
-                DxpOmmlOutputFormat.UnicodeMath => box.OperatorEmulator || box.NoBreak || box.Differential,
-                DxpOmmlOutputFormat.Text => box.OperatorEmulator || box.NoBreak || box.Differential || box.Alignment,
+                DxpOmmlOutputFormat.Latex => box.OperatorEmulator || box.NoBreak || box.Differential || box.BreakAlignmentAt > 0,
+                DxpOmmlOutputFormat.UnicodeMath => box.OperatorEmulator || box.NoBreak || box.Differential || box.BreakAlignmentAt > 0,
+                DxpOmmlOutputFormat.Text => box.OperatorEmulator || box.NoBreak || box.Differential || box.Alignment || box.BreakAlignmentAt > 0,
                 _ => false,
             };
             if (approximated)
@@ -687,6 +746,233 @@ internal static class OmmlWriter
         if (result.Count == 0) result.Add(OmmlHorizontalAlignment.Center);
         return result;
     }
+
+    private static void AppendMathMlBreak(XElement parent, int? alignmentAt)
+    {
+        XNamespace math = MathMlNamespace;
+        XElement lineBreak = new(math + "mspace", new XAttribute("linebreak", "newline"));
+        if (alignmentAt.HasValue)
+            lineBreak.SetAttributeValue("data-omml-align-at", Invariant(alignmentAt.Value));
+        parent.Add(lineBreak);
+    }
+
+    private static XElement AddMathMlLine(XElement table, XNamespace math)
+    {
+        XElement cell = new(math + "mtd");
+        table.Add(new XElement(math + "mtr", cell));
+        return cell;
+    }
+
+    private static void AppendTextualBreak(StringBuilder output, DxpOmmlOutputFormat format, int? alignmentAt)
+    {
+        output.Append(format == DxpOmmlOutputFormat.Latex ? @"\\" : "\n");
+    }
+
+    private static void AppendStyledLatexRun(StringBuilder output, OmmlRun run, IReadOnlyList<RunPiece> pieces)
+    {
+        IReadOnlyList<IReadOnlyList<OmmlToken>> segments = SplitRunAtBreaks(pieces);
+        for (int i = 0; i < segments.Count; i++)
+        {
+            if (i != 0) output.Append(@"\\");
+            if (i == 1 && run.Alignment && run.BreakAlignmentAt.HasValue) output.Append('&');
+            string value = string.Concat(segments[i].Select(token => EscapeLatex(token.Value)))
+                .Replace("\u200B", "{}");
+            output.Append(ApplyLatexStyle(run, value));
+        }
+    }
+
+    private static void AppendUnicodeOrTextRun(StringBuilder output, OmmlRun run, IReadOnlyList<RunPiece> pieces,
+        DxpOmmlOutputFormat format, Func<string, string> escape)
+    {
+        IReadOnlyList<IReadOnlyList<OmmlToken>> segments = SplitRunAtBreaks(pieces);
+        for (int i = 0; i < segments.Count; i++)
+        {
+            if (i != 0) output.Append('\n');
+            if (i == 1 && run.Alignment && run.BreakAlignmentAt.HasValue &&
+                format == DxpOmmlOutputFormat.UnicodeMath) output.Append('&');
+            string value = string.Concat(segments[i].Select(token => token.Value));
+            if (format == DxpOmmlOutputFormat.UnicodeMath && UnicodeMathStyle(run) is string command)
+                output.Append($"\\{command}\"{value.Replace("\"", "\\\"")}\"");
+            else output.Append(escape(format == DxpOmmlOutputFormat.Text
+                ? value.Replace("\u200B", string.Empty) : value));
+        }
+    }
+
+    private static IReadOnlyList<IReadOnlyList<OmmlToken>> SplitRunAtBreaks(IReadOnlyList<RunPiece> pieces)
+    {
+        List<IReadOnlyList<OmmlToken>> result = new();
+        List<OmmlToken> segment = new();
+        foreach (RunPiece piece in pieces)
+        {
+            if (piece.IsBreak)
+            {
+                result.Add(segment.ToArray());
+                segment.Clear();
+            }
+            else if (piece.Token != null) segment.Add(piece.Token);
+        }
+        result.Add(segment.ToArray());
+        return result;
+    }
+
+    private static IReadOnlyList<RunPiece> RunPieces(OmmlRun run, DxpOmmlConversionOptions options)
+    {
+        List<RunPiece> source = new();
+        if (run.BreakAlignmentAt.HasValue)
+            source.Add(RunPiece.Break(run.BreakAlignmentAt, alignmentAfter: true));
+        foreach (OmmlToken token in run.Tokens)
+            source.Add(token.Kind == OmmlTokenKind.LineBreak ? RunPiece.Break(null) : RunPiece.Content(token));
+
+        if (options.BreakBinary is null or DxpOmmlBreakBinary.Before) return source;
+        List<RunPiece> result = new();
+        for (int i = 0; i < source.Count; i++)
+        {
+            RunPiece piece = source[i];
+            if (!piece.IsBreak || i + 1 >= source.Count || source[i + 1].Token is not OmmlToken token ||
+                !IsBreakableBinaryOperator(token.Value))
+            {
+                result.Add(piece);
+                continue;
+            }
+
+            (string before, string after) = BreakOperators(token.Value, options);
+            if (before.Length != 0) result.Add(RunPiece.Content(new OmmlToken(OmmlTokenKind.Operator, before)));
+            result.Add(piece);
+            if (after.Length != 0) result.Add(RunPiece.Content(new OmmlToken(OmmlTokenKind.Operator, after)));
+            i++;
+        }
+        return result;
+    }
+
+    private static bool IsBreakableBinaryOperator(string value) =>
+        value is "+" or "-" or "−" or "=" or "==" or "≠" or "<" or ">" or "≤" or "≥" or
+            "×" or "÷" or "/" or "*" or "±" or "∓";
+
+    private static (string Before, string After) BreakOperators(string value, DxpOmmlConversionOptions options)
+    {
+        if (options.BreakBinary == DxpOmmlBreakBinary.After) return (value, string.Empty);
+        if (value is not ("-" or "−")) return (value, value);
+        string minus = value;
+        return options.BreakBinarySubtraction switch
+        {
+            DxpOmmlBreakBinarySubtraction.MinusPlus => (minus, "+"),
+            DxpOmmlBreakBinarySubtraction.PlusMinus => ("+", minus),
+            _ => (minus, minus),
+        };
+    }
+
+    private sealed class RunPiece
+    {
+        private RunPiece(OmmlToken? token, bool isBreak, int? alignmentAt, bool alignmentAfter)
+        { Token = token; IsBreak = isBreak; AlignmentAt = alignmentAt; AlignmentAfter = alignmentAfter; }
+        public OmmlToken? Token { get; }
+        public bool IsBreak { get; }
+        public int? AlignmentAt { get; }
+        public bool AlignmentAfter { get; }
+        public static RunPiece Content(OmmlToken token) => new(token, false, null, false);
+        public static RunPiece Break(int? alignmentAt, bool alignmentAfter = false) =>
+            new(null, true, alignmentAt, alignmentAfter);
+    }
+
+    private static bool NeedsLatexEnvironment(OmmlNode node) => node switch
+    {
+        OmmlBreak => true,
+        OmmlRun run => run.BreakAlignmentAt.HasValue || run.Tokens.Any(token => token.Kind == OmmlTokenKind.LineBreak),
+        OmmlBox box => box.BreakAlignmentAt.HasValue,
+        _ => false,
+    };
+
+    private static XElement BoxMathMlOperator(OmmlBox box, string value)
+    {
+        XNamespace math = MathMlNamespace;
+        XElement result = new(math + "mo", new XAttribute("form", "infix"), value);
+        ApplyBoxMathMlAttributes(result, box);
+        return result;
+    }
+
+    private static void ApplyBoxMathMlAttributes(XElement element, OmmlBox box)
+    {
+        element.SetAttributeValue("data-omml-operator-emulator", XmlBoolean(box.OperatorEmulator));
+        element.SetAttributeValue("data-omml-no-break", XmlBoolean(box.NoBreak));
+        element.SetAttributeValue("data-omml-differential", XmlBoolean(box.Differential));
+    }
+
+    private static string FormatBoxOperator(string value, DxpOmmlOutputFormat format, bool noBreak)
+    {
+        if (value.Length == 0) return string.Empty;
+        if (format != DxpOmmlOutputFormat.Latex) return value;
+        string result = $"\\mathop{{{EscapeLatex(value)}}}";
+        return noBreak ? $"\\nobreak{{{result}}}\\nobreak" : result;
+    }
+
+    private static void ApplyMathMlLayout(XElement root, OmmlDocument document,
+        DxpOmmlConversionOptions options, List<DxpOmmlDiagnostic> diagnostics)
+    {
+        DxpOmmlJustification? justification = document.Justification ?? options.DefaultJustification;
+        if (justification.HasValue)
+        {
+            root.SetAttributeValue("data-omml-justification", Justification(justification.Value));
+            root.SetAttributeValue("style", $"text-align: {CssJustification(justification.Value)}");
+            XElement? table = root.Element(XName.Get("mtable", MathMlNamespace));
+            if (table != null) table.SetAttributeValue("columnalign", CssJustification(justification.Value));
+            if (justification == DxpOmmlJustification.CenterGroup)
+                AddJustificationApproximation(document, diagnostics,
+                    "MathML centers the paragraph but cannot distinguish OMML centerGroup from center exactly.");
+        }
+        SetData(root, "math-font", options.MathFont);
+        SetData(root, "break-binary", options.BreakBinary?.ToString().ToLowerInvariant());
+        SetData(root, "break-binary-subtraction", BreakBinarySubtraction(options.BreakBinarySubtraction));
+        SetData(root, "left-margin-twips", options.LeftMarginTwips);
+        SetData(root, "right-margin-twips", options.RightMarginTwips);
+        SetData(root, "pre-spacing-twips", options.PreSpacingTwips);
+        SetData(root, "post-spacing-twips", options.PostSpacingTwips);
+        SetData(root, "inter-spacing-twips", options.InterSpacingTwips);
+        SetData(root, "intra-spacing-twips", options.IntraSpacingTwips);
+        if (!options.WrapRight) SetData(root, "wrap-indent-twips", options.WrapIndentTwips);
+        if (options.WrapRight) root.SetAttributeValue("data-omml-wrap-right", "true");
+        if (HasApproximateDocumentSettings(options))
+            AddDocumentApproximation(diagnostics,
+                "OMML document math font, break, spacing, and wrapping settings were retained as MathML metadata where no exact portable equivalent exists.");
+    }
+
+    private static void AddTextualLayoutDiagnostics(OmmlDocument document, DxpOmmlOutputFormat format,
+        DxpOmmlConversionOptions options, List<DxpOmmlDiagnostic> diagnostics)
+    {
+        if (document.Justification.HasValue || options.DefaultJustification.HasValue)
+            AddJustificationApproximation(document, diagnostics,
+                $"{format} output does not control the surrounding paragraph's OMML justification.");
+        if (HasApproximateDocumentSettings(options))
+            AddDocumentApproximation(diagnostics,
+                $"{format} output cannot portably reproduce OMML document math font, break, spacing, margin, and wrapping settings.");
+    }
+
+    private static bool HasApproximateDocumentSettings(DxpOmmlConversionOptions options) =>
+        !string.IsNullOrEmpty(options.MathFont) || options.BreakBinary.HasValue ||
+        options.BreakBinarySubtraction.HasValue || options.LeftMarginTwips.HasValue ||
+        options.RightMarginTwips.HasValue || options.PreSpacingTwips.HasValue ||
+        options.PostSpacingTwips.HasValue || options.InterSpacingTwips.HasValue ||
+        options.IntraSpacingTwips.HasValue || options.WrapIndentTwips.HasValue || options.WrapRight;
+
+    private static void AddDocumentApproximation(List<DxpOmmlDiagnostic> diagnostics, string message) =>
+        diagnostics.Add(new DxpOmmlDiagnostic("OMML002", DxpOmmlDiagnosticSeverity.Warning,
+            message, "/m:mathPr[1]", "m:mathPr"));
+
+    private static void AddJustificationApproximation(OmmlDocument document,
+        List<DxpOmmlDiagnostic> diagnostics, string message) => diagnostics.Add(new DxpOmmlDiagnostic(
+            "OMML002", DxpOmmlDiagnosticSeverity.Warning, message,
+            document.Justification.HasValue ? "/m:oMathPara[1]/m:oMathParaPr[1]/m:jc[1]" : "/m:mathPr[1]/m:defJc[1]",
+            document.Justification.HasValue ? "m:jc" : "m:defJc"));
+
+    private static void SetData(XElement root, string name, string? value)
+    { if (!string.IsNullOrEmpty(value)) root.SetAttributeValue("data-omml-" + name, value); }
+    private static void SetData(XElement root, string name, uint? value)
+    { if (value.HasValue) root.SetAttributeValue("data-omml-" + name, Invariant(value.Value)); }
+    private static string Justification(DxpOmmlJustification value) => value switch
+    { DxpOmmlJustification.Left => "left", DxpOmmlJustification.Right => "right", DxpOmmlJustification.Center => "center", _ => "centerGroup" };
+    private static string CssJustification(DxpOmmlJustification value) => value switch
+    { DxpOmmlJustification.Left => "left", DxpOmmlJustification.Right => "right", _ => "center" };
+    private static string? BreakBinarySubtraction(DxpOmmlBreakBinarySubtraction? value) => value switch
+    { DxpOmmlBreakBinarySubtraction.MinusMinus => "--", DxpOmmlBreakBinarySubtraction.MinusPlus => "-+", DxpOmmlBreakBinarySubtraction.PlusMinus => "+-", _ => null };
 
     private static bool ContainsAlignmentMarker(OmmlNode node) => node switch
     {
