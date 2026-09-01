@@ -1,0 +1,24 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <mmultiscripts>
+      <mi>&#x3b1;</mi>
+      <mo>=</mo>
+      <mi>&#x3b1;</mi>
+      <mprescripts/>
+      <mi>&#x3b3;</mi>
+    </mmultiscripts>
+    <mo linebreak="newline"/>
+    <mmultiscripts>
+      <mprescripts/>
+      <mrow>
+        <mo>=</mo>
+        <mi>&#x3b3;</mi>
+      </mrow>
+      <mrow>
+        <mi>&#x3b2;</mi>
+        <mo>=</mo>
+        <mi>&#x3b2;</mi>
+      </mrow>
+    </mmultiscripts>
+  </mstyle>
+</math>

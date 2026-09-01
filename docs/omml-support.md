@@ -357,8 +357,8 @@ The corpus is valuable for complex composition and real-world regression coverag
 
 ### Structures represented in the corpus
 
-- [ ] Import/recreate and attribute the general fixture corpus.
-- [ ] Import/recreate and attribute the line-break fixture corpus.
+- [x] Import/recreate and attribute the general fixture corpus.
+- [x] Import/recreate and attribute the line-break fixture corpus.
 - [ ] Fractions: fixtures 001-004 and complex compositions.
 - [ ] Scripts: fixtures 005-008 plus later nested cases.
 - [ ] Radicals: fixtures 009-012.
@@ -395,10 +395,10 @@ The corpus is valuable for complex composition and real-world regression coverag
 
 ### Oracle workflow
 
-- [ ] Record upstream repository, commit, path, and license with reused fixtures.
-- [ ] Generate MathML, LaTeX, and UnicodeMath oracle outputs using a pinned Plurimath version.
-- [ ] Store generated oracle outputs separately from hand-authored normative expectations.
-- [ ] Canonicalize XML before comparing MathML; do not compare prefixes or insignificant whitespace.
+- [x] Record upstream repository, commit, path, and license with reused fixtures.
+- [x] Generate MathML, LaTeX, and UnicodeMath oracle outputs using a pinned Plurimath version.
+- [x] Store generated oracle outputs separately from hand-authored normative expectations.
+- [x] Canonicalize XML before comparing MathML; do not compare prefixes or insignificant whitespace.
 - [ ] Treat an oracle disagreement as a review prompt, not automatic proof that Docxport is wrong.
 - [ ] Add focused named fixtures for every discovered regression; numbered corpus files alone are difficult to diagnose.
 

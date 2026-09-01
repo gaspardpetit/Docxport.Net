@@ -1,0 +1,15 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <mrow>
+      <munderover>
+        <mo>&#x220f;</mo>
+        <mtext>k=1</mtext>
+        <mtext>n</mtext>
+      </munderover>
+      <msub>
+        <mtext>A</mtext>
+        <mtext>k</mtext>
+      </msub>
+    </mrow>
+  </mstyle>
+</math>

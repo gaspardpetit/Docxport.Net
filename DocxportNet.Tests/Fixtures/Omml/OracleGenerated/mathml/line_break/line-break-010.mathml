@@ -1,0 +1,19 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <mstyle mathvariant="normal">
+      <mtext>r</mtext>
+    </mstyle>
+    <mo linebreak="newline"/>
+    <mstyle mathvariant="normal">
+      <mtext>e</mtext>
+    </mstyle>
+    <mo linebreak="newline"/>
+    <mstyle mathvariant="normal">
+      <mtext>a</mtext>
+    </mstyle>
+    <mo linebreak="newline"/>
+    <mstyle mathvariant="normal">
+      <mtext>d</mtext>
+    </mstyle>
+  </mstyle>
+</math>

@@ -1,0 +1,18 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <mstyle mathvariant="monospace">
+      <mtext>a</mtext>
+    </mstyle>
+    <mo linebreak="newline"/>
+    <mstyle mathvariant="monospace">
+      <mtext>b</mtext>
+    </mstyle>
+    <mstyle mathvariant="normal">
+      <mtext>d</mtext>
+    </mstyle>
+    <mo linebreak="newline"/>
+    <mstyle mathvariant="normal">
+      <mtext>e</mtext>
+    </mstyle>
+  </mstyle>
+</math>

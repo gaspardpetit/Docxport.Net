@@ -1,0 +1,16 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <msub>
+      <mi>&#x3b8;</mi>
+    </msub>
+    <mo linebreak="newline"/>
+    <msub>
+      <mi>&#x3b3;</mi>
+      <mi>&#x2222;</mi>
+    </msub>
+    <mo linebreak="newline"/>
+    <msub>
+      <mi>&#xd3;</mi>
+    </msub>
+  </mstyle>
+</math>

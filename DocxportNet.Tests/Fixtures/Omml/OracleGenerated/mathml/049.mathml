@@ -1,0 +1,24 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <mrow>
+      <munderover>
+        <mi>&#x22c3;</mi>
+        <mtext>n=1</mtext>
+        <mtext>m</mtext>
+      </munderover>
+      <mrow>
+        <mo>(</mo>
+        <msub>
+          <mtext>X</mtext>
+          <mtext>n</mtext>
+        </msub>
+        <mi>&#x2229;</mi>
+        <msub>
+          <mtext>Y</mtext>
+          <mtext>n</mtext>
+        </msub>
+        <mo>)</mo>
+      </mrow>
+    </mrow>
+  </mstyle>
+</math>

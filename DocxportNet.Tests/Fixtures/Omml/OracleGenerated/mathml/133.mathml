@@ -1,0 +1,20 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <munder>
+      <mtext>n→∞</mtext>
+      <mtext>lim</mtext>
+    </munder>
+    <msup>
+      <mrow>
+        <mo>(</mo>
+        <mi>1+</mi>
+        <mfrac>
+          <mn>1</mn>
+          <mtext>n</mtext>
+        </mfrac>
+        <mo>)</mo>
+      </mrow>
+      <mtext>n</mtext>
+    </msup>
+  </mstyle>
+</math>

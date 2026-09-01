@@ -1,0 +1,76 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <mtext>U=</mtext>
+    <mrow>
+      <mo>{</mo>
+      <mtable>
+        <mtr>
+          <mtd>
+            <msub>
+              <mtext>Q</mtext>
+              <mtext>e</mtext>
+            </msub>
+            <mtext>*E</mtext>
+            <mi>,  &</mi>
+            <mtext>if</mtext>
+            <mtext></mtext>
+            <msub>
+              <mtext>Q</mtext>
+              <mtext>e</mtext>
+            </msub>
+            <mi>&lt;1</mi>
+          </mtd>
+        </mtr>
+        <mtr>
+          <mtd>
+            <mtext>E,  &</mtext>
+            <mtext>if </mtext>
+            <msub>
+              <mtext>Q</mtext>
+              <mtext>e</mtext>
+            </msub>
+            <mtext>&lt;S</mtext>
+          </mtd>
+        </mtr>
+        <mtr>
+          <mtd>
+            <mrow>
+              <mo>(</mo>
+              <mrow>
+                <mo>⌊</mo>
+                <mfrac>
+                  <msub>
+                    <mtext>Q</mtext>
+                    <mtext>e</mtext>
+                  </msub>
+                  <mtext>S</mtext>
+                </mfrac>
+                <mo>⌋</mo>
+              </mrow>
+              <mo>+</mo>
+              <mrow>
+                <mo>⌈</mo>
+                <mfrac>
+                  <mrow>
+                    <msub>
+                      <mtext>Q</mtext>
+                      <mtext>e</mtext>
+                    </msub>
+                    <mtext>mod S</mtext>
+                  </mrow>
+                  <mtext>S</mtext>
+                </mfrac>
+                <mo>⌉</mo>
+              </mrow>
+              <mtext></mtext>
+              <mo>)</mo>
+            </mrow>
+            <mtext>E,  &</mtext>
+            <mtext>otherwise</mtext>
+          </mtd>
+        </mtr>
+      </mtable>
+      <mo>)</mo>
+    </mrow>
+  </mstyle>
+</math>

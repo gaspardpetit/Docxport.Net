@@ -1,0 +1,12 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <msup>
+      <mrow>
+        <mo rspace="thickmathspace"/>
+        <mi>csc</mi>
+      </mrow>
+      <mi>-1</mi>
+    </msup>
+    <mtext>x</mtext>
+  </mstyle>
+</math>

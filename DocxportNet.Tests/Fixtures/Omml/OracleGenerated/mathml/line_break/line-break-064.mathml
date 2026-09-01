@@ -1,0 +1,18 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <mrow>
+      <munderover>
+        <mo>&#x220f;</mo>
+        <mtext>symmetric</mtext>
+        <mstyle mathvariant="normal">
+          <mtext>node2</mtext>
+        </mstyle>
+      </munderover>
+      <mstyle mathvariant="normal">
+        <mtext>symmetric</mtext>
+      </mstyle>
+    </mrow>
+    <mo linebreak="newline"/>
+    <mi>&#xaab;</mi>
+  </mstyle>
+</math>

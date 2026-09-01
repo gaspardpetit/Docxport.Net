@@ -1,0 +1,13 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <mrow>
+      <mo rspace="thickmathspace"/>
+      <mi>lcm</mi>
+    </mrow>
+    <mtext>a</mtext>
+    <mtext>s</mtext>
+    <mo linebreak="newline"/>
+    <mtext>d</mtext>
+    <mtext>f</mtext>
+  </mstyle>
+</math>

@@ -1,0 +1,15 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <munder>
+      <mrow>
+        <mtext>i</mtext>
+        <mo>&#x2208;</mo>
+        <mtext>I</mtext>
+      </mrow>
+      <mover>
+        <mtext>n</mtext>
+        <mi>&#x22c2;</mi>
+      </mover>
+    </munder>
+  </mstyle>
+</math>

@@ -1,0 +1,43 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <mrow>
+      <mo>[</mo>
+      <mtable>
+        <mtr>
+          <mtd>
+            <mtext>a</mtext>
+          </mtd>
+          <mtd>
+            <mo>&#x22ef;</mo>
+          </mtd>
+          <mtd>
+            <mtext>b</mtext>
+          </mtd>
+        </mtr>
+        <mtr>
+          <mtd>
+            <mo>&#x22ee;</mo>
+          </mtd>
+          <mtd>
+            <mo>&#x22f1;</mo>
+          </mtd>
+          <mtd>
+            <mo>&#x22ee;</mo>
+          </mtd>
+        </mtr>
+        <mtr>
+          <mtd>
+            <mtext>d</mtext>
+          </mtd>
+          <mtd>
+            <mo>&#x22ef;</mo>
+          </mtd>
+          <mtd>
+            <mtext>c</mtext>
+          </mtd>
+        </mtr>
+      </mtable>
+      <mo>]</mo>
+    </mrow>
+  </mstyle>
+</math>

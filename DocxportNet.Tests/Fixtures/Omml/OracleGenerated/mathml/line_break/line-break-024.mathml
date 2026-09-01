@@ -1,0 +1,26 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <munder>
+      <mrow>
+        <mtext>a</mtext>
+        <mtext>s</mtext>
+      </mrow>
+      <mover>
+        <mtext>inf</mtext>
+      </mover>
+    </munder>
+    <mo linebreak="newline"/>
+    <munder>
+      <mrow>
+        <mtext>d</mtext>
+        <mtext>f</mtext>
+      </mrow>
+      <mover>
+        <mrow>
+          <mtext>e</mtext>
+          <mtext>c</mtext>
+        </mrow>
+      </mover>
+    </munder>
+  </mstyle>
+</math>

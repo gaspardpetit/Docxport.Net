@@ -1,0 +1,16 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <munder>
+      <mo>&#x2211;</mo>
+    </munder>
+    <mo linebreak="newline"/>
+    <munder>
+      <mi>&#x2222;</mi>
+      <mo>&#x220f;</mo>
+    </munder>
+    <mo linebreak="newline"/>
+    <munder>
+      <mtext>o</mtext>
+    </munder>
+  </mstyle>
+</math>

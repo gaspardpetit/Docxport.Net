@@ -1,0 +1,46 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <mstyle mathvariant="normal">
+      <mn>100</mn>
+    </mstyle>
+    <mstyle mathvariant="bold">
+      <mtext>a</mtext>
+    </mstyle>
+    <mstyle mathvariant="italic">
+      <mtext>a</mtext>
+    </mstyle>
+    <mstyle mathvariant="bold-italic">
+      <mtext>a</mtext>
+    </mstyle>
+    <mstyle mathvariant="double-struck">
+      <mtext>a</mtext>
+    </mstyle>
+    <mstyle mathvariant="bold-fraktur">
+      <mtext>a</mtext>
+    </mstyle>
+    <mstyle mathvariant="script">
+      <mtext>a</mtext>
+    </mstyle>
+    <mstyle mathvariant="bold-script">
+      <mtext>a</mtext>
+    </mstyle>
+    <mstyle mathvariant="fraktur">
+      <mtext>a</mtext>
+    </mstyle>
+    <mstyle mathvariant="sans-serif">
+      <mtext>a</mtext>
+    </mstyle>
+    <mstyle mathvariant="bold-sans-serif">
+      <mtext>a</mtext>
+    </mstyle>
+    <mstyle mathvariant="sans-serif-italic">
+      <mtext>a</mtext>
+    </mstyle>
+    <mstyle mathvariant="sans-serif-bold-italic">
+      <mtext>a</mtext>
+    </mstyle>
+    <mstyle mathvariant="monospace">
+      <mtext>a</mtext>
+    </mstyle>
+  </mstyle>
+</math>

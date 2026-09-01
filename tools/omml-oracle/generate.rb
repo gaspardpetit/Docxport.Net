@@ -13,6 +13,10 @@ output_root = Pathname.new(ARGV.fetch(1)).expand_path
 abort "input directory does not exist: #{input_root}" unless input_root.directory?
 
 results = []
+["mathml", "latex", "unicodemath"].each do |format|
+  FileUtils.rm_rf(output_root.join(format))
+end
+
 input_root.glob("**/*.omml").sort.each do |source|
   relative = source.relative_path_from(input_root)
   record = {
@@ -23,19 +27,29 @@ input_root.glob("**/*.omml").sort.each do |source|
   begin
     formula = Plurimath::Math.parse(source.read, :omml)
     outputs = {
-      "mathml" => [".mathml", formula.to_mathml],
-      "latex" => [".tex", formula.to_latex],
-      "unicodemath" => [".txt", formula.to_unicodemath],
+      "mathml" => [".mathml", -> { formula.to_mathml }],
+      "latex" => [".tex", -> { formula.to_latex }],
+      "unicodemath" => [".txt", -> { formula.to_unicodemath }],
     }
-    outputs.each do |format, (extension, value)|
-      target = output_root.join(format, relative.sub_ext(extension))
-      FileUtils.mkdir_p(target.dirname)
-      target.write(value, mode: "w", encoding: "UTF-8")
+    record[:outputs] = {}
+    outputs.each do |format, (extension, render)|
+      begin
+        target = output_root.join(format, relative.sub_ext(extension))
+        FileUtils.mkdir_p(target.dirname)
+        target.write(render.call, mode: "w", encoding: "UTF-8")
+        record[:outputs][format] = { status: "converted" }
+      rescue StandardError => e
+        record[:outputs][format] = {
+          status: "error",
+          error: "#{e.class}: #{e.message.lines.first&.strip}",
+        }
+      end
     end
-    record[:status] = "converted"
+    output_statuses = record[:outputs].values.map { |output| output[:status] }
+    record[:status] = output_statuses.all? { |status| status == "converted" } ? "converted" : "partial"
   rescue StandardError => e
     record[:status] = "error"
-    record[:error] = "#{e.class}: #{e.message}"
+    record[:error] = "#{e.class}: #{e.message.lines.first&.strip}"
   end
   results << record
 end
@@ -53,4 +67,7 @@ output_root.join("manifest.json").write(
   encoding: "UTF-8",
 )
 
-puts "Processed #{results.length} fixtures (#{results.count { |r| r[:status] == 'converted' }} converted)."
+puts "Processed #{results.length} fixtures " \
+     "(#{results.count { |r| r[:status] == 'converted' }} complete, " \
+     "#{results.count { |r| r[:status] == 'partial' }} partial, " \
+     "#{results.count { |r| r[:status] == 'error' }} failed)."

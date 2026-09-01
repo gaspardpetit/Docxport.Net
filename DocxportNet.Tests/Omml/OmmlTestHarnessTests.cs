@@ -37,6 +37,49 @@ public sealed class OmmlTestHarnessTests
     }
 
     [Fact]
+    public void GeneratedOracleManifestMatchesAvailableOutputs()
+    {
+        string oracleRoot = Path.Combine(OmmlTestData.FixtureRoot, "OracleGenerated");
+        using JsonDocument manifest = JsonDocument.Parse(
+            File.ReadAllText(Path.Combine(oracleRoot, "manifest.json")));
+        JsonElement root = manifest.RootElement;
+
+        Assert.Equal("00c52783877b38f6b8e6e109f1803f96bb34fc62",
+            root.GetProperty("oracle").GetProperty("plurimath_commit").GetString());
+        Assert.Equal("51d4abe5df58fe33a92df094971c5828c3459ffb",
+            root.GetProperty("oracle").GetProperty("omml_commit").GetString());
+
+        JsonElement fixtures = root.GetProperty("fixtures");
+        Assert.Equal(279, fixtures.GetArrayLength());
+        Assert.Equal(260, fixtures.EnumerateArray().Count(entry =>
+            entry.GetProperty("status").GetString() == "converted"));
+        Assert.Equal(19, fixtures.EnumerateArray().Count(entry =>
+            entry.GetProperty("status").GetString() == "partial"));
+
+        IReadOnlyDictionary<string, string> extensions = new Dictionary<string, string>
+        {
+            ["mathml"] = ".mathml",
+            ["latex"] = ".tex",
+            ["unicodemath"] = ".txt",
+        };
+        foreach (JsonElement fixture in fixtures.EnumerateArray())
+        {
+            string relativeSource = fixture.GetProperty("source").GetString()!
+                .Replace('/', Path.DirectorySeparatorChar);
+            JsonElement outputs = fixture.GetProperty("outputs");
+            foreach ((string format, string extension) in extensions)
+            {
+                bool converted = outputs.GetProperty(format).GetProperty("status").GetString() == "converted";
+                string outputPath = Path.Combine(
+                    oracleRoot,
+                    format,
+                    Path.ChangeExtension(relativeSource, extension));
+                Assert.Equal(converted, File.Exists(outputPath));
+            }
+        }
+    }
+
+    [Fact]
     public void CanonicalizationIgnoresPrefixesAttributeOrderAndFormatting()
     {
         const string first = """

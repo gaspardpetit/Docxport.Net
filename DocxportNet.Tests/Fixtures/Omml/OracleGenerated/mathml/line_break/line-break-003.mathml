@@ -1,0 +1,21 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <mrow>
+      <mo rspace="thickmathspace"/>
+      <mrow>
+        <mi>sin</mi>
+        <mrow>
+          <mo>(</mo>
+          <mi>&#x3c3;</mi>
+          <mo>)</mo>
+        </mrow>
+      </mrow>
+    </mrow>
+    <mo linebreak="newline"/>
+    <mrow>
+      <mo>(</mo>
+      <mi>&#x3b8;</mi>
+      <mo>)</mo>
+    </mrow>
+  </mstyle>
+</math>

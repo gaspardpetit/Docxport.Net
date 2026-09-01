@@ -1,0 +1,27 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <msubsup>
+      <mi>&#x3b1;</mi>
+    </msubsup>
+    <mo linebreak="newline"/>
+    <msubsup>
+      <mrow>
+        <mo>=</mo>
+        <mi>&#x3b2;</mi>
+      </mrow>
+      <mi>&#x3b3;</mi>
+    </msubsup>
+    <mo linebreak="newline"/>
+    <msubsup>
+      <mrow>
+        <mo>=</mo>
+        <mi>&#x3b4;</mi>
+      </mrow>
+      <mrow>
+        <mi>&#x3b2;</mi>
+        <mo>=</mo>
+        <mi>&#x3b5;</mi>
+      </mrow>
+    </msubsup>
+  </mstyle>
+</math>
