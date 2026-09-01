@@ -79,6 +79,7 @@ export interface ResolveRequest { fields?: FieldOptions; }
 export interface DocumentInfo { hasTrackedChanges: boolean; }
 
 export interface Docxport {
+  convertOmml(omml: string, format?: "mathml" | "html" | "latex" | "unicodemath" | "text"): Promise<string>;
   inspect(input: Uint8Array | ArrayBuffer): Promise<DocumentInfo>;
   export(input: Uint8Array | ArrayBuffer, request: ExportRequest): Promise<string>;
   resolveDocx(input: Uint8Array | ArrayBuffer, request?: ResolveRequest): Promise<Uint8Array>;

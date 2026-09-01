@@ -175,6 +175,15 @@ public sealed class DxpOmmlConversionOptions
 
     /// <summary>Maximum accepted XML character count.</summary>
     public long MaxInputCharacters { get; set; } = 1_048_576;
+
+    /// <summary>Maximum accepted element nesting depth.</summary>
+    public int MaxNestingDepth { get; set; } = 256;
+
+    /// <summary>Maximum accepted element count.</summary>
+    public int MaxElementCount { get; set; } = 100_000;
+
+    /// <summary>Maximum number of characters returned by a conversion.</summary>
+    public int MaxOutputCharacters { get; set; } = 4_194_304;
 }
 
 /// <summary>The output and diagnostics from one standalone OMML conversion.</summary>
@@ -211,6 +220,12 @@ public sealed class DxpOmmlParseException : DxpOmmlException
 {
     public DxpOmmlParseException(string message) : base(message) { }
     public DxpOmmlParseException(string message, Exception innerException) : base(message, innerException) { }
+}
+
+/// <summary>Thrown when configured input-tree or output resource limits are exceeded.</summary>
+public sealed class DxpOmmlResourceLimitException : DxpOmmlException
+{
+    public DxpOmmlResourceLimitException(string message) : base(message) { }
 }
 
 /// <summary>Thrown for valid OMML that is unsupported under the selected fallback policy.</summary>

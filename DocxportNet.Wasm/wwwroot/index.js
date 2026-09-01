@@ -31,6 +31,10 @@ export async function createDocxport(options = {}) {
   const api = await initialization;
 
   return Object.freeze({
+    async convertOmml(omml, format = "mathml") {
+      if (typeof omml !== "string" || !omml.trim()) throw new TypeError("OMML input must be a non-empty string.");
+      return api.ConvertOmml(omml, format);
+    },
     async inspect(input) {
       return JSON.parse(api.Inspect(requireBytes(input)));
     },

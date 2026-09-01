@@ -13,12 +13,11 @@ internal static class OmmlParser
 
     public static OmmlDocument Parse(string? omml, DxpOmmlConversionOptions options)
     {
+        ValidateOptions(options);
         if (omml is null)
             throw new DxpOmmlParseException("OMML input cannot be null.");
         if (string.IsNullOrWhiteSpace(omml))
             throw new DxpOmmlParseException("OMML input cannot be empty or whitespace.");
-        if (options.MaxInputCharacters <= 0)
-            throw new ArgumentOutOfRangeException(nameof(options.MaxInputCharacters), "The input limit must be positive.");
         if (omml.Length > options.MaxInputCharacters)
             throw new DxpOmmlParseException(
                 $"OMML input exceeds the {options.MaxInputCharacters.ToString(CultureInfo.InvariantCulture)} character limit.");
@@ -51,6 +50,8 @@ internal static class OmmlParser
                 $"Expected an OMML oMath or oMathPara root, but found '{root.Name}'.");
         }
 
+        ValidateTree(root, options);
+
         bool isDisplay = root.Name.LocalName == "oMathPara";
         IReadOnlyList<OmmlNode> children = isDisplay
             ? ParseParagraph(root)
@@ -58,14 +59,64 @@ internal static class OmmlParser
         return new OmmlDocument(isDisplay, children, isDisplay ? ParagraphJustification(root) : null);
     }
 
-    public static OmmlDocument Parse(OpenXmlElement root)
+    public static OmmlDocument Parse(OpenXmlElement root, DxpOmmlConversionOptions options)
     {
+        ValidateOptions(options);
+        ValidateTree(root, options);
         bool isDisplay = root is DocumentFormat.OpenXml.Math.Paragraph;
         string rootPath = isDisplay ? "/m:oMathPara[1]" : "/m:oMath[1]";
         IReadOnlyList<OmmlNode> children = isDisplay
             ? ParseParagraph(root)
             : ParseChildren(root, rootPath);
         return new OmmlDocument(isDisplay, children, isDisplay ? ParagraphJustification(root) : null);
+    }
+
+    private static void ValidateOptions(DxpOmmlConversionOptions options)
+    {
+        if (options.MaxInputCharacters <= 0)
+            throw new ArgumentOutOfRangeException(nameof(options.MaxInputCharacters), "The input limit must be positive.");
+        if (options.MaxNestingDepth <= 0)
+            throw new ArgumentOutOfRangeException(nameof(options.MaxNestingDepth), "The nesting-depth limit must be positive.");
+        if (options.MaxElementCount <= 0)
+            throw new ArgumentOutOfRangeException(nameof(options.MaxElementCount), "The element-count limit must be positive.");
+        if (options.MaxOutputCharacters <= 0)
+            throw new ArgumentOutOfRangeException(nameof(options.MaxOutputCharacters), "The output limit must be positive.");
+    }
+
+    private static void ValidateTree(XElement root, DxpOmmlConversionOptions options)
+    {
+        Stack<(XElement Element, int Depth)> pending = new();
+        pending.Push((root, 1));
+        int count = 0;
+        while (pending.Count != 0)
+        {
+            (XElement element, int depth) = pending.Pop();
+            ValidateResourcePosition(++count, depth, options);
+            foreach (XElement child in element.Elements())
+                pending.Push((child, depth + 1));
+        }
+    }
+
+    private static void ValidateTree(OpenXmlElement root, DxpOmmlConversionOptions options)
+    {
+        Stack<(OpenXmlElement Element, int Depth)> pending = new();
+        pending.Push((root, 1));
+        int count = 0;
+        while (pending.Count != 0)
+        {
+            (OpenXmlElement element, int depth) = pending.Pop();
+            ValidateResourcePosition(++count, depth, options);
+            foreach (OpenXmlElement child in element.ChildElements)
+                pending.Push((child, depth + 1));
+        }
+    }
+
+    private static void ValidateResourcePosition(int count, int depth, DxpOmmlConversionOptions options)
+    {
+        if (depth > options.MaxNestingDepth)
+            throw new DxpOmmlResourceLimitException($"OMML input exceeds the {options.MaxNestingDepth} element nesting-depth limit.");
+        if (count > options.MaxElementCount)
+            throw new DxpOmmlResourceLimitException($"OMML input exceeds the {options.MaxElementCount} element-count limit.");
     }
 
     private static IReadOnlyList<OmmlNode> ParseParagraph(XElement paragraph)

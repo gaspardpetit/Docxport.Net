@@ -17,7 +17,7 @@ public static class DxpOmmlConverter
     {
         options ??= new DxpOmmlConversionOptions();
         OmmlDocument document = OmmlParser.Parse(omml, options);
-        return OmmlWriter.Write(document, format, options);
+        return EnforceOutputLimit(OmmlWriter.Write(document, format, options), options);
     }
 
     public static DxpOmmlConversionResult Convert(
@@ -77,7 +77,18 @@ public static class DxpOmmlConverter
             throw new ArgumentNullException(nameof(omml));
 
         options ??= new DxpOmmlConversionOptions();
-        OmmlDocument document = OmmlParser.Parse(omml);
-        return OmmlWriter.Write(document, format, options);
+        OmmlDocument document = OmmlParser.Parse(omml, options);
+        return EnforceOutputLimit(OmmlWriter.Write(document, format, options), options);
+    }
+
+    private static DxpOmmlConversionResult EnforceOutputLimit(
+        DxpOmmlConversionResult result,
+        DxpOmmlConversionOptions options)
+    {
+        if (options.MaxOutputCharacters <= 0)
+            throw new ArgumentOutOfRangeException(nameof(options.MaxOutputCharacters), "The output limit must be positive.");
+        if (result.Output.Length > options.MaxOutputCharacters)
+            throw new DxpOmmlResourceLimitException($"OMML output exceeds the {options.MaxOutputCharacters} character limit.");
+        return result;
     }
 }

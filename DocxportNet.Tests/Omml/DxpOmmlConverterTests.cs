@@ -131,6 +131,44 @@ public sealed class DxpOmmlConverterTests
     }
 
     [Fact]
+    public void RejectsXmlBeyondConfiguredDepthBeforeSemanticRecursion()
+    {
+        string nested = Inline($"<m:box><m:e><m:box><m:e><m:r><m:t>x</m:t></m:r></m:e></m:box></m:e></m:box>");
+        DxpOmmlConversionOptions options = new() { MaxNestingDepth = 5 };
+
+        DxpOmmlResourceLimitException exception = Assert.Throws<DxpOmmlResourceLimitException>(() =>
+            DxpOmmlConverter.ToText(nested, options));
+
+        Assert.Contains("nesting-depth", exception.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void RejectsOpenXmlSdkTreeBeyondConfiguredElementCount()
+    {
+        M.OfficeMath inline = new(new M.Run(new M.Text("x")));
+        DxpOmmlConversionOptions options = new() { MaxElementCount = 2 };
+
+        DxpOmmlResourceLimitException exception = Assert.Throws<DxpOmmlResourceLimitException>(() =>
+            DxpOmmlConverter.Convert(inline, DxpOmmlOutputFormat.Text, options));
+
+        Assert.Contains("element-count", exception.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void RejectsOutputBeyondConfiguredLimitAndTryConvertReportsIt()
+    {
+        DxpOmmlConversionOptions options = new() { MaxOutputCharacters = 3 };
+
+        bool converted = DxpOmmlConverter.TryConvert(
+            Inline("abcd"), DxpOmmlOutputFormat.Text, out DxpOmmlConversionResult? result,
+            out DxpOmmlException? error, options);
+
+        Assert.False(converted);
+        Assert.Null(result);
+        Assert.IsType<DxpOmmlResourceLimitException>(error);
+    }
+
+    [Fact]
     public void AcceptsAlternateAndDefaultOmmlNamespacePrefixes()
     {
         string alternate = $"<q:oMath xmlns:q=\"{MathNamespace}\"><q:r><q:t>a</q:t></q:r></q:oMath>";

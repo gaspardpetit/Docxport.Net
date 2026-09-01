@@ -68,8 +68,12 @@ const markdown = await docxport.export(docxBytes, {
 const resolvedBytes = await docxport.resolveDocx(docxBytes, {
   fields: { mode: "evaluate", variables: { Customer: "Ada" } }
 });
+
+const mathml = await docxport.convertOmml(ommlXml, "mathml");
+const latex = await docxport.convertOmml(ommlXml, "latex");
 ```
 
+Standalone OMML conversion also supports `html`, `unicodemath`, and `text`.
 See `index.d.ts` for format-specific options.
 
 ## Build locally

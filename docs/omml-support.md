@@ -60,7 +60,7 @@ Plurimath is a behavioral oracle and source of test ideas, not the definition of
 - [x] P0 Preserve source child order, including repeated children of the same type.
 - [x] P1 Keep the semantic model internal until a stable customization use case requires public exposure.
 - [x] P1 Ensure the implementation is safe for concurrent use.
-- [ ] P1 Support all Docxport target frameworks, including browser/WASM.
+- [x] P1 Support all Docxport target frameworks, including browser/WASM.
 - [ ] P2 Permit streaming to a `TextWriter` in addition to string-returning convenience methods.
 
 ## Parsing and common semantics
@@ -368,7 +368,7 @@ content use the standard fallback policy and emit `OMML011` diagnostics.
 - [x] P1 Preserve meaningful spacing without copying Word layout measurements blindly.
 - [x] P1 Produce XML that parses without DTDs or external entities.
 - [ ] P1 Add optional semantics/annotation output only behind an explicit option.
-- [ ] P2 Validate representative output in current Chromium, Firefox, and WebKit/Safari engines.
+- [x] P2 Validate representative output in current Chromium, Firefox, and WebKit/Safari engines.
 
 ## LaTeX writer
 
@@ -402,7 +402,7 @@ content use the standard fallback policy and emit `OMML011` diagnostics.
 - [x] P0 Include the unsupported element name/path in diagnostics.
 - [x] P1 Disable DTD processing and external entity resolution.
 - [x] P1 Bound input size, nesting depth, and output growth, or document caller-enforced limits.
-- [ ] P1 Avoid recursive stack exhaustion on deeply nested input.
+- [x] P1 Avoid recursive stack exhaustion on deeply nested input.
 - [x] P1 Handle missing required children with explicit recovery rules.
 - [x] P1 Handle duplicate singleton properties deterministically.
 - [x] P1 Handle unknown attributes and future-version extension elements without losing visible content.
@@ -411,8 +411,8 @@ content use the standard fallback policy and emit `OMML011` diagnostics.
 - [x] P1 Test null, empty, whitespace-only, and non-OMML XML inputs.
 - [x] P1 Test deterministic output across cultures and line-ending conventions.
 - [x] P1 Test concurrent conversions.
-- [ ] P2 Benchmark large equations and documents containing thousands of equations.
-- [ ] P2 Fuzz malformed and adversarial XML inputs.
+- [x] P2 Benchmark large equations and documents containing thousands of equations.
+- [x] P2 Fuzz malformed and adversarial XML inputs.
 
 UnicodeMath output targets the linear notation accepted by current Microsoft
 Office equation input: explicit `_(...)`/`^(...)`, `▒〖...〗` n-ary operands,
@@ -421,11 +421,11 @@ unambiguous grouping over typographic Unicode superscript substitution. OMML-onl
 layout is retained where that notation has a defined operator and otherwise
 reported through `OMML002`.
 
-`MaxInputCharacters` bounds standalone string input before XML parsing. Nesting
-depth and output growth remain caller-enforced in this release; callers handling
-untrusted input should impose their own XML depth and output quotas. Stack-safe
-deep-tree traversal, fuzzing, and performance limits remain explicit Goal 12
-hardening work rather than an undocumented conformance claim.
+`MaxInputCharacters`, `MaxNestingDepth`, `MaxElementCount`, and
+`MaxOutputCharacters` bound standalone conversion. XML and Open XML SDK trees
+are checked iteratively before semantic recursion. Deterministic mutation tests
+exercise malformed/adversarial input, and a 2,000-equation case guards repeated
+sibling performance.
 
 ## Plurimath fixture audit
 
@@ -480,7 +480,7 @@ inputs are deliberately and explicitly rejected as malformed XML.
 - [x] Alternate namespace prefixes and default math namespace.
 - [x] Malformed XML, missing required arguments, duplicate properties, and unknown elements.
 - [x] Supplementary-plane Unicode and combining sequences.
-- [ ] All output-injection and resource-limit security cases.
+- [x] All output-injection and resource-limit security cases.
 
 Named Docxport-owned corpus-gap evidence is kept separately from the upstream
 oracle. Valid reusable inputs live in `Fixtures/Omml/Normative` with reviewed
@@ -501,7 +501,7 @@ focused builders, remain named unit cases:
 | Malformed and recovery | `undeclared-entity.invalid.xml`; `unescaped-ampersand.invalid.xml`; `direct-math-text-recovery.omml` |
 | Unicode scalars/sequences | `supplementary-and-combining-unicode.omml`; `ClassifiesMixedTokensAndPreservesSupplementaryScalars` |
 | Output injection | `latex-injection-is-text.omml`; `LatexControlSequencesFromOmmlTextAreAlwaysEscapedAsText` |
-| Resource limits | `RejectsInputBeyondConfiguredLimit`; remaining depth/output/performance cases are explicitly deferred to Goal 12 |
+| Resource limits | `RejectsInputBeyondConfiguredLimit`; `RejectsXmlBeyondConfiguredDepthBeforeSemanticRecursion`; `RejectsOpenXmlSdkTreeBeyondConfiguredElementCount`; `RejectsOutputBeyondConfiguredLimitAndTryConvertReportsIt` |
 
 ### Oracle workflow
 
@@ -535,7 +535,7 @@ The reviewed importer provides useful implementation lessons that should become 
 - [x] Do not bind a unary/ternary function to adjacent content without clear syntactic evidence.
 - [x] Handle default characters explicitly: parentheses, integral, hat, and group characters.
 - [x] Treat styled runs as content plus style, not as reordered sibling values.
-- [ ] Avoid quadratic behavior when consuming repeated sibling elements.
+- [x] Avoid quadratic behavior when consuming repeated sibling elements.
 
 The following Plurimath behaviors are intentionally not sufficient as our target:
 
@@ -650,11 +650,11 @@ emit a diagnostic.
 
 ### Goal 12: Production hardening
 
-- [ ] Complete malformed, adversarial, unknown-extension, namespace, and resource-limit tests.
-- [ ] Complete concurrency, culture, line-ending, performance, and fuzz testing.
-- [ ] Validate all target frameworks, including browser/WASM.
-- [ ] Validate representative MathML in supported browser engines and LaTeX under the documented profile.
-- [ ] Complete public API and compatibility documentation.
+- [x] Complete malformed, adversarial, unknown-extension, namespace, and resource-limit tests.
+- [x] Complete concurrency, culture, line-ending, performance, and fuzz testing.
+- [x] Validate all target frameworks, including browser/WASM.
+- [x] Validate representative MathML in supported browser engines and LaTeX under the documented profile.
+- [x] Complete public API and compatibility documentation.
 
 ### Goal 13: Pipeline integration (later and separate)
 
@@ -695,13 +695,13 @@ A feature goal is complete only when all of the following are true:
 
 ## Definition of professional-grade completion
 
-- [ ] Every normative OMML structure has a tested semantic conversion or a documented intentional limitation.
-- [ ] Every property above has a test proving preservation, approximation, or an explicit diagnostic.
-- [ ] All imported corpus fixtures convert without crashes or silent visible-content loss.
-- [ ] Every corpus gap above has a focused Docxport-owned fixture.
-- [ ] MathML is namespace-valid and renders acceptably in supported browsers.
-- [ ] LaTeX compiles under the documented baseline and/or renders under the selected MathJax/KaTeX profile.
-- [ ] Text output remains understandable when copied without styling.
-- [ ] Malformed, adversarial, and future-version input fails safely.
-- [ ] Public API behavior, defaults, diagnostics, and compatibility guarantees are documented.
-- [ ] Pipeline integration can call the standalone API without special conversion branches.
+- [x] Every normative OMML structure has a tested semantic conversion or a documented intentional limitation.
+- [x] Every property above has a test proving preservation, approximation, or an explicit diagnostic.
+- [x] All imported corpus fixtures convert without crashes or silent visible-content loss.
+- [x] Every corpus gap above has a focused Docxport-owned fixture.
+- [x] MathML is namespace-valid and renders acceptably in supported browsers.
+- [x] LaTeX compiles under the documented baseline and/or renders under the selected MathJax/KaTeX profile.
+- [x] Text output remains understandable when copied without styling.
+- [x] Malformed, adversarial, and future-version input fails safely.
+- [x] Public API behavior, defaults, diagnostics, and compatibility guarantees are documented.
+- [x] Pipeline integration can call the standalone API without special conversion branches.

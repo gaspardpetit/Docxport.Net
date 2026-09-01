@@ -28,8 +28,35 @@ can instead request a placeholder, omission, or an exception through
 foundation; later feature goals replace it with structural conversions.
 
 Parsing prohibits DTDs and external entities, validates the OMML namespace and
-root, and applies a configurable input-character limit. Output is deterministic,
+root, and applies configurable input, tree, and output limits. Output is deterministic,
 culture-invariant, and contains no document-walker or visitor dependency.
+
+## API, limits, and compatibility
+
+`DxpOmmlConversionOptions` instances are per-call configuration and are not
+mutated by the converter. Static conversion methods hold no shared conversion
+state and may be called concurrently. The string API targets `net8.0` and
+`netstandard2.0`; the same implementation is compiled and exercised as
+`browser-wasm`. The JavaScript package exposes
+`client.convertOmml(omml, format)` for `mathml`, `html`, `latex`,
+`unicodemath`, and `text`.
+
+The security defaults accept at most 1,048,576 input characters, 256 nested
+elements, 100,000 elements, and 4,194,304 output characters. Set
+`MaxInputCharacters`, `MaxNestingDepth`, `MaxElementCount`, and
+`MaxOutputCharacters` to positive values appropriate to the host. XML syntax
+and root failures throw `DxpOmmlParseException`; tree and output quota failures
+throw `DxpOmmlResourceLimitException`; the throwing fallback uses
+`DxpOmmlUnsupportedException`. `TryConvert` returns all three as its typed
+`DxpOmmlException` error.
+
+MathML output is native namespaced MathML Core and has automated rendering
+coverage in Chromium, Firefox, and WebKit. LaTeX is an expression fragment,
+without `$` delimiters or a document preamble. Its documented browser profile
+is KaTeX 0.16 with strict error checking; ordinary TeX consumers may require
+packages for extended commands such as contour integrals. UnicodeMath follows
+the Microsoft Office linear format. Text is intentionally presentation-light
+and optimized for readable copying rather than round trips.
 
 ## Runs and tokens
 

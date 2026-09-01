@@ -6,6 +6,7 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocxportNet.API;
 using DocxportNet.Fields;
+using DocxportNet.Omml;
 using DocxportNet.Visitors.Html;
 using DocxportNet.Visitors.Markdown;
 using DocxportNet.Visitors.PlainText;
@@ -14,6 +15,17 @@ namespace DocxportNet.Wasm;
 
 public static partial class BrowserExports
 {
+    [JSExport]
+    [SupportedOSPlatform("browser")]
+    public static string ConvertOmml(string omml, string format) => format.ToLowerInvariant() switch
+    {
+        "mathml" or "html" => DxpOmmlConverter.ToMathMl(omml),
+        "latex" => DxpOmmlConverter.ToLatex(omml),
+        "unicodemath" => DxpOmmlConverter.ToUnicodeMath(omml),
+        "text" => DxpOmmlConverter.ToText(omml),
+        _ => throw new ArgumentException("OMML format must be mathml, html, latex, unicodemath, or text.", nameof(format))
+    };
+
     [JSExport]
     [SupportedOSPlatform("browser")]
     public static string Export(byte[] docxBytes, string requestJson)
