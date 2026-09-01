@@ -30,3 +30,23 @@ foundation; later feature goals replace it with structural conversions.
 Parsing prohibits DTDs and external entities, validates the OMML namespace and
 root, and applies a configurable input-character limit. Output is deterministic,
 culture-invariant, and contains no document-walker or visitor dependency.
+
+## Runs and tokens
+
+Math runs are parsed semantically rather than through the unsupported-element
+fallback. Text, significant whitespace, empty text, tabs, line breaks, BMP
+characters, and supplementary Unicode scalars retain their input order. Mixed
+runs are split into identifier, number, operator, and text tokens for MathML;
+for example, `x+12` becomes `mi`, `mo`, and `mn` tokens.
+
+`m:lit`, `m:nor`, every `m:sty` value, and the roman, script, fraktur,
+double-struck, sans-serif, and monospace `m:scr` families are supported. MathML
+uses `mathvariant`; LaTeX uses nested alphabet commands; UnicodeMath uses its
+linear alphabet controls. Basic text intentionally drops styling while retaining
+readable content. Applicable Word bold, italic, language, RTL, run-font, and
+`w:sym` information is honored. Known legacy symbol fonts use
+`DxpFontSymbols`.
+
+An OMML alignment marker becomes `malignmark` in MathML and `&` in LaTeX and
+UnicodeMath. U+200B becomes a zero-width MathML space, `{}` in LaTeX, remains
+available in UnicodeMath for fidelity, and is omitted from basic readable text.

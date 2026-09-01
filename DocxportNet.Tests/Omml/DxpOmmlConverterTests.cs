@@ -10,7 +10,7 @@ public sealed class DxpOmmlConverterTests
     private const string MathNamespace = "http://schemas.openxmlformats.org/officeDocument/2006/math";
 
     [Fact]
-    public void ConvertsInlineFallbackToAllFourOutputFormats()
+    public void ConvertsInlineRunToAllFourOutputFormats()
     {
         string omml = Inline("x&amp;y_");
 
@@ -23,18 +23,15 @@ public sealed class DxpOmmlConverterTests
         XElement mathElement = XElement.Parse(mathml.Output);
         Assert.Equal(math + "math", mathElement.Name);
         Assert.Equal("inline", mathElement.Attribute("display")?.Value);
-        Assert.Equal("x&y_", mathElement.Descendants(math + "mtext").Single().Value);
+        Assert.Equal("x&y_", string.Concat(mathElement.Descendants().Where(e => e.Name == math + "mi" || e.Name == math + "mo").Select(e => e.Value)));
         Assert.Equal(@"x\&y\_", latex.Output);
         Assert.Equal("x&y_", unicodeMath.Output);
         Assert.Equal("x&y_", text.Output);
         Assert.All(new[] { mathml, latex, unicodeMath, text }, result =>
         {
             Assert.False(result.IsDisplay);
-            Assert.True(result.IsLossy);
-            DxpOmmlDiagnostic diagnostic = Assert.Single(result.Diagnostics);
-            Assert.Equal("OMML001", diagnostic.Code);
-            Assert.Equal("m:r", diagnostic.ElementName);
-            Assert.Equal("/m:oMath[1]/m:r[1]", diagnostic.Path);
+            Assert.False(result.IsLossy);
+            Assert.Empty(result.Diagnostics);
         });
     }
 
@@ -53,7 +50,7 @@ public sealed class DxpOmmlConverterTests
 
         Assert.True(inferred.IsDisplay);
         Assert.Equal("ab", inferred.Output);
-        Assert.Equal(2, inferred.Diagnostics.Count);
+        Assert.Empty(inferred.Diagnostics);
         Assert.Equal("inline", XElement.Parse(overridden).Attribute("display")?.Value);
     }
 
@@ -61,12 +58,12 @@ public sealed class DxpOmmlConverterTests
     [InlineData(DxpOmmlFallbackPolicy.ExtractText, "x")]
     [InlineData(DxpOmmlFallbackPolicy.Placeholder, "?")]
     [InlineData(DxpOmmlFallbackPolicy.Omit, "")]
-    public void AppliesConfiguredFallbackPolicy(DxpOmmlFallbackPolicy policy, string expected)
+    public void AppliesConfiguredFallbackPolicyToUnsupportedElements(DxpOmmlFallbackPolicy policy, string expected)
     {
         DxpOmmlConversionOptions options = new() { FallbackPolicy = policy, Placeholder = "?" };
 
         DxpOmmlConversionResult result = DxpOmmlConverter.Convert(
-            Inline("x"),
+            $"<m:oMath xmlns:m=\"{MathNamespace}\"><m:unknown><m:t>x</m:t></m:unknown></m:oMath>",
             DxpOmmlOutputFormat.Text,
             options);
 
@@ -80,17 +77,17 @@ public sealed class DxpOmmlConverterTests
         DxpOmmlConversionOptions options = new() { FallbackPolicy = DxpOmmlFallbackPolicy.Throw };
 
         DxpOmmlUnsupportedException exception = Assert.Throws<DxpOmmlUnsupportedException>(() =>
-            DxpOmmlConverter.ToText(Inline("x"), options));
+            DxpOmmlConverter.ToText($"<m:oMath xmlns:m=\"{MathNamespace}\"><m:unknown><m:t>x</m:t></m:unknown></m:oMath>", options));
 
-        Assert.Equal("m:r", exception.Diagnostic.ElementName);
-        Assert.Equal("/m:oMath[1]/m:r[1]", exception.Diagnostic.Path);
+        Assert.Equal("m:unknown", exception.Diagnostic.ElementName);
+        Assert.Equal("/m:oMath[1]/m:unknown[1]", exception.Diagnostic.Path);
     }
 
     [Fact]
     public void TryConvertReportsUnsupportedValidOmmlSeparatelyFromMalformedXml()
     {
         bool converted = DxpOmmlConverter.TryConvert(
-            Inline("x"),
+            $"<m:oMath xmlns:m=\"{MathNamespace}\"><m:unknown><m:t>x</m:t></m:unknown></m:oMath>",
             DxpOmmlOutputFormat.Text,
             out DxpOmmlConversionResult? result,
             out DxpOmmlException? error,
@@ -210,6 +207,90 @@ public sealed class DxpOmmlConverterTests
         string[] outputs = await Task.WhenAll(conversions);
 
         Assert.Equal(Enumerable.Range(0, 100).Select(index => index.ToString(CultureInfo.InvariantCulture)), outputs);
+    }
+
+    [Fact]
+    public void ClassifiesMixedTokensAndPreservesSupplementaryScalars()
+    {
+        XElement math = XElement.Parse(DxpOmmlConverter.ToMathMl(Inline("x+12𝑦")));
+        XNamespace m = "http://www.w3.org/1998/Math/MathML";
+        Assert.Equal(new[] { "mi:x", "mo:+", "mn:12", "mi:𝑦" },
+            math.Descendants().Where(e => e.Name != m + "mrow").Select(e => $"{e.Name.LocalName}:{e.Value}"));
+    }
+
+    [Fact]
+    public void AppliesOmmlScriptAndStyleWithoutChangingTextOutputs()
+    {
+        string omml = $"<m:oMath xmlns:m=\"{MathNamespace}\"><m:r><m:rPr><m:scr m:val=\"sans-serif\"/><m:sty m:val=\"bi\"/></m:rPr><m:t>x</m:t></m:r></m:oMath>";
+        XElement math = XElement.Parse(DxpOmmlConverter.ToMathMl(omml));
+        XNamespace m = "http://www.w3.org/1998/Math/MathML";
+        Assert.Equal("sans-serif-bold-italic", math.Descendants(m + "mstyle").Single().Attribute("mathvariant")?.Value);
+        Assert.Equal(@"\boldsymbol{\mathsf{x}}", DxpOmmlConverter.ToLatex(omml));
+        Assert.Equal("\\mbfitsans\"x\"", DxpOmmlConverter.ToUnicodeMath(omml));
+        Assert.Equal("x", DxpOmmlConverter.ToText(omml));
+    }
+
+    [Fact]
+    public void NormalAndLiteralRunsBecomeTextTokens()
+    {
+        string omml = $"<m:oMath xmlns:m=\"{MathNamespace}\"><m:r><m:rPr><m:nor/></m:rPr><m:t>sin x</m:t></m:r><m:r><m:rPr><m:lit/></m:rPr><m:t>+1</m:t></m:r></m:oMath>";
+        XNamespace m = "http://www.w3.org/1998/Math/MathML";
+        Assert.Equal(new[] { "sin x", "+1" }, XElement.Parse(DxpOmmlConverter.ToMathMl(omml)).Descendants(m + "mtext").Select(e => e.Value));
+    }
+
+    [Fact]
+    public void ResolvesWordSymbolAndHandlesInvisibleCharacterDeliberately()
+    {
+        string omml = $"<m:oMath xmlns:m=\"{MathNamespace}\" xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\"><m:r><w:sym w:font=\"Symbol\" w:char=\"F06D\"/><m:t>​</m:t></m:r></m:oMath>";
+        Assert.StartsWith("µ", DxpOmmlConverter.ToText(omml), StringComparison.Ordinal);
+        Assert.Equal("µ", DxpOmmlConverter.ToText(omml));
+        Assert.Equal("µ​", DxpOmmlConverter.ToUnicodeMath(omml));
+        Assert.Equal("µ{}", DxpOmmlConverter.ToLatex(omml));
+        XNamespace m = "http://www.w3.org/1998/Math/MathML";
+        Assert.Single(XElement.Parse(DxpOmmlConverter.ToMathMl(omml)).Descendants(m + "mspace"));
+    }
+
+    [Fact]
+    public void PreservesWhitespaceEmptyTextAndDecimalTokens()
+    {
+        string omml = $"<m:oMath xmlns:m=\"{MathNamespace}\"><m:r><m:t></m:t><m:t xml:space=\"preserve\"> 12.5 </m:t></m:r></m:oMath>";
+        XNamespace m = "http://www.w3.org/1998/Math/MathML";
+        XElement math = XElement.Parse(DxpOmmlConverter.ToMathMl(omml));
+        Assert.Equal("12.5", math.Descendants(m + "mn").Single().Value);
+        Assert.Equal(" 12.5 ", DxpOmmlConverter.ToText(omml));
+    }
+
+    [Fact]
+    public void PinnedStyleFixtureCoversEverySupportedMathVariant()
+    {
+        string fixture = Path.Combine(OmmlTestData.UpstreamRoot, "184.omml");
+        XNamespace m = "http://www.w3.org/1998/Math/MathML";
+        DxpOmmlConversionResult result = DxpOmmlConverter.Convert(File.ReadAllText(fixture), DxpOmmlOutputFormat.MathMl);
+        string[] variants = XElement.Parse(result.Output).Descendants(m + "mstyle")
+            .Select(e => (string?)e.Attribute("mathvariant")).Where(v => v != null).Cast<string>().ToArray();
+        Assert.Equal(new[] { "normal", "bold", "italic", "bold-italic", "double-struck", "bold-fraktur", "script", "bold-script", "fraktur", "sans-serif", "bold-sans-serif", "sans-serif-italic", "sans-serif-bold-italic", "monospace" }, variants);
+        Assert.Empty(result.Diagnostics);
+    }
+
+    [Fact]
+    public void SymbolFontTextIsTranslatedWhenRunFontIsKnown()
+    {
+        string omml = $"<m:oMath xmlns:m=\"{MathNamespace}\" xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\"><m:r><w:rPr><w:rFonts w:ascii=\"Symbol\"/></w:rPr><m:t>m</m:t></m:r></m:oMath>";
+        Assert.Equal("µ", DxpOmmlConverter.ToText(omml));
+    }
+
+    [Fact]
+    public void PreservesApplicableWordFormattingLanguageDirectionAndAlignment()
+    {
+        string omml = $"<m:oMath xmlns:m=\"{MathNamespace}\" xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\"><m:r><m:rPr><m:aln/></m:rPr><w:rPr><w:b/><w:i/><w:rtl/><w:lang w:val=\"ar\"/></w:rPr><m:t>x</m:t></m:r></m:oMath>";
+        XNamespace m = "http://www.w3.org/1998/Math/MathML";
+        XElement style = XElement.Parse(DxpOmmlConverter.ToMathMl(omml)).Descendants(m + "mstyle").Single();
+        Assert.Equal("bold-italic", (string?)style.Attribute("mathvariant"));
+        Assert.Equal("rtl", (string?)style.Attribute("dir"));
+        Assert.Equal("ar", (string?)style.Attribute(XNamespace.Xml + "lang"));
+        Assert.Single(style.Elements(m + "malignmark"));
+        Assert.Equal(@"&\boldsymbol{x}", DxpOmmlConverter.ToLatex(omml));
+        Assert.StartsWith("&", DxpOmmlConverter.ToUnicodeMath(omml), StringComparison.Ordinal);
     }
 
     [Fact]

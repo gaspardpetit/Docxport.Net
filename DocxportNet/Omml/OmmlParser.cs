@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using DocumentFormat.OpenXml;
@@ -150,7 +151,8 @@ internal static class OmmlParser
 
             indexes.TryGetValue(child.Name, out int index);
             indexes[child.Name] = ++index;
-            children.Add(ParseUnsupported(child, $"{parentPath}/{QualifiedName(child)}[{Index(index)}]"));
+            string path = $"{parentPath}/{QualifiedName(child)}[{Index(index)}]";
+            children.Add(child.Name == XName.Get("r", MathNamespace) ? ParseRun(child, path) : ParseUnsupported(child, path));
         }
 
         return children;
@@ -165,10 +167,92 @@ internal static class OmmlParser
             (string Namespace, string LocalName) name = (child.NamespaceUri, child.LocalName);
             indexes.TryGetValue(name, out int index);
             indexes[name] = ++index;
-            children.Add(ParseUnsupported(child, $"{parentPath}/{QualifiedName(child)}[{Index(index)}]"));
+            string path = $"{parentPath}/{QualifiedName(child)}[{Index(index)}]";
+            children.Add(child.NamespaceUri == MathNamespace && child.LocalName == "r" ? ParseRun(child, path) : ParseUnsupported(child, path));
         }
 
         return children;
+    }
+
+    private static OmmlRun ParseRun(XElement run, string path) => ParseRunCore(
+        path,
+        new[] { ExtractRunText(run) },
+        run.Descendants(), e => e.Name.NamespaceName, e => e.Name.LocalName,
+        e => (string?)e.Attribute(XName.Get("val", e.Name.NamespaceName)) ?? (string?)e.Attribute(XName.Get("val", WordNamespace)));
+
+    private static OmmlRun ParseRun(OpenXmlElement run, string path)
+    {
+        IEnumerable<OpenXmlElement> all = run.Descendants();
+        return ParseRunCore(path,
+            new[] { ExtractRunText(run) },
+            all, e => e.NamespaceUri, e => e.LocalName, e => Attribute(e, "val"));
+    }
+
+    private static OmmlRun ParseRunCore<T>(string path, IEnumerable<string> texts,
+        IEnumerable<T> elements, Func<T, string> ns, Func<T, string> local, Func<T, string?> val)
+        where T : class
+    {
+        List<T> all = elements.ToList();
+        bool Has(string space, string name) => all.Any(e => ns(e) == space && local(e) == name && Enabled(val(e)));
+        string? Value(string space, string name)
+        {
+            T? found = all.FirstOrDefault(e => ns(e) == space && local(e) == name);
+            return found == null ? null : val(found);
+        }
+        bool literal = Has(MathNamespace, "lit"), normal = Has(MathNamespace, "nor");
+        OmmlMathScript script = Value(MathNamespace, "scr") switch { "roman" => OmmlMathScript.Roman, "script" => OmmlMathScript.Script, "fraktur" => OmmlMathScript.Fraktur, "double-struck" => OmmlMathScript.DoubleStruck, "sans-serif" => OmmlMathScript.SansSerif, "monospace" => OmmlMathScript.Monospace, _ => OmmlMathScript.Default };
+        bool wordBold = Has(WordNamespace, "b"), wordItalic = Has(WordNamespace, "i");
+        OmmlMathStyle style = Value(MathNamespace, "sty") switch
+        {
+            "p" => OmmlMathStyle.Plain,
+            "b" => OmmlMathStyle.Bold,
+            "i" => OmmlMathStyle.Italic,
+            "bi" => OmmlMathStyle.BoldItalic,
+            _ when wordBold && wordItalic => OmmlMathStyle.BoldItalic,
+            _ when wordBold => OmmlMathStyle.Bold,
+            _ when wordItalic => OmmlMathStyle.Italic,
+            _ => OmmlMathStyle.Default,
+        };
+        string text = string.Concat(texts);
+        return new OmmlRun(path, OmmlTokenClassifier.Classify(text, literal || normal), script, style, literal, normal,
+            Has(MathNamespace, "aln"), Value(WordNamespace, "lang"), Has(WordNamespace, "rtl"));
+    }
+
+    private static bool Enabled(string? value) => value == null ||
+        !(value == "0" || value.Equals("false", StringComparison.OrdinalIgnoreCase) ||
+          value.Equals("off", StringComparison.OrdinalIgnoreCase));
+
+    private static string? Attribute(OpenXmlElement element, string localName) =>
+        element.GetAttributes().FirstOrDefault(a => a.LocalName == localName).Value;
+
+    private static string ExtractRunText(XElement run)
+    {
+        StringBuilder result = new();
+        XElement? fonts = run.Descendants().FirstOrDefault(e => e.Name.NamespaceName == WordNamespace && e.Name.LocalName == "rFonts");
+        string? font = fonts == null ? null : (string?)fonts.Attribute(XName.Get("ascii", WordNamespace)) ?? (string?)fonts.Attribute(XName.Get("hAnsi", WordNamespace));
+        foreach (XElement e in run.Descendants())
+        {
+            if ((e.Name.NamespaceName == MathNamespace || e.Name.NamespaceName == WordNamespace) && e.Name.LocalName == "t") result.Append(global::DocxportNet.DxpFontSymbols.Substitute(font, e.Value));
+            else if (e.Name.NamespaceName == WordNamespace && e.Name.LocalName == "tab") result.Append('\t');
+            else if (e.Name.NamespaceName == WordNamespace && e.Name.LocalName == "br") result.Append('\n');
+            else if (e.Name.NamespaceName == WordNamespace && e.Name.LocalName == "sym") result.Append(global::DocxportNet.DxpFontSymbols.TranslateWordSymbol((string?)e.Attribute(XName.Get("font", WordNamespace)), (string?)e.Attribute(XName.Get("char", WordNamespace))));
+        }
+        return result.ToString();
+    }
+
+    private static string ExtractRunText(OpenXmlElement run)
+    {
+        StringBuilder result = new();
+        OpenXmlElement? fonts = run.Descendants().FirstOrDefault(e => e.NamespaceUri == WordNamespace && e.LocalName == "rFonts");
+        string? font = fonts == null ? null : Attribute(fonts, "ascii") ?? Attribute(fonts, "hAnsi");
+        foreach (OpenXmlElement e in run.Descendants())
+        {
+            if ((e.NamespaceUri == MathNamespace || e.NamespaceUri == WordNamespace) && e.LocalName == "t") result.Append(global::DocxportNet.DxpFontSymbols.Substitute(font, e.InnerText));
+            else if (e.NamespaceUri == WordNamespace && e.LocalName == "tab") result.Append('\t');
+            else if (e.NamespaceUri == WordNamespace && e.LocalName == "br") result.Append('\n');
+            else if (e.NamespaceUri == WordNamespace && e.LocalName == "sym") result.Append(global::DocxportNet.DxpFontSymbols.TranslateWordSymbol(Attribute(e, "font"), Attribute(e, "char")));
+        }
+        return result.ToString();
     }
 
     private static OmmlUnsupported ParseUnsupported(XElement element, string path) =>

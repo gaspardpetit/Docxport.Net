@@ -79,21 +79,21 @@ Plurimath is a behavioral oracle and source of test ideas, not the definition of
 
 ### Runs and tokens
 
-- [ ] P0 Parse `m:r`, optional `m:rPr`, and `m:t` in document order.
-- [ ] P0 Preserve significant spaces, non-breaking spaces, tabs, newlines, and empty text nodes.
-- [ ] P0 Handle BMP and supplementary Unicode scalars without splitting surrogate pairs.
-- [ ] P0 Escape XML, HTML, and LaTeX metacharacters correctly.
-- [ ] P0 Classify tokens as identifiers, numbers, operators, or text for MathML.
-- [ ] P0 Avoid classifying a mixed run such as `x+1` as a single MathML identifier.
-- [ ] P1 Support `m:lit` literal-text behavior.
-- [ ] P1 Support `m:nor` normal-text behavior.
-- [ ] P1 Support math styles `m:sty`: plain (`p`), bold (`b`), italic (`i`), and bold-italic (`bi`).
-- [ ] P1 Support math scripts `m:scr`: roman, script, fraktur, double-struck, sans-serif, and monospace.
-- [ ] P1 Combine `m:scr` and `m:sty` into the appropriate MathML `mathvariant`, LaTeX alphabet command, and text approximation.
-- [ ] P1 Support `m:aln` alignment markers.
-- [ ] P1 Treat U+200B and other invisible control characters deliberately rather than accidentally emitting them.
-- [ ] P2 Resolve Word symbol-font runs through `DxpFontSymbols` when sufficient font/code information exists.
-- [ ] P2 Preserve language and bidirectional direction where representable.
+- [x] P0 Parse `m:r`, optional `m:rPr`, and `m:t` in document order.
+- [x] P0 Preserve significant spaces, non-breaking spaces, tabs, newlines, and empty text nodes.
+- [x] P0 Handle BMP and supplementary Unicode scalars without splitting surrogate pairs.
+- [x] P0 Escape XML, HTML, and LaTeX metacharacters correctly.
+- [x] P0 Classify tokens as identifiers, numbers, operators, or text for MathML.
+- [x] P0 Avoid classifying a mixed run such as `x+1` as a single MathML identifier.
+- [x] P1 Support `m:lit` literal-text behavior.
+- [x] P1 Support `m:nor` normal-text behavior.
+- [x] P1 Support math styles `m:sty`: plain (`p`), bold (`b`), italic (`i`), and bold-italic (`bi`).
+- [x] P1 Support math scripts `m:scr`: roman, script, fraktur, double-struck, sans-serif, and monospace.
+- [x] P1 Combine `m:scr` and `m:sty` into the appropriate MathML `mathvariant`, LaTeX alphabet command, and text approximation.
+- [x] P1 Support `m:aln` alignment markers.
+- [x] P1 Treat U+200B and other invisible control characters deliberately rather than accidentally emitting them.
+- [x] P2 Resolve Word symbol-font runs through `DxpFontSymbols` when sufficient font/code information exists.
+- [x] P2 Preserve language and bidirectional direction where representable.
 
 ### Manual breaks and alignment
 
@@ -451,10 +451,10 @@ Complete these goals in order. Goals 3-10 are vertical feature slices: each incl
 
 ### Goal 3: Runs, tokens, symbols, and styling
 
-- [ ] Implement math runs, text, whitespace, Unicode scalar handling, and token classification.
-- [ ] Implement literal/normal text, math style, math script, escaping, and applicable Word run properties.
-- [ ] Integrate symbol-font translation where sufficient information exists.
-- [ ] Cover simple-run, mixed-token, styled-run, invisible-character, and supplementary-Unicode cases.
+- [x] Implement math runs, text, whitespace, Unicode scalar handling, and token classification.
+- [x] Implement literal/normal text, math style, math script, escaping, and applicable Word run properties.
+- [x] Integrate symbol-font translation where sufficient information exists.
+- [x] Cover simple-run, mixed-token, styled-run, invisible-character, and supplementary-Unicode cases.
 
 ### Goal 4: Fractions, radicals, and scripts
 
