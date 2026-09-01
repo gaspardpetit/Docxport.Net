@@ -94,7 +94,7 @@ public sealed record DxpMarkdownVisitorConfig
     public DxpTrackedChangeMode TrackedChangeMode = DxpTrackedChangeMode.InlineChanges;
     public Func<DxpMarkupChangeContext, DxpMarkupChangeDecision?>? MarkupChangeClassifier = null;
 
-    public static DxpMarkdownVisitorConfig CreateRichConfig() => new();
+    public static DxpMarkdownVisitorConfig CreateRichConfig() => new() { MathOutputFormat = DxpOmmlOutputFormat.Latex };
     public static DxpMarkdownVisitorConfig CreatePlainConfig() => new() {
         EmitImages = false,
         EmitStyleFont = false,
@@ -113,7 +113,8 @@ public sealed record DxpMarkdownVisitorConfig
         EmitPageNumbers = false,
         UsePlainComments = true,
         EmitCustomProperties = true,
-        EmitTimeline = false
+        EmitTimeline = false,
+        MathOutputFormat = DxpOmmlOutputFormat.Latex,
     };
 
     public static DxpMarkdownVisitorConfig CreateConfig() => CreateRichConfig();

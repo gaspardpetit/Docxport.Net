@@ -63,7 +63,8 @@ const docxport = await createDocxport({ assetBaseUrl: "/docxport/" });
 const info = await docxport.inspect(docxBytes);
 const markdown = await docxport.export(docxBytes, {
   format: "markdown",
-  preset: "plain"
+  preset: "plain",
+  markdown: { mathOutputFormat: "latex", emitMathDelimiters: true }
 });
 const resolvedBytes = await docxport.resolveDocx(docxBytes, {
   fields: { mode: "evaluate", variables: { Customer: "Ada" } }
@@ -74,6 +75,9 @@ const latex = await docxport.convertOmml(ommlXml, "latex");
 ```
 
 Standalone OMML conversion also supports `html`, `unicodemath`, and `text`.
+DOCX export accepts `mathOutputFormat` (`mathml`, `latex`, `unicodemath`,
+`text`, or `none`) in the HTML, Markdown, and text option groups. Defaults are
+MathML for HTML, LaTeX for Markdown, and readable text for text export.
 See `index.d.ts` for format-specific options.
 
 ## Build locally

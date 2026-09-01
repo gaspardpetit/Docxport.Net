@@ -58,6 +58,21 @@ packages for extended commands such as contour integrals. UnicodeMath follows
 the Microsoft Office linear format. Text is intentionally presentation-light
 and optimized for readable copying rather than round trips.
 
+## DOCX pipeline integration
+
+The HTML, Markdown, and plain-text visitors all call this standalone converter
+for `m:oMath` and `m:oMathPara`; there is no second pipeline-specific mapping.
+Each visitor config exposes nullable `MathOutputFormat`: `null` omits equations,
+and any `DxpOmmlOutputFormat` selects that standalone writer. Defaults are native
+MathML for both HTML presets, LaTeX for both Markdown presets, and readable text
+for both plain-text tracked-change presets. Markdown owns `$`/`$$` delimiters
+and exposes `EmitMathDelimiters`; the standalone LaTeX result never includes
+them. Embedded WordprocessingML uses the walker-backed resolver by default.
+
+The browser package mirrors these settings through `mathOutputFormat` on its
+HTML, Markdown, and text option objects, using `"none"` to omit equations.
+Markdown additionally exposes `emitMathDelimiters`.
+
 ## Runs and tokens
 
 Math runs are parsed semantically rather than through the unsupported-element

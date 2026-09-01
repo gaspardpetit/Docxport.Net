@@ -75,7 +75,7 @@ public sealed record DxpHtmlVisitorConfig
     public bool EmitCustomProperties = true;
     public bool EmitTimeline = false;
     public DxpOmmlOutputFormat? MathOutputFormat = DxpOmmlOutputFormat.MathMl;
-    public IDxpOmmlEmbeddedContentResolver? MathEmbeddedContentResolver;
+    public IDxpOmmlEmbeddedContentResolver? MathEmbeddedContentResolver = new DxpWalkerOmmlEmbeddedContentResolver();
     public string? StylesheetHref = null;
     public bool EmbedDefaultStylesheet = true;
     public string RootCssClass = "dxp-root";
@@ -84,7 +84,7 @@ public sealed record DxpHtmlVisitorConfig
     public DxpHeaderFooterSelection HeaderSelection = DxpHeaderFooterSelection.First;
     public DxpHeaderFooterSelection FooterSelection = DxpHeaderFooterSelection.First;
 
-    public static DxpHtmlVisitorConfig CreateRichConfig() => new();
+    public static DxpHtmlVisitorConfig CreateRichConfig() => new() { MathOutputFormat = DxpOmmlOutputFormat.MathMl };
     public static DxpHtmlVisitorConfig CreatePlainConfig() => new() {
         EmitImages = false,
         EmitStyleFont = false,
@@ -100,7 +100,8 @@ public sealed record DxpHtmlVisitorConfig
         EmitPageNumbers = false,
         UsePlainComments = true,
         EmitCustomProperties = true,
-        EmitTimeline = false
+        EmitTimeline = false,
+        MathOutputFormat = DxpOmmlOutputFormat.MathMl,
     };
 
     public static DxpHtmlVisitorConfig CreateConfig() => CreateRichConfig();

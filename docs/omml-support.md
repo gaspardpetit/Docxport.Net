@@ -656,12 +656,12 @@ emit a diagnostic.
 - [x] Validate representative MathML in supported browser engines and LaTeX under the documented profile.
 - [x] Complete public API and compatibility documentation.
 
-### Goal 13: Pipeline integration (later and separate)
+### Goal 13: Pipeline integration
 
-- [ ] Add thin integration into the HTML visitor using the standalone HTML-ready/MathML surface.
-- [ ] Add thin integration into the Markdown visitor using expression-only LaTeX plus visitor-owned delimiters.
-- [ ] Add thin integration into the plain-text visitor using the standalone readable-text surface.
-- [ ] Confirm standalone and pipeline outputs use the same conversion behavior.
+- [x] Add thin integration into the HTML visitor using the standalone HTML-ready/MathML surface.
+- [x] Add thin integration into the Markdown visitor using expression-only LaTeX plus visitor-owned delimiters.
+- [x] Add thin integration into the plain-text visitor using the standalone readable-text surface.
+- [x] Confirm standalone and pipeline outputs use the same conversion behavior.
 
 ## Workflow for each goal
 
