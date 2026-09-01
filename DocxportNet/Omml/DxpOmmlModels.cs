@@ -53,6 +53,19 @@ public enum DxpOmmlFallbackPolicy
     Omit,
 }
 
+public enum DxpOmmlRevisionMode
+{
+    Accept,
+    Reject,
+    Preserve,
+}
+
+public enum DxpOmmlFieldMode
+{
+    CachedResult,
+    Omit,
+}
+
 /// <summary>The severity of an OMML conversion diagnostic.</summary>
 public enum DxpOmmlDiagnosticSeverity
 {
@@ -70,11 +83,14 @@ public sealed record DxpOmmlDiagnostic(
 
 /// <summary>Describes embedded non-OMML content encountered while converting an equation.</summary>
 public sealed record DxpOmmlEmbeddedContentRequest(
-    XElement? XmlElement,
-    OpenXmlElement? OpenXmlElement,
+    IReadOnlyList<XElement> XmlElements,
+    IReadOnlyList<OpenXmlElement> OpenXmlElements,
     string Path,
     string ElementName,
-    DxpOmmlOutputFormat OutputFormat);
+    DxpOmmlOutputFormat OutputFormat,
+    DxpOmmlRevisionMode RevisionMode,
+    DxpOmmlFieldMode FieldMode,
+    bool IncludeHyperlinkTargets);
 
 /// <summary>Resolves embedded WordprocessingML to visible text for an OMML output writer.</summary>
 public interface IDxpOmmlEmbeddedContentResolver
@@ -87,6 +103,18 @@ public sealed class DxpOmmlConversionOptions
 {
     /// <summary>Optional resolver for embedded WordprocessingML. The lightweight fallback is used when absent.</summary>
     public IDxpOmmlEmbeddedContentResolver? EmbeddedContentResolver { get; set; }
+
+    /// <summary>Controls visible content selected from embedded revision containers.</summary>
+    public DxpOmmlRevisionMode RevisionMode { get; set; } = DxpOmmlRevisionMode.Accept;
+
+    /// <summary>Controls embedded field handling. Field evaluation is intentionally outside this utility.</summary>
+    public DxpOmmlFieldMode FieldMode { get; set; } = DxpOmmlFieldMode.CachedResult;
+
+    /// <summary>Appends resolved hyperlink targets to visible hyperlink text.</summary>
+    public bool IncludeHyperlinkTargets { get; set; }
+
+    /// <summary>Resolves a hyperlink relationship id and/or anchor without requiring a package.</summary>
+    public Func<string?, string?, string?>? HyperlinkTargetResolver { get; set; }
 
     /// <summary>How valid but unsupported OMML is represented.</summary>
     public DxpOmmlFallbackPolicy FallbackPolicy { get; set; } = DxpOmmlFallbackPolicy.ExtractText;

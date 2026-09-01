@@ -134,6 +134,27 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
     }
 
     [Fact]
+    public void HtmlExport_AppliesTrackedChangePolicyInsideMath()
+    {
+        const string bodyXml = """
+            <w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+                    xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math">
+              <w:p><m:oMath><w:customXml>
+                <w:ins><w:r><w:t>new</w:t></w:r></w:ins>
+                <w:del><w:r><w:delText>old</w:delText></w:r></w:del>
+              </w:customXml></m:oMath></w:p>
+            </w:body>
+            """;
+
+        DxpHtmlVisitorConfig accepted = DxpHtmlVisitorConfig.CreatePlainConfig() with
+            { TrackedChangeMode = DxpTrackedChangeMode.AcceptChanges };
+        DxpHtmlVisitorConfig rejected = accepted with { TrackedChangeMode = DxpTrackedChangeMode.RejectChanges };
+
+        Assert.Contains(">new<", ExportHtmlFromBodyXml(bodyXml, accepted), StringComparison.Ordinal);
+        Assert.Contains(">old<", ExportHtmlFromBodyXml(bodyXml, rejected), StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void HtmlExport_RendersFootnotesInsideSectionBeforeFooter()
     {
         using var stream = new MemoryStream();
@@ -1017,6 +1038,7 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
             EmitCustomProperties = source.EmitCustomProperties,
             EmitTimeline = source.EmitTimeline,
             MathOutputFormat = source.MathOutputFormat,
+            MathEmbeddedContentResolver = source.MathEmbeddedContentResolver,
             StylesheetHref = source.StylesheetHref,
             EmbedDefaultStylesheet = source.EmbedDefaultStylesheet,
             RootCssClass = source.RootCssClass,

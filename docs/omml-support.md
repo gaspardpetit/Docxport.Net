@@ -316,17 +316,36 @@ Word accepts more WordprocessingML inside `m:oMath` than the base schema clearly
 
 - [x] P1 Provide an injectable embedded-content resolver while retaining lightweight standalone fallback behavior.
 - [x] P1 Provide a walker-backed visible-text resolver for LaTeX pipeline integrations.
-- [ ] P1 Parse Word run properties inside `m:ctrlPr` and math runs.
-- [ ] P1 Support bold, italic, color, size, font, vertical alignment, and language when meaningful to the target.
-- [ ] P1 Preserve ordinary `w:t`, `w:tab`, `w:br`, `w:cr`, `w:noBreakHyphen`, and `w:softHyphen` content.
-- [ ] P1 Define handling for `w:sym` and symbol fonts.
-- [ ] P2 Define standalone handling for hyperlinks: preserve visible math content and optionally expose the target.
-- [ ] P2 Define handling for simple and complex fields: cached result by default; evaluation remains outside this utility.
-- [ ] P2 Define handling for content controls, smart tags, and custom XML: unwrap visible content by default.
-- [ ] P2 Define tracked-change policy: accept, reject, preserve/annotate, or caller-selected.
-- [ ] P2 Preserve visible content inside move ranges and revision containers according to that policy.
-- [ ] P2 Ignore non-content range markers safely: bookmarks, comments, permissions, proofing, and custom XML ranges.
-- [ ] P2 Define fallback for drawings, objects, pictures, ruby, and other unexpected run content.
+- [x] P1 Parse Word run properties inside `m:ctrlPr` and math runs.
+- [x] P1 Support bold, italic, color, size, font, vertical alignment, and language when meaningful to the target.
+- [x] P1 Preserve ordinary `w:t`, `w:tab`, `w:br`, `w:cr`, `w:noBreakHyphen`, and `w:softHyphen` content.
+- [x] P1 Define handling for `w:sym` and symbol fonts.
+- [x] P2 Define standalone handling for hyperlinks: preserve visible math content and optionally expose the target.
+- [x] P2 Define handling for simple and complex fields: cached result by default; evaluation remains outside this utility.
+- [x] P2 Define handling for content controls, smart tags, and custom XML: unwrap visible content by default.
+- [x] P2 Define tracked-change policy: accept, reject, preserve/annotate, or caller-selected.
+- [x] P2 Preserve visible content inside move ranges and revision containers according to that policy.
+- [x] P2 Ignore non-content range markers safely: bookmarks, comments, permissions, proofing, and custom XML ranges.
+- [x] P2 Define fallback for drawings, objects, pictures, ruby, and other unexpected run content.
+
+Math runs retain Word bold/italic, color, half-point size, font, vertical alignment,
+language, and direction. MathML represents applicable run presentation directly;
+LaTeX emits portable style, color, size, and vertical-alignment constructs;
+UnicodeMath and basic text retain visible content and diagnose presentation that
+their linear formats cannot carry. `m:ctrlPr` is parsed independently because it
+formats a structure's non-selectable control character. MathML retains those
+properties as `data-omml-control-*` metadata, while every target diagnoses the
+control-character-only styling approximation rather than incorrectly applying it
+to the complete numerator, denominator, base, or limit.
+
+`DxpOmmlConversionOptions.RevisionMode` selects accepted, rejected, or annotated
+revision and move content. `FieldMode` defaults to cached simple/complex field
+results and can omit fields; evaluation remains a document-pipeline concern.
+Hyperlinks always preserve visible content, and `IncludeHyperlinkTargets` plus
+`HyperlinkTargetResolver` optionally appends a package-resolved target. Content
+controls, smart tags, and custom XML are transparent. Non-content ranges are
+ignored, while drawings, objects, pictures, ruby, content parts, and unknown Word
+content use the standard fallback policy and emit `OMML011` diagnostics.
 
 ## MathML writer
 
@@ -542,10 +561,10 @@ Complete these goals in order. Goals 3-10 are vertical feature slices: each incl
 ### Goal 10: Embedded WordprocessingML
 
 - [x] Add the embedded-content resolver boundary and walker-backed LaTeX text adapter.
-- [ ] Implement visible Word run content and formatting inside math.
-- [ ] Define and implement standalone policies for fields, hyperlinks, content controls, smart tags, and custom XML.
-- [ ] Define and implement tracked-change handling independently from the document pipeline.
-- [ ] Safely unwrap or diagnose bookmarks, comments, range markers, drawings, objects, and unexpected content.
+- [x] Implement visible Word run content and formatting inside math.
+- [x] Define and implement standalone policies for fields, hyperlinks, content controls, smart tags, and custom XML.
+- [x] Define and implement tracked-change handling independently from the document pipeline.
+- [x] Safely unwrap or diagnose bookmarks, comments, range markers, drawings, objects, and unexpected content.
 
 ### Goal 11: Corpus conformance and gap closure
 

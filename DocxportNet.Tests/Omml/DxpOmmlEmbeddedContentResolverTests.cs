@@ -27,7 +27,7 @@ public sealed class DxpOmmlEmbeddedContentResolverTests
         Assert.NotNull(resolver.Request);
         Assert.Equal("w:hyperlink", resolver.Request!.ElementName);
         Assert.Equal(DxpOmmlOutputFormat.Latex, resolver.Request.OutputFormat);
-        Assert.Contains("fallback", resolver.Request.XmlElement!.Value, StringComparison.Ordinal);
+        Assert.Contains("fallback", resolver.Request.XmlElements.Single().Value, StringComparison.Ordinal);
     }
 
     [Fact]

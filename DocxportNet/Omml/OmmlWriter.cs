@@ -66,9 +66,31 @@ internal static class OmmlWriter
         bool compactFractions,
         bool isDisplay,
         DxpOmmlConversionOptions options,
-        List<DxpOmmlDiagnostic> diagnostics)
+        List<DxpOmmlDiagnostic> diagnostics,
+        bool applyControlPresentation = true)
     {
         XNamespace math = MathMlNamespace;
+        if (applyControlPresentation && node.ControlRevision != null && !ControlRevisionSelected(node, options))
+        {
+            AppendMathMl(parent, node, compactFractions, isDisplay, options, diagnostics, false);
+            AddApproximation(diagnostics, node, "m:ctrlPr",
+                "The rejected OMML control-character revision was omitted while retaining the surrounding mathematical structure.");
+            return;
+        }
+        if (applyControlPresentation && (node.ControlPresentation != null || node.ControlRevision != null))
+        {
+            XElement content = new(math + "mrow");
+            AppendMathMl(content, node, compactFractions, isDisplay, options, diagnostics, false);
+            XElement style = new(math + "mstyle", content.Nodes());
+            if (node.ControlPresentation != null) ApplyMathMlPresentation(style, node.ControlPresentation);
+            style.SetAttributeValue("data-omml-control-properties", "true");
+            if (node.ControlRevision != null && options.RevisionMode == DxpOmmlRevisionMode.Preserve)
+                style.SetAttributeValue("data-omml-revision", node.ControlRevision == OmmlRevisionKind.Inserted ? "inserted" : "deleted");
+            parent.Add(style);
+            AddApproximation(diagnostics, node, "m:ctrlPr",
+                "MathML applies OMML control-character formatting to the rendered structure because MathML has no separate selectable control character.");
+            return;
+        }
         if (node is OmmlSequence sequence)
         {
             XElement row = new(math + "mrow");
@@ -88,12 +110,23 @@ internal static class OmmlWriter
         {
             XElement container = parent;
             string? variant = MathVariant(run);
-            if (variant != null || run.Language != null || run.RightToLeft)
+            if (variant != null || run.Language != null || run.RightToLeft || run.Color != null ||
+                run.FontSizePoints.HasValue || run.FontFamily != null ||
+                run.VerticalAlignment != OmmlRunVerticalAlignment.Baseline)
             {
                 container = new XElement(math + "mstyle");
                 if (variant != null) container.SetAttributeValue("mathvariant", variant);
                 if (run.Language != null) container.SetAttributeValue(XNamespace.Xml + "lang", run.Language);
                 if (run.RightToLeft) container.SetAttributeValue("dir", "rtl");
+                if (run.Color != null) container.SetAttributeValue("mathcolor", $"#{run.Color}");
+                if (run.FontSizePoints.HasValue)
+                    container.SetAttributeValue("mathsize", $"{run.FontSizePoints.Value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)}pt");
+                List<string> styles = new();
+                if (run.FontFamily != null)
+                    styles.Add($"font-family:{CssFontFamily(run.FontFamily)}");
+                if (run.VerticalAlignment != OmmlRunVerticalAlignment.Baseline)
+                    styles.Add($"vertical-align:{(run.VerticalAlignment == OmmlRunVerticalAlignment.Superscript ? "super" : "sub")}");
+                if (styles.Count != 0) container.SetAttributeValue("style", string.Join(';', styles));
                 parent.Add(container);
             }
             if (run.Alignment && !run.BreakAlignmentAt.HasValue) container.Add(new XElement(math + "malignmark"));
@@ -108,6 +141,8 @@ internal static class OmmlWriter
                 else if (piece.Token is OmmlToken token)
                 {
                     if (token.Value == "\u200B") container.Add(new XElement(math + "mspace", new XAttribute("width", "0")));
+                    else if (token.Value == "\t") container.Add(new XElement(math + "mspace",
+                        new XAttribute("width", "2em"), new XAttribute("data-omml-tab", "true")));
                     else container.Add(new XElement(math + (token.Kind switch { OmmlTokenKind.Identifier => "mi", OmmlTokenKind.Number => "mn", OmmlTokenKind.Operator => "mo", _ => "mtext" }), token.Value));
                 }
             }
@@ -403,8 +438,30 @@ internal static class OmmlWriter
         bool isDisplay,
         DxpOmmlConversionOptions options,
         List<DxpOmmlDiagnostic> diagnostics,
-        Func<string, string> escape)
+        Func<string, string> escape,
+        bool applyControlPresentation = true)
     {
+        if (applyControlPresentation && node.ControlRevision != null && !ControlRevisionSelected(node, options))
+        {
+            AppendTextual(output, node, format, isDisplay, options, diagnostics, escape, false);
+            AddApproximation(diagnostics, node, "m:ctrlPr",
+                "The rejected OMML control-character revision was omitted while retaining the surrounding mathematical structure.");
+            return;
+        }
+        if (applyControlPresentation && (node.ControlPresentation != null || node.ControlRevision != null))
+        {
+            StringBuilder content = new();
+            AppendTextual(content, node, format, isDisplay, options, diagnostics, escape, false);
+            string rendered = node.ControlPresentation != null
+                ? ApplyControlPresentation(node, content.ToString(), format, diagnostics)
+                : content.ToString();
+            if (node.ControlRevision != null && options.RevisionMode == DxpOmmlRevisionMode.Preserve)
+                rendered = node.ControlRevision == OmmlRevisionKind.Inserted
+                    ? $"[inserted:{rendered}]" : $"[deleted:{rendered}]";
+            output.Append(rendered);
+            return;
+        }
+
         if (node is OmmlSequence sequence)
         {
             bool multilineLatex = format == DxpOmmlOutputFormat.Latex && sequence.Children.Any(NeedsLatexEnvironment);
@@ -424,16 +481,18 @@ internal static class OmmlWriter
         if (node is OmmlRun run)
         {
             IReadOnlyList<RunPiece> pieces = RunPieces(run, options);
+            StringBuilder renderedRun = new();
             if (format == DxpOmmlOutputFormat.Latex)
             {
-                if (run.Alignment && !run.BreakAlignmentAt.HasValue) output.Append('&');
-                AppendStyledLatexRun(output, run, pieces);
+                if (run.Alignment && !run.BreakAlignmentAt.HasValue) renderedRun.Append('&');
+                AppendStyledLatexRun(renderedRun, run, pieces);
             }
             else
             {
-                if (run.Alignment && !run.BreakAlignmentAt.HasValue && format == DxpOmmlOutputFormat.UnicodeMath) output.Append('&');
-                AppendUnicodeOrTextRun(output, run, pieces, format, escape);
+                if (run.Alignment && !run.BreakAlignmentAt.HasValue && format == DxpOmmlOutputFormat.UnicodeMath) renderedRun.Append('&');
+                AppendUnicodeOrTextRun(renderedRun, run, pieces, format, escape);
             }
+            output.Append(ApplyRunPresentation(run, renderedRun.ToString(), format, diagnostics));
             if (run.BreakAlignmentAt > 0)
                 AddApproximation(diagnostics, run, "m:brk",
                     $"{format} preserves the manual line boundary but cannot reproduce OMML's numeric operator alignment index exactly.");
@@ -776,7 +835,8 @@ internal static class OmmlWriter
             if (i != 0) output.Append(@"\\");
             if (i == 1 && run.Alignment && run.BreakAlignmentAt.HasValue) output.Append('&');
             string value = string.Concat(segments[i].Select(token => EscapeLatex(token.Value)))
-                .Replace("\u200B", "{}");
+                .Replace("\u200B", "{}")
+                .Replace("\t", "\\quad ");
             output.Append(ApplyLatexStyle(run, value));
         }
     }
@@ -1190,11 +1250,15 @@ internal static class OmmlWriter
         if (format == DxpOmmlOutputFormat.Latex && options.EmbeddedContentResolver != null)
         {
             string? resolved = options.EmbeddedContentResolver.Resolve(new DxpOmmlEmbeddedContentRequest(
-                unsupported.XmlElement, unsupported.OpenXmlElement,
-                unsupported.Path, unsupported.ElementName, format));
+                unsupported.XmlElements, unsupported.OpenXmlElements,
+                unsupported.Path, unsupported.ElementName, format,
+                options.RevisionMode, options.FieldMode, options.IncludeHyperlinkTargets));
             if (resolved != null)
                 return resolved;
         }
+
+        if (OmmlEmbeddedWordprocessing.TryResolve(unsupported, options, diagnostics, out string embedded))
+            return embedded;
 
         DxpOmmlDiagnostic diagnostic = new(
             "OMML001",
@@ -1266,6 +1330,69 @@ internal static class OmmlWriter
             _ => weight.Length == 0 ? null : weight,
         };
     }
+
+    private static string ApplyRunPresentation(OmmlRun run, string value, DxpOmmlOutputFormat format,
+        List<DxpOmmlDiagnostic> diagnostics)
+    {
+        if (format == DxpOmmlOutputFormat.Latex)
+        {
+            if (run.Color != null) value = $"\\textcolor[HTML]{{{run.Color}}}{{{value}}}";
+            if (run.FontSizePoints.HasValue)
+            {
+                string size = run.FontSizePoints.Value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
+                string leading = (run.FontSizePoints.Value * 1.2).ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
+                value = $"{{\\fontsize{{{size}pt}}{{{leading}pt}}\\selectfont {value}}}";
+            }
+            if (run.VerticalAlignment == OmmlRunVerticalAlignment.Superscript)
+                value = $"{{}}^{{\\scriptstyle {value}}}";
+            else if (run.VerticalAlignment == OmmlRunVerticalAlignment.Subscript)
+                value = $"{{}}_{{\\scriptstyle {value}}}";
+        }
+        else if (format == DxpOmmlOutputFormat.UnicodeMath)
+        {
+            if (run.VerticalAlignment == OmmlRunVerticalAlignment.Superscript) value = $"^({value})";
+            else if (run.VerticalAlignment == OmmlRunVerticalAlignment.Subscript) value = $"_({value})";
+        }
+
+        if (format != DxpOmmlOutputFormat.MathMl && run.FontFamily != null)
+            AddApproximation(diagnostics, run, "w:rFonts", $"{format} cannot select arbitrary Word font '{run.FontFamily}' portably.");
+        if (format is DxpOmmlOutputFormat.UnicodeMath or DxpOmmlOutputFormat.Text &&
+            (run.Color != null || run.FontSizePoints.HasValue))
+            AddApproximation(diagnostics, run, "w:rPr", $"{format} preserves visible content but cannot encode Word color or font size.");
+        return value;
+    }
+
+    private static void ApplyMathMlPresentation(XElement style, OmmlRunPresentation presentation)
+    {
+        if (presentation.Bold) style.SetAttributeValue("data-omml-control-bold", "true");
+        if (presentation.Italic) style.SetAttributeValue("data-omml-control-italic", "true");
+        if (presentation.Color != null) style.SetAttributeValue("data-omml-control-color", presentation.Color);
+        if (presentation.FontSizePoints.HasValue)
+            style.SetAttributeValue("data-omml-control-size-pt",
+                presentation.FontSizePoints.Value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture));
+        if (presentation.FontFamily != null) style.SetAttributeValue("data-omml-control-font", presentation.FontFamily);
+        if (presentation.Language != null) style.SetAttributeValue("data-omml-control-language", presentation.Language);
+        if (presentation.RightToLeft) style.SetAttributeValue("data-omml-control-rtl", "true");
+        if (presentation.VerticalAlignment != OmmlRunVerticalAlignment.Baseline)
+            style.SetAttributeValue("data-omml-control-vertical-align",
+                presentation.VerticalAlignment == OmmlRunVerticalAlignment.Superscript ? "superscript" : "subscript");
+    }
+
+    private static string ApplyControlPresentation(OmmlNode node, string value, DxpOmmlOutputFormat format,
+        List<DxpOmmlDiagnostic> diagnostics)
+    {
+        AddApproximation(diagnostics, node, "m:ctrlPr",
+            $"{format} preserves the mathematical structure but cannot apply Word formatting solely to its non-selectable control character.");
+        return value;
+    }
+
+    private static bool ControlRevisionSelected(OmmlNode node, DxpOmmlConversionOptions options) =>
+        options.RevisionMode == DxpOmmlRevisionMode.Preserve ||
+        (options.RevisionMode == DxpOmmlRevisionMode.Accept && node.ControlRevision == OmmlRevisionKind.Inserted) ||
+        (options.RevisionMode == DxpOmmlRevisionMode.Reject && node.ControlRevision == OmmlRevisionKind.Deleted);
+
+    private static string CssFontFamily(string value) =>
+        $"'{value.Replace("'", "\\'")}'";
 
     private static string ApplyLatexStyle(OmmlRun run, string value)
     {

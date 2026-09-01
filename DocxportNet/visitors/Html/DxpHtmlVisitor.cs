@@ -75,6 +75,7 @@ public sealed record DxpHtmlVisitorConfig
     public bool EmitCustomProperties = true;
     public bool EmitTimeline = false;
     public DxpOmmlOutputFormat? MathOutputFormat = DxpOmmlOutputFormat.MathMl;
+    public IDxpOmmlEmbeddedContentResolver? MathEmbeddedContentResolver;
     public string? StylesheetHref = null;
     public bool EmbedDefaultStylesheet = true;
     public string RootCssClass = "dxp-root";
@@ -584,14 +585,26 @@ body.dxp-root {
     public override void VisitOMath(DocumentFormat.OpenXml.Math.OfficeMath oMath, DxpIDocumentContext d)
     {
         if (_config.MathOutputFormat is DxpOmmlOutputFormat format)
-            WriteMath(d, DxpOmmlConverter.Convert(oMath, format).Output, format);
+            WriteMath(d, DxpOmmlConverter.Convert(oMath, format, MathConversionOptions()).Output, format);
     }
 
     public override void VisitOMathParagraph(DocumentFormat.OpenXml.Math.Paragraph oMathPara, DxpIDocumentContext d)
     {
         if (_config.MathOutputFormat is DxpOmmlOutputFormat format)
-            WriteMath(d, DxpOmmlConverter.Convert(oMathPara, format).Output, format);
+            WriteMath(d, DxpOmmlConverter.Convert(oMathPara, format, MathConversionOptions()).Output, format);
     }
+
+    private DxpOmmlConversionOptions MathConversionOptions() => new()
+    {
+        EmbeddedContentResolver = _config.MathEmbeddedContentResolver,
+        RevisionMode = _config.TrackedChangeMode switch
+        {
+            DxpTrackedChangeMode.RejectChanges => DxpOmmlRevisionMode.Reject,
+            DxpTrackedChangeMode.InlineChanges or DxpTrackedChangeMode.SplitChanges => DxpOmmlRevisionMode.Preserve,
+            _ => DxpOmmlRevisionMode.Accept,
+        },
+        FieldMode = DxpOmmlFieldMode.CachedResult,
+    };
 
     private static string EncodeMath(string output, DxpOmmlOutputFormat format)
     {

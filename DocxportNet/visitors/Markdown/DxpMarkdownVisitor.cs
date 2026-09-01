@@ -475,6 +475,13 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
     private DxpOmmlConversionOptions MathConversionOptions() => new()
     {
         EmbeddedContentResolver = _config.MathEmbeddedContentResolver,
+        RevisionMode = _config.TrackedChangeMode switch
+        {
+            DxpTrackedChangeMode.RejectChanges => DxpOmmlRevisionMode.Reject,
+            DxpTrackedChangeMode.InlineChanges or DxpTrackedChangeMode.SplitChanges => DxpOmmlRevisionMode.Preserve,
+            _ => DxpOmmlRevisionMode.Accept,
+        },
+        FieldMode = DxpOmmlFieldMode.CachedResult,
     };
 
     private void WriteMath(DxpIDocumentContext d, string value, DxpOmmlOutputFormat format, bool display)

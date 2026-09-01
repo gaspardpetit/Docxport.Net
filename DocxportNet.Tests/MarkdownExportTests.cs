@@ -242,6 +242,26 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
     }
 
     [Fact]
+    public void MarkdownExport_AppliesTrackedChangePolicyInsideMath()
+    {
+        const string bodyXml = """
+            <w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+                    xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math">
+              <w:p><m:oMath><w:customXml>
+                <w:ins><w:r><w:t>new</w:t></w:r></w:ins>
+                <w:del><w:r><w:delText>old</w:delText></w:r></w:del>
+              </w:customXml></m:oMath></w:p>
+            </w:body>
+            """;
+        DxpMarkdownVisitorConfig accepted = DxpMarkdownVisitorConfig.CreatePlainConfig() with
+            { TrackedChangeMode = DxpTrackedChangeMode.AcceptChanges };
+        DxpMarkdownVisitorConfig rejected = accepted with { TrackedChangeMode = DxpTrackedChangeMode.RejectChanges };
+
+        Assert.Contains("$new$", ExportMarkdownFromBodyXml(bodyXml, accepted), StringComparison.Ordinal);
+        Assert.Contains("$old$", ExportMarkdownFromBodyXml(bodyXml, rejected), StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void MarkdownExport_EmitRichLayoutHtml_RichModeEmitsParagraphWrapper()
     {
         const string bodyXml = """

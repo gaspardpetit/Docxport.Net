@@ -22,7 +22,15 @@ internal abstract class OmmlNode
 {
     protected OmmlNode(string path) => Path = path;
     public string Path { get; }
+    public OmmlRunPresentation? ControlPresentation { get; set; }
+    public OmmlRevisionKind? ControlRevision { get; set; }
 }
+
+internal enum OmmlRevisionKind { Inserted, Deleted }
+
+internal sealed record OmmlRunPresentation(bool Bold, bool Italic, string? Color,
+    double? FontSizePoints, string? FontFamily, OmmlRunVerticalAlignment VerticalAlignment,
+    string? Language, bool RightToLeft);
 
 internal sealed class OmmlSequence : OmmlNode
 {
@@ -39,6 +47,7 @@ internal sealed class OmmlBreak : OmmlNode
 internal enum OmmlTokenKind { Identifier, Number, Operator, Text, LineBreak }
 internal enum OmmlMathScript { Default, Roman, Script, Fraktur, DoubleStruck, SansSerif, Monospace }
 internal enum OmmlMathStyle { Default, Plain, Bold, Italic, BoldItalic }
+internal enum OmmlRunVerticalAlignment { Baseline, Superscript, Subscript }
 
 internal sealed class OmmlToken
 {
@@ -51,11 +60,14 @@ internal sealed class OmmlRun : OmmlNode
 {
     public OmmlRun(string path, IReadOnlyList<OmmlToken> tokens, OmmlMathScript script,
         OmmlMathStyle style, bool literal, bool normal, bool alignment, int? breakAlignmentAt,
-        string? language, bool rightToLeft)
+        string? language, bool rightToLeft, string? color, double? fontSizePoints,
+        string? fontFamily, OmmlRunVerticalAlignment verticalAlignment)
         : base(path)
     {
         Tokens = tokens; Script = script; Style = style; Literal = literal; Normal = normal;
         Alignment = alignment; BreakAlignmentAt = breakAlignmentAt; Language = language; RightToLeft = rightToLeft;
+        Color = color; FontSizePoints = fontSizePoints; FontFamily = fontFamily;
+        VerticalAlignment = verticalAlignment;
     }
     public IReadOnlyList<OmmlToken> Tokens { get; }
     public OmmlMathScript Script { get; }
@@ -66,6 +78,10 @@ internal sealed class OmmlRun : OmmlNode
     public int? BreakAlignmentAt { get; }
     public string? Language { get; }
     public bool RightToLeft { get; }
+    public string? Color { get; }
+    public double? FontSizePoints { get; }
+    public string? FontFamily { get; }
+    public OmmlRunVerticalAlignment VerticalAlignment { get; }
 }
 
 internal enum OmmlFractionType { Bar, Skewed, Linear, NoBar }
@@ -320,12 +336,19 @@ internal sealed class OmmlUnsupported : OmmlNode
     {
         ElementName = elementName;
         VisibleText = visibleText;
-        XmlElement = xmlElement;
-        OpenXmlElement = openXmlElement;
+        XmlElements = xmlElement == null ? Array.Empty<XElement>() : new[] { xmlElement };
+        OpenXmlElements = openXmlElement == null ? Array.Empty<OpenXmlElement>() : new[] { openXmlElement };
+    }
+
+    public OmmlUnsupported(string path, string elementName, string visibleText,
+        IReadOnlyList<XElement> xmlElements, IReadOnlyList<OpenXmlElement> openXmlElements) : base(path)
+    {
+        ElementName = elementName; VisibleText = visibleText;
+        XmlElements = xmlElements; OpenXmlElements = openXmlElements;
     }
 
     public string ElementName { get; }
     public string VisibleText { get; }
-    public XElement? XmlElement { get; }
-    public OpenXmlElement? OpenXmlElement { get; }
+    public IReadOnlyList<XElement> XmlElements { get; }
+    public IReadOnlyList<OpenXmlElement> OpenXmlElements { get; }
 }

@@ -85,6 +85,8 @@ internal static class OmmlParser
             }
             if (node is not XElement child)
                 continue;
+            if (child.Name == XName.Get("ctrlPr", MathNamespace))
+                continue;
 
             if (child.Name == XName.Get("oMathParaPr", MathNamespace))
                 continue;
@@ -112,7 +114,7 @@ internal static class OmmlParser
 
         if (mathIndex == 0)
             throw new DxpOmmlParseException("An OMML oMathPara root must contain at least one oMath child.");
-        return children;
+        return CoalesceEmbeddedWordprocessing(children);
     }
 
     private static IReadOnlyList<OmmlNode> ParseParagraph(OpenXmlElement paragraph)
@@ -150,7 +152,7 @@ internal static class OmmlParser
 
         if (mathIndex == 0)
             throw new DxpOmmlParseException("An OMML oMathPara root must contain at least one oMath child.");
-        return children;
+        return CoalesceEmbeddedWordprocessing(children);
     }
 
     private static IReadOnlyList<OmmlNode> ParseChildren(XElement parent, string parentPath)
@@ -168,6 +170,8 @@ internal static class OmmlParser
             }
             if (node is not XElement child)
                 continue;
+            if (child.Name == XName.Get("ctrlPr", MathNamespace))
+                continue;
 
             indexes.TryGetValue(child.Name, out int index);
             indexes[child.Name] = ++index;
@@ -175,7 +179,7 @@ internal static class OmmlParser
             children.Add(ParseElement(child, path));
         }
 
-        return children;
+        return CoalesceEmbeddedWordprocessing(children);
     }
 
     private static IReadOnlyList<OmmlNode> ParseChildren(OpenXmlElement parent, string parentPath)
@@ -184,6 +188,8 @@ internal static class OmmlParser
         Dictionary<(string Namespace, string LocalName), int> indexes = new();
         foreach (OpenXmlElement child in parent.ChildElements)
         {
+            if (child.NamespaceUri == MathNamespace && child.LocalName == "ctrlPr")
+                continue;
             (string Namespace, string LocalName) name = (child.NamespaceUri, child.LocalName);
             indexes.TryGetValue(name, out int index);
             indexes[name] = ++index;
@@ -191,10 +197,50 @@ internal static class OmmlParser
             children.Add(ParseElement(child, path));
         }
 
-        return children;
+        return CoalesceEmbeddedWordprocessing(children);
     }
 
-    private static OmmlNode ParseElement(XElement element, string path) => element.Name.NamespaceName == MathNamespace
+    private static IReadOnlyList<OmmlNode> CoalesceEmbeddedWordprocessing(IReadOnlyList<OmmlNode> children)
+    {
+        List<OmmlNode> result = new();
+        for (int i = 0; i < children.Count; i++)
+        {
+            if (children[i] is not OmmlUnsupported first || !first.ElementName.StartsWith("w:", StringComparison.Ordinal))
+            {
+                result.Add(children[i]);
+                continue;
+            }
+
+            List<OmmlUnsupported> group = new() { first };
+            while (i + 1 < children.Count && children[i + 1] is OmmlUnsupported next &&
+                   next.ElementName.StartsWith("w:", StringComparison.Ordinal))
+            {
+                group.Add(next);
+                i++;
+            }
+            if (group.Count == 1)
+            {
+                result.Add(first);
+                continue;
+            }
+
+            result.Add(new OmmlUnsupported(first.Path, "w:embeddedContent",
+                string.Concat(group.Select(item => item.VisibleText)),
+                group.SelectMany(item => item.XmlElements).ToArray(),
+                group.SelectMany(item => item.OpenXmlElements).ToArray()));
+        }
+        return result;
+    }
+
+    private static OmmlNode ParseElement(XElement element, string path)
+    {
+        OmmlNode node = ParseElementCore(element, path);
+        node.ControlPresentation = ParseControlPresentation(element);
+        node.ControlRevision = ParseControlRevision(element);
+        return node;
+    }
+
+    private static OmmlNode ParseElementCore(XElement element, string path) => element.Name.NamespaceName == MathNamespace
         ? element.Name.LocalName switch
         {
             "r" => ParseRun(element, path),
@@ -221,7 +267,15 @@ internal static class OmmlParser
         }
         : ParseUnsupported(element, path);
 
-    private static OmmlNode ParseElement(OpenXmlElement element, string path) => element.NamespaceUri == MathNamespace
+    private static OmmlNode ParseElement(OpenXmlElement element, string path)
+    {
+        OmmlNode node = ParseElementCore(element, path);
+        node.ControlPresentation = ParseControlPresentation(element);
+        node.ControlRevision = ParseControlRevision(element);
+        return node;
+    }
+
+    private static OmmlNode ParseElementCore(OpenXmlElement element, string path) => element.NamespaceUri == MathNamespace
         ? element.LocalName switch
         {
             "r" => ParseRun(element, path),
@@ -586,8 +640,27 @@ internal static class OmmlParser
     private static bool HasControlProperties(XElement? properties) => properties?.Descendants(XName.Get("ctrlPr", MathNamespace)).Any() == true;
     private static bool HasControlProperties(OpenXmlElement? properties) => properties?.Descendants().Any(e => e.NamespaceUri == MathNamespace && e.LocalName == "ctrlPr") == true;
 
-    private static OmmlSequence ParseArgument(XElement? argument, string path) => new(path, argument == null ? Array.Empty<OmmlNode>() : ParseChildren(argument, path));
-    private static OmmlSequence ParseArgument(OpenXmlElement? argument, string path) => new(path, argument == null ? Array.Empty<OmmlNode>() : ParseChildren(argument, path));
+    private static OmmlSequence ParseArgument(XElement? argument, string path)
+    {
+        OmmlSequence sequence = new(path, argument == null ? Array.Empty<OmmlNode>() : ParseChildren(argument, path));
+        if (argument != null)
+        {
+            sequence.ControlPresentation = ParseControlPresentation(argument);
+            sequence.ControlRevision = ParseControlRevision(argument);
+        }
+        return sequence;
+    }
+
+    private static OmmlSequence ParseArgument(OpenXmlElement? argument, string path)
+    {
+        OmmlSequence sequence = new(path, argument == null ? Array.Empty<OmmlNode>() : ParseChildren(argument, path));
+        if (argument != null)
+        {
+            sequence.ControlPresentation = ParseControlPresentation(argument);
+            sequence.ControlRevision = ParseControlRevision(argument);
+        }
+        return sequence;
+    }
     private static XElement? MathChild(XElement element, string name) => element.Elements(XName.Get(name, MathNamespace)).FirstOrDefault();
     private static OpenXmlElement? MathChild(OpenXmlElement element, string name) => element.ChildElements.FirstOrDefault(e => e.NamespaceUri == MathNamespace && e.LocalName == name);
 
@@ -596,6 +669,7 @@ internal static class OmmlParser
         new[] { ExtractRunText(run) },
         run.Descendants(), e => e.Name.NamespaceName, e => e.Name.LocalName,
         e => (string?)e.Attribute(XName.Get("val", e.Name.NamespaceName)) ?? (string?)e.Attribute(XName.Get("val", WordNamespace)),
+        (e, name) => e.Attributes().FirstOrDefault(a => a.Name.LocalName == name)?.Value,
         RunBreakAlignment(run));
 
     private static OmmlRun ParseRun(OpenXmlElement run, string path)
@@ -603,7 +677,7 @@ internal static class OmmlParser
         IEnumerable<OpenXmlElement> all = run.Descendants();
         return ParseRunCore(path,
             new[] { ExtractRunText(run) },
-            all, e => e.NamespaceUri, e => e.LocalName, e => Attribute(e, "val"), RunBreakAlignment(run));
+            all, e => e.NamespaceUri, e => e.LocalName, e => Attribute(e, "val"), Attribute, RunBreakAlignment(run));
     }
 
     private static IReadOnlyList<OmmlNode> ParseParagraphRun(XElement run, string path)
@@ -612,14 +686,15 @@ internal static class OmmlParser
         return ParseParagraphRunCore(path, ExtractRunText(run), segment => ParseRunCore(path,
             new[] { segment }, all, e => e.Name.NamespaceName, e => e.Name.LocalName,
             e => (string?)e.Attribute(XName.Get("val", e.Name.NamespaceName)) ??
-                 (string?)e.Attribute(XName.Get("val", WordNamespace)), null));
+                 (string?)e.Attribute(XName.Get("val", WordNamespace)),
+            (e, name) => e.Attributes().FirstOrDefault(a => a.Name.LocalName == name)?.Value, null));
     }
 
     private static IReadOnlyList<OmmlNode> ParseParagraphRun(OpenXmlElement run, string path)
     {
         IEnumerable<OpenXmlElement> all = run.Descendants();
         return ParseParagraphRunCore(path, ExtractRunText(run), segment => ParseRunCore(path,
-            new[] { segment }, all, e => e.NamespaceUri, e => e.LocalName, e => Attribute(e, "val"), null));
+            new[] { segment }, all, e => e.NamespaceUri, e => e.LocalName, e => Attribute(e, "val"), Attribute, null));
     }
 
     private static IReadOnlyList<OmmlNode> ParseParagraphRunCore(string path, string text,
@@ -638,6 +713,7 @@ internal static class OmmlParser
 
     private static OmmlRun ParseRunCore<T>(string path, IEnumerable<string> texts,
         IEnumerable<T> elements, Func<T, string> ns, Func<T, string> local, Func<T, string?> val,
+        Func<T, string, string?> attribute,
         int? breakAlignmentAt)
         where T : class
     {
@@ -647,6 +723,11 @@ internal static class OmmlParser
         {
             T? found = all.FirstOrDefault(e => ns(e) == space && local(e) == name);
             return found == null ? null : val(found);
+        }
+        string? AttributeValue(string space, string elementName, string attributeName)
+        {
+            T? found = all.FirstOrDefault(e => ns(e) == space && local(e) == elementName);
+            return found == null ? null : attribute(found, attributeName);
         }
         bool literal = Has(MathNamespace, "lit"), normal = Has(MathNamespace, "nor");
         OmmlMathScript script = Value(MathNamespace, "scr") switch { "roman" => OmmlMathScript.Roman, "script" => OmmlMathScript.Script, "fraktur" => OmmlMathScript.Fraktur, "double-struck" => OmmlMathScript.DoubleStruck, "sans-serif" => OmmlMathScript.SansSerif, "monospace" => OmmlMathScript.Monospace, _ => OmmlMathScript.Default };
@@ -663,8 +744,110 @@ internal static class OmmlParser
             _ => OmmlMathStyle.Default,
         };
         string text = string.Concat(texts);
+        string? color = NormalizeColor(Value(WordNamespace, "color"));
+        double? fontSizePoints = uint.TryParse(Value(WordNamespace, "sz"), out uint halfPoints)
+            ? halfPoints / 2.0 : null;
+        string? fontFamily = AttributeValue(WordNamespace, "rFonts", "ascii") ??
+                             AttributeValue(WordNamespace, "rFonts", "hAnsi");
+        OmmlRunVerticalAlignment verticalAlignment = Value(WordNamespace, "vertAlign") switch
+        {
+            "superscript" => OmmlRunVerticalAlignment.Superscript,
+            "subscript" => OmmlRunVerticalAlignment.Subscript,
+            _ => OmmlRunVerticalAlignment.Baseline,
+        };
         return new OmmlRun(path, ClassifyRunText(text, literal || normal), script, style, literal, normal,
-            Has(MathNamespace, "aln"), breakAlignmentAt, Value(WordNamespace, "lang"), Has(WordNamespace, "rtl"));
+            Has(MathNamespace, "aln"), breakAlignmentAt, Value(WordNamespace, "lang"), Has(WordNamespace, "rtl"),
+            color, fontSizePoints, fontFamily, verticalAlignment);
+    }
+
+    private static string? NormalizeColor(string? value) =>
+        value != null && value.Length == 6 && value.All(Uri.IsHexDigit) ? value.ToUpperInvariant() : null;
+
+    private static OmmlRunPresentation? ParseControlPresentation(XElement element)
+    {
+        XElement? properties = element.Elements().FirstOrDefault(child =>
+            child.Name.NamespaceName == MathNamespace && child.Name.LocalName.EndsWith("Pr", StringComparison.Ordinal));
+        XElement? control = properties?.DescendantsAndSelf(XName.Get("ctrlPr", MathNamespace)).FirstOrDefault();
+        XElement? runProperties = control?.Elements(XName.Get("rPr", WordNamespace)).FirstOrDefault() ??
+                                  control?.Elements().FirstOrDefault(child => child.Name.NamespaceName == WordNamespace &&
+                                      child.Name.LocalName is "ins" or "del" or "moveTo" or "moveFrom")?
+                                      .Descendants(XName.Get("rPr", WordNamespace)).FirstOrDefault();
+        if (runProperties == null) return null;
+        string? Val(string name) => runProperties.Elements(XName.Get(name, WordNamespace)).FirstOrDefault()?
+            .Attributes().FirstOrDefault(attribute => attribute.Name.LocalName == "val")?.Value;
+        bool On(string name) => runProperties.Elements(XName.Get(name, WordNamespace)).Any(property => Enabled(
+            property.Attributes().FirstOrDefault(attribute => attribute.Name.LocalName == "val")?.Value));
+        XElement? fonts = runProperties.Element(XName.Get("rFonts", WordNamespace));
+        string? font = fonts?.Attributes().FirstOrDefault(attribute => attribute.Name.LocalName == "ascii")?.Value ??
+                       fonts?.Attributes().FirstOrDefault(attribute => attribute.Name.LocalName == "hAnsi")?.Value;
+        return CreatePresentation(On("b"), On("i"), Val("color"), Val("sz"), font, Val("vertAlign"),
+            Val("lang"), On("rtl"));
+    }
+
+    private static OmmlRunPresentation? ParseControlPresentation(OpenXmlElement element)
+    {
+        OpenXmlElement? properties = element.ChildElements.FirstOrDefault(child =>
+            child.NamespaceUri == MathNamespace && child.LocalName.EndsWith("Pr", StringComparison.Ordinal));
+        OpenXmlElement? control = properties?.Descendants().FirstOrDefault(child =>
+            child.NamespaceUri == MathNamespace && child.LocalName == "ctrlPr");
+        OpenXmlElement? runProperties = control?.ChildElements.FirstOrDefault(child =>
+            child.NamespaceUri == WordNamespace && child.LocalName == "rPr") ??
+            control?.ChildElements.FirstOrDefault(child => child.NamespaceUri == WordNamespace &&
+                child.LocalName is "ins" or "del" or "moveTo" or "moveFrom")?
+                .Descendants().FirstOrDefault(child => child.NamespaceUri == WordNamespace && child.LocalName == "rPr");
+        if (runProperties == null) return null;
+        string? Val(string name) => Attribute(runProperties.ChildElements.FirstOrDefault(child =>
+            child.NamespaceUri == WordNamespace && child.LocalName == name), "val");
+        bool On(string name)
+        {
+            OpenXmlElement? property = runProperties.ChildElements.FirstOrDefault(child =>
+                child.NamespaceUri == WordNamespace && child.LocalName == name);
+            return property != null && Enabled(Attribute(property, "val"));
+        }
+        OpenXmlElement? fonts = runProperties.ChildElements.FirstOrDefault(child =>
+            child.NamespaceUri == WordNamespace && child.LocalName == "rFonts");
+        return CreatePresentation(On("b"), On("i"), Val("color"), Val("sz"),
+            Attribute(fonts, "ascii") ?? Attribute(fonts, "hAnsi"), Val("vertAlign"), Val("lang"), On("rtl"));
+    }
+
+    private static OmmlRunPresentation CreatePresentation(bool bold, bool italic, string? color,
+        string? halfPointSize, string? font, string? verticalAlignment, string? language, bool rightToLeft) =>
+        new(bold, italic, NormalizeColor(color),
+            uint.TryParse(halfPointSize, out uint halfPoints) ? halfPoints / 2.0 : null,
+            font,
+            verticalAlignment switch
+            {
+                "superscript" => OmmlRunVerticalAlignment.Superscript,
+                "subscript" => OmmlRunVerticalAlignment.Subscript,
+                _ => OmmlRunVerticalAlignment.Baseline,
+            },
+            language, rightToLeft);
+
+    private static OmmlRevisionKind? ParseControlRevision(XElement element)
+    {
+        XElement? revision = element.Descendants(XName.Get("ctrlPr", MathNamespace)).FirstOrDefault()?
+            .Elements().FirstOrDefault(child => child.Name.NamespaceName == WordNamespace &&
+                child.Name.LocalName is "ins" or "del" or "moveTo" or "moveFrom");
+        return revision?.Name.LocalName switch
+        {
+            "ins" or "moveTo" => OmmlRevisionKind.Inserted,
+            "del" or "moveFrom" => OmmlRevisionKind.Deleted,
+            _ => null,
+        };
+    }
+
+    private static OmmlRevisionKind? ParseControlRevision(OpenXmlElement element)
+    {
+        OpenXmlElement? revision = element.Descendants().FirstOrDefault(child =>
+            child.NamespaceUri == MathNamespace && child.LocalName == "ctrlPr")?
+            .ChildElements.FirstOrDefault(child => child.NamespaceUri == WordNamespace &&
+                child.LocalName is "ins" or "del" or "moveTo" or "moveFrom");
+        return revision?.LocalName switch
+        {
+            "ins" or "moveTo" => OmmlRevisionKind.Inserted,
+            "del" or "moveFrom" => OmmlRevisionKind.Deleted,
+            _ => null,
+        };
     }
 
     private static IReadOnlyList<OmmlToken> ClassifyRunText(string text, bool textMode)
@@ -739,6 +922,8 @@ internal static class OmmlParser
             if ((e.Name.NamespaceName == MathNamespace || e.Name.NamespaceName == WordNamespace) && e.Name.LocalName == "t") result.Append(global::DocxportNet.DxpFontSymbols.Substitute(font, e.Value));
             else if (e.Name.NamespaceName == WordNamespace && e.Name.LocalName == "tab") result.Append('\t');
             else if (e.Name.NamespaceName == WordNamespace && e.Name.LocalName is "br" or "cr") result.Append('\n');
+            else if (e.Name.NamespaceName == WordNamespace && e.Name.LocalName == "noBreakHyphen") result.Append('-');
+            else if (e.Name.NamespaceName == WordNamespace && e.Name.LocalName == "softHyphen") result.Append('\u00AD');
             else if (e.Name.NamespaceName == WordNamespace && e.Name.LocalName == "sym") result.Append(global::DocxportNet.DxpFontSymbols.TranslateWordSymbol((string?)e.Attribute(XName.Get("font", WordNamespace)), (string?)e.Attribute(XName.Get("char", WordNamespace))));
         }
         return result.ToString();
@@ -754,6 +939,8 @@ internal static class OmmlParser
             if ((e.NamespaceUri == MathNamespace || e.NamespaceUri == WordNamespace) && e.LocalName == "t") result.Append(global::DocxportNet.DxpFontSymbols.Substitute(font, e.InnerText));
             else if (e.NamespaceUri == WordNamespace && e.LocalName == "tab") result.Append('\t');
             else if (e.NamespaceUri == WordNamespace && e.LocalName is "br" or "cr") result.Append('\n');
+            else if (e.NamespaceUri == WordNamespace && e.LocalName == "noBreakHyphen") result.Append('-');
+            else if (e.NamespaceUri == WordNamespace && e.LocalName == "softHyphen") result.Append('\u00AD');
             else if (e.NamespaceUri == WordNamespace && e.LocalName == "sym") result.Append(global::DocxportNet.DxpFontSymbols.TranslateWordSymbol(Attribute(e, "font"), Attribute(e, "char")));
         }
         return result.ToString();
@@ -779,10 +966,16 @@ internal static class OmmlParser
             {
                 result.Write('\t');
             }
-            else if (descendant.Name.NamespaceName == WordNamespace && descendant.Name.LocalName == "br")
+            else if (descendant.Name.NamespaceName == WordNamespace && descendant.Name.LocalName is "br" or "cr")
             {
                 result.Write('\n');
             }
+            else if (descendant.Name.NamespaceName == WordNamespace && descendant.Name.LocalName == "noBreakHyphen") result.Write('-');
+            else if (descendant.Name.NamespaceName == WordNamespace && descendant.Name.LocalName == "softHyphen") result.Write('\u00AD');
+            else if (descendant.Name.NamespaceName == WordNamespace && descendant.Name.LocalName == "sym")
+                result.Write(global::DocxportNet.DxpFontSymbols.TranslateWordSymbol(
+                    (string?)descendant.Attribute(XName.Get("font", WordNamespace)),
+                    (string?)descendant.Attribute(XName.Get("char", WordNamespace))));
         }
 
         return result.ToString();
@@ -808,9 +1001,16 @@ internal static class OmmlParser
             result.Write('\t');
             return;
         }
-        if (element.NamespaceUri == WordNamespace && element.LocalName == "br")
+        if (element.NamespaceUri == WordNamespace && element.LocalName is "br" or "cr")
         {
             result.Write('\n');
+            return;
+        }
+        if (element.NamespaceUri == WordNamespace && element.LocalName == "noBreakHyphen") { result.Write('-'); return; }
+        if (element.NamespaceUri == WordNamespace && element.LocalName == "softHyphen") { result.Write('\u00AD'); return; }
+        if (element.NamespaceUri == WordNamespace && element.LocalName == "sym")
+        {
+            result.Write(global::DocxportNet.DxpFontSymbols.TranslateWordSymbol(Attribute(element, "font"), Attribute(element, "char")));
             return;
         }
 

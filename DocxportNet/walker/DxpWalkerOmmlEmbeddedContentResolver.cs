@@ -25,6 +25,8 @@ public sealed class DxpWalkerOmmlEmbeddedContentResolver : IDxpOmmlEmbeddedConte
         ArgumentNullException.ThrowIfNull(request);
         if (request.OutputFormat != DxpOmmlOutputFormat.Latex)
             return null;
+        if (request.RevisionMode == DxpOmmlRevisionMode.Preserve || request.FieldMode == DxpOmmlFieldMode.Omit)
+            return null;
 
         using MemoryStream stream = new();
         using (WordprocessingDocument document = WordprocessingDocument.Create(
@@ -32,10 +34,11 @@ public sealed class DxpWalkerOmmlEmbeddedContentResolver : IDxpOmmlEmbeddedConte
         {
             MainDocumentPart main = document.AddMainDocumentPart();
             Paragraph paragraph = new();
-            if (request.OpenXmlElement != null)
-                paragraph.Append(request.OpenXmlElement.CloneNode(true));
-            else if (request.XmlElement != null)
-                paragraph.InnerXml = request.XmlElement.ToString(System.Xml.Linq.SaveOptions.DisableFormatting);
+            if (request.OpenXmlElements.Count != 0)
+                paragraph.Append(request.OpenXmlElements.Select(element => element.CloneNode(true)));
+            else if (request.XmlElements.Count != 0)
+                paragraph.InnerXml = string.Concat(request.XmlElements.Select(element =>
+                    element.ToString(System.Xml.Linq.SaveOptions.DisableFormatting)));
             else
                 return null;
             main.Document = new Document(new Body(paragraph));
@@ -46,6 +49,9 @@ public sealed class DxpWalkerOmmlEmbeddedContentResolver : IDxpOmmlEmbeddedConte
         using WordprocessingDocument readDocument = WordprocessingDocument.Open(stream, false);
         DxpPlainTextVisitorConfig config = new()
         {
+            TrackedChangeMode = request.RevisionMode == DxpOmmlRevisionMode.Reject
+                ? DxpPlainTextTrackedChangeMode.RejectChanges
+                : DxpPlainTextTrackedChangeMode.AcceptChanges,
             EmitDocumentProperties = false,
             EmitCustomProperties = false,
         };
