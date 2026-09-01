@@ -152,7 +152,7 @@ internal static class OmmlParser
             indexes.TryGetValue(child.Name, out int index);
             indexes[child.Name] = ++index;
             string path = $"{parentPath}/{QualifiedName(child)}[{Index(index)}]";
-            children.Add(child.Name == XName.Get("r", MathNamespace) ? ParseRun(child, path) : ParseUnsupported(child, path));
+            children.Add(ParseElement(child, path));
         }
 
         return children;
@@ -168,11 +168,101 @@ internal static class OmmlParser
             indexes.TryGetValue(name, out int index);
             indexes[name] = ++index;
             string path = $"{parentPath}/{QualifiedName(child)}[{Index(index)}]";
-            children.Add(child.NamespaceUri == MathNamespace && child.LocalName == "r" ? ParseRun(child, path) : ParseUnsupported(child, path));
+            children.Add(ParseElement(child, path));
         }
 
         return children;
     }
+
+    private static OmmlNode ParseElement(XElement element, string path) => element.Name.NamespaceName == MathNamespace
+        ? element.Name.LocalName switch
+        {
+            "r" => ParseRun(element, path),
+            "f" => ParseFraction(element, path),
+            "rad" => ParseRadical(element, path),
+            "sSub" => ParseScript(element, path, OmmlScriptType.Subscript),
+            "sSup" => ParseScript(element, path, OmmlScriptType.Superscript),
+            "sSubSup" => ParseScript(element, path, OmmlScriptType.SubSup),
+            "sPre" => ParseScript(element, path, OmmlScriptType.PreSubSup),
+            _ => ParseUnsupported(element, path),
+        }
+        : ParseUnsupported(element, path);
+
+    private static OmmlNode ParseElement(OpenXmlElement element, string path) => element.NamespaceUri == MathNamespace
+        ? element.LocalName switch
+        {
+            "r" => ParseRun(element, path),
+            "f" => ParseFraction(element, path),
+            "rad" => ParseRadical(element, path),
+            "sSub" => ParseScript(element, path, OmmlScriptType.Subscript),
+            "sSup" => ParseScript(element, path, OmmlScriptType.Superscript),
+            "sSubSup" => ParseScript(element, path, OmmlScriptType.SubSup),
+            "sPre" => ParseScript(element, path, OmmlScriptType.PreSubSup),
+            _ => ParseUnsupported(element, path),
+        }
+        : ParseUnsupported(element, path);
+
+    private static OmmlFraction ParseFraction(XElement element, string path)
+    {
+        XElement? properties = MathChild(element, "fPr");
+        string? type = properties == null ? null : MathChild(properties, "type")?.Attribute(XName.Get("val", MathNamespace))?.Value;
+        return new OmmlFraction(path, FractionType(type), ParseArgument(MathChild(element, "num"), path + "/m:num[1]"),
+            ParseArgument(MathChild(element, "den"), path + "/m:den[1]"), properties?.Descendants(XName.Get("ctrlPr", MathNamespace)).Any() == true);
+    }
+
+    private static OmmlFraction ParseFraction(OpenXmlElement element, string path)
+    {
+        OpenXmlElement? properties = MathChild(element, "fPr");
+        string? type = properties == null ? null : Attribute(MathChild(properties, "type"), "val");
+        return new OmmlFraction(path, FractionType(type), ParseArgument(MathChild(element, "num"), path + "/m:num[1]"),
+            ParseArgument(MathChild(element, "den"), path + "/m:den[1]"), properties?.Descendants().Any(e => e.NamespaceUri == MathNamespace && e.LocalName == "ctrlPr") == true);
+    }
+
+    private static OmmlFractionType FractionType(string? value) => value switch
+    { "skw" => OmmlFractionType.Skewed, "lin" => OmmlFractionType.Linear, "noBar" => OmmlFractionType.NoBar, _ => OmmlFractionType.Bar };
+
+    private static OmmlRadical ParseRadical(XElement element, string path)
+    {
+        XElement? properties = MathChild(element, "radPr");
+        XElement? hide = properties == null ? null : MathChild(properties, "degHide");
+        XElement? degree = MathChild(element, "deg");
+        return new OmmlRadical(path, ParseArgument(MathChild(element, "e"), path + "/m:e[1]"),
+            ParseArgument(degree, path + "/m:deg[1]"), degree != null, hide != null && Enabled((string?)hide.Attribute(XName.Get("val", MathNamespace))),
+            properties?.Descendants(XName.Get("ctrlPr", MathNamespace)).Any() == true);
+    }
+
+    private static OmmlRadical ParseRadical(OpenXmlElement element, string path)
+    {
+        OpenXmlElement? properties = MathChild(element, "radPr");
+        OpenXmlElement? hide = properties == null ? null : MathChild(properties, "degHide");
+        OpenXmlElement? degree = MathChild(element, "deg");
+        return new OmmlRadical(path, ParseArgument(MathChild(element, "e"), path + "/m:e[1]"),
+            ParseArgument(degree, path + "/m:deg[1]"), degree != null, hide != null && Enabled(Attribute(hide, "val")),
+            properties?.Descendants().Any(e => e.NamespaceUri == MathNamespace && e.LocalName == "ctrlPr") == true);
+    }
+
+    private static OmmlScript ParseScript(XElement element, string path, OmmlScriptType type)
+    {
+        XElement? properties = element.Elements().FirstOrDefault(e => e.Name.NamespaceName == MathNamespace && e.Name.LocalName.EndsWith("Pr", StringComparison.Ordinal));
+        XElement? align = properties == null ? null : MathChild(properties, "alnScr");
+        return new OmmlScript(path, type, ParseArgument(MathChild(element, "e"), path + "/m:e[1]"),
+            ParseArgument(MathChild(element, "sub"), path + "/m:sub[1]"), ParseArgument(MathChild(element, "sup"), path + "/m:sup[1]"),
+            align != null && Enabled((string?)align.Attribute(XName.Get("val", MathNamespace))), properties?.Descendants(XName.Get("ctrlPr", MathNamespace)).Any() == true);
+    }
+
+    private static OmmlScript ParseScript(OpenXmlElement element, string path, OmmlScriptType type)
+    {
+        OpenXmlElement? properties = element.ChildElements.FirstOrDefault(e => e.NamespaceUri == MathNamespace && e.LocalName.EndsWith("Pr", StringComparison.Ordinal));
+        OpenXmlElement? align = properties == null ? null : MathChild(properties, "alnScr");
+        return new OmmlScript(path, type, ParseArgument(MathChild(element, "e"), path + "/m:e[1]"),
+            ParseArgument(MathChild(element, "sub"), path + "/m:sub[1]"), ParseArgument(MathChild(element, "sup"), path + "/m:sup[1]"),
+            align != null && Enabled(Attribute(align, "val")), properties?.Descendants().Any(e => e.NamespaceUri == MathNamespace && e.LocalName == "ctrlPr") == true);
+    }
+
+    private static OmmlSequence ParseArgument(XElement? argument, string path) => new(path, argument == null ? Array.Empty<OmmlNode>() : ParseChildren(argument, path));
+    private static OmmlSequence ParseArgument(OpenXmlElement? argument, string path) => new(path, argument == null ? Array.Empty<OmmlNode>() : ParseChildren(argument, path));
+    private static XElement? MathChild(XElement element, string name) => element.Elements(XName.Get(name, MathNamespace)).FirstOrDefault();
+    private static OpenXmlElement? MathChild(OpenXmlElement element, string name) => element.ChildElements.FirstOrDefault(e => e.NamespaceUri == MathNamespace && e.LocalName == name);
 
     private static OmmlRun ParseRun(XElement run, string path) => ParseRunCore(
         path,
@@ -222,8 +312,8 @@ internal static class OmmlParser
         !(value == "0" || value.Equals("false", StringComparison.OrdinalIgnoreCase) ||
           value.Equals("off", StringComparison.OrdinalIgnoreCase));
 
-    private static string? Attribute(OpenXmlElement element, string localName) =>
-        element.GetAttributes().FirstOrDefault(a => a.LocalName == localName).Value;
+    private static string? Attribute(OpenXmlElement? element, string localName) =>
+        element?.GetAttributes().FirstOrDefault(a => a.LocalName == localName).Value;
 
     private static string ExtractRunText(XElement run)
     {

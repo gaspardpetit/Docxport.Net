@@ -45,6 +45,9 @@ public sealed class DxpOmmlConversionOptions
     /// <summary>Overrides inline/display mode inferred from the OMML root.</summary>
     public bool? Display { get; set; }
 
+    /// <summary>Requests compact inline fractions, corresponding to Word's document-level smallFrac setting.</summary>
+    public bool SmallFractions { get; set; }
+
     /// <summary>Maximum accepted XML character count.</summary>
     public long MaxInputCharacters { get; set; } = 1_048_576;
 }

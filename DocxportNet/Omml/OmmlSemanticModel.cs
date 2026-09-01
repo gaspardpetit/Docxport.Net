@@ -54,6 +54,46 @@ internal sealed class OmmlRun : OmmlNode
     public bool RightToLeft { get; }
 }
 
+internal enum OmmlFractionType { Bar, Skewed, Linear, NoBar }
+internal enum OmmlScriptType { Subscript, Superscript, SubSup, PreSubSup }
+
+internal sealed class OmmlFraction : OmmlNode
+{
+    public OmmlFraction(string path, OmmlFractionType type, OmmlSequence numerator,
+        OmmlSequence denominator, bool hasControlProperties) : base(path)
+    { Type = type; Numerator = numerator; Denominator = denominator; HasControlProperties = hasControlProperties; }
+    public OmmlFractionType Type { get; }
+    public OmmlSequence Numerator { get; }
+    public OmmlSequence Denominator { get; }
+    public bool HasControlProperties { get; }
+}
+
+internal sealed class OmmlRadical : OmmlNode
+{
+    public OmmlRadical(string path, OmmlSequence radicand, OmmlSequence degree,
+        bool hasDegree, bool degreeHidden, bool hasControlProperties) : base(path)
+    { Radicand = radicand; Degree = degree; HasDegree = hasDegree; DegreeHidden = degreeHidden; HasControlProperties = hasControlProperties; }
+    public OmmlSequence Radicand { get; }
+    public OmmlSequence Degree { get; }
+    public bool HasDegree { get; }
+    public bool DegreeHidden { get; }
+    public bool HasControlProperties { get; }
+}
+
+internal sealed class OmmlScript : OmmlNode
+{
+    public OmmlScript(string path, OmmlScriptType type, OmmlSequence @base,
+        OmmlSequence subscript, OmmlSequence superscript, bool alignScripts,
+        bool hasControlProperties) : base(path)
+    { Type = type; Base = @base; Subscript = subscript; Superscript = superscript; AlignScripts = alignScripts; HasControlProperties = hasControlProperties; }
+    public OmmlScriptType Type { get; }
+    public OmmlSequence Base { get; }
+    public OmmlSequence Subscript { get; }
+    public OmmlSequence Superscript { get; }
+    public bool AlignScripts { get; }
+    public bool HasControlProperties { get; }
+}
+
 internal sealed class OmmlUnsupported : OmmlNode
 {
     public OmmlUnsupported(string path, string elementName, string visibleText) : base(path)

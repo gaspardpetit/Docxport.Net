@@ -50,3 +50,23 @@ readable content. Applicable Word bold, italic, language, RTL, run-font, and
 An OMML alignment marker becomes `malignmark` in MathML and `&` in LaTeX and
 UnicodeMath. U+200B becomes a zero-width MathML space, `{}` in LaTeX, remains
 available in UnicodeMath for fidelity, and is omitted from basic readable text.
+
+## Fractions, radicals, and scripts
+
+Fractions support the default/bar, skewed, linear, and no-bar forms. MathML uses
+`mfrac` (including `bevelled` and zero-line-thickness variants) or an explicit
+linear slash; LaTeX uses `\frac`, `\genfrac`, or a linear form. UnicodeMath and
+basic text use unambiguous parenthesized numerator/denominator notation. Set
+`DxpOmmlConversionOptions.SmallFractions` when a caller has obtained Word's
+document-level `smallFrac` setting; this applies compact MathML styling only to
+inline expressions.
+
+Radicals distinguish a missing degree, an explicitly empty degree, a visible
+degree, and a degree suppressed by `degHide`. Scripts support subscript,
+superscript, combined subscript/superscript, and prescripts. Empty arguments and
+arbitrarily nested supported structures are preserved. `alnScr` intent is
+retained as `data-omml-align-scripts` on MathML; textual formats retain the
+script structure but have no separate alignment-style mechanism. Control-run
+property presence is retained in the internal semantic model for later pipeline
+integration. Ordinary scripts are not guessed to be operator limits; explicit
+limit structures are handled separately by the later functions/limits goal.

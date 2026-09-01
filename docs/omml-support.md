@@ -108,33 +108,33 @@ Plurimath is a behavioral oracle and source of test ideas, not the definition of
 
 ### Fractions: `m:f` / `m:fPr`
 
-- [ ] P0 Render numerator and denominator recursively.
-- [ ] P0 Support default/bar fraction (`m:type="bar"`).
-- [ ] P1 Support skewed fraction (`skw`).
-- [ ] P1 Support linear fraction (`lin`).
-- [ ] P1 Support no-bar stacked fraction (`noBar`).
-- [ ] P1 Handle empty numerator or denominator deterministically.
-- [ ] P1 Retain `m:ctrlPr` formatting intent.
-- [ ] P2 Respect document-level `m:smallFrac` in inline output where representable.
+- [x] P0 Render numerator and denominator recursively.
+- [x] P0 Support default/bar fraction (`m:type="bar"`).
+- [x] P1 Support skewed fraction (`skw`).
+- [x] P1 Support linear fraction (`lin`).
+- [x] P1 Support no-bar stacked fraction (`noBar`).
+- [x] P1 Handle empty numerator or denominator deterministically.
+- [x] P1 Retain `m:ctrlPr` formatting intent.
+- [x] P2 Respect document-level `m:smallFrac` in inline output where representable.
 
 ### Radicals: `m:rad` / `m:radPr`
 
-- [ ] P0 Render square root when the degree is absent or hidden.
-- [ ] P0 Render an indexed root when `m:deg` is present.
-- [ ] P1 Apply `m:degHide`, including missing-value defaults.
-- [ ] P1 Preserve an explicitly empty degree distinctly from a missing degree.
-- [ ] P1 Retain `m:ctrlPr` formatting intent.
+- [x] P0 Render square root when the degree is absent or hidden.
+- [x] P0 Render an indexed root when `m:deg` is present.
+- [x] P1 Apply `m:degHide`, including missing-value defaults.
+- [x] P1 Preserve an explicitly empty degree distinctly from a missing degree.
+- [x] P1 Retain `m:ctrlPr` formatting intent.
 
 ### Scripts
 
-- [ ] P0 Render superscript `m:sSup`.
-- [ ] P0 Render subscript `m:sSub`.
-- [ ] P0 Render combined subscript/superscript `m:sSubSup`.
-- [ ] P1 Render pre-subscript/pre-superscript `m:sPre` using MathML multiscripts and the closest LaTeX equivalent.
-- [ ] P1 Support empty base, subscript, or superscript arguments.
-- [ ] P1 Apply `m:alnScr` for aligned scripts where representable.
-- [ ] P1 Preserve nesting of scripts around structured bases.
-- [ ] P2 Distinguish semantic operator limits from ordinary scripts.
+- [x] P0 Render superscript `m:sSup`.
+- [x] P0 Render subscript `m:sSub`.
+- [x] P0 Render combined subscript/superscript `m:sSubSup`.
+- [x] P1 Render pre-subscript/pre-superscript `m:sPre` using MathML multiscripts and the closest LaTeX equivalent.
+- [x] P1 Support empty base, subscript, or superscript arguments.
+- [x] P1 Apply `m:alnScr` for aligned scripts where representable.
+- [x] P1 Preserve nesting of scripts around structured bases.
+- [x] P2 Distinguish semantic operator limits from ordinary scripts.
 
 ### Delimiters: `m:d` / `m:dPr`
 
@@ -458,10 +458,10 @@ Complete these goals in order. Goals 3-10 are vertical feature slices: each incl
 
 ### Goal 4: Fractions, radicals, and scripts
 
-- [ ] Implement every fraction type, including bar, skewed, linear, and no-bar.
-- [ ] Implement square and indexed roots, degree hiding, and empty-degree distinctions.
-- [ ] Implement subscript, superscript, combined scripts, pre-scripts, and script alignment.
-- [ ] Cover structured and deeply nested bases, degrees, numerators, denominators, and scripts.
+- [x] Implement every fraction type, including bar, skewed, linear, and no-bar.
+- [x] Implement square and indexed roots, degree hiding, and empty-degree distinctions.
+- [x] Implement subscript, superscript, combined scripts, pre-scripts, and script alignment.
+- [x] Cover structured and deeply nested bases, degrees, numerators, denominators, and scripts.
 
 ### Goal 5: Delimiters and decorations
 
