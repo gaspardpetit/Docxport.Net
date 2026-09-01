@@ -127,6 +127,51 @@ internal sealed class OmmlDecoration : OmmlNode
     public bool HasControlProperties { get; }
 }
 
+internal enum OmmlLimitType { Lower, Upper }
+
+internal sealed class OmmlFunction : OmmlNode
+{
+    public OmmlFunction(string path, OmmlSequence name, OmmlSequence argument,
+        bool hasControlProperties) : base(path)
+    { Name = name; Argument = argument; HasControlProperties = hasControlProperties; }
+    public OmmlSequence Name { get; }
+    public OmmlSequence Argument { get; }
+    public bool HasControlProperties { get; }
+}
+
+internal sealed class OmmlLimit : OmmlNode
+{
+    public OmmlLimit(string path, OmmlLimitType type, OmmlSequence @base,
+        OmmlSequence limit, bool hasControlProperties) : base(path)
+    { Type = type; Base = @base; Limit = limit; HasControlProperties = hasControlProperties; }
+    public OmmlLimitType Type { get; }
+    public OmmlSequence Base { get; }
+    public OmmlSequence Limit { get; }
+    public bool HasControlProperties { get; }
+}
+
+internal sealed class OmmlNary : OmmlNode
+{
+    public OmmlNary(string path, string character, DxpOmmlLimitLocation? limitLocation,
+        bool grow, bool hideSubscript, bool hideSuperscript, OmmlSequence subscript,
+        OmmlSequence superscript, OmmlSequence argument, bool hasControlProperties) : base(path)
+    {
+        Character = character; LimitLocation = limitLocation; Grow = grow;
+        HideSubscript = hideSubscript; HideSuperscript = hideSuperscript;
+        Subscript = subscript; Superscript = superscript; Argument = argument;
+        HasControlProperties = hasControlProperties;
+    }
+    public string Character { get; }
+    public DxpOmmlLimitLocation? LimitLocation { get; }
+    public bool Grow { get; }
+    public bool HideSubscript { get; }
+    public bool HideSuperscript { get; }
+    public OmmlSequence Subscript { get; }
+    public OmmlSequence Superscript { get; }
+    public OmmlSequence Argument { get; }
+    public bool HasControlProperties { get; }
+}
+
 internal sealed class OmmlUnsupported : OmmlNode
 {
     public OmmlUnsupported(string path, string elementName, string visibleText) : base(path)

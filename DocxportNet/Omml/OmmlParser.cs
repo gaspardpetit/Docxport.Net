@@ -188,6 +188,10 @@ internal static class OmmlParser
             "acc" => ParseDecoration(element, path, OmmlDecorationType.Accent),
             "bar" => ParseDecoration(element, path, OmmlDecorationType.Bar),
             "groupChr" => ParseDecoration(element, path, OmmlDecorationType.GroupCharacter),
+            "func" => ParseFunction(element, path),
+            "limLow" => ParseLimit(element, path, OmmlLimitType.Lower),
+            "limUpp" => ParseLimit(element, path, OmmlLimitType.Upper),
+            "nary" => ParseNary(element, path),
             _ => ParseUnsupported(element, path),
         }
         : ParseUnsupported(element, path);
@@ -206,6 +210,10 @@ internal static class OmmlParser
             "acc" => ParseDecoration(element, path, OmmlDecorationType.Accent),
             "bar" => ParseDecoration(element, path, OmmlDecorationType.Bar),
             "groupChr" => ParseDecoration(element, path, OmmlDecorationType.GroupCharacter),
+            "func" => ParseFunction(element, path),
+            "limLow" => ParseLimit(element, path, OmmlLimitType.Lower),
+            "limUpp" => ParseLimit(element, path, OmmlLimitType.Upper),
+            "nary" => ParseNary(element, path),
             _ => ParseUnsupported(element, path),
         }
         : ParseUnsupported(element, path);
@@ -307,6 +315,54 @@ internal static class OmmlParser
             ParseArgument(MathChild(element, "e"), path + "/m:e[1]"), HasControlProperties(properties));
     }
 
+    private static OmmlFunction ParseFunction(XElement element, string path)
+    {
+        XElement? properties = MathChild(element, "funcPr");
+        return new OmmlFunction(path, ParseArgument(MathChild(element, "fName"), path + "/m:fName[1]"),
+            ParseArgument(MathChild(element, "e"), path + "/m:e[1]"), HasControlProperties(properties));
+    }
+
+    private static OmmlFunction ParseFunction(OpenXmlElement element, string path)
+    {
+        OpenXmlElement? properties = MathChild(element, "funcPr");
+        return new OmmlFunction(path, ParseArgument(MathChild(element, "fName"), path + "/m:fName[1]"),
+            ParseArgument(MathChild(element, "e"), path + "/m:e[1]"), HasControlProperties(properties));
+    }
+
+    private static OmmlLimit ParseLimit(XElement element, string path, OmmlLimitType type)
+    {
+        XElement? properties = MathChild(element, type == OmmlLimitType.Lower ? "limLowPr" : "limUppPr");
+        return new OmmlLimit(path, type, ParseArgument(MathChild(element, "e"), path + "/m:e[1]"),
+            ParseArgument(MathChild(element, "lim"), path + "/m:lim[1]"), HasControlProperties(properties));
+    }
+
+    private static OmmlLimit ParseLimit(OpenXmlElement element, string path, OmmlLimitType type)
+    {
+        OpenXmlElement? properties = MathChild(element, type == OmmlLimitType.Lower ? "limLowPr" : "limUppPr");
+        return new OmmlLimit(path, type, ParseArgument(MathChild(element, "e"), path + "/m:e[1]"),
+            ParseArgument(MathChild(element, "lim"), path + "/m:lim[1]"), HasControlProperties(properties));
+    }
+
+    private static OmmlNary ParseNary(XElement element, string path)
+    {
+        XElement? properties = MathChild(element, "naryPr");
+        return new OmmlNary(path, CharProperty(properties, "chr", "∫"), LimitLocationProperty(properties),
+            OnOffProperty(properties, "grow", true), OnOffProperty(properties, "subHide", false),
+            OnOffProperty(properties, "supHide", false), ParseArgument(MathChild(element, "sub"), path + "/m:sub[1]"),
+            ParseArgument(MathChild(element, "sup"), path + "/m:sup[1]"), ParseArgument(MathChild(element, "e"), path + "/m:e[1]"),
+            HasControlProperties(properties));
+    }
+
+    private static OmmlNary ParseNary(OpenXmlElement element, string path)
+    {
+        OpenXmlElement? properties = MathChild(element, "naryPr");
+        return new OmmlNary(path, CharProperty(properties, "chr", "∫"), LimitLocationProperty(properties),
+            OnOffProperty(properties, "grow", true), OnOffProperty(properties, "subHide", false),
+            OnOffProperty(properties, "supHide", false), ParseArgument(MathChild(element, "sub"), path + "/m:sub[1]"),
+            ParseArgument(MathChild(element, "sup"), path + "/m:sup[1]"), ParseArgument(MathChild(element, "e"), path + "/m:e[1]"),
+            HasControlProperties(properties));
+    }
+
     private static string CharProperty(XElement? properties, string name, string defaultValue)
     {
         XElement? property = properties == null ? null : MathChild(properties, name);
@@ -327,6 +383,11 @@ internal static class OmmlParser
     private static OmmlDelimiterShape ShapeProperty(OpenXmlElement? properties) => properties == null || CharProperty(properties, "shp", "centered") != "match" ? OmmlDelimiterShape.Centered : OmmlDelimiterShape.Match;
     private static OmmlVerticalPosition PositionProperty(XElement? properties, string name, OmmlVerticalPosition defaultValue) => properties == null || CharProperty(properties, name, defaultValue == OmmlVerticalPosition.Top ? "top" : "bot") != "top" ? (properties == null ? defaultValue : OmmlVerticalPosition.Bottom) : OmmlVerticalPosition.Top;
     private static OmmlVerticalPosition PositionProperty(OpenXmlElement? properties, string name, OmmlVerticalPosition defaultValue) => properties == null || CharProperty(properties, name, defaultValue == OmmlVerticalPosition.Top ? "top" : "bot") != "top" ? (properties == null ? defaultValue : OmmlVerticalPosition.Bottom) : OmmlVerticalPosition.Top;
+    private static DxpOmmlLimitLocation? LimitLocationProperty(XElement? properties)
+    { XElement? property = properties == null ? null : MathChild(properties, "limLoc"); return property == null ? null : LimitLocation((string?)property.Attribute(XName.Get("val", MathNamespace))); }
+    private static DxpOmmlLimitLocation? LimitLocationProperty(OpenXmlElement? properties)
+    { OpenXmlElement? property = properties == null ? null : MathChild(properties, "limLoc"); return property == null ? null : LimitLocation(Attribute(property, "val")); }
+    private static DxpOmmlLimitLocation LimitLocation(string? value) => value == "subSup" ? DxpOmmlLimitLocation.SubscriptSuperscript : DxpOmmlLimitLocation.UnderOver;
     private static bool HasControlProperties(XElement? properties) => properties?.Descendants(XName.Get("ctrlPr", MathNamespace)).Any() == true;
     private static bool HasControlProperties(OpenXmlElement? properties) => properties?.Descendants().Any(e => e.NamespaceUri == MathNamespace && e.LocalName == "ctrlPr") == true;
 

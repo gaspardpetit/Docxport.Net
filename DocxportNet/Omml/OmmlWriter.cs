@@ -17,9 +17,9 @@ internal static class OmmlWriter
         string output = format switch
         {
             DxpOmmlOutputFormat.MathMl => WriteMathMl(document, isDisplay, options, diagnostics),
-            DxpOmmlOutputFormat.Latex => WriteTextual(document, format, options, diagnostics, EscapeLatex),
-            DxpOmmlOutputFormat.UnicodeMath => WriteTextual(document, format, options, diagnostics, static value => value),
-            DxpOmmlOutputFormat.Text => WriteTextual(document, format, options, diagnostics, static value => value),
+            DxpOmmlOutputFormat.Latex => WriteTextual(document, format, isDisplay, options, diagnostics, EscapeLatex),
+            DxpOmmlOutputFormat.UnicodeMath => WriteTextual(document, format, isDisplay, options, diagnostics, static value => value),
+            DxpOmmlOutputFormat.Text => WriteTextual(document, format, isDisplay, options, diagnostics, static value => value),
             _ => throw new ArgumentOutOfRangeException(nameof(format), format, "Unknown OMML output format."),
         };
         return new DxpOmmlConversionResult(output, format, isDisplay, diagnostics.AsReadOnly());
@@ -34,7 +34,7 @@ internal static class OmmlWriter
         XNamespace math = MathMlNamespace;
         XElement row = new(math + "mrow");
         foreach (OmmlNode node in document.Children)
-            AppendMathMl(row, node, options.SmallFractions && !isDisplay, options, diagnostics);
+            AppendMathMl(row, node, options.SmallFractions && !isDisplay, isDisplay, options, diagnostics);
 
         XElement root = new(
             math + "math",
@@ -47,6 +47,7 @@ internal static class OmmlWriter
         XElement parent,
         OmmlNode node,
         bool compactFractions,
+        bool isDisplay,
         DxpOmmlConversionOptions options,
         List<DxpOmmlDiagnostic> diagnostics)
     {
@@ -55,7 +56,7 @@ internal static class OmmlWriter
         {
             XElement row = new(math + "mrow");
             foreach (OmmlNode child in sequence.Children)
-                AppendMathMl(row, child, compactFractions, options, diagnostics);
+                AppendMathMl(row, child, compactFractions, isDisplay, options, diagnostics);
             parent.Add(row);
             return;
         }
@@ -87,17 +88,17 @@ internal static class OmmlWriter
             if (fraction.Type == OmmlFractionType.Linear)
             {
                 rendered = new XElement(math + "mrow");
-                AppendMathMl(rendered, fraction.Numerator, compactFractions, options, diagnostics);
+                AppendMathMl(rendered, fraction.Numerator, compactFractions, isDisplay, options, diagnostics);
                 rendered.Add(new XElement(math + "mo", "/"));
-                AppendMathMl(rendered, fraction.Denominator, compactFractions, options, diagnostics);
+                AppendMathMl(rendered, fraction.Denominator, compactFractions, isDisplay, options, diagnostics);
             }
             else
             {
                 rendered = new XElement(math + "mfrac");
                 if (fraction.Type == OmmlFractionType.Skewed) rendered.SetAttributeValue("bevelled", "true");
                 if (fraction.Type == OmmlFractionType.NoBar) rendered.SetAttributeValue("linethickness", "0");
-                AppendMathMl(rendered, fraction.Numerator, compactFractions, options, diagnostics);
-                AppendMathMl(rendered, fraction.Denominator, compactFractions, options, diagnostics);
+                AppendMathMl(rendered, fraction.Numerator, compactFractions, isDisplay, options, diagnostics);
+                AppendMathMl(rendered, fraction.Denominator, compactFractions, isDisplay, options, diagnostics);
             }
             if (compactFractions)
                 parent.Add(new XElement(math + "mstyle", new XAttribute("displaystyle", "false"), new XAttribute("scriptlevel", "1"), rendered));
@@ -109,8 +110,8 @@ internal static class OmmlWriter
         {
             bool indexed = radical.HasDegree && !radical.DegreeHidden;
             XElement rendered = new(math + (indexed ? "mroot" : "msqrt"));
-            AppendMathMl(rendered, radical.Radicand, compactFractions, options, diagnostics);
-            if (indexed) AppendMathMl(rendered, radical.Degree, compactFractions, options, diagnostics);
+            AppendMathMl(rendered, radical.Radicand, compactFractions, isDisplay, options, diagnostics);
+            if (indexed) AppendMathMl(rendered, radical.Degree, compactFractions, isDisplay, options, diagnostics);
             parent.Add(rendered);
             return;
         }
@@ -124,17 +125,17 @@ internal static class OmmlWriter
                 OmmlScriptType.SubSup => "msubsup",
                 _ => "mmultiscripts",
             }));
-            AppendMathMl(rendered, script.Base, compactFractions, options, diagnostics);
+            AppendMathMl(rendered, script.Base, compactFractions, isDisplay, options, diagnostics);
             if (script.Type == OmmlScriptType.PreSubSup)
             {
                 rendered.Add(new XElement(math + "mprescripts"));
-                AppendMathMl(rendered, script.Subscript, compactFractions, options, diagnostics);
-                AppendMathMl(rendered, script.Superscript, compactFractions, options, diagnostics);
+                AppendMathMl(rendered, script.Subscript, compactFractions, isDisplay, options, diagnostics);
+                AppendMathMl(rendered, script.Superscript, compactFractions, isDisplay, options, diagnostics);
             }
             else
             {
-                if (script.Type != OmmlScriptType.Superscript) AppendMathMl(rendered, script.Subscript, compactFractions, options, diagnostics);
-                if (script.Type != OmmlScriptType.Subscript) AppendMathMl(rendered, script.Superscript, compactFractions, options, diagnostics);
+                if (script.Type != OmmlScriptType.Superscript) AppendMathMl(rendered, script.Subscript, compactFractions, isDisplay, options, diagnostics);
+                if (script.Type != OmmlScriptType.Subscript) AppendMathMl(rendered, script.Superscript, compactFractions, isDisplay, options, diagnostics);
             }
             if (script.AlignScripts) rendered.SetAttributeValue("data-omml-align-scripts", "true");
             parent.Add(rendered);
@@ -149,7 +150,7 @@ internal static class OmmlWriter
             {
                 if (i != 0 && delimiter.Separator.Length != 0)
                     row.Add(new XElement(math + "mo", new XAttribute("separator", "true"), delimiter.Separator));
-                AppendMathMl(row, delimiter.Arguments[i], compactFractions, options, diagnostics);
+                AppendMathMl(row, delimiter.Arguments[i], compactFractions, isDisplay, options, diagnostics);
             }
             AddFence(row, delimiter.End, delimiter.Grow, false);
             parent.Add(row);
@@ -165,12 +166,62 @@ internal static class OmmlWriter
             if (decoration.Type != OmmlDecorationType.GroupCharacter)
                 rendered.SetAttributeValue(above ? "accent" : "accentunder",
                     decoration.Type == OmmlDecorationType.Accent ? "true" : "false");
-            AppendMathMl(rendered, decoration.Argument, compactFractions, options, diagnostics);
+            AppendMathMl(rendered, decoration.Argument, compactFractions, isDisplay, options, diagnostics);
             string character = decoration.Type == OmmlDecorationType.Accent
                 ? MathMlAccentCharacter(decoration.Character)
                 : decoration.Character;
             rendered.Add(new XElement(math + "mo", new XAttribute("stretchy", "true"), character));
             parent.Add(rendered);
+            return;
+        }
+
+        if (node is OmmlFunction function)
+        {
+            XElement row = new(math + "mrow");
+            AppendMathMl(row, function.Name, compactFractions, isDisplay, options, diagnostics);
+            row.Add(new XElement(math + "mo", new XAttribute("form", "infix"), "⁡"));
+            AppendMathMl(row, function.Argument, compactFractions, isDisplay, options, diagnostics);
+            parent.Add(row);
+            return;
+        }
+
+        if (node is OmmlLimit limit)
+        {
+            XElement rendered = new(math + (limit.Type == OmmlLimitType.Lower ? "munder" : "mover"));
+            AppendMathMl(rendered, limit.Base, compactFractions, isDisplay, options, diagnostics);
+            AppendMathMl(rendered, limit.Limit, compactFractions, isDisplay, options, diagnostics);
+            parent.Add(rendered);
+            return;
+        }
+
+        if (node is OmmlNary nary)
+        {
+            DxpOmmlLimitLocation location = NaryLimitLocation(nary, isDisplay, options);
+            bool hasSubscript = !nary.HideSubscript;
+            bool hasSuperscript = !nary.HideSuperscript;
+            XElement op = new(math + "mo", new XAttribute("largeop", "true"),
+                new XAttribute("stretchy", nary.Grow ? "true" : "false"), nary.Character);
+            XElement rendered;
+            if (hasSubscript && hasSuperscript)
+            {
+                rendered = new XElement(math + (location == DxpOmmlLimitLocation.UnderOver ? "munderover" : "msubsup"), op);
+                AppendMathMl(rendered, nary.Subscript, compactFractions, isDisplay, options, diagnostics);
+                AppendMathMl(rendered, nary.Superscript, compactFractions, isDisplay, options, diagnostics);
+            }
+            else if (hasSubscript)
+            {
+                rendered = new XElement(math + (location == DxpOmmlLimitLocation.UnderOver ? "munder" : "msub"), op);
+                AppendMathMl(rendered, nary.Subscript, compactFractions, isDisplay, options, diagnostics);
+            }
+            else if (hasSuperscript)
+            {
+                rendered = new XElement(math + (location == DxpOmmlLimitLocation.UnderOver ? "mover" : "msup"), op);
+                AppendMathMl(rendered, nary.Superscript, compactFractions, isDisplay, options, diagnostics);
+            }
+            else rendered = op;
+            XElement row = new(math + "mrow", rendered);
+            AppendMathMl(row, nary.Argument, compactFractions, isDisplay, options, diagnostics);
+            parent.Add(row);
             return;
         }
 
@@ -182,13 +233,14 @@ internal static class OmmlWriter
     private static string WriteTextual(
         OmmlDocument document,
         DxpOmmlOutputFormat format,
+        bool isDisplay,
         DxpOmmlConversionOptions options,
         List<DxpOmmlDiagnostic> diagnostics,
         Func<string, string> escape)
     {
         StringBuilder output = new();
         foreach (OmmlNode node in document.Children)
-            AppendTextual(output, node, format, options, diagnostics, escape);
+            AppendTextual(output, node, format, isDisplay, options, diagnostics, escape);
         return output.ToString();
     }
 
@@ -196,6 +248,7 @@ internal static class OmmlWriter
         StringBuilder output,
         OmmlNode node,
         DxpOmmlOutputFormat format,
+        bool isDisplay,
         DxpOmmlConversionOptions options,
         List<DxpOmmlDiagnostic> diagnostics,
         Func<string, string> escape)
@@ -203,7 +256,7 @@ internal static class OmmlWriter
         if (node is OmmlSequence sequence)
         {
             foreach (OmmlNode child in sequence.Children)
-                AppendTextual(output, child, format, options, diagnostics, escape);
+                AppendTextual(output, child, format, isDisplay, options, diagnostics, escape);
             return;
         }
 
@@ -229,8 +282,8 @@ internal static class OmmlWriter
 
         if (node is OmmlFraction fraction)
         {
-            string numerator = RenderTextual(fraction.Numerator, format, options, diagnostics, escape);
-            string denominator = RenderTextual(fraction.Denominator, format, options, diagnostics, escape);
+            string numerator = RenderTextual(fraction.Numerator, format, isDisplay, options, diagnostics, escape);
+            string denominator = RenderTextual(fraction.Denominator, format, isDisplay, options, diagnostics, escape);
             output.Append(format switch
             {
                 DxpOmmlOutputFormat.Latex when fraction.Type == OmmlFractionType.Bar => $"\\frac{{{numerator}}}{{{denominator}}}",
@@ -244,8 +297,8 @@ internal static class OmmlWriter
 
         if (node is OmmlRadical radical)
         {
-            string radicand = RenderTextual(radical.Radicand, format, options, diagnostics, escape);
-            string degree = RenderTextual(radical.Degree, format, options, diagnostics, escape);
+            string radicand = RenderTextual(radical.Radicand, format, isDisplay, options, diagnostics, escape);
+            string degree = RenderTextual(radical.Degree, format, isDisplay, options, diagnostics, escape);
             bool indexed = radical.HasDegree && !radical.DegreeHidden;
             output.Append(format switch
             {
@@ -261,9 +314,9 @@ internal static class OmmlWriter
 
         if (node is OmmlScript script)
         {
-            string @base = RenderTextual(script.Base, format, options, diagnostics, escape);
-            string sub = RenderTextual(script.Subscript, format, options, diagnostics, escape);
-            string sup = RenderTextual(script.Superscript, format, options, diagnostics, escape);
+            string @base = RenderTextual(script.Base, format, isDisplay, options, diagnostics, escape);
+            string sub = RenderTextual(script.Subscript, format, isDisplay, options, diagnostics, escape);
+            string sup = RenderTextual(script.Superscript, format, isDisplay, options, diagnostics, escape);
             if (format == DxpOmmlOutputFormat.Latex)
             {
                 string latexBase = @base.Length == 0 ? "{}" : @base;
@@ -280,7 +333,7 @@ internal static class OmmlWriter
         {
             string separator = format == DxpOmmlOutputFormat.Latex ? EscapeLatex(delimiter.Separator) : delimiter.Separator;
             string content = string.Join(separator,
-                delimiter.Arguments.Select(argument => RenderTextual(argument, format, options, diagnostics, escape)));
+                delimiter.Arguments.Select(argument => RenderTextual(argument, format, isDisplay, options, diagnostics, escape)));
             if (format == DxpOmmlOutputFormat.Latex)
             {
                 string begin = LatexDelimiter(delimiter.Begin);
@@ -295,7 +348,7 @@ internal static class OmmlWriter
 
         if (node is OmmlDecoration decoration)
         {
-            string argument = RenderTextual(decoration.Argument, format, options, diagnostics, escape);
+            string argument = RenderTextual(decoration.Argument, format, isDisplay, options, diagnostics, escape);
             if (format == DxpOmmlOutputFormat.Latex)
                 output.Append(LatexDecoration(decoration, argument));
             else if (format == DxpOmmlOutputFormat.UnicodeMath)
@@ -304,14 +357,82 @@ internal static class OmmlWriter
             return;
         }
 
+        if (node is OmmlFunction function)
+        {
+            string name = RenderTextual(function.Name, format, isDisplay, options, diagnostics, escape);
+            string argument = RenderTextual(function.Argument, format, isDisplay, options, diagnostics, escape);
+            string? simpleName = SimpleText(function.Name);
+            if (format == DxpOmmlOutputFormat.Latex)
+            {
+                string? command = simpleName == null ? null : LatexFunction(simpleName);
+                string functionName = command != null ? "\\" + command
+                    : simpleName != null ? $"\\operatorname{{{EscapeLatex(simpleName)}}}"
+                    : $"\\mathop{{{name}}}";
+                output.Append(functionName).Append('{').Append(argument).Append('}');
+            }
+            else if (format == DxpOmmlOutputFormat.UnicodeMath)
+                output.Append(name).Append('⁡').Append(argument);
+            else output.Append(name).Append('(').Append(argument).Append(')');
+            return;
+        }
+
+        if (node is OmmlLimit limit)
+        {
+            string @base = RenderTextual(limit.Base, format, isDisplay, options, diagnostics, escape);
+            string value = RenderTextual(limit.Limit, format, isDisplay, options, diagnostics, escape);
+            string? simpleBase = SimpleText(limit.Base);
+            if (format == DxpOmmlOutputFormat.Latex)
+            {
+                string? command = simpleBase == null ? null : LatexLimitOperator(simpleBase);
+                string renderedBase = command == null ? @base : "\\" + command;
+                output.Append('{').Append(renderedBase).Append('}')
+                    .Append(limit.Type == OmmlLimitType.Lower ? "_{" : "^{").Append(value).Append('}');
+            }
+            else if (format == DxpOmmlOutputFormat.UnicodeMath)
+                output.Append(@base).Append(limit.Type == OmmlLimitType.Lower ? "_(" : "^(").Append(value).Append(')');
+            else output.Append(@base).Append(limit.Type == OmmlLimitType.Lower ? " with lower limit " : " with upper limit ").Append(value);
+            return;
+        }
+
+        if (node is OmmlNary nary)
+        {
+            string subscript = RenderTextual(nary.Subscript, format, isDisplay, options, diagnostics, escape);
+            string superscript = RenderTextual(nary.Superscript, format, isDisplay, options, diagnostics, escape);
+            string argument = RenderTextual(nary.Argument, format, isDisplay, options, diagnostics, escape);
+            if (format == DxpOmmlOutputFormat.Latex)
+            {
+                string op = LatexNaryOperator(nary.Character);
+                string placement = NaryLimitLocation(nary, isDisplay, options) == DxpOmmlLimitLocation.UnderOver ? @"\limits" : @"\nolimits";
+                output.Append(op).Append(placement);
+                if (!nary.HideSubscript) output.Append("_{").Append(subscript).Append('}');
+                if (!nary.HideSuperscript) output.Append("^{").Append(superscript).Append('}');
+                output.Append(@"\,").Append(argument);
+            }
+            else if (format == DxpOmmlOutputFormat.UnicodeMath)
+            {
+                output.Append(nary.Character);
+                if (!nary.HideSubscript) output.Append("_(").Append(subscript).Append(')');
+                if (!nary.HideSuperscript) output.Append("^(").Append(superscript).Append(')');
+                output.Append('▒').Append('〖').Append(argument).Append('〗');
+            }
+            else
+            {
+                output.Append(nary.Character);
+                if (!nary.HideSubscript) output.Append(" from ").Append(subscript);
+                if (!nary.HideSuperscript) output.Append(" to ").Append(superscript);
+                output.Append(" of ").Append(argument);
+            }
+            return;
+        }
+
         output.Append(escape(ResolveFallback((OmmlUnsupported)node, options, diagnostics)));
     }
 
     private static string RenderTextual(OmmlNode node, DxpOmmlOutputFormat format,
-        DxpOmmlConversionOptions options, List<DxpOmmlDiagnostic> diagnostics, Func<string, string> escape)
+        bool isDisplay, DxpOmmlConversionOptions options, List<DxpOmmlDiagnostic> diagnostics, Func<string, string> escape)
     {
         StringBuilder result = new();
-        AppendTextual(result, node, format, options, diagnostics, escape);
+        AppendTextual(result, node, format, isDisplay, options, diagnostics, escape);
         return result.ToString();
     }
 
@@ -381,6 +502,48 @@ internal static class OmmlWriter
         return decoration.Position == OmmlVerticalPosition.Top
             ? $"{grouped}┴({decoration.Character})"
             : $"{grouped}┬{decoration.Character}";
+    }
+
+    private static DxpOmmlLimitLocation NaryLimitLocation(OmmlNary nary, bool isDisplay,
+        DxpOmmlConversionOptions options) => nary.LimitLocation ?? (!isDisplay
+        ? DxpOmmlLimitLocation.SubscriptSuperscript
+        : IsIntegral(nary.Character) ? options.IntegralLimitLocation : options.NaryLimitLocation);
+
+    private static bool IsIntegral(string character) => character is "∫" or "∬" or "∭" or "∮" or "∯" or "∰";
+
+    private static string LatexNaryOperator(string character) => character switch
+    {
+        "∫" => @"\int", "∬" => @"\iint", "∭" => @"\iiint", "∮" => @"\oint",
+        "∯" => @"\oiint", "∰" => @"\oiiint", "∑" => @"\sum", "∏" => @"\prod",
+        "∐" => @"\coprod", "⋂" => @"\bigcap", "⋃" => @"\bigcup",
+        "⋀" => @"\bigwedge", "⋁" => @"\bigvee", "⨀" => @"\bigodot",
+        "⨂" => @"\bigotimes", "⨁" => @"\bigoplus", "⨄" => @"\biguplus",
+        _ => $"\\mathop{{\\text{{{EscapeLatex(character)}}}}}",
+    };
+
+    private static string? LatexFunction(string value) => value switch
+    {
+        "sin" or "cos" or "tan" or "cot" or "sec" or "csc" or
+        "sinh" or "cosh" or "tanh" or "coth" or "log" or "ln" or "exp" or
+        "arcsin" or "arccos" or "arctan" or "det" or "dim" or "gcd" or
+        "hom" or "ker" or "max" or "min" or "Pr" or "sup" or "inf" or "lim" => value,
+        _ => null,
+    };
+
+    private static string? LatexLimitOperator(string value) => value switch
+    {
+        "lim" or "liminf" or "limsup" or "max" or "min" or "sup" or "inf" or
+        "det" or "dim" or "gcd" or "Pr" => value,
+        _ => null,
+    };
+
+    private static string? SimpleText(OmmlSequence sequence)
+    {
+        if (sequence.Children.Any(node => node is not OmmlRun)) return null;
+        IEnumerable<OmmlRun> runs = sequence.Children.Cast<OmmlRun>();
+        if (runs.Any(run => run.Alignment || run.Script != OmmlMathScript.Default ||
+                            run.Style != OmmlMathStyle.Default)) return null;
+        return string.Concat(runs.SelectMany(run => run.Tokens).Select(token => token.Value));
     }
 
     private static string ResolveFallback(

@@ -92,3 +92,28 @@ default and renders below. Group characters independently retain
 alignment property. Supported nested structures remain structural. A
 decoration around a structure assigned to a later goal remains intact around
 that structure's diagnosed text fallback until its semantic node is added.
+
+## Functions, limits, and n-ary operators
+
+Function names and arguments remain separate semantic trees. Exact, unstyled
+simple names such as `sin`, `cosh`, `log`, and `det` use conventional LaTeX
+commands; arbitrary simple names use `\operatorname`, while structured or
+styled names retain their structure through `\mathop`. MathML and UnicodeMath
+emit an explicit function-application character. Basic text uses a readable
+`name(argument)` form, including empty and already-delimited arguments.
+
+Lower and upper limit objects use MathML under/over structures and preserve
+nested content on both sides. LaTeX recognizes only a conservative set of
+conventional operator bases; arbitrary bases are not rewritten as named
+operators.
+
+N-ary objects support integrals, contour integrals, sums, products,
+coproducts, intersections, unions, wedges, vees, and arbitrary Unicode
+operators. Local `limLoc`, hidden limits, and growth are retained. When local
+placement is absent, `IntegralLimitLocation` and `NaryLimitLocation` on
+`DxpOmmlConversionOptions` represent the Word document defaults; their own
+defaults are sub/sup for integrals and under/over for other operators. With no
+local `limLoc`, inline math ultimately uses side scripts, while display math
+uses those document defaults. An explicit local placement remains authoritative.
+Extended contour-integral commands such as `\oiint` and `\oiiint` require a
+LaTeX implementation or package that provides those commands.

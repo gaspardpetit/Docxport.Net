@@ -151,31 +151,31 @@ Plurimath is a behavioral oracle and source of test ideas, not the definition of
 
 ### N-ary operators: `m:nary` / `m:naryPr`
 
-- [ ] P0 Render operator, lower limit, upper limit, and operand.
-- [ ] P0 Support summation, product, coproduct, integrals, contour integrals, intersections, unions, wedges, and vees.
-- [ ] P1 Support arbitrary Unicode `m:chr`, with integral as the schema/Word default when absent.
-- [ ] P1 Support `m:limLoc`: under/over and sub/sup.
-- [ ] P1 Apply `m:subHide` and `m:supHide`.
-- [ ] P1 Apply `m:grow`.
-- [ ] P1 Distinguish display and inline placement.
-- [ ] P2 Apply document defaults `m:intLim` and `m:naryLim` when local `m:limLoc` is absent.
+- [x] P0 Render operator, lower limit, upper limit, and operand.
+- [x] P0 Support summation, product, coproduct, integrals, contour integrals, intersections, unions, wedges, and vees.
+- [x] P1 Support arbitrary Unicode `m:chr`, with integral as the schema/Word default when absent.
+- [x] P1 Support `m:limLoc`: under/over and sub/sup.
+- [x] P1 Apply `m:subHide` and `m:supHide`.
+- [x] P1 Apply `m:grow`.
+- [x] P1 Distinguish display and inline placement.
+- [x] P2 Apply document defaults `m:intLim` and `m:naryLim` when local `m:limLoc` is absent.
 
 ### Functions: `m:func` / `m:funcPr`
 
-- [ ] P0 Preserve function name and argument as distinct semantic values.
-- [ ] P0 Render common named functions with conventional LaTeX commands where available.
-- [ ] P1 Avoid treating arbitrary multi-letter identifiers as known functions without evidence.
-- [ ] P1 Support structured and styled function names.
-- [ ] P1 Preserve function application when the argument is empty or begins with a delimiter.
-- [ ] P1 Retain `m:ctrlPr` formatting intent.
+- [x] P0 Preserve function name and argument as distinct semantic values.
+- [x] P0 Render common named functions with conventional LaTeX commands where available.
+- [x] P1 Avoid treating arbitrary multi-letter identifiers as known functions without evidence.
+- [x] P1 Support structured and styled function names.
+- [x] P1 Preserve function application when the argument is empty or begins with a delimiter.
+- [x] P1 Retain `m:ctrlPr` formatting intent.
 
 ### Limits: `m:limLow`, `m:limUpp`
 
-- [ ] P0 Render lower limits with `m:e` as the base and `m:lim` as the limit.
-- [ ] P0 Render upper limits with `m:e` as the base and `m:lim` as the limit.
-- [ ] P1 Recognize conventional limit/operator bases without rewriting arbitrary content.
-- [ ] P1 Preserve nested accents, functions, and scripts in bases and limits.
-- [ ] P1 Retain `m:ctrlPr` formatting intent.
+- [x] P0 Render lower limits with `m:e` as the base and `m:lim` as the limit.
+- [x] P0 Render upper limits with `m:e` as the base and `m:lim` as the limit.
+- [x] P1 Recognize conventional limit/operator bases without rewriting arbitrary content.
+- [x] P1 Preserve nested accents, functions, and scripts in bases and limits.
+- [x] P1 Retain `m:ctrlPr` formatting intent.
 
 ### Accents: `m:acc` / `m:accPr`
 
@@ -363,9 +363,9 @@ The corpus is valuable for complex composition and real-world regression coverag
 - [ ] Fractions: fixtures 001-004 and complex compositions.
 - [ ] Scripts: fixtures 005-008 plus later nested cases.
 - [ ] Radicals: fixtures 009-012.
-- [ ] N-ary operators: fixtures 013-046 plus complex compositions.
+- [x] N-ary operators: fixtures 013-046 plus complex compositions.
 - [ ] Delimiters and piecewise expressions: fixtures 045-072.
-- [ ] Functions and powers: fixtures 073-099.
+- [x] Functions and powers: fixtures 073-099.
 - [ ] Limits, accents, bars, and border boxes: fixtures 100-155.
 - [ ] Matrices and equation arrays: fixtures 156-177.
 - [ ] Mixed complex expressions: fixtures 178 onward and `issue-158.omml`.
@@ -472,10 +472,10 @@ Complete these goals in order. Goals 3-10 are vertical feature slices: each incl
 
 ### Goal 6: Functions, limits, and n-ary operators
 
-- [ ] Implement named and arbitrary functions without unsafe semantic guessing.
-- [ ] Implement upper and lower limits.
-- [ ] Implement standard and arbitrary n-ary operators, hidden limits, growth, and limit placement.
-- [ ] Cover differences between ordinary scripts and operator limits in inline and display math.
+- [x] Implement named and arbitrary functions without unsafe semantic guessing.
+- [x] Implement upper and lower limits.
+- [x] Implement standard and arbitrary n-ary operators, hidden limits, growth, and limit placement.
+- [x] Cover differences between ordinary scripts and operator limits in inline and display math.
 
 ### Goal 7: Matrices and equation arrays
 

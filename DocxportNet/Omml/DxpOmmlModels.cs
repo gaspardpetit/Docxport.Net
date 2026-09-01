@@ -9,6 +9,13 @@ public enum DxpOmmlOutputFormat
     Text,
 }
 
+/// <summary>Placement used for limits on n-ary operators.</summary>
+public enum DxpOmmlLimitLocation
+{
+    UnderOver,
+    SubscriptSuperscript,
+}
+
 /// <summary>Controls how valid but unsupported OMML structures are rendered.</summary>
 public enum DxpOmmlFallbackPolicy
 {
@@ -47,6 +54,12 @@ public sealed class DxpOmmlConversionOptions
 
     /// <summary>Requests compact inline fractions, corresponding to Word's document-level smallFrac setting.</summary>
     public bool SmallFractions { get; set; }
+
+    /// <summary>Default limit placement for integral operators when local OMML does not specify it.</summary>
+    public DxpOmmlLimitLocation IntegralLimitLocation { get; set; } = DxpOmmlLimitLocation.SubscriptSuperscript;
+
+    /// <summary>Default limit placement for non-integral n-ary operators when local OMML does not specify it.</summary>
+    public DxpOmmlLimitLocation NaryLimitLocation { get; set; } = DxpOmmlLimitLocation.UnderOver;
 
     /// <summary>Maximum accepted XML character count.</summary>
     public long MaxInputCharacters { get; set; } = 1_048_576;
