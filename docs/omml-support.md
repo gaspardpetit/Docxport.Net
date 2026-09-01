@@ -314,6 +314,8 @@ integral/n-ary limit placement. A local `m:oMathParaPr/m:jc` overrides
 
 Word accepts more WordprocessingML inside `m:oMath` than the base schema clearly documents. A standalone converter must define these semantics rather than inheriting pipeline behavior accidentally.
 
+- [x] P1 Provide an injectable embedded-content resolver while retaining lightweight standalone fallback behavior.
+- [x] P1 Provide a walker-backed visible-text resolver for LaTeX pipeline integrations.
 - [ ] P1 Parse Word run properties inside `m:ctrlPr` and math runs.
 - [ ] P1 Support bold, italic, color, size, font, vertical alignment, and language when meaningful to the target.
 - [ ] P1 Preserve ordinary `w:t`, `w:tab`, `w:br`, `w:cr`, `w:noBreakHyphen`, and `w:softHyphen` content.
@@ -539,6 +541,7 @@ Complete these goals in order. Goals 3-10 are vertical feature slices: each incl
 
 ### Goal 10: Embedded WordprocessingML
 
+- [x] Add the embedded-content resolver boundary and walker-backed LaTeX text adapter.
 - [ ] Implement visible Word run content and formatting inside math.
 - [ ] Define and implement standalone policies for fields, hyperlinks, content controls, smart tags, and custom XML.
 - [ ] Define and implement tracked-change handling independently from the document pipeline.

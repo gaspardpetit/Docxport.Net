@@ -760,10 +760,10 @@ internal static class OmmlParser
     }
 
     private static OmmlUnsupported ParseUnsupported(XElement element, string path) =>
-        new(path, QualifiedName(element), ExtractVisibleText(element));
+        new(path, QualifiedName(element), ExtractVisibleText(element), xmlElement: new XElement(element));
 
     private static OmmlUnsupported ParseUnsupported(OpenXmlElement element, string path) =>
-        new(path, QualifiedName(element), ExtractVisibleText(element));
+        new(path, QualifiedName(element), ExtractVisibleText(element), openXmlElement: element.CloneNode(true));
 
     private static string ExtractVisibleText(XElement element)
     {

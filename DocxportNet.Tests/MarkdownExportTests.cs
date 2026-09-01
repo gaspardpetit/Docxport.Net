@@ -227,6 +227,21 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
     }
 
     [Fact]
+    public void MarkdownExport_UsesWalkerResolverForEmbeddedWordprocessingMl()
+    {
+        const string bodyXml = """
+            <w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+                    xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math">
+              <w:p><m:oMath><w:hyperlink><w:r><w:t>A_B</w:t></w:r></w:hyperlink></m:oMath></w:p>
+            </w:body>
+            """;
+
+        string markdown = ExportMarkdownFromBodyXml(bodyXml, DxpMarkdownVisitorConfig.CreatePlainConfig());
+
+        Assert.Contains("$A\\_B$", markdown, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void MarkdownExport_EmitRichLayoutHtml_RichModeEmitsParagraphWrapper()
     {
         const string bodyXml = """
@@ -791,6 +806,7 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
             EmitTimeline = source.EmitTimeline,
             MathOutputFormat = source.MathOutputFormat,
             EmitMathDelimiters = source.EmitMathDelimiters,
+            MathEmbeddedContentResolver = source.MathEmbeddedContentResolver,
             TrackedChangeMode = mode,
             MarkupChangeClassifier = source.MarkupChangeClassifier
         };

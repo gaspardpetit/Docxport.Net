@@ -1,3 +1,6 @@
+using DocumentFormat.OpenXml;
+using System.Xml.Linq;
+
 namespace DocxportNet.Omml;
 
 internal sealed class OmmlDocument
@@ -312,12 +315,17 @@ internal sealed class OmmlPhantom : OmmlNode
 
 internal sealed class OmmlUnsupported : OmmlNode
 {
-    public OmmlUnsupported(string path, string elementName, string visibleText) : base(path)
+    public OmmlUnsupported(string path, string elementName, string visibleText,
+        XElement? xmlElement = null, OpenXmlElement? openXmlElement = null) : base(path)
     {
         ElementName = elementName;
         VisibleText = visibleText;
+        XmlElement = xmlElement;
+        OpenXmlElement = openXmlElement;
     }
 
     public string ElementName { get; }
     public string VisibleText { get; }
+    public XElement? XmlElement { get; }
+    public OpenXmlElement? OpenXmlElement { get; }
 }

@@ -1,3 +1,6 @@
+using DocumentFormat.OpenXml;
+using System.Xml.Linq;
+
 namespace DocxportNet.Omml;
 
 /// <summary>Output formats supported by the standalone OMML converter.</summary>
@@ -65,9 +68,26 @@ public sealed record DxpOmmlDiagnostic(
     string Path,
     string ElementName);
 
+/// <summary>Describes embedded non-OMML content encountered while converting an equation.</summary>
+public sealed record DxpOmmlEmbeddedContentRequest(
+    XElement? XmlElement,
+    OpenXmlElement? OpenXmlElement,
+    string Path,
+    string ElementName,
+    DxpOmmlOutputFormat OutputFormat);
+
+/// <summary>Resolves embedded WordprocessingML to visible text for an OMML output writer.</summary>
+public interface IDxpOmmlEmbeddedContentResolver
+{
+    string? Resolve(DxpOmmlEmbeddedContentRequest request);
+}
+
 /// <summary>Options shared by all standalone OMML conversion methods.</summary>
 public sealed class DxpOmmlConversionOptions
 {
+    /// <summary>Optional resolver for embedded WordprocessingML. The lightweight fallback is used when absent.</summary>
+    public IDxpOmmlEmbeddedContentResolver? EmbeddedContentResolver { get; set; }
+
     /// <summary>How valid but unsupported OMML is represented.</summary>
     public DxpOmmlFallbackPolicy FallbackPolicy { get; set; } = DxpOmmlFallbackPolicy.ExtractText;
 

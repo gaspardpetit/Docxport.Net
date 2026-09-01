@@ -90,6 +90,7 @@ public sealed record DxpMarkdownVisitorConfig
     public bool EmitTimeline = false;
     public DxpOmmlOutputFormat? MathOutputFormat = DxpOmmlOutputFormat.Latex;
     public bool EmitMathDelimiters = true;
+    public IDxpOmmlEmbeddedContentResolver? MathEmbeddedContentResolver = new DxpWalkerOmmlEmbeddedContentResolver();
     public DxpTrackedChangeMode TrackedChangeMode = DxpTrackedChangeMode.InlineChanges;
     public Func<DxpMarkupChangeContext, DxpMarkupChangeDecision?>? MarkupChangeClassifier = null;
 
@@ -461,15 +462,20 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
     {
         if (_config.MathOutputFormat is not DxpOmmlOutputFormat format)
             return;
-        WriteMath(d, DxpOmmlConverter.Convert(oMath, format).Output, format, display: false);
+        WriteMath(d, DxpOmmlConverter.Convert(oMath, format, MathConversionOptions()).Output, format, display: false);
     }
 
     public override void VisitOMathParagraph(DocumentFormat.OpenXml.Math.Paragraph oMathPara, DxpIDocumentContext d)
     {
         if (_config.MathOutputFormat is not DxpOmmlOutputFormat format)
             return;
-        WriteMath(d, DxpOmmlConverter.Convert(oMathPara, format).Output, format, display: true);
+        WriteMath(d, DxpOmmlConverter.Convert(oMathPara, format, MathConversionOptions()).Output, format, display: true);
     }
+
+    private DxpOmmlConversionOptions MathConversionOptions() => new()
+    {
+        EmbeddedContentResolver = _config.MathEmbeddedContentResolver,
+    };
 
     private void WriteMath(DxpIDocumentContext d, string value, DxpOmmlOutputFormat format, bool display)
     {

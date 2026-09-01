@@ -373,7 +373,7 @@ internal static class OmmlWriter
             return;
         }
 
-        string fallback = ResolveFallback((OmmlUnsupported)node, options, diagnostics);
+        string fallback = ResolveFallback((OmmlUnsupported)node, DxpOmmlOutputFormat.MathMl, options, diagnostics);
         if (fallback.Length != 0)
             parent.Add(new XElement(math + "mtext", fallback));
     }
@@ -717,7 +717,7 @@ internal static class OmmlWriter
             return;
         }
 
-        output.Append(escape(ResolveFallback((OmmlUnsupported)node, options, diagnostics)));
+        output.Append(escape(ResolveFallback((OmmlUnsupported)node, format, options, diagnostics)));
     }
 
     private static string RenderTextual(OmmlNode node, DxpOmmlOutputFormat format,
@@ -1183,9 +1183,19 @@ internal static class OmmlWriter
 
     private static string ResolveFallback(
         OmmlUnsupported unsupported,
+        DxpOmmlOutputFormat format,
         DxpOmmlConversionOptions options,
         List<DxpOmmlDiagnostic> diagnostics)
     {
+        if (format == DxpOmmlOutputFormat.Latex && options.EmbeddedContentResolver != null)
+        {
+            string? resolved = options.EmbeddedContentResolver.Resolve(new DxpOmmlEmbeddedContentRequest(
+                unsupported.XmlElement, unsupported.OpenXmlElement,
+                unsupported.Path, unsupported.ElementName, format));
+            if (resolved != null)
+                return resolved;
+        }
+
         DxpOmmlDiagnostic diagnostic = new(
             "OMML001",
             DxpOmmlDiagnosticSeverity.Warning,
