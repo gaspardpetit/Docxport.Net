@@ -172,6 +172,69 @@ internal sealed class OmmlNary : OmmlNode
     public bool HasControlProperties { get; }
 }
 
+internal enum OmmlHorizontalAlignment { Left, Center, Right }
+internal enum OmmlVerticalAlignment { Top, Center, Bottom }
+
+internal sealed class OmmlMatrixColumn
+{
+    public OmmlMatrixColumn(int count, OmmlHorizontalAlignment alignment)
+    { Count = count; Alignment = alignment; }
+    public int Count { get; }
+    public OmmlHorizontalAlignment Alignment { get; }
+}
+
+internal sealed class OmmlMatrixRow
+{
+    public OmmlMatrixRow(IReadOnlyList<OmmlSequence> cells) => Cells = cells;
+    public IReadOnlyList<OmmlSequence> Cells { get; }
+}
+
+internal sealed class OmmlMatrix : OmmlNode
+{
+    public OmmlMatrix(string path, IReadOnlyList<OmmlMatrixRow> rows,
+        IReadOnlyList<OmmlMatrixColumn> columns, OmmlVerticalAlignment baseJustification,
+        bool placeholdersHidden, uint rowSpacing, int rowSpacingRule, uint columnSpacing,
+        uint columnGap, int columnGapRule, bool hasControlProperties) : base(path)
+    {
+        Rows = rows; Columns = columns; BaseJustification = baseJustification;
+        PlaceholdersHidden = placeholdersHidden; RowSpacing = rowSpacing;
+        RowSpacingRule = rowSpacingRule; ColumnSpacing = columnSpacing;
+        ColumnGap = columnGap; ColumnGapRule = columnGapRule;
+        HasControlProperties = hasControlProperties;
+    }
+    public IReadOnlyList<OmmlMatrixRow> Rows { get; }
+    public IReadOnlyList<OmmlMatrixColumn> Columns { get; }
+    public OmmlVerticalAlignment BaseJustification { get; }
+    public bool PlaceholdersHidden { get; }
+    public uint RowSpacing { get; }
+    public int RowSpacingRule { get; }
+    public uint ColumnSpacing { get; }
+    public uint ColumnGap { get; }
+    public int ColumnGapRule { get; }
+    public bool HasControlProperties { get; }
+}
+
+internal sealed class OmmlEquationArray : OmmlNode
+{
+    public OmmlEquationArray(string path, IReadOnlyList<OmmlSequence> rows,
+        OmmlVerticalAlignment baseJustification, bool maxDistribution,
+        bool objectDistribution, uint rowSpacing, int rowSpacingRule,
+        bool hasControlProperties) : base(path)
+    {
+        Rows = rows; BaseJustification = baseJustification;
+        MaxDistribution = maxDistribution; ObjectDistribution = objectDistribution;
+        RowSpacing = rowSpacing; RowSpacingRule = rowSpacingRule;
+        HasControlProperties = hasControlProperties;
+    }
+    public IReadOnlyList<OmmlSequence> Rows { get; }
+    public OmmlVerticalAlignment BaseJustification { get; }
+    public bool MaxDistribution { get; }
+    public bool ObjectDistribution { get; }
+    public uint RowSpacing { get; }
+    public int RowSpacingRule { get; }
+    public bool HasControlProperties { get; }
+}
+
 internal sealed class OmmlUnsupported : OmmlNode
 {
     public OmmlUnsupported(string path, string elementName, string visibleText) : base(path)

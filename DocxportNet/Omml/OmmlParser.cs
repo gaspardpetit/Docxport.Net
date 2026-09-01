@@ -192,6 +192,8 @@ internal static class OmmlParser
             "limLow" => ParseLimit(element, path, OmmlLimitType.Lower),
             "limUpp" => ParseLimit(element, path, OmmlLimitType.Upper),
             "nary" => ParseNary(element, path),
+            "m" => ParseMatrix(element, path),
+            "eqArr" => ParseEquationArray(element, path),
             _ => ParseUnsupported(element, path),
         }
         : ParseUnsupported(element, path);
@@ -214,6 +216,8 @@ internal static class OmmlParser
             "limLow" => ParseLimit(element, path, OmmlLimitType.Lower),
             "limUpp" => ParseLimit(element, path, OmmlLimitType.Upper),
             "nary" => ParseNary(element, path),
+            "m" => ParseMatrix(element, path),
+            "eqArr" => ParseEquationArray(element, path),
             _ => ParseUnsupported(element, path),
         }
         : ParseUnsupported(element, path);
@@ -363,6 +367,87 @@ internal static class OmmlParser
             HasControlProperties(properties));
     }
 
+    private static OmmlMatrix ParseMatrix(XElement element, string path)
+    {
+        XElement? properties = MathChild(element, "mPr");
+        XElement? columnList = properties == null ? null : MathChild(properties, "mcs");
+        OmmlMatrixColumn[] columns = columnList?.Elements(XName.Get("mc", MathNamespace))
+            .Select(ParseMatrixColumn).ToArray() ?? Array.Empty<OmmlMatrixColumn>();
+        OmmlMatrixRow[] rows = element.Elements(XName.Get("mr", MathNamespace))
+            .Select((row, rowIndex) => new OmmlMatrixRow(row.Elements(XName.Get("e", MathNamespace))
+                .Select((cell, cellIndex) => ParseArgument(cell, $"{path}/m:mr[{Index(rowIndex + 1)}]/m:e[{Index(cellIndex + 1)}]"))
+                .ToArray())).ToArray();
+        return CreateMatrix(path, properties, rows, columns);
+    }
+
+    private static OmmlMatrix ParseMatrix(OpenXmlElement element, string path)
+    {
+        OpenXmlElement? properties = MathChild(element, "mPr");
+        OpenXmlElement? columnList = properties == null ? null : MathChild(properties, "mcs");
+        OmmlMatrixColumn[] columns = columnList?.ChildElements
+            .Where(e => e.NamespaceUri == MathNamespace && e.LocalName == "mc")
+            .Select(ParseMatrixColumn).ToArray() ?? Array.Empty<OmmlMatrixColumn>();
+        OmmlMatrixRow[] rows = element.ChildElements
+            .Where(e => e.NamespaceUri == MathNamespace && e.LocalName == "mr")
+            .Select((row, rowIndex) => new OmmlMatrixRow(row.ChildElements
+                .Where(e => e.NamespaceUri == MathNamespace && e.LocalName == "e")
+                .Select((cell, cellIndex) => ParseArgument(cell, $"{path}/m:mr[{Index(rowIndex + 1)}]/m:e[{Index(cellIndex + 1)}]"))
+                .ToArray())).ToArray();
+        return CreateMatrix(path, properties, rows, columns);
+    }
+
+    private static OmmlMatrixColumn ParseMatrixColumn(XElement column)
+    {
+        XElement? properties = MathChild(column, "mcPr");
+        return new OmmlMatrixColumn(IntegerProperty(properties, "count", 1, 1, 255),
+            HorizontalAlignmentProperty(properties, "mcJc"));
+    }
+
+    private static OmmlMatrixColumn ParseMatrixColumn(OpenXmlElement column)
+    {
+        OpenXmlElement? properties = MathChild(column, "mcPr");
+        return new OmmlMatrixColumn(IntegerProperty(properties, "count", 1, 1, 255),
+            HorizontalAlignmentProperty(properties, "mcJc"));
+    }
+
+    private static OmmlMatrix CreateMatrix(string path, XElement? properties,
+        IReadOnlyList<OmmlMatrixRow> rows, IReadOnlyList<OmmlMatrixColumn> columns) =>
+        new(path, rows, columns, VerticalAlignmentProperty(properties, "baseJc"),
+            OnOffProperty(properties, "plcHide", false), UnsignedProperty(properties, "rSp"),
+            IntegerProperty(properties, "rSpRule", 0, 0, 4), UnsignedProperty(properties, "cSp"),
+            UnsignedProperty(properties, "cGp"), IntegerProperty(properties, "cGpRule", 0, 0, 4),
+            HasControlProperties(properties));
+
+    private static OmmlMatrix CreateMatrix(string path, OpenXmlElement? properties,
+        IReadOnlyList<OmmlMatrixRow> rows, IReadOnlyList<OmmlMatrixColumn> columns) =>
+        new(path, rows, columns, VerticalAlignmentProperty(properties, "baseJc"),
+            OnOffProperty(properties, "plcHide", false), UnsignedProperty(properties, "rSp"),
+            IntegerProperty(properties, "rSpRule", 0, 0, 4), UnsignedProperty(properties, "cSp"),
+            UnsignedProperty(properties, "cGp"), IntegerProperty(properties, "cGpRule", 0, 0, 4),
+            HasControlProperties(properties));
+
+    private static OmmlEquationArray ParseEquationArray(XElement element, string path)
+    {
+        XElement? properties = MathChild(element, "eqArrPr");
+        OmmlSequence[] rows = element.Elements(XName.Get("e", MathNamespace))
+            .Select((row, i) => ParseArgument(row, $"{path}/m:e[{Index(i + 1)}]")).ToArray();
+        return new OmmlEquationArray(path, rows, VerticalAlignmentProperty(properties, "baseJc"),
+            OnOffProperty(properties, "maxDist", false), OnOffProperty(properties, "objDist", false),
+            UnsignedProperty(properties, "rSp"), IntegerProperty(properties, "rSpRule", 0, 0, 4),
+            HasControlProperties(properties));
+    }
+
+    private static OmmlEquationArray ParseEquationArray(OpenXmlElement element, string path)
+    {
+        OpenXmlElement? properties = MathChild(element, "eqArrPr");
+        OmmlSequence[] rows = element.ChildElements.Where(e => e.NamespaceUri == MathNamespace && e.LocalName == "e")
+            .Select((row, i) => ParseArgument(row, $"{path}/m:e[{Index(i + 1)}]")).ToArray();
+        return new OmmlEquationArray(path, rows, VerticalAlignmentProperty(properties, "baseJc"),
+            OnOffProperty(properties, "maxDist", false), OnOffProperty(properties, "objDist", false),
+            UnsignedProperty(properties, "rSp"), IntegerProperty(properties, "rSpRule", 0, 0, 4),
+            HasControlProperties(properties));
+    }
+
     private static string CharProperty(XElement? properties, string name, string defaultValue)
     {
         XElement? property = properties == null ? null : MathChild(properties, name);
@@ -379,6 +464,27 @@ internal static class OmmlParser
     { XElement? property = properties == null ? null : MathChild(properties, name); return property == null ? defaultValue : Enabled((string?)property.Attribute(XName.Get("val", MathNamespace))); }
     private static bool OnOffProperty(OpenXmlElement? properties, string name, bool defaultValue)
     { OpenXmlElement? property = properties == null ? null : MathChild(properties, name); return property == null ? defaultValue : Enabled(Attribute(property, "val")); }
+    private static int IntegerProperty(XElement? properties, string name, int defaultValue, int minimum, int maximum)
+    { XElement? property = properties == null ? null : MathChild(properties, name); return ParseInteger(property == null ? null : (string?)property.Attribute(XName.Get("val", MathNamespace)), defaultValue, minimum, maximum); }
+    private static int IntegerProperty(OpenXmlElement? properties, string name, int defaultValue, int minimum, int maximum)
+    { OpenXmlElement? property = properties == null ? null : MathChild(properties, name); return ParseInteger(Attribute(property, "val"), defaultValue, minimum, maximum); }
+    private static int ParseInteger(string? value, int defaultValue, int minimum, int maximum) =>
+        int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int parsed)
+            ? parsed < minimum ? minimum : parsed > maximum ? maximum : parsed
+            : defaultValue;
+    private static uint UnsignedProperty(XElement? properties, string name)
+    { XElement? property = properties == null ? null : MathChild(properties, name); return ParseUnsigned(property == null ? null : (string?)property.Attribute(XName.Get("val", MathNamespace))); }
+    private static uint UnsignedProperty(OpenXmlElement? properties, string name)
+    { OpenXmlElement? property = properties == null ? null : MathChild(properties, name); return ParseUnsigned(Attribute(property, "val")); }
+    private static uint ParseUnsigned(string? value) => uint.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out uint parsed) ? parsed : 0;
+    private static OmmlHorizontalAlignment HorizontalAlignmentProperty(XElement? properties, string name) =>
+        CharProperty(properties, name, "center") switch { "left" => OmmlHorizontalAlignment.Left, "right" => OmmlHorizontalAlignment.Right, _ => OmmlHorizontalAlignment.Center };
+    private static OmmlHorizontalAlignment HorizontalAlignmentProperty(OpenXmlElement? properties, string name) =>
+        CharProperty(properties, name, "center") switch { "left" => OmmlHorizontalAlignment.Left, "right" => OmmlHorizontalAlignment.Right, _ => OmmlHorizontalAlignment.Center };
+    private static OmmlVerticalAlignment VerticalAlignmentProperty(XElement? properties, string name) =>
+        CharProperty(properties, name, "center") switch { "top" => OmmlVerticalAlignment.Top, "bot" => OmmlVerticalAlignment.Bottom, _ => OmmlVerticalAlignment.Center };
+    private static OmmlVerticalAlignment VerticalAlignmentProperty(OpenXmlElement? properties, string name) =>
+        CharProperty(properties, name, "center") switch { "top" => OmmlVerticalAlignment.Top, "bot" => OmmlVerticalAlignment.Bottom, _ => OmmlVerticalAlignment.Center };
     private static OmmlDelimiterShape ShapeProperty(XElement? properties) => properties == null || CharProperty(properties, "shp", "centered") != "match" ? OmmlDelimiterShape.Centered : OmmlDelimiterShape.Match;
     private static OmmlDelimiterShape ShapeProperty(OpenXmlElement? properties) => properties == null || CharProperty(properties, "shp", "centered") != "match" ? OmmlDelimiterShape.Centered : OmmlDelimiterShape.Match;
     private static OmmlVerticalPosition PositionProperty(XElement? properties, string name, OmmlVerticalPosition defaultValue) => properties == null || CharProperty(properties, name, defaultValue == OmmlVerticalPosition.Top ? "top" : "bot") != "top" ? (properties == null ? defaultValue : OmmlVerticalPosition.Bottom) : OmmlVerticalPosition.Top;

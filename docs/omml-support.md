@@ -203,25 +203,33 @@ Plurimath is a behavioral oracle and source of test ideas, not the definition of
 
 ### Matrices: `m:m`, `m:mr`, `m:mPr`
 
-- [ ] P0 Render rows and cells while preserving rectangular and ragged input.
-- [ ] P0 Render nested expressions inside cells.
-- [ ] P1 Apply matrix column groups `m:mcs/m:mc/m:mcPr`.
-- [ ] P1 Apply column repetition `m:count`.
-- [ ] P1 Apply column justification `m:mcJc`: left, center, and right.
-- [ ] P1 Apply row/base justification `m:baseJc`: top, center, and bottom.
-- [ ] P1 Apply placeholder visibility `m:plcHide`.
-- [ ] P2 Retain row spacing `m:rSp` and `m:rSpRule`.
-- [ ] P2 Retain column spacing/gap `m:cSp`, `m:cGp`, and `m:cGpRule`.
-- [ ] P2 Handle inconsistent column definitions without data loss.
+- [x] P0 Render rows and cells while preserving rectangular and ragged input.
+- [x] P0 Render nested expressions inside cells.
+- [x] P1 Apply matrix column groups `m:mcs/m:mc/m:mcPr`.
+- [x] P1 Apply column repetition `m:count`.
+- [x] P1 Apply column justification `m:mcJc`: left, center, and right.
+- [x] P1 Apply row/base justification `m:baseJc`: top, center, and bottom.
+- [x] P1 Apply placeholder visibility `m:plcHide`.
+- [x] P2 Retain row spacing `m:rSp` and `m:rSpRule`.
+- [x] P2 Retain column spacing/gap `m:cSp`, `m:cGp`, and `m:cGpRule`.
+- [x] P2 Handle inconsistent column definitions without data loss.
 
 ### Equation arrays: `m:eqArr` / `m:eqArrPr`
 
-- [ ] P0 Render each `m:e` as a separate row.
-- [ ] P0 Preserve alignment markers within rows.
-- [ ] P1 Apply `m:baseJc`.
-- [ ] P1 Apply `m:maxDist` and `m:objDist` where representable.
-- [ ] P2 Retain `m:rSp` and `m:rSpRule`.
-- [ ] P1 Produce idiomatic MathML tables and LaTeX aligned/gathered output.
+- [x] P0 Render each `m:e` as a separate row.
+- [x] P0 Preserve alignment markers within rows.
+- [x] P1 Apply `m:baseJc`.
+- [x] P1 Apply `m:maxDist` and `m:objDist` where representable.
+- [x] P2 Retain `m:rSp` and `m:rSpRule`.
+- [x] P1 Produce idiomatic MathML tables and LaTeX aligned/gathered output.
+
+MathML uses `mtable`, retains OMML-only layout values in `data-omml-*`
+attributes, and represents a visible empty-cell placeholder with a zero-width
+`mspace` marker rather than inventing mathematical content. `maxDist` maps to a
+full-width table; `objDist` is retained as metadata because MathML has no exact
+equivalent. LaTeX uses `array` for matrices and `aligned` or `gathered` for
+equation arrays. Word's numeric row/column spacing rules have no exact portable
+LaTeX equivalent and therefore remain in the semantic model and MathML metadata.
 
 ### Boxes: `m:box` / `m:boxPr`
 
@@ -367,13 +375,13 @@ The corpus is valuable for complex composition and real-world regression coverag
 - [ ] Delimiters and piecewise expressions: fixtures 045-072.
 - [x] Functions and powers: fixtures 073-099.
 - [ ] Limits, accents, bars, and border boxes: fixtures 100-155.
-- [ ] Matrices and equation arrays: fixtures 156-177.
+- [x] Matrices and equation arrays: fixtures 156-177.
 - [ ] Mixed complex expressions: fixtures 178 onward and `issue-158.omml`.
 - [ ] Group characters: fixtures 185-186.
 - [ ] Manual breaks across many parent structures: `line_break/*`.
 - [ ] Math styles and scripts: plain/bold/italic/bold-italic plus script, fraktur, double-struck, sans-serif, and monospace examples.
 - [ ] Delimiter variants: parentheses, brackets, braces, bars, double bars, angles, floors, ceilings, and white brackets.
-- [ ] Matrix column counts and centered columns.
+- [x] Matrix column counts and centered columns.
 - [ ] Hidden n-ary subscript/superscript flags and both limit locations.
 
 ### Important corpus gaps requiring Docxport fixtures
@@ -381,8 +389,8 @@ The corpus is valuable for complex composition and real-world regression coverag
 - [ ] `m:box` and every `m:boxPr` behavior.
 - [ ] Fraction types `skw`, `lin`, and `noBar` (the reviewed fixtures do not exercise `m:type`).
 - [ ] Delimiter shape `m:shp` and explicit grow-off behavior.
-- [ ] Equation-array spacing, distance, and base-justification properties.
-- [ ] Matrix left/right column justification, base justification, placeholders, and spacing/gap properties.
+- [x] Equation-array spacing, distance, and base-justification properties.
+- [x] Matrix left/right column justification, base justification, placeholders, and spacing/gap properties.
 - [ ] Border-box horizontal, vertical, and diagonal strike combinations.
 - [ ] Phantom zero-width/ascent/descent and transparency combinations.
 - [ ] `m:argSz`, `m:lit`, `m:nor`, and `m:aln` semantics.
@@ -479,10 +487,10 @@ Complete these goals in order. Goals 3-10 are vertical feature slices: each incl
 
 ### Goal 7: Matrices and equation arrays
 
-- [ ] Implement matrix rows/cells, column groups/counts, alignment, placeholders, spacing, and gaps.
-- [ ] Implement equation-array rows, alignment points, justification, distances, and spacing.
-- [ ] Handle ragged and inconsistent input without losing cell content.
-- [ ] Produce idiomatic MathML tables, LaTeX environments, and readable text.
+- [x] Implement matrix rows/cells, column groups/counts, alignment, placeholders, spacing, and gaps.
+- [x] Implement equation-array rows, alignment points, justification, distances, and spacing.
+- [x] Handle ragged and inconsistent input without losing cell content.
+- [x] Produce idiomatic MathML tables, LaTeX environments, UnicodeMath, and readable text.
 
 ### Goal 8: Boxes, border boxes, and phantoms
 

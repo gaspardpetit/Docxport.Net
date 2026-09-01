@@ -82,15 +82,15 @@ public sealed class DxpOmmlDecorationsTests
     }
 
     [Fact]
-    public void DelimitersRemainAroundPendingMatrixAndEquationArrayStructures()
+    public void DelimitersRemainAroundMatrixAndEquationArrayStructures()
     {
         string matrix = $"<m:m><m:mr><m:e>{Run("1")}</m:e><m:e>{Run("2")}</m:e></m:mr></m:m>";
         string equationArray = $"<m:eqArr><m:e>{Run("a")}</m:e><m:e>{Run("b")}</m:e></m:eqArr>";
         string omml = Inline($"<m:d><m:e>{matrix}</m:e><m:e>{equationArray}</m:e></m:d>");
 
         DxpOmmlConversionResult result = DxpOmmlConverter.Convert(omml, DxpOmmlOutputFormat.Text);
-        Assert.Equal("(12|ab)", result.Output);
-        Assert.Equal(new[] { "m:m", "m:eqArr" }, result.Diagnostics.Select(d => d.ElementName));
+        Assert.Equal("([[1, 2]]|a; b)", result.Output);
+        Assert.Empty(result.Diagnostics);
     }
 
     [Theory]
@@ -124,7 +124,7 @@ public sealed class DxpOmmlDecorationsTests
     }
 
     [Fact]
-    public void PreservesNestedDecorationsAndDecorationAroundPendingMatrices()
+    public void PreservesNestedDecorationsAndDecorationAroundMatrices()
     {
         string nested = Inline($"<m:bar><m:e><m:acc><m:e>{Run("x")}</m:e></m:acc></m:e></m:bar>");
         XElement math = XElement.Parse(DxpOmmlConverter.ToMathMl(nested));
@@ -133,8 +133,10 @@ public sealed class DxpOmmlDecorationsTests
 
         string matrix = Inline($"<m:acc><m:e><m:m><m:mr><m:e>{Run("1")}</m:e><m:e>{Run("2")}</m:e></m:mr></m:m></m:e></m:acc>");
         DxpOmmlConversionResult result = DxpOmmlConverter.Convert(matrix, DxpOmmlOutputFormat.MathMl);
-        Assert.Single(XElement.Parse(result.Output).Descendants(MathMl + "mover"));
-        Assert.Equal("m:m", Assert.Single(result.Diagnostics).ElementName);
+        XElement converted = XElement.Parse(result.Output);
+        Assert.Single(converted.Descendants(MathMl + "mover"));
+        Assert.Single(converted.Descendants(MathMl + "mtable"));
+        Assert.Empty(result.Diagnostics);
     }
 
     [Theory]

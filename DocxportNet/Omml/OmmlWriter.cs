@@ -225,6 +225,54 @@ internal static class OmmlWriter
             return;
         }
 
+        if (node is OmmlMatrix matrix)
+        {
+            XElement table = new(math + "mtable",
+                new XAttribute("align", VerticalAlignment(matrix.BaseJustification)),
+                new XAttribute("columnalign", string.Join(" ", MatrixAlignments(matrix).Select(HorizontalAlignment))),
+                new XAttribute("data-omml-placeholder-hidden", XmlBoolean(matrix.PlaceholdersHidden)),
+                new XAttribute("data-omml-row-spacing", Invariant(matrix.RowSpacing)),
+                new XAttribute("data-omml-row-spacing-rule", Invariant(matrix.RowSpacingRule)),
+                new XAttribute("data-omml-column-spacing", Invariant(matrix.ColumnSpacing)),
+                new XAttribute("data-omml-column-gap", Invariant(matrix.ColumnGap)),
+                new XAttribute("data-omml-column-gap-rule", Invariant(matrix.ColumnGapRule)));
+            foreach (OmmlMatrixRow matrixRow in matrix.Rows)
+            {
+                XElement row = new(math + "mtr");
+                foreach (OmmlSequence cell in matrixRow.Cells)
+                {
+                    XElement entry = new(math + "mtd");
+                    if (cell.Children.Count == 0 && !matrix.PlaceholdersHidden)
+                        entry.Add(new XElement(math + "mspace", new XAttribute("width", "0"), new XAttribute("data-omml-placeholder", "true")));
+                    else
+                        AppendMathMl(entry, cell, compactFractions, isDisplay, options, diagnostics);
+                    row.Add(entry);
+                }
+                table.Add(row);
+            }
+            parent.Add(table);
+            return;
+        }
+
+        if (node is OmmlEquationArray equationArray)
+        {
+            XElement table = new(math + "mtable",
+                new XAttribute("align", VerticalAlignment(equationArray.BaseJustification)),
+                new XAttribute("data-omml-max-distribution", XmlBoolean(equationArray.MaxDistribution)),
+                new XAttribute("data-omml-object-distribution", XmlBoolean(equationArray.ObjectDistribution)),
+                new XAttribute("data-omml-row-spacing", Invariant(equationArray.RowSpacing)),
+                new XAttribute("data-omml-row-spacing-rule", Invariant(equationArray.RowSpacingRule)));
+            if (equationArray.MaxDistribution) table.SetAttributeValue("width", "100%");
+            foreach (OmmlSequence equationRow in equationArray.Rows)
+            {
+                XElement entry = new(math + "mtd");
+                AppendMathMl(entry, equationRow, compactFractions, isDisplay, options, diagnostics);
+                table.Add(new XElement(math + "mtr", entry));
+            }
+            parent.Add(table);
+            return;
+        }
+
         string fallback = ResolveFallback((OmmlUnsupported)node, options, diagnostics);
         if (fallback.Length != 0)
             parent.Add(new XElement(math + "mtext", fallback));
@@ -425,6 +473,46 @@ internal static class OmmlWriter
             return;
         }
 
+        if (node is OmmlMatrix matrix)
+        {
+            string[][] rows = matrix.Rows.Select(row => row.Cells
+                .Select(cell => RenderTextual(cell, format, isDisplay, options, diagnostics, escape)).ToArray()).ToArray();
+            if (format == DxpOmmlOutputFormat.Latex)
+            {
+                string columns = string.Concat(MatrixAlignments(matrix).Select(LatexAlignment));
+                output.Append("\\begin{array}[").Append(LatexVerticalAlignment(matrix.BaseJustification))
+                    .Append("]{").Append(columns).Append('}');
+                output.Append(string.Join(@" \\ ", rows.Select(row => string.Join(" & ", row))));
+                output.Append(@"\end{array}");
+            }
+            else if (format == DxpOmmlOutputFormat.UnicodeMath)
+                output.Append('■').Append('(').Append(string.Join("@", rows.Select(row => string.Join("&", row)))).Append(')');
+            else
+                output.Append('[').Append(string.Join("; ", rows.Select(row => "[" + string.Join(", ", row) + "]"))).Append(']');
+            return;
+        }
+
+        if (node is OmmlEquationArray equationArray)
+        {
+            string[] rows = equationArray.Rows.Select(row =>
+                RenderTextual(row, format, isDisplay, options, diagnostics, escape)).ToArray();
+            if (format == DxpOmmlOutputFormat.Latex)
+            {
+                bool aligned = equationArray.Rows.Any(ContainsAlignmentMarker);
+                string environment = aligned ? "aligned" : "gathered";
+                output.Append("\\begin{").Append(environment).Append('}');
+                if (equationArray.BaseJustification != OmmlVerticalAlignment.Center)
+                    output.Append('[').Append(LatexVerticalAlignment(equationArray.BaseJustification)).Append(']');
+                output
+                    .Append(string.Join(@" \\ ", rows)).Append("\\end{").Append(environment).Append('}');
+            }
+            else if (format == DxpOmmlOutputFormat.UnicodeMath)
+                output.Append('█').Append('(').Append(string.Join("@", rows)).Append(')');
+            else
+                output.Append(string.Join("; ", rows));
+            return;
+        }
+
         output.Append(escape(ResolveFallback((OmmlUnsupported)node, options, diagnostics)));
     }
 
@@ -444,6 +532,45 @@ internal static class OmmlWriter
             new XAttribute("stretchy", grow ? "true" : "false"),
             new XAttribute("form", opening ? "prefix" : "postfix"), value));
     }
+
+    private static IReadOnlyList<OmmlHorizontalAlignment> MatrixAlignments(OmmlMatrix matrix)
+    {
+        int actualColumns = matrix.Rows.Count == 0 ? 0 : matrix.Rows.Max(row => row.Cells.Count);
+        List<OmmlHorizontalAlignment> result = matrix.Columns
+            .SelectMany(column => Enumerable.Repeat(column.Alignment, column.Count)).ToList();
+        while (result.Count < actualColumns) result.Add(OmmlHorizontalAlignment.Center);
+        if (result.Count == 0) result.Add(OmmlHorizontalAlignment.Center);
+        return result;
+    }
+
+    private static bool ContainsAlignmentMarker(OmmlNode node) => node switch
+    {
+        OmmlRun run => run.Alignment,
+        OmmlSequence sequence => sequence.Children.Any(ContainsAlignmentMarker),
+        OmmlFraction fraction => ContainsAlignmentMarker(fraction.Numerator) || ContainsAlignmentMarker(fraction.Denominator),
+        OmmlRadical radical => ContainsAlignmentMarker(radical.Radicand) || ContainsAlignmentMarker(radical.Degree),
+        OmmlScript script => ContainsAlignmentMarker(script.Base) || ContainsAlignmentMarker(script.Subscript) || ContainsAlignmentMarker(script.Superscript),
+        OmmlDelimiter delimiter => delimiter.Arguments.Any(ContainsAlignmentMarker),
+        OmmlDecoration decoration => ContainsAlignmentMarker(decoration.Argument),
+        OmmlFunction function => ContainsAlignmentMarker(function.Name) || ContainsAlignmentMarker(function.Argument),
+        OmmlLimit limit => ContainsAlignmentMarker(limit.Base) || ContainsAlignmentMarker(limit.Limit),
+        OmmlNary nary => ContainsAlignmentMarker(nary.Subscript) || ContainsAlignmentMarker(nary.Superscript) || ContainsAlignmentMarker(nary.Argument),
+        OmmlMatrix matrix => matrix.Rows.Any(row => row.Cells.Any(ContainsAlignmentMarker)),
+        OmmlEquationArray equationArray => equationArray.Rows.Any(ContainsAlignmentMarker),
+        _ => false,
+    };
+
+    private static string HorizontalAlignment(OmmlHorizontalAlignment alignment) => alignment switch
+    { OmmlHorizontalAlignment.Left => "left", OmmlHorizontalAlignment.Right => "right", _ => "center" };
+    private static char LatexAlignment(OmmlHorizontalAlignment alignment) => alignment switch
+    { OmmlHorizontalAlignment.Left => 'l', OmmlHorizontalAlignment.Right => 'r', _ => 'c' };
+    private static string VerticalAlignment(OmmlVerticalAlignment alignment) => alignment switch
+    { OmmlVerticalAlignment.Top => "top", OmmlVerticalAlignment.Bottom => "bottom", _ => "center" };
+    private static char LatexVerticalAlignment(OmmlVerticalAlignment alignment) => alignment switch
+    { OmmlVerticalAlignment.Top => 't', OmmlVerticalAlignment.Bottom => 'b', _ => 'c' };
+    private static string XmlBoolean(bool value) => value ? "true" : "false";
+    private static string Invariant(uint value) => value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+    private static string Invariant(int value) => value.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
     private static string LatexDelimiter(string value)
     {
