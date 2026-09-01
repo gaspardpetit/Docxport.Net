@@ -9,6 +9,7 @@ using DocxportNet.Word;
 using System.Text;
 using DocxportNet.Core;
 using DocxportNet.Fields;
+using DocxportNet.Omml;
 using DocxportNet.Walker;
 
 namespace DocxportNet.Visitors.Markdown;
@@ -87,6 +88,8 @@ public sealed record DxpMarkdownVisitorConfig
     public bool UsePlainComments = false;
     public bool EmitCustomProperties = true;
     public bool EmitTimeline = false;
+    public DxpOmmlOutputFormat? MathOutputFormat = DxpOmmlOutputFormat.UnicodeMath;
+    public bool EmitMathDelimiters = true;
     public DxpTrackedChangeMode TrackedChangeMode = DxpTrackedChangeMode.InlineChanges;
     public Func<DxpMarkupChangeContext, DxpMarkupChangeDecision?>? MarkupChangeClassifier = null;
 
@@ -452,6 +455,36 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
     public override void VisitDeletedParagraphMark(Deleted del, ParagraphProperties pPr, Paragraph? p, DxpIDocumentContext d)
     {
         // Paragraph mark deletions carry no inline content; outer VisitDeletedBegin wrapper is enough.
+    }
+
+    public override void VisitOMath(DocumentFormat.OpenXml.Math.OfficeMath oMath, DxpIDocumentContext d)
+    {
+        if (_config.MathOutputFormat is not DxpOmmlOutputFormat format)
+            return;
+        WriteMath(d, DxpOmmlConverter.Convert(oMath, format).Output, format, display: false);
+    }
+
+    public override void VisitOMathParagraph(DocumentFormat.OpenXml.Math.Paragraph oMathPara, DxpIDocumentContext d)
+    {
+        if (_config.MathOutputFormat is not DxpOmmlOutputFormat format)
+            return;
+        WriteMath(d, DxpOmmlConverter.Convert(oMathPara, format).Output, format, display: true);
+    }
+
+    private void WriteMath(DxpIDocumentContext d, string value, DxpOmmlOutputFormat format, bool display)
+    {
+        bool delimit = _config.EmitMathDelimiters &&
+            format is DxpOmmlOutputFormat.Latex or DxpOmmlOutputFormat.UnicodeMath;
+        if (!delimit)
+        {
+            Write(d, value);
+            return;
+        }
+
+        if (display)
+            Write(d, $"\n\n$$\n{value}\n$$\n\n");
+        else
+            Write(d, $"${value}$");
     }
 
     public override IDisposable VisitInsertedRunBegin(InsertedRun ir, DxpIDocumentContext d)
