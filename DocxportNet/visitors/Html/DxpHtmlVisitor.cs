@@ -11,6 +11,7 @@ using DocxportNet.Core;
 using System.Net;
 using DocxportNet.Visitors.Markdown;
 using DocxportNet.Fields;
+using DocxportNet.Omml;
 using DocxportNet.Walker.Context;
 using DocxportNet.Walker;
 
@@ -73,6 +74,7 @@ public sealed record DxpHtmlVisitorConfig
     public bool UsePlainComments = false;
     public bool EmitCustomProperties = true;
     public bool EmitTimeline = false;
+    public DxpOmmlOutputFormat? MathOutputFormat = DxpOmmlOutputFormat.MathMl;
     public string? StylesheetHref = null;
     public bool EmbedDefaultStylesheet = true;
     public string RootCssClass = "dxp-root";
@@ -578,6 +580,27 @@ body.dxp-root {
     public override IDisposable VisitDeletedBegin(Deleted del, DxpIDocumentContext d) => DxpDisposable.Empty;
     public override IDisposable VisitDeletedRunBegin(DeletedRun dr, DxpIDocumentContext d) => DxpDisposable.Empty;
     public override void VisitDeletedParagraphMark(Deleted del, ParagraphProperties pPr, Paragraph? p, DxpIDocumentContext d) { }
+
+    public override void VisitOMath(DocumentFormat.OpenXml.Math.OfficeMath oMath, DxpIDocumentContext d)
+    {
+        if (_config.MathOutputFormat is DxpOmmlOutputFormat format)
+            WriteMath(d, DxpOmmlConverter.Convert(oMath, format).Output, format);
+    }
+
+    public override void VisitOMathParagraph(DocumentFormat.OpenXml.Math.Paragraph oMathPara, DxpIDocumentContext d)
+    {
+        if (_config.MathOutputFormat is DxpOmmlOutputFormat format)
+            WriteMath(d, DxpOmmlConverter.Convert(oMathPara, format).Output, format);
+    }
+
+    private static string EncodeMath(string output, DxpOmmlOutputFormat format)
+    {
+        return format == DxpOmmlOutputFormat.MathMl ? output : WebUtility.HtmlEncode(output);
+    }
+
+    private void WriteMath(DxpIDocumentContext d, string output, DxpOmmlOutputFormat format) =>
+        Write(d, EncodeMath(output, format));
+
     public override IDisposable VisitInsertedRunBegin(InsertedRun ir, DxpIDocumentContext d) => DxpDisposable.Empty;
 
     public override void VisitDeletedText(DeletedText dt, DxpIDocumentContext d)
