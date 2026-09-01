@@ -15,8 +15,20 @@ internal static class OmmlTestData
 
     public static string UpstreamRoot => Path.Combine(FixtureRoot, "Upstream", "Plurimath");
 
+    public static string NormativeRoot => Path.Combine(FixtureRoot, "Normative");
+
     public static IReadOnlyList<string> UpstreamFixtures() => Directory
         .EnumerateFiles(UpstreamRoot, "*.omml", SearchOption.AllDirectories)
+        .OrderBy(path => path, StringComparer.Ordinal)
+        .ToArray();
+
+    public static IReadOnlyList<string> NormativeFixtures() => Directory
+        .EnumerateFiles(NormativeRoot, "*.omml", SearchOption.AllDirectories)
+        .OrderBy(path => path, StringComparer.Ordinal)
+        .ToArray();
+
+    public static IReadOnlyList<string> InvalidNormativeFixtures() => Directory
+        .EnumerateFiles(NormativeRoot, "*.invalid.xml", SearchOption.AllDirectories)
         .OrderBy(path => path, StringComparer.Ordinal)
         .ToArray();
 

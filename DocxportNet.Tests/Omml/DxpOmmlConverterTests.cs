@@ -308,6 +308,45 @@ public sealed class DxpOmmlConverterTests
     }
 
     [Fact]
+    public void DirectMathTextInAnArgumentIsRecoveredWithoutLosingVisibleContent()
+    {
+        string omml = $"""
+            <m:oMath xmlns:m="{MathNamespace}">
+              <m:nary><m:sub><m:t>symmetric</m:t></m:sub><m:e><m:r><m:t>x</m:t></m:r></m:e></m:nary>
+            </m:oMath>
+            """;
+
+        DxpOmmlConversionResult result = DxpOmmlConverter.Convert(omml, DxpOmmlOutputFormat.Text);
+
+        Assert.Contains("symmetric", result.Output, StringComparison.Ordinal);
+        Assert.DoesNotContain(result.Diagnostics, diagnostic => diagnostic.Code == "OMML001");
+    }
+
+    [Fact]
+    public void LatexControlSequencesFromOmmlTextAreAlwaysEscapedAsText()
+    {
+        string fixture = Path.Combine(OmmlTestData.NormativeRoot, "latex-injection-is-text.omml");
+
+        Assert.Equal(@"\textbackslash{}end\{array\}\$\%\#\&\_\^{}\{\}",
+            DxpOmmlConverter.ToLatex(File.ReadAllText(fixture)));
+    }
+
+    [Fact]
+    public void NestedMathAndFutureExtensionsRecoverVisibleTextWithDiagnostics()
+    {
+        string nested = $"<m:oMath xmlns:m=\"{MathNamespace}\"><m:oMath><m:r><m:t>x</m:t></m:r></m:oMath></m:oMath>";
+        string extended = $"<m:oMath xmlns:m=\"{MathNamespace}\"><m:r future=\"ignored\"><m:t>x</m:t></m:r><m:future><m:t>y</m:t></m:future></m:oMath>";
+
+        DxpOmmlConversionResult nestedResult = DxpOmmlConverter.Convert(nested, DxpOmmlOutputFormat.Text);
+        DxpOmmlConversionResult extendedResult = DxpOmmlConverter.Convert(extended, DxpOmmlOutputFormat.Text);
+
+        Assert.Equal("x", nestedResult.Output);
+        Assert.Contains(nestedResult.Diagnostics, diagnostic => diagnostic.ElementName == "m:oMath");
+        Assert.Equal("xy", extendedResult.Output);
+        Assert.Contains(extendedResult.Diagnostics, diagnostic => diagnostic.ElementName == "m:future");
+    }
+
+    [Fact]
     public void FoundationParserAcceptsEveryWellFormedPinnedCorpusFixture()
     {
         List<string> rejected = new();

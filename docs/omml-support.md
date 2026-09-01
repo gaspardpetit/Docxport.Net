@@ -67,15 +67,22 @@ Plurimath is a behavioral oracle and source of test ideas, not the definition of
 
 ### Roots, arguments, and sequences
 
-- [ ] P0 Parse inline `m:oMath`.
-- [ ] P0 Parse display `m:oMathPara` containing one or more `m:oMath` children.
-- [ ] P0 Preserve adjacent expression order and intentional empty arguments.
-- [ ] P0 Parse `m:e`, `m:num`, `m:den`, `m:deg`, `m:sub`, `m:sup`, `m:lim`, and `m:fName` as ordered math arguments.
-- [ ] P1 Parse `m:argPr/m:argSz` and retain argument-size intent.
-- [ ] P1 Apply schema defaults when property elements or `m:val` attributes are absent.
-- [ ] P1 Recognize on/off lexical forms `on`, `off`, `true`, `false`, `1`, and `0` where Open XML permits them.
-- [ ] P1 Handle multiple adjacent `oMath` elements consistently with Word behavior.
-- [ ] P2 Detect invalid nested `oMath` and math content outside `oMath`; apply the configured recovery policy.
+- [x] P0 Parse inline `m:oMath`.
+- [x] P0 Parse display `m:oMathPara` containing one or more `m:oMath` children.
+- [x] P0 Preserve adjacent expression order and intentional empty arguments.
+- [x] P0 Parse `m:e`, `m:num`, `m:den`, `m:deg`, `m:sub`, `m:sup`, `m:lim`, and `m:fName` as ordered math arguments.
+- [x] P1 Parse `m:argPr/m:argSz` and retain argument-size intent.
+- [x] P1 Apply schema defaults when property elements or `m:val` attributes are absent.
+- [x] P1 Recognize on/off lexical forms `on`, `off`, `true`, `false`, `1`, and `0` where Open XML permits them.
+- [x] P1 Handle multiple adjacent `oMath` elements consistently with Word behavior.
+- [x] P2 Detect invalid nested `oMath` and math content outside `oMath`; apply the configured recovery policy.
+
+`m:argSz` is retained only on the Word-supported argument pairs: box and
+group-character bases; lower/upper limits; n-ary sub/superscripts; radical
+degrees; and ordinary/pre-script sub/superscripts. Its `-2` through `2` value is
+relative, with absent or valueless properties defaulting to zero. MathML maps it
+to relative `scriptlevel`; LaTeX uses its nearest standard math style and emits
+`OMML002`; UnicodeMath and readable text preserve content and diagnose sizing.
 
 ### Runs and tokens
 
@@ -349,63 +356,76 @@ content use the standard fallback policy and emit `OMML011` diagnostics.
 
 ## MathML writer
 
-- [ ] P0 Emit namespace-correct XML rooted at `<math xmlns="http://www.w3.org/1998/Math/MathML">`.
-- [ ] P0 Set inline/block display semantics correctly.
-- [ ] P0 Ensure the HTML-ready surface is safe to embed without double-escaping text or admitting source markup.
-- [ ] P0 Emit `mi`, `mn`, `mo`, and `mtext` using deterministic tokenization.
+- [x] P0 Emit namespace-correct XML rooted at `<math xmlns="http://www.w3.org/1998/Math/MathML">`.
+- [x] P0 Set inline/block display semantics correctly.
+- [x] P0 Ensure the HTML-ready surface is safe to embed without double-escaping text or admitting source markup.
+- [x] P0 Emit `mi`, `mn`, `mo`, and `mtext` using deterministic tokenization.
 - [ ] P0 Emit `mrow` only where grouping is semantically required.
-- [ ] P0 Support fractions, roots, scripts, multiscripts, fenced expressions, limits, and tables.
-- [ ] P1 Prefer MathML Core-compatible constructs for browser rendering.
-- [ ] P1 Use `stretchy`, `accent`, `accentunder`, `movablelimits`, and `mathvariant` correctly.
+- [x] P0 Support fractions, roots, scripts, multiscripts, fenced expressions, limits, and tables.
+- [x] P1 Prefer MathML Core-compatible constructs for browser rendering.
+- [x] P1 Use `stretchy`, `accent`, `accentunder`, `movablelimits`, and `mathvariant` correctly.
 - [x] P1 Support `menclose`, `mphantom`, and `mpadded` for advanced layout.
-- [ ] P1 Preserve meaningful spacing without copying Word layout measurements blindly.
-- [ ] P1 Produce XML that parses without DTDs or external entities.
+- [x] P1 Preserve meaningful spacing without copying Word layout measurements blindly.
+- [x] P1 Produce XML that parses without DTDs or external entities.
 - [ ] P1 Add optional semantics/annotation output only behind an explicit option.
 - [ ] P2 Validate representative output in current Chromium, Firefox, and WebKit/Safari engines.
 
 ## LaTeX writer
 
-- [ ] P0 Emit an expression without `$`, `$$`, `\(`, or `\[` wrappers.
-- [ ] P0 Escape text-mode and math-mode reserved characters correctly.
-- [ ] P0 Use braces conservatively so nested output is unambiguous.
-- [ ] P0 Support standard fractions, roots, scripts, operators, limits, and matrices.
-- [ ] P1 Emit common named functions and symbols idiomatically.
-- [ ] P1 Choose deterministic environments for matrices and equation arrays.
-- [ ] P1 Support accents, braces, bars, boxes, and phantoms where LaTeX has a standard equivalent.
-- [ ] P1 Report required non-core packages, or restrict default output to a documented package baseline.
-- [ ] P1 Never inject raw control sequences from untrusted OMML text.
+- [x] P0 Emit an expression without `$`, `$$`, `\(`, or `\[` wrappers.
+- [x] P0 Escape text-mode and math-mode reserved characters correctly.
+- [x] P0 Use braces conservatively so nested output is unambiguous.
+- [x] P0 Support standard fractions, roots, scripts, operators, limits, and matrices.
+- [x] P1 Emit common named functions and symbols idiomatically.
+- [x] P1 Choose deterministic environments for matrices and equation arrays.
+- [x] P1 Support accents, braces, bars, boxes, and phantoms where LaTeX has a standard equivalent.
+- [x] P1 Report required non-core packages, or restrict default output to a documented package baseline.
+- [x] P1 Never inject raw control sequences from untrusted OMML text.
 - [ ] P2 Offer a compatibility profile for MathJax/KaTeX-supported LaTeX.
 
 ## Readable Unicode text writer
 
-- [ ] P0 Preserve every visible literal, identifier, number, and operator.
-- [ ] P0 Use explicit grouping to avoid ambiguous flattening.
-- [ ] P0 Render fractions, roots, scripts, limits, and matrices in stable readable notation.
-- [ ] P1 Use Unicode super/subscript characters only when the complete value is representable; otherwise use `^(...)` and `_(...)`.
+- [x] P0 Preserve every visible literal, identifier, number, and operator.
+- [x] P0 Use explicit grouping to avoid ambiguous flattening.
+- [x] P0 Render fractions, roots, scripts, limits, and matrices in stable readable notation.
+- [x] P1 Use Unicode super/subscript characters only when the complete value is representable; otherwise use `^(...)` and `_(...)`.
 - [ ] P1 Render multi-line structures with a caller-selected single-line or multi-line policy.
-- [ ] P1 Define accessible names for invisible or purely visual constructs.
-- [ ] P1 Avoid dependence on terminal width or current culture.
-- [ ] P2 Define the supported UnicodeMath version/profile and document intentional deviations.
+- [x] P1 Define accessible names for invisible or purely visual constructs.
+- [x] P1 Avoid dependence on terminal width or current culture.
+- [x] P2 Define the supported UnicodeMath version/profile and document intentional deviations.
 
 ## Error handling, security, and quality
 
-- [ ] P0 Reject malformed XML with a clear input exception.
-- [ ] P0 Never silently discard an unknown semantic node.
-- [ ] P0 Preserve descendant visible text in the default unsupported-node fallback.
-- [ ] P0 Include the unsupported element name/path in diagnostics.
-- [ ] P1 Disable DTD processing and external entity resolution.
-- [ ] P1 Bound input size, nesting depth, and output growth, or document caller-enforced limits.
+- [x] P0 Reject malformed XML with a clear input exception.
+- [x] P0 Never silently discard an unknown semantic node.
+- [x] P0 Preserve descendant visible text in the default unsupported-node fallback.
+- [x] P0 Include the unsupported element name/path in diagnostics.
+- [x] P1 Disable DTD processing and external entity resolution.
+- [x] P1 Bound input size, nesting depth, and output growth, or document caller-enforced limits.
 - [ ] P1 Avoid recursive stack exhaustion on deeply nested input.
-- [ ] P1 Handle missing required children with explicit recovery rules.
-- [ ] P1 Handle duplicate singleton properties deterministically.
-- [ ] P1 Handle unknown attributes and future-version extension elements without losing visible content.
-- [ ] P1 Preserve namespace correctness regardless of the source prefix.
-- [ ] P1 Test alternate prefixes and default namespaces.
-- [ ] P1 Test null, empty, whitespace-only, and non-OMML XML inputs.
-- [ ] P1 Test deterministic output across cultures and line-ending conventions.
-- [ ] P1 Test concurrent conversions.
+- [x] P1 Handle missing required children with explicit recovery rules.
+- [x] P1 Handle duplicate singleton properties deterministically.
+- [x] P1 Handle unknown attributes and future-version extension elements without losing visible content.
+- [x] P1 Preserve namespace correctness regardless of the source prefix.
+- [x] P1 Test alternate prefixes and default namespaces.
+- [x] P1 Test null, empty, whitespace-only, and non-OMML XML inputs.
+- [x] P1 Test deterministic output across cultures and line-ending conventions.
+- [x] P1 Test concurrent conversions.
 - [ ] P2 Benchmark large equations and documents containing thousands of equations.
 - [ ] P2 Fuzz malformed and adversarial XML inputs.
+
+UnicodeMath output targets the linear notation accepted by current Microsoft
+Office equation input: explicit `_(...)`/`^(...)`, `▒〖...〗` n-ary operands,
+`■(...)` matrices, and `█(...)` equation arrays. It intentionally favors stable,
+unambiguous grouping over typographic Unicode superscript substitution. OMML-only
+layout is retained where that notation has a defined operator and otherwise
+reported through `OMML002`.
+
+`MaxInputCharacters` bounds standalone string input before XML parsing. Nesting
+depth and output growth remain caller-enforced in this release; callers handling
+untrusted input should impose their own XML depth and output quotas. Stack-safe
+deep-tree traversal, fuzzing, and performance limits remain explicit Goal 12
+hardening work rather than an undocumented conformance claim.
 
 ## Plurimath fixture audit
 
@@ -416,43 +436,72 @@ At OMML commit `51d4abe5df58fe33a92df094971c5828c3459ffb`, the repository contai
 
 The corpus is valuable for complex composition and real-world regression coverage. It is not a complete property matrix.
 
+The complete conformance gate converts all 277 well-formed fixtures through
+MathML, LaTeX, UnicodeMath, and readable text, verifies nonempty output,
+namespace-valid MathML, and absence of unsupported semantic nodes. Fixture
+`line_break/line-break-064.omml` contains a non-schema direct `m:t` argument;
+Docxport recovers its visible content. `187.omml` contains the undeclared HTML
+entity `&nbsp;`, while `issue-158.omml` contains an unescaped ampersand. Those two
+inputs are deliberately and explicitly rejected as malformed XML.
+
 ### Structures represented in the corpus
 
 - [x] Import/recreate and attribute the general fixture corpus.
 - [x] Import/recreate and attribute the line-break fixture corpus.
-- [ ] Fractions: fixtures 001-004 and complex compositions.
-- [ ] Scripts: fixtures 005-008 plus later nested cases.
-- [ ] Radicals: fixtures 009-012.
+- [x] Fractions: fixtures 001-004 and complex compositions.
+- [x] Scripts: fixtures 005-008 plus later nested cases.
+- [x] Radicals: fixtures 009-012.
 - [x] N-ary operators: fixtures 013-046 plus complex compositions.
-- [ ] Delimiters and piecewise expressions: fixtures 045-072.
+- [x] Delimiters and piecewise expressions: fixtures 045-072.
 - [x] Functions and powers: fixtures 073-099.
-- [ ] Limits, accents, bars, and border boxes: fixtures 100-155.
+- [x] Limits, accents, bars, and border boxes: fixtures 100-155.
 - [x] Matrices and equation arrays: fixtures 156-177.
-- [ ] Mixed complex expressions: fixtures 178 onward and `issue-158.omml`.
-- [ ] Group characters: fixtures 185-186.
+- [x] Mixed complex expressions: fixtures 178 onward; malformed `issue-158.omml` is explicitly rejected.
+- [x] Group characters: fixtures 185-186.
 - [x] Manual breaks across many parent structures: `line_break/*`.
-- [ ] Math styles and scripts: plain/bold/italic/bold-italic plus script, fraktur, double-struck, sans-serif, and monospace examples.
-- [ ] Delimiter variants: parentheses, brackets, braces, bars, double bars, angles, floors, ceilings, and white brackets.
+- [x] Math styles and scripts: plain/bold/italic/bold-italic plus script, fraktur, double-struck, sans-serif, and monospace examples.
+- [x] Delimiter variants: parentheses, brackets, braces, bars, double bars, angles, floors, ceilings, and white brackets.
 - [x] Matrix column counts and centered columns.
-- [ ] Hidden n-ary subscript/superscript flags and both limit locations.
+- [x] Hidden n-ary subscript/superscript flags and both limit locations.
 
 ### Important corpus gaps requiring Docxport fixtures
 
 - [x] `m:box` and every `m:boxPr` behavior.
-- [ ] Fraction types `skw`, `lin`, and `noBar` (the reviewed fixtures do not exercise `m:type`).
-- [ ] Delimiter shape `m:shp` and explicit grow-off behavior.
+- [x] Fraction types `skw`, `lin`, and `noBar` (the reviewed fixtures do not exercise `m:type`).
+- [x] Delimiter shape `m:shp` and explicit grow-off behavior.
 - [x] Equation-array spacing, distance, and base-justification properties.
 - [x] Matrix left/right column justification, base justification, placeholders, and spacing/gap properties.
 - [x] Border-box horizontal, vertical, and diagonal strike combinations.
 - [x] Phantom zero-width/ascent/descent and transparency combinations.
-- [ ] `m:argSz`, `m:lit`, `m:nor`, and `m:aln` semantics.
+- [x] `m:argSz`, `m:lit`, `m:nor`, and `m:aln` semantics.
 - [x] Math paragraph justification and multiple `oMath` children.
 - [x] Document-level `m:mathPr` defaults.
-- [ ] Embedded hyperlinks, fields, content controls, custom XML, and tracked revisions.
-- [ ] Alternate namespace prefixes and default math namespace.
-- [ ] Malformed XML, missing required arguments, duplicate properties, and unknown elements.
-- [ ] Supplementary-plane Unicode and combining sequences.
+- [x] Embedded hyperlinks, fields, content controls, custom XML, and tracked revisions.
+- [x] Alternate namespace prefixes and default math namespace.
+- [x] Malformed XML, missing required arguments, duplicate properties, and unknown elements.
+- [x] Supplementary-plane Unicode and combining sequences.
 - [ ] All output-injection and resource-limit security cases.
+
+Named Docxport-owned corpus-gap evidence is kept separately from the upstream
+oracle. Valid reusable inputs live in `Fixtures/Omml/Normative` with reviewed
+readable-text expectations; invalid XML inputs use `.invalid.xml`. Properties
+that are supplied through options, and combinatorial cases that are clearer as
+focused builders, remain named unit cases:
+
+| Gap | Named evidence |
+| --- | --- |
+| Fraction variants | `fraction-types.omml`; `SupportsEveryFractionType` |
+| Delimiter growth/shape and variants | `delimiter-shape-and-growth.omml`; `MapsCommonAndArbitraryUnicodeDelimiters` |
+| Matrix/equation-array layout | `matrix-and-equation-array-layout.omml`; `RetainsMatrixLayoutPropertiesAndPlaceholderVisibility`; `RetainsEquationArrayPropertiesAndRows` |
+| Border boxes and phantoms | `border-box-and-phantom-layout.omml`; independent border/strike/dimension theories |
+| Argument size and run semantics | `argument-size.omml`; `run-semantics.omml`; `PreservesEveryApplicableRelativeArgumentSize` |
+| Paragraph and document settings | `paragraph-multiple-equations.omml`; `ExposesEveryDocumentMathSettingThroughOptions` |
+| Embedded WordprocessingML | `embedded-wordprocessing.omml`; `DxpOmmlEmbeddedWordprocessingTests` |
+| Namespace independence | `alternate-namespace.omml`; `AcceptsAlternateAndDefaultOmmlNamespacePrefixes` |
+| Malformed and recovery | `undeclared-entity.invalid.xml`; `unescaped-ampersand.invalid.xml`; `direct-math-text-recovery.omml` |
+| Unicode scalars/sequences | `supplementary-and-combining-unicode.omml`; `ClassifiesMixedTokensAndPreservesSupplementaryScalars` |
+| Output injection | `latex-injection-is-text.omml`; `LatexControlSequencesFromOmmlTextAreAlwaysEscapedAsText` |
+| Resource limits | `RejectsInputBeyondConfiguredLimit`; remaining depth/output/performance cases are explicitly deferred to Goal 12 |
 
 ### Oracle workflow
 
@@ -460,34 +509,45 @@ The corpus is valuable for complex composition and real-world regression coverag
 - [x] Generate MathML, LaTeX, and UnicodeMath oracle outputs using a pinned Plurimath version.
 - [x] Store generated oracle outputs separately from hand-authored normative expectations.
 - [x] Canonicalize XML before comparing MathML; do not compare prefixes or insignificant whitespace.
-- [ ] Treat an oracle disagreement as a review prompt, not automatic proof that Docxport is wrong.
-- [ ] Add focused named fixtures for every discovered regression; numbered corpus files alone are difficult to diagnose.
+- [x] Treat an oracle disagreement as a review prompt, not automatic proof that Docxport is wrong.
+- [x] Add focused named fixtures for every discovered regression; numbered corpus files alone are difficult to diagnose.
+
+The conformance test compares every available generated oracle artifact on each
+run: 276 MathML, 277 LaTeX, and 259 UnicodeMath outputs. Exact equality is not a
+conformance requirement. The pinned oracle emits structurally incomplete MathML
+for missing arguments (for example, a one-child `mfrac`), drops properties that
+Docxport preserves, makes different but equivalent grouping/style choices, and
+contains one non-well-formed MathML artifact. LaTeX and UnicodeMath exact matches
+are retained as a regression floor (currently 11 and 61 respectively), while
+focused normative tests decide disagreements for fractions, radicals, scripts,
+delimiters, functions, operators, decorations, matrices, arrays, boxes,
+phantoms, breaks, and embedded WordprocessingML.
 
 ## Findings from the Plurimath implementation review
 
 The reviewed importer provides useful implementation lessons that should become explicit requirements:
 
-- [ ] Preserve original element order rather than iterating model properties.
-- [ ] Make unsupported typed nodes fail or diagnose explicitly instead of falling through.
-- [ ] Distinguish empty content from absent content.
-- [ ] Normalize non-breaking spaces and entities without accepting malformed XML silently.
-- [ ] Keep token resolution contextual: text, operator, function name, accent, and delimiter are not interchangeable.
-- [ ] Do not bind a unary/ternary function to adjacent content without clear syntactic evidence.
-- [ ] Handle default characters explicitly: parentheses, integral, hat, and group characters.
-- [ ] Treat styled runs as content plus style, not as reordered sibling values.
+- [x] Preserve original element order rather than iterating model properties.
+- [x] Make unsupported typed nodes fail or diagnose explicitly instead of falling through.
+- [x] Distinguish empty content from absent content.
+- [x] Normalize non-breaking spaces and entities without accepting malformed XML silently.
+- [x] Keep token resolution contextual: text, operator, function name, accent, and delimiter are not interchangeable.
+- [x] Do not bind a unary/ternary function to adjacent content without clear syntactic evidence.
+- [x] Handle default characters explicitly: parentheses, integral, hat, and group characters.
+- [x] Treat styled runs as content plus style, not as reordered sibling values.
 - [ ] Avoid quadratic behavior when consuming repeated sibling elements.
 
 The following Plurimath behaviors are intentionally not sufficient as our target:
 
-- [ ] Preserve fraction type; the reviewed importer maps every fraction to a conventional fraction.
-- [ ] Preserve bar position; the reviewed importer maps every bar to the same bar function.
+- [x] Preserve fraction type; the reviewed importer maps every fraction to a conventional fraction.
+- [x] Preserve bar position; the reviewed importer maps every bar to the same bar function.
 - [x] Preserve border-side and strike properties; the reviewed importer maps every border box to one `menclose` form.
 - [x] Preserve box semantics; the reviewed importer unwraps boxes.
 - [x] Preserve phantom layout semantics; the reviewed importer unwraps phantoms.
-- [ ] Preserve matrix/equation-array layout properties; the reviewed importer primarily retains rows and cells.
-- [ ] Respect `degHide`, rather than deciding square root solely from an empty degree.
-- [ ] Apply delimiter grow/shape behavior, not only boundary and separator characters.
-- [ ] Carry diagnostics for approximations rather than silently simplifying them.
+- [x] Preserve matrix/equation-array layout properties; the reviewed importer primarily retains rows and cells.
+- [x] Respect `degHide`, rather than deciding square root solely from an empty degree.
+- [x] Apply delimiter grow/shape behavior, not only boundary and separator characters.
+- [x] Carry diagnostics for approximations rather than silently simplifying them.
 
 ## Goal-by-goal implementation sequence
 
@@ -568,10 +628,25 @@ Complete these goals in order. Goals 3-10 are vertical feature slices: each incl
 
 ### Goal 11: Corpus conformance and gap closure
 
-- [ ] Run the complete pinned general and line-break corpora.
-- [ ] Resolve every crash, silent-content loss, and unexplained oracle difference.
-- [ ] Add named Docxport-owned fixtures for every corpus gap listed above.
-- [ ] Verify every normative OMML structure and property has a test or documented intentional limitation.
+- [x] Run the complete pinned general and line-break corpora.
+- [x] Resolve every crash, silent-content loss, and unexplained oracle difference.
+- [x] Add named Docxport-owned fixtures for every corpus gap listed above.
+- [x] Verify every normative OMML structure and property has a test or documented intentional limitation.
+
+Goal 11's corpus guarantees are enforced, not observational: all valid inputs run
+through every writer; MathML is parsed again; unsupported semantic diagnostics
+fail the gate; and every source text literal must survive readable output unless
+OMML explicitly hides it. Oracle artifacts are compared on every run and exact
+matches cannot regress below the recorded LaTeX/UnicodeMath floors.
+
+The remaining unchecked items elsewhere in this checklist are explicit later
+scope, not corpus ambiguities: customization/streaming APIs, minimal `mrow`
+optimization, optional MathML annotations, selectable compatibility and
+multiline profiles, browser rendering, and production depth/performance/fuzz
+hardening. Conservative `mrow` grouping is semantically valid but not claimed
+minimal. These limitations do not discard a normative OMML structure or
+property; all lossy conversions identified by Goal 11 retain visible content and
+emit a diagnostic.
 
 ### Goal 12: Production hardening
 

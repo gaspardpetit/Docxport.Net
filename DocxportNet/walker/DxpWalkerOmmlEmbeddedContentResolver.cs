@@ -22,7 +22,8 @@ public sealed class DxpWalkerOmmlEmbeddedContentResolver : IDxpOmmlEmbeddedConte
 
     public string? Resolve(DxpOmmlEmbeddedContentRequest request)
     {
-        ArgumentNullException.ThrowIfNull(request);
+        if (request is null)
+            throw new ArgumentNullException(nameof(request));
         if (request.OutputFormat != DxpOmmlOutputFormat.Latex)
             return null;
         if (request.RevisionMode == DxpOmmlRevisionMode.Preserve || request.FieldMode == DxpOmmlFieldMode.Omit)

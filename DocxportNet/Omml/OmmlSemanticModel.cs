@@ -34,8 +34,13 @@ internal sealed record OmmlRunPresentation(bool Bold, bool Italic, string? Color
 
 internal sealed class OmmlSequence : OmmlNode
 {
-    public OmmlSequence(string path, IReadOnlyList<OmmlNode> children) : base(path) => Children = children;
+    public OmmlSequence(string path, IReadOnlyList<OmmlNode> children, int? argumentSize = null) : base(path)
+    {
+        Children = children;
+        ArgumentSize = argumentSize;
+    }
     public IReadOnlyList<OmmlNode> Children { get; }
+    public int? ArgumentSize { get; }
 }
 
 internal sealed class OmmlBreak : OmmlNode

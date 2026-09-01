@@ -133,6 +133,37 @@ public sealed class DxpOmmlStructuresTests
         Assert.Equal(unicodeMath, DxpOmmlConverter.ToUnicodeMath(omml));
     }
 
+    [Theory]
+    [InlineData("-2", "+2", @"{\scriptscriptstyle x}")]
+    [InlineData("-1", "+1", @"{\scriptstyle x}")]
+    [InlineData("1", "-1", @"{\displaystyle x}")]
+    [InlineData("2", "-2", @"{\displaystyle x}")]
+    public void PreservesEveryApplicableRelativeArgumentSize(string value,
+        string mathMlScriptLevel, string latex)
+    {
+        string omml = Inline($"<m:box><m:e><m:argPr><m:argSz m:val=\"{value}\"/></m:argPr>{Run("x")}</m:e></m:box>");
+
+        DxpOmmlConversionResult mathMl = DxpOmmlConverter.Convert(omml, DxpOmmlOutputFormat.MathMl);
+        Assert.Equal(mathMlScriptLevel, (string?)XElement.Parse(mathMl.Output)
+            .Descendants(MathMl + "mstyle").First(element => element.Attribute("scriptlevel") != null)
+            .Attribute("scriptlevel"));
+        Assert.Equal(latex, DxpOmmlConverter.ToLatex(omml));
+        Assert.Contains(DxpOmmlConverter.Convert(omml, DxpOmmlOutputFormat.Text).Diagnostics,
+            diagnostic => diagnostic.ElementName == "m:argSz");
+    }
+
+    [Fact]
+    public void ArgumentSizeDefaultsToZeroAndOnlyAffectsWordSupportedArguments()
+    {
+        string defaultSize = Inline($"<m:box><m:e><m:argPr><m:argSz/></m:argPr>{Run("x")}</m:e></m:box>");
+        string inapplicable = Inline($"<m:f><m:num><m:argPr><m:argSz m:val=\"-1\"/></m:argPr>{Run("a")}</m:num><m:den>{Run("b")}</m:den></m:f>");
+
+        Assert.Equal("x", DxpOmmlConverter.ToLatex(defaultSize));
+        Assert.Equal(@"\frac{a}{b}", DxpOmmlConverter.ToLatex(inapplicable));
+        Assert.DoesNotContain(XElement.Parse(DxpOmmlConverter.ToMathMl(inapplicable)).Descendants(),
+            element => element.Attribute("scriptlevel") != null);
+    }
+
     [Fact]
     public void ConvertsStructuredOpenXmlSdkElementsWithoutSerialization()
     {
@@ -142,6 +173,12 @@ public sealed class DxpOmmlStructuresTests
         Mx.OfficeMath math = new(fraction);
 
         Assert.Equal(@"\frac{1}{2}", DxpOmmlConverter.Convert(math, DxpOmmlOutputFormat.Latex).Output);
+
+        Mx.Box box = new(new Mx.Base(
+            new Mx.ArgumentProperties(new Mx.ArgumentSize { Val = -1 }),
+            new Mx.Run(new Mx.Text("x"))));
+        Assert.Equal(@"{\scriptstyle x}", DxpOmmlConverter.Convert(
+            new Mx.OfficeMath(box), DxpOmmlOutputFormat.Latex).Output);
     }
 
     private static string Inline(string content) => $"<m:oMath xmlns:m=\"{M}\">{content}</m:oMath>";

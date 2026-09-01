@@ -96,7 +96,16 @@ internal static class OmmlWriter
             XElement row = new(math + "mrow");
             foreach (OmmlNode child in sequence.Children)
                 AppendMathMl(row, child, compactFractions, isDisplay, options, diagnostics);
-            parent.Add(row);
+            if (sequence.ArgumentSize is int argumentSize && argumentSize != 0)
+            {
+                XElement style = new(math + "mstyle", row);
+                style.SetAttributeValue("scriptlevel", argumentSize > 0 ? $"-{argumentSize}" : $"+{-argumentSize}");
+                parent.Add(style);
+            }
+            else
+            {
+                parent.Add(row);
+            }
             return;
         }
 
@@ -126,7 +135,7 @@ internal static class OmmlWriter
                     styles.Add($"font-family:{CssFontFamily(run.FontFamily)}");
                 if (run.VerticalAlignment != OmmlRunVerticalAlignment.Baseline)
                     styles.Add($"vertical-align:{(run.VerticalAlignment == OmmlRunVerticalAlignment.Superscript ? "super" : "sub")}");
-                if (styles.Count != 0) container.SetAttributeValue("style", string.Join(';', styles));
+                if (styles.Count != 0) container.SetAttributeValue("style", string.Join(";", styles));
                 parent.Add(container);
             }
             if (run.Alignment && !run.BreakAlignmentAt.HasValue) container.Add(new XElement(math + "malignmark"));
@@ -465,10 +474,26 @@ internal static class OmmlWriter
         if (node is OmmlSequence sequence)
         {
             bool multilineLatex = format == DxpOmmlOutputFormat.Latex && sequence.Children.Any(NeedsLatexEnvironment);
+            string? argumentSizePrefix = format == DxpOmmlOutputFormat.Latex ? sequence.ArgumentSize switch
+            {
+                -2 => @"{\scriptscriptstyle ",
+                -1 => @"{\scriptstyle ",
+                1 or 2 => @"{\displaystyle ",
+                _ => null,
+            } : null;
+            if (argumentSizePrefix != null) output.Append(argumentSizePrefix);
             if (multilineLatex) output.Append(@"\begin{aligned}");
             foreach (OmmlNode child in sequence.Children)
                 AppendTextual(output, child, format, isDisplay, options, diagnostics, escape);
             if (multilineLatex) output.Append(@"\end{aligned}");
+            if (argumentSizePrefix != null) output.Append('}');
+            if (sequence.ArgumentSize is int argumentSize && argumentSize != 0)
+            {
+                string message = format == DxpOmmlOutputFormat.Latex
+                    ? "LaTeX uses the nearest standard math style for the relative OMML argument size."
+                    : $"{format} preserves argument content but cannot represent its relative OMML argument size.";
+                AddApproximation(diagnostics, sequence, "m:argSz", message);
+            }
             return;
         }
 

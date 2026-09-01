@@ -1,0 +1,6 @@
+<m:oMath xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math">
+  <m:f><m:num><m:r><m:t>a</m:t></m:r></m:num><m:den><m:r><m:t>b</m:t></m:r></m:den></m:f>
+  <m:f><m:fPr><m:type m:val="skw"/></m:fPr><m:num><m:r><m:t>c</m:t></m:r></m:num><m:den><m:r><m:t>d</m:t></m:r></m:den></m:f>
+  <m:f><m:fPr><m:type m:val="lin"/></m:fPr><m:num><m:r><m:t>e</m:t></m:r></m:num><m:den><m:r><m:t>f</m:t></m:r></m:den></m:f>
+  <m:f><m:fPr><m:type m:val="noBar"/></m:fPr><m:num><m:r><m:t>g</m:t></m:r></m:num><m:den><m:r><m:t>h</m:t></m:r></m:den></m:f>
+</m:oMath>

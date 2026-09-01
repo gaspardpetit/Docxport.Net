@@ -85,7 +85,7 @@ internal static class OmmlParser
             }
             if (node is not XElement child)
                 continue;
-            if (child.Name == XName.Get("ctrlPr", MathNamespace))
+            if (child.Name == XName.Get("ctrlPr", MathNamespace) || child.Name == XName.Get("argPr", MathNamespace))
                 continue;
 
             if (child.Name == XName.Get("oMathParaPr", MathNamespace))
@@ -188,7 +188,7 @@ internal static class OmmlParser
         Dictionary<(string Namespace, string LocalName), int> indexes = new();
         foreach (OpenXmlElement child in parent.ChildElements)
         {
-            if (child.NamespaceUri == MathNamespace && child.LocalName == "ctrlPr")
+            if (child.NamespaceUri == MathNamespace && child.LocalName is "ctrlPr" or "argPr")
                 continue;
             (string Namespace, string LocalName) name = (child.NamespaceUri, child.LocalName);
             indexes.TryGetValue(name, out int index);
@@ -244,6 +244,7 @@ internal static class OmmlParser
         ? element.Name.LocalName switch
         {
             "r" => ParseRun(element, path),
+            "t" => ParseBareText(element, path),
             "f" => ParseFraction(element, path),
             "rad" => ParseRadical(element, path),
             "sSub" => ParseScript(element, path, OmmlScriptType.Subscript),
@@ -279,6 +280,7 @@ internal static class OmmlParser
         ? element.LocalName switch
         {
             "r" => ParseRun(element, path),
+            "t" => ParseBareText(element, path),
             "f" => ParseFraction(element, path),
             "rad" => ParseRadical(element, path),
             "sSub" => ParseScript(element, path, OmmlScriptType.Subscript),
@@ -642,7 +644,11 @@ internal static class OmmlParser
 
     private static OmmlSequence ParseArgument(XElement? argument, string path)
     {
-        OmmlSequence sequence = new(path, argument == null ? Array.Empty<OmmlNode>() : ParseChildren(argument, path));
+        XElement? argumentProperties = argument == null ? null : MathChild(argument, "argPr");
+        XElement? argumentSize = argumentProperties == null ? null : MathChild(argumentProperties, "argSz");
+        int? size = argumentSize == null || !ArgumentSizeApplies(path) ? null : ParseInteger(
+            (string?)argumentSize.Attribute(XName.Get("val", MathNamespace)), 0, -2, 2);
+        OmmlSequence sequence = new(path, argument == null ? Array.Empty<OmmlNode>() : ParseChildren(argument, path), size);
         if (argument != null)
         {
             sequence.ControlPresentation = ParseControlPresentation(argument);
@@ -653,13 +659,39 @@ internal static class OmmlParser
 
     private static OmmlSequence ParseArgument(OpenXmlElement? argument, string path)
     {
-        OmmlSequence sequence = new(path, argument == null ? Array.Empty<OmmlNode>() : ParseChildren(argument, path));
+        OpenXmlElement? argumentProperties = argument == null ? null : MathChild(argument, "argPr");
+        OpenXmlElement? argumentSize = argumentProperties == null ? null : MathChild(argumentProperties, "argSz");
+        int? size = argumentSize == null || !ArgumentSizeApplies(path)
+            ? null : ParseInteger(Attribute(argumentSize, "val"), 0, -2, 2);
+        OmmlSequence sequence = new(path, argument == null ? Array.Empty<OmmlNode>() : ParseChildren(argument, path), size);
         if (argument != null)
         {
             sequence.ControlPresentation = ParseControlPresentation(argument);
             sequence.ControlRevision = ParseControlRevision(argument);
         }
         return sequence;
+    }
+
+    private static bool ArgumentSizeApplies(string path)
+    {
+        string[] segments = path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+        if (segments.Length < 2) return false;
+        static string Name(string segment)
+        {
+            int bracket = segment.IndexOf('[');
+            return bracket < 0 ? segment : segment.Substring(0, bracket);
+        }
+        return (Name(segments[segments.Length - 2]), Name(segments[segments.Length - 1])) switch
+        {
+            ("m:box", "m:e") or ("m:groupChr", "m:e") or
+            ("m:limLow", "m:lim") or ("m:limUpp", "m:lim") or
+            ("m:nary", "m:sub") or ("m:nary", "m:sup") or
+            ("m:rad", "m:deg") or ("m:sPre", "m:sub") or
+            ("m:sPre", "m:sup") or ("m:sSub", "m:sub") or
+            ("m:sSubSup", "m:sub") or ("m:sSubSup", "m:sup") or
+            ("m:sSup", "m:sup") => true,
+            _ => false,
+        };
     }
     private static XElement? MathChild(XElement element, string name) => element.Elements(XName.Get(name, MathNamespace)).FirstOrDefault();
     private static OpenXmlElement? MathChild(OpenXmlElement element, string name) => element.ChildElements.FirstOrDefault(e => e.NamespaceUri == MathNamespace && e.LocalName == name);
@@ -679,6 +711,14 @@ internal static class OmmlParser
             new[] { ExtractRunText(run) },
             all, e => e.NamespaceUri, e => e.LocalName, e => Attribute(e, "val"), Attribute, RunBreakAlignment(run));
     }
+
+    private static OmmlRun ParseBareText(XElement text, string path) => ParseRunCore(
+        path, new[] { text.Value }, Array.Empty<XElement>(), e => e.Name.NamespaceName,
+        e => e.Name.LocalName, _ => null, (_, _) => null, null);
+
+    private static OmmlRun ParseBareText(OpenXmlElement text, string path) => ParseRunCore(
+        path, new[] { text.InnerText }, Array.Empty<OpenXmlElement>(), e => e.NamespaceUri,
+        e => e.LocalName, _ => null, (_, _) => null, null);
 
     private static IReadOnlyList<OmmlNode> ParseParagraphRun(XElement run, string path)
     {
