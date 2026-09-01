@@ -94,6 +94,39 @@ internal sealed class OmmlScript : OmmlNode
     public bool HasControlProperties { get; }
 }
 
+internal enum OmmlDelimiterShape { Centered, Match }
+internal enum OmmlVerticalPosition { Top, Bottom }
+internal enum OmmlDecorationType { Accent, Bar, GroupCharacter }
+
+internal sealed class OmmlDelimiter : OmmlNode
+{
+    public OmmlDelimiter(string path, string begin, string separator, string end,
+        bool grow, OmmlDelimiterShape shape, IReadOnlyList<OmmlSequence> arguments,
+        bool hasControlProperties) : base(path)
+    { Begin = begin; Separator = separator; End = end; Grow = grow; Shape = shape; Arguments = arguments; HasControlProperties = hasControlProperties; }
+    public string Begin { get; }
+    public string Separator { get; }
+    public string End { get; }
+    public bool Grow { get; }
+    public OmmlDelimiterShape Shape { get; }
+    public IReadOnlyList<OmmlSequence> Arguments { get; }
+    public bool HasControlProperties { get; }
+}
+
+internal sealed class OmmlDecoration : OmmlNode
+{
+    public OmmlDecoration(string path, OmmlDecorationType type, string character,
+        OmmlVerticalPosition position, OmmlVerticalPosition verticalJustification,
+        OmmlSequence argument, bool hasControlProperties) : base(path)
+    { Type = type; Character = character; Position = position; VerticalJustification = verticalJustification; Argument = argument; HasControlProperties = hasControlProperties; }
+    public OmmlDecorationType Type { get; }
+    public string Character { get; }
+    public OmmlVerticalPosition Position { get; }
+    public OmmlVerticalPosition VerticalJustification { get; }
+    public OmmlSequence Argument { get; }
+    public bool HasControlProperties { get; }
+}
+
 internal sealed class OmmlUnsupported : OmmlNode
 {
     public OmmlUnsupported(string path, string elementName, string visibleText) : base(path)

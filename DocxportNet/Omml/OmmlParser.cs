@@ -184,6 +184,10 @@ internal static class OmmlParser
             "sSup" => ParseScript(element, path, OmmlScriptType.Superscript),
             "sSubSup" => ParseScript(element, path, OmmlScriptType.SubSup),
             "sPre" => ParseScript(element, path, OmmlScriptType.PreSubSup),
+            "d" => ParseDelimiter(element, path),
+            "acc" => ParseDecoration(element, path, OmmlDecorationType.Accent),
+            "bar" => ParseDecoration(element, path, OmmlDecorationType.Bar),
+            "groupChr" => ParseDecoration(element, path, OmmlDecorationType.GroupCharacter),
             _ => ParseUnsupported(element, path),
         }
         : ParseUnsupported(element, path);
@@ -198,6 +202,10 @@ internal static class OmmlParser
             "sSup" => ParseScript(element, path, OmmlScriptType.Superscript),
             "sSubSup" => ParseScript(element, path, OmmlScriptType.SubSup),
             "sPre" => ParseScript(element, path, OmmlScriptType.PreSubSup),
+            "d" => ParseDelimiter(element, path),
+            "acc" => ParseDecoration(element, path, OmmlDecorationType.Accent),
+            "bar" => ParseDecoration(element, path, OmmlDecorationType.Bar),
+            "groupChr" => ParseDecoration(element, path, OmmlDecorationType.GroupCharacter),
             _ => ParseUnsupported(element, path),
         }
         : ParseUnsupported(element, path);
@@ -258,6 +266,69 @@ internal static class OmmlParser
             ParseArgument(MathChild(element, "sub"), path + "/m:sub[1]"), ParseArgument(MathChild(element, "sup"), path + "/m:sup[1]"),
             align != null && Enabled(Attribute(align, "val")), properties?.Descendants().Any(e => e.NamespaceUri == MathNamespace && e.LocalName == "ctrlPr") == true);
     }
+
+    private static OmmlDelimiter ParseDelimiter(XElement element, string path)
+    {
+        XElement? properties = MathChild(element, "dPr");
+        return new OmmlDelimiter(path, CharProperty(properties, "begChr", "("),
+            CharProperty(properties, "sepChr", "|"), CharProperty(properties, "endChr", ")"),
+            OnOffProperty(properties, "grow", true), ShapeProperty(properties),
+            element.Elements(XName.Get("e", MathNamespace)).Select((e, i) => ParseArgument(e, $"{path}/m:e[{Index(i + 1)}]")).ToArray(),
+            HasControlProperties(properties));
+    }
+
+    private static OmmlDelimiter ParseDelimiter(OpenXmlElement element, string path)
+    {
+        OpenXmlElement? properties = MathChild(element, "dPr");
+        return new OmmlDelimiter(path, CharProperty(properties, "begChr", "("),
+            CharProperty(properties, "sepChr", "|"), CharProperty(properties, "endChr", ")"),
+            OnOffProperty(properties, "grow", true), ShapeProperty(properties),
+            element.ChildElements.Where(e => e.NamespaceUri == MathNamespace && e.LocalName == "e").Select((e, i) => ParseArgument(e, $"{path}/m:e[{Index(i + 1)}]")).ToArray(),
+            HasControlProperties(properties));
+    }
+
+    private static OmmlDecoration ParseDecoration(XElement element, string path, OmmlDecorationType type)
+    {
+        string propertyName = type switch { OmmlDecorationType.Accent => "accPr", OmmlDecorationType.Bar => "barPr", _ => "groupChrPr" };
+        XElement? properties = MathChild(element, propertyName);
+        OmmlVerticalPosition position = PositionProperty(properties, "pos", type == OmmlDecorationType.Accent ? OmmlVerticalPosition.Top : OmmlVerticalPosition.Bottom);
+        string character = type switch { OmmlDecorationType.Accent => CharProperty(properties, "chr", "̂"), OmmlDecorationType.Bar => "―", _ => CharProperty(properties, "chr", position == OmmlVerticalPosition.Top ? "⏞" : "⏟") };
+        return new OmmlDecoration(path, type, character, position, PositionProperty(properties, "vertJc", OmmlVerticalPosition.Top),
+            ParseArgument(MathChild(element, "e"), path + "/m:e[1]"), HasControlProperties(properties));
+    }
+
+    private static OmmlDecoration ParseDecoration(OpenXmlElement element, string path, OmmlDecorationType type)
+    {
+        string propertyName = type switch { OmmlDecorationType.Accent => "accPr", OmmlDecorationType.Bar => "barPr", _ => "groupChrPr" };
+        OpenXmlElement? properties = MathChild(element, propertyName);
+        OmmlVerticalPosition position = PositionProperty(properties, "pos", type == OmmlDecorationType.Accent ? OmmlVerticalPosition.Top : OmmlVerticalPosition.Bottom);
+        string character = type switch { OmmlDecorationType.Accent => CharProperty(properties, "chr", "̂"), OmmlDecorationType.Bar => "―", _ => CharProperty(properties, "chr", position == OmmlVerticalPosition.Top ? "⏞" : "⏟") };
+        return new OmmlDecoration(path, type, character, position, PositionProperty(properties, "vertJc", OmmlVerticalPosition.Top),
+            ParseArgument(MathChild(element, "e"), path + "/m:e[1]"), HasControlProperties(properties));
+    }
+
+    private static string CharProperty(XElement? properties, string name, string defaultValue)
+    {
+        XElement? property = properties == null ? null : MathChild(properties, name);
+        return property == null ? defaultValue : (string?)property.Attribute(XName.Get("val", MathNamespace)) ?? string.Empty;
+    }
+
+    private static string CharProperty(OpenXmlElement? properties, string name, string defaultValue)
+    {
+        OpenXmlElement? property = properties == null ? null : MathChild(properties, name);
+        return property == null ? defaultValue : Attribute(property, "val") ?? string.Empty;
+    }
+
+    private static bool OnOffProperty(XElement? properties, string name, bool defaultValue)
+    { XElement? property = properties == null ? null : MathChild(properties, name); return property == null ? defaultValue : Enabled((string?)property.Attribute(XName.Get("val", MathNamespace))); }
+    private static bool OnOffProperty(OpenXmlElement? properties, string name, bool defaultValue)
+    { OpenXmlElement? property = properties == null ? null : MathChild(properties, name); return property == null ? defaultValue : Enabled(Attribute(property, "val")); }
+    private static OmmlDelimiterShape ShapeProperty(XElement? properties) => properties == null || CharProperty(properties, "shp", "centered") != "match" ? OmmlDelimiterShape.Centered : OmmlDelimiterShape.Match;
+    private static OmmlDelimiterShape ShapeProperty(OpenXmlElement? properties) => properties == null || CharProperty(properties, "shp", "centered") != "match" ? OmmlDelimiterShape.Centered : OmmlDelimiterShape.Match;
+    private static OmmlVerticalPosition PositionProperty(XElement? properties, string name, OmmlVerticalPosition defaultValue) => properties == null || CharProperty(properties, name, defaultValue == OmmlVerticalPosition.Top ? "top" : "bot") != "top" ? (properties == null ? defaultValue : OmmlVerticalPosition.Bottom) : OmmlVerticalPosition.Top;
+    private static OmmlVerticalPosition PositionProperty(OpenXmlElement? properties, string name, OmmlVerticalPosition defaultValue) => properties == null || CharProperty(properties, name, defaultValue == OmmlVerticalPosition.Top ? "top" : "bot") != "top" ? (properties == null ? defaultValue : OmmlVerticalPosition.Bottom) : OmmlVerticalPosition.Top;
+    private static bool HasControlProperties(XElement? properties) => properties?.Descendants(XName.Get("ctrlPr", MathNamespace)).Any() == true;
+    private static bool HasControlProperties(OpenXmlElement? properties) => properties?.Descendants().Any(e => e.NamespaceUri == MathNamespace && e.LocalName == "ctrlPr") == true;
 
     private static OmmlSequence ParseArgument(XElement? argument, string path) => new(path, argument == null ? Array.Empty<OmmlNode>() : ParseChildren(argument, path));
     private static OmmlSequence ParseArgument(OpenXmlElement? argument, string path) => new(path, argument == null ? Array.Empty<OmmlNode>() : ParseChildren(argument, path));

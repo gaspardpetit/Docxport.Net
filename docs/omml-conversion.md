@@ -70,3 +70,25 @@ script structure but have no separate alignment-style mechanism. Control-run
 property presence is retained in the internal semantic model for later pipeline
 integration. Ordinary scripts are not guessed to be operator limits; explicit
 limit structures are handled separately by the later functions/limits goal.
+
+## Delimiters and decorations
+
+Delimiter objects retain repeated arguments and the normative defaults `(`,
+`|`, and `)`. A present character property with an absent or empty value is
+kept distinct from a missing property and suppresses that boundary or
+separator. MathML fence operators carry the requested stretching and OMML
+shape intent; LaTeX uses `\left`/`\right` for growing delimiters and idiomatic
+commands for braces, angle brackets, floors, ceilings, bars, and white
+brackets. Arbitrary Unicode delimiters pass through safely.
+
+Accents use MathML accent constructs and conventional LaTeX commands for
+acute, grave, hat, check, tilde, macron, breve, dot, diaeresis, vector, brace,
+and parenthesis forms. Unknown Unicode accents use an explicit generic
+over-accent. Bars remain distinct from accents through `accent="false"` and
+support top and bottom positions; an omitted bar position follows the OMML
+default and renders below. Group characters independently retain
+`pos` and `vertJc`; the latter is represented as
+`data-omml-vertical-justification` because MathML has no equivalent baseline
+alignment property. Supported nested structures remain structural. A
+decoration around a structure assigned to a later goal remains intact around
+that structure's diagnosed text fallback until its semantic node is added.

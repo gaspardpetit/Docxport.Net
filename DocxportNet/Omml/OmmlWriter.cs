@@ -141,6 +141,39 @@ internal static class OmmlWriter
             return;
         }
 
+        if (node is OmmlDelimiter delimiter)
+        {
+            XElement row = new(math + "mrow", new XAttribute("data-omml-shape", delimiter.Shape == OmmlDelimiterShape.Match ? "match" : "centered"));
+            AddFence(row, delimiter.Begin, delimiter.Grow, true);
+            for (int i = 0; i < delimiter.Arguments.Count; i++)
+            {
+                if (i != 0 && delimiter.Separator.Length != 0)
+                    row.Add(new XElement(math + "mo", new XAttribute("separator", "true"), delimiter.Separator));
+                AppendMathMl(row, delimiter.Arguments[i], compactFractions, options, diagnostics);
+            }
+            AddFence(row, delimiter.End, delimiter.Grow, false);
+            parent.Add(row);
+            return;
+        }
+
+        if (node is OmmlDecoration decoration)
+        {
+            bool above = decoration.Position == OmmlVerticalPosition.Top;
+            XElement rendered = new(math + (above ? "mover" : "munder"),
+                new XAttribute("data-omml-vertical-justification",
+                    decoration.VerticalJustification == OmmlVerticalPosition.Top ? "top" : "bot"));
+            if (decoration.Type != OmmlDecorationType.GroupCharacter)
+                rendered.SetAttributeValue(above ? "accent" : "accentunder",
+                    decoration.Type == OmmlDecorationType.Accent ? "true" : "false");
+            AppendMathMl(rendered, decoration.Argument, compactFractions, options, diagnostics);
+            string character = decoration.Type == OmmlDecorationType.Accent
+                ? MathMlAccentCharacter(decoration.Character)
+                : decoration.Character;
+            rendered.Add(new XElement(math + "mo", new XAttribute("stretchy", "true"), character));
+            parent.Add(rendered);
+            return;
+        }
+
         string fallback = ResolveFallback((OmmlUnsupported)node, options, diagnostics);
         if (fallback.Length != 0)
             parent.Add(new XElement(math + "mtext", fallback));
@@ -243,6 +276,34 @@ internal static class OmmlWriter
             return;
         }
 
+        if (node is OmmlDelimiter delimiter)
+        {
+            string separator = format == DxpOmmlOutputFormat.Latex ? EscapeLatex(delimiter.Separator) : delimiter.Separator;
+            string content = string.Join(separator,
+                delimiter.Arguments.Select(argument => RenderTextual(argument, format, options, diagnostics, escape)));
+            if (format == DxpOmmlOutputFormat.Latex)
+            {
+                string begin = LatexDelimiter(delimiter.Begin);
+                string end = LatexDelimiter(delimiter.End);
+                output.Append(delimiter.Grow
+                    ? $"\\left{(begin.Length == 0 ? "." : begin)}{content}\\right{(end.Length == 0 ? "." : end)}"
+                    : $"{begin}{content}{end}");
+            }
+            else output.Append(delimiter.Begin).Append(content).Append(delimiter.End);
+            return;
+        }
+
+        if (node is OmmlDecoration decoration)
+        {
+            string argument = RenderTextual(decoration.Argument, format, options, diagnostics, escape);
+            if (format == DxpOmmlOutputFormat.Latex)
+                output.Append(LatexDecoration(decoration, argument));
+            else if (format == DxpOmmlOutputFormat.UnicodeMath)
+                output.Append(UnicodeMathDecoration(decoration, argument));
+            else output.Append(decoration.Position == OmmlVerticalPosition.Top ? $"{argument} with {decoration.Character} above" : $"{argument} with {decoration.Character} below");
+            return;
+        }
+
         output.Append(escape(ResolveFallback((OmmlUnsupported)node, options, diagnostics)));
     }
 
@@ -252,6 +313,74 @@ internal static class OmmlWriter
         StringBuilder result = new();
         AppendTextual(result, node, format, options, diagnostics, escape);
         return result.ToString();
+    }
+
+    private static void AddFence(XElement row, string value, bool grow, bool opening)
+    {
+        if (value.Length == 0) return;
+        XNamespace math = MathMlNamespace;
+        row.Add(new XElement(math + "mo", new XAttribute("fence", "true"),
+            new XAttribute("stretchy", grow ? "true" : "false"),
+            new XAttribute("form", opening ? "prefix" : "postfix"), value));
+    }
+
+    private static string LatexDelimiter(string value)
+    {
+        if (value.Length == 0) return string.Empty;
+        return value switch
+        {
+            "{" => @"\{", "}" => @"\}", "⟨" => @"\langle", "⟩" => @"\rangle",
+            "⌊" => @"\lfloor", "⌋" => @"\rfloor", "⌈" => @"\lceil", "⌉" => @"\rceil",
+            "‖" => @"\Vert", "⟦" => @"\lbbrack", "⟧" => @"\rbbrack",
+            _ => EscapeLatex(value),
+        };
+    }
+
+    private static string MathMlAccentCharacter(string value) => value switch
+    {
+        "́" => "´", "̀" => "`", "̂" => "^", "̌" => "ˇ", "̃" => "~",
+        "̄" => "¯", "̆" => "˘", "̇" => "˙", "̈" => "¨", "⃗" => "→",
+        _ => value,
+    };
+
+    private static string LatexDecoration(OmmlDecoration decoration, string argument)
+    {
+        string? command = decoration.Type switch
+        {
+            OmmlDecorationType.Bar => decoration.Position == OmmlVerticalPosition.Top ? "overline" : "underline",
+            OmmlDecorationType.GroupCharacter => (decoration.Position, decoration.Character) switch
+            {
+                (OmmlVerticalPosition.Top, "⏞") => "overbrace",
+                (OmmlVerticalPosition.Bottom, "⏟") => "underbrace",
+                (OmmlVerticalPosition.Top, "⏜") => "overparen",
+                (OmmlVerticalPosition.Bottom, "⏝") => "underparen",
+                _ => null,
+            },
+            _ => decoration.Character switch
+            {
+                "́" => "acute", "̀" => "grave", "̂" => "hat", "̌" => "check", "̃" => "tilde",
+                "̄" => "bar", "̆" => "breve", "̇" => "dot", "̈" => "ddot", "⃗" => "vec",
+                "⏞" => "overbrace", "⏜" => "overparen",
+                _ => null,
+            },
+        };
+        if (command != null) return $"\\{command}{{{argument}}}";
+        string escaped = EscapeLatex(decoration.Character);
+        return decoration.Position == OmmlVerticalPosition.Top
+            ? $"\\overset{{\\text{{{escaped}}}}}{{{argument}}}"
+            : $"\\underset{{\\text{{{escaped}}}}}{{{argument}}}";
+    }
+
+    private static string UnicodeMathDecoration(OmmlDecoration decoration, string argument)
+    {
+        string grouped = $"({argument})";
+        if (decoration.Type == OmmlDecorationType.Accent)
+            return decoration.Character is "⏞" or "⏜" ? decoration.Character + grouped : grouped + decoration.Character;
+        if (decoration.Type == OmmlDecorationType.Bar)
+            return grouped + (decoration.Position == OmmlVerticalPosition.Top ? "̅" : "̲");
+        return decoration.Position == OmmlVerticalPosition.Top
+            ? $"{grouped}┴({decoration.Character})"
+            : $"{grouped}┬{decoration.Character}";
     }
 
     private static string ResolveFallback(

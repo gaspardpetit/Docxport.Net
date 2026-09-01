@@ -138,16 +138,16 @@ Plurimath is a behavioral oracle and source of test ideas, not the definition of
 
 ### Delimiters: `m:d` / `m:dPr`
 
-- [ ] P0 Render default parentheses when delimiter properties are absent.
-- [ ] P0 Render explicit `m:begChr` and `m:endChr`.
-- [ ] P0 Support an intentionally empty opening or closing delimiter.
-- [ ] P1 Render multiple `m:e` arguments separated by `m:sepChr`.
-- [ ] P1 Distinguish a missing separator from an explicitly empty separator.
-- [ ] P1 Support `m:grow` stretchy delimiters.
-- [ ] P1 Support delimiter shape `m:shp`: centered and match.
-- [ ] P1 Map common parentheses, brackets, braces, bars, double bars, angle brackets, floors, ceilings, and white brackets.
-- [ ] P1 Preserve delimiters around matrices and equation arrays.
-- [ ] P2 Provide safe fallback for arbitrary Unicode delimiter characters.
+- [x] P0 Render default parentheses when delimiter properties are absent.
+- [x] P0 Render explicit `m:begChr` and `m:endChr`.
+- [x] P0 Support an intentionally empty opening or closing delimiter.
+- [x] P1 Render multiple `m:e` arguments separated by `m:sepChr`.
+- [x] P1 Distinguish a missing separator from an explicitly empty separator.
+- [x] P1 Support `m:grow` stretchy delimiters.
+- [x] P1 Support delimiter shape `m:shp`: centered and match.
+- [x] P1 Map common parentheses, brackets, braces, bars, double bars, angle brackets, floors, ceilings, and white brackets.
+- [x] P1 Preserve delimiters around matrices and equation arrays.
+- [x] P2 Provide safe fallback for arbitrary Unicode delimiter characters.
 
 ### N-ary operators: `m:nary` / `m:naryPr`
 
@@ -179,27 +179,27 @@ Plurimath is a behavioral oracle and source of test ideas, not the definition of
 
 ### Accents: `m:acc` / `m:accPr`
 
-- [ ] P0 Render the default hat when `m:chr` is absent.
-- [ ] P0 Render an explicit accent character above the argument.
-- [ ] P1 Map common acute, grave, hat, check, tilde, macron, breve, dot, diaeresis, and vector accents to idiomatic LaTeX.
-- [ ] P1 Support arbitrary Unicode combining/accent characters via generic over-accent output.
-- [ ] P1 Distinguish an accent from an ordinary overset.
-- [ ] P1 Retain `m:ctrlPr` formatting intent.
+- [x] P0 Render the default hat when `m:chr` is absent.
+- [x] P0 Render an explicit accent character above the argument.
+- [x] P1 Map common acute, grave, hat, check, tilde, macron, breve, dot, diaeresis, and vector accents to idiomatic LaTeX.
+- [x] P1 Support arbitrary Unicode combining/accent characters via generic over-accent output.
+- [x] P1 Distinguish an accent from an ordinary overset.
+- [x] P1 Retain `m:ctrlPr` formatting intent.
 
 ### Bars: `m:bar` / `m:barPr`
 
-- [ ] P0 Render an overbar.
-- [ ] P1 Apply `m:pos="top"` and `m:pos="bot"`.
-- [ ] P1 Distinguish bars from accent characters in MathML.
-- [ ] P1 Retain `m:ctrlPr` formatting intent.
+- [x] P0 Render an overbar.
+- [x] P1 Apply `m:pos="top"` and `m:pos="bot"`.
+- [x] P1 Distinguish bars from accent characters in MathML.
+- [x] P1 Retain `m:ctrlPr` formatting intent.
 
 ### Group characters: `m:groupChr` / `m:groupChrPr`
 
-- [ ] P1 Render group characters above and below an expression.
-- [ ] P1 Support explicit `m:chr` and the default group character.
-- [ ] P1 Apply `m:pos` and `m:vertJc` independently.
-- [ ] P1 Map overbrace, underbrace, overparen, underparen, and other common group characters to idiomatic LaTeX.
-- [ ] P1 Retain `m:ctrlPr` formatting intent.
+- [x] P1 Render group characters above and below an expression.
+- [x] P1 Support explicit `m:chr` and the default group character.
+- [x] P1 Apply `m:pos` and `m:vertJc` independently.
+- [x] P1 Map overbrace, underbrace, overparen, underparen, and other common group characters to idiomatic LaTeX.
+- [x] P1 Retain `m:ctrlPr` formatting intent.
 
 ### Matrices: `m:m`, `m:mr`, `m:mPr`
 
@@ -465,10 +465,10 @@ Complete these goals in order. Goals 3-10 are vertical feature slices: each incl
 
 ### Goal 5: Delimiters and decorations
 
-- [ ] Implement delimiters, repeated arguments, separators, empty boundaries, growth, and shape.
-- [ ] Implement accents, bars above/below, and group characters.
-- [ ] Cover common and arbitrary Unicode delimiters and accents.
-- [ ] Cover decorated matrices and nested decorated expressions.
+- [x] Implement delimiters, repeated arguments, separators, empty boundaries, growth, and shape.
+- [x] Implement accents, bars above/below, and group characters.
+- [x] Cover common and arbitrary Unicode delimiters and accents.
+- [x] Cover decorated matrices and nested decorated expressions.
 
 ### Goal 6: Functions, limits, and n-ary operators
 
