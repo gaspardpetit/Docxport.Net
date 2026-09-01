@@ -5,7 +5,7 @@ This document tracks the requirements for a professional-grade, standalone Offic
 The converter is one-way for this phase:
 
 ```text
-OMML -> semantic math model -> MathML / LaTeX / readable Unicode text
+OMML -> semantic math model -> MathML / LaTeX / UnicodeMath / basic readable text
 ```
 
 Mark an item complete only when its behavior is covered by a focused unit test. Structural features should also have at least one nested/composition test. Visual properties that cannot be represented exactly in an output format must have a documented deterministic approximation.
@@ -37,28 +37,29 @@ Plurimath is a behavioral oracle and source of test ideas, not the definition of
 
 ### Standalone public surface
 
-- [ ] P0 Accept an OMML XML string containing `m:oMath` or `m:oMathPara`.
-- [ ] P0 Accept Open XML SDK `OfficeMath` and `DocumentFormat.OpenXml.Math.Paragraph` instances without reparsing XML.
-- [ ] P0 Provide expression-only LaTeX output; callers add Markdown `$` or `$$` delimiters.
-- [ ] P0 Provide a standalone MathML `<math>` element with the correct inline/display mode.
-- [ ] P0 Provide HTML-ready output using native MathML, with no document or visitor dependency.
-- [ ] P0 Provide readable Unicode text suitable for plain-text export and accessibility fallback.
-- [ ] P0 Provide throwing methods with consistent exception types for malformed input.
-- [ ] P0 Provide `Try...` methods for non-throwing conversion.
-- [ ] P0 Distinguish malformed XML, unsupported valid OMML, and lossy-but-successful conversion.
-- [ ] P1 Return optional diagnostics identifying unsupported elements/properties and applied approximations.
-- [ ] P1 Support caller-selected fallback policy: throw, extract descendant text, placeholder, or omit.
-- [ ] P1 Expose inline/display override while defaulting from `oMath` versus `oMathPara`.
+- [x] P0 Accept an OMML XML string containing `m:oMath` or `m:oMathPara`.
+- [x] P0 Accept Open XML SDK `OfficeMath` and `DocumentFormat.OpenXml.Math.Paragraph` instances without reparsing XML.
+- [x] P0 Provide expression-only LaTeX output; callers add Markdown `$` or `$$` delimiters.
+- [x] P0 Provide a standalone MathML `<math>` element with the correct inline/display mode.
+- [x] P0 Provide HTML-ready output using native MathML, with no document or visitor dependency.
+- [x] P0 Provide UnicodeMath output as the structure-preserving plain-text representation.
+- [x] P0 Provide a separate basic readable-text output for accessibility and low-fidelity consumers.
+- [x] P0 Provide throwing methods with consistent exception types for malformed input.
+- [x] P0 Provide `Try...` methods for non-throwing conversion.
+- [x] P0 Distinguish malformed XML, unsupported valid OMML, and lossy-but-successful conversion.
+- [x] P1 Return optional diagnostics identifying unsupported elements/properties and applied approximations.
+- [x] P1 Support caller-selected fallback policy: throw, extract descendant text, placeholder, or omit.
+- [x] P1 Expose inline/display override while defaulting from `oMath` versus `oMathPara`.
 - [ ] P2 Allow custom symbol and unsupported-node handlers without exposing the internal AST.
 
 ### Architectural boundaries
 
-- [ ] P0 Keep parsing and rendering independent of `DxpWalker`, document context, and visitor types.
-- [ ] P0 Use one parsed semantic model for all writers.
-- [ ] P0 Keep output writers deterministic and culture-invariant.
-- [ ] P0 Preserve source child order, including repeated children of the same type.
-- [ ] P1 Keep the semantic model internal until a stable customization use case requires public exposure.
-- [ ] P1 Ensure the implementation is safe for concurrent use.
+- [x] P0 Keep parsing and rendering independent of `DxpWalker`, document context, and visitor types.
+- [x] P0 Use one parsed semantic model for all writers.
+- [x] P0 Keep output writers deterministic and culture-invariant.
+- [x] P0 Preserve source child order, including repeated children of the same type.
+- [x] P1 Keep the semantic model internal until a stable customization use case requires public exposure.
+- [x] P1 Ensure the implementation is safe for concurrent use.
 - [ ] P1 Support all Docxport target frameworks, including browser/WASM.
 - [ ] P2 Permit streaming to a `TextWriter` in addition to string-returning convenience methods.
 
@@ -324,7 +325,7 @@ Word accepts more WordprocessingML inside `m:oMath` than the base schema clearly
 - [ ] P1 Render multi-line structures with a caller-selected single-line or multi-line policy.
 - [ ] P1 Define accessible names for invisible or purely visual constructs.
 - [ ] P1 Avoid dependence on terminal width or current culture.
-- [ ] P2 Offer a strict UnicodeMath profile separately from the default human-readable profile.
+- [ ] P2 Define the supported UnicodeMath version/profile and document intentional deviations.
 
 ## Error handling, security, and quality
 
@@ -430,7 +431,7 @@ The following Plurimath behaviors are intentionally not sufficient as our target
 
 ## Goal-by-goal implementation sequence
 
-Complete these goals in order. Goals 3-10 are vertical feature slices: each includes parsing/model work, MathML, LaTeX and readable-text output, focused tests, nested/composition tests, and all applicable upstream corpus tests. Do not defer a feature's writers to a later goal.
+Complete these goals in order. Goals 3-10 are vertical feature slices: each includes parsing/model work, MathML, LaTeX, UnicodeMath and basic-text output, focused tests, nested/composition tests, and all applicable upstream corpus tests. Do not defer a feature's writers to a later goal.
 
 ### Goal 1: Oracle and test harness
 
@@ -442,11 +443,11 @@ Complete these goals in order. Goals 3-10 are vertical feature slices: each incl
 
 ### Goal 2: Standalone API and parser foundation
 
-- [ ] Implement the standalone public conversion surface and options.
-- [ ] Implement secure XML parsing, OMML root validation, ordered sequences, and the initial semantic model.
-- [ ] Implement consistent exceptions, `Try...` methods, diagnostics, and fallback policies.
-- [ ] Establish deterministic, culture-invariant MathML, LaTeX, HTML-ready, and readable-text writers.
-- [ ] Confirm the architecture has no dependency on the document walker or visitors.
+- [x] Implement the standalone public conversion surface and options.
+- [x] Implement secure XML parsing, OMML root validation, ordered sequences, and the initial semantic model.
+- [x] Implement consistent exceptions, `Try...` methods, diagnostics, and fallback policies.
+- [x] Establish deterministic, culture-invariant MathML, LaTeX, UnicodeMath, basic-text, and HTML-ready writers.
+- [x] Confirm the architecture has no dependency on the document walker or visitors.
 
 ### Goal 3: Runs, tokens, symbols, and styling
 
@@ -549,7 +550,7 @@ A feature goal is complete only when all of the following are true:
 
 - [ ] Its normative elements, properties, defaults, and invalid-input behavior have been reviewed.
 - [ ] Parsing and the semantic model preserve the information required by every output.
-- [ ] MathML, LaTeX, HTML-ready behavior where distinct, and readable text are implemented.
+- [ ] MathML, LaTeX, UnicodeMath, basic text, and HTML-ready behavior where distinct are implemented.
 - [ ] Focused, nested/composition, upstream-corpus, and identified-gap tests pass.
 - [ ] The complete repository test suite passes.
 - [ ] Lossy mappings are documented and produce the agreed diagnostics.
