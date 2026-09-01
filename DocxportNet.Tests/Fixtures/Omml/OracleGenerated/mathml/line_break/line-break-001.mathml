@@ -1,0 +1,21 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <mrow>
+      <munderover>
+        <mo>&#x2211;</mo>
+        <mtext>d</mtext>
+        <mn>3</mn>
+      </munderover>
+      <mtext>d</mtext>
+    </mrow>
+    <mo linebreak="newline"/>
+    <mrow>
+      <munderover>
+        <mo>&#x220f;</mo>
+        <mn>3</mn>
+        <mtext>d</mtext>
+      </munderover>
+      <mtext>e</mtext>
+    </mrow>
+  </mstyle>
+</math>

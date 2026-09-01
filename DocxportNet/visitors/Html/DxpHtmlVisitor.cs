@@ -11,6 +11,7 @@ using DocxportNet.Core;
 using System.Net;
 using DocxportNet.Visitors.Markdown;
 using DocxportNet.Fields;
+using DocxportNet.Omml;
 using DocxportNet.Walker.Context;
 using DocxportNet.Walker;
 
@@ -73,6 +74,8 @@ public sealed record DxpHtmlVisitorConfig
     public bool UsePlainComments = false;
     public bool EmitCustomProperties = true;
     public bool EmitTimeline = false;
+    public DxpOmmlOutputFormat? MathOutputFormat = DxpOmmlOutputFormat.MathMl;
+    public IDxpOmmlEmbeddedContentResolver? MathEmbeddedContentResolver = new DxpWalkerOmmlEmbeddedContentResolver();
     public string? StylesheetHref = null;
     public bool EmbedDefaultStylesheet = true;
     public string RootCssClass = "dxp-root";
@@ -81,7 +84,7 @@ public sealed record DxpHtmlVisitorConfig
     public DxpHeaderFooterSelection HeaderSelection = DxpHeaderFooterSelection.First;
     public DxpHeaderFooterSelection FooterSelection = DxpHeaderFooterSelection.First;
 
-    public static DxpHtmlVisitorConfig CreateRichConfig() => new();
+    public static DxpHtmlVisitorConfig CreateRichConfig() => new() { MathOutputFormat = DxpOmmlOutputFormat.MathMl };
     public static DxpHtmlVisitorConfig CreatePlainConfig() => new() {
         EmitImages = false,
         EmitStyleFont = false,
@@ -97,7 +100,8 @@ public sealed record DxpHtmlVisitorConfig
         EmitPageNumbers = false,
         UsePlainComments = true,
         EmitCustomProperties = true,
-        EmitTimeline = false
+        EmitTimeline = false,
+        MathOutputFormat = DxpOmmlOutputFormat.MathMl,
     };
 
     public static DxpHtmlVisitorConfig CreateConfig() => CreateRichConfig();
@@ -578,6 +582,39 @@ body.dxp-root {
     public override IDisposable VisitDeletedBegin(Deleted del, DxpIDocumentContext d) => DxpDisposable.Empty;
     public override IDisposable VisitDeletedRunBegin(DeletedRun dr, DxpIDocumentContext d) => DxpDisposable.Empty;
     public override void VisitDeletedParagraphMark(Deleted del, ParagraphProperties pPr, Paragraph? p, DxpIDocumentContext d) { }
+
+    public override void VisitOMath(DocumentFormat.OpenXml.Math.OfficeMath oMath, DxpIDocumentContext d)
+    {
+        if (_config.MathOutputFormat is DxpOmmlOutputFormat format)
+            WriteMath(d, DxpOmmlConverter.Convert(oMath, format, MathConversionOptions()).Output, format);
+    }
+
+    public override void VisitOMathParagraph(DocumentFormat.OpenXml.Math.Paragraph oMathPara, DxpIDocumentContext d)
+    {
+        if (_config.MathOutputFormat is DxpOmmlOutputFormat format)
+            WriteMath(d, DxpOmmlConverter.Convert(oMathPara, format, MathConversionOptions()).Output, format);
+    }
+
+    private DxpOmmlConversionOptions MathConversionOptions() => new()
+    {
+        EmbeddedContentResolver = _config.MathEmbeddedContentResolver,
+        RevisionMode = _config.TrackedChangeMode switch
+        {
+            DxpTrackedChangeMode.RejectChanges => DxpOmmlRevisionMode.Reject,
+            DxpTrackedChangeMode.InlineChanges or DxpTrackedChangeMode.SplitChanges => DxpOmmlRevisionMode.Preserve,
+            _ => DxpOmmlRevisionMode.Accept,
+        },
+        FieldMode = DxpOmmlFieldMode.CachedResult,
+    };
+
+    private static string EncodeMath(string output, DxpOmmlOutputFormat format)
+    {
+        return format == DxpOmmlOutputFormat.MathMl ? output : WebUtility.HtmlEncode(output);
+    }
+
+    private void WriteMath(DxpIDocumentContext d, string output, DxpOmmlOutputFormat format) =>
+        Write(d, EncodeMath(output, format));
+
     public override IDisposable VisitInsertedRunBegin(InsertedRun ir, DxpIDocumentContext d) => DxpDisposable.Empty;
 
     public override void VisitDeletedText(DeletedText dt, DxpIDocumentContext d)

@@ -9,6 +9,7 @@ using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using DocxportNet.Fields;
+using DocxportNet.Omml;
 using DocxportNet.Walker;
 
 namespace DocxportNet.Visitors.PlainText;
@@ -25,8 +26,14 @@ public sealed record DxpPlainTextVisitorConfig
     public string ImagePlaceholder = "[IMAGE]";
     public bool EmitDocumentProperties = true;
     public bool EmitCustomProperties = true;
-    public static DxpPlainTextVisitorConfig CreateAcceptConfig() => new();
-    public static DxpPlainTextVisitorConfig CreateRejectConfig() => new() { TrackedChangeMode = DxpPlainTextTrackedChangeMode.RejectChanges };
+    public DxpOmmlOutputFormat? MathOutputFormat = DxpOmmlOutputFormat.Text;
+    public IDxpOmmlEmbeddedContentResolver? MathEmbeddedContentResolver = new DxpWalkerOmmlEmbeddedContentResolver();
+    public static DxpPlainTextVisitorConfig CreateAcceptConfig() => new() { MathOutputFormat = DxpOmmlOutputFormat.Text };
+    public static DxpPlainTextVisitorConfig CreateRejectConfig() => new()
+    {
+        TrackedChangeMode = DxpPlainTextTrackedChangeMode.RejectChanges,
+        MathOutputFormat = DxpOmmlOutputFormat.Text,
+    };
 }
 
 public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor, IDisposable, DxpIFieldEvalProvider
@@ -148,6 +155,27 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor, IDisposab
         if (!string.IsNullOrEmpty(translated))
             Write(translated, d);
     }
+
+    public override void VisitOMath(DocumentFormat.OpenXml.Math.OfficeMath oMath, DxpIDocumentContext d)
+    {
+        if (_config.MathOutputFormat is DxpOmmlOutputFormat format)
+            Write(DxpOmmlConverter.Convert(oMath, format, MathConversionOptions()).Output, d);
+    }
+
+    public override void VisitOMathParagraph(DocumentFormat.OpenXml.Math.Paragraph oMathPara, DxpIDocumentContext d)
+    {
+        if (_config.MathOutputFormat is DxpOmmlOutputFormat format)
+            Write(DxpOmmlConverter.Convert(oMathPara, format, MathConversionOptions()).Output, d);
+    }
+
+    private DxpOmmlConversionOptions MathConversionOptions() => new()
+    {
+        EmbeddedContentResolver = _config.MathEmbeddedContentResolver,
+        RevisionMode = _config.TrackedChangeMode == DxpPlainTextTrackedChangeMode.RejectChanges
+            ? DxpOmmlRevisionMode.Reject
+            : DxpOmmlRevisionMode.Accept,
+        FieldMode = DxpOmmlFieldMode.CachedResult,
+    };
 
     public override void StyleAllCapsBegin(DxpIDocumentContext d) => _state.AllCaps = true;
     public override void StyleAllCapsEnd(DxpIDocumentContext d) => _state.AllCaps = false;

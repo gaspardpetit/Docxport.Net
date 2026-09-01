@@ -134,15 +134,15 @@ string rejected = DxpExport.ExportToString(docxPath, rejectVisitor);
 ## Visitors and options
 
 **Markdown**  
-- Presets: `DxpMarkdownVisitorConfig.CreateRichConfig()` (styled) and `CreatePlainConfig()` (minimal).  
+- Presets: `DxpMarkdownVisitorConfig.CreateRichConfig()` (styled) and `CreatePlainConfig()` (minimal); both default math to LaTeX with visitor-owned delimiters.
 - Options cover images, inline styling, rich tables, comments formatting, custom properties, and tracked change mode.
 
 **HTML**  
-- Preset: `DxpHtmlVisitorConfig.CreateRichConfig()` (styled) and `CreatePlainConfig()` (minimal).
+- Preset: `DxpHtmlVisitorConfig.CreateRichConfig()` (styled) and `CreatePlainConfig()` (minimal); both default math to native MathML.
 - Options cover inline styles, colors/backgrounds, table borders, document colors, headers/footers, comments mode, custom properties, timeline, and tracked change mode.
 
 **Plain text**  
-- Presets: `DxpPlainTextVisitorConfig.CreateAcceptConfig()` and `CreateRejectConfig()` (choose tracked change handling).  
+- Presets: `DxpPlainTextVisitorConfig.CreateAcceptConfig()` and `CreateRejectConfig()` (choose tracked change handling); both default math to readable text.
 - Focused on readable text output with list markers, comments, and basic structure.
 
 **DOCX**

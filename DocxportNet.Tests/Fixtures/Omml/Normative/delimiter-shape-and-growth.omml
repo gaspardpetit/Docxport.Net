@@ -1,0 +1,4 @@
+<m:oMath xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math">
+  <m:d><m:dPr><m:begChr m:val="("/><m:endChr m:val=")"/><m:grow/><m:shp m:val="centered"/></m:dPr><m:e><m:r><m:t>x</m:t></m:r></m:e></m:d>
+  <m:d><m:dPr><m:begChr m:val="["/><m:endChr m:val="]"/><m:grow m:val="0"/><m:shp m:val="match"/></m:dPr><m:e><m:r><m:t>y</m:t></m:r></m:e></m:d>
+</m:oMath>

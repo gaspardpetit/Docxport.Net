@@ -1,0 +1,12 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <mrow>
+      <msubsup>
+        <mo>&#x222e;</mo>
+        <mn>2</mn>
+        <mn>1</mn>
+      </msubsup>
+      <mn>3</mn>
+    </mrow>
+  </mstyle>
+</math>

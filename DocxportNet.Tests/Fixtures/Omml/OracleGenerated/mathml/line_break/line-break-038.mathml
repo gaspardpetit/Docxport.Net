@@ -1,0 +1,13 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <mrow>
+      <mo rspace="thickmathspace"/>
+      <mrow>
+        <mi>csc</mi>
+        <mi>&#x3b8;</mi>
+      </mrow>
+    </mrow>
+    <mo linebreak="newline"/>
+    <mi>&#x3b3;</mi>
+  </mstyle>
+</math>

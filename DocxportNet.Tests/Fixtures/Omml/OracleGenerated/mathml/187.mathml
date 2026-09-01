@@ -1,0 +1,95 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <mi>-</mi>
+    <mrow>
+      <mo rspace="thickmathspace"/>
+      <mi>ln</mi>
+    </mrow>
+    <mstyle mathvariant="italic">
+      <mtext>R</mtext>
+    </mstyle>
+    <mo>=</mo>
+    <mrow>
+      <mo>{</mo>
+      <mtable>
+        <mtr>
+          <mtd>
+            <mn>2</mn>
+            <msub>
+              <mstyle mathvariant="italic">
+                <mtext>N</mtext>
+              </mstyle>
+              <mtext>tot</mtext>
+            </msub>
+            <mstyle mathvariant="italic">
+              <mi>&#x3c4;</mi>
+            </mstyle>
+          </mtd>
+          <mtd>
+            <mtext>for </mtext>
+            <mstyle mathvariant="italic">
+              <mi>&#x3c4;</mi>
+            </mstyle>
+            <mi>&lt;</mi>
+            <msub>
+              <mstyle mathvariant="italic">
+                <mi>&#x3c4;</mi>
+              </mstyle>
+              <mtext>o</mtext>
+            </msub>
+          </mtd>
+        </mtr>
+        <mtr>
+          <mtd>
+            <mn>2</mn>
+            <msub>
+              <mstyle mathvariant="italic">
+                <mtext>N</mtext>
+              </mstyle>
+              <mtext>tot</mtext>
+            </msub>
+            <mstyle mathvariant="italic">
+              <mi>&#x3c4;</mi>
+            </mstyle>
+            <mi>-</mi>
+            <mn>4</mn>
+            <msub>
+              <mstyle mathvariant="italic">
+                <mtext>N</mtext>
+              </mstyle>
+              <mtext>pair</mtext>
+            </msub>
+            <mrow>
+              <mo>(</mo>
+              <mstyle mathvariant="italic">
+                <mi>&#x3c4;</mi>
+              </mstyle>
+              <mi>-</mi>
+              <msub>
+                <mstyle mathvariant="italic">
+                  <mi>&#x3c4;</mi>
+                </mstyle>
+                <mtext>o</mtext>
+              </msub>
+              <mo>)</mo>
+            </mrow>
+          </mtd>
+          <mtd>
+            <mi>'' </mi>
+            <mstyle mathvariant="italic">
+              <mi>&#x3c4;</mi>
+            </mstyle>
+            <mi>&gt;</mi>
+            <msub>
+              <mstyle mathvariant="italic">
+                <mi>&#x3c4;</mi>
+              </mstyle>
+              <mtext>o</mtext>
+            </msub>
+          </mtd>
+        </mtr>
+      </mtable>
+      <mo></mo>
+    </mrow>
+  </mstyle>
+</math>

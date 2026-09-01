@@ -1,0 +1,21 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <mrow>
+      <mo rspace="thickmathspace"/>
+      <mi>glb</mi>
+    </mrow>
+    <mrow>
+      <mo>(</mo>
+      <mtext>a</mtext>
+      <mtext>s</mtext>
+      <mo>)</mo>
+    </mrow>
+    <mo linebreak="newline"/>
+    <mrow>
+      <mo>(</mo>
+      <mtext>d</mtext>
+      <mtext>f</mtext>
+      <mo>)</mo>
+    </mrow>
+  </mstyle>
+</math>

@@ -1,0 +1,10 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <munder>
+      <mstyle mathvariant="normal">
+        <mo>&#xaf;</mo>
+      </mstyle>
+      <mtext>ABC</mtext>
+    </munder>
+  </mstyle>
+</math>

@@ -1,0 +1,6 @@
+<m:oMath xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:hyperlink><w:r><w:t>link</w:t></w:r></w:hyperlink>
+  <w:fldSimple w:instr=" DATE "><w:r><w:t>cached</w:t></w:r></w:fldSimple>
+  <w:ins><w:r><w:t>new</w:t></w:r></w:ins>
+  <w:del><w:r><w:delText>old</w:delText></w:r></w:del>
+</m:oMath>

@@ -1,0 +1,27 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <mtext>f</mtext>
+    <mrow>
+      <mo>(</mo>
+      <mtext>x</mtext>
+      <mo>)</mo>
+    </mrow>
+    <mo>=</mo>
+    <mrow>
+      <mo>{</mo>
+      <mtable>
+        <mtr>
+          <mtd>
+            <mtext>-x,  &x&lt;0</mtext>
+          </mtd>
+        </mtr>
+        <mtr>
+          <mtd>
+            <mtext>x,  &x≥0</mtext>
+          </mtd>
+        </mtr>
+      </mtable>
+      <mo>)</mo>
+    </mrow>
+  </mstyle>
+</math>

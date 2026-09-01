@@ -1,0 +1,266 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <mfrac>
+      <mrow>
+        <msubsup>
+          <mtext>u</mtext>
+          <mstyle mathvariant="normal">
+            <mtext>c</mtext>
+          </mstyle>
+          <mn>2</mn>
+        </msubsup>
+        <mrow>
+          <mo>(</mo>
+          <msub>
+            <mstyle mathvariant="italic">
+              <mtext>A</mtext>
+            </mstyle>
+            <mtext>x</mtext>
+          </msub>
+          <mo>)</mo>
+        </mrow>
+      </mrow>
+      <msubsup>
+        <mstyle mathvariant="italic">
+          <mtext>A</mtext>
+        </mstyle>
+        <mtext>x</mtext>
+        <mn>2</mn>
+      </msubsup>
+    </mfrac>
+    <mo>=</mo>
+    <mo linebreak="newline"/>
+    <mfrac>
+      <mrow>
+        <msup>
+          <mtext>u</mtext>
+          <mn>2</mn>
+        </msup>
+        <mrow>
+          <mo>(</mo>
+          <msub>
+            <mstyle mathvariant="italic">
+              <mtext>A</mtext>
+            </mstyle>
+            <mstyle mathvariant="normal">
+              <mtext>S</mtext>
+            </mstyle>
+          </msub>
+          <mo>)</mo>
+        </mrow>
+      </mrow>
+      <msubsup>
+        <mstyle mathvariant="italic">
+          <mtext>A</mtext>
+        </mstyle>
+        <mstyle mathvariant="normal">
+          <mtext>S</mtext>
+        </mstyle>
+        <mn>2</mn>
+      </msubsup>
+    </mfrac>
+    <mo>+</mo>
+    <mfrac>
+      <mrow>
+        <msup>
+          <mtext>u</mtext>
+          <mn>2</mn>
+        </msup>
+        <mrow>
+          <mo>(</mo>
+          <msub>
+            <mtext>m</mtext>
+            <mstyle mathvariant="normal">
+              <mtext>S</mtext>
+            </mstyle>
+          </msub>
+          <mo>)</mo>
+        </mrow>
+      </mrow>
+      <msubsup>
+        <mtext>m</mtext>
+        <mstyle mathvariant="normal">
+          <mtext>S</mtext>
+        </mstyle>
+        <mn>2</mn>
+      </msubsup>
+    </mfrac>
+    <mo>+</mo>
+    <mo linebreak="newline"/>
+    <mfrac>
+      <mrow>
+        <msup>
+          <mtext>u</mtext>
+          <mn>2</mn>
+        </msup>
+        <mrow>
+          <mo>(</mo>
+          <msub>
+            <mtext>m</mtext>
+            <mtext>x</mtext>
+          </msub>
+          <mo>)</mo>
+        </mrow>
+      </mrow>
+      <msubsup>
+        <mtext>m</mtext>
+        <mtext>x</mtext>
+        <mn>2</mn>
+      </msubsup>
+    </mfrac>
+    <mo>+</mo>
+    <mfrac>
+      <mrow>
+        <msup>
+          <mtext>u</mtext>
+          <mn>2</mn>
+        </msup>
+        <mrow>
+          <mo>(</mo>
+          <msub>
+            <mover accent="false">
+              <mstyle mathvariant="italic">
+                <mtext>R</mtext>
+              </mstyle>
+              <mo>&#xaf;</mo>
+            </mover>
+            <mtext>x</mtext>
+          </msub>
+          <mo>)</mo>
+        </mrow>
+      </mrow>
+      <msubsup>
+        <mover accent="false">
+          <mstyle mathvariant="italic">
+            <mtext>R</mtext>
+          </mstyle>
+          <mo>&#xaf;</mo>
+        </mover>
+        <mtext>x</mtext>
+        <mn>2</mn>
+      </msubsup>
+    </mfrac>
+    <mo>+</mo>
+    <mo linebreak="newline"/>
+    <mfrac>
+      <mrow>
+        <msup>
+          <mtext>u</mtext>
+          <mn>2</mn>
+        </msup>
+        <mrow>
+          <mo>(</mo>
+          <msub>
+            <mover accent="false">
+              <mstyle mathvariant="italic">
+                <mtext>R</mtext>
+              </mstyle>
+              <mo>&#xaf;</mo>
+            </mover>
+            <mstyle mathvariant="normal">
+              <mtext>S</mtext>
+            </mstyle>
+          </msub>
+          <mo>)</mo>
+        </mrow>
+      </mrow>
+      <msubsup>
+        <mover accent="false">
+          <mstyle mathvariant="italic">
+            <mtext>R</mtext>
+          </mstyle>
+          <mo>&#xaf;</mo>
+        </mover>
+        <mstyle mathvariant="normal">
+          <mtext>S</mtext>
+        </mstyle>
+        <mn>2</mn>
+      </msubsup>
+    </mfrac>
+    <mo>&#x2212;</mo>
+    <mn>2</mn>
+    <mtext>r</mtext>
+    <mrow>
+      <mo>(</mo>
+      <msub>
+        <mover accent="false">
+          <mstyle mathvariant="italic">
+            <mtext>R</mtext>
+          </mstyle>
+          <mo>&#xaf;</mo>
+        </mover>
+        <mtext>x</mtext>
+      </msub>
+      <mo>,</mo>
+      <msub>
+        <mover accent="false">
+          <mstyle mathvariant="italic">
+            <mtext>R</mtext>
+          </mstyle>
+          <mo>&#xaf;</mo>
+        </mover>
+        <mstyle mathvariant="normal">
+          <mtext>S</mtext>
+        </mstyle>
+      </msub>
+      <mo>)</mo>
+    </mrow>
+    <mo linebreak="newline"/>
+    <mfrac>
+      <mrow>
+        <mtext>u</mtext>
+        <mrow>
+          <mo>(</mo>
+          <msub>
+            <mover accent="false">
+              <mstyle mathvariant="italic">
+                <mtext>R</mtext>
+              </mstyle>
+              <mo>&#xaf;</mo>
+            </mover>
+            <mtext>x</mtext>
+          </msub>
+          <mo>)</mo>
+        </mrow>
+        <mtext>u</mtext>
+        <mrow>
+          <mo>(</mo>
+          <msub>
+            <mover accent="false">
+              <mstyle mathvariant="italic">
+                <mtext>R</mtext>
+              </mstyle>
+              <mo>&#xaf;</mo>
+            </mover>
+            <mstyle mathvariant="normal">
+              <mtext>S</mtext>
+            </mstyle>
+          </msub>
+          <mo>)</mo>
+        </mrow>
+      </mrow>
+      <mrow>
+        <msub>
+          <mover accent="false">
+            <mstyle mathvariant="italic">
+              <mtext>R</mtext>
+            </mstyle>
+            <mo>&#xaf;</mo>
+          </mover>
+          <mtext>x</mtext>
+        </msub>
+        <msub>
+          <mover accent="false">
+            <mstyle mathvariant="italic">
+              <mtext>R</mtext>
+            </mstyle>
+            <mo>&#xaf;</mo>
+          </mover>
+          <mstyle mathvariant="normal">
+            <mtext>S</mtext>
+          </mstyle>
+        </msub>
+      </mrow>
+    </mfrac>
+  </mstyle>
+</math>

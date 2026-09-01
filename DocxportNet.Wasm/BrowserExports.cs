@@ -6,6 +6,7 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocxportNet.API;
 using DocxportNet.Fields;
+using DocxportNet.Omml;
 using DocxportNet.Visitors.Html;
 using DocxportNet.Visitors.Markdown;
 using DocxportNet.Visitors.PlainText;
@@ -14,6 +15,17 @@ namespace DocxportNet.Wasm;
 
 public static partial class BrowserExports
 {
+    [JSExport]
+    [SupportedOSPlatform("browser")]
+    public static string ConvertOmml(string omml, string format) => format.ToLowerInvariant() switch
+    {
+        "mathml" or "html" => DxpOmmlConverter.ToMathMl(omml),
+        "latex" => DxpOmmlConverter.ToLatex(omml),
+        "unicodemath" => DxpOmmlConverter.ToUnicodeMath(omml),
+        "text" => DxpOmmlConverter.ToText(omml),
+        _ => throw new ArgumentException("OMML format must be mathml, html, latex, unicodemath, or text.", nameof(format))
+    };
+
     [JSExport]
     [SupportedOSPlatform("browser")]
     public static string Export(byte[] docxBytes, string requestJson)
@@ -126,6 +138,7 @@ public static partial class BrowserExports
         config.TrackedChangeMode = DxpTrackedChangeMode.AcceptChanges;
         var o = request.Html;
         if (o == null) return config;
+        if (o.MathOutputFormat.HasValue) config.MathOutputFormat = ToMathOutputFormat(o.MathOutputFormat.Value);
         if (o.EmitImages.HasValue) config.EmitImages = o.EmitImages.Value;
         if (o.EmitParagraphMetadata.HasValue) config.EmitParagraphMetadata = o.EmitParagraphMetadata.Value;
         if (o.EmitStyleFont.HasValue) config.EmitStyleFont = o.EmitStyleFont.Value;
@@ -160,6 +173,8 @@ public static partial class BrowserExports
         config.TrackedChangeMode = DxpTrackedChangeMode.AcceptChanges;
         var o = request.Markdown;
         if (o == null) return config;
+        if (o.MathOutputFormat.HasValue) config.MathOutputFormat = ToMathOutputFormat(o.MathOutputFormat.Value);
+        if (o.EmitMathDelimiters.HasValue) config.EmitMathDelimiters = o.EmitMathDelimiters.Value;
         if (o.EmitImages.HasValue) config.EmitImages = o.EmitImages.Value;
         if (o.EmitStyleFont.HasValue) config.EmitStyleFont = o.EmitStyleFont.Value;
         if (o.EmitRunColor.HasValue) config.EmitRunColor = o.EmitRunColor.Value;
@@ -188,6 +203,7 @@ public static partial class BrowserExports
         var config = DxpPlainTextVisitorConfig.CreateAcceptConfig();
         var o = request.Text;
         if (o == null) return config;
+        if (o.MathOutputFormat.HasValue) config.MathOutputFormat = ToMathOutputFormat(o.MathOutputFormat.Value);
         if (o.TrackedChangeMode.HasValue)
             config.TrackedChangeMode = o.TrackedChangeMode == BrowserTrackedChangeMode.Reject
                 ? DxpPlainTextTrackedChangeMode.RejectChanges
@@ -211,6 +227,15 @@ public static partial class BrowserExports
         BrowserHeaderFooterSelection.None => DxpHeaderFooterSelection.None,
         BrowserHeaderFooterSelection.Last => DxpHeaderFooterSelection.Last,
         _ => DxpHeaderFooterSelection.First
+    };
+
+    private static DxpOmmlOutputFormat? ToMathOutputFormat(BrowserMathOutputFormat value) => value switch
+    {
+        BrowserMathOutputFormat.None => null,
+        BrowserMathOutputFormat.MathMl => DxpOmmlOutputFormat.MathMl,
+        BrowserMathOutputFormat.Latex => DxpOmmlOutputFormat.Latex,
+        BrowserMathOutputFormat.UnicodeMath => DxpOmmlOutputFormat.UnicodeMath,
+        _ => DxpOmmlOutputFormat.Text,
     };
 
     private static IEnumerable<OpenXmlElement> EnumerateStoryRoots(WordprocessingDocument document)

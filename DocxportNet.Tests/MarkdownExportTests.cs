@@ -8,6 +8,7 @@ using DocxportNet.Fields.Resolution;
 using DocxportNet.Middleware;
 using DocxportNet.Tests.Utils;
 using DocxportNet.Visitors.Markdown;
+using DocxportNet.Omml;
 using System.Xml.Linq;
 using Xunit.Abstractions;
 using Xunit.Sdk;
@@ -174,6 +175,90 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
         string markdown = ExportMarkdownFromBodyXml(bodyXml, DxpMarkdownVisitorConfig.CreateRichConfig());
 
         Assert.Matches("<span[^>]*>\u00A0</span>\\r?\\n\\r?\\n", markdown);
+    }
+
+    [Fact]
+    public void MarkdownExport_RendersInlineAndDisplayMathAsUnicodeMath()
+    {
+        const string bodyXml = """
+            <w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+                    xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math">
+                <w:p>
+                  <w:r><w:t xml:space="preserve">Before </w:t></w:r>
+                  <m:oMath><m:sSub><m:e><m:r><m:t>x</m:t></m:r></m:e><m:sub><m:r><m:t>2</m:t></m:r></m:sub></m:sSub></m:oMath>
+                  <w:r><w:t xml:space="preserve"> after</w:t></w:r>
+                </w:p>
+                <w:p><m:oMathPara><m:oMath><m:f><m:num><m:r><m:t>1</m:t></m:r></m:num><m:den><m:r><m:t>2</m:t></m:r></m:den></m:f></m:oMath></m:oMathPara></w:p>
+            </w:body>
+            """;
+
+        DxpMarkdownVisitorConfig config = DxpMarkdownVisitorConfig.CreatePlainConfig() with
+        {
+            MathOutputFormat = DxpOmmlOutputFormat.UnicodeMath,
+        };
+        string markdown = ExportMarkdownFromBodyXml(bodyXml, config);
+
+        Assert.Contains("Before $x_(2)$ after", markdown, StringComparison.Ordinal);
+        Assert.Contains("$$\n(1)/(2)\n$$", markdown, StringComparison.Ordinal);
+
+        string defaultMarkdown = ExportMarkdownFromBodyXml(bodyXml, DxpMarkdownVisitorConfig.CreatePlainConfig());
+        Assert.Contains("Before $x_{2}$ after", defaultMarkdown, StringComparison.Ordinal);
+        Assert.Contains("$$\n\\frac{1}{2}\n$$", defaultMarkdown, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void MarkdownExport_CanEmitRawMathMlOrDisableMath()
+    {
+        const string bodyXml = """
+            <w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+                    xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math">
+              <w:p><m:oMath><m:r><m:t>x</m:t></m:r></m:oMath></w:p>
+            </w:body>
+            """;
+
+        DxpMarkdownVisitorConfig mathMl = DxpMarkdownVisitorConfig.CreatePlainConfig() with
+        {
+            MathOutputFormat = DxpOmmlOutputFormat.MathMl,
+        };
+        DxpMarkdownVisitorConfig omitted = mathMl with { MathOutputFormat = null };
+
+        Assert.Contains("<math", ExportMarkdownFromBodyXml(bodyXml, mathMl), StringComparison.Ordinal);
+        Assert.DoesNotContain("x", ExportMarkdownFromBodyXml(bodyXml, omitted), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void MarkdownExport_UsesWalkerResolverForEmbeddedWordprocessingMl()
+    {
+        const string bodyXml = """
+            <w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+                    xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math">
+              <w:p><m:oMath><w:hyperlink><w:r><w:t>A_B</w:t></w:r></w:hyperlink></m:oMath></w:p>
+            </w:body>
+            """;
+
+        string markdown = ExportMarkdownFromBodyXml(bodyXml, DxpMarkdownVisitorConfig.CreatePlainConfig());
+
+        Assert.Contains("$A\\_B$", markdown, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void MarkdownExport_AppliesTrackedChangePolicyInsideMath()
+    {
+        const string bodyXml = """
+            <w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+                    xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math">
+              <w:p><m:oMath><w:customXml>
+                <w:ins><w:r><w:t>new</w:t></w:r></w:ins>
+                <w:del><w:r><w:delText>old</w:delText></w:r></w:del>
+              </w:customXml></m:oMath></w:p>
+            </w:body>
+            """;
+        DxpMarkdownVisitorConfig accepted = DxpMarkdownVisitorConfig.CreatePlainConfig() with
+            { TrackedChangeMode = DxpTrackedChangeMode.AcceptChanges };
+        DxpMarkdownVisitorConfig rejected = accepted with { TrackedChangeMode = DxpTrackedChangeMode.RejectChanges };
+
+        Assert.Contains("$new$", ExportMarkdownFromBodyXml(bodyXml, accepted), StringComparison.Ordinal);
+        Assert.Contains("$old$", ExportMarkdownFromBodyXml(bodyXml, rejected), StringComparison.Ordinal);
     }
 
     [Fact]
@@ -739,6 +824,9 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
             UsePlainComments = source.UsePlainComments,
             EmitCustomProperties = source.EmitCustomProperties,
             EmitTimeline = source.EmitTimeline,
+            MathOutputFormat = source.MathOutputFormat,
+            EmitMathDelimiters = source.EmitMathDelimiters,
+            MathEmbeddedContentResolver = source.MathEmbeddedContentResolver,
             TrackedChangeMode = mode,
             MarkupChangeClassifier = source.MarkupChangeClassifier
         };

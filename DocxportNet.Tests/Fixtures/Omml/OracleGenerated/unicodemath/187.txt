@@ -1,0 +1,1 @@
+- ln⁡ \mit"R" = Ⓢ(2\mit"N"_("tot")\mitτ&"for "\mitτ<\mitτ_("o")@2\mit"N"_("tot")\mitτ-4\mit"N"_("pair")(\mitτ - \mitτ_("o"))&'' \mitτ>\mitτ_("o"))

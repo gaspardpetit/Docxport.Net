@@ -58,6 +58,9 @@ public class DxpParagraphs
             return true;
         if (p.Descendants<FieldChar>().Any() || p.Descendants<FieldCode>().Any())
             return true;
+        if (p.Descendants<DocumentFormat.OpenXml.Math.OfficeMath>().Any()
+            || p.Descendants<DocumentFormat.OpenXml.Math.Paragraph>().Any())
+            return true;
         return false;
     }
 

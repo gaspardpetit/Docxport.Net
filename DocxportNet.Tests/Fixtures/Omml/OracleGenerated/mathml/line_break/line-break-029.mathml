@@ -1,0 +1,23 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <munder>
+      <mi>&#x3b8;</mi>
+      <mover>
+        <mtext>lim</mtext>
+      </mover>
+    </munder>
+    <mo linebreak="newline"/>
+    <munder>
+      <mrow>
+        <mtext>a</mtext>
+        <mi>&#x3c3;</mi>
+      </mrow>
+      <mover>
+        <mrow>
+          <mi>&#x3b3;</mi>
+          <mi>&#x3b8;</mi>
+        </mrow>
+      </mover>
+    </munder>
+  </mstyle>
+</math>

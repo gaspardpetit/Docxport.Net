@@ -1,0 +1,18 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <mover>
+      <mrow>
+        <mtext>a</mtext>
+        <mtext>s</mtext>
+      </mrow>
+      <mo>^</mo>
+    </mover>
+    <mo linebreak="newline"/>
+    <mover>
+      <mrow>
+        <mtext>d</mtext>
+        <mtext>f</mtext>
+      </mrow>
+    </mover>
+  </mstyle>
+</math>

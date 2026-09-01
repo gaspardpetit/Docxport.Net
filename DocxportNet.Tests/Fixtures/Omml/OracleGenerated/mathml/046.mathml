@@ -1,0 +1,12 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <mrow>
+      <munderover>
+        <mo>&#x2211;</mo>
+        <mtext>i=0</mtext>
+        <mtext>n</mtext>
+      </munderover>
+      <mtext>x</mtext>
+    </mrow>
+  </mstyle>
+</math>

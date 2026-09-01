@@ -1,0 +1,47 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <mfrac>
+      <mrow>
+        <munderover>
+          <mo>&#x2211;</mo>
+          <mtext>d</mtext>
+          <mn>3</mn>
+        </munderover>
+        <mn>3</mn>
+      </mrow>
+    </mfrac>
+    <mo linebreak="newline"/>
+    <mfrac>
+      <mrow>
+        <munderover>
+          <mo>&#x220f;</mo>
+          <mn>3</mn>
+          <mtext>d</mtext>
+        </munderover>
+        <mtext>e</mtext>
+      </mrow>
+    </mfrac>
+    <mo linebreak="newline"/>
+    <mfrac>
+      <mtext>w</mtext>
+      <mrow>
+        <mo rspace="thickmathspace"/>
+        <mrow>
+          <mi>sin</mi>
+          <mrow>
+            <mo>(</mo>
+            <mtext>d</mtext>
+            <mo>)</mo>
+          </mrow>
+        </mrow>
+      </mrow>
+    </mfrac>
+    <mo linebreak="newline"/>
+    <mfrac>
+      <mrow>
+        <mo>(</mo>
+        <mo>)</mo>
+      </mrow>
+    </mfrac>
+  </mstyle>
+</math>

@@ -17,6 +17,9 @@ public enum BrowserTrackedChangeMode { Accept, Reject, Inline, Split }
 [JsonConverter(typeof(JsonStringEnumConverter<BrowserHeaderFooterSelection>))]
 public enum BrowserHeaderFooterSelection { None, First, Last }
 
+[JsonConverter(typeof(JsonStringEnumConverter<BrowserMathOutputFormat>))]
+public enum BrowserMathOutputFormat { None, MathMl, Latex, UnicodeMath, Text }
+
 public sealed class BrowserExportRequest
 {
     public BrowserExportFormat Format { get; set; } = BrowserExportFormat.Html;
@@ -45,6 +48,7 @@ public sealed class BrowserFieldOptions
 
 public sealed class BrowserHtmlOptions
 {
+    public BrowserMathOutputFormat? MathOutputFormat { get; set; }
     public bool? EmitImages { get; set; }
     public bool? EmitParagraphMetadata { get; set; }
     public bool? EmitStyleFont { get; set; }
@@ -72,6 +76,8 @@ public sealed class BrowserHtmlOptions
 
 public sealed class BrowserMarkdownOptions
 {
+    public BrowserMathOutputFormat? MathOutputFormat { get; set; }
+    public bool? EmitMathDelimiters { get; set; }
     public bool? EmitImages { get; set; }
     public bool? EmitStyleFont { get; set; }
     public bool? EmitRunColor { get; set; }
@@ -96,6 +102,7 @@ public sealed class BrowserMarkdownOptions
 
 public sealed class BrowserTextOptions
 {
+    public BrowserMathOutputFormat? MathOutputFormat { get; set; }
     public BrowserTrackedChangeMode? TrackedChangeMode { get; set; }
     public string? ImagePlaceholder { get; set; }
     public bool? EmitDocumentProperties { get; set; }

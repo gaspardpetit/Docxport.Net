@@ -1,0 +1,15 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <munder>
+      <mn>0</mn>
+      <mover>
+        <msubsup>
+          <mi>&#x3c0;</mi>
+          <mn>2221</mn>
+          <mi>&#x2221;</mi>
+        </msubsup>
+        <mo>&#x222b;</mo>
+      </mover>
+    </munder>
+  </mstyle>
+</math>

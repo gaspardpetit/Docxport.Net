@@ -1,0 +1,22 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <munder>
+      <mtext>0≤x≤1</mtext>
+      <mrow>
+        <mo rspace="thickmathspace"/>
+        <mi>max</mi>
+      </mrow>
+    </munder>
+    <mtext>x</mtext>
+    <msup>
+      <mtext>e</mtext>
+      <mrow>
+        <mi>-</mi>
+        <msup>
+          <mtext>x</mtext>
+          <mn>2</mn>
+        </msup>
+      </mrow>
+    </msup>
+  </mstyle>
+</math>

@@ -1,0 +1,8 @@
+<m:oMath xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math">
+  <m:box>
+    <m:e>
+      <m:argPr><m:argSz m:val="-1"/></m:argPr>
+      <m:r><m:t>x</m:t></m:r>
+    </m:e>
+  </m:box>
+</m:oMath>

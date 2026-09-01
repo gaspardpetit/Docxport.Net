@@ -1,0 +1,31 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <mrow>
+      <mo>(</mo>
+      <mtext>d</mtext>
+      <mo>)</mo>
+    </mrow>
+    <mo linebreak="newline"/>
+    <mrow>
+      <mo>(</mo>
+      <mtext>e</mtext>
+      <mo>)</mo>
+    </mrow>
+    <mstyle mathvariant="normal">
+      <mrow>
+        <mi>mod</mi>
+      </mrow>
+    </mstyle>
+    <mrow>
+      <mo>(</mo>
+      <mtext>c</mtext>
+      <mo>)</mo>
+    </mrow>
+    <mo linebreak="newline"/>
+    <mrow>
+      <mo>(</mo>
+      <mtext>r</mtext>
+      <mo>)</mo>
+    </mrow>
+  </mstyle>
+</math>

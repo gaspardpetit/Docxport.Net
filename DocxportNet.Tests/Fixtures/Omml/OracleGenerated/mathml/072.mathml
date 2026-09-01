@@ -1,0 +1,12 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <mrow>
+      <mo>&#x2329;</mo>
+      <mfrac>
+        <mtext>n</mtext>
+        <mtext>k</mtext>
+      </mfrac>
+      <mo>&#x232a;</mo>
+    </mrow>
+  </mstyle>
+</math>

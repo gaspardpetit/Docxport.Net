@@ -1,0 +1,14 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <mtable>
+      <mtr>
+        <mtd>
+          <mtext>a</mtext>
+        </mtd>
+        <mtd>
+          <mtext>b</mtext>
+        </mtd>
+      </mtr>
+    </mtable>
+  </mstyle>
+</math>

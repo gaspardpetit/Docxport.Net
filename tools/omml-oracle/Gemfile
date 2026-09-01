@@ -1,0 +1,4 @@
+source "https://rubygems.org"
+
+gem "omml", github: "plurimath/omml", ref: "51d4abe5df58fe33a92df094971c5828c3459ffb"
+gem "plurimath", github: "plurimath/plurimath", ref: "00c52783877b38f6b8e6e109f1803f96bb34fc62"

@@ -1,0 +1,205 @@
+GIT
+  remote: https://github.com/plurimath/omml.git
+  revision: 51d4abe5df58fe33a92df094971c5828c3459ffb
+  ref: 51d4abe5df58fe33a92df094971c5828c3459ffb
+  specs:
+    omml (0.2.5)
+      lutaml-model (>= 0.8.0, < 1.0)
+      moxml (>= 0.1.18, < 0.2)
+      oga (~> 3.4)
+      ox (~> 2.14)
+
+GIT
+  remote: https://github.com/plurimath/plurimath.git
+  revision: 00c52783877b38f6b8e6e109f1803f96bb34fc62
+  ref: 00c52783877b38f6b8e6e109f1803f96bb34fc62
+  specs:
+    plurimath (0.11.6)
+      bigdecimal
+      htmlentities
+      lutaml-model (~> 0.8.17)
+      mml (~> 2.4.0)
+      omml (~> 0.2.5)
+      ostruct
+      ox
+      parslet
+      thor
+      unitsml (~> 0.6.4)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    ansi (1.6.0)
+    ast (2.4.3)
+    base64 (0.3.0)
+    bcp47_spec (0.2.1)
+    bigdecimal (4.1.2)
+    canon (0.2.12)
+      diff-lcs
+      json
+      moxml (~> 0.1.22)
+      nokogiri
+      paint
+      rainbow
+      table_tennis
+      thor
+      unicode-name
+    concurrent-ruby (1.3.8)
+    csv (3.3.6)
+    diff-lcs (2.0.0)
+    ebnf (2.6.0)
+      base64 (~> 0.2)
+      htmlentities (~> 4.3)
+      rdf (~> 3.3)
+      scanf (~> 1.0)
+      sxp (~> 2.0)
+      unicode-types (~> 1.8)
+    ffi (1.17.4)
+    ffi (1.17.4-x64-mingw-ucrt)
+    fuzzy_match (2.1.0)
+    htmlentities (4.4.2)
+    json (2.21.2)
+    link_header (0.0.8)
+    liquid (5.13.0)
+      bigdecimal
+      strscan (>= 3.1.1)
+    logger (1.7.0)
+    lutaml-model (0.8.19)
+      base64
+      bigdecimal
+      canon
+      concurrent-ruby
+      liquid (>= 4.0, < 6.0)
+      moxml (~> 0.1.25)
+      ostruct
+      rubyzip (~> 2.3)
+      thor
+    matrix (0.4.3)
+    memo_wise (1.13.0)
+    mini_portile2 (2.8.9)
+    mml (2.4.1)
+      lutaml-model (~> 0.8.0)
+      moxml
+    moxml (0.1.26)
+    nokogiri (1.19.4)
+      mini_portile2 (~> 2.8.2)
+      racc (~> 1.4)
+    nokogiri (1.19.4-x64-mingw-ucrt)
+      racc (~> 1.4)
+    oga (3.5)
+      ast
+      ruby-ll (~> 2.2)
+    ostruct (0.6.3)
+    ox (2.14.29)
+      bigdecimal (>= 3.0)
+    paint (2.3.0)
+    parslet (2.0.0)
+    racc (1.8.1)
+    rainbow (3.1.1)
+    rdf (3.3.1)
+      bcp47_spec (~> 0.2)
+      link_header (~> 0.0, >= 0.0.8)
+    rdf-turtle (3.3.0)
+      ebnf (~> 2.4)
+      rdf (~> 3.3)
+    ruby-ll (2.2.0)
+      ansi
+      ast
+    rubyzip (2.4.1)
+    scanf (1.0.0)
+    strscan (3.1.8)
+    sxp (2.0.0)
+      matrix (~> 0.4)
+      rdf (~> 3.3)
+    table_tennis (0.0.7)
+      csv (~> 3.3)
+      ffi (~> 1.17)
+      memo_wise (~> 1.11)
+      paint (~> 2.3)
+      unicode-display_width (~> 3.1)
+    thor (1.5.0)
+    unicode-display_width (3.2.0)
+      unicode-emoji (~> 4.1)
+    unicode-emoji (4.2.0)
+    unicode-name (1.14.0)
+      unicode-types (~> 1.11)
+    unicode-types (1.11.0)
+    unitsdb (2.2.4)
+      fuzzy_match
+      logger
+      lutaml-model (~> 0.8.0)
+      rdf (~> 3.1)
+      rdf-turtle (~> 3.1)
+      rubyzip (~> 2.3)
+      table_tennis (~> 0.0.7)
+      thor (~> 1.0)
+    unitsml (0.6.8)
+      htmlentities
+      lutaml-model (~> 0.8.0)
+      mml (~> 2.4.0)
+      ox
+      parslet
+      unitsdb (~> 2.2.4)
+
+PLATFORMS
+  ruby
+  x64-mingw-ucrt
+
+DEPENDENCIES
+  omml!
+  plurimath!
+
+CHECKSUMS
+  ansi (1.6.0) sha256=ac9ea0c0ea8d32fb4e271348e609963ac78882f34b73836c2a02b3622e666658
+  ast (2.4.3) sha256=954615157c1d6a382bc27d690d973195e79db7f55e9765ac7c481c60bdb4d383
+  base64 (0.3.0) sha256=27337aeabad6ffae05c265c450490628ef3ebd4b67be58257393227588f5a97b
+  bcp47_spec (0.2.1) sha256=3fd62edf96c126bd9624e4319ac74082a966081859d1ee0ef3c3041640a37810
+  bigdecimal (4.1.2) sha256=53d217666027eab4280346fba98e7d5b66baaae1b9c3c1c0ffe89d48188a3fbd
+  canon (0.2.12) sha256=9b87514fbf6c0f9f28d1e2746ea5837b08e24e50c30751dba27a89f86e8709af
+  concurrent-ruby (1.3.8) sha256=b2f1be836e968ccc78ccfce277ea79c72a88633f22306782c16ff23fb415d1e1
+  csv (3.3.6) sha256=aba61e7e507a66f03d45cb1f3c4b6359861c3504038b422962875dce099e4456
+  diff-lcs (2.0.0) sha256=708a5d52ec2945b50f8f53a181174aa1ef2c496edf81c05957fe956dabb363d5
+  ebnf (2.6.0) sha256=e746a316caa885cc45e243dc33efc194943956760bc9bc13948de1732fbcf63e
+  ffi (1.17.4) sha256=bcd1642e06f0d16fc9e09ac6d49c3a7298b9789bcb58127302f934e437d60acf
+  ffi (1.17.4-x64-mingw-ucrt) sha256=f6ff9618cfccc494138bddade27aa06c74c6c7bc367a1ea1103d80c2fcb9ed35
+  fuzzy_match (2.1.0) sha256=e97e25d0eaee48a5f77ed970d007c7b6ff3c6a6858303fead2d1986859204dfc
+  htmlentities (4.4.2) sha256=bbafbdf69f2eca9262be4efef7e43e6a1de54c95eb600f26984f71d2fe96c5c3
+  json (2.21.2) sha256=1f1d3b7cf2b3ba1a69beca0bb6db13d5438b80bff3cd54cdaaa620b9b07c1c6a
+  link_header (0.0.8) sha256=15c65ce43b29f739b30d05e5f25c22c23797e89cf6f905dbb595fb4c70cb55f9
+  liquid (5.13.0) sha256=09d594fd96b98e19a8fd5c32aadcc6950df429b69f48c2f774c0db0ce272bf19
+  logger (1.7.0) sha256=196edec7cc44b66cfb40f9755ce11b392f21f7967696af15d274dde7edff0203
+  lutaml-model (0.8.19) sha256=470a54930b463074c4112fe0abf6708c3a3fd42c460fdb8cad527978b3ddc7ae
+  matrix (0.4.3) sha256=a0d5ab7ddcc1973ff690ab361b67f359acbb16958d1dc072b8b956a286564c5b
+  memo_wise (1.13.0) sha256=30220c38c4cef410849bc73553c58664dc2c91c6379e4a1df22aea02358b716b
+  mini_portile2 (2.8.9) sha256=0cd7c7f824e010c072e33f68bc02d85a00aeb6fce05bb4819c03dfd3c140c289
+  mml (2.4.1) sha256=fe40926d5103dc2f56718c3cdc208d663f8c500f46c84a2272c2b5908f7a0e8d
+  moxml (0.1.26) sha256=f29c2a76377f014920fbb9bec8d66acc3f162fa8a4f6a855010c3d2ac1ceeb70
+  nokogiri (1.19.4) sha256=50c951611c92bca05c51411aef45f1cbc50f2821c4802758c5c6d34696533ab5
+  nokogiri (1.19.4-x64-mingw-ucrt) sha256=051da97b8eccfdb5444fed40246a35e10d7298b9efe759b4cd25455ea04c587e
+  oga (3.5) sha256=2b65fe1dd192c01079f93748a04a7a8011369e4c99ea1c7e73f4a037e3229353
+  omml (0.2.5)
+  ostruct (0.6.3) sha256=95a2ed4a4bd1d190784e666b47b2d3f078e4a9efda2fccf18f84ddc6538ed912
+  ox (2.14.29) sha256=206736d5a8dade9dca10cf72022bc157ad6ca3eecaba3853918426ed88e12dc2
+  paint (2.3.0) sha256=327d623e4038619d5bd99ae5db07973859cd78400c7f0329eea283cef8e83be5
+  parslet (2.0.0) sha256=d45130695d39b43d7e6a91f4d2ec66b388a8d822bae38de9b4de9a5fbde1f606
+  plurimath (0.11.6)
+  racc (1.8.1) sha256=4a7f6929691dbec8b5209a0b373bc2614882b55fc5d2e447a21aaa691303d62f
+  rainbow (3.1.1) sha256=039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a
+  rdf (3.3.1) sha256=dda6a2c95198915fc63d66ee270e35d4a76d431720747a2cf97ecd92062fa150
+  rdf-turtle (3.3.0) sha256=10320428670be3510364195e68e365b888c458c4a462cfc8c28cdffccc64f699
+  ruby-ll (2.2.0) sha256=f8811ae1dfc77d6d95033a615aacb6ab8e93fb9f421fefe75107b077dc9ab588
+  rubyzip (2.4.1) sha256=8577c88edc1fde8935eb91064c5cb1aef9ad5494b940cf19c775ee833e075615
+  scanf (1.0.0) sha256=533db7f7e5acafea1a145d6c5329cef667a58fbcb7d64379a808ff1199ee1b00
+  strscan (3.1.8) sha256=aae2db611a225559f21ffbb71765c9a4e60fd262534a9ea84f4f11c7f32f679e
+  sxp (2.0.0) sha256=79971bbab54a82fe4a861332475eb8c1f33142d70f2b7e830dacbd9082824721
+  table_tennis (0.0.7) sha256=b45b50dc7714e3bea5b31d2ad2b7d6bdc2995fc7a686976017c17424e1094a28
+  thor (1.5.0) sha256=e3a9e55fe857e44859ce104a84675ab6e8cd59c650a49106a05f55f136425e73
+  unicode-display_width (3.2.0) sha256=0cdd96b5681a5949cdbc2c55e7b420facae74c4aaf9a9815eee1087cb1853c42
+  unicode-emoji (4.2.0) sha256=519e69150f75652e40bf736106cfbc8f0f73aa3fb6a65afe62fefa7f80b0f80f
+  unicode-name (1.14.0) sha256=b350dcdeb503748c8ad05c472e8078570fbf3231a73be53431c15db10bbedbdd
+  unicode-types (1.11.0) sha256=81d1201273260fa89b85471e7eebb93a51bb4e5f078a525508dcae7835d176f9
+  unitsdb (2.2.4) sha256=ba95878db47338fe9355f59f2bd388e71e06b7a9c9d3bf890482fd3d76352869
+  unitsml (0.6.8) sha256=e542cc068f8a5a74dda8d2c355f0e6f6247838c74369cf92546a4dd3a78ab52b
+
+BUNDLED WITH
+  4.0.19

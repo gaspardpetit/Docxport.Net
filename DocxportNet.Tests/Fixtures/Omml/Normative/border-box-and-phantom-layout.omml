@@ -1,0 +1,4 @@
+<m:oMath xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math">
+  <m:borderBox><m:borderBoxPr><m:strikeH/></m:borderBoxPr><m:e><m:r><m:t>x</m:t></m:r></m:e></m:borderBox>
+  <m:phant><m:phantPr><m:show/><m:transp/><m:zeroWid/><m:zeroAsc/><m:zeroDesc/></m:phantPr><m:e><m:r><m:t>y</m:t></m:r></m:e></m:phant>
+</m:oMath>

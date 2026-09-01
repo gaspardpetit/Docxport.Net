@@ -1,0 +1,11 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <munder>
+      <munder>
+        <mtext>d</mtext>
+        <mo>&#x23df;</mo>
+      </munder>
+      <mtext>e</mtext>
+    </munder>
+  </mstyle>
+</math>

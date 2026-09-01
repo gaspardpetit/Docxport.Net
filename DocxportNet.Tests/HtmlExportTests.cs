@@ -106,6 +106,55 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
     }
 
     [Fact]
+    public void HtmlExport_RendersInlineAndDisplayMathAsMathMl()
+    {
+        const string bodyXml = """
+            <w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+                    xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math">
+              <w:p>
+                <w:r><w:t xml:space="preserve">Before </w:t></w:r>
+                <m:oMath><m:sSub><m:e><m:r><m:t>x</m:t></m:r></m:e><m:sub><m:r><m:t>2</m:t></m:r></m:sub></m:sSub></m:oMath>
+              </w:p>
+              <w:p><m:oMathPara><m:oMath><m:f><m:num><m:r><m:t>1</m:t></m:r></m:num><m:den><m:r><m:t>2</m:t></m:r></m:den></m:f></m:oMath></m:oMathPara></w:p>
+            </w:body>
+            """;
+
+        string html = ExportHtmlFromBodyXml(bodyXml, DxpHtmlVisitorConfig.CreateRichConfig());
+
+        XNamespace math = "http://www.w3.org/1998/Math/MathML";
+        XElement[] equations = XDocument.Parse(html).Descendants(math + "math").ToArray();
+        Assert.Equal(2, equations.Length);
+        Assert.Equal("inline", equations[0].Attribute("display")?.Value);
+        Assert.Equal("x2", equations[0].Descendants(math + "msub").Single().Value);
+        Assert.Equal("block", equations[1].Attribute("display")?.Value);
+        Assert.Equal("12", equations[1].Descendants(math + "mfrac").Single().Value);
+
+        DxpHtmlVisitorConfig omitted = DxpHtmlVisitorConfig.CreateRichConfig() with { MathOutputFormat = null };
+        Assert.DoesNotContain("<math", ExportHtmlFromBodyXml(bodyXml, omitted), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void HtmlExport_AppliesTrackedChangePolicyInsideMath()
+    {
+        const string bodyXml = """
+            <w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+                    xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math">
+              <w:p><m:oMath><w:customXml>
+                <w:ins><w:r><w:t>new</w:t></w:r></w:ins>
+                <w:del><w:r><w:delText>old</w:delText></w:r></w:del>
+              </w:customXml></m:oMath></w:p>
+            </w:body>
+            """;
+
+        DxpHtmlVisitorConfig accepted = DxpHtmlVisitorConfig.CreatePlainConfig() with
+            { TrackedChangeMode = DxpTrackedChangeMode.AcceptChanges };
+        DxpHtmlVisitorConfig rejected = accepted with { TrackedChangeMode = DxpTrackedChangeMode.RejectChanges };
+
+        Assert.Contains(">new<", ExportHtmlFromBodyXml(bodyXml, accepted), StringComparison.Ordinal);
+        Assert.Contains(">old<", ExportHtmlFromBodyXml(bodyXml, rejected), StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void HtmlExport_RendersFootnotesInsideSectionBeforeFooter()
     {
         using var stream = new MemoryStream();
@@ -988,6 +1037,8 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
             UsePlainComments = source.UsePlainComments,
             EmitCustomProperties = source.EmitCustomProperties,
             EmitTimeline = source.EmitTimeline,
+            MathOutputFormat = source.MathOutputFormat,
+            MathEmbeddedContentResolver = source.MathEmbeddedContentResolver,
             StylesheetHref = source.StylesheetHref,
             EmbedDefaultStylesheet = source.EmbedDefaultStylesheet,
             RootCssClass = source.RootCssClass,

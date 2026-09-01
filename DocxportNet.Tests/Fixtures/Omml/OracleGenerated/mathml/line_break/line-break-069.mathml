@@ -1,0 +1,24 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <msub>
+      <mo>&#x222e;</mo>
+      <mi>&#x3b8;</mi>
+    </msub>
+    <mo linebreak="newline"/>
+    <mrow>
+      <msubsup>
+        <mi></mi>
+        <mi>&#x3b3;</mi>
+        <mrow>
+          <mi>&#x2222;</mi>
+          <mi>&#xd3;</mi>
+        </mrow>
+      </msubsup>
+      <mrow>
+        <mi>&#x2122;</mi>
+      </mrow>
+    </mrow>
+    <mo linebreak="newline"/>
+    <mn>໓</mn>
+  </mstyle>
+</math>

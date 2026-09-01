@@ -8,6 +8,7 @@ export type FieldMode = "none" | "evaluate" | "cache";
 export type TrackedChangeMode = "accept" | "reject" | "inline" | "split";
 export type HeaderFooterSelection = "none" | "first" | "last";
 export type ExportPreset = "rich" | "plain";
+export type MathOutputFormat = "none" | "mathml" | "latex" | "unicodemath" | "text";
 
 export interface FieldOptions {
   mode?: FieldMode;
@@ -15,6 +16,7 @@ export interface FieldOptions {
 }
 
 export interface HtmlOptions {
+  mathOutputFormat?: MathOutputFormat;
   emitImages?: boolean;
   emitParagraphMetadata?: boolean;
   emitStyleFont?: boolean;
@@ -41,6 +43,8 @@ export interface HtmlOptions {
 }
 
 export interface MarkdownOptions {
+  mathOutputFormat?: MathOutputFormat;
+  emitMathDelimiters?: boolean;
   emitImages?: boolean;
   emitStyleFont?: boolean;
   emitRunColor?: boolean;
@@ -64,6 +68,7 @@ export interface MarkdownOptions {
 }
 
 export interface TextOptions {
+  mathOutputFormat?: MathOutputFormat;
   trackedChangeMode?: "accept" | "reject";
   imagePlaceholder?: string;
   emitDocumentProperties?: boolean;
@@ -79,6 +84,7 @@ export interface ResolveRequest { fields?: FieldOptions; }
 export interface DocumentInfo { hasTrackedChanges: boolean; }
 
 export interface Docxport {
+  convertOmml(omml: string, format?: "mathml" | "html" | "latex" | "unicodemath" | "text"): Promise<string>;
   inspect(input: Uint8Array | ArrayBuffer): Promise<DocumentInfo>;
   export(input: Uint8Array | ArrayBuffer, request: ExportRequest): Promise<string>;
   resolveDocx(input: Uint8Array | ArrayBuffer, request?: ResolveRequest): Promise<Uint8Array>;

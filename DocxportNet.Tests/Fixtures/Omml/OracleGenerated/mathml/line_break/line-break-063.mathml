@@ -1,0 +1,21 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <munderover>
+      <mo>&#x220f;</mo>
+      <mi>&#x3b8;</mi>
+      <mrow>
+        <mi>&#x2222;</mi>
+        <mi>&#xd3;</mi>
+      </mrow>
+    </munderover>
+    <mo linebreak="newline"/>
+    <munderover>
+      <mi></mi>
+      <mi>&#x3b3;</mi>
+      <mrow>
+        <mi>&#x2222;</mi>
+        <mi>&#xd3;</mi>
+      </mrow>
+    </munderover>
+  </mstyle>
+</math>

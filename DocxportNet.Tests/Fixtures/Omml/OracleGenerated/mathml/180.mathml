@@ -1,0 +1,29 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <mrow>
+      <munderover>
+        <mo>&#x2211;</mo>
+        <mo>&#x220f;</mo>
+        <mtext>i</mtext>
+      </munderover>
+      <mrow>
+        <msubsup>
+          <mo>&#x222b;</mo>
+          <mrow>
+            <mtext>j</mtext>
+            <mo>=</mo>
+            <mn>0</mn>
+          </mrow>
+          <mrow/>
+        </msubsup>
+        <msub>
+          <mtext>p</mtext>
+          <mrow>
+            <mtext>i</mtext>
+            <mtext>j</mtext>
+          </mrow>
+        </msub>
+      </mrow>
+    </mrow>
+  </mstyle>
+</math>

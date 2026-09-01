@@ -1,0 +1,15 @@
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+  <mstyle displaystyle="true">
+    <mover>
+      <mtext>d</mtext>
+    </mover>
+    <mo linebreak="newline"/>
+    <mover>
+      <mtext>e</mtext>
+      <mrow>
+        <mtext>s</mtext>
+        <mtext>p</mtext>
+      </mrow>
+    </mover>
+  </mstyle>
+</math>
