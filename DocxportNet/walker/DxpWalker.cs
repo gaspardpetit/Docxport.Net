@@ -15,18 +15,23 @@ namespace DocxportNet.Walker;
 public class DxpWalker
 {
     private readonly ILogger? _logger;
+    private readonly DxpExportProgressTracker? _progress;
     internal ILogger? Logger => _logger;
     private int _simpleFieldDepth;
     private int _complexFieldDepth;
     private int _complexFieldInSimpleDepth;
 
-    public DxpWalker(ILogger? logger = null)
+    public DxpWalker(ILogger? logger = null, IProgress<DxpExportProgress>? progress = null)
     {
         _logger = logger;
+        _progress = progress == null ? null : new DxpExportProgressTracker(progress);
     }
+
+    internal void ReportCompleted() => _progress?.Completed();
 
     public void Accept(string docxPath, DxpIVisitor v)
     {
+        _progress?.ReportPhase(DxpExportPhase.Opening);
         _logger?.LogDebug("Walker step start: {Step}. Input: {InputPath}", "Open DOCX", docxPath);
         var openTimer = Stopwatch.StartNew();
         try
@@ -41,7 +46,7 @@ public class DxpWalker
 
             using var doc = WordprocessingDocument.Open(fileStream, false);
             _logger?.LogDebug("Walker step finish: {Step} ({ElapsedMs} ms). Input: {InputPath}", "Open DOCX", openTimer.ElapsedMilliseconds, docxPath);
-            Accept(doc, v);
+            AcceptCore(doc, v, reportOpening: false);
         }
         catch (Exception ex)
         {
@@ -51,7 +56,14 @@ public class DxpWalker
     }
 
     public void Accept(WordprocessingDocument doc, DxpIVisitor v)
+        => AcceptCore(doc, v, reportOpening: true);
+
+    private void AcceptCore(WordprocessingDocument doc, DxpIVisitor v, bool reportOpening)
     {
+        if (reportOpening)
+            _progress?.ReportPhase(DxpExportPhase.Opening);
+        _progress?.ReportPhase(DxpExportPhase.Preparing);
+
         if (doc.MainDocumentPart == null)
         {
             _logger?.LogError("DOCX has no MainDocumentPart; unable to walk document.");
@@ -75,6 +87,9 @@ public class DxpWalker
             _logger?.LogDebug(ex, "Walker step failed: {Step} ({ElapsedMs} ms)", "Build document context", contextTimer.ElapsedMilliseconds);
             throw;
         }
+
+        if (_progress != null)
+            _progress.BeginConversion(CountParagraphsToVisit(doc, documentContext, v));
 
         _logger?.LogDebug("Walker step start: {Step}", "Visit document");
         var visitTimer = Stopwatch.StartNew();
@@ -126,6 +141,7 @@ public class DxpWalker
                 }
             }
             _logger?.LogDebug("Walker step finish: {Step} ({ElapsedMs} ms)", "Visit document", visitTimer.ElapsedMilliseconds);
+            _progress?.Finalizing();
         }
         catch (Exception ex)
         {
@@ -352,6 +368,54 @@ public class DxpWalker
                 WalkSection(section, d, v, headerRef, footerRef, isLastSection);
             }
         }
+    }
+
+    private static long CountParagraphsToVisit(
+        WordprocessingDocument doc,
+        DxpDocumentContext context,
+        DxpIVisitor visitor)
+    {
+        var main = doc.MainDocumentPart;
+        var body = main?.Document?.Body;
+        if (main == null || body == null)
+            return 0;
+
+        long total = body.Descendants<Paragraph>().LongCount();
+        var selectionProvider = visitor as IDxpHeaderFooterSelectionProvider;
+        bool evenAndOddHeaders = context.DocumentSettings != null &&
+            context.DocumentSettings.ChildElements.Any(e => e.LocalName == "evenAndOddHeaders");
+        var effective = new EffectiveHeaderFooterRefs();
+
+        foreach (var section in DxpSections.SplitDocumentBodyIntoSections(body))
+        {
+            effective.ApplySectionOverrides(section.Properties);
+            HeaderReference? headerRef;
+            FooterReference? footerRef;
+            if (selectionProvider == null)
+            {
+                headerRef = DxpSections.FindFirstSectionHeaderReference(section.Properties);
+                footerRef = DxpSections.FindLastSectionFooterReference(section.Properties);
+            }
+            else
+            {
+                headerRef = effective.SelectHeader(section.Properties, selectionProvider.HeaderSelection, evenAndOddHeaders);
+                footerRef = effective.SelectFooter(section.Properties, selectionProvider.FooterSelection, evenAndOddHeaders);
+            }
+
+            if (headerRef?.Id?.Value is string headerId &&
+                main.GetPartById(headerId) is HeaderPart { Header: Header header })
+                total += header.Descendants<Paragraph>().LongCount();
+            if (footerRef?.Id?.Value is string footerId &&
+                main.GetPartById(footerId) is FooterPart { Footer: Footer footer })
+                total += footer.Descendants<Paragraph>().LongCount();
+        }
+
+        foreach (var (footnote, _, _) in context.Footnotes.GetFootnotes())
+            total += footnote.Descendants<Paragraph>().LongCount();
+        foreach (var (endnote, _, _) in context.Endnotes.GetEndnotes())
+            total += endnote.Descendants<Paragraph>().LongCount();
+
+        return total;
     }
 
     private sealed class EffectiveHeaderFooterRefs
@@ -1052,6 +1116,7 @@ public class DxpWalker
             foreach (var child in p.ChildElements)
                 WalkParagraphChild(child, d, v);
         }
+        _progress?.ParagraphCompleted();
     }
 
     private void WalkBidirectionalEmbedding(BidirectionalEmbedding bdi, DxpDocumentContext d, DxpIVisitor v)
@@ -2936,6 +3001,7 @@ public class DxpWalker
                                 foreach (var innerChild in p.ChildElements)
                                     WalkParagraphChild(innerChild, d, v);
                             }
+                            _progress?.ParagraphCompleted();
                             break;
                         case Table t:
                             WalkTable(t, d, v);

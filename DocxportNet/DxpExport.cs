@@ -26,7 +26,8 @@ public static class DxpExport
         visitor.SetOutput(writer);
         try
         {
-            RunWalker(docxPath, visitor, options, logger);
+            var walker = RunWalker(docxPath, visitor, options, logger);
+            walker.ReportCompleted();
             return writer.ToString();
         }
         finally
@@ -51,7 +52,7 @@ public static class DxpExport
         visitor.SetOutput(Stream.Null);
         try
         {
-            RunWalker(docxPath, visitor, options: null, logger);
+            RunWalker(docxPath, visitor, options: null, logger).ReportCompleted();
         }
         finally
         {
@@ -67,7 +68,7 @@ public static class DxpExport
         visitor.SetOutput(Stream.Null);
         try
         {
-            RunWalker(docxPath, visitor, options, logger);
+            RunWalker(docxPath, visitor, options, logger).ReportCompleted();
         }
         finally
         {
@@ -94,7 +95,7 @@ public static class DxpExport
         visitor.SetOutput(writer);
         try
         {
-            RunWalker(document, visitor, options, logger);
+            RunWalker(document, visitor, options, logger).ReportCompleted();
             return writer.ToString();
         }
         finally
@@ -130,7 +131,7 @@ public static class DxpExport
         visitor.SetOutput(ms);
         try
         {
-            RunWalker(docxPath, visitor, options: null, logger);
+            RunWalker(docxPath, visitor, options: null, logger).ReportCompleted();
             return ms.ToArray();
         }
         finally
@@ -148,7 +149,7 @@ public static class DxpExport
         visitor.SetOutput(ms);
         try
         {
-            RunWalker(docxPath, visitor, options, logger);
+            RunWalker(docxPath, visitor, options, logger).ReportCompleted();
             return ms.ToArray();
         }
         finally
@@ -166,7 +167,7 @@ public static class DxpExport
         visitor.SetOutput(ms);
         try
         {
-            RunWalker(document, visitor, options: null, logger);
+            RunWalker(document, visitor, options: null, logger).ReportCompleted();
             return ms.ToArray();
         }
         finally
@@ -184,7 +185,7 @@ public static class DxpExport
         visitor.SetOutput(ms);
         try
         {
-            RunWalker(document, visitor, options, logger);
+            RunWalker(document, visitor, options, logger).ReportCompleted();
             return ms.ToArray();
         }
         finally
@@ -320,8 +321,9 @@ public static class DxpExport
         visitor.SetOutput(fileStream);
         try
         {
-            RunWalker(docxPath, visitor, options, logger);
+            var walker = RunWalker(docxPath, visitor, options, logger);
             fileStream.Flush();
+            walker.ReportCompleted();
             return outputPath;
         }
         finally
@@ -369,8 +371,9 @@ public static class DxpExport
         visitor.SetOutput(fileStream);
         try
         {
-            RunWalker(document, visitor, options, logger);
+            var walker = RunWalker(document, visitor, options, logger);
             fileStream.Flush();
+            walker.ReportCompleted();
             return outputPath;
         }
         finally
@@ -386,7 +389,7 @@ public static class DxpExport
             Directory.CreateDirectory(directory);
     }
 
-    private static void RunWalker(string docxPath, DxpIVisitor visitor, DxpExportOptions? options, ILogger? logger)
+    private static DxpWalker RunWalker(string docxPath, DxpIVisitor visitor, DxpExportOptions? options, ILogger? logger)
     {
         logger?.LogDebug("Export step start: {Step}. Input: {InputPath}", "Run walker (path)", docxPath);
         var runTimer = Stopwatch.StartNew();
@@ -397,9 +400,10 @@ public static class DxpExport
             var wrapped = WrapWithFieldEvalMiddleware(visitor, options, logger);
             logger?.LogDebug("Export step finish: {Step} ({ElapsedMs} ms)", "Build middleware pipeline", middlewareTimer.ElapsedMilliseconds);
 
-            var walker = new DxpWalker(logger);
+            var walker = new DxpWalker(logger, options?.Progress);
             walker.Accept(docxPath, wrapped);
             logger?.LogDebug("Export step finish: {Step} ({ElapsedMs} ms)", "Run walker (path)", runTimer.ElapsedMilliseconds);
+            return walker;
         }
         catch (Exception ex)
         {
@@ -408,7 +412,7 @@ public static class DxpExport
         }
     }
 
-    private static void RunWalker(WordprocessingDocument document, DxpIVisitor visitor, DxpExportOptions? options, ILogger? logger)
+    private static DxpWalker RunWalker(WordprocessingDocument document, DxpIVisitor visitor, DxpExportOptions? options, ILogger? logger)
     {
         logger?.LogDebug("Export step start: {Step}", "Run walker (document)");
         var runTimer = Stopwatch.StartNew();
@@ -419,9 +423,10 @@ public static class DxpExport
             var wrapped = WrapWithFieldEvalMiddleware(visitor, options, logger);
             logger?.LogDebug("Export step finish: {Step} ({ElapsedMs} ms)", "Build middleware pipeline", middlewareTimer.ElapsedMilliseconds);
 
-            var walker = new DxpWalker(logger);
+            var walker = new DxpWalker(logger, options?.Progress);
             walker.Accept(document, wrapped);
             logger?.LogDebug("Export step finish: {Step} ({ElapsedMs} ms)", "Run walker (document)", runTimer.ElapsedMilliseconds);
+            return walker;
         }
         catch (Exception ex)
         {
