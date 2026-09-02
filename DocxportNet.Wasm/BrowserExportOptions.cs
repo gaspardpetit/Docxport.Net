@@ -20,6 +20,9 @@ public enum BrowserHeaderFooterSelection { None, First, Last }
 [JsonConverter(typeof(JsonStringEnumConverter<BrowserMathOutputFormat>))]
 public enum BrowserMathOutputFormat { None, MathMl, Latex, UnicodeMath, Text }
 
+[JsonConverter(typeof(JsonStringEnumConverter<BrowserMathDelimiterStyle>))]
+public enum BrowserMathDelimiterStyle { Dollar, Backslash, Auto }
+
 public sealed class BrowserExportRequest
 {
     public BrowserExportFormat Format { get; set; } = BrowserExportFormat.Html;
@@ -78,6 +81,7 @@ public sealed class BrowserMarkdownOptions
 {
     public BrowserMathOutputFormat? MathOutputFormat { get; set; }
     public bool? EmitMathDelimiters { get; set; }
+    public BrowserMathDelimiterStyle? MathDelimiterStyle { get; set; }
     public bool? EmitImages { get; set; }
     public bool? EmitStyleFont { get; set; }
     public bool? EmitRunColor { get; set; }

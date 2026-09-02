@@ -9,6 +9,7 @@ export type TrackedChangeMode = "accept" | "reject" | "inline" | "split";
 export type HeaderFooterSelection = "none" | "first" | "last";
 export type ExportPreset = "rich" | "plain";
 export type MathOutputFormat = "none" | "mathml" | "latex" | "unicodemath" | "text";
+export type MathDelimiterStyle = "dollar" | "backslash" | "auto";
 
 export interface FieldOptions {
   mode?: FieldMode;
@@ -45,6 +46,7 @@ export interface HtmlOptions {
 export interface MarkdownOptions {
   mathOutputFormat?: MathOutputFormat;
   emitMathDelimiters?: boolean;
+  mathDelimiterStyle?: MathDelimiterStyle;
   emitImages?: boolean;
   emitStyleFont?: boolean;
   emitRunColor?: boolean;

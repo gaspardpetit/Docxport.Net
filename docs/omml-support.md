@@ -659,7 +659,7 @@ emit a diagnostic.
 ### Goal 13: Pipeline integration
 
 - [x] Add thin integration into the HTML visitor using the standalone HTML-ready/MathML surface.
-- [x] Add thin integration into the Markdown visitor using expression-only LaTeX plus visitor-owned delimiters.
+- [x] Add thin integration into the Markdown visitor using expression-only LaTeX plus configurable dollar, backslash, and conservative-auto visitor-owned delimiters.
 - [x] Add thin integration into the plain-text visitor using the standalone readable-text surface.
 - [x] Confirm standalone and pipeline outputs use the same conversion behavior.
 
