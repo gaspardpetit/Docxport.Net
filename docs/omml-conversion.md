@@ -65,13 +65,21 @@ for `m:oMath` and `m:oMathPara`; there is no second pipeline-specific mapping.
 Each visitor config exposes nullable `MathOutputFormat`: `null` omits equations,
 and any `DxpOmmlOutputFormat` selects that standalone writer. Defaults are native
 MathML for both HTML presets, LaTeX for both Markdown presets, and readable text
-for both plain-text tracked-change presets. Markdown owns `$`/`$$` delimiters
-and exposes `EmitMathDelimiters`; the standalone LaTeX result never includes
-them. Embedded WordprocessingML uses the walker-backed resolver by default.
+for both plain-text tracked-change presets. Markdown owns its delimiters and
+exposes `EmitMathDelimiters` plus `MathDelimiterStyle`; the standalone LaTeX
+result never includes delimiters. Embedded WordprocessingML uses the
+walker-backed resolver by default.
+
+Both Markdown presets default to `Auto`. It emits `$...$` only when the inline
+expression is nonempty, single-line, starts with a non-whitespace/non-digit,
+ends with a non-whitespace, is not immediately followed by a digit, and has no
+unescaped literal dollar. Other inline expressions use `\(...\)`, and display
+expressions use `\[...\]`. `Dollar` forces `$...$`/`$$...$$`; `Backslash`
+forces `\(...\)`/`\[...\]`. Literal dollars are escaped before wrapping.
 
 The browser package mirrors these settings through `mathOutputFormat` on its
 HTML, Markdown, and text option objects, using `"none"` to omit equations.
-Markdown additionally exposes `emitMathDelimiters`.
+Markdown additionally exposes `emitMathDelimiters` and `mathDelimiterStyle`.
 
 ## Runs and tokens
 

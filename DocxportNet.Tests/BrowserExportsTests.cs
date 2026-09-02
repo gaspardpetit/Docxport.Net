@@ -49,10 +49,34 @@ public sealed class BrowserExportsTests
     {
         BrowserExportRequest request = new() { Format = exportFormat, Preset = BrowserPreset.Plain };
         request.Html = new BrowserHtmlOptions { MathOutputFormat = mathFormat };
-        request.Markdown = new BrowserMarkdownOptions { MathOutputFormat = mathFormat, EmitMathDelimiters = false };
+        request.Markdown = new BrowserMarkdownOptions
+        {
+            MathOutputFormat = mathFormat,
+            EmitMathDelimiters = false,
+            MathDelimiterStyle = BrowserMathDelimiterStyle.Backslash,
+        };
         request.Text = new BrowserTextOptions { MathOutputFormat = mathFormat };
 
         Assert.Contains(expected, BrowserExports.ExportForTests(CreateMathDocument(), request), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void BrowserMarkdownOptionsSelectDelimiterStyle()
+    {
+        BrowserExportRequest request = new()
+        {
+            Format = BrowserExportFormat.Markdown,
+            Preset = BrowserPreset.Plain,
+            Markdown = new BrowserMarkdownOptions
+            {
+                MathOutputFormat = BrowserMathOutputFormat.Latex,
+                EmitMathDelimiters = true,
+                MathDelimiterStyle = BrowserMathDelimiterStyle.Backslash,
+            },
+        };
+
+        Assert.Contains(@"\(\frac{a}{b}\)",
+            BrowserExports.ExportForTests(CreateMathDocument(), request), StringComparison.Ordinal);
     }
 
     [Fact]

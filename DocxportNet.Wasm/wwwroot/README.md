@@ -64,7 +64,7 @@ const info = await docxport.inspect(docxBytes);
 const markdown = await docxport.export(docxBytes, {
   format: "markdown",
   preset: "plain",
-  markdown: { mathOutputFormat: "latex", emitMathDelimiters: true }
+  markdown: { mathOutputFormat: "latex", emitMathDelimiters: true, mathDelimiterStyle: "auto" }
 });
 const resolvedBytes = await docxport.resolveDocx(docxBytes, {
   fields: { mode: "evaluate", variables: { Customer: "Ada" } }
@@ -78,6 +78,8 @@ Standalone OMML conversion also supports `html`, `unicodemath`, and `text`.
 DOCX export accepts `mathOutputFormat` (`mathml`, `latex`, `unicodemath`,
 `text`, or `none`) in the HTML, Markdown, and text option groups. Defaults are
 MathML for HTML, LaTeX for Markdown, and readable text for text export.
+Markdown `mathDelimiterStyle` accepts `auto` (the default), `dollar`, or
+`backslash`.
 See `index.d.ts` for format-specific options.
 
 ## Build locally

@@ -199,11 +199,61 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
         string markdown = ExportMarkdownFromBodyXml(bodyXml, config);
 
         Assert.Contains("Before $x_(2)$ after", markdown, StringComparison.Ordinal);
-        Assert.Contains("$$\n(1)/(2)\n$$", markdown, StringComparison.Ordinal);
+        Assert.Contains("\\[\n(1)/(2)\n\\]", markdown, StringComparison.Ordinal);
 
         string defaultMarkdown = ExportMarkdownFromBodyXml(bodyXml, DxpMarkdownVisitorConfig.CreatePlainConfig());
         Assert.Contains("Before $x_{2}$ after", defaultMarkdown, StringComparison.Ordinal);
-        Assert.Contains("$$\n\\frac{1}{2}\n$$", defaultMarkdown, StringComparison.Ordinal);
+        Assert.Contains("\\[\n\\frac{1}{2}\n\\]", defaultMarkdown, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void MarkdownExport_AutoMathDelimitersUseDollarsOnlyForConservativelySafeInlineMath()
+    {
+        const string bodyXml = """
+            <w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+                    xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math">
+              <w:p>
+                <m:oMath><m:r><m:t>i</m:t></m:r></m:oMath><w:r><w:t xml:space="preserve"> </w:t></w:r>
+                <m:oMath><m:r><m:t>123</m:t></m:r></m:oMath><w:r><w:t xml:space="preserve"> </w:t></w:r>
+                <m:oMath><m:r><m:t>x</m:t></m:r></m:oMath><w:r><w:t>2</w:t></w:r>
+                <w:r><w:t xml:space="preserve"> </w:t></w:r><m:oMath><m:r><m:t>$5</m:t></m:r></m:oMath>
+                <w:r><w:t xml:space="preserve"> </w:t></w:r><m:oMath><m:r><m:t xml:space="preserve"> z </m:t></m:r></m:oMath>
+              </w:p>
+              <w:p><m:oMathPara><m:oMath><m:r><m:t>y</m:t></m:r></m:oMath></m:oMathPara></w:p>
+            </w:body>
+            """;
+
+        DxpMarkdownVisitorConfig config = DxpMarkdownVisitorConfig.CreatePlainConfig() with
+        {
+            MathOutputFormat = DxpOmmlOutputFormat.UnicodeMath,
+        };
+        string markdown = ExportMarkdownFromBodyXml(bodyXml, config);
+
+        Assert.Contains("$i$ \\(123\\) \\(x\\)2", markdown, StringComparison.Ordinal);
+        Assert.Contains(@"$\$5$", markdown, StringComparison.Ordinal);
+        Assert.Contains(@"\( z \)", markdown, StringComparison.Ordinal);
+        Assert.Contains("\\[\ny\n\\]", markdown, StringComparison.Ordinal);
+    }
+
+    [Theory]
+    [InlineData(DxpMarkdownMathDelimiterStyle.Dollar, "$123$", "$$\ny\n$$")]
+    [InlineData(DxpMarkdownMathDelimiterStyle.Backslash, "\\(123\\)", "\\[\ny\n\\]")]
+    public void MarkdownExport_ExplicitMathDelimiterStylesApplyToInlineAndBlockMath(
+        DxpMarkdownMathDelimiterStyle style, string expectedInline, string expectedBlock)
+    {
+        const string bodyXml = """
+            <w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+                    xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math">
+              <w:p><m:oMath><m:r><m:t>123</m:t></m:r></m:oMath></w:p>
+              <w:p><m:oMathPara><m:oMath><m:r><m:t>y</m:t></m:r></m:oMath></m:oMathPara></w:p>
+            </w:body>
+            """;
+        DxpMarkdownVisitorConfig config = DxpMarkdownVisitorConfig.CreatePlainConfig() with { MathDelimiterStyle = style };
+
+        string markdown = ExportMarkdownFromBodyXml(bodyXml, config);
+
+        Assert.Contains(expectedInline, markdown, StringComparison.Ordinal);
+        Assert.Contains(expectedBlock, markdown, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -826,6 +876,7 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
             EmitTimeline = source.EmitTimeline,
             MathOutputFormat = source.MathOutputFormat,
             EmitMathDelimiters = source.EmitMathDelimiters,
+            MathDelimiterStyle = source.MathDelimiterStyle,
             MathEmbeddedContentResolver = source.MathEmbeddedContentResolver,
             TrackedChangeMode = mode,
             MarkupChangeClassifier = source.MarkupChangeClassifier
