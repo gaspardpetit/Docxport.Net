@@ -15,6 +15,17 @@ namespace DocxportNet.Wasm;
 
 public static partial class BrowserExports
 {
+    private sealed class BrowserProgress(Action<string> callback) : IProgress<DxpExportProgress>
+    {
+        public void Report(DxpExportProgress value) => callback(
+            JsonSerializer.Serialize(new BrowserExportProgress {
+                Phase = value.Phase.ToString().ToLowerInvariant(),
+                CompletedUnits = value.CompletedUnits,
+                TotalUnits = value.TotalUnits,
+                Percentage = value.Percentage
+            }, BrowserJsonContext.Default.BrowserExportProgress));
+    }
+
     [JSExport]
     [SupportedOSPlatform("browser")]
     public static string ConvertOmml(string omml, string format) => format.ToLowerInvariant() switch
@@ -28,14 +39,22 @@ public static partial class BrowserExports
 
     [JSExport]
     [SupportedOSPlatform("browser")]
-    public static string Export(byte[] docxBytes, string requestJson)
-        => ExportCore(docxBytes, DeserializeExportRequest(requestJson));
+    public static string Export(
+        byte[] docxBytes,
+        string requestJson,
+        [JSMarshalAs<JSType.Function<JSType.String>>] Action<string>? onProgress)
+        => ExportCore(docxBytes, DeserializeExportRequest(requestJson), onProgress);
 
-    private static string ExportCore(byte[] docxBytes, BrowserExportRequest request)
+    private static string ExportCore(
+        byte[] docxBytes,
+        BrowserExportRequest request,
+        Action<string>? onProgress = null)
     {
         ValidateBytes(docxBytes);
         var eval = CreateFieldEval(request.Fields);
         var exportOptions = CreateExportOptionsOrDefault(request.Fields);
+        if (onProgress != null)
+            exportOptions.Progress = new BrowserProgress(onProgress);
 
         return request.Format switch
         {
@@ -80,6 +99,11 @@ public static partial class BrowserExports
 
     public static string ExportForTests(byte[] docxBytes, BrowserExportRequest request) =>
         ExportCore(docxBytes, request);
+
+    public static string ExportForTests(
+        byte[] docxBytes,
+        BrowserExportRequest request,
+        Action<string> onProgress) => ExportCore(docxBytes, request, onProgress);
 
     public static byte[] ResolveDocxForTests(byte[] docxBytes, BrowserResolveRequest request) =>
         ResolveDocxCore(docxBytes, request);

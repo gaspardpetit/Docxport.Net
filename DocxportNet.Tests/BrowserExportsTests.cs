@@ -2,6 +2,7 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.Wasm;
+using System.Text.Json;
 using M = DocumentFormat.OpenXml.Math;
 
 namespace DocxportNet.Tests;
@@ -101,6 +102,26 @@ public sealed class BrowserExportsTests
     {
         var error = Assert.Throws<ArgumentException>(() => BrowserExports.ExportForTests([], new BrowserExportRequest()));
         Assert.Contains("non-empty DOCX", error.Message);
+    }
+
+    [Fact]
+    public void ReportsExportProgressToBrowserCallback()
+    {
+        var reports = new List<JsonElement>();
+
+        string output = BrowserExports.ExportForTests(Sample, new BrowserExportRequest {
+            Format = BrowserExportFormat.Text
+        }, json => reports.Add(JsonDocument.Parse(json).RootElement.Clone()));
+
+        Assert.NotEmpty(output);
+        Assert.NotEmpty(reports);
+        Assert.Equal("opening", reports[0].GetProperty("phase").GetString());
+        JsonElement completed = reports[^1];
+        Assert.Equal("completed", completed.GetProperty("phase").GetString());
+        Assert.Equal(100d, completed.GetProperty("percentage").GetDouble());
+        Assert.Equal(
+            completed.GetProperty("totalUnits").GetInt64(),
+            completed.GetProperty("completedUnits").GetInt64());
     }
 
     [Fact]
