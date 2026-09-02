@@ -28,6 +28,7 @@ string? outputPath = null;
 string format = "markdown";
 string tracked = "accept";
 bool plainOutput = false;
+bool showProgress = true;
 bool formatExplicit = false;
 var cliVariables = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 var includePaths = new List<string>();
@@ -68,6 +69,8 @@ for (int i = 0; i < args.Length; i++)
     }
     else if (arg.Equals("--plain", StringComparison.OrdinalIgnoreCase))
         plainOutput = true;
+    else if (arg.Equals("--no-progress", StringComparison.OrdinalIgnoreCase))
+        showProgress = false;
     else if (arg.StartsWith("--fields=", StringComparison.OrdinalIgnoreCase))
         fieldMode = ParseFieldMode(arg[(arg.IndexOf('=') + 1)..]);
     else if (arg.Equals("--fields", StringComparison.OrdinalIgnoreCase))
@@ -222,21 +225,21 @@ switch (format.ToLowerInvariant())
 {
     case "markdown":
     case "md":
-        ExportMarkdown(inputPath, outputPath, trackedMode, plainOutput, fieldMode, varsPath, cliVariables, includePaths, databaseConnections, logLevel);
+        ExportMarkdown(inputPath, outputPath, trackedMode, plainOutput, fieldMode, varsPath, cliVariables, includePaths, databaseConnections, logLevel, showProgress);
         break;
     case "html":
-        ExportHtml(inputPath, outputPath, trackedMode, plainOutput, fieldMode, varsPath, cliVariables, includePaths, databaseConnections, logLevel);
+        ExportHtml(inputPath, outputPath, trackedMode, plainOutput, fieldMode, varsPath, cliVariables, includePaths, databaseConnections, logLevel, showProgress);
         break;
     case "text":
     case "txt":
         if (plainOutput)
             Console.Error.WriteLine("Warning: --plain is only supported for markdown/html; ignoring.");
-        ExportPlainText(inputPath, outputPath, trackedMode, fieldMode, varsPath, cliVariables, includePaths, databaseConnections, logLevel);
+        ExportPlainText(inputPath, outputPath, trackedMode, fieldMode, varsPath, cliVariables, includePaths, databaseConnections, logLevel, showProgress);
         break;
     case "docx":
         if (plainOutput)
             Console.Error.WriteLine("Warning: --plain is only supported for markdown/html; ignoring.");
-        ExportDocx(inputPath, outputPath, fieldMode, varsPath, cliVariables, includePaths, databaseConnections, logLevel);
+        ExportDocx(inputPath, outputPath, fieldMode, varsPath, cliVariables, includePaths, databaseConnections, logLevel, showProgress);
         break;
     default:
         Console.Error.WriteLine($"Unknown format '{format}'. Expected markdown|html|text|docx.");
@@ -252,7 +255,8 @@ static void ExportDocx(
     IReadOnlyDictionary<string, string> cliVariables,
     IReadOnlyList<string> includePaths,
     IReadOnlyDictionary<string, string> databaseConnections,
-    LogLevel logLevel)
+    LogLevel logLevel,
+    bool showProgress)
 {
     string output = outputPath ?? Path.Combine(
         Path.GetDirectoryName(inputPath) ?? string.Empty,
@@ -261,7 +265,7 @@ static void ExportDocx(
     var logger = loggerFactory.CreateLogger("docxport");
     var visitor = new DxpDocxVisitor(logger);
     ApplyFieldContext(visitor, varsPath, cliVariables, includePaths, databaseConnections);
-    var exportOptions = new DxpExportOptions { FieldEvalMode = fieldMode };
+    var exportOptions = CreateExportOptions(fieldMode, showProgress);
     DxpExport.ExportToFile(inputPath, visitor, output, exportOptions, logger);
     Console.WriteLine($"Wrote DOCX to {output}");
 }
@@ -276,7 +280,8 @@ static void ExportMarkdown(
     IReadOnlyDictionary<string, string> cliVariables,
     IReadOnlyList<string> includePaths,
     IReadOnlyDictionary<string, string> databaseConnections,
-    LogLevel logLevel)
+    LogLevel logLevel,
+    bool showProgress)
 {
     var config = plainOutput ? DxpMarkdownVisitorConfig.CreatePlainConfig() : DxpMarkdownVisitorConfig.CreateRichConfig();
     config = config with { TrackedChangeMode = trackedMode };
@@ -286,7 +291,7 @@ static void ExportMarkdown(
     var logger = loggerFactory.CreateLogger("docxport");
     var visitor = new DxpMarkdownVisitor(config, logger);
     ApplyFieldContext(visitor, varsPath, cliVariables, includePaths, databaseConnections);
-    var exportOptions = new DxpExportOptions { FieldEvalMode = fieldMode };
+    var exportOptions = CreateExportOptions(fieldMode, showProgress);
     DxpExport.ExportToFile(inputPath, visitor, output, exportOptions, logger);
     Console.WriteLine($"Wrote Markdown to {output}");
 }
@@ -301,7 +306,8 @@ static void ExportHtml(
     IReadOnlyDictionary<string, string> cliVariables,
     IReadOnlyList<string> includePaths,
     IReadOnlyDictionary<string, string> databaseConnections,
-    LogLevel logLevel)
+    LogLevel logLevel,
+    bool showProgress)
 {
     var config = (plainOutput ? DxpHtmlVisitorConfig.CreatePlainConfig() : DxpHtmlVisitorConfig.CreateRichConfig()) with { TrackedChangeMode = trackedMode };
     string output = outputPath ?? Path.ChangeExtension(inputPath, trackedMode == DxpTrackedChangeMode.RejectChanges ? ".reject.html" : ".html");
@@ -309,7 +315,7 @@ static void ExportHtml(
     var logger = loggerFactory.CreateLogger("docxport");
     var visitor = new DxpHtmlVisitor(config, logger);
     ApplyFieldContext(visitor, varsPath, cliVariables, includePaths, databaseConnections);
-    var exportOptions = new DxpExportOptions { FieldEvalMode = fieldMode };
+    var exportOptions = CreateExportOptions(fieldMode, showProgress);
     DxpExport.ExportToFile(inputPath, visitor, output, exportOptions, logger);
     Console.WriteLine($"Wrote HTML to {output}");
 }
@@ -323,7 +329,8 @@ static void ExportPlainText(
     IReadOnlyDictionary<string, string> cliVariables,
     IReadOnlyList<string> includePaths,
     IReadOnlyDictionary<string, string> databaseConnections,
-    LogLevel logLevel)
+    LogLevel logLevel,
+    bool showProgress)
 {
     var textMode = trackedMode == DxpTrackedChangeMode.RejectChanges
         ? DxpPlainTextTrackedChangeMode.RejectChanges
@@ -334,7 +341,7 @@ static void ExportPlainText(
     var logger = loggerFactory.CreateLogger("docxport");
     var visitor = new DxpPlainTextVisitor(config, logger);
     ApplyFieldContext(visitor, varsPath, cliVariables, includePaths, databaseConnections);
-    var exportOptions = new DxpExportOptions { FieldEvalMode = fieldMode };
+    var exportOptions = CreateExportOptions(fieldMode, showProgress);
     DxpExport.ExportToFile(inputPath, visitor, output, exportOptions, logger);
     Console.WriteLine($"Wrote text to {output}");
 }
@@ -347,6 +354,16 @@ static DxpTrackedChangeMode ParseTrackedChangeMode(string value)
         "inline" => DxpTrackedChangeMode.InlineChanges,
         "split" => DxpTrackedChangeMode.SplitChanges,
         _ => DxpTrackedChangeMode.AcceptChanges
+    };
+}
+
+static DxpExportOptions CreateExportOptions(DxpFieldEvalExportMode fieldMode, bool showProgress)
+{
+    return new DxpExportOptions {
+        FieldEvalMode = fieldMode,
+        // Keep redirected stderr machine-readable and avoid paying for the
+        // paragraph-counting pre-pass when no progress can be displayed.
+        Progress = !showProgress || Console.IsErrorRedirected ? null : new DxpCliProgress()
     };
 }
 
@@ -393,7 +410,7 @@ static void PrintHelp()
 {
     Console.WriteLine($"""
 docxport ({GetVersion()})
-Usage: docxport <input.docx> [--format=markdown|html|text|docx] [--tracked=accept|reject|inline|split] [--plain] [--fields=evaluate|cache|none] [-o|--output=path] [--vars=path] [-D name=value] [--include-path=directory] [--database=[LABEL=]CONNECTION_STRING]
+Usage: docxport <input.docx> [--format=markdown|html|text|docx] [--tracked=accept|reject|inline|split] [--plain] [--fields=evaluate|cache|none] [--no-progress] [-o|--output=path] [--vars=path] [-D name=value] [--include-path=directory] [--database=[LABEL=]CONNECTION_STRING]
 
 Options:
   --format=...   Output format (default: markdown)
@@ -410,6 +427,7 @@ Options:
                   filename, or filename without extension; * explicitly denotes the fallback.
   --log          Enable info-level logging to stderr.
   --log-level=...  Set log level (trace|debug|info|warn|error|critical|none).
+  --no-progress  Disable the interactive progress bar and paragraph-counting pre-pass.
   -v, --version  Show CLI version
   -h, --help     Show this help
 """);
