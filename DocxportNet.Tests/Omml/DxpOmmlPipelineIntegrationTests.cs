@@ -19,6 +19,8 @@ public sealed class DxpOmmlPipelineIntegrationTests
         Assert.Equal(DxpOmmlOutputFormat.MathMl, DxpHtmlVisitorConfig.CreatePlainConfig().MathOutputFormat);
         Assert.Equal(DxpOmmlOutputFormat.Latex, DxpMarkdownVisitorConfig.CreateRichConfig().MathOutputFormat);
         Assert.Equal(DxpOmmlOutputFormat.Latex, DxpMarkdownVisitorConfig.CreatePlainConfig().MathOutputFormat);
+        Assert.Equal(DxpMarkdownMathDelimiterStyle.Auto, DxpMarkdownVisitorConfig.CreateRichConfig().MathDelimiterStyle);
+        Assert.Equal(DxpMarkdownMathDelimiterStyle.Auto, DxpMarkdownVisitorConfig.CreatePlainConfig().MathDelimiterStyle);
         Assert.Equal(DxpOmmlOutputFormat.Text, DxpPlainTextVisitorConfig.CreateAcceptConfig().MathOutputFormat);
         Assert.Equal(DxpOmmlOutputFormat.Text, DxpPlainTextVisitorConfig.CreateRejectConfig().MathOutputFormat);
     }

@@ -175,6 +175,7 @@ public static partial class BrowserExports
         if (o == null) return config;
         if (o.MathOutputFormat.HasValue) config.MathOutputFormat = ToMathOutputFormat(o.MathOutputFormat.Value);
         if (o.EmitMathDelimiters.HasValue) config.EmitMathDelimiters = o.EmitMathDelimiters.Value;
+        if (o.MathDelimiterStyle.HasValue) config.MathDelimiterStyle = ToMathDelimiterStyle(o.MathDelimiterStyle.Value);
         if (o.EmitImages.HasValue) config.EmitImages = o.EmitImages.Value;
         if (o.EmitStyleFont.HasValue) config.EmitStyleFont = o.EmitStyleFont.Value;
         if (o.EmitRunColor.HasValue) config.EmitRunColor = o.EmitRunColor.Value;
@@ -236,6 +237,13 @@ public static partial class BrowserExports
         BrowserMathOutputFormat.Latex => DxpOmmlOutputFormat.Latex,
         BrowserMathOutputFormat.UnicodeMath => DxpOmmlOutputFormat.UnicodeMath,
         _ => DxpOmmlOutputFormat.Text,
+    };
+
+    private static DxpMarkdownMathDelimiterStyle ToMathDelimiterStyle(BrowserMathDelimiterStyle value) => value switch
+    {
+        BrowserMathDelimiterStyle.Backslash => DxpMarkdownMathDelimiterStyle.Backslash,
+        BrowserMathDelimiterStyle.Auto => DxpMarkdownMathDelimiterStyle.Auto,
+        _ => DxpMarkdownMathDelimiterStyle.Dollar,
     };
 
     private static IEnumerable<OpenXmlElement> EnumerateStoryRoots(WordprocessingDocument document)

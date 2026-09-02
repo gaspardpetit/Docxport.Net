@@ -67,6 +67,13 @@ public enum DxpTrackedChangeMode
     SplitChanges
 }
 
+public enum DxpMarkdownMathDelimiterStyle
+{
+    Dollar,
+    Backslash,
+    Auto,
+}
+
 public sealed record DxpMarkdownVisitorConfig
 {
     public bool EmitImages = true;
@@ -90,11 +97,16 @@ public sealed record DxpMarkdownVisitorConfig
     public bool EmitTimeline = false;
     public DxpOmmlOutputFormat? MathOutputFormat = DxpOmmlOutputFormat.Latex;
     public bool EmitMathDelimiters = true;
+    public DxpMarkdownMathDelimiterStyle MathDelimiterStyle = DxpMarkdownMathDelimiterStyle.Auto;
     public IDxpOmmlEmbeddedContentResolver? MathEmbeddedContentResolver = new DxpWalkerOmmlEmbeddedContentResolver();
     public DxpTrackedChangeMode TrackedChangeMode = DxpTrackedChangeMode.InlineChanges;
     public Func<DxpMarkupChangeContext, DxpMarkupChangeDecision?>? MarkupChangeClassifier = null;
 
-    public static DxpMarkdownVisitorConfig CreateRichConfig() => new() { MathOutputFormat = DxpOmmlOutputFormat.Latex };
+    public static DxpMarkdownVisitorConfig CreateRichConfig() => new()
+    {
+        MathOutputFormat = DxpOmmlOutputFormat.Latex,
+        MathDelimiterStyle = DxpMarkdownMathDelimiterStyle.Auto,
+    };
     public static DxpMarkdownVisitorConfig CreatePlainConfig() => new() {
         EmitImages = false,
         EmitStyleFont = false,
@@ -115,6 +127,7 @@ public sealed record DxpMarkdownVisitorConfig
         EmitCustomProperties = true,
         EmitTimeline = false,
         MathOutputFormat = DxpOmmlOutputFormat.Latex,
+        MathDelimiterStyle = DxpMarkdownMathDelimiterStyle.Auto,
     };
 
     public static DxpMarkdownVisitorConfig CreateConfig() => CreateRichConfig();
@@ -463,14 +476,16 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
     {
         if (_config.MathOutputFormat is not DxpOmmlOutputFormat format)
             return;
-        WriteMath(d, DxpOmmlConverter.Convert(oMath, format, MathConversionOptions()).Output, format, display: false);
+        WriteMath(d, DxpOmmlConverter.Convert(oMath, format, MathConversionOptions()).Output, format,
+            display: false, followedByDigit: IsImmediatelyFollowedByDigit(oMath));
     }
 
     public override void VisitOMathParagraph(DocumentFormat.OpenXml.Math.Paragraph oMathPara, DxpIDocumentContext d)
     {
         if (_config.MathOutputFormat is not DxpOmmlOutputFormat format)
             return;
-        WriteMath(d, DxpOmmlConverter.Convert(oMathPara, format, MathConversionOptions()).Output, format, display: true);
+        WriteMath(d, DxpOmmlConverter.Convert(oMathPara, format, MathConversionOptions()).Output, format,
+            display: true, followedByDigit: false);
     }
 
     private DxpOmmlConversionOptions MathConversionOptions() => new()
@@ -485,7 +500,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
         FieldMode = DxpOmmlFieldMode.CachedResult,
     };
 
-    private void WriteMath(DxpIDocumentContext d, string value, DxpOmmlOutputFormat format, bool display)
+    private void WriteMath(DxpIDocumentContext d, string value, DxpOmmlOutputFormat format, bool display, bool followedByDigit)
     {
         bool delimit = _config.EmitMathDelimiters &&
             format is DxpOmmlOutputFormat.Latex or DxpOmmlOutputFormat.UnicodeMath;
@@ -495,10 +510,74 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
             return;
         }
 
+        value = EscapeUnescapedDollars(value);
+
+        DxpMarkdownMathDelimiterStyle style = _config.MathDelimiterStyle;
         if (display)
-            Write(d, $"\n\n$$\n{value}\n$$\n\n");
-        else
-            Write(d, $"${value}$");
+        {
+            Write(d, style == DxpMarkdownMathDelimiterStyle.Dollar
+                ? $"\n\n$$\n{value}\n$$\n\n"
+                : $"\n\n\\[\n{value}\n\\]\n\n");
+            return;
+        }
+
+        bool useDollar = style == DxpMarkdownMathDelimiterStyle.Dollar ||
+            (style == DxpMarkdownMathDelimiterStyle.Auto && IsConservativeDollarExpression(value, followedByDigit));
+        Write(d, useDollar ? $"${value}$" : $"\\({value}\\)");
+    }
+
+    private static bool IsConservativeDollarExpression(string value, bool followedByDigit)
+    {
+        if (value.Length == 0 || followedByDigit ||
+            char.IsWhiteSpace(value[0]) || char.IsDigit(value[0]) ||
+            char.IsWhiteSpace(value[value.Length - 1]) || value.IndexOfAny(['\r', '\n']) >= 0)
+            return false;
+
+        for (int index = 0; index < value.Length; index++)
+        {
+            if (value[index] != '$')
+                continue;
+            int slashCount = 0;
+            for (int prior = index - 1; prior >= 0 && value[prior] == '\\'; prior--)
+                slashCount++;
+            if (slashCount % 2 == 0)
+                return false;
+        }
+        return true;
+    }
+
+    private static string EscapeUnescapedDollars(string value)
+    {
+        StringBuilder? escaped = null;
+        int segmentStart = 0;
+        for (int index = 0; index < value.Length; index++)
+        {
+            if (value[index] != '$')
+                continue;
+            int slashCount = 0;
+            for (int prior = index - 1; prior >= 0 && value[prior] == '\\'; prior--)
+                slashCount++;
+            if (slashCount % 2 != 0)
+                continue;
+
+            escaped ??= new StringBuilder(value.Length + 1);
+            escaped.Append(value, segmentStart, index - segmentStart).Append(@"\$");
+            segmentStart = index + 1;
+        }
+
+        return escaped == null ? value : escaped.Append(value, segmentStart, value.Length - segmentStart).ToString();
+    }
+
+    private static bool IsImmediatelyFollowedByDigit(OpenXmlElement element)
+    {
+        for (OpenXmlElement? next = element.NextSibling(); next != null; next = next.NextSibling())
+        {
+            string text = next.InnerText;
+            if (text.Length == 0)
+                continue;
+            return char.IsDigit(text[0]);
+        }
+        return false;
     }
 
     public override IDisposable VisitInsertedRunBegin(InsertedRun ir, DxpIDocumentContext d)

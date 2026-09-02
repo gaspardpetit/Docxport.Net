@@ -134,7 +134,7 @@ string rejected = DxpExport.ExportToString(docxPath, rejectVisitor);
 ## Visitors and options
 
 **Markdown**  
-- Presets: `DxpMarkdownVisitorConfig.CreateRichConfig()` (styled) and `CreatePlainConfig()` (minimal); both default math to LaTeX with visitor-owned delimiters.
+- Presets: `DxpMarkdownVisitorConfig.CreateRichConfig()` (styled) and `CreatePlainConfig()` (minimal); both default math to LaTeX with automatic `$` versus `\(` delimiters and `\[` blocks. Select `Dollar`, `Backslash`, or `Auto` through `MathDelimiterStyle`.
 - Options cover images, inline styling, rich tables, comments formatting, custom properties, and tracked change mode.
 
 **HTML**  
