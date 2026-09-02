@@ -11,6 +11,19 @@ export type ExportPreset = "rich" | "plain";
 export type MathOutputFormat = "none" | "mathml" | "latex" | "unicodemath" | "text";
 export type MathDelimiterStyle = "dollar" | "backslash" | "auto";
 
+export type ExportPhase = "opening" | "preparing" | "converting" | "finalizing" | "completed";
+
+export interface ExportProgress {
+  phase: ExportPhase;
+  completedUnits: number;
+  totalUnits: number;
+  percentage: number | null;
+}
+
+export interface ExportProgressOptions {
+  onProgress?: (progress: ExportProgress) => void;
+}
+
 export interface FieldOptions {
   mode?: FieldMode;
   variables?: Record<string, string | null>;
@@ -77,10 +90,11 @@ export interface TextOptions {
   emitCustomProperties?: boolean;
 }
 
-export type ExportRequest =
+export type ExportRequest = (
   | { format: "html"; preset?: ExportPreset; fields?: FieldOptions; html?: HtmlOptions }
   | { format: "markdown"; preset?: ExportPreset; fields?: FieldOptions; markdown?: MarkdownOptions }
-  | { format: "text"; fields?: FieldOptions; text?: TextOptions };
+  | { format: "text"; fields?: FieldOptions; text?: TextOptions }
+) & ExportProgressOptions;
 
 export interface ResolveRequest { fields?: FieldOptions; }
 export interface DocumentInfo { hasTrackedChanges: boolean; }

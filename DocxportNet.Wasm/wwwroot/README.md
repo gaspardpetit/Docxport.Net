@@ -38,7 +38,10 @@ const docxport = await createDocxport({ assetBaseUrl });
 const html = await docxport.export(docxBytes, {
   format: "html",
   preset: "rich",
-  fields: { mode: "cache" }
+  fields: { mode: "cache" },
+  onProgress(progress) {
+    console.log(progress.phase, progress.percentage);
+  }
 });
 ```
 
@@ -81,6 +84,9 @@ MathML for HTML, LaTeX for Markdown, and readable text for text export.
 Markdown `mathDelimiterStyle` accepts `auto` (the default), `dollar`, or
 `backslash`.
 See `index.d.ts` for format-specific options.
+The optional `onProgress` callback receives the current phase, completed and
+total paragraph units, and a nullable percentage. Supplying it enables the
+lightweight paragraph-counting pre-pass.
 
 ## Build locally
 
