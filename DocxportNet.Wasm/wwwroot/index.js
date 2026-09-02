@@ -39,7 +39,14 @@ export async function createDocxport(options = {}) {
       return JSON.parse(api.Inspect(requireBytes(input)));
     },
     async export(input, request = {}) {
-      return api.Export(requireBytes(input), JSON.stringify(request));
+      const { onProgress, ...serializableRequest } = request;
+      if (onProgress !== undefined && typeof onProgress !== "function") {
+        throw new TypeError("onProgress must be a function.");
+      }
+      const progressCallback = onProgress
+        ? value => onProgress(JSON.parse(value))
+        : null;
+      return api.Export(requireBytes(input), JSON.stringify(serializableRequest), progressCallback);
     },
     async resolveDocx(input, request = {}) {
       const result = api.ResolveDocx(requireBytes(input), JSON.stringify(request));

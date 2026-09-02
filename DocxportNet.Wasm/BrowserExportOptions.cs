@@ -43,6 +43,14 @@ public sealed class BrowserDocumentInfo
     public bool HasTrackedChanges { get; set; }
 }
 
+public sealed class BrowserExportProgress
+{
+    public string Phase { get; set; } = string.Empty;
+    public long CompletedUnits { get; set; }
+    public long TotalUnits { get; set; }
+    public double? Percentage { get; set; }
+}
+
 public sealed class BrowserFieldOptions
 {
     public BrowserFieldMode? Mode { get; set; }
@@ -120,6 +128,7 @@ public sealed class BrowserTextOptions
 [JsonSerializable(typeof(BrowserExportRequest))]
 [JsonSerializable(typeof(BrowserResolveRequest))]
 [JsonSerializable(typeof(BrowserDocumentInfo))]
+[JsonSerializable(typeof(BrowserExportProgress))]
 internal partial class BrowserJsonContext : JsonSerializerContext
 {
 }
