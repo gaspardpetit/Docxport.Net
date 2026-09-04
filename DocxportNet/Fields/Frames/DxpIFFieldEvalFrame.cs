@@ -63,7 +63,8 @@ internal sealed class DxpIFFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame, I
 		FlushLiteralBuffer();
 		if (_ifState != null)
 			DxpFieldEvalIfRunner.TryEvaluateAndEmit(_ifState, _instructionText ?? string.Empty, _eval, d, Next,
-				DxpFieldEvalRules.GetEvaluationErrorText, EmitEvaluatedText, TryDeferStructuredResult);
+				DxpFieldEvalRules.GetEvaluationErrorText, EmitEvaluatedText,
+				buffer => TryDeferStructuredResult(buffer, d));
 	}
 
 	public override void VisitComplexFieldCachedResultText(string text, DxpIDocumentContext d)
@@ -79,7 +80,8 @@ internal sealed class DxpIFFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame, I
 			FlushLiteralBuffer();
 			if (_ifState != null)
 				DxpFieldEvalIfRunner.TryEvaluateAndEmit(_ifState, _instructionText ?? string.Empty, _eval, d, Next, 
-					DxpFieldEvalRules.GetEvaluationErrorText, EmitEvaluatedText, TryDeferStructuredResult);
+					DxpFieldEvalRules.GetEvaluationErrorText, EmitEvaluatedText,
+					buffer => TryDeferStructuredResult(buffer, d));
 			_inCachedResult = false;
 		});
 	}
@@ -209,13 +211,15 @@ internal sealed class DxpIFFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFrame, I
 		DxpFieldFrames.EmitTextInRun(text, d, run, Next);
 	}
 
-	private bool TryDeferStructuredResult(DxpFieldNodeBuffer buffer)
+	private bool TryDeferStructuredResult(DxpFieldNodeBuffer buffer, DxpIDocumentContext context)
 	{
+		if (_eval.Context.StructuredFieldSpliceCollector?.Record(buffer) == true)
+			return true;
 		if (Next is IDxpStructuredFieldResultSink sink && sink.TryRecordStructuredFieldResult(buffer))
 			return true;
 		if (_eval.Context.FieldDepth != 1 || !buffer.HasBlockRoots)
 			return false;
-		_eval.Context.DeferStructuredFieldResult(buffer);
+		_eval.Context.DeferStructuredFieldResult(context, buffer);
 		return true;
 	}
 

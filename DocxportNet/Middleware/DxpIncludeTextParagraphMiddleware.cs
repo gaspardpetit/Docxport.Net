@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 namespace DocxportNet.Middleware;
 
 internal sealed class DxpIncludeTextParagraphMiddleware : DxpMiddleware,
-    IDxpIncludeTextSpliceCollector,
+    IDxpStructuredFieldSpliceCollector,
     IDxpEmbeddedWalkCompletion
 {
     private readonly DxpIVisitor _next;
@@ -17,7 +17,7 @@ internal sealed class DxpIncludeTextParagraphMiddleware : DxpMiddleware,
     private DxpFieldNodeBuffer? _buffer;
     private Paragraph? _paragraph;
     private DxpIDocumentContext? _documentContext;
-    private IDxpIncludeTextSpliceCollector? _previousCollector;
+    private IDxpStructuredFieldSpliceCollector? _previousCollector;
     private bool _rootParagraphClosed;
 
     public DxpIncludeTextParagraphMiddleware(DxpIVisitor next, DxpFieldEval eval, ILogger? logger)
@@ -36,17 +36,17 @@ internal sealed class DxpIncludeTextParagraphMiddleware : DxpMiddleware,
 
     public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
     {
-        if (_buffer != null || !ContainsIncludeText(p))
+        if (_buffer != null || !ContainsBlockProducingField(p))
             return base.VisitParagraphBegin(p, d, paragraph);
 
         _buffer = new DxpFieldNodeBuffer();
         _recorder.Reset(_buffer);
         _paragraph = p;
         _documentContext = d;
-        _previousCollector = _context.IncludeTextSpliceCollector;
-        _context.IncludeTextSpliceCollector = this;
+        _previousCollector = _context.StructuredFieldSpliceCollector;
+        _context.StructuredFieldSpliceCollector = this;
         _rootParagraphClosed = false;
-        _logger?.LogDebug("Capturing paragraph containing INCLUDETEXT for block-aware replay.");
+        _logger?.LogDebug("Capturing field paragraph for block-aware replay.");
 
         return DocxportNet.Core.DxpDisposable.Create(Flush);
     }
@@ -56,6 +56,15 @@ internal sealed class DxpIncludeTextParagraphMiddleware : DxpMiddleware,
         if (_buffer == null)
             return false;
         _recorder.RecordInclude(expansion);
+        Complete();
+        return true;
+    }
+
+    public bool Record(DxpFieldNodeBuffer buffer)
+    {
+        if (_buffer == null)
+            return false;
+        _recorder.Record(buffer);
         Complete();
         return true;
     }
@@ -86,7 +95,7 @@ internal sealed class DxpIncludeTextParagraphMiddleware : DxpMiddleware,
         var buffer = _buffer;
         var paragraph = _paragraph;
         var documentContext = _documentContext;
-        _context.IncludeTextSpliceCollector = _previousCollector;
+        _context.StructuredFieldSpliceCollector = _previousCollector;
         _buffer = null;
         _paragraph = null;
         _documentContext = null;
@@ -97,10 +106,10 @@ internal sealed class DxpIncludeTextParagraphMiddleware : DxpMiddleware,
             return;
 
         var parts = buffer.SplitIncludeTextExpansions();
-        _logger?.LogDebug("Replaying INCLUDETEXT paragraph with {PartCount} splice parts and {ExpansionCount} expansions.", parts.Count, parts.Count(part => part.Expansion != null));
+        _logger?.LogDebug("Replaying field paragraph with {PartCount} splice parts and {ExpansionCount} INCLUDETEXT expansions.", parts.Count, parts.Count(part => part.Expansion != null));
         if (parts.All(part => part.Expansion == null))
         {
-            documentContext.Walker.ReplayBufferedParentParagraph(paragraph, documentContext, _next, buffer);
+            ReplayPart(documentContext, paragraph, buffer);
             return;
         }
         if (parts.Count == 3 && parts[1].Expansion != null)
@@ -132,19 +141,35 @@ internal sealed class DxpIncludeTextParagraphMiddleware : DxpMiddleware,
         foreach (var part in parts)
         {
             if (part.Inline != null)
-                documentContext.Walker.ReplayBufferedParentParagraph(
-                    paragraph,
-                    documentContext,
-                    _next,
-                    part.Inline);
+                ReplayPart(documentContext, paragraph, part.Inline);
             else
                 part.Expansion?.Emit(_next, documentContext, paragraph, null, null);
         }
     }
 
-    private static bool ContainsIncludeText(Paragraph paragraph)
-        => paragraph.Descendants<FieldCode>().Any(code =>
-            code.Text.Contains("INCLUDETEXT", StringComparison.OrdinalIgnoreCase))
-        || paragraph.Descendants<SimpleField>().Any(field =>
-            (field.Instruction?.Value ?? string.Empty).Contains("INCLUDETEXT", StringComparison.OrdinalIgnoreCase));
+    private void ReplayPart(DxpIDocumentContext context, Paragraph paragraph, DxpFieldNodeBuffer buffer)
+    {
+        if (buffer.HasBlockRoots)
+            buffer.Replay(_next, context);
+        else
+            context.Walker.ReplayBufferedParentParagraph(paragraph, context, _next, buffer);
+    }
+
+    private static bool ContainsBlockProducingField(Paragraph paragraph)
+    {
+        string complexInstructions = string.Concat(
+            paragraph.Descendants<FieldCode>().Select(static code => code.Text));
+        if (DxpFieldInstructionClassifier.IsIncludeTextInstruction(complexInstructions) ||
+            DxpFieldInstructionClassifier.IsDatabaseInstruction(complexInstructions) ||
+            complexInstructions.Contains("INCLUDETEXT", StringComparison.OrdinalIgnoreCase) ||
+            complexInstructions.Contains("DATABASE", StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return paragraph.Descendants<SimpleField>().Any(field =>
+        {
+            string instruction = field.Instruction?.Value ?? string.Empty;
+            return DxpFieldInstructionClassifier.IsIncludeTextInstruction(instruction) ||
+                DxpFieldInstructionClassifier.IsDatabaseInstruction(instruction);
+        });
+    }
 }

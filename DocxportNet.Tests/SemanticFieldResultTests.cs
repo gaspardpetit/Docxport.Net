@@ -345,6 +345,165 @@ public sealed class SemanticFieldResultTests : TestBase<SemanticFieldResultTests
     }
 
     [Fact]
+    public void VariablesIncludeFollowedByBodyIncludeInTableCellPreservesBodyBlocks()
+    {
+        byte[] variables = CreateDocument(body => body.Append(new Paragraph(
+            Begin(), Code(" SET EffectiveDate \"2026-09-04\" "), End())));
+        byte[] letterBody = CreateDocument(body => body.Append(
+            new Paragraph(new Run(new Text("FIRST BODY PARAGRAPH"))),
+            new Paragraph(new Run(new RunProperties(new Bold()), new Text("SECOND BODY PARAGRAPH")))));
+        byte[] root = CreateDocument(body => body.Append(
+            new Paragraph(
+                Begin(), Code(" INCLUDETEXT \"variables.docx\" "), Separate(),
+                new Run(new Text("VARIABLES-CACHE")), End()),
+            new Table(
+                new TableProperties(),
+                new TableGrid(new GridColumn()),
+                new TableRow(new TableCell(new Paragraph(
+                    Begin(), Code(" INCLUDETEXT \"letter-body.docx\" "), Separate(),
+                    new Run(new Text("BODY-CACHE")), End()))))));
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.IncludeTextResolver = new SelectiveIncludeResolver(
+            new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["variables.docx"] = variables,
+                ["letter-body.docx"] = letterBody
+            });
+
+        using var output = Open(DxpDocxExport.Export(root, SemanticOptions(), Logger, eval));
+
+        TableCell cell = Assert.Single(output.MainDocumentPart!.Document.Body!
+            .Descendants<TableCell>());
+        Assert.Equal(
+            new[] { "FIRST BODY PARAGRAPH", "SECOND BODY PARAGRAPH" },
+            cell.Elements<Paragraph>().Where(p => p.InnerText.Length > 0).Select(p => p.InnerText));
+        Assert.DoesNotContain("VARIABLES-CACHE", output.MainDocumentPart.Document.Body.InnerText,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain("BODY-CACHE", output.MainDocumentPart.Document.Body.InnerText,
+            StringComparison.Ordinal);
+        Run styled = Assert.Single(cell.Descendants<Run>(), run => run.InnerText == "SECOND BODY PARAGRAPH");
+        Assert.NotNull(styled.RunProperties?.Bold);
+        AssertValid(output);
+    }
+
+    [Fact]
+    public void CrossParagraphIncludeTextReplacesItsEntireCachedResultInsideTableCell()
+    {
+        byte[] included = CreateDocument(body => body.Append(
+            new Paragraph(new Run(new Text("RESOLVED FIRST"))),
+            new Paragraph(new Run(new Text("RESOLVED LAST")))));
+        byte[] source = CreateDocument(body => body.Append(new Table(
+            new TableProperties(),
+            new TableGrid(new GridColumn()),
+            new TableRow(new TableCell(
+                new Paragraph(
+                    Begin(), Code(" INCLUDETEXT \"body.docx\" "), Separate(),
+                    new Run(new Text("STALE FIRST"))),
+                new Paragraph(new Run(new Text("STALE MIDDLE"))),
+                new Paragraph(new Run(new Text("STALE LAST")), End()))))));
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.IncludeTextResolver = new SelectiveIncludeResolver(
+            new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["body.docx"] = included
+            });
+
+        using var output = Open(DxpDocxExport.Export(source, SemanticOptions(), Logger, eval));
+
+        TableCell cell = Assert.Single(output.MainDocumentPart!.Document.Body!.Descendants<TableCell>());
+        Assert.Equal(new[] { "RESOLVED FIRST", "RESOLVED LAST" },
+            cell.Elements<Paragraph>().Where(p => p.InnerText.Length > 0).Select(p => p.InnerText));
+        Assert.DoesNotContain("STALE", cell.InnerText, StringComparison.Ordinal);
+        AssertValid(output);
+    }
+
+    [Fact]
+    public void AdjacentCrossParagraphIncludesSharingAParagraphBothEmitTheirBlocks()
+    {
+        byte[] header = CreateDocument(body => body.Append(
+            new Paragraph(new Run(new Text("RESOLVED HEADER")))));
+        byte[] letterBody = CreateDocument(body => body.Append(
+            new Paragraph(new Run(new Text("RESOLVED BODY FIRST"))),
+            new Paragraph(new Run(new Text("RESOLVED BODY LAST")))));
+        byte[] source = CreateDocument(body => body.Append(new Table(
+            new TableProperties(),
+            new TableGrid(new GridColumn()),
+            new TableRow(new TableCell(
+                new Paragraph(
+                    Begin(), Code(" INCLUDETEXT \"header.docx\" "), Separate(),
+                    new Run(new Text("STALE HEADER FIRST"))),
+                new Paragraph(
+                    new Run(new Text("STALE HEADER LAST")), End(),
+                    Begin(), Code(" INCLUDETEXT \"body.docx\" "), Separate(),
+                    new Run(new Text("STALE BODY FIRST"))),
+                new Paragraph(new Run(new Text("STALE BODY LAST")), End()))))));
+        DxpFieldEval CreateIncludeEval()
+        {
+            var includeEval = new DxpFieldEval(logger: Logger);
+            includeEval.Context.IncludeTextResolver = new SelectiveIncludeResolver(
+                new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase)
+                {
+                    ["header.docx"] = header,
+                    ["body.docx"] = letterBody
+                });
+            return includeEval;
+        }
+        var eval = CreateIncludeEval();
+
+        using var output = Open(DxpDocxExport.Export(source, SemanticOptions(), Logger, eval));
+
+        TableCell cell = Assert.Single(output.MainDocumentPart!.Document.Body!.Descendants<TableCell>());
+        Assert.Equal(
+            new[] { "RESOLVED HEADER", "RESOLVED BODY FIRST", "RESOLVED BODY LAST" },
+            cell.Elements<Paragraph>().Where(p => p.InnerText.Length > 0).Select(p => p.InnerText));
+        Assert.DoesNotContain("STALE", cell.InnerText, StringComparison.Ordinal);
+        AssertValid(output);
+
+        string plainText = DxpExport.ExportToString(
+            source,
+            new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateAcceptConfig(), Logger, CreateIncludeEval()),
+            SemanticOptions(),
+            Logger);
+        Assert.Equal("RESOLVED HEADER|RESOLVED BODY FIRST|RESOLVED BODY LAST",
+            string.Join("|", new[] { "RESOLVED HEADER", "RESOLVED BODY FIRST", "RESOLVED BODY LAST" }
+                .OrderBy(value => plainText.IndexOf(value, StringComparison.Ordinal))));
+        Assert.DoesNotContain("STALE", plainText, StringComparison.Ordinal);
+
+        string html = DxpExport.ExportToString(
+            source,
+            new DxpHtmlVisitor(DxpHtmlVisitorConfig.CreateRichConfig(), Logger, CreateIncludeEval()),
+            SemanticOptions(),
+            Logger);
+        Assert.Contains("RESOLVED BODY LAST", html, StringComparison.Ordinal);
+        Assert.DoesNotContain("STALE", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void StructuredDatabaseResultStaysBetweenInlineSiblingsInItsTableCell()
+    {
+        byte[] source = CreateDocument(body => body.Append(new Table(
+            new TableProperties(),
+            new TableGrid(new GridColumn(), new GridColumn()),
+            new TableRow(
+                new TableCell(new Paragraph(
+                    new Run(new Text("BEFORE")),
+                    Begin(), Code(" DATABASE \\h \\s \"SELECT Name, Address FROM SyntheticPeople\" "), End(),
+                    new Run(new Text("AFTER")))),
+                new TableCell(new Paragraph(new Run(new Text("SIBLING"))))))));
+
+        using var output = Open(DxpDocxExport.Export(source, SemanticOptions(), Logger, CreateEval()));
+
+        Table outer = Assert.Single(output.MainDocumentPart!.Document.Body!.Elements<Table>());
+        TableCell[] cells = outer.Elements<TableRow>().Single().Elements<TableCell>().ToArray();
+        Assert.Equal(2, cells.Length);
+        Assert.Equal("BEFORE", cells[0].Elements<Paragraph>().First().InnerText);
+        Assert.Equal("AFTER", cells[0].Elements<Paragraph>().Last().InnerText);
+        Assert.Single(cells[0].Elements<Table>());
+        Assert.Equal("SIBLING", cells[1].InnerText);
+        AssertValid(output);
+    }
+
+    [Fact]
     public void AdjacentResolvedIncludesDoNotLeakTheirCachedErrors()
     {
         var resolver = new SelectiveIncludeResolver(new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase)
@@ -937,6 +1096,13 @@ public sealed class SemanticFieldResultTests : TestBase<SemanticFieldResultTests
 
     private static WordprocessingDocument Open(byte[] bytes)
         => WordprocessingDocument.Open(new MemoryStream(bytes), false);
+
+    private static void AssertValid(WordprocessingDocument document)
+    {
+        ValidationErrorInfo[] errors = new OpenXmlValidator().Validate(document).ToArray();
+        Assert.True(errors.Length == 0, string.Join(Environment.NewLine,
+            errors.Select(error => $"{error.Description} ({error.Path?.XPath})")));
+    }
 
     private sealed class SyntheticDatabaseProvider : IDatabaseFieldProvider
     {
