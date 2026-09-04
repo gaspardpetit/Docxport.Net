@@ -30,6 +30,9 @@ internal sealed class DxpEvalFieldNodeBufferRecorder : DxpVisitor, IDxpIncludeTe
     public void RecordInclude(DxpIncludeTextExpansion expansion)
         => Current.AddIncludeTextExpansion(expansion);
 
+    public void Record(DxpFieldNodeBuffer buffer)
+        => Current.Append(buffer);
+
     public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
     {
         var clone = (Paragraph)p.CloneNode(false);

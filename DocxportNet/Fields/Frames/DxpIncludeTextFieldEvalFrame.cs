@@ -97,7 +97,7 @@ internal sealed class DxpIncludeTextFieldEvalFrame : DxpValueFieldEvalFrame
             CachedResultBuffer,
             Eval,
             Logger);
-        if (EvalContext.IncludeTextSpliceCollector?.Record(expansion) == true)
+        if (EvalContext.StructuredFieldSpliceCollector?.Record(expansion) == true)
             return true;
 
         if (!EvalContext.TryEnterIncludeText(source.Identity, out string? recursionError))
@@ -127,7 +127,7 @@ internal sealed class DxpIncludeTextFieldEvalFrame : DxpValueFieldEvalFrame
 
     private bool ReplayCache(DxpIDocumentContext d)
     {
-        var collector = EvalContext.IncludeTextSpliceCollector;
+        var collector = EvalContext.StructuredFieldSpliceCollector;
         if (Next != null && CachedResultBuffer != null)
         {
             if (collector != null)

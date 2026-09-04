@@ -367,9 +367,11 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
                 Next,
                 _logger);
         }
+        if (buffer.HasBlockRoots && EvalContext.StructuredFieldSpliceCollector?.Record(buffer) == true)
+            return true;
         if (buffer.HasBlockRoots && EvalContext.FieldDepth == 1 &&
-            EvalContext.IncludeTextSpliceCollector == null)
-            EvalContext.DeferStructuredFieldResult(buffer);
+            EvalContext.StructuredFieldSpliceCollector == null)
+            EvalContext.DeferStructuredFieldResult(context, buffer);
         else
             buffer.Replay(Next, context);
         return true;

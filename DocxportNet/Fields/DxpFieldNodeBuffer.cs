@@ -249,10 +249,14 @@ public sealed class DxpFieldNodeBuffer
         public DxpIncludeTextExpansion Expansion { get; }
         public void Replay(DxpIVisitor visitor, DxpIDocumentContext context)
         {
-            if (Expansion.Eval.Context.IncludeTextSpliceCollector?.Record(Expansion) == true)
+            if (Expansion.Eval.Context.StructuredFieldSpliceCollector?.Record(Expansion) == true)
                 return;
             if (visitor is IDxpIncludeTextResultSink sink)
+            {
                 sink.RecordInclude(Expansion);
+                return;
+            }
+            Expansion.EmitStandalone(visitor, context);
         }
         public OpenXmlElement CreateElement(bool forRoot) => new Run();
         public void AppendText(StringBuilder sb) { }
@@ -340,6 +344,13 @@ public sealed class DxpFieldNodeBuffer
             {
                 if (pendingInline.Count == 0)
                     return;
+
+                var pendingBuffer = new DxpFieldNodeBuffer(new List<IReplayNode>(pendingInline));
+                if (string.IsNullOrEmpty(pendingBuffer.ToPlainText()))
+                {
+                    pendingInline.Clear();
+                    return;
+                }
 
                 Paragraph paragraph;
                 var firstRoot = pendingInline[0].CreateElement(forRoot: true);

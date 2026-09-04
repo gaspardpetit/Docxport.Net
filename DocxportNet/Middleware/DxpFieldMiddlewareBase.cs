@@ -321,7 +321,7 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware, IDxpEmbedde
         // The next paragraph boundary is the first reliably block-safe emission point.
         // Close an older paragraph retained for a later cross-paragraph field before
         // emitting a block that was produced earlier in that same source paragraph.
-        if (_context.HasDeferredStructuredFieldResults && _openCrossParagraphFieldParagraph != null)
+        if (_context.HasDeferredStructuredFieldResults(d) && _openCrossParagraphFieldParagraph != null)
         {
             var open = _openCrossParagraphFieldParagraph;
             _openCrossParagraphFieldParagraph = null;
@@ -414,7 +414,7 @@ public abstract class DxpFieldMiddlewareBase : DxpLoggingMiddleware, IDxpEmbedde
 
     private void ReplayDeferredStructuredResults(DxpIDocumentContext d)
     {
-        while (_context.TryTakeDeferredStructuredFieldResult(out var deferred) && deferred != null)
+        while (_context.TryTakeDeferredStructuredFieldResult(d, out var deferred) && deferred != null)
         {
             PrepareStructuredFieldResultSink(_next);
             deferred.Replay(_next, d);

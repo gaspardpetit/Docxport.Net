@@ -47,9 +47,11 @@ internal sealed class DxpDatabaseFieldEvalFrame : DxpMiddleware, DxpIFieldEvalFr
 
         OpenXmlElement block = BuildResult(execution.Value.Request, execution.Value.Result);
         var buffer = DxpFieldNodeBuffer.FromBlock(block);
+        if (_eval.Context.StructuredFieldSpliceCollector?.Record(buffer) == true)
+            return;
         if (Next is IDxpStructuredFieldResultSink sink && sink.TryRecordStructuredFieldResult(buffer))
             return;
-        _eval.Context.DeferStructuredFieldResult(buffer);
+        _eval.Context.DeferStructuredFieldResult(context, buffer);
     }
 
     private OpenXmlElement BuildResult(DxpDatabaseRequest request, DxpDatabaseResult result)

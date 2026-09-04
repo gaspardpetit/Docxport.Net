@@ -4,8 +4,9 @@ using Microsoft.Extensions.Logging;
 
 namespace DocxportNet.Fields;
 
-internal interface IDxpIncludeTextSpliceCollector
+internal interface IDxpStructuredFieldSpliceCollector
 {
+    bool Record(DxpFieldNodeBuffer buffer);
     bool Record(DxpIncludeTextExpansion expansion);
     void Complete();
 }
@@ -23,6 +24,35 @@ internal sealed record DxpIncludeTextExpansion(
     DxpFieldEval Eval,
     Microsoft.Extensions.Logging.ILogger? Logger)
 {
+    internal void EmitStandalone(DxpIVisitor visitor, DxpIDocumentContext context)
+    {
+        if (!Eval.Context.TryEnterIncludeText(Identity, out var recursionError))
+        {
+            Logger?.LogWarning("{Error} Using cached INCLUDETEXT result.", recursionError);
+            CachedResult?.Replay(visitor, context);
+            return;
+        }
+
+        try
+        {
+            bool emitted = DxpEmbeddedIncludeTextRunner.TryRun(
+                Path,
+                Content,
+                Bookmark,
+                visitor,
+                Eval,
+                Logger,
+                static (walker, document, pipeline, blocks) =>
+                    walker.AcceptEmbeddedBody(document, pipeline, blocks));
+            if (!emitted)
+                CachedResult?.Replay(visitor, context);
+        }
+        finally
+        {
+            Eval.Context.ExitIncludeText(Identity);
+        }
+    }
+
     internal void Emit(
         DxpIVisitor visitor,
         DxpIDocumentContext parentContext,
@@ -50,7 +80,7 @@ internal sealed record DxpIncludeTextExpansion(
                 {
                     DxpIDocumentContext childContext = walker.AcceptEmbeddedBodySpliced(
                         document, pipeline, parentContext, parentParagraph, before, after, blocks);
-                    while (Eval.Context.TryTakeDeferredStructuredFieldResult(out var deferred) && deferred != null)
+                    while (Eval.Context.TryTakeDeferredStructuredFieldResult(childContext, out var deferred) && deferred != null)
                         EmitDeferred(deferred, visitor, parentContext, parentParagraph);
                     return childContext;
                 });

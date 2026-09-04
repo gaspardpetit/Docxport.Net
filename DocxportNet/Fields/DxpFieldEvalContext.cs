@@ -26,27 +26,46 @@ public sealed partial class DxpFieldEvalContext
     private string? _lastPromptResponse;
     private bool _hasLastPromptResponse;
     private readonly Stack<string> _includeTextStack = new();
-    private readonly Queue<DxpFieldNodeBuffer> _deferredStructuredFieldResults = new();
+    private readonly Dictionary<DxpIDocumentContext, Queue<DxpFieldNodeBuffer>> _deferredStructuredFieldResults =
+        new(DocumentContextReferenceComparer.Instance);
     private readonly Dictionary<string, Lazy<Task<byte[]>>> _htmlIncludeConversions = new(StringComparer.Ordinal);
 
-    internal IDxpIncludeTextSpliceCollector? IncludeTextSpliceCollector { get; set; }
+    internal IDxpStructuredFieldSpliceCollector? StructuredFieldSpliceCollector { get; set; }
     internal bool SuppressCrossParagraphFieldParagraphOutput { get; set; }
 
-    internal void DeferStructuredFieldResult(DxpFieldNodeBuffer result)
-        => _deferredStructuredFieldResults.Enqueue(result);
-
-    internal bool HasDeferredStructuredFieldResults
-        => _deferredStructuredFieldResults.Count > 0;
-
-    internal bool TryTakeDeferredStructuredFieldResult(out DxpFieldNodeBuffer? result)
+    internal void DeferStructuredFieldResult(DxpIDocumentContext context, DxpFieldNodeBuffer result)
     {
-        if (_deferredStructuredFieldResults.Count == 0)
+        if (!_deferredStructuredFieldResults.TryGetValue(context, out var results))
+        {
+            results = new Queue<DxpFieldNodeBuffer>();
+            _deferredStructuredFieldResults.Add(context, results);
+        }
+        results.Enqueue(result);
+    }
+
+    internal bool HasDeferredStructuredFieldResults(DxpIDocumentContext context)
+        => _deferredStructuredFieldResults.TryGetValue(context, out var results) && results.Count > 0;
+
+    internal bool TryTakeDeferredStructuredFieldResult(
+        DxpIDocumentContext context,
+        out DxpFieldNodeBuffer? result)
+    {
+        if (!_deferredStructuredFieldResults.TryGetValue(context, out var results) || results.Count == 0)
         {
             result = null;
             return false;
         }
-        result = _deferredStructuredFieldResults.Dequeue();
+        result = results.Dequeue();
+        if (results.Count == 0)
+            _deferredStructuredFieldResults.Remove(context);
         return true;
+    }
+
+    private sealed class DocumentContextReferenceComparer : IEqualityComparer<DxpIDocumentContext>
+    {
+        internal static DocumentContextReferenceComparer Instance { get; } = new();
+        public bool Equals(DxpIDocumentContext? x, DxpIDocumentContext? y) => ReferenceEquals(x, y);
+        public int GetHashCode(DxpIDocumentContext obj) => System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(obj);
     }
 
     public Func<DateTimeOffset> NowProvider { get; private set; } = () => DateTimeOffset.Now;
@@ -162,6 +181,7 @@ public sealed partial class DxpFieldEvalContext
         _docVariableNodes.Clear();
         _bookmarkNodes.Clear();
         _bookmarkValues.Clear();
+        _deferredStructuredFieldResults.Clear();
         _sequences.Clear();
         _numberedItems.Clear();
         _sequenceResetKeys.Clear();
