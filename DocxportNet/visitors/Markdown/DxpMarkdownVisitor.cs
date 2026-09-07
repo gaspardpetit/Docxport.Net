@@ -916,23 +916,88 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
     public override IDisposable VisitSectionHeaderBegin(Header hdr, object kind, DxpIDocumentContext d)
     {
-        if (_config.EmitSectionHeadersFooters == false)
-            return DxpDisposable.Empty;
-
-        WriteLine(d, """<div class="header" style="border-bottom:1px solid #000;">""");
-
-        return DxpDisposable.Create(() => {
-            WriteLine(d, "</div>");
-        });
+        return BeginDeferredHeaderFooterRegion(
+            d,
+            """<div class="header" style="border-bottom:1px solid #000;">""");
     }
 
     public override IDisposable VisitSectionFooterBegin(Footer ftr, object kind, DxpIDocumentContext d)
     {
-        WriteLine(d, """<div class="footer" style="border-top:1px solid #000;">""");
+        return BeginDeferredHeaderFooterRegion(
+            d,
+            """<div class="footer" style="border-top:1px solid #000;">""");
+    }
+
+    private IDisposable BeginDeferredHeaderFooterRegion(DxpIDocumentContext d, string openingTag)
+    {
+        if (_config.EmitSectionHeadersFooters == false)
+            return DxpDisposable.Empty;
+
+        // Match the old wrapper's inline-change boundary before redirecting output.
+        if (_config.TrackedChangeMode == DxpTrackedChangeMode.InlineChanges)
+            Write(d, string.Empty);
+
+        var previousDeleted = _state.DeletedTextWriter;
+        var previousInserted = _state.InsertedTextWriter;
+        var previousUnchanged = _state.UnchangedTextWriter;
+        var acceptBuffer = new DxpBufferedTextWriter();
+        var rejectBuffer = new DxpBufferedTextWriter();
+
+        switch (_config.TrackedChangeMode)
+        {
+            case DxpTrackedChangeMode.SplitChanges:
+                _state.DeletedTextWriter = rejectBuffer;
+                _state.InsertedTextWriter = acceptBuffer;
+                _state.UnchangedTextWriter = new DxpMultiTextWriter(true, rejectBuffer, acceptBuffer);
+                break;
+            case DxpTrackedChangeMode.RejectChanges:
+                _state.DeletedTextWriter = rejectBuffer;
+                _state.InsertedTextWriter = TextWriter.Null;
+                _state.UnchangedTextWriter = rejectBuffer;
+                break;
+            default:
+                _state.DeletedTextWriter = _config.TrackedChangeMode == DxpTrackedChangeMode.InlineChanges
+                    ? acceptBuffer
+                    : TextWriter.Null;
+                _state.InsertedTextWriter = acceptBuffer;
+                _state.UnchangedTextWriter = acceptBuffer;
+                break;
+        }
 
         return DxpDisposable.Create(() => {
-            WriteLine(d, "</div>");
+            if (_config.TrackedChangeMode == DxpTrackedChangeMode.InlineChanges)
+                SetInlineChangeMode(DxpMarkdownVisitorState.InlineChangeMode.Unchanged);
+
+            _state.DeletedTextWriter = previousDeleted;
+            _state.InsertedTextWriter = previousInserted;
+            _state.UnchangedTextWriter = previousUnchanged;
+
+            if (_config.TrackedChangeMode == DxpTrackedChangeMode.SplitChanges)
+            {
+                EmitDeferredRegion(previousInserted, acceptBuffer.Drain(), openingTag);
+                EmitDeferredRegion(previousDeleted, rejectBuffer.Drain(), openingTag);
+                EmitSplitBuffersIfNeeded();
+            }
+            else if (_config.TrackedChangeMode == DxpTrackedChangeMode.RejectChanges)
+            {
+                EmitDeferredRegion(previousUnchanged, rejectBuffer.Drain(), openingTag);
+            }
+            else
+            {
+                EmitDeferredRegion(previousUnchanged, acceptBuffer.Drain(), openingTag);
+            }
         });
+    }
+
+    private static void EmitDeferredRegion(TextWriter writer, string content, string openingTag)
+    {
+        if (string.IsNullOrWhiteSpace(content))
+            return;
+
+        writer.Write(openingTag);
+        writer.Write('\n');
+        writer.Write(content);
+        writer.Write("</div>\n");
     }
 
     public override void VisitPageNumber(PageNumber pn, DxpIDocumentContext d)

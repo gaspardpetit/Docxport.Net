@@ -438,6 +438,72 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
     }
 
     [Fact]
+    public void MarkdownExport_OmitsEmptyHeaderAndFooterWrappers()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p><w:r><w:t>Body text</w:t></w:r></w:p>
+  <w:sectPr>
+    <w:headerReference w:type="default" r:id="rIdHeader1" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/>
+    <w:footerReference w:type="default" r:id="rIdFooter1" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/>
+  </w:sectPr>
+</w:body>
+""";
+
+        string markdown = ExportMarkdownFromBodyXml(
+            bodyXml,
+            DxpMarkdownVisitorConfig.CreateRichConfig(),
+            document => {
+                var main = document.MainDocumentPart ?? throw new InvalidOperationException("Main document part should exist.");
+                var headerPart = main.AddNewPart<HeaderPart>("rIdHeader1");
+                headerPart.Header = new Header(new Paragraph());
+                headerPart.Header.Save();
+
+                var footerPart = main.AddNewPart<FooterPart>("rIdFooter1");
+                footerPart.Footer = new Footer(new Paragraph(new Run(new Text("   "))));
+                footerPart.Footer.Save();
+            });
+
+        Assert.Contains("Body text", markdown, StringComparison.Ordinal);
+        Assert.DoesNotContain("<div class=\"header\"", markdown, StringComparison.Ordinal);
+        Assert.DoesNotContain("<div class=\"footer\"", markdown, StringComparison.Ordinal);
+    }
+
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(true, true)]
+    public void MarkdownExport_HeaderWrapperDependsOnRenderedPageField(bool emitPageNumbers, bool expectHeader)
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p><w:r><w:t>Body text</w:t></w:r></w:p>
+  <w:sectPr>
+    <w:headerReference w:type="default" r:id="rIdHeader1" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"/>
+  </w:sectPr>
+</w:body>
+""";
+
+        var config = DxpMarkdownVisitorConfig.CreateRichConfig();
+        config.EmitPageNumbers = emitPageNumbers;
+        config.EmitFieldInstructions = false;
+        string markdown = ExportMarkdownFromBodyXml(
+            bodyXml,
+            config,
+            document => {
+                var main = document.MainDocumentPart ?? throw new InvalidOperationException("Main document part should exist.");
+                var headerPart = main.AddNewPart<HeaderPart>("rIdHeader1");
+                headerPart.Header = new Header(
+                    new Paragraph(
+                        new SimpleField(
+                            new Run(new Text("7"))) { Instruction = " PAGE " }));
+                headerPart.Header.Save();
+            });
+
+        Assert.Equal(expectHeader, markdown.Contains("<div class=\"header\"", StringComparison.Ordinal));
+        Assert.Equal(expectHeader, markdown.Contains("7", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void MarkdownExport_CacheMode_DefaultFieldFallback_ReplaysCachedResults_AndSuppressesOnlyTruePageFields()
     {
         const string bodyXml = """

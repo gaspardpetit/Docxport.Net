@@ -4,8 +4,6 @@
 <!-- Modified: 2026-04-11 05:51:00Z -->
 <!-- ContentTypeId: 0x0101008BCA4F4E672FAC4691598DEB380F9245 -->
 
-<div class="header" style="border-bottom:1px solid #000;">
-</div>
 <table style="width:100%;border-collapse:collapse;border:1px solid #ccc;"><tr><td style="width:50%;vertical-align:top;padding:8px;border:1px solid #ccc;"># BILL C-244: UNLOCKING THE repair  of goods
 
 </td><td style="width:50%;vertical-align:top;padding:8px;border:1px solid #ccc;"># BILL C-244: UNLOCKING THE RIGHT TO REPAIR
@@ -463,4 +461,4 @@ HYPERLINK "https://www.assnat.qc.ca/en/travaux-parlementaires/projets-loi/projet
 
 <u>https://www.assnat.qc.ca/en/travaux-parlementaires/projets-loi/projet-loi-29-43-1.html.</u>
 
-</td></tr></table>
+</td></tr></table></div>

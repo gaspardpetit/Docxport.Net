@@ -27,8 +27,3 @@ no marker level 2
 3\. Item 3
 
 4\. Item 4
-
-<div class="footer" style="border-top:1px solid #000;">
-
-
-</div>
