@@ -4,8 +4,6 @@
 <!-- Modified: 2026-04-11 05:51:00Z -->
 <!-- ContentTypeId: 0x0101008BCA4F4E672FAC4691598DEB380F9245 -->
 
-<div class="header" style="border-bottom:1px solid #000;">
-</div>
 # BILL C-244: UNLOCKING THE repair  of goods
 
 Gaspard Petit, Laura Trépanier-Champagne
@@ -411,6 +409,4 @@ HYPERLINK "https://www.theverge.com/2023/8/23/23843506/apple-california-right-to
 
 </div>
 <div class="footnote" id="fn-30">
-</div>
-<div class="footer" style="border-top:1px solid #000;">
 </div>

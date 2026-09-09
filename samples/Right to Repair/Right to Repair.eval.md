@@ -5,8 +5,6 @@
 <!-- ContentTypeId: 0x0101008BCA4F4E672FAC4691598DEB380F9245 -->
 
 <div class="section" style="color:#000000;display:flex;flex-direction:column;position:relative;width:8.5in;min-height:11in;box-sizing:border-box;padding-left:1in;padding-right:1in;background-color:#ffffff;font-family:Aptos;font-size:12pt;">
-<div class="header" style="border-bottom:1px solid #000;">
-</div>
 <div class="body" style="flex:1 0 auto;padding-top:1in;">
 <h1 style="text-align:center;"><span style="font-family: Aptos Display; font-size: 22pt;">BILL C-244: UNLOCKING THE RIGHT TO REPAIR</span></h1>
 
@@ -324,7 +322,5 @@
 <p style="margin-bottom:0pt;line-height:1;">29<span style="font-family: Aptos Display; font-size: 9pt;"> Québec National Assembly, Bill 29, <i>An Act to protect consumers from planned obsolescence and to promote the durability, repairability and maintenance of goods, </i>online: https://www.assnat.qc.ca/en/travaux-parlementaires/projets-loi/projet-loi-29-43-1.html<u>.</u></span></p>
 
 
-</div>
-<div class="footer" style="border-top:1px solid #000;">
 </div>
 </div>

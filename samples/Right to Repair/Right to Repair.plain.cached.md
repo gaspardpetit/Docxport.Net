@@ -4,8 +4,6 @@
 <!-- Modified: 2026-04-11 05:51:00Z -->
 <!-- ContentTypeId: 0x0101008BCA4F4E672FAC4691598DEB380F9245 -->
 
-<div class="header" style="border-bottom:1px solid #000;">
-</div>
 # BILL C-244: UNLOCKING THE RIGHT TO REPAIR
 
 Gaspard Petit, Laura Trépanier-Champagne
@@ -247,6 +245,4 @@ Here in Canada, the adoption of Bill C-244 represents another step in establishi
 <div class="footnote" id="fn-30">
 29 Québec National Assembly, Bill 29, <i>An Act to protect consumers from planned obsolescence and to promote the durability, repairability and maintenance of goods, </i>online: <u>https://www.assnat.qc.ca/en/travaux-parlementaires/projets-loi/projet-loi-29-43-1.html.</u>
 
-</div>
-<div class="footer" style="border-top:1px solid #000;">
 </div>
