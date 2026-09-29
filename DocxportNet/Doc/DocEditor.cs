@@ -111,6 +111,10 @@ public sealed class DocEditor : IDisposable
         if (_envelopeEdit == null && _visibilityEdit == null) return (byte[])_source.Clone();
         var envelope = RequireEnvelopeField();
         var dop = RequireDopField();
+        if (_envelopeEdit != null && envelope.IsPresent)
+            ValidateOldEnvelope(envelope);
+        if (_visibilityEdit.HasValue && dop.IsPresent && dop.Length < DopVisibilityOffset + 1)
+            throw new NotSupportedException("The DOP has no Dop2000 visibility field.");
         using var output = new MemoryStream();
         output.Write(_source, 0, _source.Length);
         output.Position = 0;
@@ -122,7 +126,6 @@ public sealed class DocEditor : IDisposable
             {
                 if (envelope.IsPresent)
                 {
-                    ValidateOldEnvelope(envelope);
                     ClearOldEnvelope(table, envelope, cancellationToken);
                 }
                 var newOffset = _envelopeEdit.Length == 0 ? 0u : checked((uint)table.Length);
@@ -138,8 +141,6 @@ public sealed class DocEditor : IDisposable
                 uint dopOffset;
                 if (dop.IsPresent)
                 {
-                    if (dop.Length < DopVisibilityOffset + 1)
-                        throw new NotSupportedException("The DOP has no Dop2000 visibility field.");
                     dopOffset = dop.Offset;
                 }
                 else

@@ -86,7 +86,7 @@ internal static class DocEmailEnvelopeCodec
             reader.ReadUInt32(); // ReplyTime
             ReadString(reader); // RequestStr
             var representingIdLength = reader.ReadUInt32();
-            ReadBytes(reader, checked((int)representingIdLength));
+            ReadBytes(reader, CheckedLength(representingIdLength));
             ReadString(reader); // SentRepresentingName
             ReadString(reader); // InetAcctStamp
             ReadString(reader); // InetAcctName
@@ -120,7 +120,7 @@ internal static class DocEmailEnvelopeCodec
                 attachments.Add(new DocEmailAttachment(name, ReadBytes(reader, (int)size)));
             }
             var introBytes = reader.ReadUInt32();
-            var introduction = Decode(ReadBytes(reader, checked((int)introBytes)));
+            var introduction = Decode(ReadBytes(reader, CheckedLength(introBytes)));
             if (input.Position != input.Length)
                 throw new NotSupportedException("The envelope has additional data outside the supported settings model.");
             return new DocEmailEnvelope
@@ -242,6 +242,13 @@ internal static class DocEmailEnvelopeCodec
         var bytes = reader.ReadBytes(length);
         if (bytes.Length != length) throw new EndOfStreamException();
         return bytes;
+    }
+
+    private static int CheckedLength(uint length)
+    {
+        if (length > int.MaxValue)
+            throw new InvalidDataException("An envelope field exceeds its byte range.");
+        return (int)length;
     }
 
     private static string Decode(byte[] bytes)

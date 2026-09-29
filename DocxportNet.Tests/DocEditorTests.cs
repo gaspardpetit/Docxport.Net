@@ -259,6 +259,39 @@ public class DocEditorTests
         Assert.Equal(EnvelopeBytes(unknown), EnvelopeBytes(hidden));
     }
 
+    [Theory]
+    [InlineData(false, 0)]
+    [InlineData(false, 1)]
+    [InlineData(true, 0)]
+    [InlineData(true, 1)]
+    public void RejectsPartialEnvelopeOverlapInEitherTableStream(bool tableOne, int shift)
+    {
+        using var editor = DocEditor.Open(CreateContainer(tableOne));
+        var original = editor.SetEmailEnvelope(new DocEmailEnvelope { Subject = "Keep" }).Save();
+        var word = ReadStream(original, "WordDocument");
+        var envelope = LocateEnvelope(word);
+        BinaryPrimitives.WriteUInt32LittleEndian(word.AsSpan(154 + 33 * 8), envelope.Offset + (uint)shift);
+        BinaryPrimitives.WriteUInt32LittleEndian(word.AsSpan(154 + 33 * 8 + 4), envelope.Length - 2);
+        var overlapping = RewriteStream(original, "WordDocument", word);
+        using var overlappingEditor = DocEditor.Open(overlapping);
+        overlappingEditor.RemoveEmailEnvelope();
+        Assert.Throws<InvalidDataException>(() => overlappingEditor.Save());
+    }
+
+    [Fact]
+    public void RejectsUnsupportedOldEnvelopeVersionBeforeReplacing()
+    {
+        using var editor = DocEditor.Open(CreateContainer(true));
+        var original = editor.SetEmailEnvelope(new DocEmailEnvelope { Subject = "Keep" }).Save();
+        var envelope = LocateEnvelope(ReadStream(original, "WordDocument"));
+        var table = ReadStream(original, "1Table");
+        BinaryPrimitives.WriteUInt32LittleEndian(table.AsSpan((int)envelope.Offset + 16), 9);
+        var unsupported = RewriteStream(original, "1Table", table);
+        using var replacementEditor = DocEditor.Open(unsupported);
+        replacementEditor.SetEmailEnvelope(new DocEmailEnvelope { Subject = "Replace" });
+        Assert.Throws<NotSupportedException>(() => replacementEditor.Save());
+    }
+
     [Fact]
     public void RejectsInvalidSettingsAndHonorsCancellation()
     {
