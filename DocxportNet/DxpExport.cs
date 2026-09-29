@@ -1,4 +1,5 @@
 using DocumentFormat.OpenXml.Packaging;
+using DocxportNet.Doc;
 using DocxportNet.API;
 using DocxportNet.Fields;
 using DocxportNet.Fields.Eval;
@@ -11,14 +12,15 @@ using System.Diagnostics;
 namespace DocxportNet;
 
 /// <summary>
-/// High-level helpers for running a <see cref="DxpIVisitor"/> against a DOCX source and collecting the result.
+/// High-level helpers for running a <see cref="DxpIVisitor"/> against a DOCX or binary DOC source and collecting the result.
 /// These overloads cover common entry points (file path, in-memory bytes, already-open <see cref="WordprocessingDocument"/>)
 /// and common sinks (existing <see cref="TextWriter"/>, returning a <see cref="string"/>, or writing to a file).
+/// Binary DOC sources are projected to a basic DOCX before walking; only main-document text is currently projected.
 /// </summary>
 public static class DxpExport
 {
     /// <summary>
-    /// Export to a text string using a <see cref="DxpITextVisitor"/> and a DOCX file path.
+    /// Export to a text string using a <see cref="DxpITextVisitor"/> and a DOC or DOCX file path.
     /// </summary>
     public static string ExportToString(string docxPath, DxpITextVisitor visitor, DxpExportOptions? options, ILogger? logger = null)
     {
@@ -37,7 +39,7 @@ public static class DxpExport
     }
 
     /// <summary>
-    /// Export to a text string using a <see cref="DxpITextVisitor"/> and a DOCX file path.
+    /// Export to a text string using a <see cref="DxpITextVisitor"/> and a DOC or DOCX file path.
     /// </summary>
     public static string ExportToString(string docxPath, DxpITextVisitor visitor, ILogger? logger = null)
     {
@@ -105,7 +107,7 @@ public static class DxpExport
     }
 
     /// <summary>
-    /// Export to a text string using a <see cref="DxpITextVisitor"/> and in-memory DOCX bytes.
+    /// Export to a text string using a <see cref="DxpITextVisitor"/> and in-memory DOC or DOCX bytes.
     /// </summary>
     public static string ExportToString(byte[] docxBytes, DxpITextVisitor visitor, ILogger? logger = null)
     {
@@ -113,17 +115,17 @@ public static class DxpExport
     }
 
     /// <summary>
-    /// Export to a text string using a <see cref="DxpITextVisitor"/> and in-memory DOCX bytes.
+    /// Export to a text string using a <see cref="DxpITextVisitor"/> and in-memory DOC or DOCX bytes.
     /// </summary>
     public static string ExportToString(byte[] docxBytes, DxpITextVisitor visitor, DxpExportOptions? options, ILogger? logger = null)
     {
-        using var stream = new MemoryStream(docxBytes, writable: false);
+        using var stream = new MemoryStream(DocInputProjection.ProjectIfDoc(docxBytes), writable: false);
         using var document = WordprocessingDocument.Open(stream, false);
         return ExportToString(document, visitor, options, logger);
     }
 
     /// <summary>
-    /// Export to a byte array using a <see cref="DxpIVisitor"/> and a DOCX file path.
+    /// Export to a byte array using a <see cref="DxpIVisitor"/> and a DOC or DOCX file path.
     /// </summary>
     public static byte[] ExportToBytes(string docxPath, DxpIVisitor visitor, ILogger? logger = null)
     {
@@ -141,7 +143,7 @@ public static class DxpExport
     }
 
     /// <summary>
-    /// Export to a byte array using a <see cref="DxpIVisitor"/> and a DOCX file path.
+    /// Export to a byte array using a <see cref="DxpIVisitor"/> and a DOC or DOCX file path.
     /// </summary>
     public static byte[] ExportToBytes(string docxPath, DxpIVisitor visitor, DxpExportOptions? options, ILogger? logger = null)
     {
@@ -195,7 +197,7 @@ public static class DxpExport
     }
 
     /// <summary>
-    /// Export to a byte array using a <see cref="DxpIVisitor"/> and in-memory DOCX bytes.
+    /// Export to a byte array using a <see cref="DxpIVisitor"/> and in-memory DOC or DOCX bytes.
     /// </summary>
     public static byte[] ExportToBytes(byte[] docxBytes, DxpIVisitor visitor, ILogger? logger = null)
     {
@@ -210,8 +212,15 @@ public static class DxpExport
         DxpExportOptions? options = null,
         ILogger? logger = null)
     {
-        using var document = WordprocessingDocument.Open(docxPath, false);
-        return ExportToStrings(document, cursor, visitorFactory, fieldEval, options, logger);
+        var projected = DocInputProjection.ProjectIfDoc(docxPath);
+        if (projected == null)
+        {
+            using var document = WordprocessingDocument.Open(docxPath, false);
+            return ExportToStrings(document, cursor, visitorFactory, fieldEval, options, logger);
+        }
+        using var stream = new MemoryStream(projected, writable: false);
+        using var binaryDocument = WordprocessingDocument.Open(stream, false);
+        return ExportToStrings(binaryDocument, cursor, visitorFactory, fieldEval, options, logger);
     }
 
     public static IReadOnlyList<string> ExportToStrings(
@@ -265,8 +274,15 @@ public static class DxpExport
         DxpExportOptions? options = null,
         ILogger? logger = null)
     {
-        using var document = WordprocessingDocument.Open(docxPath, false);
-        return ExportToFiles(document, cursor, visitorFactory, outputPathFactory, fieldEval, options, logger);
+        var projected = DocInputProjection.ProjectIfDoc(docxPath);
+        if (projected == null)
+        {
+            using var document = WordprocessingDocument.Open(docxPath, false);
+            return ExportToFiles(document, cursor, visitorFactory, outputPathFactory, fieldEval, options, logger);
+        }
+        using var stream = new MemoryStream(projected, writable: false);
+        using var binaryDocument = WordprocessingDocument.Open(stream, false);
+        return ExportToFiles(binaryDocument, cursor, visitorFactory, outputPathFactory, fieldEval, options, logger);
     }
 
     public static IReadOnlyList<string> ExportToFiles(
@@ -293,17 +309,17 @@ public static class DxpExport
     }
 
     /// <summary>
-    /// Export to a byte array using a <see cref="DxpIVisitor"/> and in-memory DOCX bytes.
+    /// Export to a byte array using a <see cref="DxpIVisitor"/> and in-memory DOC or DOCX bytes.
     /// </summary>
     public static byte[] ExportToBytes(byte[] docxBytes, DxpIVisitor visitor, DxpExportOptions? options, ILogger? logger = null)
     {
-        using var stream = new MemoryStream(docxBytes, writable: false);
+        using var stream = new MemoryStream(DocInputProjection.ProjectIfDoc(docxBytes), writable: false);
         using var document = WordprocessingDocument.Open(stream, false);
         return ExportToBytes(document, visitor, options, logger);
     }
 
     /// <summary>
-    /// Walks the DOCX at <paramref name="docxPath"/> with <paramref name="visitor"/> and returns the collected text.
+    /// Walks the DOC or DOCX at <paramref name="docxPath"/> with <paramref name="visitor"/> and returns the collected text.
     /// </summary>
     public static string ExportToFile(string docxPath, DxpIVisitor visitor, string outputPath, ILogger? logger = null)
     {
@@ -311,7 +327,7 @@ public static class DxpExport
     }
 
     /// <summary>
-    /// Walks the DOCX at <paramref name="docxPath"/> with <paramref name="visitor"/> and writes the output to <paramref name="outputPath"/>.
+    /// Walks the DOC or DOCX at <paramref name="docxPath"/> with <paramref name="visitor"/> and writes the output to <paramref name="outputPath"/>.
     /// </summary>
     public static string ExportToFile(string docxPath, DxpIVisitor visitor, string outputPath, DxpExportOptions? options, ILogger? logger = null)
     {
@@ -333,7 +349,7 @@ public static class DxpExport
     }
 
     /// <summary>
-    /// Walks in-memory DOCX bytes with <paramref name="visitor"/> and writes the output to <paramref name="outputPath"/>.
+    /// Walks in-memory DOC or DOCX bytes with <paramref name="visitor"/> and writes the output to <paramref name="outputPath"/>.
     /// </summary>
     public static string ExportToFile(byte[] docxBytes, DxpIVisitor visitor, string outputPath, ILogger? logger = null)
     {
@@ -341,11 +357,11 @@ public static class DxpExport
     }
 
     /// <summary>
-    /// Walks in-memory DOCX bytes with <paramref name="visitor"/> and writes the output to <paramref name="outputPath"/>.
+    /// Walks in-memory DOC or DOCX bytes with <paramref name="visitor"/> and writes the output to <paramref name="outputPath"/>.
     /// </summary>
     public static string ExportToFile(byte[] docxBytes, DxpIVisitor visitor, string outputPath, DxpExportOptions? options, ILogger? logger = null)
     {
-        using var stream = new MemoryStream(docxBytes, writable: false);
+        using var stream = new MemoryStream(DocInputProjection.ProjectIfDoc(docxBytes), writable: false);
         using var document = WordprocessingDocument.Open(stream, false);
         return ExportToFile(document, visitor, outputPath, options, logger);
     }
@@ -401,7 +417,15 @@ public static class DxpExport
             logger?.LogDebug("Export step finish: {Step} ({ElapsedMs} ms)", "Build middleware pipeline", middlewareTimer.ElapsedMilliseconds);
 
             var walker = new DxpWalker(logger, options?.Progress);
-            walker.Accept(docxPath, wrapped);
+            var projected = DocInputProjection.ProjectIfDoc(docxPath);
+            if (projected == null)
+                walker.Accept(docxPath, wrapped);
+            else
+            {
+                using var stream = new MemoryStream(projected, writable: false);
+                using var document = WordprocessingDocument.Open(stream, false);
+                walker.Accept(document, wrapped);
+            }
             logger?.LogDebug("Export step finish: {Step} ({ElapsedMs} ms)", "Run walker (path)", runTimer.ElapsedMilliseconds);
             return walker;
         }

@@ -70,6 +70,36 @@ public static partial class BrowserExports
 
     [JSExport]
     [SupportedOSPlatform("browser")]
+    public static byte[] ProjectDocx(byte[] docBytes)
+        => ProjectDocxCore(docBytes);
+
+    private static byte[] ProjectDocxCore(byte[] docBytes)
+    {
+        ValidateBytes(docBytes);
+        return DxpDocToDocx.Project(docBytes).DocxBytes;
+    }
+
+    public static byte[] ProjectDocxForTests(byte[] docBytes) => ProjectDocxCore(docBytes);
+
+    [JSExport]
+    [SupportedOSPlatform("browser")]
+    public static byte[] ExportDoc(byte[] inputBytes, string requestJson)
+        => ExportDocCore(inputBytes, DeserializeResolveRequest(requestJson));
+
+    private static byte[] ExportDocCore(byte[] inputBytes, BrowserResolveRequest request)
+    {
+        ValidateBytes(inputBytes);
+        var fields = request.Fields ?? new BrowserFieldOptions();
+        return DxpDocExport.Export(inputBytes,
+            CreateExportOptions(fields, BrowserFieldMode.Evaluate),
+            fieldEval: CreateFieldEval(fields));
+    }
+
+    public static byte[] ExportDocForTests(byte[] inputBytes, BrowserResolveRequest request)
+        => ExportDocCore(inputBytes, request);
+
+    [JSExport]
+    [SupportedOSPlatform("browser")]
     public static byte[] ResolveDocx(byte[] docxBytes, string requestJson)
         => ResolveDocxCore(docxBytes, DeserializeResolveRequest(requestJson));
 
@@ -127,7 +157,7 @@ public static partial class BrowserExports
     private static void ValidateBytes(byte[] bytes)
     {
         if (bytes == null || bytes.Length == 0)
-            throw new ArgumentException("A non-empty DOCX byte array is required.", nameof(bytes));
+            throw new ArgumentException("A non-empty DOC or DOCX byte array is required.", nameof(bytes));
     }
 
     private static DxpFieldEval CreateFieldEval(BrowserFieldOptions? fields)

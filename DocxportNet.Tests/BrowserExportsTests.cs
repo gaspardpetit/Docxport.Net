@@ -101,7 +101,7 @@ public sealed class BrowserExportsTests
     public void RejectsEmptyInput()
     {
         var error = Assert.Throws<ArgumentException>(() => BrowserExports.ExportForTests([], new BrowserExportRequest()));
-        Assert.Contains("non-empty DOCX", error.Message);
+        Assert.Contains("non-empty DOC or DOCX", error.Message);
     }
 
     [Fact]

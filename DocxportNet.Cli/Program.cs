@@ -6,6 +6,7 @@ using DocxportNet.Visitors.Html;
 using DocxportNet.Visitors.Markdown;
 using DocxportNet.Visitors.PlainText;
 using DocxportNet.Visitors.Docx;
+using DocxportNet.Visitors.Doc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using System.Data.Common;
@@ -195,7 +196,7 @@ for (int i = 0; i < args.Length; i++)
 
 if (string.IsNullOrWhiteSpace(inputPath))
 {
-    Console.Error.WriteLine("Input DOCX path is required.");
+    Console.Error.WriteLine("Input DOC or DOCX path is required.");
     PrintHelp();
     return;
 }
@@ -219,6 +220,8 @@ if (!formatExplicit && !string.IsNullOrWhiteSpace(outputPath))
         format = "text";
     else if (ext is ".docx")
         format = "docx";
+    else if (ext is ".doc")
+        format = "doc";
 }
 
 switch (format.ToLowerInvariant())
@@ -241,10 +244,30 @@ switch (format.ToLowerInvariant())
             Console.Error.WriteLine("Warning: --plain is only supported for markdown/html; ignoring.");
         ExportDocx(inputPath, outputPath, fieldMode, varsPath, cliVariables, includePaths, databaseConnections, logLevel, showProgress);
         break;
+    case "doc":
+        ExportDoc(inputPath, outputPath, fieldMode, varsPath, cliVariables, includePaths, databaseConnections, logLevel, showProgress);
+        break;
     default:
-        Console.Error.WriteLine($"Unknown format '{format}'. Expected markdown|html|text|docx.");
+        Console.Error.WriteLine($"Unknown format '{format}'. Expected markdown|html|text|docx|doc.");
         PrintHelp();
         break;
+}
+
+static void ExportDoc(string inputPath, string? outputPath, DxpFieldEvalExportMode fieldMode,
+    string? varsPath, IReadOnlyDictionary<string, string> cliVariables, IReadOnlyList<string> includePaths,
+    IReadOnlyDictionary<string, string> databaseConnections,
+    LogLevel logLevel, bool showProgress)
+{
+    string output = outputPath ?? Path.Combine(
+        Path.GetDirectoryName(inputPath) ?? string.Empty,
+        $"{Path.GetFileNameWithoutExtension(inputPath)}.plain.doc");
+    using var loggerFactory = CreateLoggerFactory(logLevel);
+    var logger = loggerFactory.CreateLogger("docxport");
+    var visitor = new DxpDocVisitor(logger);
+    ApplyFieldContext(visitor, varsPath, cliVariables, includePaths, databaseConnections);
+    DxpExport.ExportToFile(inputPath, visitor, output,
+        CreateExportOptions(fieldMode, showProgress), logger);
+    Console.WriteLine($"Wrote DOC to {output}");
 }
 
 static void ExportDocx(
@@ -410,11 +433,11 @@ static void PrintHelp()
 {
     Console.WriteLine($"""
 docxport ({GetVersion()})
-Usage: docxport <input.docx> [--format=markdown|html|text|docx] [--tracked=accept|reject|inline|split] [--plain] [--fields=evaluate|cache|none] [--no-progress] [-o|--output=path] [--vars=path] [-D name=value] [--include-path=directory] [--database=[LABEL=]CONNECTION_STRING]
+Usage: docxport <input.doc|input.docx> [--format=markdown|html|text|docx|doc] [--tracked=accept|reject|inline|split] [--plain] [--fields=evaluate|cache|none] [--no-progress] [-o|--output=path] [--vars=path] [-D name=value] [--include-path=directory] [--database=[LABEL=]CONNECTION_STRING]
 
 Options:
   --format=...   Output format (default: markdown)
-                If --format is omitted, the format is inferred from -o/--output extension (.md/.html/.txt/.docx).
+                If --format is omitted, the format is inferred from -o/--output extension (.md/.html/.txt/.docx/.doc).
   --tracked=...  Tracked change mode (accept, reject, inline, split). Plain text supports accept/reject.
     --plain        Plain output for markdown/html (minimal styling/features)
     --fields=...   Field result mode (evaluate, cache, none). Default: cache.
