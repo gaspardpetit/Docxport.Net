@@ -52,6 +52,35 @@ slots, section table, piece table, and formatting page references directly.
 The read-side walker indexes these structures, including the stylesheet and
 section boundaries. No DOC template is embedded.
 
+`DocEditor` is a separate edit-and-save surface for existing DOC bytes. It
+keeps the original indexed bytes unchanged while `SetEmailEnvelope`,
+`SetEmailEnvelopeVisibility`, and `RemoveEmailEnvelope` queue edits. `Save`
+flattens those edits into a new DOC byte array. An envelope replacement is
+serialized into the selected table stream and its FIB location is updated;
+the visibility bit is changed in the DOP. If no DOP exists, the editor creates
+one for the visibility field. The editor preserves unrelated streams and
+checks an old envelope's header and FIB range overlaps before clearing it.
+Removing an envelope is not a secure sanitization operation.
+
+```csharp
+using DocxportNet.Doc;
+
+using var editor = DocEditor.Open(docBytes);
+editor.SetEmailEnvelope(new DocEmailEnvelope
+{
+    Subject = "Report",
+    To = new[] { new DocEmailAddress("client@example.com", "Client") },
+    Attachments = new[] { new DocEmailAttachment("report.pdf", pdfBytes) }
+});
+byte[] editedDoc = editor.Save();
+```
+
+`ReadEmailEnvelope` materializes the supported Unicode version 8 settings on
+request. Visibility-only edits leave unknown envelope payloads untouched.
+Browser callers can pass DOC bytes and an edit list to
+`createDocxport().editDocEnvelope(bytes, edits)`; attachment content is passed
+as `Uint8Array` or `ArrayBuffer`.
+
 ```csharp
 using DocxportNet.Doc;
 

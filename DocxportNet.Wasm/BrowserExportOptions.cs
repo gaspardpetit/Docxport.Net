@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using DocxportNet.Doc;
 
 namespace DocxportNet.Wasm;
 
@@ -121,6 +122,48 @@ public sealed class BrowserTextOptions
     public bool? EmitCustomProperties { get; set; }
 }
 
+public sealed class BrowserDocEnvelopeEdit
+{
+    public string Operation { get; set; } = "";
+    public BrowserDocEmailEnvelope? Envelope { get; set; }
+    public bool? Visible { get; set; }
+}
+
+public sealed class BrowserDocEmailEnvelope
+{
+    public string? Subject { get; set; }
+    public string? Introduction { get; set; }
+    public IReadOnlyList<DocEmailAddress>? To { get; set; }
+    public IReadOnlyList<DocEmailAddress>? Cc { get; set; }
+    public IReadOnlyList<DocEmailAddress>? Bcc { get; set; }
+    public IReadOnlyList<DocEmailAddress>? ReplyTo { get; set; }
+    public IReadOnlyList<DocEmailAttachment>? Attachments { get; set; }
+    public DocEmailImportance? Importance { get; set; }
+    public DocEmailSensitivity? Sensitivity { get; set; }
+    public bool? RequestDeliveryReceipt { get; set; }
+    public bool? RequestReadReceipt { get; set; }
+    public bool? Visible { get; set; }
+    public string? Categories { get; set; }
+    public DateTimeOffset? DeliverAfter { get; set; }
+    public DateTimeOffset? ExpiresAt { get; set; }
+
+    public DocEmailEnvelope ToModel() => new()
+    {
+        Subject = Subject ?? "", Introduction = Introduction ?? "",
+        To = To ?? Array.Empty<DocEmailAddress>(),
+        Cc = Cc ?? Array.Empty<DocEmailAddress>(),
+        Bcc = Bcc ?? Array.Empty<DocEmailAddress>(),
+        ReplyTo = ReplyTo ?? Array.Empty<DocEmailAddress>(),
+        Attachments = Attachments ?? Array.Empty<DocEmailAttachment>(),
+        Importance = Importance ?? DocEmailImportance.Normal,
+        Sensitivity = Sensitivity ?? DocEmailSensitivity.Normal,
+        RequestDeliveryReceipt = RequestDeliveryReceipt ?? false,
+        RequestReadReceipt = RequestReadReceipt ?? false,
+        Visible = Visible ?? true,
+        Categories = Categories ?? "", DeliverAfter = DeliverAfter, ExpiresAt = ExpiresAt
+    };
+}
+
 [JsonSourceGenerationOptions(
     PropertyNameCaseInsensitive = true,
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
@@ -129,6 +172,7 @@ public sealed class BrowserTextOptions
 [JsonSerializable(typeof(BrowserResolveRequest))]
 [JsonSerializable(typeof(BrowserDocumentInfo))]
 [JsonSerializable(typeof(BrowserExportProgress))]
+[JsonSerializable(typeof(BrowserDocEnvelopeEdit[]))]
 internal partial class BrowserJsonContext : JsonSerializerContext
 {
 }

@@ -56,7 +56,7 @@ The inventory is based on the code in
 | Tables, fields, images, lists | No | No | Some FIB ranges are located; their semantic structures are not parsed. |
 | DOCX projection | — | Partial | Projects main text, paragraph marks, tabs, and line breaks. Reports deferred parts, locations, streams, and approximated or omitted characters. |
 | Binary `.doc` writing | — | Partial | A plain-text writer builds a Word 2002 FIB, fixed-index stylesheet slots, one-section PlcfSed, CLX, BTE indexes, and FKP pages without a template. It does not preserve source formatting or other stories. |
-| Binary `.doc` editing | — | No | No in-place or source-preserving patch writer exists. |
+| Binary `.doc` editing | — | Partial | `DocEditor` indexes source bytes, queues envelope replacement/visibility/removal, and saves a new compound file while preserving unrelated streams. General structure editing is not available. |
 
 The five single-property-modifier families in section 2.6 are tracked below.
 `Pcd.prm` and `Sepx.grpprl` remain raw references or byte ranges. Individual

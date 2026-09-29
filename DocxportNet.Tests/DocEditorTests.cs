@@ -1,0 +1,212 @@
+using System.Buffers.Binary;
+using System.Text;
+using DocxportNet.Doc;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
+using OpenMcdf;
+
+namespace DocxportNet.Tests;
+
+public class DocEditorTests
+{
+    [Fact]
+    public void EditsEnvelopeOfTemplateFreeDocAndReadsSettingsBack()
+    {
+        var original = CreatePlainDoc();
+        var snapshot = (byte[])original.Clone();
+        var attachment = Enumerable.Range(0, 12000).Select(i => (byte)i).ToArray();
+        var replacement = new DocEmailEnvelope
+        {
+            Subject = "Résultats — 東京",
+            Introduction = "Bonjour\r\nVeuillez consulter la pièce jointe.",
+            To = new[] { new DocEmailAddress("to@example.com", "Côté, Francine") },
+            Cc = new[] { new DocEmailAddress("cc@example.com") },
+            Bcc = new[] { new DocEmailAddress("bcc@example.com") },
+            ReplyTo = new[] { new DocEmailAddress("reply@example.com") },
+            Importance = DocEmailImportance.High,
+            Sensitivity = DocEmailSensitivity.Confidential,
+            RequestDeliveryReceipt = true,
+            RequestReadReceipt = true,
+            Categories = "Patents",
+            DeliverAfter = new DateTimeOffset(2027, 1, 2, 15, 30, 0, TimeSpan.Zero),
+            ExpiresAt = new DateTimeOffset(2027, 2, 2, 15, 30, 0, TimeSpan.Zero),
+            Attachments = new[] { new DocEmailAttachment("résultats.bin", attachment) }
+        };
+
+        byte[] result;
+        using (var editor = DocEditor.Open(original))
+        {
+            Assert.Equal(original, editor.Save());
+            Assert.Null(editor.ReadEmailEnvelope());
+            Assert.False(editor.Index.FindLocation("EmailEnvelope")!.IsPresent);
+            Assert.False(editor.Index.FindLocation("DocumentProperties")!.IsPresent);
+            editor.SetEmailEnvelope(replacement);
+            Assert.Equal(replacement.Subject, editor.ReadEmailEnvelope()!.Subject);
+            Assert.Equal(snapshot, original);
+            result = editor.Save();
+            Assert.Equal(result, editor.Save());
+        }
+
+        using var reopened = DocEditor.Open(result);
+        var actual = reopened.ReadEmailEnvelope()!;
+        Assert.Equal(replacement.Subject, actual.Subject);
+        Assert.Equal(replacement.Introduction, actual.Introduction);
+        Assert.Equal(replacement.To, actual.To);
+        Assert.Equal(replacement.Cc, actual.Cc);
+        Assert.Equal(replacement.Bcc, actual.Bcc);
+        Assert.Equal(replacement.ReplyTo, actual.ReplyTo);
+        Assert.Equal(replacement.Importance, actual.Importance);
+        Assert.Equal(replacement.Sensitivity, actual.Sensitivity);
+        Assert.Equal(replacement.Categories, actual.Categories);
+        Assert.Equal(replacement.DeliverAfter, actual.DeliverAfter);
+        Assert.Equal(replacement.ExpiresAt, actual.ExpiresAt);
+        Assert.True(actual.RequestDeliveryReceipt);
+        Assert.True(actual.RequestReadReceipt);
+        Assert.True(actual.Visible);
+        Assert.Equal(attachment, Assert.Single(actual.Attachments).Content);
+        Assert.Equal("Hello Ω\r", ReadText(result));
+        Assert.True(reopened.Index.FindLocation("DocumentProperties")!.IsPresent);
+    }
+
+    [Fact]
+    public void VisibilityReplacementAndRemovalPreserveUnrelatedStream()
+    {
+        var original = CreateContainer(false);
+        using var editor = DocEditor.Open(original);
+        var first = editor.SetEmailEnvelope(new DocEmailEnvelope { Subject = "Old secret" }).Save();
+        using var showEditor = DocEditor.Open(first);
+        var hidden = showEditor.SetEmailEnvelopeVisibility(false).Save();
+        Assert.Equal(EnvelopeBytes(first), EnvelopeBytes(hidden));
+        using var hiddenEditor = DocEditor.Open(hidden);
+        Assert.False(hiddenEditor.ReadEmailEnvelope()!.Visible);
+        var replaced = hiddenEditor.SetEmailEnvelope(new DocEmailEnvelope { Subject = "New", Visible = false }).Save();
+        using var replacedEditor = DocEditor.Open(replaced);
+        Assert.Equal("New", replacedEditor.ReadEmailEnvelope()!.Subject);
+        Assert.False(replacedEditor.ReadEmailEnvelope()!.Visible);
+        Assert.DoesNotContain("Old secret", Encoding.Unicode.GetString(ReadStream(replaced, "0Table")));
+        Assert.Equal(ReadStream(original, "Unrelated"), ReadStream(replaced, "Unrelated"));
+        var removed = replacedEditor.RemoveEmailEnvelope().Save();
+        using var removedEditor = DocEditor.Open(removed);
+        Assert.Null(removedEditor.ReadEmailEnvelope());
+        Assert.False(removedEditor.Index.FindLocation("EmailEnvelope")!.IsPresent);
+        Assert.DoesNotContain("New", Encoding.Unicode.GetString(ReadStream(removed, "0Table")));
+        Assert.Equal(ReadStream(original, "Unrelated"), ReadStream(removed, "Unrelated"));
+    }
+
+    [Fact]
+    public void RejectsOverlappingOrUnrecognizedOldEnvelopeBeforeRemoving()
+    {
+        using var editor = DocEditor.Open(CreateContainer(true));
+        var original = editor.SetEmailEnvelope(new DocEmailEnvelope { Subject = "Existing" }).Save();
+        var word = ReadStream(original, "WordDocument");
+        var envelope = LocateEnvelope(word);
+        BinaryPrimitives.WriteUInt32LittleEndian(word.AsSpan(154 + 33 * 8), envelope.Offset);
+        BinaryPrimitives.WriteUInt32LittleEndian(word.AsSpan(154 + 33 * 8 + 4), envelope.Length);
+        var overlap = RewriteStream(original, "WordDocument", word);
+        var overlapSnapshot = (byte[])overlap.Clone();
+        using var overlappingEditor = DocEditor.Open(overlap);
+        overlappingEditor.RemoveEmailEnvelope();
+        Assert.Throws<InvalidDataException>(() => overlappingEditor.Save());
+        Assert.Equal(overlapSnapshot, overlap);
+
+        var table = ReadStream(original, "1Table");
+        table[(int)envelope.Offset] = 0;
+        var unknown = RewriteStream(original, "1Table", table);
+        using var unknownEditor = DocEditor.Open(unknown);
+        unknownEditor.RemoveEmailEnvelope();
+        Assert.Throws<InvalidDataException>(() => unknownEditor.Save());
+        // Visibility edits retain opaque envelope payloads.
+        using var visibilityEditor = DocEditor.Open(unknown);
+        var hidden = visibilityEditor.SetEmailEnvelopeVisibility(false).Save();
+        Assert.Equal(EnvelopeBytes(unknown), EnvelopeBytes(hidden));
+    }
+
+    [Fact]
+    public void RejectsInvalidSettingsAndHonorsCancellation()
+    {
+        using var editor = DocEditor.Open(CreatePlainDoc());
+        Assert.Throws<ArgumentException>(() => editor.SetEmailEnvelope(new DocEmailEnvelope { Subject = "bad\0subject" }));
+        Assert.Throws<ArgumentException>(() => editor.SetEmailEnvelope(new DocEmailEnvelope
+        {
+            Attachments = new[] { new DocEmailAttachment("../bad.txt", new byte[0]) }
+        }));
+        editor.SetEmailEnvelope(new DocEmailEnvelope { Subject = "Valid" });
+        Assert.Throws<OperationCanceledException>(() => editor.Save(new CancellationToken(true)));
+    }
+
+    private static byte[] CreatePlainDoc()
+    {
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source,
+                   DocumentFormat.OpenXml.WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(new Paragraph(new Run(new Text("Hello Ω")))));
+            main.Document.Save();
+        }
+        return DxpDocExport.Export(source.ToArray());
+    }
+
+    private static byte[] CreateContainer(bool tableOne)
+    {
+        using var output = new MemoryStream();
+        using (var root = RootStorage.Create(output, OpenMcdf.Version.V3, StorageModeFlags.LeaveOpen))
+        {
+            var word = new byte[1200];
+            BinaryPrimitives.WriteUInt16LittleEndian(word, 0xA5EC);
+            BinaryPrimitives.WriteUInt16LittleEndian(word.AsSpan(2), 0x00C1);
+            BinaryPrimitives.WriteUInt16LittleEndian(word.AsSpan(10), tableOne ? (ushort)0x0200 : (ushort)0);
+            BinaryPrimitives.WriteUInt16LittleEndian(word.AsSpan(32), 14);
+            BinaryPrimitives.WriteUInt16LittleEndian(word.AsSpan(62), 22);
+            BinaryPrimitives.WriteUInt16LittleEndian(word.AsSpan(152), 108);
+            BinaryPrimitives.WriteUInt32LittleEndian(word.AsSpan(154 + 31 * 8 + 4), 600);
+            using (var stream = root.CreateStream("WordDocument")) stream.Write(word);
+            using (var stream = root.CreateStream(tableOne ? "1Table" : "0Table")) stream.Write(new byte[600]);
+            using (var stream = root.CreateStream("Unrelated")) stream.Write(Encoding.UTF8.GetBytes("Keep this stream"));
+        }
+        return output.ToArray();
+    }
+
+    private static string ReadText(byte[] doc)
+    {
+        using var input = new MemoryStream(doc);
+        using var index = new DocTextIndexWalker().Index(input);
+        return string.Concat(index.GetPartSpans("Main").Select(x => x.Text));
+    }
+
+    private static byte[] EnvelopeBytes(byte[] doc)
+    {
+        var word = ReadStream(doc, "WordDocument");
+        var (offset, length) = LocateEnvelope(word);
+        var table = ReadStream(doc, (word[11] & 2) != 0 ? "1Table" : "0Table");
+        return table.AsSpan((int)offset, (int)length).ToArray();
+    }
+
+    private static (uint Offset, uint Length) LocateEnvelope(byte[] word) =>
+        (BinaryPrimitives.ReadUInt32LittleEndian(word.AsSpan(154 + 97 * 8)),
+         BinaryPrimitives.ReadUInt32LittleEndian(word.AsSpan(154 + 97 * 8 + 4)));
+
+    private static byte[] ReadStream(byte[] doc, string name)
+    {
+        using var input = new MemoryStream(doc, false);
+        using var root = RootStorage.Open(input);
+        using var stream = root.OpenStream(name);
+        using var buffer = new MemoryStream();
+        stream.CopyTo(buffer);
+        return buffer.ToArray();
+    }
+
+    private static byte[] RewriteStream(byte[] doc, string name, byte[] bytes)
+    {
+        using var output = new MemoryStream();
+        output.Write(doc);
+        output.Position = 0;
+        using (var root = RootStorage.Open(output, StorageModeFlags.LeaveOpen))
+        using (var stream = root.OpenStream(name))
+        {
+            stream.Position = 0;
+            stream.Write(bytes);
+        }
+        return output.ToArray();
+    }
+}

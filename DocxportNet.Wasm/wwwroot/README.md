@@ -74,6 +74,14 @@ const resolvedBytes = await docxport.resolveDocx(docxBytes, {
 });
 const projectedBytes = await docxport.projectDocx(docBytes);
 const plainDocBytes = await docxport.exportDoc(docxBytes);
+const editedDocBytes = await docxport.editDocEnvelope(plainDocBytes, [{
+  operation: "set",
+  envelope: {
+    subject: "Report",
+    to: [{ address: "client@example.com" }],
+    attachments: [{ fileName: "report.pdf", content: pdfBytes }]
+  }
+}]);
 
 const mathml = await docxport.convertOmml(ommlXml, "mathml");
 const latex = await docxport.convertOmml(ommlXml, "latex");

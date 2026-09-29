@@ -99,6 +99,30 @@ export type ExportRequest = (
 export interface ResolveRequest { fields?: FieldOptions; }
 export interface DocumentInfo { hasTrackedChanges: boolean; }
 
+export interface DocEmailAddress { address: string; displayName?: string; }
+export interface DocEmailAttachment { fileName: string; content: Uint8Array | ArrayBuffer; }
+export interface DocEmailEnvelope {
+  subject?: string;
+  introduction?: string;
+  to?: DocEmailAddress[];
+  cc?: DocEmailAddress[];
+  bcc?: DocEmailAddress[];
+  replyTo?: DocEmailAddress[];
+  attachments?: DocEmailAttachment[];
+  importance?: "low" | "normal" | "high";
+  sensitivity?: "normal" | "personal" | "private" | "confidential";
+  requestDeliveryReceipt?: boolean;
+  requestReadReceipt?: boolean;
+  visible?: boolean;
+  categories?: string;
+  deliverAfter?: string;
+  expiresAt?: string;
+}
+export type DocEnvelopeEdit =
+  | { operation: "set"; envelope: DocEmailEnvelope }
+  | { operation: "visibility"; visible: boolean }
+  | { operation: "remove" };
+
 export interface Docxport {
   convertOmml(omml: string, format?: "mathml" | "html" | "latex" | "unicodemath" | "text"): Promise<string>;
   /** Inspect a DOCX package. Binary DOC revision inspection is not supported. */
@@ -109,6 +133,8 @@ export interface Docxport {
   projectDocx(input: Uint8Array | ArrayBuffer): Promise<Uint8Array>;
   /** Walk DOCX or binary DOC input and write a plain text binary DOC. */
   exportDoc(input: Uint8Array | ArrayBuffer, request?: ResolveRequest): Promise<Uint8Array>;
+  /** Queue envelope edits and return a newly saved binary DOC. */
+  editDocEnvelope(input: Uint8Array | ArrayBuffer, edits: DocEnvelopeEdit[]): Promise<Uint8Array>;
   /** Return resolved DOCX bytes; binary DOC input is projected first. */
   resolveDocx(input: Uint8Array | ArrayBuffer, request?: ResolveRequest): Promise<Uint8Array>;
 }
