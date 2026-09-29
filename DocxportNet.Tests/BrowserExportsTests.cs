@@ -21,6 +21,7 @@ public sealed class BrowserExportsTests
         {
             new { operation = "set", envelope = new {
                 subject = "Browser envelope", to = new[] { new { address = "client@example.com" } },
+                bcc = new[] { new { address = "blind@example.com" } },
                 attachments = new[] { new { fileName = "note.txt", content = Convert.ToBase64String(new byte[] { 1, 2, 3 }) } }
             } },
             new { operation = "visibility", visible = false }
@@ -28,6 +29,7 @@ public sealed class BrowserExportsTests
         var result = BrowserExports.EditDocEnvelope(doc, request);
         using var editor = DocEditor.Open(result);
         Assert.Equal("Browser envelope", editor.ReadEmailEnvelope()!.Subject);
+        Assert.Equal("blind@example.com", Assert.Single(editor.ReadEmailEnvelope()!.Bcc).Address);
         Assert.False(editor.ReadEmailEnvelope()!.Visible);
         Assert.Equal(new byte[] { 1, 2, 3 }, Assert.Single(editor.ReadEmailEnvelope()!.Attachments).Content);
     }

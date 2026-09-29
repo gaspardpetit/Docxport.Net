@@ -72,7 +72,7 @@ Unicode body as described below; the DOP reader exposes one visibility flag.
 | Referenced structure | Navigation | Parsing | Current limit |
 | --- | --- | --- | --- |
 | MS-CFB container | Yes | Partial | OpenMcdf handles storage and stream access; this library emits their names and lengths. |
-| MS-OSHARED email envelope | Yes | Partial | Walks Unicode version 8 scalar fields, string ranges, recipient collections/properties, and attachment ranges. String and attachment payloads are lazy; some recipient property types and version 6 bodies remain opaque. |
+| MS-OSHARED email envelope | Yes | Partial | Walks Unicode version 8 scalar fields, string ranges, recipient collections/properties, and attachment ranges. Supports the specified recipient property byte layouts while leaving unmodeled values as indexed ranges. String and attachment payloads are lazy; version 6 bodies remain opaque. The settings model requires an SMTP or email address for each recipient, so it cannot represent addressless recipient rows. |
 | MS-ODRAW drawings | No | No | Embedded drawing structures are not located individually. |
 | MS-OLEPS property streams | Yes | No | Compound-file streams are listed; property sets are not decoded. |
 | MS-OVBA macros | Yes | No | Compound-file storages are listed; VBA contents are not decoded. |

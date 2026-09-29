@@ -187,23 +187,45 @@ internal static class DocEmailEnvelopeCodec
             for (uint j = 0; j < properties; j++)
             {
                 var tag = reader.ReadUInt32();
-                if ((tag & 0xFFFF) == 3)
+                var propertyType = (ushort)(tag & 0xFFFF);
+                if (propertyType is 1 or 3 or 10)
                 {
                     var value = reader.ReadUInt32();
                     if (tag == 0x0C150003) type = value;
                 }
-                else if ((tag & 0xFFFF) == 31)
+                else if (propertyType == 11)
+                {
+                    reader.ReadUInt16();
+                }
+                else if (propertyType == 64)
+                {
+                    SkipBytes(reader, 8);
+                }
+                else if (propertyType is 30 or 31 or 258)
                 {
                     var size = reader.ReadUInt16();
-                    var value = Decode(ReadBytes(reader, size)).TrimEnd('\0');
-                    if (tag == 0x3001001F) name = value;
-                    if (tag == 0x3003001F) emailAddress = value;
-                    if (tag == 0x39FE001F) smtpAddress = value;
+                    if (propertyType == 31 && tag is 0x3001001F or 0x3003001F or 0x39FE001F)
+                    {
+                        if ((size & 1) != 0) throw new InvalidDataException("A recipient Unicode property has an odd byte length.");
+                        var value = Decode(ReadBytes(reader, size)).TrimEnd('\0');
+                        if (tag == 0x3001001F) name = value;
+                        if (tag == 0x3003001F) emailAddress = value;
+                        if (tag == 0x39FE001F) smtpAddress = value;
+                    }
+                    else SkipBytes(reader, size);
+                }
+                else if (propertyType is 4126 or 4354)
+                {
+                    var elementCount = reader.ReadUInt32();
+                    if (elementCount > (reader.BaseStream.Length - reader.BaseStream.Position) / 2)
+                        throw new InvalidDataException("A recipient multi-value property count is invalid.");
+                    for (uint k = 0; k < elementCount; k++) SkipBytes(reader, reader.ReadUInt16());
                 }
                 else throw new NotSupportedException("An envelope recipient property type is unsupported.");
             }
             var address = smtpAddress ?? emailAddress;
-            if (address == null) throw new InvalidDataException("A recipient has no email address.");
+            if (address == null) throw new NotSupportedException(
+                $"A recipient of type {type} has no SMTP or email address that the settings model can represent.");
             result.Add((new DocEmailAddress(address, name == address ? null : name), type));
         }
         return result;
@@ -244,6 +266,13 @@ internal static class DocEmailEnvelopeCodec
         var bytes = reader.ReadBytes(length);
         if (bytes.Length != length) throw new EndOfStreamException();
         return bytes;
+    }
+
+    private static void SkipBytes(BinaryReader reader, int length)
+    {
+        if (length < 0 || length > reader.BaseStream.Length - reader.BaseStream.Position)
+            throw new InvalidDataException("An envelope field exceeds its byte range.");
+        reader.BaseStream.Position += length;
     }
 
     private static int CheckedLength(uint length)

@@ -141,26 +141,54 @@ internal static class DocEnvelopeNavigator
                 var tag = reader.U32();
                 var type = (ushort)(tag & 0xFFFF);
                 DocStructureNode property;
-                if (type == 3)
+                if (type is 1 or 3 or 10)
                 {
                     var value = reader.U32();
                     property = new DocStructureNode("EnvRecipientProperty", $"Property{j}",
                         structure.FibBase.TableStreamName, propertyStart, reader.Position - propertyStart);
                     property.Attributes["value"] = value.ToString(CultureInfo.InvariantCulture);
                 }
-                else if (type == 31)
+                else if (type == 11)
+                {
+                    var value = reader.U16();
+                    property = new DocStructureNode("EnvRecipientProperty", $"Property{j}",
+                        structure.FibBase.TableStreamName, propertyStart, reader.Position - propertyStart);
+                    property.Attributes["value"] = value.ToString(CultureInfo.InvariantCulture);
+                }
+                else if (type == 64)
+                {
+                    reader.Skip(8);
+                    property = new DocStructureNode("EnvRecipientProperty", $"Property{j}",
+                        structure.FibBase.TableStreamName, propertyStart, reader.Position - propertyStart);
+                }
+                else if (type is 30 or 31 or 258)
                 {
                     var byteLength = reader.U16();
-                    if ((byteLength & 1) != 0)
+                    if (type == 31 && (byteLength & 1) != 0)
                         throw new InvalidDataException("A recipient Unicode property has an odd byte length.");
                     var dataOffset = reader.Position;
                     reader.Skip(byteLength);
                     property = new DocStructureNode("EnvRecipientProperty", $"Property{j}",
                         structure.FibBase.TableStreamName, propertyStart, reader.Position - propertyStart);
-                    var text = new DocStructureNode("EnvUnicodeString", "Value", property.StreamName,
-                        dataOffset, byteLength);
-                    TextPayload(structure, text, dataOffset, byteLength);
-                    property.Children.Add(text);
+                    property.Attributes["dataOffset"] = dataOffset.ToString(CultureInfo.InvariantCulture);
+                    property.Attributes["dataLength"] = byteLength.ToString(CultureInfo.InvariantCulture);
+                    if (type == 31)
+                    {
+                        var text = new DocStructureNode("EnvUnicodeString", "Value", property.StreamName,
+                            dataOffset, byteLength);
+                        TextPayload(structure, text, dataOffset, byteLength);
+                        property.Children.Add(text);
+                    }
+                }
+                else if (type is 4126 or 4354)
+                {
+                    var elementCount = reader.U32();
+                    if (elementCount > (reader.End - reader.Position) / 2)
+                        throw new InvalidDataException("A recipient multi-value property count is invalid.");
+                    for (uint k = 0; k < elementCount; k++) reader.Skip(reader.U16());
+                    property = new DocStructureNode("EnvRecipientProperty", $"Property{j}",
+                        structure.FibBase.TableStreamName, propertyStart, reader.Position - propertyStart);
+                    property.Attributes["elementCount"] = elementCount.ToString(CultureInfo.InvariantCulture);
                 }
                 else throw new UnsupportedPropertyException(start, type);
                 property.Attributes["tag"] = $"0x{tag:X8}";
