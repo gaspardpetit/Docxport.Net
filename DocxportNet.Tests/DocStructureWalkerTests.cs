@@ -292,6 +292,14 @@ public class DocStructureWalkerTests
         }
 
         var docBytes = DxpDocExport.Export(source.ToArray());
+        using (var compoundInput = new MemoryStream(docBytes, false))
+        using (var compound = RootStorage.Open(compoundInput))
+        using (var word = compound.OpenStream("WordDocument"))
+        {
+            var fib = new byte[68];
+            Assert.Equal(fib.Length, word.Read(fib, 0, fib.Length));
+            Assert.Equal(word.Length, BinaryPrimitives.ReadUInt32LittleEndian(fib.AsSpan(64)));
+        }
         using var docStream = new MemoryStream(docBytes);
         using var index = new DocTextIndexWalker().Index(docStream);
         Assert.Equal("Hello\tΩ\vWorld\rNext\r",

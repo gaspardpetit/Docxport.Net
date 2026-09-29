@@ -21,7 +21,7 @@ internal sealed class DocFibWriter
         U32(28, textEnd);
         U16(32, 14); // csw
         U16(62, 22); // cslw
-        U32(66, word.Length); // cbMac
+        U32(64, word.Length); // cbMac is the first FibRgLw97 field.
         U32(76, characterCount); // ccpText
         U16(152, 136); // cbRgFcLcb (Word 2002)
         U16(PairOffset + 136 * 8, 0); // cswNew
