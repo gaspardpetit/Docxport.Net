@@ -98,9 +98,9 @@ public sealed class DocToDocxProjector
                             break;
                         case '\u000C': // A section mark occurs at a section boundary; otherwise this is a page break.
                             FlushText();
-                            sectionEnds ??= index.Sections.Take(Math.Max(0, index.Sections.Count - 1))
-                                .Select(x => uint.Parse(x.Attributes["cpEnd"], CultureInfo.InvariantCulture))
-                                .ToHashSet();
+                            sectionEnds ??= new HashSet<uint>(index.Sections
+                                .Take(Math.Max(0, index.Sections.Count - 1))
+                                .Select(x => uint.Parse(x.Attributes["cpEnd"], CultureInfo.InvariantCulture)));
                             if (sectionEnds.Contains(span.CpStart + (uint)offset + 1))
                             {
                                 body.AppendChild(paragraph);
