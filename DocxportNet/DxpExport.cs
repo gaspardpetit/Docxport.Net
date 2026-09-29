@@ -274,8 +274,15 @@ public static class DxpExport
         DxpExportOptions? options = null,
         ILogger? logger = null)
     {
-        using var document = WordprocessingDocument.Open(docxPath, false);
-        return ExportToFiles(document, cursor, visitorFactory, outputPathFactory, fieldEval, options, logger);
+        var projected = DocInputProjection.ProjectIfDoc(docxPath);
+        if (projected == null)
+        {
+            using var document = WordprocessingDocument.Open(docxPath, false);
+            return ExportToFiles(document, cursor, visitorFactory, outputPathFactory, fieldEval, options, logger);
+        }
+        using var stream = new MemoryStream(projected, writable: false);
+        using var binaryDocument = WordprocessingDocument.Open(stream, false);
+        return ExportToFiles(binaryDocument, cursor, visitorFactory, outputPathFactory, fieldEval, options, logger);
     }
 
     public static IReadOnlyList<string> ExportToFiles(

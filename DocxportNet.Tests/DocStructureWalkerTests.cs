@@ -6,6 +6,8 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentFormat.OpenXml.Validation;
 using DocxportNet.Visitors.PlainText;
+using DocxportNet.Fields;
+using DocxportNet.Fields.Resolution;
 using DocxportNet.Wasm;
 
 namespace DocxportNet.Tests;
@@ -208,11 +210,12 @@ public class DocStructureWalkerTests
         using var stream = new MemoryStream(projection.DocxBytes);
         using var document = WordprocessingDocument.Open(stream, false);
         var paragraphs = document.MainDocumentPart!.Document!.Body!.Elements<Paragraph>().ToArray();
-        Assert.Equal(2, paragraphs.Length);
-        Assert.Single(paragraphs[0].Descendants<Break>());
+        Assert.Single(paragraphs);
+        Assert.Equal(2, paragraphs[0].Descendants<Break>().Count());
         Assert.Equal(2, paragraphs[0].Descendants<TabChar>().Count());
         Assert.Equal(1, projection.Coverage.ApproximateCharacters[0x0007]);
-        Assert.Equal(1, projection.Coverage.ApproximateCharacters[0x000C]);
+        Assert.Contains(paragraphs[0].Descendants<Break>(), x => x.Type?.Value == BreakValues.Page);
+        Assert.False(projection.Coverage.ApproximateCharacters.ContainsKey(0x000C));
         Assert.Equal(1, projection.Coverage.OmittedCharacters[0x0013]);
     }
 
@@ -293,6 +296,59 @@ public class DocStructureWalkerTests
         using var index = new DocTextIndexWalker().Index(docStream);
         Assert.Equal("Hello\tΩ\vWorld\rNext\r",
             string.Concat(index.GetPartSpans("Main").Select(x => x.Text)));
+    }
+
+    [Fact]
+    public void DocProjectionPreservesManualPageBreak()
+    {
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source,
+            DocumentFormat.OpenXml.WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(new Paragraph(new Run(
+                new Text("Before"), new Break { Type = BreakValues.Page }, new Text("After")))));
+            main.Document.Save();
+        }
+        var docBytes = DxpDocExport.Export(source.ToArray());
+        var projection = DxpDocToDocx.Project(docBytes);
+        using var projectedStream = new MemoryStream(projection.DocxBytes);
+        using var projected = WordprocessingDocument.Open(projectedStream, false);
+        var paragraph = Assert.Single(projected.MainDocumentPart!.Document!.Body!.Elements<Paragraph>());
+        Assert.Equal("BeforeAfter", paragraph.InnerText);
+        Assert.Equal(BreakValues.Page, Assert.Single(paragraph.Descendants<Break>()).Type!.Value);
+    }
+
+    [Fact]
+    public void ExportToFilesAcceptsBinaryDocPath()
+    {
+        using var input = CreateDocWithPieces(allMain: true);
+        var inputPath = Path.Combine(Path.GetTempPath(), $"doc-merge-{Guid.NewGuid():N}.doc");
+        var outputPath = Path.ChangeExtension(inputPath, ".txt");
+        try
+        {
+            File.WriteAllBytes(inputPath, input.ToArray());
+            var outputs = DxpExport.ExportToFiles(inputPath, new SingleRecordCursor(),
+                _ => new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateAcceptConfig()),
+                _ => outputPath);
+            Assert.Single(outputs);
+            Assert.Equal(outputs[0], File.ReadAllText(outputPath));
+            Assert.Contains("Hel—", outputs[0]);
+            Assert.Contains("Ω", outputs[0]);
+        }
+        finally
+        {
+            if (File.Exists(inputPath)) File.Delete(inputPath);
+            if (File.Exists(outputPath)) File.Delete(outputPath);
+        }
+    }
+
+    private sealed class SingleRecordCursor : IDxpMergeRecordCursor
+    {
+        public bool HasCurrent => true;
+        public int RecordIndex => 1;
+        public bool MoveNext() => false;
+        public DxpFieldValue? GetValue(string fieldName) => null;
     }
 
     [Fact]

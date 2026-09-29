@@ -245,7 +245,7 @@ switch (format.ToLowerInvariant())
         ExportDocx(inputPath, outputPath, fieldMode, varsPath, cliVariables, includePaths, databaseConnections, logLevel, showProgress);
         break;
     case "doc":
-        ExportDoc(inputPath, outputPath, fieldMode, logLevel, showProgress);
+        ExportDoc(inputPath, outputPath, fieldMode, varsPath, cliVariables, includePaths, databaseConnections, logLevel, showProgress);
         break;
     default:
         Console.Error.WriteLine($"Unknown format '{format}'. Expected markdown|html|text|docx|doc.");
@@ -254,6 +254,8 @@ switch (format.ToLowerInvariant())
 }
 
 static void ExportDoc(string inputPath, string? outputPath, DxpFieldEvalExportMode fieldMode,
+    string? varsPath, IReadOnlyDictionary<string, string> cliVariables, IReadOnlyList<string> includePaths,
+    IReadOnlyDictionary<string, string> databaseConnections,
     LogLevel logLevel, bool showProgress)
 {
     string output = outputPath ?? Path.Combine(
@@ -261,7 +263,9 @@ static void ExportDoc(string inputPath, string? outputPath, DxpFieldEvalExportMo
         $"{Path.GetFileNameWithoutExtension(inputPath)}.plain.doc");
     using var loggerFactory = CreateLoggerFactory(logLevel);
     var logger = loggerFactory.CreateLogger("docxport");
-    DxpExport.ExportToFile(inputPath, new DxpDocVisitor(logger), output,
+    var visitor = new DxpDocVisitor(logger);
+    ApplyFieldContext(visitor, varsPath, cliVariables, includePaths, databaseConnections);
+    DxpExport.ExportToFile(inputPath, visitor, output,
         CreateExportOptions(fieldMode, showProgress), logger);
     Console.WriteLine($"Wrote DOC to {output}");
 }

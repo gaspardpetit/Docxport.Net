@@ -1,4 +1,5 @@
 using System.Text;
+using System.Globalization;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
@@ -28,6 +29,7 @@ public sealed class DocToDocxProjector
 
         var omitted = new SortedDictionary<ushort, int>();
         var approximate = new SortedDictionary<ushort, int>();
+        HashSet<uint>? sectionEnds = null;
         using var output = new MemoryStream();
         using (var document = WordprocessingDocument.Create(output, WordprocessingDocumentType.Document, true))
         {
@@ -50,8 +52,10 @@ public sealed class DocToDocxProjector
 
             foreach (var span in spans)
             {
-                foreach (var character in span.Text)
+                var text = span.Text;
+                for (var offset = 0; offset < text.Length; offset++)
                 {
+                    var character = text[offset];
                     if (pendingHighSurrogate is char high)
                     {
                         pendingHighSurrogate = null;
@@ -92,12 +96,23 @@ public sealed class DocToDocxProjector
                             Count(approximate, character);
                             endedWithParagraph = false;
                             break;
-                        case '\u000C': // Section mark; section properties are deferred.
+                        case '\u000C': // A section mark occurs at a section boundary; otherwise this is a page break.
                             FlushText();
-                            body.AppendChild(paragraph);
-                            paragraph = new Paragraph();
-                            Count(approximate, character);
-                            endedWithParagraph = true;
+                            sectionEnds ??= index.Sections.Take(Math.Max(0, index.Sections.Count - 1))
+                                .Select(x => uint.Parse(x.Attributes["cpEnd"], CultureInfo.InvariantCulture))
+                                .ToHashSet();
+                            if (sectionEnds.Contains(span.CpStart + (uint)offset + 1))
+                            {
+                                body.AppendChild(paragraph);
+                                paragraph = new Paragraph();
+                                Count(approximate, character);
+                                endedWithParagraph = true;
+                            }
+                            else
+                            {
+                                paragraph.AppendChild(new Run(new Break { Type = BreakValues.Page }));
+                                endedWithParagraph = false;
+                            }
                             break;
                         default:
                             if (IsXmlCharacter(character))
