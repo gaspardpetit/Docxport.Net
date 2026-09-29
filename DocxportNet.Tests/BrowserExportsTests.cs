@@ -2,6 +2,7 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.Wasm;
+using DocxportNet.Doc;
 using System.Text.Json;
 using M = DocumentFormat.OpenXml.Math;
 
@@ -11,6 +12,25 @@ public sealed class BrowserExportsTests
 {
     private static readonly string ProjectRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", ".."));
     private static readonly byte[] Sample = File.ReadAllBytes(Path.Combine(ProjectRoot, "samples", "TestLists.docx"));
+
+    [Fact]
+    public void BrowserEnvelopeEditsSaveBinaryDocBytes()
+    {
+        var doc = DxpDocExport.Export(Sample);
+        var request = JsonSerializer.Serialize(new object[]
+        {
+            new { operation = "set", envelope = new {
+                subject = "Browser envelope", to = new[] { new { address = "client@example.com" } },
+                attachments = new[] { new { fileName = "note.txt", content = Convert.ToBase64String(new byte[] { 1, 2, 3 }) } }
+            } },
+            new { operation = "visibility", visible = false }
+        });
+        var result = BrowserExports.EditDocEnvelope(doc, request);
+        using var editor = DocEditor.Open(result);
+        Assert.Equal("Browser envelope", editor.ReadEmailEnvelope()!.Subject);
+        Assert.False(editor.ReadEmailEnvelope()!.Visible);
+        Assert.Equal(new byte[] { 1, 2, 3 }, Assert.Single(editor.ReadEmailEnvelope()!.Attachments).Content);
+    }
 
     [Theory]
     [InlineData(BrowserExportFormat.Html, "<")]

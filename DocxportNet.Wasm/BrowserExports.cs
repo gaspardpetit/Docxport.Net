@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
+using DocxportNet.Doc;
 using DocxportNet.API;
 using DocxportNet.Fields;
 using DocxportNet.Omml;
@@ -97,6 +98,49 @@ public static partial class BrowserExports
 
     public static byte[] ExportDocForTests(byte[] inputBytes, BrowserResolveRequest request)
         => ExportDocCore(inputBytes, request);
+
+    [JSExport]
+    [SupportedOSPlatform("browser")]
+    public static byte[] EditDocEnvelope(byte[] docBytes, string editsJson)
+    {
+        if (string.IsNullOrWhiteSpace(editsJson))
+            throw new ArgumentException("An envelope edit request is required.", nameof(editsJson));
+        var edits = JsonSerializer.Deserialize(editsJson, BrowserJsonContext.Default.BrowserDocEnvelopeEditArray)
+            ?? throw new ArgumentException("The envelope edit request is empty.", nameof(editsJson));
+        return EditDocEnvelopeCore(docBytes, edits);
+    }
+
+    public static byte[] EditDocEnvelopeForTests(byte[] docBytes, BrowserDocEnvelopeEdit[] edits)
+        => EditDocEnvelopeCore(docBytes, edits);
+
+    private static byte[] EditDocEnvelopeCore(byte[] docBytes, BrowserDocEnvelopeEdit[] edits)
+    {
+        ValidateBytes(docBytes);
+        if (edits == null || edits.Length == 0)
+            throw new ArgumentException("At least one envelope edit is required.", nameof(edits));
+        using var editor = DocEditor.Open(docBytes);
+        foreach (var edit in edits)
+        {
+            if (edit == null) throw new ArgumentException("An envelope edit is null.", nameof(edits));
+            switch (edit.Operation?.ToLowerInvariant())
+            {
+                case "set":
+                    editor.SetEmailEnvelope((edit.Envelope ??
+                        throw new ArgumentException("A set edit requires an envelope.", nameof(edits))).ToModel());
+                    break;
+                case "visibility":
+                    editor.SetEmailEnvelopeVisibility(edit.Visible ??
+                        throw new ArgumentException("A visibility edit requires visible.", nameof(edits)));
+                    break;
+                case "remove":
+                    editor.RemoveEmailEnvelope();
+                    break;
+                default:
+                    throw new ArgumentException("Envelope edit operation must be set, visibility, or remove.", nameof(edits));
+            }
+        }
+        return editor.Save();
+    }
 
     [JSExport]
     [SupportedOSPlatform("browser")]

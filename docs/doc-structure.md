@@ -10,8 +10,10 @@ reads `FibRgLw97` character counts to expose the global CP ranges for the main
 document, footnotes, headers, comments, endnotes, and textboxes. It
 recognizes the document settings, text piece table, style sheet, sections,
 header/footer references, character and paragraph formatting, font table, and email
-envelope locations. The envelope visibility flag and CLSID/version can be read
-on demand when those headers are present.
+envelope locations. The walker enters Unicode version 8 envelope fields,
+recipient collections, properties, attachments, and introduction text when the
+visitor enters `MsoEnvelope`. The envelope header is read when its location is
+entered; text and attachment bytes remain lazy.
 
 Applications use the same export surface for DOC and DOCX input. `DxpExport`
 recognizes binary DOC by its compound-file signature, builds the basic DOCX
@@ -51,6 +53,35 @@ The writer constructs the compound file, Word 2002 FIB, fixed-index style
 slots, section table, piece table, and formatting page references directly.
 The read-side walker indexes these structures, including the stylesheet and
 section boundaries. No DOC template is embedded.
+
+`DocEditor` is a separate edit-and-save surface for existing DOC bytes. It
+keeps the original indexed bytes unchanged while `SetEmailEnvelope`,
+`SetEmailEnvelopeVisibility`, and `RemoveEmailEnvelope` queue edits. `Save`
+flattens those edits into a new DOC byte array. An envelope replacement is
+serialized into the selected table stream and its FIB location is updated;
+the visibility bit is changed in the DOP. If no DOP exists, the editor creates
+one for the visibility field. The editor preserves unrelated streams and
+checks an old envelope's header and FIB range overlaps before clearing it.
+Removing an envelope is not a secure sanitization operation.
+
+```csharp
+using DocxportNet.Doc;
+
+using var editor = DocEditor.Open(docBytes);
+editor.SetEmailEnvelope(new DocEmailEnvelope
+{
+    Subject = "Report",
+    To = new[] { new DocEmailAddress("client@example.com", "Client") },
+    Attachments = new[] { new DocEmailAttachment("report.pdf", pdfBytes) }
+});
+byte[] editedDoc = editor.Save();
+```
+
+`ReadEmailEnvelope` materializes the supported Unicode version 8 settings on
+request. Visibility-only edits leave unknown envelope payloads untouched.
+Browser callers can pass DOC bytes and an edit list to
+`createDocxport().editDocEnvelope(bytes, edits)`; attachment content is passed
+as `Uint8Array` or `ArrayBuffer`.
 
 ```csharp
 using DocxportNet.Doc;
@@ -148,13 +179,17 @@ Text bytes are decoded only when `Payload` is accessed on a `Pcd`, yielding
 `DocTextPieceContent` with its CP range and string. The returned nodes are
 location descriptors, not byte arrays. Parsable nodes expose `HasPayload`,
 `IsPayloadLoaded`, and `Payload`; results are cached. Other current results are
-`DocDopVisibility` and `DocEnvelopeHeader`. Dispose the returned `DocStructure` when finished; it holds
+`DocDopVisibility`, `DocEnvelopeHeader`, `DocEnvelopeText`, and
+`DocEnvelopeBytes`. The XML visitor emits decoded envelope strings but leaves
+attachment data unmaterialized. Returning `null` at `EmailEnvelope` or
+`MsoEnvelope` skips its nested parsing. Unsupported recipient property types
+are exposed as an opaque remainder. Dispose the returned `DocStructure` when finished; it holds
 the compound file open so lazy materialization can read the original range.
 For a caller-supplied stream, disposing `DocStructure` leaves that stream open.
 
 This layer discovers locations and decodes raw document text on request. It does
-not yet interpret paragraph, field, or table control characters, styles,
-envelope contents, or edit the file. FIB entries without a recognized semantic
+not yet interpret paragraph, field, or table control characters or styles.
+Envelope edits use the separate `DocEditor` surface described above. FIB entries without a recognized semantic
 name are emitted as `FibEntryN`, so later parsers can be added without changing
 the container/FIB navigation model. The reader rejects invalid compound files,
 unsupported pre-Word 97 files, encrypted files, missing selected table streams,

@@ -61,6 +61,10 @@ public sealed class DocStructureNode
 public abstract record DocParsedBlock;
 public sealed record DocDopVisibility(bool Visible) : DocParsedBlock;
 public sealed record DocEnvelopeHeader(Guid Clsid, uint Version) : DocParsedBlock;
+/// <summary>Decoded envelope text, materialized only when its node payload is accessed.</summary>
+public sealed record DocEnvelopeText(string Text) : DocParsedBlock;
+/// <summary>Attachment bytes, materialized only when its data node payload is accessed.</summary>
+public sealed record DocEnvelopeBytes(byte[] Bytes) : DocParsedBlock;
 public sealed record DocTextPieceContent(uint CpStart, uint CpEnd, string Text) : DocParsedBlock;
 
 /// <summary>The discovered container and FIB directory, without eagerly parsing document content.</summary>

@@ -26,6 +26,15 @@ function requireBytes(input) {
   throw new TypeError("DOC or DOCX input must be a Uint8Array or ArrayBuffer.");
 }
 
+function base64Bytes(input) {
+  const bytes = requireBytes(input);
+  let binary = "";
+  for (let i = 0; i < bytes.length; i += 0x8000) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  }
+  return btoa(binary);
+}
+
 export async function createDocxport(options = {}) {
   initialization ??= initialize(options);
   const api = await initialization;
@@ -54,6 +63,22 @@ export async function createDocxport(options = {}) {
     },
     async exportDoc(input, request = {}) {
       const result = api.ExportDoc(requireBytes(input), JSON.stringify(request));
+      return result instanceof Uint8Array ? result : new Uint8Array(result);
+    },
+    async editDocEnvelope(input, edits) {
+      if (!Array.isArray(edits) || edits.length === 0) {
+        throw new TypeError("At least one envelope edit is required.");
+      }
+      const serialized = edits.map(edit => edit.operation === "set"
+        ? { ...edit, envelope: {
+            ...edit.envelope,
+            attachments: edit.envelope?.attachments?.map(attachment => ({
+              fileName: attachment.fileName,
+              content: base64Bytes(attachment.content)
+            }))
+          } }
+        : edit);
+      const result = api.EditDocEnvelope(requireBytes(input), JSON.stringify(serialized));
       return result instanceof Uint8Array ? result : new Uint8Array(result);
     },
     async resolveDocx(input, request = {}) {
