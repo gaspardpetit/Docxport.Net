@@ -338,6 +338,73 @@ public class DocEditorTests
     }
 
     [Fact]
+    public void ReaderSkipsBinaryRecipientPropertyWithoutLosingFollowingFields()
+    {
+        using var editor = DocEditor.Open(CreateContainer(true));
+        var original = editor.SetEmailEnvelope(new DocEmailEnvelope
+        {
+            Bcc = new[] { new DocEmailAddress("blind@example.com") }
+        }).Save();
+        long propertyOffset;
+        using (var input = new MemoryStream(original))
+        using (var structure = new DocStructureWalker().Accept(input,
+                   new DocStructurePrintVisitor(new StringWriter())))
+        {
+            var recipient = Assert.Single(FindNamed(structure.Root,
+                "EnvRecipientCollection", "MessageRecipients").Children);
+            propertyOffset = recipient.Children.Single(x => x.Attributes.TryGetValue("tag", out var tag) &&
+                tag == "0x3002001F").Offset!.Value;
+        }
+        var table = ReadStream(original, "1Table");
+        BinaryPrimitives.WriteUInt32LittleEndian(table.AsSpan((int)propertyOffset), 0x30020102);
+        var modified = RewriteStream(original, "1Table", table);
+        using var reader = DocEditor.Open(modified);
+        Assert.Equal("blind@example.com", Assert.Single(reader.ReadEmailEnvelope()!.Bcc).Address);
+        using var stream = new MemoryStream(modified);
+        using var structureAfter = new DocStructureWalker().Accept(stream,
+            new DocStructurePrintVisitor(new StringWriter()));
+        var parsed = Assert.Single(FindNamed(structureAfter.Root,
+            "EnvRecipientCollection", "MessageRecipients").Children);
+        Assert.Contains(parsed.Children, x => x.Attributes.TryGetValue("tag", out var tag) &&
+            tag == "0x30020102");
+    }
+
+    [Fact]
+    public void AddresslessBccRowRemainsNavigableButCannotBecomeAnSmtpAddress()
+    {
+        using var editor = DocEditor.Open(CreateContainer(true));
+        var original = editor.SetEmailEnvelope(new DocEmailEnvelope
+        {
+            Bcc = new[] { new DocEmailAddress("blind@example.com", "Blind recipient") }
+        }).Save();
+        long genericOffset, smtpOffset;
+        using (var input = new MemoryStream(original))
+        using (var structure = new DocStructureWalker().Accept(input,
+                   new DocStructurePrintVisitor(new StringWriter())))
+        {
+            var row = Assert.Single(FindNamed(structure.Root,
+                "EnvRecipientCollection", "MessageRecipients").Children);
+            genericOffset = row.Children.Single(x => x.Attributes.TryGetValue("tag", out var tag) &&
+                tag == "0x3003001F").Offset!.Value;
+            smtpOffset = row.Children.Single(x => x.Attributes.TryGetValue("tag", out var tag) &&
+                tag == "0x39FE001F").Offset!.Value;
+        }
+        var table = ReadStream(original, "1Table");
+        BinaryPrimitives.WriteUInt32LittleEndian(table.AsSpan((int)genericOffset), 0x6001001F);
+        BinaryPrimitives.WriteUInt32LittleEndian(table.AsSpan((int)smtpOffset), 0x5FF6001F);
+        var modified = RewriteStream(original, "1Table", table);
+        using var stream = new MemoryStream(modified);
+        using var structureAfter = new DocStructureWalker().Accept(stream,
+            new DocStructurePrintVisitor(new StringWriter()));
+        var recipient = Assert.Single(FindNamed(structureAfter.Root,
+            "EnvRecipientCollection", "MessageRecipients").Children);
+        Assert.Contains(recipient.Children, x => x.Attributes.TryGetValue("tag", out var tag) &&
+            tag == "0x0C150003" && x.Attributes["value"] == "3");
+        using var reader = DocEditor.Open(modified);
+        Assert.Throws<NotSupportedException>(() => reader.ReadEmailEnvelope());
+    }
+
+    [Fact]
     public void RejectsInvalidSettingsAndHonorsCancellation()
     {
         using var editor = DocEditor.Open(CreatePlainDoc());
