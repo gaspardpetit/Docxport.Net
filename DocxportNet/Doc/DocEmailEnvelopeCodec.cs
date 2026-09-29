@@ -183,7 +183,7 @@ internal static class DocEmailEnvelopeCodec
             if (properties > reader.BaseStream.Length - reader.BaseStream.Position)
                 throw new InvalidDataException("The recipient property count is invalid.");
             uint type = 1;
-            string? address = null, name = null;
+            string? smtpAddress = null, emailAddress = null, name = null;
             for (uint j = 0; j < properties; j++)
             {
                 var tag = reader.ReadUInt32();
@@ -197,11 +197,13 @@ internal static class DocEmailEnvelopeCodec
                     var size = reader.ReadUInt16();
                     var value = Decode(ReadBytes(reader, size)).TrimEnd('\0');
                     if (tag == 0x3001001F) name = value;
-                    if (tag == 0x3003001F || tag == 0x39FE001F) address = value;
+                    if (tag == 0x3003001F) emailAddress = value;
+                    if (tag == 0x39FE001F) smtpAddress = value;
                 }
                 else throw new NotSupportedException("An envelope recipient property type is unsupported.");
             }
-            if (address == null) throw new InvalidDataException("A recipient has no SMTP address.");
+            var address = smtpAddress ?? emailAddress;
+            if (address == null) throw new InvalidDataException("A recipient has no email address.");
             result.Add((new DocEmailAddress(address, name == address ? null : name), type));
         }
         return result;

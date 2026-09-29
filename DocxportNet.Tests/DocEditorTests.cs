@@ -310,6 +310,34 @@ public class DocEditorTests
     }
 
     [Fact]
+    public void ReaderPrefersSmtpAddressEvenWhenGenericEmailComesLater()
+    {
+        using var editor = DocEditor.Open(CreateContainer(true));
+        var original = editor.SetEmailEnvelope(new DocEmailEnvelope
+        {
+            To = new[] { new DocEmailAddress("a@b.co") }
+        }).Save();
+        long firstOffset, secondOffset;
+        using (var input = new MemoryStream(original))
+        using (var structure = new DocStructureWalker().Accept(input,
+                   new DocStructurePrintVisitor(new StringWriter())))
+        {
+            var recipient = Assert.Single(FindNamed(structure.Root,
+                "EnvRecipientCollection", "MessageRecipients").Children);
+            firstOffset = recipient.Children.Single(x => x.Attributes.TryGetValue("tag", out var tag) &&
+                tag == "0x3003001F").Offset!.Value;
+            secondOffset = recipient.Children.Single(x => x.Attributes.TryGetValue("tag", out var tag) &&
+                tag == "0x39FE001F").Offset!.Value;
+        }
+        var table = ReadStream(original, "1Table");
+        BinaryPrimitives.WriteUInt32LittleEndian(table.AsSpan((int)firstOffset), 0x39FE001F);
+        BinaryPrimitives.WriteUInt32LittleEndian(table.AsSpan((int)secondOffset), 0x3003001F);
+        Encoding.Unicode.GetBytes("EX:foo").CopyTo(table, (int)secondOffset + 6);
+        using var reader = DocEditor.Open(RewriteStream(original, "1Table", table));
+        Assert.Equal("a@b.co", Assert.Single(reader.ReadEmailEnvelope()!.To).Address);
+    }
+
+    [Fact]
     public void RejectsInvalidSettingsAndHonorsCancellation()
     {
         using var editor = DocEditor.Open(CreatePlainDoc());
