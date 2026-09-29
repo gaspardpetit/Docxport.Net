@@ -1,7 +1,7 @@
 {
   "name": "docxport",
   "version": "0.1.0",
-  "description": "DOCX conversion and field resolution in the browser using DocxportNet and WebAssembly.",
+  "description": "DOC and DOCX conversion and field resolution in the browser using DocxportNet and WebAssembly.",
   "type": "module",
   "sideEffects": false,
   "main": "./index.js",
@@ -28,7 +28,7 @@
     "README.md",
     "LICENSE"
   ],
-  "keywords": ["docx", "markdown", "html", "webassembly", "wasm"],
+  "keywords": ["doc", "docx", "markdown", "html", "webassembly", "wasm"],
   "license": "MIT",
   "repository": {
     "type": "git",

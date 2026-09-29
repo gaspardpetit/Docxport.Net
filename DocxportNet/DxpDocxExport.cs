@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DocxportNet;
 
-/// <summary>Convenience API for rebuilding a DOCX through the existing visitor pipeline.</summary>
+/// <summary>Convenience API for producing DOCX bytes or a file from DOCX or binary DOC input.</summary>
 public static class DxpDocxExport
 {
     public static string Export(string inputPath, string outputPath, DxpExportOptions? options = null, ILogger? logger = null, DxpFieldEval? fieldEval = null)

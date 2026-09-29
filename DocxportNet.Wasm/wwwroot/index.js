@@ -23,7 +23,7 @@ async function initialize(options = {}) {
 function requireBytes(input) {
   if (input instanceof Uint8Array) return input;
   if (input instanceof ArrayBuffer) return new Uint8Array(input);
-  throw new TypeError("DOCX input must be a Uint8Array or ArrayBuffer.");
+  throw new TypeError("DOC or DOCX input must be a Uint8Array or ArrayBuffer.");
 }
 
 export async function createDocxport(options = {}) {
@@ -47,6 +47,14 @@ export async function createDocxport(options = {}) {
         ? value => onProgress(JSON.parse(value))
         : null;
       return api.Export(requireBytes(input), JSON.stringify(serializableRequest), progressCallback);
+    },
+    async projectDocx(input) {
+      const result = api.ProjectDocx(requireBytes(input));
+      return result instanceof Uint8Array ? result : new Uint8Array(result);
+    },
+    async exportDoc(input, request = {}) {
+      const result = api.ExportDoc(requireBytes(input), JSON.stringify(request));
+      return result instanceof Uint8Array ? result : new Uint8Array(result);
     },
     async resolveDocx(input, request = {}) {
       const result = api.ResolveDocx(requireBytes(input), JSON.stringify(request));

@@ -1,6 +1,6 @@
 # docxport
 
-Convert DOCX files to HTML, Markdown, or plain text entirely in the browser. The package also exposes field resolution and resolved-DOCX output through a .NET WebAssembly runtime.
+Convert DOCX files to HTML, Markdown, plain text, or a plain-text binary DOC entirely in the browser. Binary DOC files also work through `export`, `resolveDocx`, and `exportDoc`: they are first projected to a basic DOCX containing main-document text, paragraphs, and runs. The package also exposes field resolution and resolved-DOCX output through a .NET WebAssembly runtime.
 
 ## Install
 
@@ -72,6 +72,8 @@ const markdown = await docxport.export(docxBytes, {
 const resolvedBytes = await docxport.resolveDocx(docxBytes, {
   fields: { mode: "evaluate", variables: { Customer: "Ada" } }
 });
+const projectedBytes = await docxport.projectDocx(docBytes);
+const plainDocBytes = await docxport.exportDoc(docxBytes);
 
 const mathml = await docxport.convertOmml(ommlXml, "mathml");
 const latex = await docxport.convertOmml(ommlXml, "latex");
@@ -84,6 +86,7 @@ MathML for HTML, LaTeX for Markdown, and readable text for text export.
 Markdown `mathDelimiterStyle` accepts `auto` (the default), `dollar`, or
 `backslash`.
 See `index.d.ts` for format-specific options.
+`inspect` currently reads DOCX packages; it does not inspect binary DOC revisions.
 The optional `onProgress` callback receives the current phase, completed and
 total paragraph units, and a nullable percentage. Supplying it enables the
 lightweight paragraph-counting pre-pass.

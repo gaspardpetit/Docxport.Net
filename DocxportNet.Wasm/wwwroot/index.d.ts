@@ -101,8 +101,15 @@ export interface DocumentInfo { hasTrackedChanges: boolean; }
 
 export interface Docxport {
   convertOmml(omml: string, format?: "mathml" | "html" | "latex" | "unicodemath" | "text"): Promise<string>;
+  /** Inspect a DOCX package. Binary DOC revision inspection is not supported. */
   inspect(input: Uint8Array | ArrayBuffer): Promise<DocumentInfo>;
+  /** Export DOCX or binary DOC bytes. Binary DOC is projected to basic DOCX first. */
   export(input: Uint8Array | ArrayBuffer, request: ExportRequest): Promise<string>;
+  /** Directly project binary DOC bytes into a basic DOCX, without a DOCX visitor pass. */
+  projectDocx(input: Uint8Array | ArrayBuffer): Promise<Uint8Array>;
+  /** Walk DOCX or binary DOC input and write a plain text binary DOC. */
+  exportDoc(input: Uint8Array | ArrayBuffer, request?: ResolveRequest): Promise<Uint8Array>;
+  /** Return resolved DOCX bytes; binary DOC input is projected first. */
   resolveDocx(input: Uint8Array | ArrayBuffer, request?: ResolveRequest): Promise<Uint8Array>;
 }
 
