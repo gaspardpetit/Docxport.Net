@@ -10,8 +10,10 @@ reads `FibRgLw97` character counts to expose the global CP ranges for the main
 document, footnotes, headers, comments, endnotes, and textboxes. It
 recognizes the document settings, text piece table, style sheet, sections,
 header/footer references, character and paragraph formatting, font table, and email
-envelope locations. The envelope visibility flag and CLSID/version can be read
-on demand when those headers are present.
+envelope locations. The walker enters Unicode version 8 envelope fields,
+recipient collections, properties, attachments, and introduction text when the
+visitor enters `MsoEnvelope`. The envelope header is read when its location is
+entered; text and attachment bytes remain lazy.
 
 Applications use the same export surface for DOC and DOCX input. `DxpExport`
 recognizes binary DOC by its compound-file signature, builds the basic DOCX
@@ -177,13 +179,17 @@ Text bytes are decoded only when `Payload` is accessed on a `Pcd`, yielding
 `DocTextPieceContent` with its CP range and string. The returned nodes are
 location descriptors, not byte arrays. Parsable nodes expose `HasPayload`,
 `IsPayloadLoaded`, and `Payload`; results are cached. Other current results are
-`DocDopVisibility` and `DocEnvelopeHeader`. Dispose the returned `DocStructure` when finished; it holds
+`DocDopVisibility`, `DocEnvelopeHeader`, `DocEnvelopeText`, and
+`DocEnvelopeBytes`. The XML visitor emits decoded envelope strings but leaves
+attachment data unmaterialized. Returning `null` at `EmailEnvelope` or
+`MsoEnvelope` skips its nested parsing. Unsupported recipient property types
+are exposed as an opaque remainder. Dispose the returned `DocStructure` when finished; it holds
 the compound file open so lazy materialization can read the original range.
 For a caller-supplied stream, disposing `DocStructure` leaves that stream open.
 
 This layer discovers locations and decodes raw document text on request. It does
-not yet interpret paragraph, field, or table control characters, styles,
-envelope contents, or edit the file. FIB entries without a recognized semantic
+not yet interpret paragraph, field, or table control characters or styles.
+Envelope edits use the separate `DocEditor` surface described above. FIB entries without a recognized semantic
 name are emitted as `FibEntryN`, so later parsers can be added without changing
 the container/FIB navigation model. The reader rejects invalid compound files,
 unsupported pre-Word 97 files, encrypted files, missing selected table streams,

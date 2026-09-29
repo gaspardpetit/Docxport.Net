@@ -66,13 +66,13 @@ The DOCX projection code is in
 [DocToDocxProjector.cs](../DocxportNet/Doc/DocToDocxProjector.cs).
 Format dependencies such as [MS-CFB], [MS-ODRAW], [MS-OSHARED], [MS-OLEPS],
 and [MS-OVBA] are outside this MS-DOC table; they need separate inventories if
-we later implement their contents. The envelope header currently reads only
-its CLSID/version, and the DOP reader exposes one visibility flag.
+we later implement their contents. The envelope navigator covers the supported
+Unicode body as described below; the DOP reader exposes one visibility flag.
 
 | Referenced structure | Navigation | Parsing | Current limit |
 | --- | --- | --- | --- |
 | MS-CFB container | Yes | Partial | OpenMcdf handles storage and stream access; this library emits their names and lengths. |
-| MS-OSHARED email envelope | Yes | Partial | Reads CLSID and version only; envelope body is not parsed. |
+| MS-OSHARED email envelope | Yes | Partial | Walks Unicode version 8 scalar fields, string ranges, recipient collections/properties, and attachment ranges. String and attachment payloads are lazy; some recipient property types and version 6 bodies remain opaque. |
 | MS-ODRAW drawings | No | No | Embedded drawing structures are not located individually. |
 | MS-OLEPS property streams | Yes | No | Compound-file streams are listed; property sets are not decoded. |
 | MS-OVBA macros | Yes | No | Compound-file storages are listed; VBA contents are not decoded. |

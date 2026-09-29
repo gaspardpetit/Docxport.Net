@@ -42,6 +42,12 @@ public sealed class DocStructureXmlVisitor : IDocStructureVisitor, IDisposable
             _writer.WriteString(Safe(text.Text));
             _writer.WriteEndElement();
         }
+        if (node.Kind == "EnvUnicodeString" && node.Payload is DocEnvelopeText envelopeText)
+        {
+            _writer.WriteStartElement("Text");
+            _writer.WriteString(Safe(envelopeText.Text));
+            _writer.WriteEndElement();
+        }
         return DxpDisposable.Create(_writer.WriteEndElement);
     }
 

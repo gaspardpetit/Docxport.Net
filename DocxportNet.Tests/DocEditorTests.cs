@@ -4,11 +4,149 @@ using DocxportNet.Doc;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using OpenMcdf;
+using System.Xml.Linq;
 
 namespace DocxportNet.Tests;
 
 public class DocEditorTests
 {
+    [Fact]
+    public void WalkerVisitsEnvelopeFieldsAndKeepsAttachmentBytesLazy()
+    {
+        var payload = Enumerable.Range(0, 12000).Select(i => (byte)i).ToArray();
+        using var editor = DocEditor.Open(CreatePlainDoc());
+        var edited = editor.SetEmailEnvelope(new DocEmailEnvelope
+        {
+            Subject = "Résultats Ω",
+            To = new[] { new DocEmailAddress("client@example.com", "Client") },
+            Attachments = new[] { new DocEmailAttachment("report.bin", payload) }
+        }).Save();
+
+        using var input = new MemoryStream(edited);
+        using var output = new StringWriter();
+        using var xml = new DocStructureXmlVisitor(output);
+        using var structure = new DocStructureWalker().Accept(input, xml);
+        xml.Dispose();
+        var dump = XDocument.Parse(output.ToString());
+        Assert.Contains(dump.Descendants("MsoEnvelope"), x => (string?)x.Attribute("name") == "Envelope");
+        Assert.Contains(dump.Descendants("EnvUnicodeString"), x =>
+            (string?)x.Attribute("name") == "Subject" && (string?)x.Element("Text") == "R\\u00E9sultats \\u03A9");
+        Assert.Single(dump.Descendants("EnvRecipientProperties"));
+        Assert.Single(dump.Descendants("EnvAttachment"));
+        var data = Find(structure.Root, "EnvAttachmentData");
+        Assert.Equal(payload.Length, data.Length);
+        Assert.True(data.HasPayload);
+        Assert.False(data.IsPayloadLoaded);
+        Assert.Equal(payload, ((DocEnvelopeBytes)data.Payload!).Bytes);
+        Assert.True(data.IsPayloadLoaded);
+        Assert.Same(data.Payload, data.Payload);
+    }
+
+    [Fact]
+    public void WalkerCanSkipEnvelopeBodyBeforeParsingItsContents()
+    {
+        using var editor = DocEditor.Open(CreatePlainDoc());
+        var edited = editor.SetEmailEnvelope(new DocEmailEnvelope { Subject = "Skip me" }).Save();
+        using var input = new MemoryStream(edited);
+        var visitor = new SkipEnvelopeBodyVisitor();
+        using var structure = new DocStructureWalker().Accept(input, visitor);
+        Assert.Contains("MsoEnvelope", visitor.Kinds);
+        Assert.DoesNotContain("EnvUnicodeString", visitor.Kinds);
+        Assert.Empty(Find(structure.Root, "MsoEnvelope").Children);
+    }
+
+    [Fact]
+    public void WalkerSkipsMalformedBodyAndKeepsUnknownRecipientPropertiesOpaque()
+    {
+        using var editor = DocEditor.Open(CreatePlainDoc());
+        var edited = editor.SetEmailEnvelope(new DocEmailEnvelope
+        {
+            To = new[] { new DocEmailAddress("client@example.com") }
+        }).Save();
+        long collectionOffset;
+        long propertyOffset;
+        using (var input = new MemoryStream(edited))
+        using (var structure = new DocStructureWalker().Accept(input,
+                   new DocStructurePrintVisitor(new StringWriter())))
+        {
+            collectionOffset = FindNamed(structure.Root, "EnvRecipientCollection", "MessageRecipients").Offset!.Value;
+            propertyOffset = Find(structure.Root, "EnvRecipientProperty").Offset!.Value;
+        }
+        var table = ReadStream(edited, "1Table");
+        table[(int)collectionOffset] = 0; // Invalid collection marker.
+        var malformed = RewriteStream(edited, "1Table", table);
+        using (var input = new MemoryStream(malformed))
+        using (new DocStructureWalker().Accept(input, new SkipEnvelopeBodyVisitor())) { }
+        using (var input = new MemoryStream(malformed))
+            Assert.Throws<InvalidDataException>(() => new DocStructureWalker().Accept(input,
+                new DocStructurePrintVisitor(new StringWriter())));
+
+        table = ReadStream(edited, "1Table");
+        table[(int)propertyOffset] = 0x99;
+        table[(int)propertyOffset + 1] = 0x99; // Unknown recipient property type.
+        var unknown = RewriteStream(edited, "1Table", table);
+        using var unknownInput = new MemoryStream(unknown);
+        using var unknownStructure = new DocStructureWalker().Accept(unknownInput,
+            new DocStructurePrintVisitor(new StringWriter()));
+        var opaque = Find(unknownStructure.Root, "EnvOpaqueBytes");
+        Assert.Equal(collectionOffset, opaque.Offset);
+        Assert.Contains("0x9999", opaque.Attributes["reason"]);
+    }
+
+    private sealed class SkipEnvelopeBodyVisitor : IDocStructureVisitor
+    {
+        public List<string> Kinds { get; } = new();
+        public IDisposable? Enter(DocStructureNode node, int depth)
+        {
+            Kinds.Add(node.Kind);
+            return node.Kind == "MsoEnvelope" ? null : DocxportNet.Core.DxpDisposable.Empty;
+        }
+    }
+
+    private static DocStructureNode Find(DocStructureNode node, string kind)
+    {
+        if (node.Kind == kind) return node;
+        foreach (var child in node.Children)
+        {
+            var found = FindOrNull(child, kind);
+            if (found != null) return found;
+        }
+        throw new InvalidOperationException($"No {kind} node was found.");
+    }
+
+    private static DocStructureNode FindNamed(DocStructureNode node, string kind, string name)
+    {
+        if (node.Kind == kind && node.Name == name) return node;
+        foreach (var child in node.Children)
+        {
+            var found = FindNamedOrNull(child, kind, name);
+            if (found != null) return found;
+        }
+        throw new InvalidOperationException($"No {kind} node named {name} was found.");
+    }
+
+    private static DocStructureNode? FindNamedOrNull(DocStructureNode node, string kind, string name)
+    {
+        if (node.Kind == kind && node.Name == name) return node;
+        foreach (var child in node.Children)
+        {
+            var found = FindNamedOrNull(child, kind, name);
+            if (found != null) return found;
+        }
+        return null;
+    }
+
+    private static DocStructureNode? FindOrNull(DocStructureNode node, string kind)
+    {
+        if (node.Kind == kind) return node;
+        foreach (var child in node.Children)
+        {
+            var found = FindOrNull(child, kind);
+            if (found != null) return found;
+        }
+        return null;
+    }
+
     [Fact]
     public void EditsEnvelopeOfTemplateFreeDocAndReadsSettingsBack()
     {

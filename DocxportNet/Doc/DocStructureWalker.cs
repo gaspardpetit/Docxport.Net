@@ -57,6 +57,10 @@ public sealed class DocStructureWalker
             DocClxNavigator.Expand(structure, node);
         if (node.Kind == "FibLocation" && node.Name == "StyleSheet")
             DocStyleSheetNavigator.Expand(structure, node);
+        if (node.Kind == "FibLocation" && node.Name == "EmailEnvelope")
+            DocEnvelopeNavigator.ExpandLocation(structure, node);
+        if (node.Kind == "MsoEnvelope")
+            DocEnvelopeNavigator.ExpandBody(structure, node);
         if (node.Kind == "FibLocation" && node.Name is "CharacterFormatting" or "ParagraphFormatting")
             DocFormattingNavigator.ExpandPageTable(structure, node);
         if (node.Kind is "ChpxFkp" or "PapxFkp")
