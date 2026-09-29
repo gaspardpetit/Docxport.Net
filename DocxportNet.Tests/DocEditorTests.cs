@@ -293,6 +293,23 @@ public class DocEditorTests
     }
 
     [Fact]
+    public void VisibilityEditRejectsDopByteAliasedToEnvelope()
+    {
+        using var editor = DocEditor.Open(CreateContainer(true));
+        var original = editor.SetEmailEnvelope(new DocEmailEnvelope { Subject = "Preserve" }).Save();
+        var word = ReadStream(original, "WordDocument");
+        var envelope = LocateEnvelope(word);
+        var dopField = 154 + 31 * 8;
+        BinaryPrimitives.WriteUInt32LittleEndian(word.AsSpan(dopField), envelope.Offset - 504);
+        BinaryPrimitives.WriteUInt32LittleEndian(word.AsSpan(dopField + 4), 505);
+        var aliased = RewriteStream(original, "WordDocument", word);
+        using var visibilityEditor = DocEditor.Open(aliased);
+        visibilityEditor.SetEmailEnvelopeVisibility(false);
+        Assert.Throws<InvalidDataException>(() => visibilityEditor.Save());
+        Assert.Equal(EnvelopeBytes(aliased), EnvelopeBytes(original));
+    }
+
+    [Fact]
     public void RejectsInvalidSettingsAndHonorsCancellation()
     {
         using var editor = DocEditor.Open(CreatePlainDoc());

@@ -115,6 +115,8 @@ public sealed class DocEditor : IDisposable
             ValidateOldEnvelope(envelope);
         if (_visibilityEdit.HasValue && dop.IsPresent && dop.Length < DopVisibilityOffset + 1)
             throw new NotSupportedException("The DOP has no Dop2000 visibility field.");
+        if (_visibilityEdit.HasValue && dop.IsPresent)
+            ValidateDopVisibility(dop);
         using var output = new MemoryStream();
         output.Write(_source, 0, _source.Length);
         output.Position = 0;
@@ -205,6 +207,19 @@ public sealed class DocEditor : IDisposable
             if ((ulong)envelope.Offset < (ulong)location.Offset + location.Length &&
                 (ulong)location.Offset < (ulong)envelope.Offset + envelope.Length)
                 throw new InvalidDataException($"The envelope overlaps {location.Name}.");
+        }
+    }
+
+    private void ValidateDopVisibility(DocLocation dop)
+    {
+        var visibilityOffset = (ulong)dop.Offset + DopVisibilityOffset;
+        foreach (var location in _index.Locations)
+        {
+            if (location.FibIndex == DopFibIndex || !location.IsRange || !location.IsPresent ||
+                location.StreamName != dop.StreamName) continue;
+            if ((ulong)location.Offset <= visibilityOffset &&
+                visibilityOffset < (ulong)location.Offset + location.Length)
+                throw new InvalidDataException($"The DOP visibility byte overlaps {location.Name}.");
         }
     }
 
