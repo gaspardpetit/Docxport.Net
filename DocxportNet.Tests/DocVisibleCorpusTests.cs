@@ -823,6 +823,7 @@ public class DocVisibleCorpusTests
             }
     }
 
+    [Trait("Category", "LocalOnly")]
     [Fact]
     public void RunFitTextHighAnsiFontsRetainScalesAndEditableFontsInAllStories()
     {
@@ -868,6 +869,7 @@ public class DocVisibleCorpusTests
             }
     }
 
+    [Trait("Category", "LocalOnly")]
     [Fact]
     public void RunFitTextBoldUsesBoldFaceAdvancesInAllStories()
     {
@@ -1045,6 +1047,7 @@ public class DocVisibleCorpusTests
         Assert.Empty(Validate(third.DocxBytes));
     }
 
+    [Trait("Category", "LocalOnly")]
     [Fact]
     public void RunFitTextLayeredBoldItalicStylesRetainNativeSpacing()
     {
@@ -1100,6 +1103,7 @@ public class DocVisibleCorpusTests
             }
     }
 
+    [Trait("Category", "LocalOnly")]
     [Fact]
     public void RunFitTextItalicUsesItalicFaceAdvancesInAllStories()
     {
@@ -1146,6 +1150,7 @@ public class DocVisibleCorpusTests
             }
     }
 
+    [Trait("Category", "LocalOnly")]
     [Fact]
     public void RunFitTextCjkPunctuationUsesEastAsianFaceInAllStories()
     {

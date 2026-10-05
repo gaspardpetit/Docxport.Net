@@ -2934,6 +2934,7 @@ public class DocStructureWalkerTests
             DxpDocToDocx.Project(generated).DocxBytes, 0.04, 1, ".docx");
     }
 
+    [Trait("Category", "LocalOnly")]
     [Theory]
     [InlineData("WordRotatedFloatingImageStories.docx", 0.055)]
     [InlineData("WordTransformedFloatingImageStories.docx", 0.04)]
@@ -9891,6 +9892,7 @@ public class DocStructureWalkerTests
         }
     }
 
+    [Trait("Category", "LocalOnly")]
     [Fact]
     public void WordListParagraphsExposeOverrideAndLevelInSemanticIndex()
     {
@@ -9914,6 +9916,7 @@ public class DocStructureWalkerTests
             x.ParagraphFormatting?.ListOverrideIndex > 0);
     }
 
+    [Trait("Category", "LocalOnly")]
     [Fact]
     public void WordListParagraphsProjectAsEditableDocxNumbering()
     {
@@ -9928,6 +9931,7 @@ public class DocStructureWalkerTests
         Assert.Empty(new OpenXmlValidator().Validate(document));
     }
 
+    [Trait("Category", "LocalOnly")]
     [Fact]
     public void WordTrackedListEditsProjectAsEditableRevisions()
     {
@@ -10192,6 +10196,7 @@ public class DocStructureWalkerTests
         }
     }
 
+    [Trait("Category", "LocalOnly")]
     [Fact]
     public void DocListRoundTripWritesEditableBinaryNumbering()
     {
@@ -17416,6 +17421,7 @@ public class DocStructureWalkerTests
         finally { Directory.Delete(directory, true); }
     }
 
+    [Trait("Category", "LocalOnly")]
     [Fact]
     public void NilTableStyleShadingDoesNotSuppressInheritedFill()
     {
@@ -26406,6 +26412,7 @@ public class DocStructureWalkerTests
         Assert.Empty(new OpenXmlValidator().Validate(projected));
     }
 
+    [Trait("Category", "LocalOnly")]
     [Fact]
     public void LinkedParagraphAndCharacterStylesSurviveBothDocRoutesInAllStories()
     {
@@ -26522,6 +26529,7 @@ public class DocStructureWalkerTests
         }
     }
 
+    [Trait("Category", "LocalOnly")]
     [Fact]
     public void DocRoundTripPreservesNamedParagraphStylesAndBasedOnLink()
     {
