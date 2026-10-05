@@ -349,6 +349,26 @@ public sealed class DxpFieldEval
                 }
                 value = new DxpFieldValue(RefNotFoundError);
                 return (true, value);
+            case "TITLE":
+            case "SUBJECT":
+            case "AUTHOR":
+            case "KEYWORDS":
+            case "COMMENTS":
+                {
+                    var resolver = Context.ValueResolver ?? _resolver;
+                    value = await resolver.ResolveAsync(fieldType,
+                        DxpFieldValueKindHint.DocumentProperty, Context) ??
+                        new DxpFieldValue(string.Empty);
+                    return (true, value);
+                }
+            case "LASTSAVEDBY":
+                {
+                    var resolver = Context.ValueResolver ?? _resolver;
+                    value = await resolver.ResolveAsync("LastSavedBy",
+                        DxpFieldValueKindHint.DocumentProperty, Context) ??
+                        new DxpFieldValue(string.Empty);
+                    return (true, value);
+                }
             case "DOCPROPERTY":
                 if (ast.ArgumentsText != null)
                 {
@@ -437,12 +457,21 @@ public sealed class DxpFieldEval
                 return (true, value);
             }
             case "NUMPAGES":
+                if (string.IsNullOrWhiteSpace(documentContext?.ExtendedProperties?
+                    .Pages?.Text))
+                    return (false, value);
                 value = ResolveDocumentMetricValue(documentContext, props => props.Pages, "NUMPAGES");
                 return (true, value);
             case "NUMWORDS":
+                if (string.IsNullOrWhiteSpace(documentContext?.ExtendedProperties?
+                    .Words?.Text))
+                    return (false, value);
                 value = ResolveDocumentMetricValue(documentContext, props => props.Words, "NUMWORDS");
                 return (true, value);
             case "NUMCHARS":
+                if (string.IsNullOrWhiteSpace(documentContext?.ExtendedProperties?
+                    .Characters?.Text))
+                    return (false, value);
                 value = ResolveDocumentMetricValue(documentContext, props => props.Characters, "NUMCHARS");
                 return (true, value);
             case "NEXT":
@@ -1624,6 +1653,12 @@ public sealed class DxpFieldEval
             || fieldType.Equals("REF", StringComparison.OrdinalIgnoreCase)
             || fieldType.Equals("DOCVARIABLE", StringComparison.OrdinalIgnoreCase)
             || fieldType.Equals("DOCPROPERTY", StringComparison.OrdinalIgnoreCase)
+            || fieldType.Equals("LASTSAVEDBY", StringComparison.OrdinalIgnoreCase)
+            || fieldType.Equals("AUTHOR", StringComparison.OrdinalIgnoreCase)
+            || fieldType.Equals("TITLE", StringComparison.OrdinalIgnoreCase)
+            || fieldType.Equals("SUBJECT", StringComparison.OrdinalIgnoreCase)
+            || fieldType.Equals("KEYWORDS", StringComparison.OrdinalIgnoreCase)
+            || fieldType.Equals("COMMENTS", StringComparison.OrdinalIgnoreCase)
             || fieldType.Equals("MERGEFIELD", StringComparison.OrdinalIgnoreCase)
             || fieldType.Equals("MERGEREC", StringComparison.OrdinalIgnoreCase)
             || fieldType.Equals("MERGESEQ", StringComparison.OrdinalIgnoreCase)

@@ -17,7 +17,19 @@ internal sealed class DxpEvaluateFieldFrameFactory
             return new DxpPassthroughFieldEvalFrame(next);
 
         if (context.PreserveLayoutDependentFields &&
-            DxpFieldInstructionClassifier.IsPaginationDependentInstruction(instruction))
+            (DxpFieldInstructionClassifier.IsHyperlinkInstruction(instruction) ||
+             DxpFieldInstructionClassifier.IsDateTimeInstruction(instruction) ||
+             DxpFieldInstructionClassifier.IsSeqInstruction(instruction)))
+            return new DxpPassthroughFieldEvalFrame(next);
+
+        if (context.PreserveReferenceFields &&
+            (DxpFieldInstructionClassifier.IsRefInstruction(instruction) ||
+             DxpFieldInstructionClassifier.IsStyleRefInstruction(instruction)))
+            return new DxpPassthroughFieldEvalFrame(next);
+
+        if (context.PreserveLayoutDependentFields &&
+            (DxpFieldInstructionClassifier.IsPaginationDependentInstruction(instruction) ||
+             DxpFieldInstructionClassifier.IsDocumentMetricInstruction(instruction)))
             return new DxpPassthroughFieldEvalFrame(next);
 
         if (DxpFieldInstructionClassifier.IsRefInstruction(instruction))

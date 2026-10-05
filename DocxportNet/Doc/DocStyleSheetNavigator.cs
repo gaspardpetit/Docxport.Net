@@ -6,6 +6,24 @@ namespace DocxportNet.Doc;
 /// <summary>Indexes STSH headers and length-prefixed styles without parsing style bodies.</summary>
 internal static class DocStyleSheetNavigator
 {
+    public static void ExpandHeaderTail(DocStructure structure, DocStructureNode node)
+    {
+        if (node.Children.Count != 0 || node.StreamName == null ||
+            node.Offset == null || node.Length is not >= 8) return;
+        var bytes = structure.ReadRange(node.StreamName, node.Offset.Value,
+            checked((int)node.Length.Value));
+        var cursor = 0;
+        foreach (var name in new[] { "CharacterDefaults", "ParagraphDefaults" })
+        {
+            if (bytes.Length - cursor < 4) return;
+            var size = BinaryPrimitives.ReadInt32LittleEndian(bytes.AsSpan(cursor));
+            if (size < 0 || size > bytes.Length - cursor - 4) return;
+            node.Children.Add(new DocStructureNode("LPStshiGrpPrl", name,
+                node.StreamName, node.Offset + cursor, 4 + size));
+            cursor += 4 + size;
+        }
+    }
+
     public static void Expand(DocStructure structure, DocStructureNode location)
     {
         if (location.Children.Count != 0 || location.StreamName == null ||
@@ -36,6 +54,31 @@ internal static class DocStyleSheetNavigator
         stshif.Attributes["styleCount"] = styleCount.ToString(CultureInfo.InvariantCulture);
         stshif.Attributes["stdBaseBytes"] = baseSize.ToString(CultureInfo.InvariantCulture);
         stshi.Children.Add(stshif);
+        // The optional ftcBi precedes the latent-style table in post-2000 headers.
+        if (headerLength >= 22)
+        {
+            var latentCount = BinaryPrimitives.ReadUInt16LittleEndian(fields.AsSpan(2 + 6, 2));
+            var latentBytes = 2L + 4L * latentCount;
+            if (BinaryPrimitives.ReadUInt16LittleEndian(fields.AsSpan(2 + 20, 2)) == 4 &&
+                latentBytes <= headerLength - 20L)
+            {
+                var latent = new DocStructureNode("StshiLsd", "LatentStyles", location.StreamName,
+                    start + 2 + 20, latentBytes);
+                latent.Attributes["styleCount"] = latentCount.ToString(CultureInfo.InvariantCulture);
+                for (var i = 0; i < latentCount; i++)
+                {
+                    var entry = new DocStructureNode("LSD", $"LatentStyle{i}", location.StreamName,
+                        start + 2 + 22L + i * 4L, 4);
+                    entry.Attributes["styleIndex"] = i.ToString(CultureInfo.InvariantCulture);
+                    latent.Children.Add(entry);
+                }
+                stshi.Children.Add(latent);
+                var remainder = headerLength - 20L - latentBytes;
+                if (remainder > 0)
+                    stshi.Children.Add(new DocStructureNode("STSHIB", "StyleSheetHeaderTail",
+                        location.StreamName, start + 2 + 20 + latentBytes, remainder));
+            }
+        }
         header.Children.Add(stshi);
         stsh.Children.Add(header);
         stsh.Attributes["styleCount"] = styleCount.ToString(CultureInfo.InvariantCulture);
@@ -56,8 +99,12 @@ internal static class DocStyleSheetNavigator
             style.Attributes["styleIndex"] = i.ToString(CultureInfo.InvariantCulture);
             style.Attributes["styleBytes"] = styleBytes.ToString(CultureInfo.InvariantCulture);
             if (styleBytes != 0)
-                style.Children.Add(new DocStructureNode("STD", "StyleDefinition", location.StreamName,
-                    cursor + 2, styleBytes));
+            {
+                var definition = new DocStructureNode("STD", "StyleDefinition", location.StreamName,
+                    cursor + 2, styleBytes);
+                definition.Attributes["baseSize"] = baseSize.ToString(CultureInfo.InvariantCulture);
+                style.Children.Add(definition);
+            }
             stsh.Children.Add(style);
             cursor += total;
         }

@@ -8,12 +8,15 @@ using System.Xml.Linq;
 
 namespace DocxportNet.Middleware;
 
-public abstract class DxpMiddleware : DxpIVisitor
+public abstract class DxpMiddleware : DxpIVisitor, IDxpCoveredTableCellVisitor
 {
     protected DxpMiddleware()
     {}
 
     public abstract DxpIVisitor? Next { get; }
+
+    public bool IncludeCoveredTableCells => Next is IDxpCoveredTableCellVisitor
+        { IncludeCoveredTableCells: true };
 
     protected virtual bool ShouldForwardContent(DxpIDocumentContext d) => true;
 

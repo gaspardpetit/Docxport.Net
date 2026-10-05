@@ -571,6 +571,36 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     }
 
     [Fact]
+    public async Task EvalAsync_LastSavedByUsesDocumentProperty()
+    {
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.SetDocumentPropertyValue("LastSavedBy",
+            new DxpFieldValue("Petit, Gaspard"));
+
+        var result = await eval.EvalAsync(new DxpFieldInstruction("LASTSAVEDBY"));
+
+        Assert.Equal("Petit, Gaspard", result.Text);
+    }
+
+    [Theory]
+    [InlineData("AUTHOR", "Author", "Ada Lovelace")]
+    [InlineData("TITLE", "Title", "Quarterly Report")]
+    [InlineData("SUBJECT", "Subject", "Internal Review")]
+    [InlineData("KEYWORDS", "Keywords", "Project Alpha")]
+    [InlineData("COMMENTS", "Comments", "Approved draft")]
+    public async Task EvalAsync_StandaloneCorePropertyUsesDocumentProperty(
+        string instruction, string propertyName, string expectedValue)
+    {
+        var eval = new DxpFieldEval(logger: Logger);
+        eval.Context.SetDocumentPropertyValue(propertyName,
+            new DxpFieldValue(expectedValue));
+
+        var result = await eval.EvalAsync(new DxpFieldInstruction(instruction));
+
+        Assert.Equal(expectedValue, result.Text);
+    }
+
+    [Fact]
     public async Task EvalAsync_DocPropertyExpandsNestedName()
     {
         var eval = new DxpFieldEval(logger: Logger);
@@ -2267,7 +2297,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     }
 
     [Fact]
-    public void EvalAsync_DocumentMetrics_MissingPropertiesYieldEmpty()
+    public void EvalAsync_DocumentMetrics_MissingPropertiesUseCachedResults()
     {
         const string bodyXml = """
 <w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
@@ -2295,7 +2325,7 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
 """;
 
         var actual = TestCompare.Normalize(ExportPlainTextEvaluatedFromBodyXml(bodyXml));
-        var expected = TestCompare.Normalize("Pages= Words= Chars=\n\n");
+        var expected = TestCompare.Normalize("Pages=cached Words=cached Chars=cached\n\n");
         Assert.Equal(expected, actual);
     }
 

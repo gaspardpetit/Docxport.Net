@@ -14,7 +14,8 @@ namespace DocxportNet.Visitors.Docx;
 /// stories surfaced by <see cref="Walker.DxpWalker"/> from visitor events.
 /// Unsupported events are intentionally left to <see cref="Visitors.DxpVisitor"/>.
 /// </summary>
-public sealed class DxpDocxVisitor : DxpVisitor, IDisposable, DxpIFieldEvalProvider, DxpIPreserveLayoutFields,
+public sealed class DxpDocxVisitor : DxpVisitor, IDisposable, IDxpAllHeaderFooterVisitor,
+    DxpIFieldEvalProvider, DxpIPreserveLayoutFields,
     IDxpDeferredStructuredResultTarget
 {
     private readonly Stack<OpenXmlCompositeElement> _parents = new();

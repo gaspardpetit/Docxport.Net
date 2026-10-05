@@ -58,6 +58,12 @@ public class DxpTables
         return span is > 1 ? span.Value : 1;
     }
 
+    private static int GetGridBefore(TableRow row) =>
+        Math.Max(0, row.TableRowProperties?.GetFirstChild<GridBefore>()?.Val?.Value ?? 0);
+
+    private static int GetGridAfter(TableRow row) =>
+        Math.Max(0, row.TableRowProperties?.GetFirstChild<GridAfter>()?.Val?.Value ?? 0);
+
     private static bool IsVMergeContinue(TableCell tc)
     {
         var vm = tc.TableCellProperties?.VerticalMerge;
@@ -80,7 +86,9 @@ public class DxpTables
         if (colCount == 0)
         {
             colCount = t.Elements<TableRow>()
-                .Select(r => EnumerateRowCells(r).Sum(tc => GetGridSpan(tc)))
+                .Select(r => GetGridBefore(r) +
+                    EnumerateRowCells(r).Sum(tc => GetGridSpan(tc)) +
+                    GetGridAfter(r))
                 .DefaultIfEmpty(0)
                 .Max();
         }
@@ -96,7 +104,8 @@ public class DxpTables
 
         for (int r = 0; r < rowCount; r++)
         {
-            int c = 0;
+            int c = GetGridBefore(rows[r]);
+            if (c >= colCount) c = 0;
             foreach (var tc in EnumerateRowCells(rows[r]))
             {
                 // find next free column slot (skip covered slots)

@@ -103,7 +103,11 @@ public sealed class DocStructure : IDisposable
     internal byte[] ReadRange(string streamName, long offset, int length)
     {
         if (_disposed) throw new ObjectDisposedException(nameof(DocStructure));
-        using var stream = _storage.OpenStream(streamName);
+        var parts = streamName.Split('/');
+        Storage storage = _storage;
+        for (var i = 0; i < parts.Length - 1; i++)
+            storage = storage.OpenStorage(parts[i]);
+        using var stream = storage.OpenStream(parts[parts.Length - 1]);
         if (offset < 0 || length < 0 || offset > stream.Length || length > stream.Length - offset)
             throw new InvalidDataException("The block range is outside its stream.");
         stream.Position = offset;

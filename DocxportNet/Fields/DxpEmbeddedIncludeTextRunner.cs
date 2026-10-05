@@ -76,6 +76,7 @@ internal static class DxpEmbeddedIncludeTextRunner
                 options: new DxpEvaluateFieldMiddlewareOptions
                 {
                     PreserveLayoutDependentFields = eval.Context.PreserveLayoutDependentFields,
+                    PreserveReferenceFields = eval.Context.PreserveReferenceFields,
                     EmitStructuredDatabaseResults = eval.Context.EmitStructuredDatabaseResults
                 }),
             next => new DxpContextMiddleware(next, logger));

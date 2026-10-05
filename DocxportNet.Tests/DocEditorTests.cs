@@ -177,7 +177,7 @@ public class DocEditorTests
             Assert.Equal(original, editor.Save());
             Assert.Null(editor.ReadEmailEnvelope());
             Assert.False(editor.Index.FindLocation("EmailEnvelope")!.IsPresent);
-            Assert.False(editor.Index.FindLocation("DocumentProperties")!.IsPresent);
+            Assert.True(editor.Index.FindLocation("DocumentProperties")!.IsPresent);
             editor.SetEmailEnvelope(replacement);
             Assert.Equal(replacement.Subject, editor.ReadEmailEnvelope()!.Subject);
             Assert.Equal(snapshot, original);

@@ -2,17 +2,18 @@ using System.Buffers.Binary;
 
 namespace DocxportNet.Doc;
 
-/// <summary>Writes the Word 2002 FIB directory and its table-block locations.</summary>
+/// <summary>Writes the Word 2007 FIB directory and its table-block locations.</summary>
 internal sealed class DocFibWriter
 {
     private const int PairOffset = 154;
     private readonly byte[] word;
 
-    public DocFibWriter(byte[] word, int textStart, int textEnd, int characterCount)
+    public DocFibWriter(byte[] word, int textStart, int textEnd, int characterCount,
+        int headerCharacterCount = 0)
     {
         this.word = word;
         U16(0, 0xA5EC); // wIdent
-        U16(2, 0x0101); // nFib: Word 2002
+        U16(2, 0x00C1); // FibBase.nFib; the later version is in nFibNew.
         U16(4, 0x204D); // unused, conventional value
         U16(6, 0x0409); // English language ID
         U16(10, 0x12F0); // Unicode, 1Table, complex piece table, quick-save count
@@ -23,8 +24,14 @@ internal sealed class DocFibWriter
         U16(62, 22); // cslw
         U32(64, word.Length); // cbMac is the first FibRgLw97 field.
         U32(76, characterCount); // ccpText
-        U16(152, 136); // cbRgFcLcb (Word 2002)
-        U16(PairOffset + 136 * 8, 0); // cswNew
+        U32(84, headerCharacterCount); // ccpHdd
+        U16(152, 183); // cbRgFcLcb (Word 2007).
+        var extensionOffset = PairOffset + 183 * 8;
+        U16(extensionOffset, 5);
+        U16(extensionOffset + 2, 0x0112);
+        U16(extensionOffset + 4, 0); // FibRgCswNewData2000.
+        U16(extensionOffset + 6, 0x0409);
+        U16(extensionOffset + 8, 0x0411);
     }
 
     public void AddTableBlock(MemoryStream table, int pairIndex, byte[] bytes)

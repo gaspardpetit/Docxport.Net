@@ -51,6 +51,9 @@ internal static class DxpFieldInstructionClassifier
         return trimmed.Length == 3 || char.IsWhiteSpace(trimmed[3]);
     }
 
+    internal static bool IsStyleRefInstruction(string? instruction)
+        => StartsWithField(instruction, "STYLEREF");
+
     internal static bool IsDocVariableInstruction(string? instruction)
     {
         if (string.IsNullOrWhiteSpace(instruction))
@@ -73,6 +76,17 @@ internal static class DxpFieldInstructionClassifier
 
     internal static bool IsDocPropertyInstruction(string? instruction)
         => StartsWithField(instruction, "DOCPROPERTY");
+
+    internal static bool IsStandaloneDocumentPropertyInstruction(string? instruction)
+        => StartsWithField(instruction, "LASTSAVEDBY") ||
+            StartsWithField(instruction, "AUTHOR") ||
+            StartsWithField(instruction, "TITLE") ||
+            StartsWithField(instruction, "SUBJECT") ||
+            StartsWithField(instruction, "KEYWORDS") ||
+            StartsWithField(instruction, "COMMENTS");
+
+    internal static bool IsHyperlinkInstruction(string? instruction)
+        => StartsWithField(instruction, "HYPERLINK");
 
     internal static bool IsMergeFieldInstruction(string? instruction)
         => StartsWithField(instruction, "MERGEFIELD");

@@ -49,7 +49,8 @@ public class PlainTextExportTests : TestBase<PlainTextExportTests>
 
     public static IEnumerable<object[]> SampleDocs() =>
         Directory.EnumerateFiles(SamplesDirectory, "*.docx", SearchOption.TopDirectoryOnly)
-            .Where(path => !Path.GetFileName(path).StartsWith("~$", StringComparison.Ordinal))
+            .Where(path => !Path.GetFileName(path).StartsWith("~$", StringComparison.Ordinal) &&
+                !Path.GetFileName(path).EndsWith(".projected.docx", StringComparison.OrdinalIgnoreCase))
             .OrderBy(Path.GetFileName)
             .Select(path => new object[] { new Sample(path) });
 
