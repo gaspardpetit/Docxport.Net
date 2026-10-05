@@ -27,6 +27,7 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
     private bool _seenSeparate;
     private bool _inResult;
     private readonly List<FieldEvent> _events = new();
+    private FieldChar? _beginMarker;
     private readonly Stack<IDisposable> _replayScopes = new();
     private DxpFieldValue? _capturedSetScalar;
     private bool _capturedSetScalarIsExact;
@@ -79,6 +80,12 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         _expressionParts.Add(new DxpFieldExpressionText(
             text,
             DxpFieldExpressionSource.CaptureRunFormat(instr.Parent as Run)));
+    }
+
+    public override void VisitComplexFieldBegin(FieldChar begin, DxpIDocumentContext d)
+    {
+        _beginMarker = begin;
+        base.VisitComplexFieldBegin(begin, d);
     }
 
     public override void VisitComplexFieldSeparate(FieldChar separate, DxpIDocumentContext d)
@@ -297,6 +304,9 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
             return;
         }
 
+        if (delegateFrame is DxpPassthroughFieldEvalFrame passthrough)
+            passthrough.BeginMarker = _beginMarker;
+
         if (delegateFrame is DxpSetFieldEvalFrame setFrame && _capturedSetScalarIsExact)
             setFrame.CapturedScalar = _capturedSetScalar;
 
@@ -317,10 +327,20 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
 
     private bool TryReplaySemanticExpression(DxpIDocumentContext context)
     {
+        if (EvalContext.PreserveLayoutDependentFields &&
+            (DxpFieldInstructionClassifier.IsHyperlinkInstruction(InstructionText) ||
+             DxpFieldInstructionClassifier.IsDateTimeInstruction(InstructionText) ||
+             DxpFieldInstructionClassifier.IsSeqInstruction(InstructionText)))
+            return false;
+        if (EvalContext.PreserveReferenceFields &&
+            (DxpFieldInstructionClassifier.IsRefInstruction(InstructionText) ||
+             DxpFieldInstructionClassifier.IsStyleRefInstruction(InstructionText)))
+            return false;
         if (EvalContext.FieldEvaluationFilter?.Invoke(InstructionText) == false)
             return false;
         if (EvalContext.PreserveLayoutDependentFields &&
-            DxpFieldInstructionClassifier.IsPaginationDependentInstruction(InstructionText))
+            (DxpFieldInstructionClassifier.IsPaginationDependentInstruction(InstructionText) ||
+             DxpFieldInstructionClassifier.IsDocumentMetricInstruction(InstructionText)))
             return false;
         // These top-level fields still need event-backed document artifacts that
         // are richer than a scalar semantic value: bookmark run structure,

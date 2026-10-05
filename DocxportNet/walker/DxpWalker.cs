@@ -337,6 +337,7 @@ public class DxpWalker
     {
         using (v.VisitDocumentBodyBegin(body, d))
         {
+            var allExplicitStories = WantsAllExplicitHeaderFooterStories(v);
             var selectionProvider = v as IDxpHeaderFooterSelectionProvider;
             bool evenAndOddHeaders = d.DocumentSettings != null && d.DocumentSettings.ChildElements.Any(e => e.LocalName == "evenAndOddHeaders");
 
@@ -349,6 +350,12 @@ public class DxpWalker
             {
                 SectionSlice section = sections[i];
                 effective.ApplySectionOverrides(section.Properties);
+
+                if (allExplicitStories)
+                {
+                    WalkSectionAllExplicitStories(section, d, v, i == sections.Count - 1);
+                    continue;
+                }
 
                 HeaderReference? headerRef = null;
                 FooterReference? footerRef = null;
@@ -367,6 +374,32 @@ public class DxpWalker
                 bool isLastSection = i == sections.Count - 1;
                 WalkSection(section, d, v, headerRef, footerRef, isLastSection);
             }
+        }
+    }
+
+    private static bool WantsAllExplicitHeaderFooterStories(DxpIVisitor visitor)
+    {
+        while (true)
+        {
+            if (visitor is IDxpAllHeaderFooterVisitor) return true;
+            if (visitor is not DocxportNet.Middleware.DxpMiddleware { Next: { } next })
+                return false;
+            visitor = next;
+        }
+    }
+
+    private void WalkSectionAllExplicitStories(SectionSlice section, DxpDocumentContext d,
+        DxpIVisitor v, bool isLastSection)
+    {
+        var layout = DxpSections.CreateSectionLayout(section.Properties);
+        using (v.VisitSectionBegin(section.Properties, layout, d))
+        {
+            foreach (var header in section.Properties.Elements<HeaderReference>())
+                WalkHeaderReference(header, d, v);
+            WalkSectionBody(section, d, v);
+            if (isLastSection) WalkFootnotesAndEndnotes(d, v);
+            foreach (var footer in section.Properties.Elements<FooterReference>())
+                WalkFooterReference(footer, d, v);
         }
     }
 
@@ -944,7 +977,7 @@ public class DxpWalker
         // Advance grid position even if we skip emitting (covered vertical-merge continuations).
         int advance = Math.Max(1, colSpan);
 
-        if (!isCovered)
+        if (!isCovered || v is IDxpCoveredTableCellVisitor { IncludeCoveredTableCells: true })
             WalkTableCell(tc, d, v, rowContext, gridColumnIndex, rowSpan, colSpan);
 
         gridColumnIndex += advance;

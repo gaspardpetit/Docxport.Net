@@ -53,7 +53,8 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
     public static IEnumerable<object[]> SampleDocs()
     {
         return Directory.EnumerateFiles(SamplesDirectory, "*.docx", SearchOption.TopDirectoryOnly)
-            .Where(path => !Path.GetFileName(path).StartsWith("~$", StringComparison.Ordinal))
+            .Where(path => !Path.GetFileName(path).StartsWith("~$", StringComparison.Ordinal) &&
+                !Path.GetFileName(path).EndsWith(".projected.docx", StringComparison.OrdinalIgnoreCase))
             .OrderBy(Path.GetFileName) // deterministic ordering for discovery
             .Select(path => new object[] { new Sample(path) });
     }

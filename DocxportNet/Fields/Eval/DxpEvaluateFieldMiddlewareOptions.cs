@@ -6,6 +6,7 @@ public sealed class DxpEvaluateFieldMiddlewareOptions
 {
     public IDxpRefResolver? RefResolver { get; set; }
     public bool PreserveLayoutDependentFields { get; set; }
+    public bool PreserveReferenceFields { get; set; }
     public bool EmitStructuredDatabaseResults { get; set; }
     public Func<string?, bool>? FieldEvaluationFilter { get; set; }
 }

@@ -30,6 +30,10 @@ internal static class DocClxNavigator
                 Require(cursor, blockLength, end);
                 var node = new DocStructureNode("Prc", "PropertyBlock", clx.StreamName, cursor, blockLength);
                 node.Attributes["propertyBytes"] = size.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                var data = new DocStructureNode("PrcData", "PropertyData", clx.StreamName,
+                    cursor + 1, size + 2L);
+                data.Attributes["propertyBytes"] = size.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                node.Children.Add(data);
                 clx.Children.Add(node);
                 cursor += blockLength;
                 continue;
@@ -96,6 +100,23 @@ internal static class DocClxNavigator
             piece.Attributes["encoding"] = compressed ? "compressed" : "utf16";
             piece.Attributes["flags"] = $"0x{flags:X4}";
             piece.Attributes["prm"] = $"0x{prm:X4}";
+            var propertyReference = new DocStructureNode("Prm", "PropertyReference",
+                plc.StreamName, recordOffset + 6, 2);
+            var complex = (prm & 1) != 0;
+            var variant = new DocStructureNode(complex ? "Prm1" : "Prm0", "PropertyReferenceData",
+                plc.StreamName, recordOffset + 6, 2);
+            if (complex)
+                variant.Attributes["propertyBlockIndex"] = (prm >> 1)
+                    .ToString(System.Globalization.CultureInfo.InvariantCulture);
+            else
+            {
+                variant.Attributes["modifierIndex"] = ((prm >> 1) & 0x7F)
+                    .ToString(System.Globalization.CultureInfo.InvariantCulture);
+                variant.Attributes["operand"] = (prm >> 8)
+                    .ToString(System.Globalization.CultureInfo.InvariantCulture);
+            }
+            propertyReference.Children.Add(variant);
+            piece.Children.Add(propertyReference);
             var pieceStartCp = previousCp;
             piece.SetPayloadFactory(() => structure.ReadTextPiece(pieceStartCp, nextCp, textOffset,
                 checked((int)textLength), compressed));

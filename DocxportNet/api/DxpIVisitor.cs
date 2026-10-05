@@ -99,6 +99,12 @@ public interface DxpITableCellContext
     DxpComputedTableCellStyle ComputedStyle { get; }
 }
 
+/// <summary>Requests physical continuation cells when walking a merged table.</summary>
+public interface IDxpCoveredTableCellVisitor
+{
+    bool IncludeCoveredTableCells { get; }
+}
+
 public interface DxpIRubyContext
 {
     Ruby Ruby { get; }

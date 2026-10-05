@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DocxportNet;
 
-/// <summary>Writes an unformatted binary DOC from DOCX or binary DOC input.</summary>
+/// <summary>Writes a binary DOC with body and header/footer stories and selected styles.</summary>
 public static class DxpDocExport
 {
     public static byte[] Export(byte[] input, DxpExportOptions? options = null, ILogger? logger = null,

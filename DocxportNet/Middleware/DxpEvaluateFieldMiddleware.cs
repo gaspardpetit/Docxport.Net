@@ -52,5 +52,6 @@ internal sealed class DxpEvaluateFieldMiddleware : DxpFieldMiddlewareBase
         Context.FieldEvaluationFilter = _options.FieldEvaluationFilter;
         if (_options.PreserveLayoutDependentFields)
             Context.PreserveLayoutDependentFields = true;
+        Context.PreserveReferenceFields = _options.PreserveReferenceFields;
     }
 }

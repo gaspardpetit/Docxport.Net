@@ -35,4 +35,4 @@ jobs:
         run: dotnet build DocxportNet.sln --configuration Release --no-restore
 
       - name: Test
-        run: dotnet test DocxportNet.sln --configuration Release --no-build --logger "trx;LogFileName=tests.trx"
+        run: dotnet test DocxportNet.sln --configuration Release --no-build --filter "Category!=LocalOnly" --logger "trx;LogFileName=tests.trx"

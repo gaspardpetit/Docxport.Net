@@ -525,8 +525,17 @@ public static class DxpExport
                         logger: logger,
                         options: new DxpEvaluateFieldMiddlewareOptions {
                             PreserveLayoutDependentFields = visitor is DxpIPreserveLayoutFields,
+                            PreserveReferenceFields = options == null &&
+                                visitor is DxpIPreserveLayoutFields,
                             EmitStructuredDatabaseResults = visitor is DxpIPreserveLayoutFields,
-                            FieldEvaluationFilter = options?.FieldEvaluationFilter,
+                            FieldEvaluationFilter = options?.FieldEvaluationFilter ??
+                                (options == null && visitor is DxpIPreserveLayoutFields
+                                    ? instruction =>
+                                        !DxpFieldInstructionClassifier.IsIfInstruction(instruction) &&
+                                        !DxpFieldInstructionClassifier.IsMergeFieldInstruction(instruction) &&
+                                        !DxpFieldInstructionClassifier.IsDocPropertyInstruction(instruction) &&
+                                        !DxpFieldInstructionClassifier.IsStandaloneDocumentPropertyInstruction(instruction)
+                                    : null),
                         }),
                 next => new DxpContextMiddleware(next, logger));
         }
