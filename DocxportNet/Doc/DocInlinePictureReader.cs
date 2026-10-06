@@ -5,7 +5,7 @@ namespace DocxportNet.Doc;
 /// <summary>An inline DOC image and its displayed extent in English metric units.</summary>
 internal sealed record DocInlinePicture(byte[] Bytes, string ContentType, long WidthEmu,
     long HeightEmu, DocInlinePictureCrop? Crop = null, bool FlipHorizontal = false,
-    bool FlipVertical = false, double RotationDegrees = 0);
+    bool FlipVertical = false, double RotationDegrees = 0, Uri? LinkedImage = null);
 
 public sealed record DocInlinePictureCrop(double Left, double Top, double Right,
     double Bottom)
@@ -17,7 +17,7 @@ internal static class DocInlinePictureReader
 {
     public static DocInlinePicture Read(DocStructure structure, int dataOffset)
         => TryRead(structure, dataOffset) ?? throw new NotSupportedException(
-            "The DOC inline picture has no supported JPEG or PNG blip.");
+            "The DOC inline picture has no supported embedded blip or linked image.");
 
     public static DocInlinePicture? TryRead(DocStructure structure, int dataOffset)
     {
@@ -44,11 +44,57 @@ internal static class DocInlinePictureReader
         else if (metafileType != 0x64)
             throw new NotSupportedException($"DOC picture format 0x{metafileType:X4} is unsupported.");
         var found = FindBlip(block.AsSpan(recordsStart));
-        if (found == null) return null;
-        var flips = FindFlips(block.AsSpan(recordsStart));
-        return new DocInlinePicture(found.Value.Bytes, found.Value.ContentType, width, height,
-            FindCrop(block.AsSpan(recordsStart)), flips.Horizontal, flips.Vertical,
-            FindRotation(block.AsSpan(recordsStart)));
+        var records = block.AsSpan(recordsStart);
+        var linkedImage = found == null ? FindLinkedImage(records) : null;
+        if (found == null && linkedImage == null) return null;
+        var flips = FindFlips(records);
+        return new DocInlinePicture(found?.Bytes ?? [], found?.ContentType ?? "image/png",
+            width, height, FindCrop(records), flips.Horizontal, flips.Vertical,
+            FindRotation(records), linkedImage);
+    }
+
+    private static Uri? FindLinkedImage(ReadOnlySpan<byte> records)
+    {
+        for (var offset = 0; offset + 8 <= records.Length;)
+        {
+            var word = BinaryPrimitives.ReadUInt16LittleEndian(records.Slice(offset));
+            var version = word & 0xF;
+            var instance = word >> 4;
+            var type = BinaryPrimitives.ReadUInt16LittleEndian(records.Slice(offset + 2));
+            var length = BinaryPrimitives.ReadUInt32LittleEndian(records.Slice(offset + 4));
+            if (length > records.Length - offset - 8)
+                throw new InvalidDataException("An OfficeArt shape record exceeds its container.");
+            var body = records.Slice(offset + 8, checked((int)length));
+            if (type == 0xF00B)
+            {
+                var tableLength = checked(instance * 6);
+                if (tableLength > body.Length)
+                    throw new InvalidDataException("An OfficeArt shape property table is truncated.");
+                var dataOffset = tableLength;
+                for (var i = 0; i < instance; i++)
+                {
+                    var entry = body.Slice(i * 6);
+                    var property = BinaryPrimitives.ReadUInt16LittleEndian(entry);
+                    var value = BinaryPrimitives.ReadUInt32LittleEndian(entry.Slice(2));
+                    if ((property & 0x8000) == 0) continue;
+                    if (value > body.Length - dataOffset)
+                        throw new InvalidDataException("An OfficeArt complex property is truncated.");
+                    if (property == 0xC105 && value >= 4 && value % 2 == 0)
+                    {
+                        // pibName is the UTF-16 path of a linked picture; it has no embedded BLIP.
+                        var name = System.Text.Encoding.Unicode.GetString(
+                            body.Slice(dataOffset, checked((int)value)).ToArray()).TrimEnd('\0');
+                        if (Uri.TryCreate(name, UriKind.Absolute, out var uri))
+                            return uri;
+                    }
+                    dataOffset += checked((int)value);
+                }
+            }
+            if (version == 0xF && FindLinkedImage(body) is { } nested)
+                return nested;
+            offset += checked(8 + (int)length);
+        }
+        return null;
     }
 
     private static double FindRotation(ReadOnlySpan<byte> records)
