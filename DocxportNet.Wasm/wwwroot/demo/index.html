@@ -3,23 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>DocxportNet · Browser DOCX exporter</title>
-  <meta name="description" content="Convert DOCX files to HTML, Markdown, or plain text entirely in your browser.">
+  <title>DocxportNet · Browser DOC and DOCX exporter</title>
+  <meta name="description" content="Convert DOC and DOCX files to HTML, Markdown, or plain text entirely in your browser.">
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
   <header class="topbar">
     <a class="brand" href="./" aria-label="DocxportNet home"><span class="brand-mark">D</span><span>Docxport<span>Net</span></span></a>
-    <p>DOCX conversion, entirely in your browser</p>
+    <p>DOC and DOCX conversion, entirely in your browser</p>
     <a class="source-link" href="https://github.com/gaspardpetit/Docxport.Net">Source ↗</a>
   </header>
 
   <main class="app-shell">
     <aside class="controls">
-      <section id="dropZone" class="drop-zone" tabindex="0" role="button" aria-label="Choose or drop a DOCX file">
-        <input id="fileInput" type="file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden>
+      <section id="dropZone" class="drop-zone" tabindex="0" role="button" aria-label="Choose or drop a DOC or DOCX file">
+        <input id="fileInput" type="file" accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden>
         <div class="drop-icon">↓</div>
-        <strong>Drop a DOCX here</strong>
+        <strong>Drop a DOC or DOCX here</strong>
         <span>or click to choose a file</span>
       </section>
 
@@ -65,7 +65,7 @@
       <div id="emptyState" class="empty-state">
         <div class="document-stack"><span></span><span></span><span>+</span></div>
         <h1>Your converted document will appear here</h1>
-        <p>Choose a DOCX file, then explore HTML, Markdown, and plain-text exports.</p>
+        <p>Choose a DOC or DOCX file, then explore HTML, Markdown, and plain-text exports.</p>
       </div>
       <div id="errorState" class="error-state" hidden><strong>Conversion failed</strong><p id="errorMessage"></p></div>
       <iframe id="renderedOutput" title="Rendered document output" sandbox hidden></iframe>

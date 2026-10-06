@@ -3,7 +3,7 @@
 
 # Docxport.Net
 
-Docxport.Net is a .NET library for walking DOCX documents and exporting them to friendly formats or rebuilding them as standalone DOCX files, with full handling of:
+Docxport.Net is a .NET library for reading DOC and DOCX documents, exporting them to friendly formats, or rebuilding them as standalone DOCX files. Binary DOC inputs are projected to DOCX before walking. It handles:
 
 - Tracked changes (accept/reject/inline views)
 - Lists with proper markers and indentation
@@ -17,11 +17,17 @@ Docxport.Net is a .NET library for walking DOCX documents and exporting them to 
 
 ## Support overview
 
+**Input formats**
+- DOCX
+- Binary DOC (projected to DOCX for export; fidelity varies by structure)
+
 **Output formats**
+- JSON metadata (`docxport my.doc --format=metadata`; writes to stdout)
 - Markdown (rich + plain)
 - HTML (rich + plain)
 - Plain text
 - DOCX (package-preserving rebuild with optional field evaluation)
+- Binary DOC (writer with feature-dependent structure and formatting support)
 
 **Document features**
 - Tracked changes: accept/reject/inline/split modes
@@ -152,7 +158,7 @@ string rejected = DxpExport.ExportToString(docxPath, rejectVisitor);
 - A caller-supplied `DxpFieldEval` evaluates supported dependencies such as `ASK` → `REF` and nested `IF` → `ASK`. An explicit `FieldEvalMode = Evaluate` also requests evaluation, even without a supplied evaluator.
 - Set `DocxFieldPolicy = DxpDocxFieldPolicy.Preserve` or `Evaluate` to override that choice. Layout-dependent fields remain native during evaluation; `FieldEvalMode = None` disables field processing and `Cache` replays cached results.
 
-`DxpExport` has overloads for DOCX file paths, in-memory bytes, or an already-open `WordprocessingDocument`, and can return a `string`, a `byte[]`, write straight to a file path, or just drive a visitor that collects data.
+`DxpExport` has overloads for DOC and DOCX file paths and in-memory bytes, or an already-open `WordprocessingDocument`, and can return a `string`, a `byte[]`, write straight to a file path, or just drive a visitor that collects data.
 
 ### Document metadata
 
@@ -167,6 +173,17 @@ dotnet tool install -g DocxportNet.Cli
 docxport my.docx -o my.md --tracked=accept
 ```
 
+The CLI accepts `.doc` and `.docx` inputs. The output extension selects the format when `--format` is omitted:
+
+```bash
+docxport old.doc -o old.docx          # DOC → DOCX
+docxport modern.docx -o modern.doc    # DOCX → DOC
+docxport old.doc --format=metadata    # JSON metadata on stdout
+docxport modern.docx -o modern.json   # JSON metadata in a file
+```
+
+Metadata includes core properties, available statistics and languages, and flags for tracked changes and comments. Conversion fidelity depends on the structures in the source. Without `-o`, `--format=docx` writes `<name>.resolved.docx`, `--format=doc` writes `<name>.plain.doc`, and `--format=metadata` writes JSON to stdout. Other formats write beside the input with the selected output extension.
+
 Self-contained binaries for Windows/Linux/macOS are also published on GitHub Releases.
 
 ```bash
@@ -177,7 +194,7 @@ dotnet run --project DocxportNet.Cli -- my.docx -o my.md --tracked=accept
 
 ### Browser WebAssembly
 
-`DocxportNet.Wasm` publishes the exporters as the browser-only `docxport` ESM package. It accepts DOCX data as a `Uint8Array` and returns HTML, Markdown, plain text, or a resolved DOCX without uploading the document.
+`DocxportNet.Wasm` publishes the exporters as the browser-only `docxport` ESM package. It accepts DOC or DOCX data as a `Uint8Array` and returns HTML, Markdown, plain text, or a resolved DOCX without uploading the document.
 
 ```powershell
 dotnet workload install wasm-tools
@@ -196,7 +213,7 @@ npx docxport-copy-assets public/docxport
 
 Then initialize with `createDocxport({ assetBaseUrl: "/docxport/" })`. The package README includes React, Vue, Vite, and generic static-hosting guidance.
 
-Options: `--format=markdown|html|text|docx`, `--tracked=accept|reject|inline|split` (text uses accept/reject), `--plain` (plain markdown), `-o, --output=path` (infers format from extension when `--format` is omitted), `--vars=path` (JSON/INI DOCVARIABLEs), `-D name=value` (repeatable overrides), and `--include-path=directory` (repeatable allowed/search roots for evaluated DOCX and HTML `INCLUDETEXT` fields).
+Options: `--format=markdown|html|text|docx|doc|metadata`, `--tracked=accept|reject|inline|split` (text uses accept/reject), `--plain` (plain markdown/HTML), `-o, --output=path` (infers format from extension when `--format` is omitted), `--vars=path` (JSON/INI DOCVARIABLEs), `-D name=value` (repeatable overrides), and `--include-path=directory` (repeatable allowed/search roots for evaluated DOCX and HTML `INCLUDETEXT` fields).
 
 ```bash
 docxport my.docx --fields=evaluate --include-path="C:\templates\Word Templates" -o my.md

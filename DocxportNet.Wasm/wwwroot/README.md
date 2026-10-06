@@ -1,6 +1,6 @@
 # docxport
 
-Convert DOCX files to HTML, Markdown, plain text, or a plain-text binary DOC entirely in the browser. Binary DOC files also work through `export`, `resolveDocx`, and `exportDoc`: they are first projected to a basic DOCX containing main-document text, paragraphs, and runs. The package also exposes field resolution and resolved-DOCX output through a .NET WebAssembly runtime.
+Convert DOC and DOCX files to HTML, Markdown, plain text, or a resolved DOCX entirely in the browser. Binary DOC inputs are projected to DOCX before export; fidelity varies by structure. `exportDoc` writes a binary DOC with feature-dependent structure and formatting support. The package also exposes document inspection and field resolution through a .NET WebAssembly runtime.
 
 ## Install
 
@@ -63,7 +63,7 @@ The default asset location is relative to the installed ESM loader and is useful
 
 ```ts
 const docxport = await createDocxport({ assetBaseUrl: "/docxport/" });
-const info = await docxport.inspect(docxBytes);
+const info = await docxport.inspect(docxBytes); // DOC and DOCX are supported
 const markdown = await docxport.export(docxBytes, {
   format: "markdown",
   preset: "plain",

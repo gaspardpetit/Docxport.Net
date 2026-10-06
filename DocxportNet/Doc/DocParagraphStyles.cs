@@ -30,8 +30,11 @@ internal static class DocParagraphStyleReader
                 styleIndex = BinaryPrimitives.ReadUInt16LittleEndian(bytes.AsSpan(styleOffset));
                 // PAPX may end with one alignment byte after its SPRMs.
                 directSprms = bytes.AsSpan(styleOffset + 2).ToArray();
+                var (resolvedSprms, resolvedNode, resolvedOffset) = ResolveHugePapx(
+                    index.Structure, directSprms, property, offset + styleOffset + 2);
+                directSprms = resolvedSprms;
                 referencedTable = ReadReferencedTableProperties(index.Structure,
-                    property, directSprms, offset + styleOffset + 2);
+                    resolvedNode, directSprms, resolvedOffset);
                 try { formatting = DocParagraphFormatting.Parse(directSprms); }
                 catch (InvalidDataException) when (directSprms.Length > 0 &&
                     directSprms[directSprms.Length - 1] == 0)
@@ -71,6 +74,32 @@ internal static class DocParagraphStyleReader
             }
         }
         return result.OrderBy(x => x.CpStart).ToArray();
+    }
+
+    private static (byte[] Sprms, DocStructureNode Node, long Offset) ResolveHugePapx(
+        DocStructure structure, byte[] sprms, DocStructureNode property, long sprmOffset)
+    {
+        var offsets = new HashSet<uint>();
+        for (var depth = 0; sprms.Length >= 6 &&
+            BinaryPrimitives.ReadUInt16LittleEndian(sprms) == 0x6646; depth++)
+        {
+            if (depth == 32)
+                throw new InvalidDataException("A DOC huge PAPX chain is too deep.");
+            if (sprms.AsSpan(6).IndexOfAnyExcept((byte)0) >= 0)
+                throw new InvalidDataException("A DOC huge PAPX has trailing modifiers.");
+            var dataOffset = BinaryPrimitives.ReadUInt32LittleEndian(sprms.AsSpan(2));
+            if (!offsets.Add(dataOffset))
+                throw new InvalidDataException("A DOC huge PAPX reference is cyclic.");
+            var length = BinaryPrimitives.ReadUInt16LittleEndian(
+                structure.ReadRange("Data", dataOffset, 2));
+            if (length < 10)
+                throw new InvalidDataException("A DOC huge PAPX has too few property bytes.");
+            property = new DocStructureNode("PrcData", "HugeParagraphProperties",
+                "Data", dataOffset, checked(2 + length));
+            sprmOffset = dataOffset + 2;
+            sprms = structure.ReadRange("Data", sprmOffset, length);
+        }
+        return (sprms, property, sprmOffset);
     }
 
     private static DocParagraphFormatting ApplyReferencedTableProperties(

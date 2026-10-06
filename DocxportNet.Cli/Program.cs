@@ -222,10 +222,15 @@ if (!formatExplicit && !string.IsNullOrWhiteSpace(outputPath))
         format = "docx";
     else if (ext is ".doc")
         format = "doc";
+    else if (ext is ".json")
+        format = "metadata";
 }
 
 switch (format.ToLowerInvariant())
 {
+    case "metadata":
+        ExportMetadata(inputPath, outputPath);
+        break;
     case "markdown":
     case "md":
         ExportMarkdown(inputPath, outputPath, trackedMode, plainOutput, fieldMode, varsPath, cliVariables, includePaths, databaseConnections, logLevel, showProgress);
@@ -248,9 +253,21 @@ switch (format.ToLowerInvariant())
         ExportDoc(inputPath, outputPath, fieldMode, varsPath, cliVariables, includePaths, databaseConnections, logLevel, showProgress);
         break;
     default:
-        Console.Error.WriteLine($"Unknown format '{format}'. Expected markdown|html|text|docx|doc.");
+        Console.Error.WriteLine($"Unknown format '{format}'. Expected markdown|html|text|docx|doc|metadata.");
         PrintHelp();
         break;
+}
+
+static void ExportMetadata(string inputPath, string? outputPath)
+{
+    var metadata = DxpMetadata.Inspect(inputPath);
+    string json = JsonSerializer.Serialize(metadata, new JsonSerializerOptions(JsonSerializerDefaults.Web) {
+        WriteIndented = true
+    });
+    if (outputPath is null)
+        Console.WriteLine(json);
+    else
+        File.WriteAllText(outputPath, json + Environment.NewLine);
 }
 
 static void ExportDoc(string inputPath, string? outputPath, DxpFieldEvalExportMode fieldMode,
@@ -433,15 +450,18 @@ static void PrintHelp()
 {
     Console.WriteLine($"""
 docxport ({GetVersion()})
-Usage: docxport <input.doc|input.docx> [--format=markdown|html|text|docx|doc] [--tracked=accept|reject|inline|split] [--plain] [--fields=evaluate|cache|none] [--no-progress] [-o|--output=path] [--vars=path] [-D name=value] [--include-path=directory] [--database=[LABEL=]CONNECTION_STRING]
+Usage: docxport <input.doc|input.docx> [--format=markdown|html|text|docx|doc|metadata] [--tracked=accept|reject|inline|split] [--plain] [--fields=evaluate|cache|none] [--no-progress] [-o|--output=path] [--vars=path] [-D name=value] [--include-path=directory] [--database=[LABEL=]CONNECTION_STRING]
 
 Options:
-  --format=...   Output format (default: markdown)
-                If --format is omitted, the format is inferred from -o/--output extension (.md/.html/.txt/.docx/.doc).
+  --format=...   Output format (default: markdown); metadata emits JSON to stdout unless -o is supplied.
+                DOC to DOCX and DOCX to DOC are supported; binary DOC fidelity varies by feature.
+                If --format is omitted, the format is inferred from -o/--output extension (.md/.html/.txt/.docx/.doc/.json).
   --tracked=...  Tracked change mode (accept, reject, inline, split). Plain text supports accept/reject.
     --plain        Plain output for markdown/html (minimal styling/features)
     --fields=...   Field result mode (evaluate, cache, none). Default: cache.
-  -o, --output=...  Output file path (default: swaps extension)
+  -o, --output=...  Output path; without it DOCX writes <name>.resolved.docx, DOC writes
+                  <name>.plain.doc, metadata writes JSON to stdout, and text formats
+                  write beside the input with their selected extension.
   --vars=...     Load DOCVARIABLE values from a JSON or INI file.
   -D name=value  Define a DOCVARIABLE (repeatable). CLI values override --vars.
   --include-path=...  Allow and search this directory for INCLUDETEXT DOCX/HTML files (repeatable).
