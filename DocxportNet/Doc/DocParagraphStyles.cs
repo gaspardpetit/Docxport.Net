@@ -85,8 +85,9 @@ internal static class DocParagraphStyleReader
         {
             if (depth == 32)
                 throw new InvalidDataException("A DOC huge PAPX chain is too deep.");
-            if (sprms.AsSpan(6).IndexOfAnyExcept((byte)0) >= 0)
-                throw new InvalidDataException("A DOC huge PAPX has trailing modifiers.");
+            for (var i = 6; i < sprms.Length; i++)
+                if (sprms[i] != 0)
+                    throw new InvalidDataException("A DOC huge PAPX has trailing modifiers.");
             var dataOffset = BinaryPrimitives.ReadUInt32LittleEndian(sprms.AsSpan(2));
             if (!offsets.Add(dataOffset))
                 throw new InvalidDataException("A DOC huge PAPX reference is cyclic.");
