@@ -1585,9 +1585,15 @@ public sealed record DocParagraphFormatting(byte? Justification, ushort? BeforeT
         DocParagraphBorder? border)
     {
         if (border == null) return;
-        // The modern border operand retains the complete color and line style.
-        // Emitting the legacy operand as well can overflow a row PAPX and cause
-        // Word to discard that row's table properties.
+        // Keep both compatibility and full-color operands. The caller groups
+        // adjacent equal borders so they do not overflow the row PAPX.
+        if (border.Encode80() is { } legacy)
+        {
+            stream.WriteByte(0x20); stream.WriteByte(0xD6);
+            stream.WriteByte(7); stream.WriteByte(checked((byte)index));
+            stream.WriteByte(checked((byte)end)); stream.WriteByte(side);
+            stream.Write(legacy, 0, legacy.Length);
+        }
         stream.WriteByte(0x2F); stream.WriteByte(0xD6);
         stream.WriteByte(11); stream.WriteByte(checked((byte)index));
         stream.WriteByte(checked((byte)end)); stream.WriteByte(side);
