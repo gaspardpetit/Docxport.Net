@@ -291,6 +291,9 @@ body.dxp-root {
   width: 100%;
   margin: 0.5em 0;
 }
+.dxp-table-rich { margin: 0; }
+.dxp-table-rich .dxp-paragraph { margin: 0; line-height: normal; }
+.dxp-table.dxp-table-rich td, .dxp-table.dxp-table-rich th { padding: 0 5.4pt; }
 .dxp-table td, .dxp-table th {
   padding: 4px 6px;
   vertical-align: top;
@@ -551,7 +554,7 @@ body.dxp-root {
             return false;
 
         bool nameMatch = d.DefaultRunStyle.FontName == null || string.Equals(d.DefaultRunStyle.FontName, fontName, StringComparison.OrdinalIgnoreCase);
-        bool sizeMatch = d.DefaultRunStyle.FontSizeHalfPoints == null || d.DefaultRunStyle.FontSizeHalfPoints == fontSizeHalfPoints;
+        bool sizeMatch = d.DefaultRunStyle.FontSizeHalfPoints == fontSizeHalfPoints;
         return nameMatch && sizeMatch;
     }
 
@@ -882,6 +885,21 @@ body.dxp-root {
     {
         if (!DxpParagraphs.HasRenderableParagraphContent(p))
         {
+            if (_config.RichTables && p.Ancestors<TableCell>().Any())
+            {
+                var css = paragraph.ComputedStyle.ToCss(includeTextAlign: false);
+                var markSize = p.ParagraphProperties?.ParagraphMarkRunProperties?.GetFirstChild<FontSize>()?.Val?.Value;
+                var emptyStyle = new StringBuilder();
+                if (int.TryParse(markSize, NumberStyles.Integer, CultureInfo.InvariantCulture, out var halfPoints))
+                    emptyStyle.Append("font-size:").Append((halfPoints / 2.0).ToString("0.###", CultureInfo.InvariantCulture)).Append("pt;");
+                if (!string.IsNullOrEmpty(css))
+                    emptyStyle.Append(css);
+                Write(d, "<p class=\"dxp-paragraph\"");
+                if (emptyStyle.Length > 0)
+                    Write(d, $" style=\"{emptyStyle}\"");
+                WriteLine(d, ">&#160;</p>");
+                return DxpDisposable.Empty;
+            }
             _state.SuppressParagraphDepth++;
             return DxpDisposable.Create(() => _state.SuppressParagraphDepth--);
         }
@@ -999,6 +1017,16 @@ body.dxp-root {
             .Any(run => run.Descendants<Text>().Any(text => !string.IsNullOrEmpty(text.Text))
                 && !d.Styles.ResolveRunStyle(p, run).Bold);
         var style = new StringBuilder();
+        var inRichTable = _config.RichTables && p.Ancestors<TableCell>().Any();
+        if (_config.EmitStyleFont && inRichTable)
+        {
+            var sizes = p.Descendants<Run>()
+                .Where(run => run.Descendants<Text>().Any(text => !string.IsNullOrEmpty(text.Text)))
+                .Select(run => d.Styles.ResolveRunStyle(p, run).FontSizeHalfPoints)
+                .Distinct().ToArray();
+            if (sizes.Length == 1 && sizes[0] is int halfPoints)
+                style.Append("font-size:").Append((halfPoints / 2.0).ToString("0.###", CultureInfo.InvariantCulture)).Append("pt;");
+        }
         if (headingHasRegularWeight)
             style.Append("font-weight:normal;");
         if (hasComputedCss)
@@ -1419,13 +1447,38 @@ body.dxp-root {
     public override IDisposable VisitTableBegin(Table t, DxpTableModel model, DxpIDocumentContext d, DxpITableContext table)
     {
         var currentStyle = _config.EmitTableBorders ? table.ComputedStyle.ToCss() : null;
+        var width = t.TableProperties?.TableWidth;
+        var tableWidthTwips = 0;
+        var fixedGrid = _config.RichTables && HasFixedGrid(t, model) &&
+            int.TryParse(width?.Width?.Value, NumberStyles.Integer, CultureInfo.InvariantCulture,
+                out tableWidthTwips);
+        var tableStyle = new StringBuilder(currentStyle);
+        if (fixedGrid)
+        {
+            tableStyle.Append("width:").Append((tableWidthTwips / 20.0)
+                .ToString("0.###", CultureInfo.InvariantCulture))
+                .Append("pt;table-layout:fixed;");
+        }
 
         Write(d, """
-			<table class="dxp-table"
-			""");
-        if (!string.IsNullOrEmpty(currentStyle))
-            Write(d, $" style=\"{currentStyle}\"");
+            <table
+            """);
+        Write(d, _config.RichTables
+            ? " class=\"dxp-table dxp-table-rich\""
+            : " class=\"dxp-table\"");
+        if (tableStyle.Length > 0)
+            Write(d, $" style=\"{tableStyle}\"");
         WriteLine(d, ">");
+        if (fixedGrid)
+        {
+            WriteLine(d, "  <colgroup>");
+            foreach (var column in model.GridColTwips)
+            {
+                var widthPt = (column!.Value / 20.0).ToString("0.###", CultureInfo.InvariantCulture);
+                WriteLine(d, $"    <col style=\"width:{widthPt}pt\">");
+            }
+            WriteLine(d, "  </colgroup>");
+        }
         return DxpDisposable.Create(() => {
             WriteLine(d, "</table>");
         });
@@ -1445,20 +1498,56 @@ body.dxp-root {
     public override IDisposable VisitTableCellBegin(TableCell tc, DxpITableCellContext cell, DxpIDocumentContext d)
     {
         var spans = (cell.RowSpan, cell.ColSpan);
-        var cellStyle = _config.EmitTableBorders ? cell.ComputedStyle.ToCss() : null;
+        var cellStyle = new StringBuilder(_config.EmitTableBorders ? cell.ComputedStyle.ToCss() : null);
+        if (_config.RichTables)
+        {
+            AppendCellPadding(cellStyle, tc.TableCellProperties?.TableCellMargin,
+                cell.Row.Table.Properties?.TableCellMarginDefault);
+        }
 
         Write(d, "    <td");
         if (spans.Item1 > 1)
             Write(d, $" rowspan=\"{spans.Item1}\"");
         if (spans.Item2 > 1)
             Write(d, $" colspan=\"{spans.Item2}\"");
-        if (!string.IsNullOrEmpty(cellStyle))
+        if (cellStyle.Length > 0)
             Write(d, $" style=\"{cellStyle}\"");
         Write(d, ">");
 
         return DxpDisposable.Create(() => {
             WriteLine(d, "</td>");
         });
+    }
+
+    private static bool HasFixedGrid(Table table, DxpTableModel? model) =>
+        table.TableProperties?.TableWidth?.Type?.Value == TableWidthUnitValues.Dxa &&
+        table.TableProperties?.TableLayout?.Type?.Value == TableLayoutValues.Fixed &&
+        model?.GridColTwips.Count > 0 &&
+        model.GridColTwips.All(column => column is > 0) &&
+        int.TryParse(table.TableProperties.TableWidth.Width?.Value,
+            NumberStyles.Integer, CultureInfo.InvariantCulture, out var width) && width > 0;
+
+    private static void AppendCellPadding(StringBuilder css, OpenXmlElement? direct,
+        OpenXmlElement? tableDefault)
+    {
+        const string wordNamespace = "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
+        foreach (var (side, logical) in new[] {
+            ("top", "top"), ("right", "end"), ("bottom", "bottom"), ("left", "start") })
+        {
+            OpenXmlElement? Find(OpenXmlElement? parent) => parent?.ChildElements
+                .FirstOrDefault(element => element.LocalName == logical) ?? parent?.ChildElements
+                .FirstOrDefault(element => element.LocalName == side);
+            var margin = Find(direct) ?? Find(tableDefault);
+            if (margin == null) continue;
+            var type = margin.GetAttribute("type", wordNamespace).Value;
+            if (type.Length != 0 && type != "dxa") continue;
+            if (!int.TryParse(margin.GetAttribute("w", wordNamespace).Value,
+                NumberStyles.Integer, CultureInfo.InvariantCulture, out var twips) || twips < 0)
+                continue;
+            css.Append("padding-").Append(side).Append(':')
+                .Append((twips / 20.0).ToString("0.###", CultureInfo.InvariantCulture))
+                .Append("pt;");
+        }
     }
 
     public override IDisposable VisitBlockBegin(OpenXmlElement child, DxpIDocumentContext d)

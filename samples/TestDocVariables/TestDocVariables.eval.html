@@ -92,6 +92,9 @@ body.dxp-root {
   width: 100%;
   margin: 0.5em 0;
 }
+.dxp-table-rich { margin: 0; }
+.dxp-table-rich .dxp-paragraph { margin: 0; line-height: normal; }
+.dxp-table.dxp-table-rich td, .dxp-table.dxp-table-rich th { padding: 0 5.4pt; }
 .dxp-table td, .dxp-table th {
   padding: 4px 6px;
   vertical-align: top;
@@ -168,284 +171,284 @@ body.dxp-root {
 <div class="dxp-section" style="color:#000000;display:flex;flex-direction:column;position:relative;width:8.5in;min-height:11in;box-sizing:border-box;padding-left:1in;padding-right:1in;background-color:#ffffff;font-family:Aptos;font-size:12pt;">
 <div class="dxp-body" style="flex:1 0 auto;padding-top:1in;padding-bottom:1in;">
 <p class="dxp-paragraph align-center">DOCVARIABLE TEST</p>
-<table class="dxp-table" style="border:0.5pt solid #000000;border-collapse:collapse;">
+<table class="dxp-table dxp-table-rich" style="border:0.5pt solid #000000;border-collapse:collapse;">
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">DOCVARIABLE Var1</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">DOCVARIABLE Var1</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">two</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">two</p>
 </td>
   </tr>
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">DOCVARIABLE Missing</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">DOCVARIABLE Missing</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">Error! No document variable supplied.</p>
-</td>
-  </tr>
-  <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"><strong class="dxp-bold">DOCVARIABLE</strong> Var1 \* Charformat</p>
-</td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"><strong class="dxp-bold">two</strong></p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">Error! No document variable supplied.</p>
 </td>
   </tr>
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">DOCVARIABLE Var1 \* MERGEFORMAT</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;"><strong class="dxp-bold">DOCVARIABLE</strong> Var1 \* Charformat</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"><span class="dxp-underline">two</span></p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;"><strong class="dxp-bold">two</strong></p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">DOCVARIABLE Var1 \* MERGEFORMAT</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;"><span class="dxp-underline">two</span></p>
 </td>
   </tr>
 </table>
 <p class="dxp-paragraph align-center">IF TEST</p>
-<table class="dxp-table" style="border:0.5pt solid #000000;border-collapse:collapse;">
+<table class="dxp-table dxp-table-rich" style="border:0.5pt solid #000000;border-collapse:collapse;">
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">IF 5 &gt;= 3 &quot;OK&quot; &quot;BAD&quot;</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">IF 5 &gt;= 3 &quot;OK&quot; &quot;BAD&quot;</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">OK</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">OK</p>
 </td>
   </tr>
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">IF &quot;Approved&quot; = &quot;App*&quot; &quot;YES&quot; &quot;NO&quot;</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">IF &quot;Approved&quot; = &quot;App*&quot; &quot;YES&quot; &quot;NO&quot;</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">YES</p>
-</td>
-  </tr>
-  <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">SET Var2 &quot;two&quot;</p>
-</td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"></p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">YES</p>
 </td>
   </tr>
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">IF { REF Var1 } = &quot;two&quot; &quot;Value is { REF Var1 }&quot; &quot;Mismatch&quot;</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">SET Var2 &quot;two&quot;</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">Value is two</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;"></p>
 </td>
   </tr>
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">IF { REF MissingBookmark } = &quot;&quot; &quot;Empty&quot; &quot;Not Empty&quot;</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">IF { REF Var1 } = &quot;two&quot; &quot;Value is { REF Var1 }&quot; &quot;Mismatch&quot;</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">Not Empty</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">Value is two</p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">IF { REF MissingBookmark } = &quot;&quot; &quot;Empty&quot; &quot;Not Empty&quot;</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">Not Empty</p>
 </td>
   </tr>
 </table>
 <p class="dxp-paragraph align-center">DOCPROPERTY TEST</p>
-<table class="dxp-table" style="border:0.5pt solid #000000;border-collapse:collapse;">
+<table class="dxp-table dxp-table-rich" style="border:0.5pt solid #000000;border-collapse:collapse;">
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">DOCPROPERTY Title</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">DOCPROPERTY Title</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">Field Test Title</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">Field Test Title</p>
 </td>
   </tr>
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">DOCPROPERTY Created \@ &quot;yyyy-MM-dd&quot;</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">DOCPROPERTY Created \@ &quot;yyyy-MM-dd&quot;</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">2010-10-13</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">2010-10-13</p>
 </td>
   </tr>
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">DOCPROPERTY &quot;CustomProp1&quot;</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">DOCPROPERTY &quot;CustomProp1&quot;</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">custom-value</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">custom-value</p>
 </td>
   </tr>
 </table>
 <p class="dxp-paragraph align-center">TEST COMPARE</p>
-<table class="dxp-table" style="border:0.5pt solid #000000;border-collapse:collapse;">
+<table class="dxp-table dxp-table-rich" style="border:0.5pt solid #000000;border-collapse:collapse;">
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">COMPARE 5 &gt;= 3</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">COMPARE 5 &gt;= 3</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">1</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">1</p>
 </td>
   </tr>
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">COMPARE 2 &gt; 3</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">COMPARE 2 &gt; 3</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">0</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">0</p>
 </td>
   </tr>
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">COMPARE &quot;Approved&quot; = &quot;App*&quot;</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">COMPARE &quot;Approved&quot; = &quot;App*&quot;</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">1</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">1</p>
 </td>
   </tr>
 </table>
 <p class="dxp-paragraph align-center">TEST MERGEFIELD</p>
-<table class="dxp-table" style="border:0.5pt solid #000000;border-collapse:collapse;">
+<table class="dxp-table dxp-table-rich" style="border:0.5pt solid #000000;border-collapse:collapse;">
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">MERGEFIELD FirstName \b &quot;Hello &quot; \f &quot;!&quot;</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">MERGEFIELD FirstName \b &quot;Hello &quot; \f &quot;!&quot;</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">Hello Ana!</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">Hello Ana!</p>
 </td>
   </tr>
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">MERGEFIELD EmptyField \b &quot;Hello &quot; \f &quot;!&quot;</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">MERGEFIELD EmptyField \b &quot;Hello &quot; \f &quot;!&quot;</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"></p>
-</td>
-  </tr>
-  <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">MERGEFIELD GivenName \m</p>
-</td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">Ana</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;"></p>
 </td>
   </tr>
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">MERGEFIELD FirstName \v</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">MERGEFIELD GivenName \m</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">A<br/>n<br/>a</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">Ana</p>
 </td>
   </tr>
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">MERGEFIELD FirstName \* Upper</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">MERGEFIELD FirstName \v</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">ANA</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">A<br/>n<br/>a</p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">MERGEFIELD FirstName \* Upper</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">ANA</p>
 </td>
   </tr>
 </table>
 <p class="dxp-paragraph align-center">TEST SEQ</p>
-<table class="dxp-table" style="border:0.5pt solid #000000;border-collapse:collapse;">
+<table class="dxp-table dxp-table-rich" style="border:0.5pt solid #000000;border-collapse:collapse;">
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">SEQ Figure</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">SEQ Figure</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">1</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">1</p>
 </td>
   </tr>
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">SEQ Figure</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">SEQ Figure</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">2</p>
-</td>
-  </tr>
-  <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">SEQ Figure \c</p>
-</td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">2</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">2</p>
 </td>
   </tr>
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">SEQ Figure \r 5</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">SEQ Figure \c</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">5</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">2</p>
 </td>
   </tr>
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">SEQ Figure \h</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">SEQ Figure \r 5</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">5</p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">SEQ Figure \h</p>
 </td>
     <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"></p>
 </td>
   </tr>
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">SEQ Figure \h \* Arabic</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">SEQ Figure \h \* Arabic</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">7</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">7</p>
 </td>
   </tr>
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">SEQ Figure \s 1</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">SEQ Figure \s 1</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">8</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">8</p>
 </td>
   </tr>
 </table>
 <p class="dxp-paragraph align-center">TEST FORMULA</p>
-<table class="dxp-table" style="border:0.5pt solid #000000;border-collapse:collapse;">
+<table class="dxp-table dxp-table-rich" style="border:0.5pt solid #000000;border-collapse:collapse;">
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">= 2 + 3</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">= 2 + 3</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">5</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">5</p>
 </td>
   </tr>
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">= 2 + 3 * 4</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">= 2 + 3 * 4</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">14</p>
-</td>
-  </tr>
-  <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">= 3 &gt; 2</p>
-</td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">1</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">14</p>
 </td>
   </tr>
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">= SUM(1,2,3)</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">= 3 &gt; 2</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">6</p>
-</td>
-  </tr>
-  <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">= { DATE \@ &quot;yyyy&quot; } + 1</p>
-</td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">2027</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">1</p>
 </td>
   </tr>
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">= 1 / 0</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">= SUM(1,2,3)</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">!Zero Divide</p>
-</td>
-  </tr>
-  <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">= LN(10)</p>
-</td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">!Syntax Error, 10</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">6</p>
 </td>
   </tr>
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">= SUM(ABOVE)</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">= { DATE \@ &quot;yyyy&quot; } + 1</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">2053</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">2027</p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">= 1 / 0</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">!Zero Divide</p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">= LN(10)</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">!Syntax Error, 10</p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">= SUM(ABOVE)</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">2053</p>
 </td>
   </tr>
 </table>
 <p class="dxp-paragraph align-center">ASK TEST</p>
-<table class="dxp-table" style="border:0.5pt solid #000000;border-collapse:collapse;">
+<table class="dxp-table dxp-table-rich" style="border:0.5pt solid #000000;border-collapse:collapse;">
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">ASK Name &quot;Name?&quot; \d &quot;Unknown&quot;</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">ASK Name &quot;Name?&quot; \d &quot;Unknown&quot;</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"></p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;"></p>
 </td>
   </tr>
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">REF Name</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">REF Name</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">Bob</p>
-</td>
-  </tr>
-  <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">ASK Name &quot;Name?&quot; \o </p>
-</td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"></p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">Bob</p>
 </td>
   </tr>
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">REF Name</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">ASK Name &quot;Name?&quot; \o </p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">Bob</p>
-</td>
-  </tr>
-  <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">SET DefaultCity &quot;Rome&quot;</p>
-</td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"></p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;"></p>
 </td>
   </tr>
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">SET Greeting &quot;Hi&quot;</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">REF Name</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"></p>
-</td>
-  </tr>
-  <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">ASK City &quot;{ REF Greeting }?&quot; \d &quot;{ REF DefaultCity }&quot;</p>
-</td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph"></p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">Bob</p>
 </td>
   </tr>
   <tr>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">REF City</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">SET DefaultCity &quot;Rome&quot;</p>
 </td>
-    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph">Montreal</p>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;"></p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">SET Greeting &quot;Hi&quot;</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;"></p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">ASK City &quot;{ REF Greeting }?&quot; \d &quot;{ REF DefaultCity }&quot;</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;"></p>
+</td>
+  </tr>
+  <tr>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">REF City</p>
+</td>
+    <td style="border:0.5pt solid #000000;"><p class="dxp-paragraph" style="font-size:12pt;">Montreal</p>
 </td>
   </tr>
 </table>
