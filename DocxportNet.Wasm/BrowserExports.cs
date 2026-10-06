@@ -2,8 +2,6 @@ using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Versioning;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.Packaging;
 using DocxportNet.Doc;
 using DocxportNet.API;
 using DocxportNet.Fields;
@@ -154,12 +152,18 @@ public static partial class BrowserExports
 
     public static BrowserDocumentInfo InspectForTests(byte[] docxBytes) => InspectCore(docxBytes);
 
-    private static BrowserDocumentInfo InspectCore(byte[] docxBytes)
+    private static BrowserDocumentInfo InspectCore(byte[] inputBytes)
     {
-        ValidateBytes(docxBytes);
-        using var stream = new MemoryStream(docxBytes, writable: false);
-        using var document = WordprocessingDocument.Open(stream, false);
-        return new BrowserDocumentInfo { HasTrackedChanges = EnumerateStoryRoots(document).Any(HasTrackedChanges) };
+        ValidateBytes(inputBytes);
+        var metadata = DxpMetadata.Inspect(inputBytes);
+        return new BrowserDocumentInfo
+        {
+            CoreProperties = metadata.CoreProperties,
+            ExtendedProperties = metadata.ExtendedProperties,
+            Language = metadata.Language,
+            HasTrackedChanges = metadata.HasTrackedChanges,
+            HasComments = metadata.HasComments
+        };
     }
 
     private static byte[] ResolveDocxCore(byte[] docxBytes, BrowserResolveRequest request)
@@ -344,25 +348,4 @@ public static partial class BrowserExports
         _ => DxpMarkdownMathDelimiterStyle.Dollar,
     };
 
-    private static IEnumerable<OpenXmlElement> EnumerateStoryRoots(WordprocessingDocument document)
-    {
-        var main = document.MainDocumentPart;
-        if (main?.Document != null) yield return main.Document;
-        if (main == null) yield break;
-        foreach (var part in main.HeaderParts)
-            if (part.Header != null) yield return part.Header;
-        foreach (var part in main.FooterParts)
-            if (part.Footer != null) yield return part.Footer;
-        if (main.FootnotesPart?.Footnotes != null) yield return main.FootnotesPart.Footnotes;
-        if (main.EndnotesPart?.Endnotes != null) yield return main.EndnotesPart.Endnotes;
-    }
-
-    private static bool HasTrackedChanges(OpenXmlElement root) =>
-        root.Descendants().Any(element => TrackedChangeNames.Contains(element.LocalName));
-
-    private static readonly HashSet<string> TrackedChangeNames = new(StringComparer.Ordinal)
-    {
-        "ins", "del", "moveFrom", "moveTo", "moveFromRangeStart", "moveFromRangeEnd",
-        "moveToRangeStart", "moveToRangeEnd", "conflictIns", "conflictDel"
-    };
 }

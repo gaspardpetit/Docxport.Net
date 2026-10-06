@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using DocxportNet.Doc;
+using DocxportNet;
 
 namespace DocxportNet.Wasm;
 
@@ -41,7 +42,11 @@ public sealed class BrowserResolveRequest
 
 public sealed class BrowserDocumentInfo
 {
+    public DxpCoreMetadata CoreProperties { get; set; } = new();
+    public DxpExtendedMetadata? ExtendedProperties { get; set; }
+    public IReadOnlyList<DxpLanguageRatio>? Language { get; set; }
     public bool HasTrackedChanges { get; set; }
+    public bool HasComments { get; set; }
 }
 
 public sealed class BrowserExportProgress

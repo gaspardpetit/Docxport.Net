@@ -29,6 +29,6 @@ internal static class DocInputProjection
         return DxpDocToDocx.Project(input).DocxBytes;
     }
 
-    private static bool IsBinaryDoc(byte[] input) =>
+    internal static bool IsBinaryDoc(byte[] input) =>
         input != null && input.AsSpan().StartsWith(CompoundSignature);
 }

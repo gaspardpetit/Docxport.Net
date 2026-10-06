@@ -81,6 +81,20 @@ internal static class DocSummaryInformation
     public static int? ReadPageCount(DocStructure structure) => ReadIntegerProperty(structure, 14);
     public static int? ReadWordCount(DocStructure structure) => ReadIntegerProperty(structure, 15);
     public static int? ReadCharacterCount(DocStructure structure) => ReadIntegerProperty(structure, 16);
+    public static DateTime? ReadCreated(DocStructure structure) => ReadFileTimeProperty(structure, 12);
+    public static DateTime? ReadModified(DocStructure structure) => ReadFileTimeProperty(structure, 13);
+
+    private static DateTime? ReadFileTimeProperty(DocStructure structure, uint propertyId)
+    {
+        var property = FindProperty(structure, propertyId);
+        if (property.Length < 12 ||
+            BinaryPrimitives.ReadUInt16LittleEndian(property) != 0x40)
+            return null;
+        var ticks = BinaryPrimitives.ReadInt64LittleEndian(property.Slice(4));
+        if (ticks <= 0) return null;
+        try { return DateTime.FromFileTimeUtc(ticks); }
+        catch (ArgumentOutOfRangeException) { return null; }
+    }
 
     private static int? ReadIntegerProperty(DocStructure structure, uint propertyId)
     {

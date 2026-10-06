@@ -94,7 +94,7 @@ MathML for HTML, LaTeX for Markdown, and readable text for text export.
 Markdown `mathDelimiterStyle` accepts `auto` (the default), `dollar`, or
 `backslash`.
 See `index.d.ts` for format-specific options.
-`inspect` currently reads DOCX packages; it does not inspect binary DOC revisions.
+`inspect` accepts DOCX and binary DOC. It returns `coreProperties`, optional `extendedProperties`, optional language ratios, `hasTrackedChanges`, and `hasComments`. Properties unavailable in a source format are `null`; language ratios are based on tagged letters. DOC comment detection uses annotation references, separately from the SummaryInformation document description.
 The optional `onProgress` callback receives the current phase, completed and
 total paragraph units, and a nullable percentage. Supplying it enables the
 lightweight paragraph-counting pre-pass.
