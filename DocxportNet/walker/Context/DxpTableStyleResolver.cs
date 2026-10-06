@@ -107,9 +107,10 @@ internal sealed class DxpTableStyleResolver
         var tableBorders = ComputeTableBoxBorders(merged, out var anyTableBorderSpecified);
         var tableBorder = PickComputedBorder(merged).Border;
 
-        // Default cell borders: use insideH/insideV when available, otherwise fall back to the single-border behavior.
-        var defaultCellBorders = ComputeDefaultCellBoxBordersFromTable(merged, tableBorder);
-        var defaultCellBorder = tableBorder;
+        // Keep inside borders on their specified axes. A single picked border must not
+        // fill unspecified outer or vertical edges when tblBorders has explicit sides.
+        var defaultCellBorders = ComputeDefaultCellBoxBordersFromTable(merged);
+        var defaultCellBorder = merged.AnySpecified ? null : tableBorder;
 
         bool collapse = anyTableBorderSpecified && (
             HasVisibleBorder(tableBorders) ||
@@ -541,8 +542,8 @@ internal sealed class DxpTableStyleResolver
     {
         var inside = tableStyle.DefaultCellBorders;
         var outer = tableStyle.TableBorders;
-        DxpComputedBorder? insideAll = tableStyle.DefaultCellBorder ?? tableStyle.TableBorder;
-        DxpComputedBorder? outerAll = tableStyle.TableBorder;
+        DxpComputedBorder? insideAll = outer == null ? tableStyle.DefaultCellBorder ?? tableStyle.TableBorder : null;
+        DxpComputedBorder? outerAll = outer == null ? tableStyle.TableBorder : null;
 
         bool isTopEdge = rowIndex == 0;
         bool isBottomEdge = (resolved.RowCount > 0) && (rowIndex + Math.Max(1, rowSpan) - 1) == (resolved.RowCount - 1);
@@ -553,13 +554,6 @@ internal sealed class DxpTableStyleResolver
         var bottom = isBottomEdge ? (outer?.Bottom ?? outerAll) : (inside?.Bottom ?? insideAll);
         var left = isLeftEdge ? (outer?.Left ?? outerAll) : (inside?.Left ?? insideAll);
         var right = isRightEdge ? (outer?.Right ?? outerAll) : (inside?.Right ?? insideAll);
-
-        // Final fallback: if anything is still missing, use the best global fallback.
-        var fallback = insideAll ?? outerAll;
-        top ??= fallback;
-        right ??= fallback;
-        bottom ??= fallback;
-        left ??= fallback;
 
         return new DxpComputedBoxBorders(top, right, bottom, left);
     }
@@ -627,7 +621,7 @@ internal sealed class DxpTableStyleResolver
         return new DxpComputedBoxBorders(top, right, bottom, left);
     }
 
-    private static DxpComputedBoxBorders? ComputeDefaultCellBoxBordersFromTable(MergedTableBorders borders, DxpComputedBorder? fallback)
+    private static DxpComputedBoxBorders? ComputeDefaultCellBoxBordersFromTable(MergedTableBorders borders)
     {
         if (!borders.AnySpecified)
             return null;
@@ -635,8 +629,8 @@ internal sealed class DxpTableStyleResolver
         var insideH = ToComputedBorder(borders.InsideH);
         var insideV = ToComputedBorder(borders.InsideV);
 
-        var topBottom = insideH ?? fallback;
-        var leftRight = insideV ?? fallback;
+        var topBottom = insideH;
+        var leftRight = insideV;
         if (topBottom == null && leftRight == null)
             return null;
 
