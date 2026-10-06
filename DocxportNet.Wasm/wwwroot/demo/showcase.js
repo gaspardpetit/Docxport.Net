@@ -42,7 +42,7 @@ const settingSchemas = {
 };
 
 let api;
-let docxBytes;
+let documentBytes;
 let rawOutput = "";
 let currentView = "rendered";
 let generation = 0;
@@ -113,7 +113,8 @@ function request() {
 
 function renderedDocument() {
   const format = currentFormat();
-  const body = format === "html" ? rawOutput : format === "markdown" ? renderMarkdown(rawOutput) : `<pre>${escapeHtml(rawOutput)}</pre>`;
+  if (format === "html") return rawOutput;
+  const body = format === "markdown" ? renderMarkdown(rawOutput) : `<pre>${escapeHtml(rawOutput)}</pre>`;
   return `<!doctype html><html><head><meta charset="utf-8"><style>body{max-width:900px;margin:36px auto;padding:0 28px;color:#20232a;font:16px/1.6 system-ui,sans-serif}img{max-width:100%}table{border-collapse:collapse;max-width:100%}td,th{padding:.45rem;border:1px solid #ccd1d8}pre{white-space:pre-wrap;word-break:break-word}code{background:#f1f3f5;padding:.12rem .3rem;border-radius:4px}blockquote{border-left:3px solid #5e6ad2;margin-left:0;padding-left:1rem;color:#59616d}</style></head><body>${body}</body></html>`;
 }
 
@@ -134,14 +135,14 @@ function showOutput() {
 }
 
 async function convert() {
-  if (!docxBytes || !api) return;
+  if (!documentBytes || !api) return;
   const token = ++generation;
   elements.status.textContent = "Converting…";
   elements.status.className = "status busy";
   elements.copy.disabled = true;
   elements.error.hidden = true;
   try {
-    const output = await api.export(docxBytes, request());
+    const output = await api.export(documentBytes, request());
     if (token !== generation) return;
     rawOutput = output;
     showOutput();
@@ -161,15 +162,15 @@ async function convert() {
 }
 
 async function loadFile(file) {
-  if (!file || !file.name.toLowerCase().endsWith(".docx")) {
+  if (!file || !/\.docx?$/i.test(file.name)) {
     elements.error.hidden = false; elements.empty.hidden = true;
-    elements.errorMessage.textContent = "Choose a file with the .docx extension."; return;
+    elements.errorMessage.textContent = "Choose a .doc or .docx file."; return;
   }
-  docxBytes = new Uint8Array(await file.arrayBuffer());
+  documentBytes = new Uint8Array(await file.arrayBuffer());
   elements.fileName.textContent = file.name; elements.fileSize.textContent = formatSize(file.size);
   elements.drop.hidden = true; elements.fileCard.hidden = false;
   try {
-    const info = await api.inspect(docxBytes);
+    const info = await api.inspect(documentBytes);
     hasTrackedChanges = info.hasTrackedChanges;
   } catch {
     hasTrackedChanges = false;
@@ -179,7 +180,7 @@ async function loadFile(file) {
 }
 
 function clearDocument() {
-  generation++; docxBytes = undefined; rawOutput = ""; renderedSource = ""; hasTrackedChanges = false; elements.input.value = "";
+  generation++; documentBytes = undefined; rawOutput = ""; renderedSource = ""; hasTrackedChanges = false; elements.input.value = "";
   elements.rendered.removeAttribute("srcdoc");
   elements.fileCard.hidden = true; elements.drop.hidden = false; elements.empty.hidden = false;
   elements.error.hidden = elements.rendered.hidden = elements.raw.hidden = true;
@@ -217,9 +218,9 @@ try {
   if (sampleUrl) {
     const response = await fetch(sampleUrl);
     if (!response.ok) throw new Error(`Sample download failed (${response.status}).`);
-    const name = sampleUrl.split("/").pop() || "sample.docx";
+    const name = new URL(sampleUrl, location.href).pathname.split("/").pop() || "sample.docx";
     await loadFile(new File([await response.arrayBuffer()], name, {
-      type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      type: /\.doc$/i.test(name) ? "application/msword" : "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
     }));
   }
 } catch (error) {
