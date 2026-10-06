@@ -473,7 +473,23 @@ internal static class DocPlainTextWriter
         else properties = compatibility;
         var payloadLength = 2 + properties.Length;
         var blockLength = 1 + payloadLength + (payloadLength % 2 == 0 ? 1 : 0);
-        if (blockLength > 510) throw new InvalidDataException("A paragraph PAPX is too large.");
+        // A single FKP run also needs room for its FC and BX entries. Move a
+        // larger grpprl to the Data stream and leave sprmPHugePapx in the PAPX.
+        if (blockLength > 488)
+        {
+            if (properties.Length > ushort.MaxValue)
+                throw new InvalidDataException("A paragraph's properties exceed the DOC Data stream limit.");
+            var offset = checked((uint)dataStream.Position);
+            Span<byte> size = stackalloc byte[2];
+            BinaryPrimitives.WriteUInt16LittleEndian(size, checked((ushort)properties.Length));
+            dataStream.Write(size);
+            dataStream.Write(properties);
+            properties = new byte[6];
+            BinaryPrimitives.WriteUInt16LittleEndian(properties, 0x6646);
+            BinaryPrimitives.WriteUInt32LittleEndian(properties.AsSpan(2), offset);
+            payloadLength = 2 + properties.Length;
+            blockLength = 1 + payloadLength + (payloadLength % 2 == 0 ? 1 : 0);
+        }
         var block = new byte[blockLength];
         block[0] = checked((byte)(blockLength / 2));
         BinaryPrimitives.WriteUInt16LittleEndian(block.AsSpan(1), checked((ushort)run.StyleIndex));
@@ -538,6 +554,17 @@ internal static class DocPlainTextWriter
             modifiers.WriteByte(checked((byte)(i + 1)));
             WriteI16(modifiers, checked((short)(edges[i + 1] - edges[i])));
         }
+        // TInsert creates fresh cells in the modern row definition, so repeat
+        // vertical merge flags that TDefTable carried for older readers.
+        if (formatting.TableCellVerticalMerges is { } verticalMerges)
+            for (var i = 0; i < Math.Min(verticalMerges.Count, edges.Count - 1); i++)
+                if (verticalMerges[i] is 1 or 3)
+                {
+                    WriteI16(modifiers, unchecked((short)0xD62B));
+                    modifiers.WriteByte(2);
+                    modifiers.WriteByte(checked((byte)i));
+                    modifiers.WriteByte(verticalMerges[i]!.Value);
+                }
         if (formatting.TableCellNoWraps is { } noWraps)
             // Word uses the modern row block for auto-fit tables; the
             // compatibility PAPX no-wrap operand alone is not applied there.

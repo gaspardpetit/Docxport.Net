@@ -1376,16 +1376,28 @@ public sealed record DocParagraphFormatting(byte? Justification, ushort? BeforeT
         {
             if (cellBorders.Count > 63)
                 throw new InvalidDataException("A table row has too many cell border entries.");
-            for (var i = 0; i < cellBorders.Count; i++)
+            // A border operand addresses a range of cells. Coalesce equal
+            // adjacent edges rather than repeating a modifier per cell.
+            foreach (var (side, select) in new (byte Side,
+                Func<DocCellBorders, DocParagraphBorder?> Select)[]
             {
-                var borders = cellBorders[i];
-                if (borders == null) continue;
-                WriteCellBorder(stream, i, 1, borders.Top);
-                WriteCellBorder(stream, i, 2, borders.Left);
-                WriteCellBorder(stream, i, 4, borders.Bottom);
-                WriteCellBorder(stream, i, 8, borders.Right);
-                WriteCellBorder(stream, i, 0x10, borders.TopLeftToBottomRight);
-                WriteCellBorder(stream, i, 0x20, borders.TopRightToBottomLeft);
+                (1, x => x.Top), (2, x => x.Left),
+                (4, x => x.Bottom), (8, x => x.Right),
+                (0x10, x => x.TopLeftToBottomRight),
+                (0x20, x => x.TopRightToBottomLeft)
+            })
+            {
+                for (var i = 0; i < cellBorders.Count;)
+                {
+                    var border = cellBorders[i] is { } cell ? select(cell) : null;
+                    if (border == null) { i++; continue; }
+                    var end = i + 1;
+                    while (end < cellBorders.Count &&
+                        cellBorders[end] is { } next && select(next) == border)
+                        end++;
+                    WriteCellBorder(stream, i, end, side, border);
+                    i = end;
+                }
             }
         }
         if (LineValue is short line)
@@ -1569,20 +1581,22 @@ public sealed record DocParagraphFormatting(byte? Justification, ushort? BeforeT
         stream.WriteByte((byte)(value >> 24));
     }
 
-    private static void WriteCellBorder(Stream stream, int index, byte side,
+    private static void WriteCellBorder(Stream stream, int index, int end, byte side,
         DocParagraphBorder? border)
     {
         if (border == null) return;
+        // Keep both compatibility and full-color operands. The caller groups
+        // adjacent equal borders so they do not overflow the row PAPX.
         if (border.Encode80() is { } legacy)
         {
             stream.WriteByte(0x20); stream.WriteByte(0xD6);
             stream.WriteByte(7); stream.WriteByte(checked((byte)index));
-            stream.WriteByte(checked((byte)(index + 1))); stream.WriteByte(side);
+            stream.WriteByte(checked((byte)end)); stream.WriteByte(side);
             stream.Write(legacy, 0, legacy.Length);
         }
         stream.WriteByte(0x2F); stream.WriteByte(0xD6);
         stream.WriteByte(11); stream.WriteByte(checked((byte)index));
-        stream.WriteByte(checked((byte)(index + 1))); stream.WriteByte(side);
+        stream.WriteByte(checked((byte)end)); stream.WriteByte(side);
         var bytes = border.EncodeRaw();
         stream.Write(bytes, 0, bytes.Length);
     }
