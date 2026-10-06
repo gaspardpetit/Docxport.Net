@@ -1038,7 +1038,7 @@ public sealed class DocToDocxProjector
                                 pictureOffset);
                             if (picture == null)
                                 throw new NotSupportedException(
-                                    "The DOC inline picture has no supported JPEG or PNG blip.");
+                                    "The DOC inline picture has no supported embedded blip or linked image.");
                             pictures[pictureOffset] = picture;
                         }
                         paragraph.AppendChild(new Run(CreatePictureDrawing(contentPart, picture,
@@ -1080,12 +1080,25 @@ public sealed class DocToDocxProjector
     private static Drawing CreatePictureDrawing(OpenXmlPart target,
         DocInlinePicture picture, uint cp)
     {
-        var image = target.AddNewPart<ImagePart>(picture.ContentType);
-        using (var data = new MemoryStream(picture.Bytes, writable: false))
-            image.FeedData(data);
-        var relationship = target.GetIdOfPart(image);
+        string relationship;
+        var blip = new A.Blip();
+        if (picture.LinkedImage is { } linkedImage)
+        {
+            relationship = target.AddExternalRelationship(
+                "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image",
+                linkedImage).Id;
+            blip.Link = relationship;
+        }
+        else
+        {
+            var image = target.AddNewPart<ImagePart>(picture.ContentType);
+            using (var data = new MemoryStream(picture.Bytes, writable: false))
+                image.FeedData(data);
+            relationship = target.GetIdOfPart(image);
+            blip.Embed = relationship;
+        }
         var pictureId = checked(cp + 1);
-        var fill = new PIC.BlipFill(new A.Blip { Embed = relationship });
+        var fill = new PIC.BlipFill(blip);
         if (picture.Crop is { IsEmpty: false } crop)
             fill.Append(new A.SourceRectangle
             {
