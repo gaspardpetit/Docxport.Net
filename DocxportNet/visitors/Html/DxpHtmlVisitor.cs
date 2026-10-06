@@ -27,6 +27,7 @@ internal sealed class DxpHtmlVisitorState
     }
 
     public bool InHeading { get; set; }
+    public bool HeadingHasRegularWeight { get; set; }
     public bool FontSpanOpen { get; set; }
     public bool AllCaps { get; set; }
     public bool IsFirstSection { get; set; } = true;
@@ -462,15 +463,13 @@ body.dxp-root {
 
     public override void StyleBoldBegin(DxpIDocumentContext d)
     {
-        if (_state.InHeading)
-            return;
-        Write(d, "<strong class=\"dxp-bold\">");
+        if (!_state.InHeading || _state.HeadingHasRegularWeight)
+            Write(d, "<strong class=\"dxp-bold\">");
     }
     public override void StyleBoldEnd(DxpIDocumentContext d)
     {
-        if (_state.InHeading)
-            return;
-        Write(d, "</strong>");
+        if (!_state.InHeading || _state.HeadingHasRegularWeight)
+            Write(d, "</strong>");
     }
 
     public override void StyleItalicBegin(DxpIDocumentContext d) => Write(d, "<em class=\"dxp-italic\">");
@@ -994,15 +993,26 @@ body.dxp-root {
         if (justify != null && !_state.InHeading)
             paraClasses.Add($"align-{justify}");
 
+        // Outline level does not imply bold in Word. The default heading CSS does,
+        // so reset it when a heading contains regular text and retain bold runs.
+        bool headingHasRegularWeight = isHeading && paragraphStyleId == null && p.Descendants<Run>()
+            .Any(run => run.Descendants<Text>().Any(text => !string.IsNullOrEmpty(text.Text))
+                && !d.Styles.ResolveRunStyle(p, run).Bold);
         var style = new StringBuilder();
+        if (headingHasRegularWeight)
+            style.Append("font-weight:normal;");
         if (hasComputedCss)
             style.Append(computedParaCss);
         if (ShouldPreventWrapForTabAlignedParagraph(p, paragraph))
             style.Append("white-space:nowrap;");
 
         bool previousHeading = _state.InHeading;
+        bool previousHeadingHasRegularWeight = _state.HeadingHasRegularWeight;
         if (isHeading)
+        {
             _state.InHeading = true;
+            _state.HeadingHasRegularWeight = headingHasRegularWeight;
+        }
 
         if (isBlockQuote)
             WriteLine(d, """<blockquote class="dxp-blockquote">""");
@@ -1053,6 +1063,7 @@ body.dxp-root {
                 WriteLine(d);
 
             _state.InHeading = previousHeading;
+            _state.HeadingHasRegularWeight = previousHeadingHasRegularWeight;
 
             if (_config.TrackedChangeMode == DxpTrackedChangeMode.SplitChanges)
                 EmitSplitBuffersIfNeeded();
