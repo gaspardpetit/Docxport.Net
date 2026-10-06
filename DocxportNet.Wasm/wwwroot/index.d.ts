@@ -97,7 +97,37 @@ export type ExportRequest = (
 ) & ExportProgressOptions;
 
 export interface ResolveRequest { fields?: FieldOptions; }
-export interface DocumentInfo { hasTrackedChanges: boolean; }
+export interface CoreProperties {
+  title: string | null;
+  subject: string | null;
+  creator: string | null;
+  lastModifiedBy: string | null;
+  revision: string | null;
+  created: string | null;
+  modified: string | null;
+  description: string | null;
+  category: string | null;
+  keywords: string | null;
+}
+export interface ExtendedProperties {
+  application: string | null;
+  applicationVersion: string | null;
+  template: string | null;
+  pages: string | null;
+  words: string | null;
+  characters: string | null;
+  lines: string | null;
+  paragraphs: string | null;
+  totalTime: string | null;
+}
+export interface LanguageRatio { code: string; ratio: number; }
+export interface DocumentInfo {
+  coreProperties: CoreProperties;
+  extendedProperties: ExtendedProperties | null;
+  language: LanguageRatio[] | null;
+  hasTrackedChanges: boolean;
+  hasComments: boolean;
+}
 
 export interface DocEmailAddress { address: string; displayName?: string; }
 export interface DocEmailAttachment { fileName: string; content: Uint8Array | ArrayBuffer; }
@@ -125,7 +155,7 @@ export type DocEnvelopeEdit =
 
 export interface Docxport {
   convertOmml(omml: string, format?: "mathml" | "html" | "latex" | "unicodemath" | "text"): Promise<string>;
-  /** Inspect a DOCX package. Binary DOC revision inspection is not supported. */
+  /** Inspect metadata, revisions, and comments in DOCX or binary DOC bytes. */
   inspect(input: Uint8Array | ArrayBuffer): Promise<DocumentInfo>;
   /** Export DOCX or binary DOC bytes. Binary DOC is projected to basic DOCX first. */
   export(input: Uint8Array | ArrayBuffer, request: ExportRequest): Promise<string>;

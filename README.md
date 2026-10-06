@@ -154,6 +154,10 @@ string rejected = DxpExport.ExportToString(docxPath, rejectVisitor);
 
 `DxpExport` has overloads for DOCX file paths, in-memory bytes, or an already-open `WordprocessingDocument`, and can return a `string`, a `byte[]`, write straight to a file path, or just drive a visitor that collects data.
 
+### Document metadata
+
+`DxpMetadata.Inspect(path)` or `DxpMetadata.Inspect(bytes)` reads DOCX and binary DOC metadata without converting the document. The result contains core properties, available application and document statistics, language ratios, `HasTrackedChanges`, and `HasComments`. DOC supplies fewer extended properties than DOCX; unavailable values are null. The browser package exposes the same result through `await docxport.inspect(bytes)`.
+
 ### CLI
 
 A ready-to-use console app lives in `DocxportNet.Cli` and is published as a .NET tool. Example:
