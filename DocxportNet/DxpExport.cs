@@ -508,6 +508,10 @@ public static class DxpExport
     private static DxpIVisitor WrapWithFieldEvalMiddleware(DxpIVisitor visitor, DxpExportOptions? options, ILogger? logger)
     {
         var mode = options?.FieldEvalMode ?? DxpFieldEvalExportMode.Evaluate;
+        var preserveDocxFields = visitor is DocxportNet.Visitors.Docx.DxpDocxVisitor docxVisitor &&
+            (options?.DocxFieldPolicy == DxpDocxFieldPolicy.Preserve ||
+             (options?.DocxFieldPolicy == null && !docxVisitor.HasCallerSuppliedFieldEval &&
+              options?.HasExplicitFieldEvalMode != true));
         if (visitor is DxpIFieldEvalProvider provider && mode != DxpFieldEvalExportMode.None)
         {
             return DxpVisitorMiddleware.Chain(
@@ -525,11 +529,10 @@ public static class DxpExport
                         logger: logger,
                         options: new DxpEvaluateFieldMiddlewareOptions {
                             PreserveLayoutDependentFields = visitor is DxpIPreserveLayoutFields,
-                            PreserveReferenceFields = options == null &&
-                                visitor is DxpIPreserveLayoutFields,
+                            PreserveReferenceFields = preserveDocxFields,
                             EmitStructuredDatabaseResults = visitor is DxpIPreserveLayoutFields,
                             FieldEvaluationFilter = options?.FieldEvaluationFilter ??
-                                (options == null && visitor is DxpIPreserveLayoutFields
+                                (preserveDocxFields
                                     ? instruction =>
                                         !DxpFieldInstructionClassifier.IsIfInstruction(instruction) &&
                                         !DxpFieldInstructionClassifier.IsMergeFieldInstruction(instruction) &&

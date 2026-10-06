@@ -148,7 +148,9 @@ string rejected = DxpExport.ExportToString(docxPath, rejectVisitor);
 **DOCX**
 - `DxpDocxVisitor` preserves reusable package parts while rebuilding walked document stories.
 - `DxpDocxExport` provides convenient file and byte-array APIs.
-- With field evaluation enabled, layout-dependent fields remain native.
+- DOCX rebuilding without a caller-supplied `DxpFieldEval` preserves cached `REF` and `IF` results. Supplying `new DxpExportOptions()` has the same default.
+- A caller-supplied `DxpFieldEval` evaluates supported dependencies such as `ASK` → `REF` and nested `IF` → `ASK`. An explicit `FieldEvalMode = Evaluate` also requests evaluation, even without a supplied evaluator.
+- Set `DocxFieldPolicy = DxpDocxFieldPolicy.Preserve` or `Evaluate` to override that choice. Layout-dependent fields remain native during evaluation; `FieldEvalMode = None` disables field processing and `Cache` replays cached results.
 
 `DxpExport` has overloads for DOCX file paths, in-memory bytes, or an already-open `WordprocessingDocument`, and can return a `string`, a `byte[]`, write straight to a file path, or just drive a visitor that collects data.
 

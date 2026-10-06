@@ -7,6 +7,13 @@ public enum DxpFieldEvalExportMode
     Cache
 }
 
+/// <summary>Controls field handling when rebuilding a DOCX.</summary>
+public enum DxpDocxFieldPolicy
+{
+    Preserve,
+    Evaluate
+}
+
 /// <summary>Identifies the current stage of a DOCX export.</summary>
 public enum DxpExportPhase
 {
@@ -41,7 +48,22 @@ public readonly record struct DxpExportProgress(
 
 public sealed class DxpExportOptions
 {
-    public DxpFieldEvalExportMode FieldEvalMode { get; set; } = DxpFieldEvalExportMode.Evaluate;
+    private DxpFieldEvalExportMode _fieldEvalMode = DxpFieldEvalExportMode.Evaluate;
+    internal bool HasExplicitFieldEvalMode { get; private set; }
+    public DxpFieldEvalExportMode FieldEvalMode
+    {
+        get => _fieldEvalMode;
+        set
+        {
+            _fieldEvalMode = value;
+            HasExplicitFieldEvalMode = true;
+        }
+    }
+    /// <summary>
+    /// When unset, a caller-supplied evaluator selects evaluation; otherwise
+    /// DOCX rebuilding preserves reference and cached layout-sensitive fields.
+    /// </summary>
+    public DxpDocxFieldPolicy? DocxFieldPolicy { get; set; }
     public Func<string?, bool>? FieldEvaluationFilter { get; set; }
     /// <summary>
     /// Optional progress reporter. Supplying one enables a lightweight paragraph-counting pre-pass.

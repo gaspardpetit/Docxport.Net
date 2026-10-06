@@ -31,9 +31,13 @@ public sealed class DxpDocxVisitor : DxpVisitor, IDisposable, IDxpAllHeaderFoote
     private Comments? _rebuiltComments;
     private readonly HashSet<string> _rebuiltCommentIds = new(StringComparer.Ordinal);
     public DxpFieldEval FieldEval { get; }
+    internal bool HasCallerSuppliedFieldEval { get; }
 
     public DxpDocxVisitor(ILogger? logger = null, DxpFieldEval? fieldEval = null) : base(logger)
-        => FieldEval = fieldEval ?? new DxpFieldEval(logger: logger);
+    {
+        HasCallerSuppliedFieldEval = fieldEval != null;
+        FieldEval = fieldEval ?? new DxpFieldEval(logger: logger);
+    }
 
     public override void SetOutput(Stream stream)
         => _output = stream ?? throw new ArgumentNullException(nameof(stream));
