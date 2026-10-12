@@ -18,7 +18,7 @@ internal readonly record struct DxpMeasurement(int Twips)
         if (string.IsNullOrWhiteSpace(text))
             return false;
 
-        text = text.Trim();
+        text = text!.Trim();
         if (int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out int twips))
         {
             value = new DxpMeasurement(twips);
@@ -36,11 +36,19 @@ internal readonly record struct DxpMeasurement(int Twips)
         else suffixLength = 0;
 
         if (suffixLength == 0 ||
-            !decimal.TryParse(text[..^suffixLength], NumberStyles.AllowLeadingSign |
+            !decimal.TryParse(text.Substring(0, text.Length - suffixLength), NumberStyles.AllowLeadingSign |
                 NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out decimal amount))
             return false;
 
-        decimal normalized = decimal.Round(amount * factor, 0, MidpointRounding.AwayFromZero);
+        decimal normalized;
+        try
+        {
+            normalized = decimal.Round(amount * factor, 0, MidpointRounding.AwayFromZero);
+        }
+        catch (OverflowException)
+        {
+            return false;
+        }
         if (normalized < int.MinValue || normalized > int.MaxValue)
             return false;
 

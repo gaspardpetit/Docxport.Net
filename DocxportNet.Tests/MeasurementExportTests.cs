@@ -28,6 +28,21 @@ public class MeasurementExportTests
         Assert.Equal(twips / 1440.0, measurement.Inches);
     }
 
+    [Fact]
+    public void OversizedMeasurementReturnsFalseWithoutOverflow()
+    {
+        Assert.False(DxpMeasurement.TryParse("79228162514264337593543950335in", out _));
+    }
+
+    [Fact]
+    public void OversizedHangingIndentDoesNotAbortDocExport()
+    {
+        byte[] source = CreateSyntheticDocx(oversizedHangingIndent: true);
+        byte[] result = DxpExport.ExportToBytes(source, new DxpDocVisitor());
+        Assert.Contains("Measurement probe", DxpExport.ExportToString(result,
+            new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateAcceptConfig())));
+    }
+
     [Theory]
     [InlineData("markdown")]
     [InlineData("html")]
@@ -89,7 +104,7 @@ public class MeasurementExportTests
         }
     }
 
-    private static byte[] CreateSyntheticDocx()
+    private static byte[] CreateSyntheticDocx(bool oversizedHangingIndent = false)
     {
         using var output = new MemoryStream();
         using (var zip = new ZipArchive(output, ZipArchiveMode.Create, leaveOpen: true))
@@ -106,7 +121,9 @@ public class MeasurementExportTests
                 "</Relationships>");
             Write(zip, "word/document.xml",
                 "<w:document xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\"><w:body>" +
-                "<w:p><w:pPr><w:ind w:left=\"0.5in\"/><w:spacing w:after=\"6pt\"/>" +
+                "<w:p><w:pPr><w:ind w:left=\"0.5in\"" +
+                (oversizedHangingIndent ? " w:hanging=\"24in\"" : "") +
+                "/><w:spacing w:after=\"6pt\"/>" +
                 "<w:tabs><w:tab w:val=\"left\" w:pos=\"1in\"/></w:tabs></w:pPr>" +
                 "<w:r><w:t>Measurement probe</w:t></w:r></w:p>" +
                 "<w:tbl><w:tblPr><w:tblW w:type=\"dxa\" w:w=\"2in\"/></w:tblPr>" +

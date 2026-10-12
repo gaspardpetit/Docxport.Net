@@ -2729,7 +2729,11 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
         short? firstLine = DxpMeasurement.TryParse(indent?.FirstLine?.Value, out var firstMeasure) &&
             firstMeasure.Twips is >= short.MinValue and <= short.MaxValue ? (short)firstMeasure.Twips : null;
         if (DxpMeasurement.TryParse(indent?.Hanging?.Value, out var hangingMeasure))
-            firstLine = checked((short)-hangingMeasure.Twips);
+        {
+            long hangingFirstLine = -(long)hangingMeasure.Twips;
+            if (hangingFirstLine is >= short.MinValue and <= short.MaxValue)
+                firstLine = (short)hangingFirstLine;
+        }
         short? leftChars = (indent?.StartCharacters?.Value ??
             indent?.LeftChars?.Value) is int leftCharValue
             ? checked((short)leftCharValue) : null;
