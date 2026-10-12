@@ -22,8 +22,7 @@ internal static class DxpParagraphLayoutComputer
         {
             var kind = stop.Val?.Value;
             var leader = stop.Leader?.Value;
-            var pos = stop.Position?.Value;
-            if (pos == null || pos.Value <= 0)
+            if (!DxpMeasurement.TryParse(stop.Position?.ToString(), out var pos) || pos.Twips <= 0)
                 continue;
 
             var k = MapKind(kind);
@@ -32,7 +31,7 @@ internal static class DxpParagraphLayoutComputer
 
             stops.Add(new DxpComputedTabStop(
                 k.Value,
-                DxpTwipValue.ToPoints((int)pos.Value),
+                pos.Points,
                 MapLeader(leader)));
         }
 

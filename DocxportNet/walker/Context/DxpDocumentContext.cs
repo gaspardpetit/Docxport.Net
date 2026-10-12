@@ -344,27 +344,27 @@ public class DxpDocumentContext : DxpIDocumentContext, IDxpMutableDocumentContex
         var pg = layout.PageSize;
         if (pg?.Width != null && pg.Height != null)
         {
-            result.PageWidth = new DxpTwipValue((int)pg.Width.Value);
-            result.PageHeight = new DxpTwipValue((int)pg.Height.Value);
+            result.PageWidth = new DxpTwipValue(DxpMeasurement.Parse(pg.Width.ToString()).Twips);
+            result.PageHeight = new DxpTwipValue(DxpMeasurement.Parse(pg.Height.ToString()).Twips);
         }
 
         var margin = layout.PageMargin;
         if (margin != null)
         {
             if (margin.Left != null)
-                result.MarginLeft = new DxpTwipValue((int)margin.Left.Value);
+                result.MarginLeft = new DxpTwipValue(DxpMeasurement.Parse(margin.Left.ToString()).Twips);
             if (margin.Right != null)
-                result.MarginRight = new DxpTwipValue((int)margin.Right.Value);
+                result.MarginRight = new DxpTwipValue(DxpMeasurement.Parse(margin.Right.ToString()).Twips);
             if (margin.Top != null)
-                result.MarginTop = new DxpTwipValue((int)margin.Top.Value);
+                result.MarginTop = new DxpTwipValue(DxpMeasurement.Parse(margin.Top.ToString()).Twips);
             if (margin.Bottom != null)
-                result.MarginBottom = new DxpTwipValue((int)margin.Bottom.Value);
+                result.MarginBottom = new DxpTwipValue(DxpMeasurement.Parse(margin.Bottom.ToString()).Twips);
             if (margin.Header != null)
-                result.MarginHeader = new DxpTwipValue((int)margin.Header.Value);
+                result.MarginHeader = new DxpTwipValue(DxpMeasurement.Parse(margin.Header.ToString()).Twips);
             if (margin.Footer != null)
-                result.MarginFooter = new DxpTwipValue((int)margin.Footer.Value);
+                result.MarginFooter = new DxpTwipValue(DxpMeasurement.Parse(margin.Footer.ToString()).Twips);
             if (margin.Gutter != null)
-                result.MarginGutter = new DxpTwipValue((int)margin.Gutter.Value);
+                result.MarginGutter = new DxpTwipValue(DxpMeasurement.Parse(margin.Gutter.ToString()).Twips);
         }
 
         var cols = layout.Columns;
@@ -376,8 +376,8 @@ public class DxpDocumentContext : DxpIDocumentContext, IDxpMutableDocumentContex
                 result.ColumnCount = numCols;
 
             OpenXmlAttribute spaceAttr = attrs.FirstOrDefault(a => string.Equals(a.LocalName, "space", StringComparison.OrdinalIgnoreCase));
-            if (!string.IsNullOrEmpty(spaceAttr.Value) && int.TryParse(spaceAttr.Value, out int spaceTwips))
-                result.ColumnSpace = new DxpTwipValue(spaceTwips);
+            if (DxpMeasurement.TryParse(spaceAttr.Value, out var columnSpace))
+                result.ColumnSpace = new DxpTwipValue(columnSpace.Twips);
         }
 
         return result;
