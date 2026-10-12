@@ -245,7 +245,7 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
     {
         if (v?.Value == null)
             return null;
-        return int.TryParse(v.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var n) ? n : null;
+        return DxpMeasurement.TryParse(v.Value, out var measurement) ? measurement.Twips : null;
     }
 
     private static void ApplyIndentation(Indentation? ind, ref IndentAcc acc)

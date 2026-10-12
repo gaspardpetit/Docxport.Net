@@ -72,28 +72,27 @@ internal static class DxpParagraphStyleComputer
         double? mb = null;
 
         // before/after are in twips.
-        if (spacing.Before?.Value != null && int.TryParse(spacing.Before.Value, out int beforeTwips))
-            mt = DxpTwipValue.ToPoints(beforeTwips);
-        if (spacing.After?.Value != null && int.TryParse(spacing.After.Value, out int afterTwips))
-            mb = DxpTwipValue.ToPoints(afterTwips);
+        if (DxpMeasurement.TryParse(spacing.Before?.Value, out var before))
+            mt = before.Points;
+        if (DxpMeasurement.TryParse(spacing.After?.Value, out var after))
+            mb = after.Points;
 
         string? lineHeightCss = null;
-        if (spacing.Line?.Value != null && int.TryParse(spacing.Line.Value, out int lineTwips))
+        if (spacing.Line?.Value != null)
         {
-            if (lineTwips > 0)
+            var rule = spacing.LineRule?.Value;
+            // Auto line spacing uses 240ths of a line, not a physical length.
+            if (rule == LineSpacingRuleValues.Exact || rule == LineSpacingRuleValues.AtLeast)
             {
-                var rule = spacing.LineRule?.Value;
-                if (rule == LineSpacingRuleValues.Exact || rule == LineSpacingRuleValues.AtLeast)
+                if (DxpMeasurement.TryParse(spacing.Line.Value, out var line) && line.Twips > 0)
                 {
-                    double pt = DxpTwipValue.ToPoints(lineTwips);
-                    lineHeightCss = pt.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture) + "pt";
+                    lineHeightCss = line.Points.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture) + "pt";
                 }
-                else
-                {
-                    // Auto: 240 twips is "single" (12pt at 10pt font historically); map to a CSS multiplier.
-                    double mult = lineTwips / 240.0;
-                    lineHeightCss = mult.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture);
-                }
+            }
+            else if (int.TryParse(spacing.Line.Value, out int lineUnits) && lineUnits > 0)
+            {
+                double mult = lineUnits / 240.0;
+                lineHeightCss = mult.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture);
             }
         }
 
