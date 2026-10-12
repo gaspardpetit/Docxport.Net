@@ -8,6 +8,7 @@ using DocxportNet.API;
 using DocxportNet.Core;
 using DocxportNet.Doc;
 using DocxportNet.Fields;
+using DocxportNet.Walker.Context;
 using Microsoft.Extensions.Logging;
 
 namespace DocxportNet.Visitors.Doc;
@@ -376,10 +377,8 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
             !(doNotHyphenateCaps.Val?.Value ?? true);
         var hyphenationZone = _mainPart?.DocumentSettingsPart?.Settings?
             .GetFirstChild<HyphenationZone>()?.Val?.Value;
-        _hyphenationZoneTwips = short.TryParse(hyphenationZone,
-            System.Globalization.NumberStyles.Integer,
-            System.Globalization.CultureInfo.InvariantCulture, out var zoneTwips) &&
-            zoneTwips >= 0 ? zoneTwips : (short)0;
+        _hyphenationZoneTwips = DxpMeasurement.TryParse(hyphenationZone, out var zone) &&
+            zone.Twips is >= 0 and <= short.MaxValue ? (short)zone.Twips : (short)0;
         var consecutiveHyphenLimit = _mainPart?.DocumentSettingsPart?.Settings?
             .GetFirstChild<ConsecutiveHyphenLimit>()?.Val?.Value;
         _consecutiveHyphenLimit = consecutiveHyphenLimit is <= (ushort)short.MaxValue
@@ -398,9 +397,10 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
         _growAutofit = growAutofitSetting != null &&
             (growAutofitSetting.Val?.Value ?? true);
         var defaultTabStop = _mainPart?.DocumentSettingsPart?.Settings?
-            .GetFirstChild<DefaultTabStop>()?.Val?.Value;
-        _defaultTabStopTwips = defaultTabStop is > 0 and <= short.MaxValue
-            ? checked((short)defaultTabStop.Value) : (short)720;
+            .GetFirstChild<DefaultTabStop>()?.Val?.ToString();
+        _defaultTabStopTwips = DxpMeasurement.TryParse(defaultTabStop, out var tabStop) &&
+            tabStop.Twips is > 0 and <= short.MaxValue
+            ? (short)tabStop.Twips : (short)720;
         var documentDefaults = _mainPart?.StyleDefinitionsPart?.Styles?
             .Elements<DocDefaults>().FirstOrDefault();
         var defaultRuns = documentDefaults?.GetFirstChild<RunPropertiesDefault>()?
@@ -1268,20 +1268,26 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
         var rightToLeft = bidi != null && bidi.Val?.Value != OnOffOnlyValues.Off;
         var cellSpacingTwips = ReadCellSpacing(ResolveTableProperty<TableCellSpacing>(table));
         var widths = table.GetFirstChild<TableGrid>()?.Elements<GridColumn>()
-            .Select(x => short.TryParse(x.Width?.Value, out var width) && width > 0
-                ? width : (short)1440).ToArray() ?? [];
+            .Select(x => DxpMeasurement.TryParse(x.Width?.Value, out var width) &&
+                width.Twips is > 0 and <= short.MaxValue
+                ? (short)width.Twips : (short)1440).ToArray() ?? [];
         var tableWidth = ResolveTableProperty<TableWidth>(table);
         DocTablePreferredWidth? preferredWidth = null;
         var widthUnit = tableWidth?.Type?.Value;
         var widthValue = tableWidth?.Width?.Value;
         if (widthUnit == TableWidthUnitValues.Auto)
             preferredWidth = new DocTablePreferredWidth(1, 0);
-        else if ((widthUnit == TableWidthUnitValues.Pct ||
-            widthUnit == TableWidthUnitValues.Dxa) &&
-            ushort.TryParse(widthValue, out var parsedWidth))
+        else if (widthUnit == TableWidthUnitValues.Pct ||
+            widthUnit == TableWidthUnitValues.Dxa)
+        {
+            int? parsedWidth = widthUnit == TableWidthUnitValues.Dxa
+                ? DxpMeasurement.TryParse(widthValue, out var width) ? width.Twips : null
+                : ushort.TryParse(widthValue, out var percentage) ? percentage : null;
+            if (parsedWidth is >= 0 and <= ushort.MaxValue)
             preferredWidth = new DocTablePreferredWidth(
                 widthUnit == TableWidthUnitValues.Pct ? (byte)2 : (byte)3,
-                parsedWidth);
+                (ushort)parsedWidth.Value);
+        }
         var justification = ReadTableJustification(
             ResolveTableProperty<TableJustification>(table));
         var defaultMargins = ResolveTableDefaultMargins(table);
@@ -1804,9 +1810,10 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
     {
         if (indent == null) return null;
         if (indent.Type?.Value != TableWidthUnitValues.Dxa ||
-            indent.Width?.Value is not int twips || twips is < -31560 or > 31680)
+            !DxpMeasurement.TryParse(indent.Width?.ToString(), out var width) ||
+            width.Twips is < -31560 or > 31680)
             throw new NotSupportedException("The DOCX table indent must be a DOC twip width.");
-        return checked((short)twips);
+        return checked((short)width.Twips);
     }
 
     private static byte? ReadTableJustification(TableJustification? justification)
@@ -1823,9 +1830,10 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
     {
         if (spacing == null) return null;
         if (spacing.Type?.Value != TableWidthUnitValues.Dxa ||
-            !ushort.TryParse(spacing.Width?.Value, out var value) || value > 15840)
+            !DxpMeasurement.TryParse(spacing.Width?.Value, out var value) ||
+            value.Twips is < 0 or > 15840)
             throw new NotSupportedException("Only twip table cell spacing up to 11 inches is supported.");
-        return value;
+        return (ushort)value.Twips;
     }
 
     public override IDisposable VisitTableRowBegin(TableRow row,
@@ -1899,9 +1907,10 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
             cantSplit.Val?.Value != OnOffOnlyValues.Off;
         var height = rowProperties?.GetFirstChild<TableRowHeight>();
         short? rowHeight = null;
-        if (short.TryParse(height?.Val?.Value.ToString(), out var parsedHeight))
+        if (DxpMeasurement.TryParse(height?.Val?.ToString(), out var parsedHeight) &&
+            parsedHeight.Twips is >= 0 and <= short.MaxValue)
             rowHeight = height?.HeightType?.Value == HeightRuleValues.Exact
-                ? checked((short)-parsedHeight) : parsedHeight;
+                ? checked((short)-parsedHeight.Twips) : (short)parsedHeight.Twips;
         return DxpDisposable.Create(() =>
         {
             var cellCount = _activeRow!.CellCount;
@@ -2066,9 +2075,9 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
         var previousCellContentWidth = _positionalCellContentWidth;
         var cellWidth = table.GridWidths.Count > 0
             ? table.GridWidths.Skip(cellContext.ColumnIndex).Take(span).Sum(x => (int)x)
-            : int.TryParse(cell.TableCellProperties?
+            : DxpMeasurement.TryParse(cell.TableCellProperties?
                 .GetFirstChild<TableCellWidth>()?.Width?.Value, out var suppliedCellWidth)
-                ? suppliedCellWidth : 1440;
+                ? suppliedCellWidth.Twips : 1440;
         var marginsForTab = MergeCellMargins(MergeCellMargins(table.DefaultMargins,
             ReadCellMargins((cell.Parent as TableRow)?.TablePropertyExceptions?
                 .GetFirstChild<TableCellMarginDefault>())),
@@ -2414,11 +2423,16 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
             else if (cellWidthType == TableWidthUnitValues.Pct ||
                 cellWidthType == TableWidthUnitValues.Dxa)
             {
-                if (!ushort.TryParse(cellWidth?.Width?.Value, out var parsedPreferredWidth))
+                int? parsedPreferredWidth = cellWidthType == TableWidthUnitValues.Dxa
+                    ? DxpMeasurement.TryParse(cellWidth?.Width?.Value, out var preferredMeasure)
+                        ? preferredMeasure.Twips : null
+                    : ushort.TryParse(cellWidth?.Width?.Value, out var percentage)
+                        ? percentage : null;
+                if (parsedPreferredWidth is not >= 0 and <= ushort.MaxValue)
                     throw new NotSupportedException("A DOCX cell has an invalid preferred width.");
                 preferredCellWidth = new DocTablePreferredWidth(
                     cellWidthType == TableWidthUnitValues.Pct ? (byte)2 : (byte)3,
-                    parsedPreferredWidth);
+                    (ushort)parsedPreferredWidth.Value);
             }
             _activeRow.PreferredCellWidths.Add(preferredCellWidth);
             var noWrap = cell.TableCellProperties?.GetFirstChild<NoWrap>();
@@ -2456,9 +2470,10 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
                 width = checked((short)table.GridWidths.Skip(cellContext.ColumnIndex)
                     .Take(span).Sum(x => (int)x));
             }
-            else width = short.TryParse(cell.TableCellProperties?
+            else width = DxpMeasurement.TryParse(cell.TableCellProperties?
                 .GetFirstChild<TableCellWidth>()?.Width?.Value, out var suppliedWidth) &&
-                suppliedWidth > 0 ? suppliedWidth : (short)1440;
+                suppliedWidth.Twips is > 0 and <= short.MaxValue
+                ? (short)suppliedWidth.Twips : (short)1440;
             _activeRow.CellWidths.Add(width);
         });
     }
@@ -2702,19 +2717,23 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
             ? checked((short)beforeLineValue) : null;
         short? afterLines = spacing?.AfterLines?.Value is int afterLineValue
             ? checked((short)afterLineValue) : null;
-        ushort? before = ushort.TryParse(spacing?.Before?.Value,
-            out var beforeValue) ? beforeValue : null;
-        ushort? after = ushort.TryParse(spacing?.After?.Value,
-            out var afterValue) ? afterValue : null;
+        ushort? before = DxpMeasurement.TryParse(spacing?.Before?.Value, out var beforeMeasure) &&
+            beforeMeasure.Twips is >= 0 and <= ushort.MaxValue ? (ushort)beforeMeasure.Twips : null;
+        ushort? after = DxpMeasurement.TryParse(spacing?.After?.Value, out var afterMeasure) &&
+            afterMeasure.Twips is >= 0 and <= ushort.MaxValue ? (ushort)afterMeasure.Twips : null;
         var indent = properties?.GetFirstChild<Indentation>();
-        short? left = short.TryParse(indent?.Left?.Value, out var leftValue)
-            ? leftValue : null;
-        short? right = short.TryParse(indent?.Right?.Value, out var rightValue)
-            ? rightValue : null;
-        short? firstLine = short.TryParse(indent?.FirstLine?.Value, out var firstValue)
-            ? firstValue : null;
-        if (short.TryParse(indent?.Hanging?.Value, out var hangingValue))
-            firstLine = checked((short)-hangingValue);
+        short? left = DxpMeasurement.TryParse(indent?.Left?.Value, out var leftMeasure) &&
+            leftMeasure.Twips is >= short.MinValue and <= short.MaxValue ? (short)leftMeasure.Twips : null;
+        short? right = DxpMeasurement.TryParse(indent?.Right?.Value, out var rightMeasure) &&
+            rightMeasure.Twips is >= short.MinValue and <= short.MaxValue ? (short)rightMeasure.Twips : null;
+        short? firstLine = DxpMeasurement.TryParse(indent?.FirstLine?.Value, out var firstMeasure) &&
+            firstMeasure.Twips is >= short.MinValue and <= short.MaxValue ? (short)firstMeasure.Twips : null;
+        if (DxpMeasurement.TryParse(indent?.Hanging?.Value, out var hangingMeasure))
+        {
+            long hangingFirstLine = -(long)hangingMeasure.Twips;
+            if (hangingFirstLine is >= short.MinValue and <= short.MaxValue)
+                firstLine = (short)hangingFirstLine;
+        }
         short? leftChars = (indent?.StartCharacters?.Value ??
             indent?.LeftChars?.Value) is int leftCharValue
             ? checked((short)leftCharValue) : null;
@@ -2787,9 +2806,15 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
             bidiElement.Val?.Value ?? true;
         short? lineValue = null;
         bool? lineIsMultiple = null;
-        if (short.TryParse(spacing?.Line?.Value, out var parsedLine))
+        var lineRule = spacing?.LineRule?.Value;
+        int? lineAmount = lineRule == LineSpacingRuleValues.Exact ||
+            lineRule == LineSpacingRuleValues.AtLeast
+            ? DxpMeasurement.TryParse(spacing?.Line?.Value, out var lineMeasure) ? lineMeasure.Twips : null
+            : int.TryParse(spacing?.Line?.Value, out var lineUnits) ? lineUnits : null;
+        if (lineAmount is >= short.MinValue and <= short.MaxValue)
         {
-            var rule = spacing?.LineRule?.Value;
+            var parsedLine = checked((short)lineAmount.Value);
+            var rule = lineRule;
             if (rule == LineSpacingRuleValues.Exact)
             {
                 lineValue = checked((short)-parsedLine);
@@ -2810,10 +2835,9 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
         var tabStops = new List<DocTabStop>();
         foreach (var tab in properties?.GetFirstChild<Tabs>()?.Elements<TabStop>() ?? [])
         {
-            var rawPosition = tab.Position?.Value;
-            if (rawPosition == null || rawPosition < short.MinValue ||
-                rawPosition > short.MaxValue) continue;
-            var position = checked((short)rawPosition.Value);
+            if (!DxpMeasurement.TryParse(tab.Position?.ToString(), out var tabPosition) ||
+                tabPosition.Twips is < short.MinValue or > short.MaxValue) continue;
+            var position = checked((short)tabPosition.Twips);
             var tabAlignment = tab.Val?.Value;
             if (tabAlignment == TabStopValues.Clear)
             {
@@ -2943,10 +2967,10 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
             var type = side.GetAttribute("type", ns).Value;
             if (type.Length != 0 && type != "dxa")
                 throw new NotSupportedException("Only twip table cell margins are supported.");
-            if (!ushort.TryParse(side.GetAttribute("w", ns).Value, out var value) ||
-                value > 31680)
+            if (!DxpMeasurement.TryParse(side.GetAttribute("w", ns).Value, out var value) ||
+                value.Twips is < 0 or > 31680)
                 throw new InvalidDataException("A DOCX table cell margin is invalid.");
-            return value;
+            return (ushort)value.Twips;
         }
         var top = ReadSide(element.GetFirstChild<TopMargin>());
         var physicalLeft = ReadSide((OpenXmlElement?)element.GetFirstChild<LeftMargin>() ??
@@ -3259,8 +3283,9 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
             script == VerticalPositionValues.Subscript ? (byte)2 : null;
         var fonts = properties?.GetFirstChild<RunFonts>();
         var spacing = properties?.GetFirstChild<Spacing>();
-        short? characterSpacing = short.TryParse(spacing?.Val?.Value.ToString(),
-            out var spacingValue) ? spacingValue : null;
+        short? characterSpacing = DxpMeasurement.TryParse(spacing?.Val?.ToString(),
+            out var spacingValue) && spacingValue.Twips is >= short.MinValue and <= short.MaxValue
+            ? (short)spacingValue.Twips : null;
         var language = properties?.GetFirstChild<Languages>();
         static ushort? LanguageId(string? tag)
         {

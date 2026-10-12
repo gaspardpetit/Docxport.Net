@@ -1,5 +1,6 @@
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
+using DocxportNet.Walker.Context;
 using System.Globalization;
 
 namespace DocxportNet.Walker.Parts;
@@ -44,8 +45,8 @@ public class DxpTables
         foreach (var gc in tg.Elements<GridColumn>())
         {
             // GridColumn.Width is a StringValue in twips
-            if (gc.Width?.Value != null && int.TryParse(gc.Width.Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out var w))
-                cols.Add(w);
+            if (DxpMeasurement.TryParse(gc.Width?.Value, out var width))
+                cols.Add(width.Twips);
             else
                 cols.Add(null);
         }
