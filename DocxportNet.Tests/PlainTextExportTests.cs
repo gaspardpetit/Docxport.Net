@@ -90,9 +90,9 @@ public class PlainTextExportTests : TestBase<PlainTextExportTests>
         DxpFieldEvalExportMode evalMode)
     {
         string expectedPath = config.TrackedChangeMode == DxpPlainTextTrackedChangeMode.RejectChanges
-            ? TestPaths.GetSampleTruthPath(sample.DocxPath, "plain-text-export", ".reject.txt")
-            : TestPaths.GetSampleTruthPath(sample.DocxPath, "plain-text-export", expectedExt);
-        string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, "plain-text-export", actualSuffix);
+            ? TestPaths.GetSampleTruthPath(sample.DocxPath, "samples-export-text", ".reject.txt")
+            : TestPaths.GetSampleTruthPath(sample.DocxPath, "samples-export-text", expectedExt);
+        string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, "samples-export-text", actualSuffix);
 
         string actualText = TestCompare.Normalize(ToPlainText(sample.DocxPath, config, evalMode));
         File.WriteAllText(actualPath, actualText);
@@ -121,8 +121,8 @@ public class PlainTextExportTests : TestBase<PlainTextExportTests>
 
     private void VerifyCached(Sample sample, DxpPlainTextVisitorConfig config, string expectedExt, string actualSuffix)
     {
-        string expectedPath = TestPaths.GetSampleTruthPath(sample.DocxPath, "plain-text-export", expectedExt);
-        string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, "plain-text-export", actualSuffix);
+        string expectedPath = TestPaths.GetSampleTruthPath(sample.DocxPath, "samples-export-text", expectedExt);
+        string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, "samples-export-text", actualSuffix);
 
         string actualText = TestCompare.Normalize(ToPlainTextCached(sample.DocxPath, config));
         File.WriteAllText(actualPath, actualText);

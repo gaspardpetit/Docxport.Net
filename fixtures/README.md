@@ -18,8 +18,8 @@ pass/fail status. Exporter-specific known gaps belong in a separate reviewed
 manifest. Generated exports and raster comparisons belong under `../output/`,
 not here. Word's temporary `~$` lock files are not fixtures.
 
-Exporter baselines are grouped by test suite under `../truth/html-export/`,
-`../truth/markdown-export/`, and `../truth/plain-text-export/`. Test output uses
+Sample baselines are grouped by test suite under `../truth/samples-export-html/`,
+`../truth/samples-export-markdown/`, and `../truth/samples-export-text/`. Test output uses
 the same suite and sample names under ignored `../output/`. After reviewing a
 generated result, run `scripts/update-expected-from-tests.sh` to replace only
 existing baselines with their corresponding generated files.

@@ -989,8 +989,8 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
         DxpTrackedChangeMode mode,
         DxpFieldEvalExportMode evalMode)
     {
-        string expectedPath = TestPaths.GetSampleTruthPath(sample.DocxPath, "html-export", expectedExt);
-        string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, "html-export", actualSuffix);
+        string expectedPath = TestPaths.GetSampleTruthPath(sample.DocxPath, "samples-export-html", expectedExt);
+        string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, "samples-export-html", actualSuffix);
 
         var config = CloneConfig(baseConfig, mode);
         string html = TestCompare.Normalize(ToHtml(sample.DocxPath, config, evalMode));
@@ -1090,8 +1090,8 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
 
     private void VerifyCachedAgainstFixture(Sample sample, DxpHtmlVisitorConfig baseConfig, string expectedExt, string actualSuffix)
     {
-        string expectedPath = TestPaths.GetSampleTruthPath(sample.DocxPath, "html-export", expectedExt);
-        string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, "html-export", actualSuffix);
+        string expectedPath = TestPaths.GetSampleTruthPath(sample.DocxPath, "samples-export-html", expectedExt);
+        string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, "samples-export-html", actualSuffix);
 
         var config = CloneConfig(baseConfig, DxpTrackedChangeMode.AcceptChanges);
         string html = TestCompare.Normalize(ToHtmlCached(sample.DocxPath, config));
