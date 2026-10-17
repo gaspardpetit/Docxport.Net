@@ -13,6 +13,55 @@ public class StyleResolverDuplicateStylesTests : TestBase<StyleResolverDuplicate
     }
 
     [Fact]
+    public void RunStyle_ResolvesThemeColorMappingAndDirectOverrides()
+    {
+        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+            "WordThreeLevelStyleOverrides.docx"));
+        using var stream = new MemoryStream();
+        stream.Write(File.ReadAllBytes(path));
+        stream.Position = 0;
+        using var doc = WordprocessingDocument.Open(stream, true);
+        var main = doc.MainDocumentPart!;
+        var mapping = main.DocumentSettingsPart!.Settings!.GetFirstChild<ColorSchemeMapping>()!;
+        mapping.Accent1 = ColorSchemeIndexValues.Accent2;
+        var styles = main.StyleDefinitionsPart!.Styles!;
+        styles.Append(new Style {
+            StyleId = "ThemeParagraph", Type = StyleValues.Paragraph,
+            StyleRunProperties = new StyleRunProperties(new Color {
+                Val = "FFFFFF", ThemeColor = ThemeColorValues.Accent1
+            })
+        });
+        var paragraph = new Paragraph(
+            new ParagraphProperties(new ParagraphStyleId { Val = "ThemeParagraph" }),
+            new Run(new Text("mapped")),
+            new Run(new RunProperties(new Color { Val = "123456" }), new Text("direct")),
+            new Run(new RunProperties(new Color {
+                Val = "FFFFFF", ThemeColor = ThemeColorValues.Accent3, ThemeShade = "80"
+            }), new Text("shaded")),
+            new Run(new RunProperties(new Color {
+                Val = "000000", ThemeColor = ThemeColorValues.Dark1
+            }), new Text("system")),
+            new Run(new RunProperties(new Color {
+                Val = "E97133", ThemeColor = ThemeColorValues.Accent2
+            }), new Text("cached")),
+            new Run(new RunProperties(new Color {
+                Val = "FFFFFF", ThemeColor = ThemeColorValues.Accent1, ThemeTint = "80"
+            }), new Text("tinted")));
+        main.Document!.Body!.Append(paragraph);
+
+        var resolver = new DxpStyleResolver(doc, Logger);
+        var runs = paragraph.Elements<Run>().ToArray();
+
+        Assert.Equal("#E97132", resolver.ResolveRunStyle(paragraph, runs[0]).ColorCss);
+        Assert.Equal("#123456", resolver.ResolveRunStyle(paragraph, runs[1]).ColorCss);
+        Assert.Equal("#0D3612", resolver.ResolveRunStyle(paragraph, runs[2]).ColorCss);
+        Assert.Equal("#000000", resolver.ResolveRunStyle(paragraph, runs[3]).ColorCss);
+        Assert.Equal("#E97133", resolver.ResolveRunStyle(paragraph, runs[4]).ColorCss);
+        Assert.Equal("#F4B898", resolver.ResolveRunStyle(paragraph, runs[5]).ColorCss);
+    }
+
+    [Fact]
     public void CharacterStyleToggle_ReversesInheritedFormattingWithoutChangingDirectRunFormatting()
     {
         using var doc = CreateDocument((body, styles) => {
