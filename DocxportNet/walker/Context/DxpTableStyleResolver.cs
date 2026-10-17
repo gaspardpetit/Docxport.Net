@@ -311,14 +311,20 @@ internal sealed class DxpTableStyleResolver
         if (look == null)
             return default;
 
+        var mask = ushort.TryParse(GetAttributeValue(look, "val"),
+            System.Globalization.NumberStyles.HexNumber,
+            System.Globalization.CultureInfo.InvariantCulture, out var value) ? value : (ushort)0;
         return new DxpTableLook(
-            FirstRow: GetBoolAttribute(look, "firstRow"),
-            LastRow: GetBoolAttribute(look, "lastRow"),
-            FirstColumn: GetBoolAttribute(look, "firstColumn"),
-            LastColumn: GetBoolAttribute(look, "lastColumn"),
-            NoHBand: GetBoolAttribute(look, "noHBand"),
-            NoVBand: GetBoolAttribute(look, "noVBand"));
+            FirstRow: GetBoolAttributeOrMask(look, "firstRow", mask, 0x0020),
+            LastRow: GetBoolAttributeOrMask(look, "lastRow", mask, 0x0040),
+            FirstColumn: GetBoolAttributeOrMask(look, "firstColumn", mask, 0x0080),
+            LastColumn: GetBoolAttributeOrMask(look, "lastColumn", mask, 0x0100),
+            NoHBand: GetBoolAttributeOrMask(look, "noHBand", mask, 0x0200),
+            NoVBand: GetBoolAttributeOrMask(look, "noVBand", mask, 0x0400));
     }
+
+    private static bool GetBoolAttributeOrMask(OpenXmlElement element, string name, ushort mask, ushort flag)
+        => GetAttributeValue(element, name) == null ? (mask & flag) != 0 : GetBoolAttribute(element, name);
 
     private static bool GetBoolAttribute(OpenXmlElement el, string localName)
     {
