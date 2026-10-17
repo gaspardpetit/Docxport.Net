@@ -13714,6 +13714,12 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                         _characterSpacings[next] = spacing;
                     if (_characterScales.TryGetValue(current, out var scale))
                         _characterScales[next] = scale;
+                    if (_fitTextWidths.TryGetValue(current, out var fitWidth))
+                        _fitTextWidths[next] = fitWidth;
+                    if (_fitTextCharacterCounts.TryGetValue(current, out var fitCount))
+                        _fitTextCharacterCounts[next] = fitCount;
+                    if (_fitTextTracking.Contains(current))
+                        _fitTextTracking.Add(next);
                     if (_tabbedRunShadings.TryGetValue(current, out var tabShading))
                         _tabbedRunShadings[next] = tabShading;
                     if (_coloredUnderlineParagraphs.TryGetValue(current, out var underline))
