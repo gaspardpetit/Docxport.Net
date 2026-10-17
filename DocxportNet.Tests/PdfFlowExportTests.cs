@@ -509,6 +509,29 @@ public sealed class PdfFlowExportTests
     }
 
     [Fact]
+    public void KeepsParagraphAlignmentAfterInParagraphPageBreak()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(new Paragraph(
+                new ParagraphProperties(new Justification { Val = JustificationValues.Center }),
+                new Run(new Text("Aligned"), new Break { Type = BreakValues.Page },
+                    new Text("Aligned")))));
+        }
+
+        byte[] result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        Assert.Equal(2, pdf.NumberOfPages);
+        var first = Assert.Single(pdf.GetPage(1).GetWords());
+        var second = Assert.Single(pdf.GetPage(2).GetWords());
+        Assert.InRange(Math.Abs(first.BoundingBox.Left - second.BoundingBox.Left), 0, 0.5);
+    }
+
+    [Fact]
     public void BottomAlignsMultilineSectionWithoutSplittingIt()
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;

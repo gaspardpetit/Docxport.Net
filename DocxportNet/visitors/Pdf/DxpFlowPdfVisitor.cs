@@ -8739,6 +8739,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         if (_footerImages.Count == 0) return;
         Section? previousSection = null;
         var sectionPage = 0;
+        var displayedPage = 0;
         for (var index = 0; index < renderer.PageCount; index++)
         {
             var section = renderer.DocumentRenderer.GetRenderInfoFromPage(index + 1)?
@@ -8746,11 +8747,13 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 .FirstOrDefault(candidate => candidate != null);
             if (section == null) continue;
             sectionPage = ReferenceEquals(section, previousSection) ? sectionPage + 1 : 1;
+            displayedPage = sectionPage == 1 && section.PageSetup.StartingNumber > 0
+                ? section.PageSetup.StartingNumber : displayedPage + 1;
             previousSection = section;
             if (!_footerImages.TryGetValue(section, out var images)) continue;
             var kind = sectionPage == 1 && section.PageSetup.DifferentFirstPageHeaderFooter
                 ? HeaderFooterValues.First
-                : section.PageSetup.OddAndEvenPagesHeaderFooter && (index + 1) % 2 == 0
+                : section.PageSetup.OddAndEvenPagesHeaderFooter && displayedPage % 2 == 0
                     ? HeaderFooterValues.Even : HeaderFooterValues.Default;
             var selected = images.Where(image => image.Kind == kind).ToArray();
             if (selected.Length == 0) continue;
@@ -13659,9 +13662,15 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 _pendingEmptyParagraphPageBreak = true;
                 return;
             }
+            var current = _paragraph;
             var next = AddParagraph();
             if (next != null)
             {
+                if (current != null)
+                {
+                    next.Style = current.Style;
+                    next.Format = (ParagraphFormat)current.Format.Clone();
+                }
                 next.Format.PageBreakBefore = true;
                 _paragraph = next;
                 if (_activeHyperlink != null)
@@ -14395,7 +14404,11 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 ? rightEmu / 12700.0 : 0;
             if (!_paragraphImages.TryGetValue(_paragraph, out var images))
                 _paragraphImages[_paragraph] = images = new List<ParagraphImageOverlay>();
-            images.Add(new ParagraphImageOverlay(bytes, marginLeft, paragraphTop,
+            images.Add(new ParagraphImageOverlay(bytes,
+                marginLeft + (marginFrame.FrameWidthPoints.Value -
+                    (transformed?.Width ?? marginFrame.FrameWidthPoints.Value)) / 2,
+                paragraphTop + (marginFrame.FrameHeightPoints.Value -
+                    (transformed?.Height ?? marginFrame.FrameHeightPoints.Value)) / 2,
                 transformed?.Width ?? marginFrame.FrameWidthPoints.Value,
                 transformed?.Height ?? marginFrame.FrameHeightPoints.Value,
                 ZOrder: zOrder, BehindDocument: behindDocument));
