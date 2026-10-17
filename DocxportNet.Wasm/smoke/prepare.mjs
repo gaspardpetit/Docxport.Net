@@ -4,7 +4,7 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const sample = path.resolve(here, "../../samples/sample-no-sectPr.docx");
+const sample = path.resolve(here, "../../fixtures/docx/samples/sample-no-sectPr.docx");
 
 for (const app of ["react", "vue"]) {
   const publicDirectory = path.join(here, app, "public");

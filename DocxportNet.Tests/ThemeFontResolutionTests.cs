@@ -18,7 +18,7 @@ public class ThemeFontResolutionTests : TestBase<ThemeFontResolutionTests>
     [Fact]
     public void DefaultRunStyle_IncludesThemeLatinFont()
     {
-        string path = Path.Combine(ProjectRoot, "samples", "with_breaking_style.docx");
+        string path = Path.Combine(ProjectRoot, "fixtures", "docx", "samples", "with_breaking_style.docx");
         using var doc = WordprocessingDocument.Open(path, false);
 
         string? minorLatin = null;
@@ -47,7 +47,7 @@ public class ThemeFontResolutionTests : TestBase<ThemeFontResolutionTests>
     [Fact]
     public void DocRoundTripResolvesThemeLatinFontInDefaultsAndDirectRuns()
     {
-        var path = Path.Combine(ProjectRoot, "samples", "with_breaking_style.docx");
+        var path = Path.Combine(ProjectRoot, "fixtures", "docx", "samples", "with_breaking_style.docx");
         using var source = new MemoryStream(File.ReadAllBytes(path));
         string majorLatin;
         string minorLatin;
@@ -119,7 +119,7 @@ public class ThemeFontResolutionTests : TestBase<ThemeFontResolutionTests>
     [Fact]
     public void DocRoundTripResolvesThemeEastAsianFontInDefaultsStylesAndRuns()
     {
-        var path = Path.Combine(ProjectRoot, "samples", "with_breaking_style.docx");
+        var path = Path.Combine(ProjectRoot, "fixtures", "docx", "samples", "with_breaking_style.docx");
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
         source.Position = 0;
@@ -197,7 +197,7 @@ public class ThemeFontResolutionTests : TestBase<ThemeFontResolutionTests>
     public void DocRoundTripResolvesThemeEastAsianScriptFontFromSettings(
         string language, string script)
     {
-        var path = Path.Combine(ProjectRoot, "samples", "with_breaking_style.docx");
+        var path = Path.Combine(ProjectRoot, "fixtures", "docx", "samples", "with_breaking_style.docx");
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
         source.Position = 0;
@@ -373,7 +373,7 @@ public class ThemeFontResolutionTests : TestBase<ThemeFontResolutionTests>
         string language, string script)
     {
         var scriptText = script == "Hebr" ? "שלום" : "مرحبا";
-        var path = Path.Combine(ProjectRoot, "samples", "with_breaking_style.docx");
+        var path = Path.Combine(ProjectRoot, "fixtures", "docx", "samples", "with_breaking_style.docx");
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
         source.Position = 0;

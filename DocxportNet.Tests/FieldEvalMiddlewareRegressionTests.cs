@@ -14,7 +14,7 @@ namespace DocxportNet.Tests;
 public sealed class FieldEvalMiddlewareRegressionTests : TestBase<FieldEvalMiddlewareRegressionTests>
 {
     private static readonly string ProjectRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", ".."));
-    private static readonly string SamplesDirectory = Path.Combine(ProjectRoot, "samples");
+    private static readonly string SamplesDirectory = Path.Combine(ProjectRoot, "fixtures", "docx", "samples");
 
     public FieldEvalMiddlewareRegressionTests(ITestOutputHelper output) : base(output)
     {

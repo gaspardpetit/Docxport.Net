@@ -13,7 +13,7 @@ namespace DocxportNet.Tests;
 public class PlainTextExportTests : TestBase<PlainTextExportTests>
 {
     private static readonly string ProjectRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", ".."));
-    private static readonly string SamplesDirectory = Path.Combine(ProjectRoot, "samples");
+    private static readonly string SamplesDirectory = Path.Combine(ProjectRoot, "fixtures", "docx", "samples");
 
     public PlainTextExportTests(ITestOutputHelper output) : base(output)
     {
@@ -90,9 +90,9 @@ public class PlainTextExportTests : TestBase<PlainTextExportTests>
         DxpFieldEvalExportMode evalMode)
     {
         string expectedPath = config.TrackedChangeMode == DxpPlainTextTrackedChangeMode.RejectChanges
-            ? TestPaths.GetSampleOutputPath(sample.DocxPath, ".reject.txt")
-            : TestPaths.GetSampleOutputPath(sample.DocxPath, expectedExt);
-        string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, actualSuffix);
+            ? TestPaths.GetSampleTruthPath(sample.DocxPath, "samples-export-text", ".reject.txt")
+            : TestPaths.GetSampleTruthPath(sample.DocxPath, "samples-export-text", expectedExt);
+        string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, "samples-export-text", actualSuffix);
 
         string actualText = TestCompare.Normalize(ToPlainText(sample.DocxPath, config, evalMode));
         File.WriteAllText(actualPath, actualText);
@@ -121,8 +121,8 @@ public class PlainTextExportTests : TestBase<PlainTextExportTests>
 
     private void VerifyCached(Sample sample, DxpPlainTextVisitorConfig config, string expectedExt, string actualSuffix)
     {
-        string expectedPath = TestPaths.GetSampleOutputPath(sample.DocxPath, expectedExt);
-        string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, actualSuffix);
+        string expectedPath = TestPaths.GetSampleTruthPath(sample.DocxPath, "samples-export-text", expectedExt);
+        string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, "samples-export-text", actualSuffix);
 
         string actualText = TestCompare.Normalize(ToPlainTextCached(sample.DocxPath, config));
         File.WriteAllText(actualPath, actualText);

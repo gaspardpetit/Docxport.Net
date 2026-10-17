@@ -34,8 +34,8 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
 
         public string DocxPath { get; private set; }
         public string FileName => Path.GetFileName(DocxPath);
-        public string ExpectedMarkdownPath => Path.ChangeExtension(DocxPath, ".md");
-        public string TestOutputPath => TestPaths.GetSampleOutputPath(DocxPath, ".test.md");
+        public string ExpectedMarkdownPath => TestPaths.GetSampleTruthPath(DocxPath, "samples-export-markdown", ".md");
+        public string TestOutputPath => TestPaths.GetSampleOutputPath(DocxPath, "samples-export-markdown", ".test.md");
 
         public void Serialize(IXunitSerializationInfo info) => info.AddValue(nameof(DocxPath), DocxPath);
         public void Deserialize(IXunitSerializationInfo info) => DocxPath = info.GetValue<string>(nameof(DocxPath));
@@ -44,7 +44,7 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
     }
 
     private static readonly string ProjectRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", ".."));
-    private static readonly string SamplesDirectory = Path.Combine(ProjectRoot, "samples");
+    private static readonly string SamplesDirectory = Path.Combine(ProjectRoot, "fixtures", "docx", "samples");
 
     public MarkdownExportTests(ITestOutputHelper output) : base(output)
     {
@@ -715,8 +715,8 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
         string actualSuffix,
         DxpFieldEvalExportMode evalMode)
     {
-        string expectedPath = TestPaths.GetSampleOutputPath(sample.DocxPath, expectedExt);
-        string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, actualSuffix);
+        string expectedPath = TestPaths.GetSampleTruthPath(sample.DocxPath, "samples-export-markdown", expectedExt);
+        string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, "samples-export-markdown", actualSuffix);
 
         string actualMarkdown = TestCompare.Normalize(ToMarkdown(sample.DocxPath, CloneConfig(config, DxpTrackedChangeMode.AcceptChanges), evalMode));
         File.WriteAllText(actualPath, actualMarkdown);
@@ -741,8 +741,8 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
 
     private void VerifyVariant(Sample sample, DxpMarkdownVisitorConfig config, string suffix, DxpTrackedChangeMode mode, DxpFieldEvalExportMode evalMode)
     {
-        string expectedPath = TestPaths.GetSampleOutputPath(sample.DocxPath, suffix.Replace(".test", string.Empty));
-        string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, suffix);
+        string expectedPath = TestPaths.GetSampleTruthPath(sample.DocxPath, "samples-export-markdown", suffix.Replace(".test", string.Empty));
+        string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, "samples-export-markdown", suffix);
 
         var cfg = CloneConfig(config, mode);
         string markdown = TestCompare.Normalize(ToMarkdown(sample.DocxPath, cfg, evalMode));
@@ -762,7 +762,7 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
     private void WriteVariant(Sample sample, DxpMarkdownVisitorConfig baseConfig, DxpTrackedChangeMode mode, string suffix, DxpFieldEvalExportMode evalMode)
     {
         var cfg = CloneConfig(baseConfig, mode);
-        string path = TestPaths.GetSampleOutputPath(sample.DocxPath, suffix);
+        string path = TestPaths.GetSampleOutputPath(sample.DocxPath, "samples-export-markdown", suffix);
         string markdown = TestCompare.Normalize(ToMarkdown(sample.DocxPath, cfg, evalMode));
         File.WriteAllText(path, markdown);
     }
@@ -780,8 +780,8 @@ public class MarkdownExportTests : TestBase<MarkdownExportTests>
 
     private void VerifyCachedAgainstFixture(Sample sample, DxpMarkdownVisitorConfig config, string expectedExt, string actualSuffix)
     {
-        string expectedPath = TestPaths.GetSampleOutputPath(sample.DocxPath, expectedExt);
-        string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, actualSuffix);
+        string expectedPath = TestPaths.GetSampleTruthPath(sample.DocxPath, "samples-export-markdown", expectedExt);
+        string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, "samples-export-markdown", actualSuffix);
 
         string actualMarkdown = TestCompare.Normalize(ToMarkdownCached(sample.DocxPath, CloneConfig(config, DxpTrackedChangeMode.AcceptChanges)));
         File.WriteAllText(actualPath, actualMarkdown);
