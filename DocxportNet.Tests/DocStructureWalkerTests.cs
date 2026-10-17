@@ -78,7 +78,7 @@ public class DocStructureWalkerTests
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var output = Path.Combine(Path.GetTempPath(),
+            var output = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-run-defaults-{Guid.NewGuid():N}.doc");
             File.WriteAllBytes(output, binary);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -107,10 +107,10 @@ public class DocStructureWalkerTests
     [Fact]
     public void WordLayeredParagraphAndCharacterStylesKeepDirectOverrideInStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var sourceDoc = Path.Combine(directory, "WordStyleLayeredStories.doc");
-        var sourceDocx = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var sourceDoc = FixturePath.Combine(directory, "WordStyleLayeredStories.doc");
+        var sourceDocx = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordStyleLayeredStories.docx"));
         foreach (var binary in new[] { File.ReadAllBytes(sourceDoc),
             DxpDocExport.Export(sourceDocx) })
@@ -162,7 +162,7 @@ public class DocStructureWalkerTests
             }
             if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
             {
-                var output = Path.Combine(Path.GetTempPath(),
+                var output = FixturePath.Combine(Path.GetTempPath(),
                     $"docxport-layered-styles-{Guid.NewGuid():N}.doc");
                 File.WriteAllBytes(output, binary);
                 dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -195,8 +195,8 @@ public class DocStructureWalkerTests
     {
         // Derived from WordBoldStyleToggle.doc by changing its two 0x81 bold
         // operands to 0x80 without changing their CHPX record sizes.
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordBoldStyleMatch.doc"));
         using (var index = new DocTextIndexWalker().Index(path))
         {
@@ -234,8 +234,8 @@ public class DocStructureWalkerTests
     [Fact]
     public void WordStyleRelativeBoldToggleResolvesAgainstBoldNormalStyle()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordBoldStyleToggle.doc"));
         using (var index = new DocTextIndexWalker().Index(path))
         {
@@ -263,7 +263,7 @@ public class DocStructureWalkerTests
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var output = Path.Combine(Path.GetTempPath(),
+            var output = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-bold-toggle-{Guid.NewGuid():N}.doc");
             File.WriteAllBytes(output, roundTripped);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -333,7 +333,7 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
             AssertWordFirstPageRenderClose(source.ToArray(), binary, 0.04);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-row-cell-spacing-{Guid.NewGuid():N}.docx");
         var generatedPath = Path.ChangeExtension(sourcePath, ".doc");
         var nativePath = Path.ChangeExtension(sourcePath, ".native.doc");
@@ -386,8 +386,8 @@ public class DocStructureWalkerTests
     [Fact]
     public void IsolatedFirstColumnStyleBorderRetainsBothDocHops()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordConditionalColumnBorders.docx"));
         using var input = new MemoryStream();
         input.Write(File.ReadAllBytes(path));
@@ -540,7 +540,7 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1")
             return;
         AssertWordFirstPageRenderClose(source.ToArray(), binary, 0.04);
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-paragraph-table-style-{Guid.NewGuid():N}.docx");
         var generatedPath = Path.ChangeExtension(sourcePath, ".generated.doc");
         var nativePath = Path.ChangeExtension(sourcePath, ".native.doc");
@@ -741,7 +741,7 @@ public class DocStructureWalkerTests
         AssertAlignment(DxpDocExport.Export(DxpDocToDocx.Project(binary).DocxBytes));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1")
             return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-conditional-paragraph-{Guid.NewGuid():N}.docx");
         var generatedPath = Path.ChangeExtension(sourcePath, ".doc");
         File.WriteAllBytes(sourcePath, source.ToArray());
@@ -997,7 +997,7 @@ public class DocStructureWalkerTests
         AssertSpacing(DxpDocExport.Export(DxpDocToDocx.Project(binary).DocxBytes));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1")
             return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-conditional-spacing-{Guid.NewGuid():N}.docx");
         var generatedPath = Path.ChangeExtension(sourcePath, ".generated.doc");
         var nativePath = Path.ChangeExtension(sourcePath, ".native.doc");
@@ -1176,7 +1176,7 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1")
             return;
         AssertWordFirstPageRenderClose(source.ToArray(), binary, 0.04);
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-paragraph-bands-{Guid.NewGuid():N}.docx");
         var generatedPath = Path.ChangeExtension(sourcePath, ".doc");
         File.WriteAllBytes(sourcePath, source.ToArray());
@@ -1347,7 +1347,7 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
         {
             AssertWordFirstPageRenderClose(source.ToArray(), binary, 0.04);
-            var sourcePath = Path.Combine(Path.GetTempPath(),
+            var sourcePath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-corner-run-colors-{Guid.NewGuid():N}.docx");
             var generatedPath = Path.ChangeExtension(sourcePath, ".generated.doc");
             var nativePath = Path.ChangeExtension(sourcePath, ".native.doc");
@@ -1486,7 +1486,7 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
         {
             AssertWordFirstPageRenderClose(source.ToArray(), binary, 0.04);
-            var sourcePath = Path.Combine(Path.GetTempPath(),
+            var sourcePath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-spanned-band-runs-{Guid.NewGuid():N}.docx");
             var generatedPath = Path.ChangeExtension(sourcePath, ".doc");
             File.WriteAllBytes(sourcePath, source.ToArray());
@@ -1615,7 +1615,7 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
         {
             AssertWordFirstPageRenderClose(source.ToArray(), binary, 0.04);
-            var sourcePath = Path.Combine(Path.GetTempPath(),
+            var sourcePath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-vertical-band-runs-{Guid.NewGuid():N}.docx");
             var generatedPath = Path.ChangeExtension(sourcePath, ".generated.doc");
             var nativePath = Path.ChangeExtension(sourcePath, ".native.doc");
@@ -1756,7 +1756,7 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
         {
             AssertWordFirstPageRenderClose(source.ToArray(), binary, 0.04);
-            var sourcePath = Path.Combine(Path.GetTempPath(),
+            var sourcePath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-table-band-runs-{Guid.NewGuid():N}.docx");
             var generatedPath = Path.ChangeExtension(sourcePath, ".generated.doc");
             var nativePath = Path.ChangeExtension(sourcePath, ".native.doc");
@@ -1856,7 +1856,7 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1")
             return;
         AssertWordFirstPageRenderClose(source.ToArray(), binary, 0.04);
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-single-row-style-{Guid.NewGuid():N}.docx");
         var generatedPath = Path.ChangeExtension(sourcePath, ".doc");
         File.WriteAllBytes(sourcePath, source.ToArray());
@@ -2050,7 +2050,7 @@ public class DocStructureWalkerTests
         Assert.Empty(new OpenXmlValidator().Validate(rewrittenDocx));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
         {
-            var sourcePath = Path.Combine(Path.GetTempPath(),
+            var sourcePath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-table-style-run-{Guid.NewGuid():N}.docx");
             var generatedPath = Path.ChangeExtension(sourcePath, ".generated.doc");
             var nativePath = Path.ChangeExtension(sourcePath, ".native.doc");
@@ -2230,7 +2230,7 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
             AssertWordFirstPageRenderClose(source.ToArray(), binary, 0.03);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-style-cell-shading-{Guid.NewGuid():N}.docx");
         var generatedPath = Path.ChangeExtension(sourcePath, ".doc");
         var nativePath = Path.ChangeExtension(sourcePath, ".native.doc");
@@ -2449,7 +2449,7 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
             AssertWordFirstPageRenderClose(source.ToArray(), binary, 0.03);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-banded-source-{Guid.NewGuid():N}.docx");
         var generatedPath = Path.ChangeExtension(sourcePath, ".doc");
         var nativePath = Path.ChangeExtension(sourcePath, ".native.doc");
@@ -2509,8 +2509,8 @@ public class DocStructureWalkerTests
     [Fact]
     public void WordBandedHMergeStoriesProjectAndWriteBack()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordBandedHMergeStories.doc"));
         var nativeBytes = File.ReadAllBytes(path);
         using (var nativeInput = new MemoryStream(nativeBytes))
@@ -2683,7 +2683,7 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
             AssertWordFirstPageRenderClose(source.ToArray(), binary, 0.03);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-cross-bands-{Guid.NewGuid():N}.docx");
         var generatedPath = Path.ChangeExtension(sourcePath, ".doc");
         var nativePath = Path.ChangeExtension(sourcePath, ".native.doc");
@@ -2902,11 +2902,11 @@ public class DocStructureWalkerTests
     {
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1")
             return;
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var nonzero = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var nonzero = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordCellSpacingAllStories.docx"));
-        var reset = File.ReadAllBytes(Path.Combine(directory,
+        var reset = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordCellSpacingResetAllStories.docx"));
         var error = AssertWordPageRenderClose(nonzero, reset, 1, 1, ".docx");
         Assert.True(error > 0.015,
@@ -2918,11 +2918,11 @@ public class DocStructureWalkerTests
     {
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1")
             return;
-        var stem = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "DocKnownGaps", "WordFloatingHeaderWrapAllStories"));
+        var stem = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "regressions", "WordFloatingHeaderWrapAllStories"));
         var source = File.ReadAllBytes(stem + ".docx");
-        var native = File.ReadAllBytes(stem + ".doc");
+        var native = File.ReadAllBytes(FixturePath.Resolve(stem + ".doc"));
         var generated = DxpDocExport.Export(source);
         var nativeError = AssertWordPageRenderClose(source, native, 0.08, 1);
         Assert.True(nativeError > 0.04,
@@ -2941,9 +2941,9 @@ public class DocStructureWalkerTests
     public void GeneratedFloatingTransformsRenderCloseToSource(string fixtureName,
         double maximumError)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "DocKnownGaps", fixtureName));
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "regressions", fixtureName));
         var source = File.ReadAllBytes(path);
         AssertWordFirstPageRenderClose(source, DxpDocExport.Export(source), maximumError);
     }
@@ -2955,12 +2955,12 @@ public class DocStructureWalkerTests
         string fixtureName, double maximumError)
     {
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1") return;
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "DocKnownGaps", fixtureName));
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "regressions", fixtureName));
         var source = File.ReadAllBytes(path);
         var projected = DxpDocToDocx.Project(File.ReadAllBytes(
-            Path.ChangeExtension(path, ".doc"))).DocxBytes;
+            FixturePath.Resolve(Path.ChangeExtension(path, ".doc")))).DocxBytes;
         AssertWordPageRenderClose(source, projected, maximumError, 1, ".docx");
     }
 
@@ -2968,12 +2968,12 @@ public class DocStructureWalkerTests
     public void WordNativeArbitraryRotationProjectionRendersCloseToSource()
     {
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1") return;
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "Doc", "WordArbitraryRotationStories.docx"));
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "legacy", "WordArbitraryRotationStories.docx"));
         var source = File.ReadAllBytes(path);
         var projected = DxpDocToDocx.Project(File.ReadAllBytes(
-            Path.ChangeExtension(path, ".doc"))).DocxBytes;
+            FixturePath.Resolve(Path.ChangeExtension(path, ".doc")))).DocxBytes;
         AssertWordPageRenderClose(source, projected, 0.02, 1, ".docx");
     }
 
@@ -2982,8 +2982,8 @@ public class DocStructureWalkerTests
     {
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1")
             return;
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordStyledParagraphShadingResetAllStories.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
@@ -3012,8 +3012,8 @@ public class DocStructureWalkerTests
     {
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1")
             return;
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordConditionalFirstRowShadingAllStories.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
@@ -3040,13 +3040,13 @@ public class DocStructureWalkerTests
         }
         var generated = DxpDocExport.Export(source.ToArray());
         AssertWordPageRenderClose(source.ToArray(), generated, 0.04, 1);
-        var nativeDirectory = Path.Combine(Path.GetTempPath(),
+        var nativeDirectory = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-cell-shading-native-{Guid.NewGuid():N}");
         Directory.CreateDirectory(nativeDirectory);
         try
         {
-            var sourcePath = Path.Combine(nativeDirectory, "source.docx");
-            var nativePath = Path.Combine(nativeDirectory, "native.doc");
+            var sourcePath = FixturePath.Combine(nativeDirectory, "source.docx");
+            var nativePath = FixturePath.Combine(nativeDirectory, "native.doc");
             File.WriteAllBytes(sourcePath, source.ToArray());
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID(
                 "Word.Application")!)!;
@@ -3079,8 +3079,8 @@ public class DocStructureWalkerTests
     {
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1")
             return;
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordStyledRunShadingResetAllStories.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
@@ -3112,8 +3112,8 @@ public class DocStructureWalkerTests
     {
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1")
             return;
-        var sourcePath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var sourcePath = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             fixtureName));
         var source = File.ReadAllBytes(sourcePath);
         var generated = DxpDocExport.Export(source);
@@ -3476,9 +3476,9 @@ public class DocStructureWalkerTests
         double maximumError, bool allPages = false, int minimumPages = 3)
     {
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1") return;
-        var fixture = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", fixtureName == "WordTableCellPositionalTabProbe.docx"
-                ? "DocKnownGaps" : "Doc",
+        var fixture = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", fixtureName == "WordTableCellPositionalTabProbe.docx"
+                ? "regressions" : "legacy",
             fixtureName));
         var compareWithNativeDoc = fixtureName is
             "WordLogicalCellBordersAllStories.docx" or
@@ -3489,14 +3489,14 @@ public class DocStructureWalkerTests
             @"C:\Program Files\gs\gs10.06.0\bin\gswin64c.exe";
         var imageMagick = Environment.GetEnvironmentVariable("DOCXPORT_IMAGEMAGICK_PATH") ??
             @"C:\Program Files\ImageMagick-7.1.2-Q16-HDRI\magick.exe";
-        var directory = Path.Combine(Path.GetTempPath(),
+        var directory = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-image-render-{Guid.NewGuid():N}");
         Directory.CreateDirectory(directory);
-        var generatedPath = Path.Combine(directory, "generated.doc");
+        var generatedPath = FixturePath.Combine(directory, "generated.doc");
         File.WriteAllBytes(generatedPath, DxpDocExport.Export(File.ReadAllBytes(fixture)));
-        var projectedPath = Path.Combine(directory, "projected.docx");
+        var projectedPath = FixturePath.Combine(directory, "projected.docx");
         File.WriteAllBytes(projectedPath, DxpDocToDocx.Project(File.ReadAllBytes(
-            Path.ChangeExtension(fixture, ".doc"))).DocxBytes);
+            FixturePath.Resolve(Path.ChangeExtension(fixture, ".doc")))).DocxBytes);
         var checkGeneratedProjection = fixtureName is
             "WordHyphenationStyleAllStories.docx" or
             "WordHyphenationCenterBottomAllStories.docx" or
@@ -3608,11 +3608,11 @@ public class DocStructureWalkerTests
             "WordConditionalFirstRowRunStyleAllStories.docx" or
             "WordConditionalFirstRowParagraphAllStories.docx" or
             "WordConditionalFirstLastRowParagraphAllStories.docx";
-        var generatedProjectedPath = Path.Combine(directory, "generated-projected.docx");
+        var generatedProjectedPath = FixturePath.Combine(directory, "generated-projected.docx");
         if (checkGeneratedProjection)
             File.WriteAllBytes(generatedProjectedPath, DxpDocToDocx.Project(
                 File.ReadAllBytes(generatedPath)).DocxBytes);
-        var rewrittenDocPath = Path.Combine(directory, "projected-rewritten.doc");
+        var rewrittenDocPath = FixturePath.Combine(directory, "projected-rewritten.doc");
         File.WriteAllBytes(rewrittenDocPath, DxpDocExport.Export(
             File.ReadAllBytes(projectedPath)));
 
@@ -3652,7 +3652,7 @@ public class DocStructureWalkerTests
                 (fixture, "reference")
             };
             if (compareWithNativeDoc)
-                renderInputs.Add((Path.ChangeExtension(fixture, ".doc"), "native"));
+                renderInputs.Add((FixturePath.Resolve(Path.ChangeExtension(fixture, ".doc")), "native"));
             renderInputs.Add((generatedPath, "generated"));
             renderInputs.Add((projectedPath, "projected"));
             if (checkGeneratedProjection)
@@ -3685,7 +3685,7 @@ public class DocStructureWalkerTests
             }
             if (fixtureName == "WordMixedRotatedCellsAllStories.docx")
             {
-                dynamic native = word.Documents.Open(Path.ChangeExtension(fixture, ".doc"),
+                dynamic native = word.Documents.Open(FixturePath.Resolve(Path.ChangeExtension(fixture, ".doc")),
                     ReadOnly: true, AddToRecentFiles: false);
                 try { AssertMixedCellOrientations(native); }
                 finally { native.Close(false); }
@@ -3712,7 +3712,7 @@ public class DocStructureWalkerTests
             }
             if (fixtureName == "WordInheritedStyledRotatedTables.docx")
             {
-                dynamic native = word.Documents.Open(Path.ChangeExtension(fixture, ".doc"),
+                dynamic native = word.Documents.Open(FixturePath.Resolve(Path.ChangeExtension(fixture, ".doc")),
                     ReadOnly: true, AddToRecentFiles: false);
                 try { AssertInheritedStyledRotatedOrientations(native); }
                 finally { native.Close(false); }
@@ -4946,15 +4946,15 @@ public class DocStructureWalkerTests
                     }
                     opened.Repaginate();
                     pageCounts.Add((int)opened.ComputeStatistics(2));
-                    opened.ExportAsFixedFormat(Path.Combine(directory, name + ".pdf"), 17);
+                    opened.ExportAsFixedFormat(FixturePath.Combine(directory, name + ".pdf"), 17);
                 }
                 finally { opened.Close(false); }
                 Run(ghostscript, "-q", "-dNOPAUSE", "-dBATCH", "-sDEVICE=png16m",
                     "-r96", "-dFirstPage=1", "-dLastPage=" +
                         (allPages ? pageCounts[^1] : 1),
-                    "-sOutputFile=" + Path.Combine(directory,
+                    "-sOutputFile=" + FixturePath.Combine(directory,
                         name + (allPages ? "-%d" : "") + ".png"),
-                    Path.Combine(directory, name + ".pdf"));
+                    FixturePath.Combine(directory, name + ".pdf"));
             }
             if (allPages)
             {
@@ -4968,8 +4968,8 @@ public class DocStructureWalkerTests
                 foreach (var name in renderInputs.Skip(1).Select(x => x.Name))
                 {
                     var metric = Run(imageMagick, "compare", "-metric", "RMSE",
-                        Path.Combine(directory, "reference" + suffix + ".png"),
-                        Path.Combine(directory, name + suffix + ".png"), "null:");
+                        FixturePath.Combine(directory, "reference" + suffix + ".png"),
+                        FixturePath.Combine(directory, name + suffix + ".png"), "null:");
                     var match = Regex.Match(metric, @"\(([0-9.]+)\)");
                     Assert.True(match.Success, "ImageMagick did not report normalized RMSE: " + metric);
                     var error = double.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture);
@@ -4979,8 +4979,8 @@ public class DocStructureWalkerTests
                 if (compareWithNativeDoc)
                 {
                     var metric = Run(imageMagick, "compare", "-metric", "RMSE",
-                        Path.Combine(directory, "native" + suffix + ".png"),
-                        Path.Combine(directory, "generated" + suffix + ".png"), "null:");
+                        FixturePath.Combine(directory, "native" + suffix + ".png"),
+                        FixturePath.Combine(directory, "generated" + suffix + ".png"), "null:");
                     var match = Regex.Match(metric, @"\(([0-9.]+)\)");
                     Assert.True(match.Success, "ImageMagick did not report normalized RMSE: " + metric);
                     var error = double.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture);
@@ -5000,10 +5000,10 @@ public class DocStructureWalkerTests
     [Fact]
     public void WordAuthoredImageStoriesKeepPicturesAndBodyFormatting()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var sourceDocx = File.ReadAllBytes(Path.Combine(directory, "WordImageStories.docx"));
-        var sourceDoc = Path.Combine(directory, "WordImageStories.doc");
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var sourceDocx = File.ReadAllBytes(FixturePath.Combine(directory, "WordImageStories.docx"));
+        var sourceDoc = FixturePath.Combine(directory, "WordImageStories.doc");
         var writtenDoc = DxpDocExport.Export(sourceDocx);
         foreach (var binary in new[] { File.ReadAllBytes(sourceDoc), writtenDoc })
         {
@@ -5050,7 +5050,7 @@ public class DocStructureWalkerTests
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var generatedPath = Path.Combine(Path.GetTempPath(),
+            var generatedPath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-image-stories-{Guid.NewGuid():N}.doc");
             File.WriteAllBytes(generatedPath, writtenDoc);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -5079,8 +5079,8 @@ public class DocStructureWalkerTests
     [Fact]
     public void InlinePicturesKeepFourSidedCropsInAllStories()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordImageStories.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
@@ -5169,9 +5169,9 @@ public class DocStructureWalkerTests
             return;
         AssertWordFirstPageRenderClose(original, generated, 0.04);
         AssertWordPageRenderClose(original, projected, 0.04, 1, ".docx");
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-cropped-inline-{Guid.NewGuid():N}.docx");
-        var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+        var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
         File.WriteAllBytes(sourcePath, original);
         dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID(
             "Word.Application")!)!;
@@ -5203,8 +5203,8 @@ public class DocStructureWalkerTests
     [Fact]
     public void WordCroppedPngPreservesCropThroughBothDirections()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordCroppedPngBody.doc"));
         var sourceDocx = DxpDocToDocx.Project(path).DocxBytes;
         using (var stream = new MemoryStream(sourceDocx))
@@ -5233,7 +5233,7 @@ public class DocStructureWalkerTests
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var generatedPath = Path.Combine(Path.GetTempPath(),
+            var generatedPath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-cropped-image-{Guid.NewGuid():N}.doc");
             File.WriteAllBytes(generatedPath, binary);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -5262,8 +5262,8 @@ public class DocStructureWalkerTests
     [Fact]
     public void WordInlinePngInBodyProjectsWithOriginalBytes()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordInlinePngBody.doc"));
         using (var index = new DocTextIndexWalker().Index(path))
             Assert.Contains(DocStoryTextReader.Read(index, "Main").Paragraphs
@@ -5289,7 +5289,7 @@ public class DocStructureWalkerTests
         Assert.Empty(new OpenXmlValidator().Validate(document));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var projectedPath = Path.Combine(Path.GetTempPath(),
+            var projectedPath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-inline-png-{Guid.NewGuid():N}.docx");
             File.WriteAllBytes(projectedPath, result.DocxBytes);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -5313,8 +5313,8 @@ public class DocStructureWalkerTests
     [Fact]
     public void WordFloatingPngLinksAnchorShapeAndDelayedBlip()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordFloatingPngBody.doc"));
         using var index = new DocTextIndexWalker().Index(path);
         var picture = Assert.Single(DocFloatingPictureReader.ReadMain(index.Structure));
@@ -5346,8 +5346,8 @@ public class DocStructureWalkerTests
     [Fact]
     public void WordFloatingPngSurvivesDocxToDocAndBack()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordFloatingPngBody.docx"));
         byte[] originalImage;
         using (var source = WordprocessingDocument.Open(path, false))
@@ -5388,7 +5388,7 @@ public class DocStructureWalkerTests
         Assert.Empty(new OpenXmlValidator().Validate(document));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var generatedPath = Path.Combine(Path.GetTempPath(),
+            var generatedPath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-floating-png-{Guid.NewGuid():N}.doc");
             File.WriteAllBytes(generatedPath, binary);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -5417,8 +5417,8 @@ public class DocStructureWalkerTests
     [Fact]
     public void WordTwoFloatingPicturesLinkDistinctAnchorsAndBlips()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordTwoFloatingPicturesBody.doc"));
         using var index = new DocTextIndexWalker().Index(path);
         var floating = DocFloatingPictureReader.ReadMain(index.Structure);
@@ -5438,8 +5438,8 @@ public class DocStructureWalkerTests
     [Fact]
     public void WordTwoFloatingPicturesSurviveDocxToDocAndBack()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordTwoFloatingPicturesBody.docx"));
         var sourceHashes = new Dictionary<string, string>();
         using (var source = WordprocessingDocument.Open(path, false))
@@ -5480,7 +5480,7 @@ public class DocStructureWalkerTests
         Assert.Empty(new OpenXmlValidator().Validate(document));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var generatedPath = Path.Combine(Path.GetTempPath(),
+            var generatedPath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-two-floating-{Guid.NewGuid():N}.doc");
             File.WriteAllBytes(generatedPath, binary);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -5504,8 +5504,8 @@ public class DocStructureWalkerTests
     [Fact]
     public void WordFloatingPicturesInBodyHeaderAndFooterProjectAsAnchors()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordFloatingPngAllStories.doc"));
         using var index = new DocTextIndexWalker().Index(path);
         var bodyPicture = Assert.Single(DocFloatingPictureReader.ReadMain(index.Structure));
@@ -5531,7 +5531,7 @@ public class DocStructureWalkerTests
         Assert.Empty(new OpenXmlValidator().Validate(document));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var projectedPath = Path.Combine(Path.GetTempPath(),
+            var projectedPath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-floating-stories-{Guid.NewGuid():N}.docx");
             File.WriteAllBytes(projectedPath, projected.DocxBytes);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -5557,8 +5557,8 @@ public class DocStructureWalkerTests
     [Fact]
     public void WordFloatingPicturesInAllStoriesSurviveDocxToDocAndBack()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordFloatingPngAllStories.docx"));
         string sourceImageHash;
         using (var source = WordprocessingDocument.Open(path, false))
@@ -5618,7 +5618,7 @@ public class DocStructureWalkerTests
         Assert.Empty(new OpenXmlValidator().Validate(document));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var generatedPath = Path.Combine(Path.GetTempPath(),
+            var generatedPath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-floating-all-stories-{Guid.NewGuid():N}.doc");
             File.WriteAllBytes(generatedPath, binary);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -5644,8 +5644,8 @@ public class DocStructureWalkerTests
     [Fact]
     public void FloatingPicturesKeepDistinctFourSidedCropsAcrossStories()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordFloatingPngAllStories.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
@@ -5738,9 +5738,9 @@ public class DocStructureWalkerTests
             AssertWordFirstPageRenderClose(sourceBytes, binary, 0.04);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var nativePath = Path.Combine(Path.GetTempPath(),
+            var nativePath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-cropped-stories-{Guid.NewGuid():N}.doc");
-            var sourcePath = Path.ChangeExtension(nativePath, ".docx");
+            var sourcePath = FixturePath.Resolve(Path.ChangeExtension(nativePath, ".docx"));
             File.WriteAllBytes(sourcePath, sourceBytes);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID(
                 "Word.Application")!)!;
@@ -5778,8 +5778,8 @@ public class DocStructureWalkerTests
     public void FloatingPictureAlignmentSurvivesWordDocAndDocxRoutes(
         bool insideOutside)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordFloatingPngAllStories.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
@@ -5874,9 +5874,9 @@ public class DocStructureWalkerTests
                 AssertWordPageRenderClose(sourceBytes, binary, 0.047, 2);
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-aligned-picture-{Guid.NewGuid():N}.docx");
-        var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+        var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
         File.WriteAllBytes(sourcePath, sourceBytes);
         dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID(
             "Word.Application")!)!;
@@ -5915,8 +5915,8 @@ public class DocStructureWalkerTests
     [Fact]
     public void FloatingPictureWrapDistancesSurviveAllStoriesAndWordDoc()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordFloatingPngAllStories.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
@@ -5998,9 +5998,9 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
             AssertWordFirstPageRenderClose(sourceBytes, binary, 0.043);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-wrap-distance-{Guid.NewGuid():N}.docx");
-        var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+        var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
         File.WriteAllBytes(sourcePath, sourceBytes);
         dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID(
             "Word.Application")!)!;
@@ -6035,9 +6035,9 @@ public class DocStructureWalkerTests
     public void WordCroppedFloatingPicturePreservesCropBothDirections(
         string fixtureName, double expectedRight, double expectedBottom)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var nativePath = Path.Combine(directory, fixtureName + ".doc");
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var nativePath = FixturePath.Combine(directory, fixtureName + ".doc");
         using (var native = new DocTextIndexWalker().Index(nativePath))
         {
             var picture = Assert.Single(DocFloatingPictureReader.ReadMain(native.Structure));
@@ -6062,7 +6062,7 @@ public class DocStructureWalkerTests
             Assert.Empty(new OpenXmlValidator().Validate(document));
         }
 
-        var binary = DxpDocExport.Export(File.ReadAllBytes(Path.Combine(directory,
+        var binary = DxpDocExport.Export(File.ReadAllBytes(FixturePath.Combine(directory,
             fixtureName + ".docx")));
         using (var input = new MemoryStream(binary))
         using (var index = new DocTextIndexWalker().Index(input))
@@ -6092,7 +6092,7 @@ public class DocStructureWalkerTests
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var generatedPath = Path.Combine(Path.GetTempPath(),
+            var generatedPath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-cropped-floating-{Guid.NewGuid():N}.doc");
             File.WriteAllBytes(generatedPath, binary);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -6126,9 +6126,9 @@ public class DocStructureWalkerTests
     public void WordFloatingPictureWrapModeSurvivesBothDirections(string fixtureName,
         byte wrapCode, bool behindText, string wrapElement, int wordWrapType)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var nativePath = Path.Combine(directory, fixtureName + ".doc");
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var nativePath = FixturePath.Combine(directory, fixtureName + ".doc");
         using (var native = new DocTextIndexWalker().Index(nativePath))
         {
             var picture = Assert.Single(DocFloatingPictureReader.ReadMain(native.Structure));
@@ -6144,7 +6144,7 @@ public class DocStructureWalkerTests
             Assert.Empty(new OpenXmlValidator().Validate(document));
         }
 
-        var binary = DxpDocExport.Export(File.ReadAllBytes(Path.Combine(directory,
+        var binary = DxpDocExport.Export(File.ReadAllBytes(FixturePath.Combine(directory,
             fixtureName + ".docx")));
         using (var input = new MemoryStream(binary))
         using (var index = new DocTextIndexWalker().Index(input))
@@ -6165,7 +6165,7 @@ public class DocStructureWalkerTests
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var generatedPath = Path.Combine(Path.GetTempPath(),
+            var generatedPath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-wrap-{Guid.NewGuid():N}.doc");
             File.WriteAllBytes(generatedPath, binary);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -6193,9 +6193,9 @@ public class DocStructureWalkerTests
     public void WordFloatingSquareWrapSideSurvivesBothDirections(string fixtureName,
         byte wrapSide)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var nativePath = Path.Combine(directory, fixtureName + ".doc");
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var nativePath = FixturePath.Combine(directory, fixtureName + ".doc");
         using (var native = new DocTextIndexWalker().Index(nativePath))
         {
             var picture = Assert.Single(DocFloatingPictureReader.ReadMain(native.Structure));
@@ -6209,7 +6209,7 @@ public class DocStructureWalkerTests
             Assert.Equal(ExpectedWrapText(wrapSide), square.WrapText!.Value);
             Assert.Empty(new OpenXmlValidator().Validate(document));
         }
-        var binary = DxpDocExport.Export(File.ReadAllBytes(Path.Combine(directory,
+        var binary = DxpDocExport.Export(File.ReadAllBytes(FixturePath.Combine(directory,
             fixtureName + ".docx")));
         using (var input = new MemoryStream(binary))
         using (var index = new DocTextIndexWalker().Index(input))
@@ -6228,7 +6228,7 @@ public class DocStructureWalkerTests
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var generatedPath = Path.Combine(Path.GetTempPath(),
+            var generatedPath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-wrap-side-{Guid.NewGuid():N}.doc");
             File.WriteAllBytes(generatedPath, binary);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -6264,10 +6264,10 @@ public class DocStructureWalkerTests
     public void WordContouredFloatingPictureWrapSurvivesBothDirections(
         string fixtureName, byte wrapCode, string elementName, int wordWrapType)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         using (var native = new DocTextIndexWalker().Index(
-            Path.Combine(directory, fixtureName + ".doc")))
+            FixturePath.Combine(directory, fixtureName + ".doc")))
         {
             var picture = Assert.Single(DocFloatingPictureReader.ReadMain(native.Structure));
             Assert.Equal(wrapCode, picture.WrapCode);
@@ -6281,7 +6281,7 @@ public class DocStructureWalkerTests
                 DocumentFormat.OpenXml.Drawing.Wordprocessing.WrapPolygon>());
             Assert.Empty(new OpenXmlValidator().Validate(document));
         }
-        var binary = DxpDocExport.Export(File.ReadAllBytes(Path.Combine(directory,
+        var binary = DxpDocExport.Export(File.ReadAllBytes(FixturePath.Combine(directory,
             fixtureName + ".docx")));
         using (var input = new MemoryStream(binary))
         using (var index = new DocTextIndexWalker().Index(input))
@@ -6298,7 +6298,7 @@ public class DocStructureWalkerTests
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var generatedPath = Path.Combine(Path.GetTempPath(),
+            var generatedPath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-contour-{Guid.NewGuid():N}.doc");
             File.WriteAllBytes(generatedPath, binary);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -6330,10 +6330,10 @@ public class DocStructureWalkerTests
         byte horizontalOrigin, byte verticalOrigin, string horizontalXml, string verticalXml,
         int leftTwips, int topTwips)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         using (var native = new DocTextIndexWalker().Index(
-            Path.Combine(directory, fixtureName + ".doc")))
+            FixturePath.Combine(directory, fixtureName + ".doc")))
         {
             var picture = Assert.Single(DocFloatingPictureReader.ReadMain(native.Structure));
             Assert.Equal(horizontalOrigin, picture.HorizontalOrigin);
@@ -6349,7 +6349,7 @@ public class DocStructureWalkerTests
             Assert.Equal(verticalXml, anchor.VerticalPosition!.RelativeFrom!.InnerText);
             Assert.Empty(new OpenXmlValidator().Validate(document));
         }
-        var binary = DxpDocExport.Export(File.ReadAllBytes(Path.Combine(directory,
+        var binary = DxpDocExport.Export(File.ReadAllBytes(FixturePath.Combine(directory,
             fixtureName + ".docx")));
         using (var input = new MemoryStream(binary))
         using (var index = new DocTextIndexWalker().Index(input))
@@ -6372,7 +6372,7 @@ public class DocStructureWalkerTests
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var generatedPath = Path.Combine(Path.GetTempPath(),
+            var generatedPath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-origins-{Guid.NewGuid():N}.doc");
             File.WriteAllBytes(generatedPath, binary);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -6406,9 +6406,9 @@ public class DocStructureWalkerTests
     public void FloatingPicturesWithoutBodyShapeKeepHeaderFooterStories(
         string fixtureName, int expectedCount, bool hasHeaderShape)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var nativePath = Path.Combine(directory, fixtureName + ".doc");
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var nativePath = FixturePath.Combine(directory, fixtureName + ".doc");
         using (var native = new DocTextIndexWalker().Index(nativePath))
         {
             Assert.Empty(DocFloatingPictureReader.ReadMain(native.Structure));
@@ -6424,7 +6424,7 @@ public class DocStructureWalkerTests
                     DocumentFormat.OpenXml.Drawing.Wordprocessing.Anchor>().Count()));
             Assert.Empty(new OpenXmlValidator().Validate(document));
         }
-        var binary = DxpDocExport.Export(File.ReadAllBytes(Path.Combine(directory,
+        var binary = DxpDocExport.Export(File.ReadAllBytes(FixturePath.Combine(directory,
             fixtureName + ".docx")));
         using (var input = new MemoryStream(binary))
         using (var index = new DocTextIndexWalker().Index(input))
@@ -6446,7 +6446,7 @@ public class DocStructureWalkerTests
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var generatedPath = Path.Combine(Path.GetTempPath(),
+            var generatedPath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-header-footer-only-{Guid.NewGuid():N}.doc");
             File.WriteAllBytes(generatedPath, binary);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -6473,11 +6473,11 @@ public class DocStructureWalkerTests
     [Fact]
     public void InheritedDisplayStyleSurvivesBodyHeaderFooterRoundTrips()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var sourceDocx = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var sourceDocx = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordInheritedDisplayStyleStories.docx"));
-        var nativeDoc = File.ReadAllBytes(Path.Combine(directory,
+        var nativeDoc = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordInheritedDisplayStyleStories.doc"));
         var generatedDoc = DxpDocExport.Export(sourceDocx);
         foreach (var binary in new[] { nativeDoc, generatedDoc })
@@ -6530,7 +6530,7 @@ public class DocStructureWalkerTests
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var generatedPath = Path.Combine(Path.GetTempPath(),
+            var generatedPath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-inherited-style-{Guid.NewGuid():N}.doc");
             File.WriteAllBytes(generatedPath, generatedDoc);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -6568,13 +6568,13 @@ public class DocStructureWalkerTests
     [Fact]
     public void ThreeLevelStyleAndDirectOverridesSurviveAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var sourceDocx = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var sourceDocx = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordThreeLevelStyleOverrides.docx"));
         var generatedDoc = DxpDocExport.Export(sourceDocx);
         foreach (var binary in new[]
-            { File.ReadAllBytes(Path.Combine(directory, "WordThreeLevelStyleOverrides.doc")),
+            { File.ReadAllBytes(FixturePath.Combine(directory, "WordThreeLevelStyleOverrides.doc")),
                 generatedDoc })
         {
             using var input = new MemoryStream(binary);
@@ -6618,7 +6618,7 @@ public class DocStructureWalkerTests
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var generatedPath = Path.Combine(Path.GetTempPath(),
+            var generatedPath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-three-level-style-{Guid.NewGuid():N}.doc");
             File.WriteAllBytes(generatedPath, generatedDoc);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -6665,10 +6665,10 @@ public class DocStructureWalkerTests
             ShadingPatternValues.Clear;
         ushort stylePatternCode = patterned ? (ushort)5 : (ushort)0;
         ushort directPatternCode = patterned ? (ushort)8 : (ushort)0;
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         using var source = new MemoryStream();
-        source.Write(File.ReadAllBytes(Path.Combine(directory,
+        source.Write(File.ReadAllBytes(FixturePath.Combine(directory,
             "WordThreeLevelStyleOverrides.docx")));
         using (var document = WordprocessingDocument.Open(source, true))
         {
@@ -6747,9 +6747,9 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
             AssertWordFirstPageRenderClose(source.ToArray(), generated, 0.04);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-style-run-shading-{Guid.NewGuid():N}.docx");
-        var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+        var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
         File.WriteAllBytes(sourcePath, source.ToArray());
         dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
         word.Visible = false;
@@ -6803,8 +6803,8 @@ public class DocStructureWalkerTests
     [Fact]
     public void FooterDirectUnderlineResetOverridesInheritedThreeLevelStyle()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordThreeLevelStyleOverrides.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
@@ -6839,7 +6839,7 @@ public class DocStructureWalkerTests
         Assert.Empty(new OpenXmlValidator().Validate(output));
 
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var generatedPath = Path.Combine(Path.GetTempPath(),
+        var generatedPath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-footer-underline-{Guid.NewGuid():N}.doc");
         File.WriteAllBytes(generatedPath, writtenDoc);
         dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -6880,8 +6880,8 @@ public class DocStructureWalkerTests
     public void ExtendedUnderlineStylesSurviveDocInStylesAndAllStories(
         string underlineName, byte docCode)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordThreeLevelStyleOverrides.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
@@ -6936,7 +6936,7 @@ public class DocStructureWalkerTests
 
         if (underlineName != "wave" ||
             Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var generatedPath = Path.Combine(Path.GetTempPath(),
+        var generatedPath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-wave-underline-{Guid.NewGuid():N}.doc");
         File.WriteAllBytes(generatedPath, binary);
         dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -6964,8 +6964,8 @@ public class DocStructureWalkerTests
     [Fact]
     public void UnderlineColorsSurviveDocInStyleAndAllStories()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordThreeLevelStyleOverrides.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
@@ -7023,7 +7023,7 @@ public class DocStructureWalkerTests
         Assert.Empty(new OpenXmlValidator().Validate(output));
 
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var generatedPath = Path.Combine(Path.GetTempPath(),
+        var generatedPath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-underline-color-{Guid.NewGuid():N}.doc");
         File.WriteAllBytes(generatedPath, binary);
         dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -7056,8 +7056,8 @@ public class DocStructureWalkerTests
     public void ThemeRunAndUnderlineColorsResolveBeforeDocWriting(
         bool transformed, int remapDepth)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordThreeLevelStyleOverrides.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
@@ -7145,11 +7145,11 @@ public class DocStructureWalkerTests
         var verifyRender = Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1";
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1" &&
             !verifyRender) return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-theme-source-{Guid.NewGuid():N}.docx");
-        var generatedPath = Path.Combine(Path.GetTempPath(),
+        var generatedPath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-theme-colors-{Guid.NewGuid():N}.doc");
-        var renderDirectory = Path.Combine(Path.GetTempPath(),
+        var renderDirectory = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-theme-render-{Guid.NewGuid():N}");
         if (verifyRender) Directory.CreateDirectory(renderDirectory);
         File.WriteAllBytes(sourcePath, source.ToArray());
@@ -7163,7 +7163,7 @@ public class DocStructureWalkerTests
             {
                 opened = word.Documents.Open(sourcePath, ReadOnly: true,
                     AddToRecentFiles: false);
-                opened.ExportAsFixedFormat(Path.Combine(renderDirectory, "source.pdf"), 17);
+                opened.ExportAsFixedFormat(FixturePath.Combine(renderDirectory, "source.pdf"), 17);
                 opened.Close(false);
                 opened = null;
             }
@@ -7184,7 +7184,7 @@ public class DocStructureWalkerTests
                 (int)opened.Sections(1).Footers(1).Range
                 .Characters(1).Font.Color);
             if (verifyRender)
-                opened.ExportAsFixedFormat(Path.Combine(renderDirectory, "generated.pdf"), 17);
+                opened.ExportAsFixedFormat(FixturePath.Combine(renderDirectory, "generated.pdf"), 17);
         }
         finally
         {
@@ -7225,11 +7225,11 @@ public class DocStructureWalkerTests
             foreach (var name in new[] { "source", "generated" })
                 Run(ghostscript, "-q", "-dNOPAUSE", "-dBATCH", "-sDEVICE=png16m",
                     "-r96", "-dFirstPage=1", "-dLastPage=1",
-                    "-sOutputFile=" + Path.Combine(renderDirectory, name + ".png"),
-                    Path.Combine(renderDirectory, name + ".pdf"));
+                    "-sOutputFile=" + FixturePath.Combine(renderDirectory, name + ".png"),
+                    FixturePath.Combine(renderDirectory, name + ".pdf"));
             var metric = Run(imageMagick, "compare", "-metric", "RMSE",
-                Path.Combine(renderDirectory, "source.png"),
-                Path.Combine(renderDirectory, "generated.png"), "null:");
+                FixturePath.Combine(renderDirectory, "source.png"),
+                FixturePath.Combine(renderDirectory, "generated.png"), "null:");
             var match = Regex.Match(metric, @"\(([0-9.]+)\)");
             Assert.True(match.Success, "ImageMagick did not report normalized RMSE: " + metric);
             var error = double.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture);
@@ -7246,8 +7246,8 @@ public class DocStructureWalkerTests
     [Fact]
     public void CyclicThemeColorMappingIsRejected()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordThreeLevelStyleOverrides.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
@@ -7271,8 +7271,8 @@ public class DocStructureWalkerTests
     [Fact]
     public void TextBackgroundAndHyperlinkThemeMappingsReachDocStories()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordThreeLevelStyleOverrides.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
@@ -7352,8 +7352,8 @@ public class DocStructureWalkerTests
     public void RemainingHighlightPaletteSurvivesAllDocStories(
         string colorName, byte docCode)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordThreeLevelStyleOverrides.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
@@ -7398,7 +7398,7 @@ public class DocStructureWalkerTests
             AssertWordFirstPageRenderClose(source.ToArray(), binary, 0.02);
         if (colorName != "darkRed" ||
             Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-highlight-source-{Guid.NewGuid():N}.docx");
         var wordDocPath = Path.ChangeExtension(sourcePath, ".doc");
         File.WriteAllBytes(sourcePath, source.ToArray());
@@ -7523,7 +7523,7 @@ public class DocStructureWalkerTests
             Assert.Empty(new OpenXmlValidator().Validate(modifiedDocx));
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-widow-{Guid.NewGuid():N}.docx");
         var nativePath = Path.ChangeExtension(sourcePath, ".native.doc");
         var generatedPath = Path.ChangeExtension(sourcePath, ".generated.doc");
@@ -7585,8 +7585,8 @@ public class DocStructureWalkerTests
     [Fact]
     public void CharacterShadingSurvivesStyleAndAllDocStories()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordThreeLevelStyleOverrides.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
@@ -7644,7 +7644,7 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
             AssertWordFirstPageRenderClose(source.ToArray(), binary, 0.02);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-character-shading-{Guid.NewGuid():N}.docx");
         var wordDocPath = Path.ChangeExtension(sourcePath, ".doc");
         File.WriteAllBytes(sourcePath, source.ToArray());
@@ -7689,8 +7689,8 @@ public class DocStructureWalkerTests
     [Fact]
     public void PatternedCharacterShadingRetainsForegroundAndFillInStories()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordThreeLevelStyleOverrides.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
@@ -7753,8 +7753,8 @@ public class DocStructureWalkerTests
     [Fact]
     public void ThemeShadingColorsResolveAcrossStylesAndStories()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordThreeLevelStyleOverrides.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
@@ -7826,8 +7826,8 @@ public class DocStructureWalkerTests
     [InlineData(false)]
     public void ThemeTableCellShadingResolvesBeforeDocWriting(bool fixedLayout)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordThreeLevelStyleOverrides.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
@@ -7915,9 +7915,9 @@ public class DocStructureWalkerTests
         if (fixedLayout && Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
             AssertWordFirstPageRenderClose(source.ToArray(), binary, 0.03);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-table-layout-{Guid.NewGuid():N}.docx");
-        var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+        var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
         File.WriteAllBytes(sourcePath, source.ToArray());
         dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
         word.Visible = false;
@@ -7959,8 +7959,8 @@ public class DocStructureWalkerTests
     [InlineData((byte)3, (ushort)4000)]
     public void TablePreferredWidthRoundTripsThroughDoc(byte unit, ushort value)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordThreeLevelStyleOverrides.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
@@ -8018,9 +8018,9 @@ public class DocStructureWalkerTests
         Assert.Empty(new OpenXmlValidator().Validate(output));
         if (unit == 1 || Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1")
             return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-table-width-{Guid.NewGuid():N}.docx");
-        var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+        var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
         File.WriteAllBytes(sourcePath, source.ToArray());
         dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
         word.Visible = false;
@@ -8060,8 +8060,8 @@ public class DocStructureWalkerTests
     [InlineData(true)]
     public void TableDefaultAndCellMarginsRoundTripThroughDoc(bool logicalSides)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordThreeLevelStyleOverrides.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
@@ -8132,9 +8132,9 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
             AssertWordFirstPageRenderClose(source.ToArray(), binary, 0.03);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-cell-margins-{Guid.NewGuid():N}.docx");
-        var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+        var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
         File.WriteAllBytes(sourcePath, source.ToArray());
         dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
         word.Visible = false;
@@ -8285,7 +8285,7 @@ public class DocStructureWalkerTests
             AssertWordFirstPageRenderClose(source.ToArray(), binary,
                 inherited ? 0.04 : 0.03);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-cell-spacing-{Guid.NewGuid():N}.docx");
         var generatedPath = Path.ChangeExtension(sourcePath, ".doc");
         var nativePath = Path.ChangeExtension(sourcePath, ".native.doc");
@@ -8377,8 +8377,8 @@ public class DocStructureWalkerTests
         bool verticalMerge, bool logicalSides, bool rightToLeft, bool styled,
         bool rowSpacing, bool firstColumnBorder = false)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordThreeLevelStyleOverrides.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
@@ -8618,7 +8618,7 @@ public class DocStructureWalkerTests
             }
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-header-table-source-{Guid.NewGuid():N}.docx");
         var generatedPath = Path.ChangeExtension(sourcePath, ".doc");
         var nativePath = Path.ChangeExtension(sourcePath, ".native.doc");
@@ -8800,8 +8800,8 @@ public class DocStructureWalkerTests
     [Fact]
     public void ThemeParagraphShadingResolvesInBodyHeaderAndFooter()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordThreeLevelStyleOverrides.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
@@ -8878,9 +8878,9 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
             AssertWordFirstPageRenderClose(source.ToArray(), binary, 0.03);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-theme-paragraph-{Guid.NewGuid():N}.docx");
-        var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+        var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
         File.WriteAllBytes(sourcePath, source.ToArray());
         dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
         word.Visible = false;
@@ -8939,8 +8939,8 @@ public class DocStructureWalkerTests
             BorderValues.DashDotStroked, BorderValues.ThreeDEmboss,
             BorderValues.ThreeDEngrave, BorderValues.Outset, BorderValues.Inset
         };
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordThreeLevelStyleOverrides.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
@@ -8988,12 +8988,12 @@ public class DocStructureWalkerTests
     [Fact]
     public void IndexedTableRowsKeepStoryPositionsAndPhysicalOffsets()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory, "WordTablesAllStories.docx"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, "WordTablesAllStories.docx"));
         foreach (var binary in new[]
         {
-            File.ReadAllBytes(Path.Combine(directory, "WordTablesAllStories.doc")),
+            File.ReadAllBytes(FixturePath.Combine(directory, "WordTablesAllStories.doc")),
             DxpDocExport.Export(source)
         })
         {
@@ -9139,7 +9139,7 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
             AssertWordFirstPageRenderClose(stream.ToArray(), binary.ToArray(), 0.03);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var path = Path.Combine(Path.GetTempPath(),
+        var path = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-applied-table-style-{Guid.NewGuid():N}.doc");
         var savedPath = Path.ChangeExtension(path, ".saved.docx");
         File.WriteAllBytes(path, binary.ToArray());
@@ -9237,7 +9237,7 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
             AssertWordFirstPageRenderClose(source.ToArray(), binary, 0.03);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var path = Path.Combine(Path.GetTempPath(),
+        var path = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-adjacent-same-style-{Guid.NewGuid():N}.doc");
         File.WriteAllBytes(path, binary);
         dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -9263,8 +9263,8 @@ public class DocStructureWalkerTests
     public void AdjacentSameStyleTablesStaySeparateInHeaderAndFooterStories(
         bool activateAllSlots)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordThreeLevelStyleOverrides.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
@@ -9347,7 +9347,7 @@ public class DocStructureWalkerTests
             }
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var docPath = Path.Combine(Path.GetTempPath(),
+        var docPath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-adjacent-story-tables-{Guid.NewGuid():N}.doc");
         var sourcePath = Path.ChangeExtension(docPath, ".source.docx");
         var nativePath = Path.ChangeExtension(docPath, ".native.doc");
@@ -9511,7 +9511,7 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
             AssertWordFirstPageRenderClose(source.ToArray(), bytes, 0.04);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var path = Path.Combine(Path.GetTempPath(),
+        var path = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-legacy-border-{Guid.NewGuid():N}.doc");
         File.WriteAllBytes(path, bytes);
         dynamic app = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -9602,7 +9602,7 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
             AssertWordFirstPageRenderClose(source.ToArray(), bytes, 0.04);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var path = Path.Combine(Path.GetTempPath(),
+        var path = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-legacy-table-border-{Guid.NewGuid():N}.doc");
         File.WriteAllBytes(path, bytes);
         dynamic app = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -9658,8 +9658,8 @@ public class DocStructureWalkerTests
     [Fact]
     public void EditedFloatingWrapPolygonIsExplicitlyUnsupportedInDocWriter()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordTightFloatingPngBody.docx"));
         using var stream = new MemoryStream();
         stream.Write(File.ReadAllBytes(path));
@@ -9683,8 +9683,8 @@ public class DocStructureWalkerTests
     public void InlineImageSurvivesDocxToDocInBodyOrHeader(string fixture,
         bool inHeader, bool inFooter, string expectedHash)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             fixture));
         var sourceDocx = DxpDocToDocx.Project(path).DocxBytes;
         var binary = DxpDocExport.Export(sourceDocx);
@@ -9714,7 +9714,7 @@ public class DocStructureWalkerTests
         Assert.Empty(new OpenXmlValidator().Validate(document));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var generatedPath = Path.Combine(Path.GetTempPath(),
+            var generatedPath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-written-image-{Guid.NewGuid():N}.doc");
             File.WriteAllBytes(generatedPath, binary);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -9747,11 +9747,11 @@ public class DocStructureWalkerTests
     [Fact]
     public void DistinctInlineImagesKeepTheirOwnBinaryDataRecords()
     {
-        var fixtureDirectory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var pngDocx = DxpDocToDocx.Project(Path.Combine(fixtureDirectory,
+        var fixtureDirectory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var pngDocx = DxpDocToDocx.Project(FixturePath.Combine(fixtureDirectory,
             "WordInlinePngBody.doc")).DocxBytes;
-        var jpegDocx = DxpDocToDocx.Project(Path.Combine(fixtureDirectory,
+        var jpegDocx = DxpDocToDocx.Project(FixturePath.Combine(fixtureDirectory,
             "WordInlineJpegHeader.doc")).DocxBytes;
         using var pngStream = new MemoryStream(pngDocx);
         using var pngSource = WordprocessingDocument.Open(pngStream, false);
@@ -9812,7 +9812,7 @@ public class DocStructureWalkerTests
         Assert.Empty(new OpenXmlValidator().Validate(result));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var generatedPath = Path.Combine(Path.GetTempPath(),
+            var generatedPath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-written-images-{Guid.NewGuid():N}.doc");
             File.WriteAllBytes(generatedPath, binary);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -9838,8 +9838,8 @@ public class DocStructureWalkerTests
     [Fact]
     public void WordInlineJpegInHeaderProjectsWithOriginalBytes()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordInlineJpegHeader.doc"));
         using (var index = new DocTextIndexWalker().Index(path))
         {
@@ -9870,7 +9870,7 @@ public class DocStructureWalkerTests
         Assert.Empty(new OpenXmlValidator().Validate(document));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var projectedPath = Path.Combine(Path.GetTempPath(),
+            var projectedPath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-inline-image-{Guid.NewGuid():N}.docx");
             File.WriteAllBytes(projectedPath, result.DocxBytes);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -9896,7 +9896,7 @@ public class DocStructureWalkerTests
     [Fact]
     public void WordListParagraphsExposeOverrideAndLevelInSemanticIndex()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
             "..", "..", "..", "..", "samples", "TestLists.doc"));
         using var index = new DocTextIndexWalker().Index(path);
         Assert.NotEmpty(index.Lists.Definitions);
@@ -9920,7 +9920,7 @@ public class DocStructureWalkerTests
     [Fact]
     public void WordListParagraphsProjectAsEditableDocxNumbering()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
             "..", "..", "..", "..", "samples", "TestLists.doc"));
         var result = DxpDocToDocx.Project(File.ReadAllBytes(path));
         using var stream = new MemoryStream(result.DocxBytes);
@@ -9935,7 +9935,7 @@ public class DocStructureWalkerTests
     [Fact]
     public void WordTrackedListEditsProjectAsEditableRevisions()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
             "..", "..", "..", "..", "samples", "TestLists.doc"));
         using var index = new DocTextIndexWalker().Index(path);
         Assert.Contains(index.CharacterFormatting, x => x.Formatting.DeletedRevision == true);
@@ -10056,9 +10056,9 @@ public class DocStructureWalkerTests
 
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var path = Path.Combine(Path.GetTempPath(),
+            var path = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-revision-stories-{Guid.NewGuid():N}.doc");
-            var nativePath = Path.Combine(Path.GetTempPath(),
+            var nativePath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-revision-stories-native-{Guid.NewGuid():N}.doc");
             File.WriteAllBytes(path, binary);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -10148,9 +10148,9 @@ public class DocStructureWalkerTests
 
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var path = Path.Combine(Path.GetTempPath(),
+            var path = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-adjacent-revisions-{Guid.NewGuid():N}.doc");
-            var nativePath = Path.Combine(Path.GetTempPath(),
+            var nativePath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-adjacent-revisions-native-{Guid.NewGuid():N}.doc");
             File.WriteAllBytes(path, binary);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -10200,7 +10200,7 @@ public class DocStructureWalkerTests
     [Fact]
     public void DocListRoundTripWritesEditableBinaryNumbering()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
             "..", "..", "..", "..", "samples", "TestLists.doc"));
         var sourceDocx = DxpDocToDocx.Project(File.ReadAllBytes(path)).DocxBytes;
         var binary = DxpDocExport.Export(sourceDocx);
@@ -10220,7 +10220,7 @@ public class DocStructureWalkerTests
         Assert.Empty(new OpenXmlValidator().Validate(document));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var wordPath = Path.Combine(Path.GetTempPath(),
+            var wordPath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-list-{Guid.NewGuid():N}.doc");
             File.WriteAllBytes(wordPath, binary);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -10235,7 +10235,7 @@ public class DocStructureWalkerTests
                     if ((int)paragraph.Range.ListFormat.ListType != 0)
                         labels.Add((string)paragraph.Range.ListFormat.ListString);
                 Assert.NotEmpty(labels);
-                var sourceDocxPath = Path.Combine(Path.GetTempPath(),
+                var sourceDocxPath = FixturePath.Combine(Path.GetTempPath(),
                     $"docxport-list-source-{Guid.NewGuid():N}.docx");
                 File.WriteAllBytes(sourceDocxPath, sourceDocx);
                 try
@@ -10287,19 +10287,19 @@ public class DocStructureWalkerTests
     public void TrackedListRevisionViewsKeepWordLabelsAcrossDocHops()
     {
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var nativePath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
+        var nativePath = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
             "..", "..", "..", "..", "samples", "TestLists.doc"));
         var native = File.ReadAllBytes(nativePath);
         var projected = DxpDocToDocx.Project(native).DocxBytes;
         var generated = DxpDocExport.Export(projected);
-        var temporary = Path.Combine(Path.GetTempPath(),
+        var temporary = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-tracked-lists-{Guid.NewGuid():N}");
         Directory.CreateDirectory(temporary);
         var paths = new[]
         {
-            Path.Combine(temporary, "native.doc"),
-            Path.Combine(temporary, "projected.docx"),
-            Path.Combine(temporary, "generated.doc")
+            FixturePath.Combine(temporary, "native.doc"),
+            FixturePath.Combine(temporary, "projected.docx"),
+            FixturePath.Combine(temporary, "generated.doc")
         };
         File.WriteAllBytes(paths[0], native);
         File.WriteAllBytes(paths[1], projected);
@@ -10420,14 +10420,14 @@ public class DocStructureWalkerTests
             AssertWordFirstPageRenderClose(source.ToArray(), firstDoc, 0.04);
             AssertWordFirstPageRenderClose(source.ToArray(), firstProjection, 0.04);
             AssertWordFirstPageRenderClose(source.ToArray(), thirdProjection, 0.04);
-            var directory = Path.Combine(Path.GetTempPath(),
+            var directory = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-list-story-revisions-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(directory);
             try
             {
-                var sourcePath = Path.Combine(directory, "source.docx");
-                var nativePath = Path.Combine(directory, "native.doc");
-                var generatedPath = Path.Combine(directory, "generated.doc");
+                var sourcePath = FixturePath.Combine(directory, "source.docx");
+                var nativePath = FixturePath.Combine(directory, "native.doc");
+                var generatedPath = FixturePath.Combine(directory, "generated.doc");
                 File.WriteAllBytes(sourcePath, source.ToArray());
                 File.WriteAllBytes(generatedPath, firstDoc);
                 dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID(
@@ -10587,8 +10587,8 @@ public class DocStructureWalkerTests
     [InlineData("WordFloatingBmpAllStories")]
     public void WordBmpImagesRoundTripThroughAllStories(string name)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             name + ".docx"));
         var source = File.ReadAllBytes(path);
         byte[] expected;
@@ -10629,7 +10629,7 @@ public class DocStructureWalkerTests
             }
             Assert.Empty(new OpenXmlValidator().Validate(document));
         }
-        var native = File.ReadAllBytes(Path.ChangeExtension(path, ".doc"));
+        var native = File.ReadAllBytes(FixturePath.Resolve(Path.ChangeExtension(path, ".doc")));
         var nativeProjection = DxpDocToDocx.Project(native).DocxBytes;
         using (var stream = new MemoryStream(nativeProjection))
         using (var document = WordprocessingDocument.Open(stream, false))
@@ -10665,8 +10665,8 @@ public class DocStructureWalkerTests
     [Fact]
     public void WordTiffImagesRoundTripThroughAllStories()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordTiffAllStories.docx"));
         var source = File.ReadAllBytes(path);
         byte[] sourceTiff;
@@ -10707,7 +10707,7 @@ public class DocStructureWalkerTests
             }
             Assert.Empty(new OpenXmlValidator().Validate(document));
         }
-        var native = File.ReadAllBytes(Path.ChangeExtension(path, ".doc"));
+        var native = File.ReadAllBytes(FixturePath.Resolve(Path.ChangeExtension(path, ".doc")));
         var nativeProjection = DxpDocToDocx.Project(native).DocxBytes;
         using (var stream = new MemoryStream(nativeProjection))
         using (var document = WordprocessingDocument.Open(stream, false))
@@ -10741,8 +10741,8 @@ public class DocStructureWalkerTests
     [Fact]
     public void WordFloatingTiffImagesRoundTripThroughAllStories()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordFloatingTiffAllStories.docx"));
         var source = File.ReadAllBytes(path);
         byte[] sourceTiff;
@@ -10782,7 +10782,7 @@ public class DocStructureWalkerTests
             }
             Assert.Empty(new OpenXmlValidator().Validate(document));
         }
-        var native = File.ReadAllBytes(Path.ChangeExtension(path, ".doc"));
+        var native = File.ReadAllBytes(FixturePath.Resolve(Path.ChangeExtension(path, ".doc")));
         var nativeProjection = DxpDocToDocx.Project(native).DocxBytes;
         using (var stream = new MemoryStream(nativeProjection))
         using (var document = WordprocessingDocument.Open(stream, false))
@@ -10865,16 +10865,16 @@ public class DocStructureWalkerTests
             Assert.True(errors.Length == 0, string.Join("\n", errors.Select(x =>
                 $"{x.Description} at {x.Path?.XPath}: {x.Node?.OuterXml}")));
         }
-        var temporary = Path.Combine(Path.GetTempPath(),
+        var temporary = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-nested-revisions-{Guid.NewGuid():N}");
         Directory.CreateDirectory(temporary);
         var paths = new[]
         {
-            Path.Combine(temporary, "source.docx"),
-            Path.Combine(temporary, "native.doc"),
-            Path.Combine(temporary, "native-projected.docx"),
-            Path.Combine(temporary, "generated.doc"),
-            Path.Combine(temporary, "rewritten-native.doc")
+            FixturePath.Combine(temporary, "source.docx"),
+            FixturePath.Combine(temporary, "native.doc"),
+            FixturePath.Combine(temporary, "native-projected.docx"),
+            FixturePath.Combine(temporary, "generated.doc"),
+            FixturePath.Combine(temporary, "rewritten-native.doc")
         };
         File.WriteAllBytes(paths[0], source.ToArray());
         dynamic word = Activator.CreateInstance(
@@ -11035,7 +11035,7 @@ public class DocStructureWalkerTests
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var prefix = Path.Combine(Path.GetTempPath(),
+            var prefix = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-list-restart-{Guid.NewGuid():N}");
             var paths = new[] { prefix + ".docx", prefix + ".doc",
                 prefix + "-projected.docx", prefix + "-native.doc",
@@ -11177,7 +11177,7 @@ public class DocStructureWalkerTests
             AssertWordFirstPageRenderClose(source.ToArray(), third, 0.04);
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var prefix = Path.Combine(Path.GetTempPath(),
+        var prefix = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-deep-restart-{Guid.NewGuid():N}");
         var paths = new[] { prefix + ".docx", prefix + ".doc",
             prefix + "-projected.docx", prefix + "-third.doc",
@@ -11282,7 +11282,7 @@ public class DocStructureWalkerTests
                 AssertWordPageRenderClose(source.ToArray(), third, 0.04, page);
             }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var prefix = Path.Combine(Path.GetTempPath(),
+        var prefix = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-list-sections-{Guid.NewGuid():N}");
         var paths = new[] { prefix + ".docx", prefix + ".doc",
             prefix + "-projected.docx", prefix + "-third.doc",
@@ -11439,10 +11439,10 @@ public class DocStructureWalkerTests
             AssertWordFirstPageRenderClose(source.ToArray(), binary, 0.04);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var path = Path.Combine(Path.GetTempPath(),
+            var path = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-list-stories-{Guid.NewGuid():N}.doc");
-            var sourcePath = Path.ChangeExtension(path, ".docx");
-            var nativePath = Path.Combine(Path.GetDirectoryName(path)!,
+            var sourcePath = FixturePath.Resolve(Path.ChangeExtension(path, ".docx"));
+            var nativePath = FixturePath.Combine(Path.GetDirectoryName(path)!,
                 Path.GetFileNameWithoutExtension(path) + "-native.doc");
             File.WriteAllBytes(path, binary);
             File.WriteAllBytes(sourcePath, source.ToArray());
@@ -12021,7 +12021,7 @@ public class DocStructureWalkerTests
             new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateAcceptConfig()));
         Assert.Contains("Hel— Ω", fromBytes);
 
-        var path = Path.Combine(Path.GetTempPath(), $"doc-export-{Guid.NewGuid():N}.doc");
+        var path = FixturePath.Combine(Path.GetTempPath(), $"doc-export-{Guid.NewGuid():N}.doc");
         try
         {
             File.WriteAllBytes(path, bytes);
@@ -12190,13 +12190,13 @@ public class DocStructureWalkerTests
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
         {
-            var directory = Path.Combine(Path.GetTempPath(),
+            var directory = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-styled-field-code-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(directory);
             try
             {
-                var sourcePath = Path.Combine(directory, "source.docx");
-                var nativePath = Path.Combine(directory, "native.doc");
+                var sourcePath = FixturePath.Combine(directory, "source.docx");
+                var nativePath = FixturePath.Combine(directory, "native.doc");
                 File.WriteAllBytes(sourcePath, source.ToArray());
                 dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID(
                     "Word.Application")!)!;
@@ -12338,9 +12338,9 @@ public class DocStructureWalkerTests
             AssertWordPageRenderClose(source.ToArray(), generated, 0.04, 2, ".doc");
             AssertWordPageRenderClose(source.ToArray(), projection, 0.04, 1, ".docx");
             AssertWordPageRenderClose(source.ToArray(), projection, 0.04, 2, ".docx");
-            var sourcePath = Path.Combine(Path.GetTempPath(),
+            var sourcePath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-legacy-page-{Guid.NewGuid():N}.docx");
-            var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+            var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
             File.WriteAllBytes(sourcePath, source.ToArray());
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID(
                 "Word.Application")!)!;
@@ -12458,9 +12458,9 @@ public class DocStructureWalkerTests
         {
             AssertWordFirstPageRenderClose(source.ToArray(), generated, 0.04);
             AssertWordPageRenderClose(source.ToArray(), projection, 0.04, 1, ".docx");
-            var sourcePath = Path.Combine(Path.GetTempPath(),
+            var sourcePath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-legacy-dates-{Guid.NewGuid():N}.docx");
-            var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+            var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
             File.WriteAllBytes(sourcePath, source.ToArray());
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID(
                 "Word.Application")!)!;
@@ -12603,9 +12603,9 @@ public class DocStructureWalkerTests
             return;
         AssertWordFirstPageRenderClose(source.ToArray(), generated, 0.04);
         AssertWordPageRenderClose(source.ToArray(), projected, 0.04, 1, ".docx");
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-legacy-table-{Guid.NewGuid():N}.docx");
-        var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+        var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
         File.WriteAllBytes(sourcePath, source.ToArray());
         dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID(
             "Word.Application")!)!;
@@ -12696,7 +12696,7 @@ public class DocStructureWalkerTests
         {
             if (!OperatingSystem.IsWindows())
                 throw new PlatformNotSupportedException("Word automation requires Windows.");
-            var path = Path.Combine(Path.GetTempPath(),
+            var path = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-page-field-" + Guid.NewGuid().ToString("N") + ".doc");
             var wordSavedPath = Path.ChangeExtension(path, ".word-saved.doc");
             File.WriteAllBytes(path, bytes);
@@ -12746,8 +12746,8 @@ public class DocStructureWalkerTests
     [InlineData(3)]
     public void CharacterGridModesRetainPitchAndVisibleLayoutInAllStories(byte mode)
     {
-        var fixture = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var fixture = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordSectionLineGridSnapAllStories.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(fixture));
@@ -12823,9 +12823,9 @@ public class DocStructureWalkerTests
         Check(DxpDocExport.Export(DxpDocToDocx.Project(generated).DocxBytes));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
         {
-            var sourcePath = Path.Combine(Path.GetTempPath(),
+            var sourcePath = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-character-grid-" + Guid.NewGuid().ToString("N") + ".docx");
-            var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+            var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
             File.WriteAllBytes(sourcePath, source.ToArray());
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID(
                 "Word.Application")!)!;
@@ -12944,9 +12944,9 @@ public class DocStructureWalkerTests
         Check(DxpDocExport.Export(DxpDocToDocx.Project(generated).DocxBytes));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
         {
-            var sourcePath = Path.Combine(Path.GetTempPath(),
+            var sourcePath = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-line-grid-" + Guid.NewGuid().ToString("N") + ".docx");
-            var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+            var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
             File.WriteAllBytes(sourcePath, source.ToArray());
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID(
                 "Word.Application")!)!;
@@ -13057,9 +13057,9 @@ public class DocStructureWalkerTests
         Check(DxpDocExport.Export(DxpDocToDocx.Project(generated).DocxBytes));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
         {
-            var sourcePath = Path.Combine(Path.GetTempPath(),
+            var sourcePath = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-right-grid-" + Guid.NewGuid().ToString("N") + ".docx");
-            var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+            var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
             File.WriteAllBytes(sourcePath, source.ToArray());
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID(
                 "Word.Application")!)!;
@@ -13198,9 +13198,9 @@ public class DocStructureWalkerTests
         Check(DxpDocExport.Export(projected));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
         {
-            var sourcePath = Path.Combine(Path.GetTempPath(),
+            var sourcePath = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-cjk-break-" + Guid.NewGuid().ToString("N") + ".docx");
-            var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+            var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
             File.WriteAllBytes(sourcePath, source.ToArray());
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID(
                 "Word.Application")!)!;
@@ -13338,9 +13338,9 @@ public class DocStructureWalkerTests
         Check(DxpDocExport.Export(projected));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
         {
-            var sourcePath = Path.Combine(Path.GetTempPath(),
+            var sourcePath = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-cjk-spacing-" + Guid.NewGuid().ToString("N") + ".docx");
-            var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+            var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
             File.WriteAllBytes(sourcePath, source.ToArray());
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID(
                 "Word.Application")!)!;
@@ -13468,9 +13468,9 @@ public class DocStructureWalkerTests
             AssertWordFirstPageRenderClose(source.ToArray(), generated, 0.04);
             AssertWordFirstPageRenderClose(source.ToArray(),
                 DxpDocToDocx.Project(generated).DocxBytes, 0.04);
-            var sourcePath = Path.Combine(Path.GetTempPath(),
+            var sourcePath = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-outline-" + Guid.NewGuid().ToString("N") + ".docx");
-            var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+            var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
             File.WriteAllBytes(sourcePath, source.ToArray());
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID(
                 "Word.Application")!)!;
@@ -13532,9 +13532,9 @@ public class DocStructureWalkerTests
             AssertWordFirstPageRenderClose(source.ToArray(), doc, 0.04);
             AssertWordFirstPageRenderClose(source.ToArray(),
                 DxpDocToDocx.Project(doc).DocxBytes, 0.04);
-            var sourcePath = Path.Combine(Path.GetTempPath(),
+            var sourcePath = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-revision-property-" + Guid.NewGuid().ToString("N") + ".docx");
-            var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+            var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
             File.WriteAllBytes(sourcePath, source.ToArray());
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID(
                 "Word.Application")!)!;
@@ -13717,7 +13717,7 @@ public class DocStructureWalkerTests
             Assert.Empty(new OpenXmlValidator().Validate(third));
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-display-field-{Guid.NewGuid():N}.docx");
         var generatedPath = Path.ChangeExtension(sourcePath, ".doc");
         var nativePath = Path.ChangeExtension(sourcePath, ".native.doc");
@@ -13922,7 +13922,7 @@ public class DocStructureWalkerTests
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var path = Path.Combine(Path.GetTempPath(),
+            var path = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-mark-format-" + Guid.NewGuid().ToString("N") + ".doc");
             File.WriteAllBytes(path, bytes);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -14044,10 +14044,10 @@ public class DocStructureWalkerTests
 
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var path = Path.Combine(Path.GetTempPath(),
+            var path = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-styled-marks-" + Guid.NewGuid().ToString("N") + ".doc");
-            var sourcePath = Path.ChangeExtension(path, ".docx");
-            var nativePath = Path.Combine(Path.GetTempPath(),
+            var sourcePath = FixturePath.Resolve(Path.ChangeExtension(path, ".docx"));
+            var nativePath = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-styled-marks-native-" + Guid.NewGuid().ToString("N") + ".doc");
             File.WriteAllBytes(path, firstDoc);
             File.WriteAllBytes(sourcePath, source.ToArray());
@@ -14152,7 +14152,7 @@ public class DocStructureWalkerTests
         Assert.Empty(new OpenXmlValidator().Validate(projected));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var path = Path.Combine(Path.GetTempPath(),
+            var path = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-story-merge-{Guid.NewGuid():N}.doc");
             File.WriteAllBytes(path, binary);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -14266,7 +14266,7 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
         {
             AssertWordFirstPageRenderClose(source.ToArray(), binary, 0.075);
-            var docxPath = Path.Combine(Path.GetTempPath(),
+            var docxPath = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-hmerge-" + Guid.NewGuid().ToString("N") + ".docx");
             var docPath = Path.ChangeExtension(docxPath, ".doc");
             File.WriteAllBytes(docxPath, source.ToArray());
@@ -14404,7 +14404,7 @@ public class DocStructureWalkerTests
         Assert.Empty(new OpenXmlValidator().Validate(projected));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var path = Path.Combine(Path.GetTempPath(),
+            var path = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-hmerge-{Guid.NewGuid():N}.doc");
             var saved = Path.ChangeExtension(path, ".saved.docx");
             var sourcePath = Path.ChangeExtension(path, ".source.docx");
@@ -14589,7 +14589,7 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
             AssertWordFirstPageRenderClose(source.ToArray(), binary, 0.04);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-rtl-table-{Guid.NewGuid():N}.docx");
         var generatedPath = Path.ChangeExtension(sourcePath, ".doc");
         var nativePath = Path.ChangeExtension(sourcePath, ".native.doc");
@@ -14746,13 +14746,13 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
         {
             AssertWordFirstPageRenderClose(source.ToArray(), generatedDoc, 0.004);
-            var directory = Path.Combine(Path.GetTempPath(),
+            var directory = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-logical-story-borders-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(directory);
             try
             {
-                var sourcePath = Path.Combine(directory, "source.docx");
-                var nativePath = Path.Combine(directory, "native.doc");
+                var sourcePath = FixturePath.Combine(directory, "source.docx");
+                var nativePath = FixturePath.Combine(directory, "native.doc");
                 File.WriteAllBytes(sourcePath, source.ToArray());
                 dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID(
                     "Word.Application")!)!;
@@ -14878,13 +14878,13 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
             AssertWordFirstPageRenderClose(source.ToArray(), generated, 0.04);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var directory = Path.Combine(Path.GetTempPath(),
+        var directory = FixturePath.Combine(Path.GetTempPath(),
             "docxport-logical-borders-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(directory);
         try
         {
-            var sourcePath = Path.Combine(directory, "source.docx");
-            var nativePath = Path.Combine(directory, "native.doc");
+            var sourcePath = FixturePath.Combine(directory, "source.docx");
+            var nativePath = FixturePath.Combine(directory, "native.doc");
             File.WriteAllBytes(sourcePath, source.ToArray());
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
             word.Visible = false;
@@ -14994,10 +14994,10 @@ public class DocStructureWalkerTests
             Assert.Empty(new OpenXmlValidator().Validate(document));
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1") return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-2x2-border-{Guid.NewGuid():N}.docx");
         var generatedPath = Path.ChangeExtension(sourcePath, ".doc");
-        var nativePath = Path.Combine(Path.GetTempPath(),
+        var nativePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-2x2-native-{Guid.NewGuid():N}.doc");
         File.WriteAllBytes(sourcePath, source.ToArray());
         File.WriteAllBytes(generatedPath, generated);
@@ -15121,10 +15121,10 @@ public class DocStructureWalkerTests
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
         {
-            var sourcePath = Path.Combine(Path.GetTempPath(),
+            var sourcePath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-row-border-source-{Guid.NewGuid():N}.docx");
             var generatedPath = Path.ChangeExtension(sourcePath, ".doc");
-            var nativePath = Path.Combine(Path.GetTempPath(),
+            var nativePath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-row-border-native-{Guid.NewGuid():N}.doc");
             File.WriteAllBytes(sourcePath, source.ToArray());
             File.WriteAllBytes(generatedPath, generated);
@@ -15309,9 +15309,9 @@ public class DocStructureWalkerTests
             Assert.Empty(new OpenXmlValidator().Validate(document));
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1") return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-one-column-borders-{Guid.NewGuid():N}.docx");
-        var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+        var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
         var generatedPath = Path.ChangeExtension(sourcePath, ".generated.doc");
         File.WriteAllBytes(sourcePath, source.ToArray());
         File.WriteAllBytes(generatedPath, generated);
@@ -15452,9 +15452,9 @@ public class DocStructureWalkerTests
             Assert.Empty(new OpenXmlValidator().Validate(document));
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1") return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-column-top-{Guid.NewGuid():N}.docx");
-        var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+        var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
         File.WriteAllBytes(sourcePath, source.ToArray());
         dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
         word.Visible = false;
@@ -15565,10 +15565,10 @@ public class DocStructureWalkerTests
         byte[]? nativeProjectedBytes = null;
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
         {
-            var sourcePath = Path.Combine(Path.GetTempPath(),
+            var sourcePath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-column-border-source-{Guid.NewGuid():N}.docx");
             var generatedPath = Path.ChangeExtension(sourcePath, ".doc");
-            var nativePath = Path.Combine(Path.GetTempPath(),
+            var nativePath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-column-border-native-{Guid.NewGuid():N}.doc");
             File.WriteAllBytes(sourcePath, source.ToArray());
             File.WriteAllBytes(generatedPath, generated);
@@ -15783,10 +15783,10 @@ public class DocStructureWalkerTests
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1")
             return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-side-overlap-{Guid.NewGuid():N}.docx");
         var generatedPath = Path.ChangeExtension(sourcePath, ".doc");
-        var nativePath = Path.Combine(Path.GetTempPath(),
+        var nativePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-side-overlap-native-{Guid.NewGuid():N}.doc");
         File.WriteAllBytes(sourcePath, original);
         File.WriteAllBytes(generatedPath, generated);
@@ -15920,13 +15920,13 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
             AssertWordFirstPageRenderClose(source.ToArray(), generated, 0.04);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var directory = Path.Combine(Path.GetTempPath(),
+        var directory = FixturePath.Combine(Path.GetTempPath(),
             "docxport-shading-nil-clear-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(directory);
         try
         {
-            var sourcePath = Path.Combine(directory, "source.docx");
-            var nativePath = Path.Combine(directory, "native.doc");
+            var sourcePath = FixturePath.Combine(directory, "source.docx");
+            var nativePath = FixturePath.Combine(directory, "native.doc");
             File.WriteAllBytes(sourcePath, source.ToArray());
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
             word.Visible = false;
@@ -16028,7 +16028,7 @@ public class DocStructureWalkerTests
             tables.Select(x => x.InnerText));
         Assert.Empty(new OpenXmlValidator().Validate(projected));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var generatedPath = Path.Combine(Path.GetTempPath(),
+        var generatedPath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-adjacent-rtl-{Guid.NewGuid():N}.doc");
         var sourcePath = Path.ChangeExtension(generatedPath, ".source.docx");
         var nativePath = Path.ChangeExtension(generatedPath, ".native.doc");
@@ -16115,7 +16115,7 @@ public class DocStructureWalkerTests
         Assert.Empty(new OpenXmlValidator().Validate(projected));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var path = Path.Combine(Path.GetTempPath(),
+            var path = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-vmerge-{Guid.NewGuid():N}.doc");
             var saved = Path.ChangeExtension(path, ".saved.docx");
             var sourcePath = Path.ChangeExtension(path, ".source.docx");
@@ -16225,7 +16225,7 @@ public class DocStructureWalkerTests
             x.Path?.XPath + ": " + x.Description)));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var path = Path.Combine(Path.GetTempPath(),
+            var path = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-table-" + Guid.NewGuid().ToString("N") + ".doc");
             var wordSavedPath = Path.ChangeExtension(path, ".word-saved.doc");
             var sourcePath = Path.ChangeExtension(path, ".source.docx");
@@ -16368,10 +16368,10 @@ public class DocStructureWalkerTests
         Assert.Empty(new OpenXmlValidator().Validate(projected));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var path = Path.Combine(Path.GetTempPath(),
+            var path = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-story-tables-" + Guid.NewGuid().ToString("N") + ".doc");
-            var sourcePath = Path.ChangeExtension(path, ".docx");
-            var nativePath = Path.Combine(Path.GetDirectoryName(path)!,
+            var sourcePath = FixturePath.Resolve(Path.ChangeExtension(path, ".docx"));
+            var nativePath = FixturePath.Combine(Path.GetDirectoryName(path)!,
                 Path.GetFileNameWithoutExtension(path) + "-native.doc");
             File.WriteAllBytes(path, bytes);
             File.WriteAllBytes(sourcePath, source.ToArray());
@@ -16518,10 +16518,10 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
             AssertWordFirstPageRenderClose(source.ToArray(), binary, 0.04);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var generatedPath = Path.Combine(Path.GetTempPath(),
+        var generatedPath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-placement-{Guid.NewGuid():N}.doc");
-        var sourcePath = Path.ChangeExtension(generatedPath, ".docx");
-        var nativePath = Path.Combine(Path.GetDirectoryName(generatedPath)!,
+        var sourcePath = FixturePath.Resolve(Path.ChangeExtension(generatedPath, ".docx"));
+        var nativePath = FixturePath.Combine(Path.GetDirectoryName(generatedPath)!,
             Path.GetFileNameWithoutExtension(generatedPath) + "-native.doc");
         File.WriteAllBytes(generatedPath, binary);
         File.WriteAllBytes(sourcePath, source.ToArray());
@@ -16652,7 +16652,7 @@ public class DocStructureWalkerTests
         Assert.Empty(new OpenXmlValidator().Validate(projected));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var path = Path.Combine(Path.GetTempPath(),
+            var path = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-row-format-" + Guid.NewGuid().ToString("N") + ".doc");
             File.WriteAllBytes(path, bytes);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -16817,13 +16817,13 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
             AssertWordFirstPageRenderClose(source.ToArray(), generated, 0.04);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var directory = Path.Combine(Path.GetTempPath(),
+        var directory = FixturePath.Combine(Path.GetTempPath(),
             "docxport-none-nil-borders-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(directory);
         try
         {
-            var sourcePath = Path.Combine(directory, "source.docx");
-            var nativePath = Path.Combine(directory, "native.doc");
+            var sourcePath = FixturePath.Combine(directory, "source.docx");
+            var nativePath = FixturePath.Combine(directory, "native.doc");
             File.WriteAllBytes(sourcePath, source.ToArray());
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
             word.Visible = false;
@@ -16988,15 +16988,15 @@ public class DocStructureWalkerTests
             AssertWordPageRenderClose(source.ToArray(), projected, 0.04, 1, ".docx");
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var directory = Path.Combine(Path.GetTempPath(),
+        var directory = FixturePath.Combine(Path.GetTempPath(),
             "docxport-style-valign-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(directory);
         try
         {
-            var sourcePath = Path.Combine(directory, "source.docx");
-            var nativePath = Path.Combine(directory, "native.doc");
-            var projectedPath = Path.Combine(directory, "projected.docx");
-            var wordSavedPath = Path.Combine(directory, "word-saved.docx");
+            var sourcePath = FixturePath.Combine(directory, "source.docx");
+            var nativePath = FixturePath.Combine(directory, "native.doc");
+            var projectedPath = FixturePath.Combine(directory, "projected.docx");
+            var wordSavedPath = FixturePath.Combine(directory, "word-saved.docx");
             File.WriteAllBytes(sourcePath, source.ToArray());
             File.WriteAllBytes(projectedPath, projected);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -17112,15 +17112,15 @@ public class DocStructureWalkerTests
         AssertReusable(DxpDocToDocx.Project(
             DxpDocExport.Export(projected)).DocxBytes);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var directory = Path.Combine(Path.GetTempPath(),
+        var directory = FixturePath.Combine(Path.GetTempPath(),
             "docxport-twelve-valign-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(directory);
         try
         {
-            var projectedPath = Path.Combine(directory, "projected.docx");
-            var savedPath = Path.Combine(directory, "saved.docx");
-            var generatedPath = Path.Combine(directory, "generated.doc");
-            var generatedSavedPath = Path.Combine(directory, "generated-saved.docx");
+            var projectedPath = FixturePath.Combine(directory, "projected.docx");
+            var savedPath = FixturePath.Combine(directory, "saved.docx");
+            var generatedPath = FixturePath.Combine(directory, "generated.doc");
+            var generatedSavedPath = FixturePath.Combine(directory, "generated-saved.docx");
             File.WriteAllBytes(projectedPath, projected);
             File.WriteAllBytes(generatedPath, generated);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -17231,13 +17231,13 @@ public class DocStructureWalkerTests
             AssertWordPageRenderClose(source.ToArray(), projected, 0.04, 1, ".docx");
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var directory = Path.Combine(Path.GetTempPath(),
+        var directory = FixturePath.Combine(Path.GetTempPath(),
             "docxport-column-valign-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(directory);
         try
         {
-            var sourcePath = Path.Combine(directory, "source.docx");
-            var nativePath = Path.Combine(directory, "native.doc");
+            var sourcePath = FixturePath.Combine(directory, "source.docx");
+            var nativePath = FixturePath.Combine(directory, "native.doc");
             File.WriteAllBytes(sourcePath, source.ToArray());
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
             word.Visible = false;
@@ -17373,13 +17373,13 @@ public class DocStructureWalkerTests
             AssertWordPageRenderClose(source.ToArray(), projected, 0.04, 1, ".docx");
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var directory = Path.Combine(Path.GetTempPath(),
+        var directory = FixturePath.Combine(Path.GetTempPath(),
             "docxport-corner-valign-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(directory);
         try
         {
-            var sourcePath = Path.Combine(directory, "source.docx");
-            var nativePath = Path.Combine(directory, "native.doc");
+            var sourcePath = FixturePath.Combine(directory, "source.docx");
+            var nativePath = FixturePath.Combine(directory, "native.doc");
             File.WriteAllBytes(sourcePath, source.ToArray());
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
             word.Visible = false;
@@ -17507,13 +17507,13 @@ public class DocStructureWalkerTests
         Assert.Empty(new OpenXmlValidator().Validate(third));
         AssertWordFirstPageRenderClose(source.ToArray(), binary, 0.04);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var directory = Path.Combine(Path.GetTempPath(),
+        var directory = FixturePath.Combine(Path.GetTempPath(),
             "docxport-nil-table-style-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(directory);
         try
         {
-            var sourcePath = Path.Combine(directory, "source.docx");
-            var nativePath = Path.Combine(directory, "native.doc");
+            var sourcePath = FixturePath.Combine(directory, "source.docx");
+            var nativePath = FixturePath.Combine(directory, "native.doc");
             File.WriteAllBytes(sourcePath, source.ToArray());
             dynamic word = Activator.CreateInstance(
                 Type.GetTypeFromProgID("Word.Application")!)!;
@@ -17684,13 +17684,13 @@ public class DocStructureWalkerTests
             AssertWordPageRenderClose(source.ToArray(), projected, 0.04, 1, ".docx");
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var directory = Path.Combine(Path.GetTempPath(),
+        var directory = FixturePath.Combine(Path.GetTempPath(),
             "docxport-band-valign-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(directory);
         try
         {
-            var sourcePath = Path.Combine(directory, "source.docx");
-            var nativePath = Path.Combine(directory, "native.doc");
+            var sourcePath = FixturePath.Combine(directory, "source.docx");
+            var nativePath = FixturePath.Combine(directory, "native.doc");
             File.WriteAllBytes(sourcePath, source.ToArray());
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
             word.Visible = false;
@@ -17930,13 +17930,13 @@ public class DocStructureWalkerTests
             AssertWordPageRenderClose(source.ToArray(), projected, 0.04, 1, ".docx");
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var directory = Path.Combine(Path.GetTempPath(),
+        var directory = FixturePath.Combine(Path.GetTempPath(),
             "docxport-overlap-valign-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(directory);
         try
         {
-            var sourcePath = Path.Combine(directory, "source.docx");
-            var nativePath = Path.Combine(directory, "native.doc");
+            var sourcePath = FixturePath.Combine(directory, "source.docx");
+            var nativePath = FixturePath.Combine(directory, "native.doc");
             File.WriteAllBytes(sourcePath, source.ToArray());
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
             word.Visible = false;
@@ -18127,13 +18127,13 @@ public class DocStructureWalkerTests
             AssertWordPageRenderClose(source.ToArray(), projected, 0.04, 1, ".docx");
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var directory = Path.Combine(Path.GetTempPath(),
+        var directory = FixturePath.Combine(Path.GetTempPath(),
             "docxport-competing-valign-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(directory);
         try
         {
-            var sourcePath = Path.Combine(directory, "source.docx");
-            var nativePath = Path.Combine(directory, "native.doc");
+            var sourcePath = FixturePath.Combine(directory, "source.docx");
+            var nativePath = FixturePath.Combine(directory, "native.doc");
             File.WriteAllBytes(sourcePath, source.ToArray());
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
             word.Visible = false;
@@ -18340,9 +18340,9 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
         {
             AssertWordFirstPageRenderClose(source.ToArray(), binary, 0.04);
-            var sourcePath = Path.Combine(Path.GetTempPath(),
+            var sourcePath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-row-gap-units-{Guid.NewGuid():N}.docx");
-            var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+            var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
             File.WriteAllBytes(sourcePath, source.ToArray());
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
             word.Visible = false;
@@ -18466,9 +18466,9 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
         {
             AssertWordFirstPageRenderClose(source.ToArray(), generated, 0.04);
-            var sourcePath = Path.Combine(Path.GetTempPath(),
+            var sourcePath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-tall-cells-{Guid.NewGuid():N}.docx");
-            var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+            var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
             File.WriteAllBytes(sourcePath, source.ToArray());
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
             word.Visible = false;
@@ -18612,9 +18612,9 @@ public class DocStructureWalkerTests
             x.Formatting.TableCellShadings[1]?.FillRgb == 0xFFEEDDu));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
         {
-            var sourcePath = Path.Combine(Path.GetTempPath(),
+            var sourcePath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-palette-cell-shading-{Guid.NewGuid():N}.docx");
-            var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+            var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
             var generatedPath = Path.ChangeExtension(sourcePath, ".generated.doc");
             var nativeDocxPath = Path.ChangeExtension(sourcePath, ".native.docx");
             File.WriteAllBytes(sourcePath, source.ToArray());
@@ -18800,10 +18800,10 @@ public class DocStructureWalkerTests
             x.Formatting?.TableCellTextFlows?.SequenceEqual(expectedFlows) == true));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
         {
-            var sourcePath = Path.Combine(Path.GetTempPath(),
+            var sourcePath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-cell-direction-{Guid.NewGuid():N}.docx");
-            var nativePath = Path.ChangeExtension(sourcePath, ".doc");
-            var generatedPath = Path.Combine(Path.GetTempPath(),
+            var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
+            var generatedPath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-cell-direction-generated-{Guid.NewGuid():N}.doc");
             File.WriteAllBytes(sourcePath, source.ToArray());
             File.WriteAllBytes(generatedPath, doc);
@@ -18954,9 +18954,9 @@ public class DocStructureWalkerTests
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1")
             return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-native-cell-pattern-{Guid.NewGuid():N}.docx");
-        var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+        var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
         File.WriteAllBytes(sourcePath, original);
         dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID(
             "Word.Application")!)!;
@@ -19244,9 +19244,9 @@ public class DocStructureWalkerTests
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1")
             return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-native-conditional-pattern-{Guid.NewGuid():N}.docx");
-        var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+        var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
         File.WriteAllBytes(sourcePath, original);
         dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID(
             "Word.Application")!)!;
@@ -19648,7 +19648,7 @@ public class DocStructureWalkerTests
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1")
             return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-overlap-shade-{Guid.NewGuid():N}.docx");
         var generatedPath = Path.ChangeExtension(sourcePath, ".generated.doc");
         var nativePath = Path.ChangeExtension(sourcePath, ".native.doc");
@@ -19825,7 +19825,7 @@ public class DocStructureWalkerTests
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1")
             return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-one-column-shade-{Guid.NewGuid():N}.docx");
         var generatedPath = Path.ChangeExtension(sourcePath, ".doc");
         var nativePath = Path.ChangeExtension(sourcePath, ".native.doc");
@@ -19954,7 +19954,7 @@ public class DocStructureWalkerTests
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1")
             return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-one-column-corners-{Guid.NewGuid():N}.docx");
         var generatedPath = Path.ChangeExtension(sourcePath, ".doc");
         var nativePath = Path.ChangeExtension(sourcePath, ".native.doc");
@@ -20091,9 +20091,9 @@ public class DocStructureWalkerTests
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1")
             return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-cell-flow-alias-{Guid.NewGuid():N}.docx");
-        var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+        var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
         File.WriteAllBytes(sourcePath, original);
         dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID(
             "Word.Application")!)!;
@@ -20220,9 +20220,9 @@ public class DocStructureWalkerTests
                 new bool?[] { true, true }) == true));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
         {
-            var sourcePath = Path.Combine(Path.GetTempPath(),
+            var sourcePath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-hide-mark-{Guid.NewGuid():N}.docx");
-            var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+            var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
             File.WriteAllBytes(sourcePath, source.ToArray());
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
             word.Visible = false;
@@ -20323,7 +20323,7 @@ public class DocStructureWalkerTests
         Assert.Empty(new OpenXmlValidator().Validate(projected));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var path = Path.Combine(Path.GetTempPath(),
+            var path = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-cell-shading-" + Guid.NewGuid().ToString("N") + ".doc");
             File.WriteAllBytes(path, bytes);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -20377,10 +20377,10 @@ public class DocStructureWalkerTests
     {
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1")
             return;
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             fixtureName));
-        var output = Path.Combine(Path.GetTempPath(),
+        var output = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-autowidth-wrap-{Guid.NewGuid():N}.doc");
         File.WriteAllBytes(output, DxpDocExport.Export(File.ReadAllBytes(path)));
         dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID(
@@ -20416,11 +20416,11 @@ public class DocStructureWalkerTests
     [InlineData("WordConditionalBandBordersThreeRowsAllStories")]
     public void WordNativeConditionalBorderProjectionUsesModernPlacement(string name)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "Doc", name + ".docx"));
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "legacy", name + ".docx"));
         var source = File.ReadAllBytes(path);
-        var native = File.ReadAllBytes(Path.ChangeExtension(path, ".doc"));
+        var native = File.ReadAllBytes(FixturePath.Resolve(Path.ChangeExtension(path, ".doc")));
         var projected = DxpDocToDocx.Project(native).DocxBytes;
         using (var package = WordprocessingDocument.Open(
             new MemoryStream(projected), false))
@@ -20442,9 +20442,9 @@ public class DocStructureWalkerTests
     [Fact]
     public void ThreeRowConditionalBandProjectionUsesModernWordCompatibility()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "Doc", "WordConditionalBandBordersThreeRowsAllStories.docx"));
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "legacy", "WordConditionalBandBordersThreeRowsAllStories.docx"));
         var source = File.ReadAllBytes(path);
         var generated = DxpDocExport.Export(source);
         var projected = DxpDocToDocx.Project(generated).DocxBytes;
@@ -20471,9 +20471,9 @@ public class DocStructureWalkerTests
     [InlineData("WordConditionalBandInheritedDirectAllStories")]
     public void InheritedTableStyleBorderUsesHalfWidthCellOrigin(string name)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
         var generated = DxpDocExport.Export(source);
         using (var input = new MemoryStream(generated))
         using (var index = new DocTextIndexWalker().Index(input))
@@ -20515,11 +20515,11 @@ public class DocStructureWalkerTests
     {
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1")
             return;
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "Doc", name + ".docx"));
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "legacy", name + ".docx"));
         var source = File.ReadAllBytes(path);
-        var native = File.ReadAllBytes(Path.ChangeExtension(path, ".doc"));
+        var native = File.ReadAllBytes(FixturePath.Resolve(Path.ChangeExtension(path, ".doc")));
         var generated = DxpDocExport.Export(source);
         foreach (var doc in new[] { native, generated })
         {
@@ -20536,11 +20536,11 @@ public class DocStructureWalkerTests
     {
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1")
             return;
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "Doc", "WordRunFitTextLayeredBoldItalicAllStories.docx"));
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "legacy", "WordRunFitTextLayeredBoldItalicAllStories.docx"));
         var source = File.ReadAllBytes(path);
-        var native = File.ReadAllBytes(Path.ChangeExtension(path, ".doc"));
+        var native = File.ReadAllBytes(FixturePath.Resolve(Path.ChangeExtension(path, ".doc")));
         var generated = DxpDocExport.Export(source);
         var nativeError = AssertWordFirstPageRenderClose(source, native, 0.11);
         var generatedError = AssertWordFirstPageRenderClose(source, generated, 0.04);
@@ -20557,19 +20557,19 @@ public class DocStructureWalkerTests
     {
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1")
             return;
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx",
             fixtureName == "WordVisibleNoWrapArialAllStories.docx" ?
-                "DocKnownGaps" : "Doc", fixtureName));
+                "regressions" : "legacy", fixtureName));
         var source = File.ReadAllBytes(path);
         var generatedError = AssertWordFirstPageRenderClose(source,
             DxpDocExport.Export(source), maximumGeneratedError);
         var nativeError = AssertWordFirstPageRenderClose(source,
-            File.ReadAllBytes(Path.ChangeExtension(path, ".doc")), 0.11);
+            File.ReadAllBytes(FixturePath.Resolve(Path.ChangeExtension(path, ".doc"))), 0.11);
         Assert.True(generatedError < nativeError,
             $"Generated DOC RMSE {generatedError} should remain below Word's native DOC RMSE {nativeError}.");
         foreach (var doc in new[] {
-            File.ReadAllBytes(Path.ChangeExtension(path, ".doc")),
+            File.ReadAllBytes(FixturePath.Resolve(Path.ChangeExtension(path, ".doc"))),
             DxpDocExport.Export(source) })
         {
             var rebuilt = DxpDocExport.Export(DxpDocToDocx.Project(doc).DocxBytes);
@@ -20589,9 +20589,9 @@ public class DocStructureWalkerTests
     {
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_STRICT_NOWRAP") != "1")
             return;
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            knownGap ? "DocKnownGaps" : "Doc", name + ".docx"));
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx",
+            knownGap ? "regressions" : "legacy", name + ".docx"));
         var source = File.ReadAllBytes(path);
         AssertWordFirstPageRenderClose(source, DxpDocExport.Export(source), 0.04);
     }
@@ -20604,9 +20604,9 @@ public class DocStructureWalkerTests
     {
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1")
             return;
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            knownGap ? "DocKnownGaps" : "Doc", name + ".docx"));
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx",
+            knownGap ? "regressions" : "legacy", name + ".docx"));
         using var controlStream = new MemoryStream(File.ReadAllBytes(path));
         using (var document = WordprocessingDocument.Open(controlStream, true))
         {
@@ -20618,7 +20618,7 @@ public class DocStructureWalkerTests
             settings.Save();
         }
         AssertWordPageRenderClose(controlStream.ToArray(),
-            File.ReadAllBytes(Path.ChangeExtension(path, ".doc")),
+            File.ReadAllBytes(FixturePath.Resolve(Path.ChangeExtension(path, ".doc"))),
             0.04, 1);
     }
 
@@ -20628,10 +20628,10 @@ public class DocStructureWalkerTests
     [InlineData("WordVisibleNoWrapArialAllStories", true)]
     public void WordAutoWidthProjectionMatchesSourceRender(string name, bool knownGap)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            knownGap ? "DocKnownGaps" : "Doc", name + ".doc"));
-        var source = File.ReadAllBytes(Path.ChangeExtension(path, ".docx"));
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "doc",
+            knownGap ? "regressions" : "legacy", name + ".doc"));
+        var source = File.ReadAllBytes(FixturePath.Resolve(Path.ChangeExtension(path, ".docx")));
         foreach (var doc in new[] { File.ReadAllBytes(path), DxpDocExport.Export(source) })
         {
             var projected = DxpDocToDocx.Project(doc).DocxBytes;
@@ -20777,11 +20777,11 @@ public class DocStructureWalkerTests
     public void WordNativeSpacedAutoFitTableBackgroundSurvivesBothDocRoutes(
         string name, bool directOverride)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "DocNativeOracle", name + ".docx"));
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "native-oracle", name + ".docx"));
         var source = File.ReadAllBytes(path);
-        var native = File.ReadAllBytes(Path.ChangeExtension(path, ".doc"));
+        var native = File.ReadAllBytes(FixturePath.Resolve(Path.ChangeExtension(path, ".doc")));
         using (var input = new MemoryStream(native))
         using (var index = new DocTextIndexWalker().Index(input))
         {
@@ -21124,10 +21124,10 @@ public class DocStructureWalkerTests
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1")
             return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-style-nowrap-{Guid.NewGuid():N}.docx");
-        var nativePath = Path.ChangeExtension(sourcePath, ".doc");
-        var generatedPath = Path.Combine(Path.GetTempPath(),
+        var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
+        var generatedPath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-style-nowrap-generated-{Guid.NewGuid():N}.doc");
         File.WriteAllBytes(sourcePath, original);
         File.WriteAllBytes(generatedPath, generated);
@@ -21279,9 +21279,9 @@ public class DocStructureWalkerTests
         Assert.Empty(new OpenXmlValidator().Validate(projected));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var sourcePath = Path.Combine(Path.GetTempPath(),
+            var sourcePath = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-cell-nowrap-" + Guid.NewGuid().ToString("N") + ".docx");
-            var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+            var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
             File.WriteAllBytes(sourcePath, source.ToArray());
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
             dynamic? opened = null;
@@ -21367,7 +21367,7 @@ public class DocStructureWalkerTests
         Assert.Empty(new OpenXmlValidator().Validate(projected));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var sourcePath = Path.Combine(Path.GetTempPath(),
+            var sourcePath = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-cell-fittext-" + Guid.NewGuid().ToString("N") + ".docx");
             var generatedPath = Path.ChangeExtension(sourcePath, ".generated.doc");
             var nativePath = Path.ChangeExtension(sourcePath, ".native.doc");
@@ -21423,8 +21423,8 @@ public class DocStructureWalkerTests
     [Fact]
     public void TableCellFitTextSurvivesBodyHeaderAndFooter()
     {
-        var fixture = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var fixture = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordTablesAllStories.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(fixture));
@@ -21470,7 +21470,7 @@ public class DocStructureWalkerTests
         AssertFitTextRows(generatedBytes);
         AssertFitTextProjection(generatedBytes);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             "docxport-all-story-fittext-" + Guid.NewGuid().ToString("N") + ".docx");
         var nativePath = Path.ChangeExtension(sourcePath, ".native.doc");
         var nativeDocxPath = Path.ChangeExtension(sourcePath, ".native.docx");
@@ -21572,7 +21572,7 @@ public class DocStructureWalkerTests
         Assert.Empty(new OpenXmlValidator().Validate(projected));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var path = Path.Combine(Path.GetTempPath(),
+            var path = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-table-borders-" + Guid.NewGuid().ToString("N") + ".doc");
             var sourcePath = Path.ChangeExtension(path, ".source.docx");
             var nativePath = Path.ChangeExtension(path, ".native.doc");
@@ -21713,9 +21713,9 @@ public class DocStructureWalkerTests
             AssertWordFirstPageRenderClose(source.ToArray(), generated, 0.04);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var sourcePath = Path.Combine(Path.GetTempPath(),
+            var sourcePath = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-first-column-gap-" + Guid.NewGuid().ToString("N") + ".docx");
-            var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+            var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
             File.WriteAllBytes(sourcePath, source.ToArray());
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
             dynamic? opened = null;
@@ -21821,8 +21821,8 @@ public class DocStructureWalkerTests
         var generated = DxpDocExport.Export(source.ToArray());
         AssertBorders(generated);
         AssertBorders(DxpDocExport.Export(DxpDocToDocx.Project(generated).DocxBytes));
-        var pairedNative = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var pairedNative = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordConditionalColumnBorders.doc"));
         var native = File.ReadAllBytes(pairedNative);
         AssertBorders(native);
@@ -21932,13 +21932,13 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
         {
             AssertWordFirstPageRenderClose(source.ToArray(), docBytes, 0.04);
-            var directory = Path.Combine(Path.GetTempPath(),
+            var directory = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-hyphen-space-{Guid.NewGuid():N}");
             Directory.CreateDirectory(directory);
             try
             {
-                var sourcePath = Path.Combine(directory, "source.docx");
-                var nativePath = Path.Combine(directory, "native.doc");
+                var sourcePath = FixturePath.Combine(directory, "source.docx");
+                var nativePath = FixturePath.Combine(directory, "native.doc");
                 File.WriteAllBytes(sourcePath, source.ToArray());
                 dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID(
                     "Word.Application")!)!;
@@ -22044,13 +22044,13 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
         {
             AssertWordFirstPageRenderClose(source.ToArray(), doc, 0.04);
-            var directory = Path.Combine(Path.GetTempPath(),
+            var directory = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-styled-controls-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(directory);
             try
             {
-                var sourcePath = Path.Combine(directory, "source.docx");
-                var nativePath = Path.Combine(directory, "native.doc");
+                var sourcePath = FixturePath.Combine(directory, "source.docx");
+                var nativePath = FixturePath.Combine(directory, "native.doc");
                 File.WriteAllBytes(sourcePath, source.ToArray());
                 dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID(
                     "Word.Application")!)!;
@@ -22134,13 +22134,13 @@ public class DocStructureWalkerTests
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
         {
-            var directory = Path.Combine(Path.GetTempPath(),
+            var directory = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-revised-controls-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(directory);
             try
             {
-                var sourcePath = Path.Combine(directory, "source.docx");
-                var nativePath = Path.Combine(directory, "native.doc");
+                var sourcePath = FixturePath.Combine(directory, "source.docx");
+                var nativePath = FixturePath.Combine(directory, "native.doc");
                 File.WriteAllBytes(sourcePath, source.ToArray());
                 dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID(
                     "Word.Application")!)!;
@@ -22321,7 +22321,7 @@ public class DocStructureWalkerTests
         Assert.Empty(new OpenXmlValidator().Validate(projected));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var path = Path.Combine(Path.GetTempPath(),
+            var path = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-links-" + Guid.NewGuid().ToString("N") + ".doc");
             var sourcePath = Path.ChangeExtension(path, ".source.docx");
             var nativePath = Path.ChangeExtension(path, ".native.doc");
@@ -22440,13 +22440,13 @@ public class DocStructureWalkerTests
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
         {
-            var directory = Path.Combine(Path.GetTempPath(),
+            var directory = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-tab-bookmark-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(directory);
             try
             {
-                var sourcePath = Path.Combine(directory, "source.docx");
-                var nativePath = Path.Combine(directory, "native.doc");
+                var sourcePath = FixturePath.Combine(directory, "source.docx");
+                var nativePath = FixturePath.Combine(directory, "native.doc");
                 File.WriteAllBytes(sourcePath, source.ToArray());
                 dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID(
                     "Word.Application")!)!;
@@ -22525,7 +22525,7 @@ public class DocStructureWalkerTests
         Assert.Empty(new OpenXmlValidator().Validate(projected));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var path = Path.Combine(Path.GetTempPath(),
+            var path = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-bookmark-link-" + Guid.NewGuid().ToString("N") + ".doc");
             var sourcePath = Path.ChangeExtension(path, ".source.docx");
             var nativePath = Path.ChangeExtension(path, ".native.doc");
@@ -22678,8 +22678,8 @@ public class DocStructureWalkerTests
     [Fact]
     public void ProjectionRejectsHeaderSlotCountThatOmitsASection()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordThreeSectionEmptyInheritedHeader.docx"));
         var generated = DxpDocExport.Export(File.ReadAllBytes(path));
         using var edited = new MemoryStream();
@@ -22946,7 +22946,7 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
             AssertWordFirstPageRenderClose(source.ToArray(), docBytes, 0.03);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-uneven-columns-{Guid.NewGuid():N}.docx");
         var generatedPath = Path.ChangeExtension(sourcePath, ".doc");
         var nativePath = Path.ChangeExtension(sourcePath, ".native.doc");
@@ -23150,9 +23150,9 @@ public class DocStructureWalkerTests
             AssertWordPageRenderClose(source.ToArray(), generated, 0.04, 3);
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             "docxport-section-stories-" + Guid.NewGuid().ToString("N") + ".docx");
-        var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+        var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
         File.WriteAllBytes(sourcePath, source.ToArray());
         dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
         dynamic? opened = null;
@@ -23291,7 +23291,7 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
             AssertWordFirstPageRenderClose(source.ToArray(), docBytes, 0.03);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-section-geometry-{Guid.NewGuid():N}.docx");
         var generatedPath = Path.ChangeExtension(sourcePath, ".doc");
         var nativePath = Path.ChangeExtension(sourcePath, ".native.doc");
@@ -23538,9 +23538,9 @@ public class DocStructureWalkerTests
         AssertDocx(DxpDocToDocx.Project(repeated).DocxBytes);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var sourcePath = Path.Combine(Path.GetTempPath(),
+            var sourcePath = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-supplementary-unicode-" + Guid.NewGuid().ToString("N") + ".docx");
-            var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+            var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
             File.WriteAllBytes(sourcePath, source.ToArray());
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
             dynamic? opened = null;
@@ -23716,10 +23716,10 @@ public class DocStructureWalkerTests
             }
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var path = Path.Combine(Path.GetTempPath(),
+        var path = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-inherited-header-footer-{Guid.NewGuid():N}.doc");
         File.WriteAllBytes(path, docBytes);
-        var sourcePath = Path.ChangeExtension(path, ".docx");
+        var sourcePath = FixturePath.Resolve(Path.ChangeExtension(path, ".docx"));
         var nativePath = Path.ChangeExtension(path, ".native.doc");
         File.WriteAllBytes(sourcePath, source.ToArray());
         byte[]? nativeDoc = null;
@@ -23910,7 +23910,7 @@ public class DocStructureWalkerTests
                 AssertWordPageRenderClose(source.ToArray(), bytes, 0.04, 3);
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var path = Path.Combine(Path.GetTempPath(),
+        var path = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-inherited-six-stories-{Guid.NewGuid():N}.doc");
         File.WriteAllBytes(path, bytes);
         dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -24037,7 +24037,7 @@ public class DocStructureWalkerTests
             for (var page = 1; page <= 3; page++)
                 AssertWordPageRenderClose(source.ToArray(), bytes, 0.04, page);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var path = Path.Combine(Path.GetTempPath(),
+        var path = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-explicit-blank-header-{Guid.NewGuid():N}.doc");
         File.WriteAllBytes(path, bytes);
         dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -24352,10 +24352,10 @@ public class DocStructureWalkerTests
     public void PatternedParagraphStyleAndDirectOverrideSurviveAllStories(
         ShadingPatternValues pattern, ushort docPattern)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         using var source = new MemoryStream();
-        source.Write(File.ReadAllBytes(Path.Combine(directory,
+        source.Write(File.ReadAllBytes(FixturePath.Combine(directory,
             "WordThreeLevelStyleOverrides.docx")));
         using (var document = WordprocessingDocument.Open(source, true))
         {
@@ -24776,7 +24776,7 @@ public class DocStructureWalkerTests
         Assert.Equal(3, runs.Count(x => x.RunProperties?.Bold?.Val?.Value == true));
         Assert.Empty(new OpenXmlValidator().Validate(projected));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var path = Path.Combine(Path.GetTempPath(),
+        var path = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-piece-bold-{Guid.NewGuid():N}.doc");
         File.WriteAllBytes(path, bytes);
         dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -24920,7 +24920,7 @@ public class DocStructureWalkerTests
         }
         Assert.Empty(new OpenXmlValidator().Validate(projected));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var path = Path.Combine(Path.GetTempPath(),
+        var path = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-piece-block-{Guid.NewGuid():N}.doc");
         File.WriteAllBytes(path, bytes);
         dynamic app = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -24990,7 +24990,7 @@ public class DocStructureWalkerTests
                 .Justification!.Val!.Value);
         Assert.Empty(new OpenXmlValidator().Validate(projected));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var path = Path.Combine(Path.GetTempPath(),
+        var path = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-piece-align-{Guid.NewGuid():N}.doc");
         File.WriteAllBytes(path, bytes);
         dynamic app = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -25059,7 +25059,7 @@ public class DocStructureWalkerTests
             run.RunProperties!.Color!.Val!.Value);
         Assert.Empty(new OpenXmlValidator().Validate(projected));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var path = Path.Combine(Path.GetTempPath(),
+        var path = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-piece-color-{Guid.NewGuid():N}.doc");
         File.WriteAllBytes(path, bytes);
         dynamic app = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -25169,7 +25169,7 @@ public class DocStructureWalkerTests
         }
         Assert.Empty(new OpenXmlValidator().Validate(projected));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var path = Path.Combine(Path.GetTempPath(),
+        var path = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-piece-plain-{Guid.NewGuid():N}.doc");
         File.WriteAllBytes(path, bytes);
         dynamic app = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -25290,7 +25290,7 @@ public class DocStructureWalkerTests
         AssertWordPageRenderClose(source.ToArray(), binary, 0.04, 1);
         if (!directReset)
             AssertWordPageRenderClose(source.ToArray(), binary, 0.04, 2);
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-styled-flow-{Guid.NewGuid():N}.docx");
         var generatedPath = Path.ChangeExtension(sourcePath, ".generated.doc");
         var nativePath = Path.ChangeExtension(sourcePath, ".native.doc");
@@ -25423,7 +25423,7 @@ public class DocStructureWalkerTests
             return;
         AssertWordPageRenderClose(source.ToArray(), binary, 0.04, 1);
         AssertWordPageRenderClose(source.ToArray(), binary, 0.04, 2);
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-keep-boundary-{Guid.NewGuid():N}.docx");
         var generatedPath = Path.ChangeExtension(sourcePath, ".generated.doc");
         var nativePath = Path.ChangeExtension(sourcePath, ".native.doc");
@@ -25563,7 +25563,7 @@ public class DocStructureWalkerTests
             return;
         AssertWordPageRenderClose(source.ToArray(), binary, 0.04, 1);
         AssertWordPageRenderClose(source.ToArray(), binary, 0.04, 2);
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-keep-lines-{Guid.NewGuid():N}.docx");
         var generatedPath = Path.ChangeExtension(sourcePath, ".generated.doc");
         var nativePath = Path.ChangeExtension(sourcePath, ".native.doc");
@@ -25749,10 +25749,10 @@ public class DocStructureWalkerTests
             AssertWordFirstPageRenderClose(source.ToArray(), bytes, 0.04);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1" &&
             Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1") return;
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-style-tabs-{Guid.NewGuid():N}.docx");
         var generatedPath = Path.ChangeExtension(sourcePath, ".generated.doc");
-        var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+        var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
         File.WriteAllBytes(sourcePath, source.ToArray());
         File.WriteAllBytes(generatedPath, bytes);
         dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -26109,14 +26109,14 @@ public class DocStructureWalkerTests
         using (var sourceStream = new MemoryStream(source.ToArray()))
         using (var sourceDocx = WordprocessingDocument.Open(sourceStream, false))
             Assert.Empty(new OpenXmlValidator().Validate(sourceDocx));
-        var directory = Path.Combine(Path.GetTempPath(),
+        var directory = FixturePath.Combine(Path.GetTempPath(),
             "docxport-native-run-direction-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(directory);
         try
         {
-            var sourcePath = Path.Combine(directory, "source.docx");
-            var nativePath = Path.Combine(directory, "native.doc");
-            var savedPath = Path.Combine(directory, "saved.docx");
+            var sourcePath = FixturePath.Combine(directory, "source.docx");
+            var nativePath = FixturePath.Combine(directory, "native.doc");
+            var savedPath = FixturePath.Combine(directory, "saved.docx");
             File.WriteAllBytes(sourcePath, source.ToArray());
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID(
                 "Word.Application")!)!;
@@ -26283,7 +26283,7 @@ public class DocStructureWalkerTests
         Assert.Empty(new OpenXmlValidator().Validate(projected));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var path = Path.Combine(Path.GetTempPath(),
+            var path = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-reused-header-" + Guid.NewGuid().ToString("N") + ".doc");
             File.WriteAllBytes(path, bytes);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -26496,9 +26496,9 @@ public class DocStructureWalkerTests
         AssertDoc(DxpDocExport.Export(projected));
         AssertWordFirstPageRenderClose(source.ToArray(), generated, 0.04);
 
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-linked-styles-{Guid.NewGuid():N}.docx");
-        var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+        var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
         File.WriteAllBytes(sourcePath, source.ToArray());
         dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
         word.Visible = false;
@@ -26633,7 +26633,7 @@ public class DocStructureWalkerTests
             normal.StyleRunProperties!.FontSize!.Val = "32";
             editable.MainDocumentPart.StyleDefinitionsPart.Styles.Save();
         }
-        var editedPath = Path.Combine(Path.GetTempPath(),
+        var editedPath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-style-inheritance-{Guid.NewGuid():N}.docx");
         File.WriteAllBytes(editedPath, editedStream.ToArray());
         dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -26743,9 +26743,9 @@ public class DocStructureWalkerTests
         {
             AssertWordFirstPageRenderClose(sourceBytes, binary, 0.04);
             AssertWordPageRenderClose(sourceBytes, projectedBytes, 0.04, 1, ".docx");
-            var sourcePath = Path.Combine(Path.GetTempPath(),
+            var sourcePath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-auto-color-source-{Guid.NewGuid():N}.docx");
-            var nativePath = Path.ChangeExtension(sourcePath, ".doc");
+            var nativePath = FixturePath.Resolve(Path.ChangeExtension(sourcePath, ".doc"));
             File.WriteAllBytes(sourcePath, sourceBytes);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID(
                 "Word.Application")!)!;
@@ -27042,7 +27042,7 @@ public class DocStructureWalkerTests
             return;
 
         AssertWordPageRenderClose(source.ToArray(), bytes, 0.06, 1);
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-paragraph-spacing-{Guid.NewGuid():N}.docx");
         var generatedPath = Path.ChangeExtension(sourcePath, ".generated.doc");
         var nativePath = Path.ChangeExtension(sourcePath, ".native.doc");
@@ -27241,7 +27241,7 @@ public class DocStructureWalkerTests
         if (explicitDefaults)
             AssertWordPageRenderClose(source.ToArray(),
                 DxpDocToDocx.Project(binary).DocxBytes, 0.04, 1, ".docx");
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-line-unit-spacing-{Guid.NewGuid():N}.docx");
         var generatedPath = Path.ChangeExtension(sourcePath, ".generated.doc");
         var nativePath = Path.ChangeExtension(sourcePath, ".native.doc");
@@ -27413,7 +27413,7 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1")
             return;
         AssertWordPageRenderClose(source.ToArray(), binary, 0.04, 1);
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-auto-spacing-{Guid.NewGuid():N}.docx");
         var generatedPath = Path.ChangeExtension(sourcePath, ".generated.doc");
         var nativePath = Path.ChangeExtension(sourcePath, ".native.doc");
@@ -27458,9 +27458,9 @@ public class DocStructureWalkerTests
     [Fact]
     public void SuppressAutoHyphensStyleAndResetSurviveBothDocRoutes()
     {
-        var fixture = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "Doc", "WordMirrorIndentsAllStories.docx"));
+        var fixture = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "legacy", "WordMirrorIndentsAllStories.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(fixture));
         using (var document = WordprocessingDocument.Open(source, true))
@@ -27562,14 +27562,14 @@ public class DocStructureWalkerTests
             AssertWordPageRenderClose(source.ToArray(), generated, 0.065, 2);
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var temporary = Path.Combine(Path.GetTempPath(),
+        var temporary = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-suppress-hyphens-{Guid.NewGuid():N}");
         Directory.CreateDirectory(temporary);
         var paths = new[]
         {
-            Path.Combine(temporary, "source.docx"),
-            Path.Combine(temporary, "generated.doc"),
-            Path.Combine(temporary, "native.doc")
+            FixturePath.Combine(temporary, "source.docx"),
+            FixturePath.Combine(temporary, "generated.doc"),
+            FixturePath.Combine(temporary, "native.doc")
         };
         File.WriteAllBytes(paths[0], source.ToArray());
         File.WriteAllBytes(paths[1], generated);
@@ -27625,9 +27625,9 @@ public class DocStructureWalkerTests
     [Fact]
     public void KerningStyleAndDirectOverrideSurviveAllStoriesAndWord()
     {
-        var fixture = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "Doc", "WordMirrorIndentsAllStories.docx"));
+        var fixture = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "legacy", "WordMirrorIndentsAllStories.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(fixture));
         using (var document = WordprocessingDocument.Open(source, true))
@@ -27678,12 +27678,12 @@ public class DocStructureWalkerTests
             AssertWordPageRenderClose(source.ToArray(), generated, 0.04, 2);
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var directory = Path.Combine(Path.GetTempPath(),
+        var directory = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-kerning-stories-{Guid.NewGuid():N}");
         Directory.CreateDirectory(directory);
-        var sourcePath = Path.Combine(directory, "source.docx");
-        var generatedPath = Path.Combine(directory, "generated.doc");
-        var nativePath = Path.Combine(directory, "native.doc");
+        var sourcePath = FixturePath.Combine(directory, "source.docx");
+        var generatedPath = FixturePath.Combine(directory, "generated.doc");
+        var nativePath = FixturePath.Combine(directory, "native.doc");
         File.WriteAllBytes(sourcePath, source.ToArray());
         File.WriteAllBytes(generatedPath, generated);
         dynamic word = Activator.CreateInstance(
@@ -27745,9 +27745,9 @@ public class DocStructureWalkerTests
             2 => LineNumberRestartValues.Continuous,
             _ => LineNumberRestartValues.NewPage
         };
-        var fixture = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "Doc", "WordMirrorIndentsAllStories.docx"));
+        var fixture = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "legacy", "WordMirrorIndentsAllStories.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(fixture));
         using (var document = WordprocessingDocument.Open(source, true))
@@ -27818,12 +27818,12 @@ public class DocStructureWalkerTests
             AssertWordPageRenderClose(source.ToArray(), generated, 0.04, 2);
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var directory = Path.Combine(Path.GetTempPath(),
+        var directory = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-section-lines-{Guid.NewGuid():N}");
         Directory.CreateDirectory(directory);
-        var sourcePath = Path.Combine(directory, "source.docx");
-        var generatedPath = Path.Combine(directory, "generated.doc");
-        var nativePath = Path.Combine(directory, "native.doc");
+        var sourcePath = FixturePath.Combine(directory, "source.docx");
+        var generatedPath = FixturePath.Combine(directory, "generated.doc");
+        var nativePath = FixturePath.Combine(directory, "native.doc");
         File.WriteAllBytes(sourcePath, source.ToArray());
         File.WriteAllBytes(generatedPath, generated);
         dynamic word = Activator.CreateInstance(
@@ -27875,9 +27875,9 @@ public class DocStructureWalkerTests
     [Fact]
     public void SectionLineNumberingTransitionsAcrossThreeStorySections()
     {
-        var fixture = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "Doc", "WordThreeSectionStories.docx"));
+        var fixture = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "legacy", "WordThreeSectionStories.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(fixture));
         using (var document = WordprocessingDocument.Open(source, true))
@@ -27947,12 +27947,12 @@ public class DocStructureWalkerTests
             for (var page = 1; page <= 3; page++)
                 AssertWordPageRenderClose(source.ToArray(), generated, 0.04, page);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var directory = Path.Combine(Path.GetTempPath(),
+        var directory = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-three-section-lines-{Guid.NewGuid():N}");
         Directory.CreateDirectory(directory);
-        var sourcePath = Path.Combine(directory, "source.docx");
-        var generatedPath = Path.Combine(directory, "generated.doc");
-        var nativePath = Path.Combine(directory, "native.doc");
+        var sourcePath = FixturePath.Combine(directory, "source.docx");
+        var generatedPath = FixturePath.Combine(directory, "generated.doc");
+        var nativePath = FixturePath.Combine(directory, "native.doc");
         File.WriteAllBytes(sourcePath, source.ToArray());
         File.WriteAllBytes(generatedPath, generated);
         dynamic word = Activator.CreateInstance(
@@ -28005,9 +28005,9 @@ public class DocStructureWalkerTests
     public void SectionLineNumberingSurvivesLongBodyFlowWithExemptParagraphs(
         bool explicitZeroKerning, int expectedKerning, bool styledExemptParagraphs)
     {
-        var fixture = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "Doc", "WordMirrorIndentsAllStories.docx"));
+        var fixture = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "legacy", "WordMirrorIndentsAllStories.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(fixture));
         using (var document = WordprocessingDocument.Open(source, true))
@@ -28085,12 +28085,12 @@ public class DocStructureWalkerTests
             for (var page = 1; page <= 4; page++)
                 AssertWordPageRenderClose(source.ToArray(), generated, 0.05, page);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var directory = Path.Combine(Path.GetTempPath(),
+        var directory = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-long-section-lines-{Guid.NewGuid():N}");
         Directory.CreateDirectory(directory);
-        var sourcePath = Path.Combine(directory, "source.docx");
-        var generatedPath = Path.Combine(directory, "generated.doc");
-        var nativePath = Path.Combine(directory, "native.doc");
+        var sourcePath = FixturePath.Combine(directory, "source.docx");
+        var generatedPath = FixturePath.Combine(directory, "generated.doc");
+        var nativePath = FixturePath.Combine(directory, "native.doc");
         File.WriteAllBytes(sourcePath, source.ToArray());
         File.WriteAllBytes(generatedPath, generated);
         dynamic word = Activator.CreateInstance(
@@ -28142,9 +28142,9 @@ public class DocStructureWalkerTests
     [Fact]
     public void SectionVerticalAlignmentFollowsThreeSectionStoryChanges()
     {
-        var fixture = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "Doc", "WordThreeSectionStories.docx"));
+        var fixture = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "legacy", "WordThreeSectionStories.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(fixture));
         using (var document = WordprocessingDocument.Open(source, true))
@@ -28189,12 +28189,12 @@ public class DocStructureWalkerTests
             for (var page = 1; page <= 3; page++)
                 AssertWordPageRenderClose(source.ToArray(), generated, 0.04, page);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var directory = Path.Combine(Path.GetTempPath(),
+        var directory = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-three-section-vertical-{Guid.NewGuid():N}");
         Directory.CreateDirectory(directory);
-        var sourcePath = Path.Combine(directory, "source.docx");
-        var generatedPath = Path.Combine(directory, "generated.doc");
-        var nativePath = Path.Combine(directory, "native.doc");
+        var sourcePath = FixturePath.Combine(directory, "source.docx");
+        var generatedPath = FixturePath.Combine(directory, "generated.doc");
+        var nativePath = FixturePath.Combine(directory, "native.doc");
         File.WriteAllBytes(sourcePath, source.ToArray());
         File.WriteAllBytes(generatedPath, generated);
         dynamic word = Activator.CreateInstance(
@@ -28243,9 +28243,9 @@ public class DocStructureWalkerTests
             3 => VerticalJustificationValues.Bottom,
             _ => throw new InvalidDataException()
         };
-        var fixture = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "Doc", "WordMirrorIndentsAllStories.docx"));
+        var fixture = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "legacy", "WordMirrorIndentsAllStories.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(fixture));
         using (var document = WordprocessingDocument.Open(source, true))
@@ -28284,12 +28284,12 @@ public class DocStructureWalkerTests
             AssertWordPageRenderClose(source.ToArray(), generated, 0.04, 2);
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var directory = Path.Combine(Path.GetTempPath(),
+        var directory = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-section-vertical-{Guid.NewGuid():N}");
         Directory.CreateDirectory(directory);
-        var sourcePath = Path.Combine(directory, "source.docx");
-        var generatedPath = Path.Combine(directory, "generated.doc");
-        var nativePath = Path.Combine(directory, "native.doc");
+        var sourcePath = FixturePath.Combine(directory, "source.docx");
+        var generatedPath = FixturePath.Combine(directory, "generated.doc");
+        var nativePath = FixturePath.Combine(directory, "native.doc");
         File.WriteAllBytes(sourcePath, source.ToArray());
         File.WriteAllBytes(generatedPath, generated);
         dynamic word = Activator.CreateInstance(
@@ -28328,9 +28328,9 @@ public class DocStructureWalkerTests
     [InlineData(4)]
     public void OtherVerticalTextAlignmentsSurviveBothDocRoutes(int alignmentCode)
     {
-        var fixture = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "Doc", "WordMirrorIndentsAllStories.docx"));
+        var fixture = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "legacy", "WordMirrorIndentsAllStories.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(fixture));
         var value = alignmentCode switch
@@ -28392,12 +28392,12 @@ public class DocStructureWalkerTests
             AssertWordPageRenderClose(source.ToArray(), generated, 0.065, 2);
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var directory = Path.Combine(Path.GetTempPath(),
+        var directory = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-text-alignment-{Guid.NewGuid():N}");
         Directory.CreateDirectory(directory);
-        var sourcePath = Path.Combine(directory, "source.docx");
-        var generatedPath = Path.Combine(directory, "generated.doc");
-        var nativePath = Path.Combine(directory, "native.doc");
+        var sourcePath = FixturePath.Combine(directory, "source.docx");
+        var generatedPath = FixturePath.Combine(directory, "generated.doc");
+        var nativePath = FixturePath.Combine(directory, "native.doc");
         File.WriteAllBytes(sourcePath, source.ToArray());
         File.WriteAllBytes(generatedPath, generated);
         dynamic word = Activator.CreateInstance(
@@ -28440,9 +28440,9 @@ public class DocStructureWalkerTests
     [Fact]
     public void AutomaticHyphenationChangesWordLineLayoutAfterDocRoundTrip()
     {
-        var fixture = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "Doc", "WordMirrorIndentsAllStories.docx"));
+        var fixture = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "legacy", "WordMirrorIndentsAllStories.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(fixture));
         using (var document = WordprocessingDocument.Open(source, true))
@@ -28485,11 +28485,11 @@ public class DocStructureWalkerTests
             new MemoryStream(projected.DocxBytes), false))
             Assert.Empty(new OpenXmlValidator().Validate(document));
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var directory = Path.Combine(Path.GetTempPath(),
+        var directory = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-visible-hyphenation-{Guid.NewGuid():N}");
         Directory.CreateDirectory(directory);
-        var sourcePath = Path.Combine(directory, "source.docx");
-        var generatedPath = Path.Combine(directory, "generated.doc");
+        var sourcePath = FixturePath.Combine(directory, "source.docx");
+        var generatedPath = FixturePath.Combine(directory, "generated.doc");
         File.WriteAllBytes(sourcePath, source.ToArray());
         File.WriteAllBytes(generatedPath, generated);
         dynamic word = Activator.CreateInstance(
@@ -28618,14 +28618,14 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
             AssertWordPageRenderClose(source.ToArray(), generated, 0.04, 2);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var temporary = Path.Combine(Path.GetTempPath(),
+        var temporary = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-mirror-indents-{Guid.NewGuid():N}");
         Directory.CreateDirectory(temporary);
         var paths = new[]
         {
-            Path.Combine(temporary, "source.docx"),
-            Path.Combine(temporary, "generated.doc"),
-            Path.Combine(temporary, "native.doc")
+            FixturePath.Combine(temporary, "source.docx"),
+            FixturePath.Combine(temporary, "generated.doc"),
+            FixturePath.Combine(temporary, "native.doc")
         };
         File.WriteAllBytes(paths[0], source.ToArray());
         File.WriteAllBytes(paths[1], generated);
@@ -28734,7 +28734,7 @@ public class DocStructureWalkerTests
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") != "1")
             return;
         AssertWordPageRenderClose(source.ToArray(), binary, 0.04, 1);
-        var sourcePath = Path.Combine(Path.GetTempPath(),
+        var sourcePath = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-contextual-spacing-{Guid.NewGuid():N}.docx");
         var generatedPath = Path.ChangeExtension(sourcePath, ".generated.doc");
         var nativePath = Path.ChangeExtension(sourcePath, ".native.doc");
@@ -28844,7 +28844,7 @@ public class DocStructureWalkerTests
         {
             if (!OperatingSystem.IsWindows())
                 throw new PlatformNotSupportedException("Word automation requires Windows.");
-            var path = Path.Combine(Path.GetTempPath(),
+            var path = FixturePath.Combine(Path.GetTempPath(),
                 "docxport-character-style-" + Guid.NewGuid().ToString("N") + ".doc");
             var sourcePath = Path.ChangeExtension(path, ".source.docx");
             var nativePath = Path.ChangeExtension(path, ".native.doc");
@@ -29054,7 +29054,7 @@ public class DocStructureWalkerTests
     public void ExportToFilesAcceptsBinaryDocPath()
     {
         using var input = CreateDocWithPieces(allMain: true);
-        var inputPath = Path.Combine(Path.GetTempPath(), $"doc-merge-{Guid.NewGuid():N}.doc");
+        var inputPath = FixturePath.Combine(Path.GetTempPath(), $"doc-merge-{Guid.NewGuid():N}.doc");
         var outputPath = Path.ChangeExtension(inputPath, ".txt");
         try
         {
@@ -29368,11 +29368,11 @@ public class DocStructureWalkerTests
         byte[] generatedDoc, double maximumError, int pageNumber,
         string generatedExtension = ".doc", string sourceExtension = ".docx")
     {
-        var directory = Path.Combine(Path.GetTempPath(),
+        var directory = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-theme-alias-render-{Guid.NewGuid():N}");
         Directory.CreateDirectory(directory);
-        var sourcePath = Path.Combine(directory, "source" + sourceExtension);
-        var generatedPath = Path.Combine(directory, "generated" + generatedExtension);
+        var sourcePath = FixturePath.Combine(directory, "source" + sourceExtension);
+        var generatedPath = FixturePath.Combine(directory, "generated" + generatedExtension);
         File.WriteAllBytes(sourcePath, sourceDocx);
         File.WriteAllBytes(generatedPath, generatedDoc);
         var ghostscript = Environment.GetEnvironmentVariable("DOCXPORT_GHOSTSCRIPT_PATH") ??
@@ -29408,16 +29408,16 @@ public class DocStructureWalkerTests
             {
                 dynamic opened = word.Documents.Open(path, ReadOnly: true,
                     AddToRecentFiles: false);
-                try { opened.ExportAsFixedFormat(Path.Combine(directory, name + ".pdf"), 17); }
+                try { opened.ExportAsFixedFormat(FixturePath.Combine(directory, name + ".pdf"), 17); }
                 finally { opened.Close(false); }
                 Run(ghostscript, "-q", "-dNOPAUSE", "-dBATCH", "-sDEVICE=png16m",
                     "-r96", "-dFirstPage=" + pageNumber, "-dLastPage=" + pageNumber,
-                    "-sOutputFile=" + Path.Combine(directory, name + ".png"),
-                    Path.Combine(directory, name + ".pdf"));
+                    "-sOutputFile=" + FixturePath.Combine(directory, name + ".png"),
+                    FixturePath.Combine(directory, name + ".pdf"));
             }
             var metric = Run(imageMagick, "compare", "-metric", "RMSE",
-                Path.Combine(directory, "source.png"),
-                Path.Combine(directory, "generated.png"), "null:");
+                FixturePath.Combine(directory, "source.png"),
+                FixturePath.Combine(directory, "generated.png"), "null:");
             var match = Regex.Match(metric, @"\(([0-9.]+)\)");
             Assert.True(match.Success, "ImageMagick did not report normalized RMSE: " + metric);
             var error = double.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture);

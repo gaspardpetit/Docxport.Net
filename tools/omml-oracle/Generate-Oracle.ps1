@@ -4,8 +4,8 @@ param()
 $ErrorActionPreference = 'Stop'
 $toolDirectory = $PSScriptRoot
 $repositoryRoot = Resolve-Path (Join-Path $toolDirectory '..\..')
-$inputDirectory = Join-Path $repositoryRoot 'DocxportNet.Tests\Fixtures\Omml\Upstream\Plurimath'
-$outputDirectory = Join-Path $repositoryRoot 'DocxportNet.Tests\Fixtures\Omml\OracleGenerated'
+$inputDirectory = Join-Path $repositoryRoot 'fixtures\omml\upstream\plurimath'
+$outputDirectory = Join-Path $repositoryRoot 'fixtures\omml\oracle-generated'
 
 $additionalPaths = @()
 if ($IsWindows -and $env:USERPROFILE) {

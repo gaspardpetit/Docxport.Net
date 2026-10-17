@@ -10,7 +10,7 @@ if (-not (Get-Command magick -ErrorAction SilentlyContinue)) {
 }
 $repository = (Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
 $project = Join-Path $repository 'DocxportNet.Tests/DocxportNet.Tests.csproj'
-$fixtures = Join-Path $repository 'DocxportNet.Tests/Fixtures/Doc'
+$fixtures = Join-Path $repository 'fixtures/docx/legacy'
 $binary = Join-Path $repository 'DocxportNet.Tests/bin/Debug/net10.0'
 & dotnet build $project --no-restore --verbosity quiet -p:WarningLevel=0
 if ($LASTEXITCODE -ne 0) { throw 'The test project build failed.' }
@@ -55,7 +55,7 @@ function Get-PixelHashes([byte[]]$bytes, [string]$prefix) {
 $rows = @()
 $checked = 0
 foreach ($fixture in Get-ChildItem -LiteralPath $fixtures -Filter '*.docx') {
-    $nativePath = [IO.Path]::ChangeExtension($fixture.FullName, '.doc')
+    $nativePath = Join-Path $repository ('fixtures/doc/legacy/' + $fixture.BaseName + '.doc')
     if (-not (Test-Path -LiteralPath $nativePath)) { continue }
     [byte[]]$source = [IO.File]::ReadAllBytes($fixture.FullName)
     $expected = @(Get-PixelHashes $source ($fixture.BaseName + '-source'))
@@ -104,7 +104,7 @@ if ($failures.Count -gt 0) {
     $word.DisplayAlerts = 0
     try {
         foreach ($name in @($failures.Fixture | Sort-Object -Unique)) {
-            $nativePath = Join-Path $fixtures ($name + '.doc')
+            $nativePath = Join-Path $repository ('fixtures/doc/legacy/' + $name + '.doc')
             $wordDocx = Join-Path $ResultsDirectory ($name + '-word-reopened.docx')
             $document = $word.Documents.Open($nativePath, $false, $true)
             try { $document.SaveAs2($wordDocx, 16) }
