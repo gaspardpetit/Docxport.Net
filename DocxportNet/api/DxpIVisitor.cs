@@ -78,6 +78,7 @@ public interface DxpITableContext
     TableProperties? Properties { get; }
     TableGrid? Grid { get; }
     DxpComputedTableStyle ComputedStyle { get; }
+    bool RightToLeft { get; }
 }
 
 public interface DxpITableRowContext
@@ -197,6 +198,8 @@ public interface DxpISectionContext
 }
 
 public sealed record DxpFont(string? fontName, int? fontSizeHalfPoints);
+
+internal interface IDxpCachedHyperlinkFieldVisitor { }
 
 
 public interface DxpIFieldVisitor

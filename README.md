@@ -83,6 +83,12 @@ effects, tables, images, or page geometry. Configure a
 PDFsharp font resolver before exporting; on Windows, set
 `PdfSharp.Fonts.GlobalFontSettings.UseWindowsFontsUnderWindows = true`.
 
+On `net8.0`, `DxpFlowPdfVisitor` provides the layout-oriented exporter through
+the same APIs, including page geometry, tables, images, headers and footers,
+notes, and drawing content. It is not included in the `netstandard2.0` target;
+that target retains `DxpPdfVisitor` until the flow implementation's newer .NET
+API usage is ported. Configure a PDFsharp font resolver before either export.
+
 ## Quick start: DOCX → Markdown
 
 ### Command line

@@ -706,6 +706,9 @@ internal sealed class DxpTableStyleResolver
         return new DxpComputedBoxBorders(top, right, bottom, left);
     }
 
+    internal static DxpComputedBorder? ComputeDirectBottomBorder(TableCellProperties? cellProperties) =>
+        ToComputedBorder(cellProperties?.TableCellBorders?.BottomBorder);
+
     private static DxpComputedBoxBorders? ComputeTableBoxBorders(MergedTableBorders borders, out bool anySpecified)
     {
         anySpecified = borders.AnySpecified;

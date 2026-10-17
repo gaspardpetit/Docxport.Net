@@ -1,0 +1,106 @@
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
+using DocxportNet.Visitors.Pdf;
+using PdfSharp.Fonts;
+
+namespace DocxportNet.Tests;
+
+public sealed class PdfFlowExportTests
+{
+    [Fact]
+    public void RendersTableCellsAndParagraphs()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(
+                new Paragraph(new Run(new Text("Introduction"))),
+                new Table(new TableRow(
+                    new TableCell(new Paragraph(new Run(new Text("Left cell")))),
+                    new TableCell(new Paragraph(new Run(new Text("Right cell")))))),
+                new Paragraph(new Run(new Text("After table")))));
+        }
+
+        byte[] result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        var page = Assert.Single(pdf.GetPages());
+        Assert.Contains("Introduction", page.Text);
+        Assert.Contains("Leftcell", page.Text);
+        Assert.Contains("Rightcell", page.Text);
+        Assert.Contains("Aftertable", page.Text);
+    }
+
+    [Fact]
+    public void PreservesPageGeometryAndExplicitBreak()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(
+                new Paragraph(new Run(new Text("First page"))),
+                new Paragraph(new Run(new Break { Type = BreakValues.Page }, new Text("Second page"))),
+                new SectionProperties(new PageSize { Width = 12240, Height = 15840 })));
+        }
+
+        byte[] result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        Assert.Equal(2, pdf.NumberOfPages);
+        Assert.InRange(pdf.GetPage(1).Width, 611.9, 612.1);
+        Assert.InRange(pdf.GetPage(1).Height, 791.9, 792.1);
+        Assert.Contains("Firstpage", pdf.GetPage(1).Text);
+        Assert.Contains("Secondpage", pdf.GetPage(2).Text);
+    }
+
+    [Fact]
+    public void EmbedsInlineImage()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "probes", "inline-image-paragraph-probe__24.docx");
+
+        byte[] result = DxpExport.ExportToBytes(source, new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        var page = Assert.Single(pdf.GetPages());
+        var image = Assert.Single(page.GetImages());
+        Assert.InRange(image.Bounds.Width, 23.9, 24.1);
+        Assert.InRange(image.Bounds.Height, 23.9, 24.1);
+    }
+
+    [Theory]
+    [InlineData("EndnoteBasic.docx")]
+    [InlineData("EndnoteTable.docx")]
+    public void RendersEndnoteFixtures(string fileName)
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "features", fileName);
+
+        byte[] result = DxpExport.ExportToBytes(source, new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        Assert.True(pdf.NumberOfPages > 0);
+        Assert.Contains(pdf.GetPages(), page => page.Letters.Any());
+    }
+
+    [Fact]
+    public void RendersTextBoxFixture()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "features", "text-boxes",
+            "TextBoxVerticalTextSingleLine.docx");
+
+        byte[] result = DxpExport.ExportToBytes(source, new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        Assert.Contains(pdf.GetPages(), page => page.Letters.Any());
+    }
+}
