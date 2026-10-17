@@ -864,6 +864,37 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
         return null;
     }
 
+    public SpacingBetweenLines? GetEffectiveParagraphSpacing(Paragraph p)
+    {
+        var direct = p.ParagraphProperties?.SpacingBetweenLines;
+        SpacingBetweenLines? effective = direct == null ? null : (SpacingBetweenLines)direct.CloneNode(true);
+        var beforeAutoDefined = direct?.Before != null || direct?.BeforeAutoSpacing != null;
+        var afterAutoDefined = direct?.After != null || direct?.AfterAutoSpacing != null;
+        var pStyleId = p.ParagraphProperties?.ParagraphStyleId?.Val?.Value;
+        foreach (var s in EnumerateStyleChainRaw(pStyleId, StyleValues.Paragraph))
+        {
+            var spacing = s.StyleParagraphProperties?.SpacingBetweenLines;
+            if (spacing == null) continue;
+            effective ??= new SpacingBetweenLines();
+            effective.Before ??= spacing.Before;
+            effective.After ??= spacing.After;
+            effective.Line ??= spacing.Line;
+            effective.LineRule ??= spacing.LineRule;
+            if (!beforeAutoDefined)
+            {
+                effective.BeforeAutoSpacing = spacing.BeforeAutoSpacing;
+                beforeAutoDefined = spacing.Before != null || spacing.BeforeAutoSpacing != null;
+            }
+            if (!afterAutoDefined)
+            {
+                effective.AfterAutoSpacing = spacing.AfterAutoSpacing;
+                afterAutoDefined = spacing.After != null || spacing.AfterAutoSpacing != null;
+            }
+        }
+
+        return effective;
+    }
+
     public bool GetContextualSpacing(Paragraph p)
     {
         var direct = p.ParagraphProperties?.ContextualSpacing;
