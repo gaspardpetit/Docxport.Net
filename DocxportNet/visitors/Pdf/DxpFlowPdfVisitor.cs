@@ -514,6 +514,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private readonly Dictionary<long, int> _endnoteOrdinals = new();
     private readonly Dictionary<int, string> _endnoteLabels = new();
     private readonly HashSet<int> _customEndnoteMarks = new();
+    private readonly Dictionary<int, int> _endnoteSectionStarts = new();
     private readonly Dictionary<long, Section> _endnoteSections = new();
     private readonly HashSet<Section> _endnoteSeparatorSections = new();
     private readonly HashSet<int> _endnoteDestinationOrdinals = new();
@@ -1168,6 +1169,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _activeEndnoteIndex = null;
         _endnoteOrdinals.Clear();
         _endnoteLabels.Clear();
+        _customEndnoteMarks.Clear();
+        _endnoteSectionStarts.Clear();
         _endnoteSections.Clear();
         _endnoteSeparatorSections.Clear();
         _endnoteDestinationOrdinals.Clear();
@@ -8843,14 +8846,28 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         var previous = _container;
         _container = _section;
         var body = properties.Ancestors<Body>().FirstOrDefault();
+        var sectionEnd = properties.Parent is DocumentFormat.OpenXml.Wordprocessing.Paragraph boundary
+            ? (OpenXmlElement)boundary : properties;
+        var preceding = body?.ChildElements.TakeWhile(element => element != sectionEnd).ToArray() ?? [];
+        var previousSectionIndex = Array.FindLastIndex(preceding, element =>
+            element is DocumentFormat.OpenXml.Wordprocessing.Paragraph paragraph &&
+            paragraph.ParagraphProperties?.SectionProperties != null);
+        var sectionElements = body?.ChildElements.Skip(previousSectionIndex + 1)
+            .TakeWhile(element => element != sectionEnd)
+            .Concat(sectionEnd is DocumentFormat.OpenXml.Wordprocessing.Paragraph ? [sectionEnd] : [])
+            .ToArray() ?? [];
+        var sectionParagraphs = sectionElements.OfType<DocumentFormat.OpenXml.Wordprocessing.Paragraph>().ToArray();
         if (_columnWidths != null && body != null &&
-            body.ChildElements.All(element => element is DocumentFormat.OpenXml.Wordprocessing.Paragraph or SectionProperties) &&
-            body.Elements<DocumentFormat.OpenXml.Wordprocessing.Paragraph>().All(paragraph =>
-                paragraph.Descendants<DocumentFormat.OpenXml.Wordprocessing.Text>()
-                    .Where(text => !text.Ancestors<TextBoxContent>().Any())
-                    .Sum(text => text.Text.Length) < 45 &&
+            sectionElements.All(element => element is DocumentFormat.OpenXml.Wordprocessing.Paragraph or SectionProperties) &&
+            sectionParagraphs.All(paragraph =>
                 paragraph.Descendants<Drawing>().All(drawing =>
-                    drawing.Descendants<TextBoxContent>().Any())))
+                    drawing.Descendants<TextBoxContent>().Any())) &&
+            (sectionParagraphs.Any(paragraph => paragraph.Descendants<Break>()
+                 .Any(br => br.Type?.Value == BreakValues.Column)) ||
+             sectionParagraphs.All(paragraph =>
+                 paragraph.Descendants<DocumentFormat.OpenXml.Wordprocessing.Text>()
+                     .Where(text => !text.Ancestors<TextBoxContent>().Any())
+                     .Sum(text => text.Text.Length) < 45)))
         {
             _columnIndex = 0;
             _columnParagraphCount = 0;
@@ -13831,12 +13848,17 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         label.Superscript = _runStyle?.Superscript == true;
     }
 
-    private static string FormatEndnoteIndex(int index, DxpIDocumentContext context)
+    private string FormatEndnoteIndex(int index, DxpIDocumentContext context)
     {
         var sectionProperties = context.CurrentSection.SectionProperties?.GetFirstChild<EndnoteProperties>();
         var format = sectionProperties?.NumberingFormat?.Val?.Value ?? NumberFormatValues.LowerRoman;
         var start = sectionProperties?.NumberingStart?.Val?.Value ?? 1;
-        return DxpListMarkerFormatter.FormatNumber(index + start - 1, format);
+        var sectionIndex = sectionProperties?.NumberingRestart?.Val?.Value == RestartNumberValues.EachSection
+            ? _endnoteSectionStarts.GetValueOrDefault(_sectionCount, index) : 1;
+        if (sectionIndex == index &&
+            sectionProperties?.NumberingRestart?.Val?.Value == RestartNumberValues.EachSection)
+            _endnoteSectionStarts.TryAdd(_sectionCount, index);
+        return DxpListMarkerFormatter.FormatNumber(index - sectionIndex + start, format);
     }
 
     private string FormatFootnoteIndex(int index, DxpIDocumentContext context)
@@ -14372,7 +14394,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             images.Add(new ParagraphImageOverlay(bytes, marginLeft, paragraphTop,
                 transformed?.Width ?? marginFrame.FrameWidthPoints.Value,
                 transformed?.Height ?? marginFrame.FrameHeightPoints.Value,
-                BehindDocument: behindDocument));
+                ZOrder: zOrder, BehindDocument: behindDocument));
             if (drawing.Ancestors<DocumentFormat.OpenXml.Wordprocessing.Paragraph>().FirstOrDefault()?
                     .NextSibling() is DocumentFormat.OpenXml.Wordprocessing.Paragraph following)
                 _floatingTextWraps[following] = new FloatingTextWrap(marginLeft - leftDistance,

@@ -134,6 +134,29 @@ public sealed class PdfFlowExportTests
     }
 
     [Fact]
+    public void KeepsLongParagraphsInExplicitMultiColumnFlow()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(
+                new Paragraph(new Run(new Text("A longer paragraph with enough words to exceed the old character cutoff"),
+                    new Break { Type = BreakValues.Column })),
+                new Paragraph(new Run(new Text("Second column"))),
+                new SectionProperties(new Columns { ColumnCount = 2, Space = "360" })));
+        }
+
+        byte[] result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        var words = Assert.Single(pdf.GetPages()).GetWords().ToArray();
+        Assert.True(words.Single(word => word.Text == "Second").BoundingBox.Left >
+            words.Single(word => word.Text.StartsWith("Alonger", StringComparison.Ordinal)).BoundingBox.Left);
+    }
+
+    [Fact]
     public void ExplicitEvenSectionBreakWinsOverOddPageNumberRestart()
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
@@ -227,6 +250,59 @@ public sealed class PdfFlowExportTests
         var text = string.Concat(pdf.GetPages().Select(page => page.Text));
         Assert.Contains("*", text);
         Assert.DoesNotContain("i", text, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void RestartsEndnoteLabelsInNextSection()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.AddNewPart<EndnotesPart>().Endnotes = new Endnotes(
+                new Endnote(new Paragraph(new Run(new EndnoteReferenceMark(), new Text(" A")))) { Id = 1 },
+                new Endnote(new Paragraph(new Run(new EndnoteReferenceMark(), new Text(" B")))) { Id = 2 });
+            main.Document = new Document(new Body(
+                new Paragraph(new Run(new Text("First"), new EndnoteReference { Id = 1 }),
+                    new ParagraphProperties(new SectionProperties(new EndnoteProperties(
+                        new NumberingRestart { Val = RestartNumberValues.EachSection })))),
+                new Paragraph(new Run(new Text("Second"), new EndnoteReference { Id = 2 })),
+                new SectionProperties(new EndnoteProperties(
+                    new NumberingRestart { Val = RestartNumberValues.EachSection }))));
+        }
+
+        byte[] result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        var text = string.Concat(pdf.GetPages().Select(page => page.Text));
+        Assert.Equal("FirstiSecondiiAiB", text);
+    }
+
+    [Fact]
+    public void ClearsCustomEndnoteMarksBeforeReusingVisitor()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        byte[] CreateSource(bool custom)
+        {
+            using var source = new MemoryStream();
+            using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+            {
+                var main = document.AddMainDocumentPart();
+                main.AddNewPart<EndnotesPart>().Endnotes = new Endnotes(new Endnote(new Paragraph(
+                    new Run(new EndnoteReferenceMark(), new Text(" N")))) { Id = 1 });
+                main.Document = new Document(new Body(new Paragraph(new Run(new Text("B"),
+                    new EndnoteReference { Id = 1, CustomMarkFollows = custom }))));
+            }
+            return source.ToArray();
+        }
+
+        var visitor = new DxpFlowPdfVisitor();
+        _ = DxpExport.ExportToBytes(CreateSource(true), visitor);
+        byte[] result = DxpExport.ExportToBytes(CreateSource(false), visitor);
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        Assert.Contains("i", string.Concat(pdf.GetPages().Select(page => page.Text)));
     }
 
     [Fact]
