@@ -66,17 +66,21 @@ Most DOCX “save as text” pipelines lose important fidelity: strikethroughs a
 
 ## Pdfxport source builds
 
-The optional `ext/PDFsharp` submodule pins the MIT-licensed
-[Pdfxport.Net fork](https://github.com/gaspardpetit/Pdfxport.Net). To build against
-its PDFsharp and MigraDoc projects instead of packaged binaries:
+The `ext/PDFsharp` submodule pins the MIT-licensed
+[Pdfxport.Net fork](https://github.com/gaspardpetit/Pdfxport.Net). Initialize it
+before building; the default build uses the pinned source until a package is released:
 
 ```powershell
 git submodule update --init ext/PDFsharp
-dotnet build DocxportNet/DocxportNet.csproj -f netstandard2.0 -p:PdfSharpSourceRoot="$((Resolve-Path ext/PDFsharp).Path)"
+dotnet build DocxportNet/DocxportNet.csproj -f netstandard2.0
 ```
 
-The default build does not require the submodule. PDF export will be introduced
-in a separate change.
+`DxpPdfVisitor` provides the first text-focused PDF slice through the standard
+`DxpExport.ExportToBytes` and `ExportToFile` APIs. It handles paragraphs, list
+markers, explicit page breaks, line wrapping, and page overflow. It does not yet
+reproduce Word's run formatting, tables, images, or page geometry. Configure a
+PDFsharp font resolver before exporting; on Windows, set
+`PdfSharp.Fonts.GlobalFontSettings.UseWindowsFontsUnderWindows = true`.
 
 ## Quick start: DOCX → Markdown
 
