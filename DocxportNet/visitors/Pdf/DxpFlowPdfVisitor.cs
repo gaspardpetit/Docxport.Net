@@ -1243,6 +1243,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _htmlBevelTables.Clear();
         _tableFragmentBorders.Clear();
         _splitOverpageTables.Clear();
+        _noAutoSpacingTables.Clear();
         _nestedFragmentBorderGroups.Clear();
         _diagonalCells.Clear();
         _rotatedCells.Clear();
