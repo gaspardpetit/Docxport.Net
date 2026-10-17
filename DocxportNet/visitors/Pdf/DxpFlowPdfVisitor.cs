@@ -2917,7 +2917,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 {
                     frame.RelativeHorizontal = MigraDoc.DocumentObjectModel.Shapes.RelativeHorizontal.Page;
                     frame.Left = Unit.FromPoint(_section.PageSetup.LeftMargin.Point +
-                        (_columnIndex == 0 ? 0 : _columnWidths[0] + _columnGapPoints) +
+                        _columnWidths.Take(_columnIndex).Sum() + _columnIndex * _columnGapPoints +
                         frame.Left.Position.Point);
                 }
                 if (vertical?.GetAttribute("relativeFrom", "").Value == "paragraph")
@@ -8567,7 +8567,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private sealed record FooterImageOverlay(HeaderFooterValues Kind, byte[] Bytes,
         double Left, double Top, double Width, double Height, bool Header = false,
         MigraDoc.DocumentObjectModel.Paragraph? AnchorParagraph = null, bool BehindDocument = false,
-        long ZOrder = 0);
+        long ZOrder = 0, bool PageRelative = false);
 
     private sealed record ParagraphImageOverlay(byte[] Bytes, double Left, double Top,
         double Width, double Height, bool PageRelative = false, long ZOrder = 0,
@@ -8777,8 +8777,10 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                         section.PageSetup.FooterDistance.Point - 15
                     : overlay.Header ? section.PageSetup.HeaderDistance.Point :
                         section.PageSetup.TopMargin.Point);
-                graphics.DrawImage(image, section.PageSetup.LeftMargin.Point + overlay.Left,
-                    storyTop + overlay.Top, overlay.Width, overlay.Height);
+                graphics.DrawImage(image,
+                    overlay.PageRelative ? overlay.Left : section.PageSetup.LeftMargin.Point + overlay.Left,
+                    overlay.PageRelative ? overlay.Top : storyTop + overlay.Top,
+                    overlay.Width, overlay.Height);
             }
         }
     }
@@ -14404,6 +14406,24 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 transformed?.Width ?? pageFrame.FrameWidthPoints.Value,
                 transformed?.Height ?? pageFrame.FrameHeightPoints.Value, PageRelative: true,
                 ZOrder: zOrder, BehindDocument: behindDocument));
+            return DxpDisposable.Empty;
+        }
+        if (anchored && _container is HeaderFooter && _section != null &&
+            PositionImageOffset(horizontal, "page") is double headerPageLeft &&
+            PositionImageOffset(vertical, "page") is double headerPageTop &&
+            info.Presentation is { FrameWidthPoints: > 0, FrameHeightPoints: > 0 } headerPageFrame)
+        {
+            if (!_footerImages.TryGetValue(_section, out var images))
+                _footerImages[_section] = images = new List<FooterImageOverlay>();
+            images.Add(new FooterImageOverlay(_headerFooterKind, bytes,
+                headerPageLeft + (headerPageFrame.FrameWidthPoints.Value -
+                    (transformed?.Width ?? headerPageFrame.FrameWidthPoints.Value)) / 2,
+                headerPageTop + (headerPageFrame.FrameHeightPoints.Value -
+                    (transformed?.Height ?? headerPageFrame.FrameHeightPoints.Value)) / 2,
+                transformed?.Width ?? headerPageFrame.FrameWidthPoints.Value,
+                transformed?.Height ?? headerPageFrame.FrameHeightPoints.Value,
+                Header: _inHeader, BehindDocument: behindDocument, ZOrder: zOrder,
+                PageRelative: true));
             return DxpDisposable.Empty;
         }
         var paragraphAnchor = anchored && _container is Section &&
