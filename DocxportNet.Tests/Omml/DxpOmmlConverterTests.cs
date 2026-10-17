@@ -334,7 +334,7 @@ public sealed class DxpOmmlConverterTests
     [Fact]
     public void StandaloneImplementationDoesNotReferencePipelineTypesOrReparseSdkElements()
     {
-        string sourceRoot = Path.Combine(OmmlTestData.FixtureRoot, "..", "..", "..", "DocxportNet", "Omml");
+        string sourceRoot = Path.Combine(OmmlTestData.FixtureRoot, "..", "..", "DocxportNet", "Omml");
         string source = string.Join("\n", Directory.EnumerateFiles(sourceRoot, "*.cs")
             .OrderBy(path => path, StringComparer.Ordinal)
             .Select(File.ReadAllText));

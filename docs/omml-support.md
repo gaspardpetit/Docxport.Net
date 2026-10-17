@@ -483,7 +483,7 @@ inputs are deliberately and explicitly rejected as malformed XML.
 - [x] All output-injection and resource-limit security cases.
 
 Named Docxport-owned corpus-gap evidence is kept separately from the upstream
-oracle. Valid reusable inputs live in `Fixtures/Omml/Normative` with reviewed
+oracle. Valid reusable inputs live in `fixtures/omml/normative` with reviewed
 readable-text expectations; invalid XML inputs use `.invalid.xml`. Properties
 that are supplied through options, and combinatorial cases that are clearer as
 focused builders, remain named unit cases:

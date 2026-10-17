@@ -47,7 +47,7 @@ public class StyleResolverDuplicateStylesTests : TestBase<StyleResolverDuplicate
     public void RunStyle_ResolvesThemeColorMappingAndDirectOverrides()
     {
         var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordThreeLevelStyleOverrides.docx"));
         using var stream = new MemoryStream();
         stream.Write(File.ReadAllBytes(path));

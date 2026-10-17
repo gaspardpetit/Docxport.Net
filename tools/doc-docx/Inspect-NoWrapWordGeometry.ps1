@@ -8,7 +8,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $repository = (Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
-$fixtures = Join-Path $repository 'DocxportNet.Tests/Fixtures'
+$fixtures = Join-Path $repository 'fixtures'
 $project = Join-Path $repository 'DocxportNet.Tests/DocxportNet.Tests.csproj'
 $binary = Join-Path $repository 'DocxportNet.Tests/bin/Debug/net10.0'
 & dotnet build $project --no-restore --verbosity quiet -p:WarningLevel=0
@@ -52,12 +52,12 @@ $rows = @()
 $characters = @()
 try {
     foreach ($name in $names) {
-        $folder = if ($name -like '*Arial*') { 'DocKnownGaps' } else { 'Doc' }
-        $source = Join-Path (Join-Path $fixtures $folder) ($name + '.docx')
+        $folder = if ($name -like '*Arial*') { 'regressions' } else { 'legacy' }
+        $source = Join-Path (Join-Path (Join-Path $fixtures 'docx') $folder) ($name + '.docx')
         $generated = Join-Path $ResultsDirectory ($name + '-generated.doc')
         [IO.File]::WriteAllBytes($generated,
             [DocxportNet.DxpDocExport]::Export([IO.File]::ReadAllBytes($source)))
-        $native = [IO.Path]::ChangeExtension($source, '.doc')
+        $native = Join-Path (Join-Path (Join-Path $fixtures 'doc') $folder) ($name + '.doc')
         $routes = @('source', 'native', 'generated')
         if ($Mode11Control) {
             $control = Join-Path $ResultsDirectory ($name + '-mode11.docx')

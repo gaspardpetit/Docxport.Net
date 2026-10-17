@@ -4,6 +4,7 @@
 **/node_modules/**
 .vscode
 artifacts
+/output/
 .nuget
 DocxportNet.Cli/Properties/launchSettings.json
 samples/*/*.test.*
