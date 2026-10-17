@@ -227,6 +227,51 @@ public sealed class PdfFlowExportTests
     }
 
     [Fact]
+    public void PaintsShortAndSplitParagraphHighlights()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new PdfDocument();
+        var firstPage = source.AddPage();
+        using (var graphics = XGraphics.FromPdfPage(firstPage))
+            graphics.DrawString("Opening A", new XFont("Arial", 12), XBrushes.Black, 40, 80);
+        var originalStreamCount = firstPage.Contents.Elements.Count;
+        var secondPage = source.AddPage();
+        using (var graphics = XGraphics.FromPdfPage(secondPage))
+            graphics.DrawString("following text", new XFont("Arial", 12), XBrushes.Black, 40, 80);
+        using var output = new MemoryStream();
+
+        DxpPdfHighlightOverlay.Save(source, output,
+            [new DxpPdfHighlight("A", HighlightColorValues.Yellow,
+                ParagraphText: new System.Text.StringBuilder("Opening A following text"), SourceOffset: 7)]);
+
+        using var result = PdfReader.Open(new MemoryStream(output.ToArray()), PdfDocumentOpenMode.Import);
+        Assert.True(result.Pages[0].Contents.Elements.Count > originalStreamCount);
+    }
+
+    [Fact]
+    public void PaintsRepeatedHeaderHighlightOnEachPage()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new PdfDocument();
+        for (var pageIndex = 0; pageIndex < 2; pageIndex++)
+        {
+            var page = source.AddPage();
+            using var graphics = XGraphics.FromPdfPage(page);
+            graphics.DrawString("Header", new XFont("Arial", 12), XBrushes.Black, 40, 40);
+        }
+        var originalStreamCount = source.Pages[0].Contents.Elements.Count;
+        using var output = new MemoryStream();
+
+        DxpPdfHighlightOverlay.Save(source, output,
+            [new DxpPdfHighlight("Header", HighlightColorValues.Yellow,
+                ParagraphText: new System.Text.StringBuilder("Header"), RepeatedStory: true)]);
+
+        using var result = PdfReader.Open(new MemoryStream(output.ToArray()), PdfDocumentOpenMode.Import);
+        Assert.All(result.Pages.Cast<PdfPage>(), page =>
+            Assert.True(page.Contents.Elements.Count > originalStreamCount));
+    }
+
+    [Fact]
     public void RendersCarriageReturnAsLineBreak()
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
@@ -468,6 +513,21 @@ public sealed class PdfFlowExportTests
         using var source = new MemoryStream(bytes);
 
         DxpHtmlChunkImporter.Append(section, source, "Arial");
+
+        var paragraph = section.Elements.OfType<MigraDoc.DocumentObjectModel.Paragraph>().Single();
+        Assert.Contains("Caf\u00e9", paragraph.Elements.OfType<MigraDoc.DocumentObjectModel.FormattedText>()
+            .SelectMany(span => span.Elements.OfType<MigraDoc.DocumentObjectModel.Text>())
+            .Select(text => text.Content));
+    }
+
+    [Fact]
+    public void ImportsHtmlUsingPartContentTypeCharset()
+    {
+        var document = new MigraDoc.DocumentObjectModel.Document();
+        var section = document.AddSection();
+        using var source = new MemoryStream(System.Text.Encoding.Latin1.GetBytes("<p>Caf\u00e9</p>"));
+
+        DxpHtmlChunkImporter.Append(section, source, "Arial", contentType: "text/html; charset=windows-1252");
 
         var paragraph = section.Elements.OfType<MigraDoc.DocumentObjectModel.Paragraph>().Single();
         Assert.Contains("Caf\u00e9", paragraph.Elements.OfType<MigraDoc.DocumentObjectModel.FormattedText>()

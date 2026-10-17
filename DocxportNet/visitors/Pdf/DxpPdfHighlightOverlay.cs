@@ -12,7 +12,7 @@ namespace DocxportNet.Visitors.Pdf;
 
 internal sealed record DxpPdfHighlight(string Text, HighlightColorValues? Color, string? Shading = null,
     double LineSize = 0, bool Footer = false, double RightPadding = 0,
-    StringBuilder? ParagraphText = null, int SourceOffset = 0);
+    StringBuilder? ParagraphText = null, int SourceOffset = 0, bool RepeatedStory = false);
 
 internal static class DxpPdfHighlightOverlay
 {
@@ -35,7 +35,8 @@ internal static class DxpPdfHighlightOverlay
         foreach (var highlight in highlights)
         {
             var text = Normalize(highlight.Text);
-            if (text.Length < 3 || !(highlight.Color is { } value && TryColor(value, out var color) ||
+            if (text.Length == 0 || highlight.ParagraphText == null && text.Length < 3 ||
+                !(highlight.Color is { } value && TryColor(value, out var color) ||
                 TryShadingColor(highlight.Shading, out color))) continue;
             if (highlight.ParagraphText != null)
             {
@@ -78,22 +79,28 @@ internal static class DxpPdfHighlightOverlay
             if (highlight.SourceOffset < 0 || highlight.SourceOffset + text.Length > paragraphText.Length ||
                 string.CompareOrdinal(paragraphText, highlight.SourceOffset, text, 0, text.Length) != 0)
                 continue;
-            var matchPage = -1;
-            var matchOffset = -1;
-            var occurrences = 0;
-            for (var pageIndex = 0; pageIndex < pageTexts.Length && occurrences < 2; pageIndex++)
-                for (var offset = 0; (offset = pageTexts[pageIndex].IndexOf(paragraphText, offset,
-                         StringComparison.Ordinal)) >= 0 && occurrences < 2; offset += paragraphText.Length)
-                {
-                    occurrences++;
-                    matchPage = pageIndex;
-                    matchOffset = offset + highlight.SourceOffset;
-                }
-            if (occurrences != 1) continue;
-            if (!anchoredMatches.TryGetValue(matchPage, out var pageMatches))
-                anchoredMatches[matchPage] = pageMatches = new();
-            pageMatches.Add((matchOffset, text.Length, color, highlight.Shading != null,
-                highlight.LineSize, highlight.Footer, highlight.RightPadding));
+            var positions = new List<(int Page, int Offset)>();
+            foreach (var radius in new[] { paragraphText.Length, 64, 32, 16, 8, 0 }.Distinct())
+            {
+                var contextStart = Math.Max(0, highlight.SourceOffset - radius);
+                var contextEnd = Math.Min(paragraphText.Length,
+                    highlight.SourceOffset + text.Length + radius);
+                var context = paragraphText[contextStart..contextEnd];
+                positions.Clear();
+                for (var pageIndex = 0; pageIndex < pageTexts.Length; pageIndex++)
+                    for (var offset = 0; (offset = pageTexts[pageIndex].IndexOf(context, offset,
+                             StringComparison.Ordinal)) >= 0; offset += context.Length)
+                        positions.Add((pageIndex, offset + highlight.SourceOffset - contextStart));
+                if (positions.Count > 0) break;
+            }
+            if (positions.Count == 0 || positions.Count > 1 && !highlight.RepeatedStory) continue;
+            foreach (var (pageIndex, offset) in positions)
+            {
+                if (!anchoredMatches.TryGetValue(pageIndex, out var pageMatches))
+                    anchoredMatches[pageIndex] = pageMatches = new();
+                pageMatches.Add((offset, text.Length, color, highlight.Shading != null,
+                    highlight.LineSize, highlight.Footer, highlight.RightPadding));
+            }
         }
         if (colors.Count == 0 && anchoredMatches.Count == 0)
         {

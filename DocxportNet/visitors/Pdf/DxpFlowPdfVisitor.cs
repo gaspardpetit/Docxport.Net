@@ -12687,7 +12687,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         if (_runHighlight is { } highlight && !string.IsNullOrWhiteSpace(content))
             _highlights.Add(new DxpPdfHighlight(content, highlight, null,
                 _paragraphLineSize, _container is HeaderFooter && !_inHeader,
-                ParagraphText: paragraphText.Text, SourceOffset: sourceOffset));
+                ParagraphText: paragraphText.Text, SourceOffset: sourceOffset,
+                RepeatedStory: _container is HeaderFooter));
         else if (_runShading is { } shading && !string.IsNullOrWhiteSpace(content))
         {
             var storySpacing = _container is HeaderFooter &&
@@ -12705,7 +12706,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 rightPadding += storySpacing;
             _highlights.Add(new DxpPdfHighlight(content, null, shading,
                 _paragraphLineSize, _container is HeaderFooter && !_inHeader, rightPadding,
-                paragraphText.Text, sourceOffset));
+                paragraphText.Text, sourceOffset, _container is HeaderFooter));
         }
         if (!smallCaps)
         {
@@ -14793,7 +14794,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             DxpHtmlChunkImporter.Append(section, stream,
                 _availableFontFamilies.Contains("Aptos") ? "Aptos" : _fontFamily,
                 (table, border, spacing, padding) =>
-                    _htmlBevelTables.Add(table, (border, spacing, padding)));
+                    _htmlBevelTables.Add(table, (border, spacing, padding)), part.ContentType);
             return;
         }
         if (!part.ContentType.StartsWith("text/plain", StringComparison.OrdinalIgnoreCase)) return;

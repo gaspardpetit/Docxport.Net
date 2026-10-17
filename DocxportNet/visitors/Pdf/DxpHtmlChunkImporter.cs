@@ -3,6 +3,7 @@ using AngleSharp.Html.Parser;
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
 using StbImageSharp;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace DocxportNet.Visitors.Pdf;
@@ -13,9 +14,20 @@ internal static class DxpHtmlChunkImporter
         "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4//8/AwAI/AL+p5qgoAAAAABJRU5ErkJggg==";
 
     internal static void Append(Section section, Stream stream, string bodyFont,
-        Action<Table, double, double, double>? onBorderedTable = null)
+        Action<Table, double, double, double>? onBorderedTable = null, string? contentType = null)
     {
-        var document = new HtmlParser().ParseDocument(stream);
+        var charset = Regex.Match(contentType ?? "", @"(?:^|;)\s*charset\s*=\s*['"" ]?(?<name>[^;'""\s]+)",
+            RegexOptions.IgnoreCase).Groups["name"].Value;
+        var parser = new HtmlParser();
+        AngleSharp.Html.Dom.IHtmlDocument document;
+        if (charset.Length > 0)
+        {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            using var reader = new StreamReader(stream, Encoding.GetEncoding(charset),
+                detectEncodingFromByteOrderMarks: true);
+            document = parser.ParseDocument(reader.ReadToEnd());
+        }
+        else document = parser.ParseDocument(stream);
         if (document.Body == null) return;
         var initialCount = section.Elements.Count;
         foreach (var child in document.Body.ChildNodes)
