@@ -40,7 +40,7 @@ public sealed class OmmlTestHarnessTests
     [Fact]
     public void GeneratedOracleManifestMatchesAvailableOutputs()
     {
-        string oracleRoot = Path.Combine(OmmlTestData.FixtureRoot, "OracleGenerated");
+        string oracleRoot = Path.Combine(OmmlTestData.FixtureRoot, "oracle-generated");
         using JsonDocument manifest = JsonDocument.Parse(
             File.ReadAllText(Path.Combine(oracleRoot, "manifest.json")));
         JsonElement root = manifest.RootElement;
@@ -191,7 +191,7 @@ public sealed class OmmlTestHarnessTests
             string source = File.ReadAllText(fixture);
             foreach ((DxpOmmlOutputFormat format, (string folder, string extension)) in formats)
             {
-                string oracle = Path.Combine(OmmlTestData.FixtureRoot, "OracleGenerated", folder,
+                string oracle = Path.Combine(OmmlTestData.FixtureRoot, "oracle-generated", folder,
                     Path.ChangeExtension(relative, extension));
                 if (!File.Exists(oracle)) continue;
                 available[format]++;

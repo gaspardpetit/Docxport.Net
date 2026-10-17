@@ -10,7 +10,7 @@ public class TableLookMaskTests
     public void BitmaskEnablesWordAuthoredFirstRowFormattingWithoutBooleanAttributes()
     {
         var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordConditionalFirstRowRunStyleAllStories.docx"));
         using var document = WordprocessingDocument.Open(path, false);
         var table = document.MainDocumentPart!.Document!.Body!.Descendants<Table>().First();
@@ -33,7 +33,7 @@ public class TableLookMaskTests
     public void BitmaskSuppliesEachOmittedTableLookFlag()
     {
         var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordConditionalFirstRowRunStyleAllStories.docx"));
         using var document = WordprocessingDocument.Open(path, false);
         var resolver = new DxpTableStyleResolver(document);

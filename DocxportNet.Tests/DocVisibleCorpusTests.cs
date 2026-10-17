@@ -16,11 +16,11 @@ public class DocVisibleCorpusTests
     [InlineData("WordTableCellPositionalTabProbe")]
     public void TableCellPositionalTabKnownGapsRetainIndexedStops(string name)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "DocKnownGaps"));
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory, name + ".doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "regressions"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
+        var native = File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc"));
         var expected = ReadStories(source);
         var expectedStops = ReadEffectiveTabStops(source);
         foreach (var binary in new[] { native, DxpDocExport.Export(source) })
@@ -38,13 +38,13 @@ public class DocVisibleCorpusTests
     [InlineData("WordSnapToCharacterGridAllStories", (byte)3)]
     public void CharacterGridPairsRetainPitchModeAndRunOverrides(string name, byte mode)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
         var stories = ReadStories(source);
         foreach (var doc in new[]
         {
-            File.ReadAllBytes(Path.Combine(directory, name + ".doc")),
+            File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc")),
             DxpDocExport.Export(source)
         })
         {
@@ -84,8 +84,8 @@ public class DocVisibleCorpusTests
     [InlineData(true)]
     public void InheritedCharacterEmphasisAndGridSnapRetainLayeredValues(bool native)
     {
-        var stem = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var stem = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordInheritedCharacterEmphasisGridAllStories"));
         var source = File.ReadAllBytes(stem + ".docx");
         var expected = ReadEffectiveRunFormatting(source);
@@ -95,7 +95,7 @@ public class DocVisibleCorpusTests
         Assert.Equal("false", expected["body.paragraph1.char0.snapToGrid"]);
         Assert.Equal("dot", expected["section0.header.default.paragraph0.char0.emphasis"]);
         Assert.Equal("dot", expected["section0.footer.default.paragraph0.char0.emphasis"]);
-        var bytes = native ? File.ReadAllBytes(stem + ".doc") :
+        var bytes = native ? File.ReadAllBytes(FixturePath.Resolve(stem + ".doc")) :
             DxpDocExport.Export(source);
         foreach (var binary in new[] { bytes,
             DxpDocExport.Export(DxpDocToDocx.Project(bytes).DocxBytes) })
@@ -121,8 +121,8 @@ public class DocVisibleCorpusTests
     [InlineData(true)]
     public void InheritedEmphasisRetainsStyleAndDirectRunOverrides(bool native)
     {
-        var stem = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var stem = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordInheritedEmphasisAllStories"));
         var source = File.ReadAllBytes(stem + ".docx");
         var expected = ReadEffectiveRunFormatting(source);
@@ -130,7 +130,7 @@ public class DocVisibleCorpusTests
         Assert.Equal("comma", expected["body.paragraph1.char0.emphasis"]);
         Assert.Equal("dot", expected["section0.header.default.paragraph0.char0.emphasis"]);
         Assert.Equal("dot", expected["section0.footer.default.paragraph0.char0.emphasis"]);
-        var bytes = native ? File.ReadAllBytes(stem + ".doc") :
+        var bytes = native ? File.ReadAllBytes(FixturePath.Resolve(stem + ".doc")) :
             DxpDocExport.Export(source);
         foreach (var binary in new[] { bytes,
             DxpDocExport.Export(DxpDocToDocx.Project(bytes).DocxBytes) })
@@ -156,8 +156,8 @@ public class DocVisibleCorpusTests
     [InlineData(true)]
     public void InheritedRunGridSnapRetainsCharacterStylesAndDirectReset(bool native)
     {
-        var stem = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var stem = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordInheritedRunGridSnapAllStories"));
         var source = File.ReadAllBytes(stem + ".docx");
         var expected = ReadEffectiveRunFormatting(source);
@@ -165,7 +165,7 @@ public class DocVisibleCorpusTests
         Assert.Equal("false", expected["body.paragraph1.char0.snapToGrid"]);
         Assert.Equal("false", expected["section0.header.default.paragraph0.char0.snapToGrid"]);
         Assert.Equal("false", expected["section0.footer.default.paragraph0.char0.snapToGrid"]);
-        var bytes = native ? File.ReadAllBytes(stem + ".doc") :
+        var bytes = native ? File.ReadAllBytes(FixturePath.Resolve(stem + ".doc")) :
             DxpDocExport.Export(source);
         foreach (var binary in new[] { bytes,
             DxpDocExport.Export(DxpDocToDocx.Project(bytes).DocxBytes) })
@@ -189,14 +189,14 @@ public class DocVisibleCorpusTests
     [Fact]
     public void SectionLineGridPairRetainsSnapStylesAndDirectOverrides()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         const string name = "WordSectionLineGridSnapAllStories";
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
         var stories = ReadStories(source);
         foreach (var doc in new[]
         {
-            File.ReadAllBytes(Path.Combine(directory, name + ".doc")),
+            File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc")),
             DxpDocExport.Export(source)
         })
         {
@@ -237,14 +237,14 @@ public class DocVisibleCorpusTests
     [Fact]
     public void CharacterGridAdjustRightPairRetainsStyleAndDirectOverrides()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         const string name = "WordCharacterGridAdjustRightAllStories";
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
         var stories = ReadStories(source);
         foreach (var doc in new[]
         {
-            File.ReadAllBytes(Path.Combine(directory, name + ".doc")),
+            File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc")),
             DxpDocExport.Export(source)
         })
         {
@@ -289,8 +289,8 @@ public class DocVisibleCorpusTests
     [InlineData(true)]
     public void InheritedTextAlignmentRetainsVisibleStyleAndDirectReset(bool native)
     {
-        var stem = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var stem = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordInheritedTextAlignmentAllStories"));
         var source = File.ReadAllBytes(stem + ".docx");
         var expected = ReadEffectiveParagraphLayout(source);
@@ -298,7 +298,7 @@ public class DocVisibleCorpusTests
         Assert.Equal("top", expected["body.paragraph2.textAlignment"]);
         Assert.Equal("top", expected["section0.header.default.paragraph0.textAlignment"]);
         Assert.Equal("top", expected["section0.footer.default.paragraph0.textAlignment"]);
-        var bytes = native ? File.ReadAllBytes(stem + ".doc") :
+        var bytes = native ? File.ReadAllBytes(FixturePath.Resolve(stem + ".doc")) :
             DxpDocExport.Export(source);
         foreach (var binary in new[] { bytes,
             DxpDocExport.Export(DxpDocToDocx.Project(bytes).DocxBytes) })
@@ -323,13 +323,13 @@ public class DocVisibleCorpusTests
     [InlineData(true)]
     public void InheritedGridAdjustedRightIndentRetainsVisibleDerivedStyle(bool native)
     {
-        var stem = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var stem = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordInheritedAdjustRightGridAllStories"));
         var source = File.ReadAllBytes(stem + ".docx");
         Assert.Equal("false", ReadEffectiveParagraphLayout(source)[
             "body.paragraph2.adjustRightIndent"]);
-        var bytes = native ? File.ReadAllBytes(stem + ".doc") :
+        var bytes = native ? File.ReadAllBytes(FixturePath.Resolve(stem + ".doc")) :
             DxpDocExport.Export(source);
         foreach (var binary in new[] { bytes,
             DxpDocExport.Export(DxpDocToDocx.Project(bytes).DocxBytes) })
@@ -349,11 +349,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void EastAsianLineBreakingPairRetainsStyleAndDirectControlsInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         const string name = "WordEastAsianLineBreakingAllStories";
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory, name + ".doc"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
+        var native = File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc"));
         var expectedStories = ReadStories(source);
         foreach (var doc in new[] { native, DxpDocExport.Export(source) })
         {
@@ -398,11 +398,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void EastAsianAutomaticSpacingPairRetainsStyleDirectAndDefaultFontInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         const string name = "WordEastAsianAutomaticSpacingAllStories";
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory, name + ".doc"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
+        var native = File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc"));
         var expectedStories = ReadStories(source);
         foreach (var doc in new[] { native, DxpDocExport.Export(source) })
         {
@@ -455,12 +455,12 @@ public class DocVisibleCorpusTests
         Assert.Throws<InvalidDataException>(() =>
             DocPlainTextWriter.EncodeCharacterProperties(
                 DocCharacterFormatting.Empty with { EmphasisMarkCode = 5 }));
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         const string name = "WordEastAsianEmphasisAllStories";
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
         var expectedStories = ReadStories(source);
-        foreach (var doc in new[] { File.ReadAllBytes(Path.Combine(directory, name + ".doc")),
+        foreach (var doc in new[] { File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc")),
             DxpDocExport.Export(source) })
         {
             foreach (var binary in new[] { doc,
@@ -577,14 +577,14 @@ public class DocVisibleCorpusTests
     [Fact]
     public void OpenTypeAdvanceReaderMeasuresFittedWordFont()
     {
-        var font = Path.Combine(Environment.GetFolderPath(
+        var font = FixturePath.Combine(Environment.GetFolderPath(
             Environment.SpecialFolder.Windows), "Fonts", "yumin.ttf");
         if (!File.Exists(font)) return;
         var metrics = Assert.IsType<DocOpenTypeAdvances>(
             DocSystemFontAdvances.Find("Yu Mincho"));
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        using var package = WordprocessingDocument.Open(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        using var package = WordprocessingDocument.Open(FixturePath.Combine(directory,
             "WordRunFitTextMixedCjkAllStories.docx"), false);
         var headerText = string.Concat(package.MainDocumentPart!.HeaderParts.Single()
             .Header!.Descendants<Text>().Select(x => x.Text));
@@ -638,10 +638,10 @@ public class DocVisibleCorpusTests
     [Fact]
     public void DocxFitTextWidthAboveSignedDocRangeIsRejected()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         using var source = new MemoryStream();
-        source.Write(File.ReadAllBytes(Path.Combine(directory,
+        source.Write(File.ReadAllBytes(FixturePath.Combine(directory,
             "WordRunFitTextAllStories.docx")));
         source.Position = 0;
         using (var package = WordprocessingDocument.Open(source, true))
@@ -653,12 +653,12 @@ public class DocVisibleCorpusTests
     [Fact]
     public void RunFitTextParagraphStylesRetainInheritedWidthsInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         const string name = "WordRunFitTextParagraphStyleAllStories";
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
         var stories = ReadStories(source);
-        foreach (var doc in new[] { File.ReadAllBytes(Path.Combine(directory, name + ".doc")),
+        foreach (var doc in new[] { File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc")),
             DxpDocExport.Export(source) })
             foreach (var binary in new[] { doc,
                 DxpDocExport.Export(DxpDocToDocx.Project(doc).DocxBytes) })
@@ -706,12 +706,12 @@ public class DocVisibleCorpusTests
     [Fact]
     public void RunFitTextBasedOnParagraphStylesRetainInheritedWidthsInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         const string name = "WordRunFitTextInheritedParagraphStyleAllStories";
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
         var stories = ReadStories(source);
-        foreach (var doc in new[] { File.ReadAllBytes(Path.Combine(directory, name + ".doc")),
+        foreach (var doc in new[] { File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc")),
             DxpDocExport.Export(source) })
             foreach (var binary in new[] { doc,
                 DxpDocExport.Export(DxpDocToDocx.Project(doc).DocxBytes) })
@@ -762,12 +762,12 @@ public class DocVisibleCorpusTests
     [Fact]
     public void RunFitTextParagraphOverrideRetainsDirectAndInheritedWidthsInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         const string name = "WordRunFitTextParagraphOverrideAllStories";
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
         var stories = ReadStories(source);
-        foreach (var doc in new[] { File.ReadAllBytes(Path.Combine(directory, name + ".doc")),
+        foreach (var doc in new[] { File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc")),
             DxpDocExport.Export(source) })
             foreach (var binary in new[] { doc,
                 DxpDocExport.Export(DxpDocToDocx.Project(doc).DocxBytes) })
@@ -827,11 +827,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void RunFitTextHighAnsiFontsRetainScalesAndEditableFontsInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         const string name = "WordRunFitTextHighAnsiFontsAllStories";
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory, name + ".doc"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
+        var native = File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc"));
         var generated = DxpDocExport.Export(source);
         static ushort?[] Scales(byte[] doc)
         {
@@ -873,11 +873,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void RunFitTextBoldUsesBoldFaceAdvancesInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         const string name = "WordRunFitTextBoldAllStories";
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory, name + ".doc"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
+        var native = File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc"));
         var generated = DxpDocExport.Export(source);
         static ushort?[] Scales(byte[] doc)
         {
@@ -927,16 +927,16 @@ public class DocVisibleCorpusTests
     public void CjkFontSubstitutionRetainsStoriesAndThirdHop(string name,
         string authoredFont)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
         static (bool? Balance, bool? Breaking) Flags(byte[] doc)
         {
             using var stream = new MemoryStream(doc);
             using var index = new DocTextIndexWalker().Index(stream);
             return (index.BalanceSingleByteDoubleByteWidth, index.ApplyBreakingRules);
         }
-        var native = File.ReadAllBytes(Path.Combine(directory, name + ".doc"));
+        var native = File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc"));
         var generated = DxpDocExport.Export(source);
         Assert.Equal(Flags(native), Flags(generated));
         var authoredFace = DocSystemFontAdvances.Find(authoredFont);
@@ -973,8 +973,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void SoleAuthoredEastAsianFontStaysImplicitWhenNoCjkGlyphNeedsFallback()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordRunFitTextLayeredCalibriCjkAllStories.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
@@ -1002,8 +1002,8 @@ public class DocVisibleCorpusTests
     [InlineData(false)]
     public void EastAsianFallbackFindsCjkTextOnlyInHeaderOrFooter(bool inHeader)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordRunFitTextLayeredCalibriCjkAllStories.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
@@ -1051,11 +1051,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void RunFitTextLayeredBoldItalicStylesRetainNativeSpacing()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         const string name = "WordRunFitTextLayeredBoldItalicAllStories";
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory, name + ".doc"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
+        var native = File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc"));
         var generated = DxpDocExport.Export(source);
         static ushort?[] Scales(byte[] doc)
         {
@@ -1107,11 +1107,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void RunFitTextItalicUsesItalicFaceAdvancesInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         const string name = "WordRunFitTextItalicAllStories";
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory, name + ".doc"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
+        var native = File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc"));
         var generated = DxpDocExport.Export(source);
         static ushort?[] Scales(byte[] doc)
         {
@@ -1154,11 +1154,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void RunFitTextCjkPunctuationUsesEastAsianFaceInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         const string name = "WordRunFitTextCjkPunctuationFontsAllStories";
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory, name + ".doc"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
+        var native = File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc"));
         var generated = DxpDocExport.Export(source);
         static ushort?[] Scales(byte[] doc)
         {
@@ -1206,13 +1206,13 @@ public class DocVisibleCorpusTests
     [Fact]
     public void RunFitTextPairRetainsGroupedWidthsInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         const string name = "WordRunFitTextAllStories";
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
         var stories = ReadStories(source);
         var expected = new[] { (2880, 7), (1800, 8), (1800, 9) };
-        foreach (var doc in new[] { File.ReadAllBytes(Path.Combine(directory, name + ".doc")),
+        foreach (var doc in new[] { File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc")),
             DxpDocExport.Export(source) })
         {
             foreach (var binary in new[] { doc,
@@ -1256,12 +1256,12 @@ public class DocVisibleCorpusTests
     [Fact]
     public void RunFitTextCharacterStyleCombinesWithDirectRunInBody()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         const string name = "WordRunFitTextStyleAllStories";
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
         var stories = ReadStories(source);
-        foreach (var doc in new[] { File.ReadAllBytes(Path.Combine(directory, name + ".doc")),
+        foreach (var doc in new[] { File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc")),
             DxpDocExport.Export(source) })
         {
             foreach (var binary in new[] { doc,
@@ -1293,12 +1293,12 @@ public class DocVisibleCorpusTests
     [Fact]
     public void MixedScriptFontFitTextRetainsGroupedRunsAcrossStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         const string name = "WordRunFitTextMixedScriptFontsAllStories";
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
         var generated = DxpDocExport.Export(source);
-        var native = File.ReadAllBytes(Path.Combine(directory, name + ".doc"));
+        var native = File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc"));
         var stories = ReadStories(source);
         static (ushort? Header, ushort? Footer) Scales(byte[] doc)
         {
@@ -1337,7 +1337,7 @@ public class DocVisibleCorpusTests
             Assert.Equal(nativeScales.Footer, generatedScales.Footer);
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var path = Path.Combine(Path.GetTempPath(),
+        var path = FixturePath.Combine(Path.GetTempPath(),
             "docxport-mixed-script-font-fit-" + Guid.NewGuid().ToString("N") + ".doc");
         File.WriteAllBytes(path, generated);
         dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -1362,7 +1362,7 @@ public class DocVisibleCorpusTests
                 opened = null;
                 return positions;
             }
-            var expected = Read(Path.Combine(directory, name + ".docx"));
+            var expected = Read(FixturePath.Combine(directory, name + ".docx"));
             var actual = Read(path);
             Assert.True(Math.Abs(expected.Header.End - actual.Header.End) <= 2.5 &&
                 Math.Abs(expected.Footer.End - actual.Footer.End) <= 2.5,
@@ -1380,12 +1380,12 @@ public class DocVisibleCorpusTests
     [Fact]
     public void MixedFontFitTextRegionUsesBothInstalledFaces()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         const string name = "WordRunFitTextMixedFontsAllStories";
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
         var stories = ReadStories(source);
-        foreach (var doc in new[] { File.ReadAllBytes(Path.Combine(directory, name + ".doc")),
+        foreach (var doc in new[] { File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc")),
             DxpDocExport.Export(source) })
         {
             foreach (var binary in new[] { doc,
@@ -1410,7 +1410,7 @@ public class DocVisibleCorpusTests
             }
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var path = Path.Combine(Path.GetTempPath(),
+        var path = FixturePath.Combine(Path.GetTempPath(),
             "docxport-mixed-font-fit-" + Guid.NewGuid().ToString("N") + ".doc");
         File.WriteAllBytes(path, DxpDocExport.Export(source));
         dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -1429,7 +1429,7 @@ public class DocVisibleCorpusTests
                 opened = null;
                 return (middle, final);
             }
-            var expected = Positions(Path.Combine(directory, name + ".docx"));
+            var expected = Positions(FixturePath.Combine(directory, name + ".docx"));
             var actual = Positions(path);
             Assert.True(Math.Abs(expected.Middle - actual.Middle) <= 4 &&
                 Math.Abs(expected.End - actual.End) <= 2,
@@ -1446,11 +1446,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void MixedScriptFitTextUsesMeasuredScaleInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         const string name = "WordRunFitTextMixedCjkAllStories";
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory, name + ".doc"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
+        var native = File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc"));
         var generated = DxpDocExport.Export(source);
         static (int FitRuns, ushort? Scale) ReadHeader(byte[] doc)
         {
@@ -1476,7 +1476,7 @@ public class DocVisibleCorpusTests
             Assert.Empty(Validate(projected.DocxBytes));
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var generatedPath = Path.Combine(Path.GetTempPath(),
+        var generatedPath = FixturePath.Combine(Path.GetTempPath(),
             "docxport-mixed-fit-" + Guid.NewGuid().ToString("N") + ".doc");
         File.WriteAllBytes(generatedPath, generated);
         dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID("Word.Application")!)!;
@@ -1494,8 +1494,8 @@ public class DocVisibleCorpusTests
                 opened = null;
                 return position;
             }
-            var sourcePosition = Position(Path.Combine(directory, name + ".docx"));
-            var nativePosition = Position(Path.Combine(directory, name + ".doc"));
+            var sourcePosition = Position(FixturePath.Combine(directory, name + ".docx"));
+            var nativePosition = Position(FixturePath.Combine(directory, name + ".doc"));
             var generatedPosition = Position(generatedPath);
             Assert.InRange(Math.Abs(sourcePosition - nativePosition), 0, 0.5);
             Assert.InRange(Math.Abs(generatedPosition - sourcePosition), 0, 2);
@@ -1510,11 +1510,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordNativeDocDropsOmittedFitTextIdsInHeaderAndFooter()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "DocKnownGaps"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "regressions"));
         const string name = "WordRunFitTextOmittedIdAllStories";
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory, name + ".doc"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
+        var native = File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc"));
         var generated = DxpDocExport.Export(source);
         static DocFitText[] FitTexts(byte[] doc)
         {
@@ -1533,13 +1533,13 @@ public class DocVisibleCorpusTests
     [Fact]
     public void OutlineStylePairRetainsLevelsAndOverridesInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         const string name = "WordOutlineStylesAllStories";
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
         foreach (var doc in new[]
         {
-            File.ReadAllBytes(Path.Combine(directory, name + ".doc")),
+            File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc")),
             DxpDocExport.Export(source)
         })
         {
@@ -1583,11 +1583,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void RevisionPropertyPairPreservesEditableFieldsAndMetadata()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         const string name = "WordRevisionPropertyAllStories";
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory, name + ".doc"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
+        var native = File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc"));
         var expectedFields = ReadEditableFieldSemantics(source);
         Assert.Equal(3, expectedFields.Count(x =>
             x == "FIELD:DOCPROPERTY:RevisionNumber"));
@@ -1608,11 +1608,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordSymbolGlyphsKeepFontAndCodeInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         const string name = "WordSymbolGlyphAllStories";
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory, name + ".doc"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
+        var native = File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc"));
         var generated = DxpDocExport.Export(source);
         foreach (var binary in new[] { native, generated,
             DxpDocExport.Export(DxpDocToDocx.Project(generated).DocxBytes) })
@@ -1638,11 +1638,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordSavedGrowAutofitPairRetainsSettingsAndStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "legacy"));
         const string name = "WordGrowAutofitNoWrapAllStories";
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
         static bool Enabled(byte[] bytes)
         {
             using var stream = new MemoryStream(bytes);
@@ -1654,7 +1654,7 @@ public class DocVisibleCorpusTests
         Assert.True(Enabled(source));
         foreach (var binary in new[]
         {
-            File.ReadAllBytes(Path.Combine(directory, name + ".doc")),
+            File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc")),
             DxpDocExport.Export(source)
         })
         {
@@ -1677,8 +1677,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void GrowAutofitCompatibilityOptionSurvivesDocRoundTrips()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordVisibleNoWrapAllStories.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
@@ -1700,7 +1700,7 @@ public class DocVisibleCorpusTests
             Assert.True(index.GrowAutofit);
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD_RENDER") == "1")
         {
-            var tempPath = Path.Combine(Path.GetTempPath(),
+            var tempPath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-grow-autofit-{Guid.NewGuid():N}.doc");
             File.WriteAllBytes(tempPath, generated);
             dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID(
@@ -1733,10 +1733,10 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordClearedInheritedTabsDoNotReviveTheParentStop()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         var name = "WordClearedInheritedTabsAllStories";
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
         var expected = ReadEffectiveTabStops(source);
         Assert.Contains(expected, x => x.Key.StartsWith("body.paragraph0.",
             StringComparison.Ordinal) && x.Value == "right|hyphen");
@@ -1749,7 +1749,7 @@ public class DocVisibleCorpusTests
             StringComparison.Ordinal) && x.Value == "right|dot");
         foreach (var binary in new[]
         {
-            File.ReadAllBytes(Path.Combine(directory, name + ".doc")),
+            File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc")),
             DxpDocExport.Export(source)
         })
         {
@@ -1763,8 +1763,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordInheritedTabLeadersExerciseStyleChainAndDirectOverrides()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordInheritedTabLeadersAllStories.docx"));
         var bytes = File.ReadAllBytes(path);
         using var stream = new MemoryStream(bytes);
@@ -1792,8 +1792,8 @@ public class DocVisibleCorpusTests
     [InlineData("WordStyledTabLeadersAllStories")]
     public void WordTabLeaderFixtureExercisesAllThreeStories(string name)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             name + ".docx"));
         var tabs = ReadEffectiveTabStops(File.ReadAllBytes(path));
         Assert.Contains(tabs, x => x.Key.StartsWith("body.", StringComparison.Ordinal) &&
@@ -1811,9 +1811,9 @@ public class DocVisibleCorpusTests
     [InlineData("WordNumWordsCharsMixedStories")]
     public void WordStatisticPropertiesSurviveBothDocRoutesAndThirdHop(string name)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
         static (string?, string?, string?) Stats(byte[] bytes)
         {
             using var stream = new MemoryStream(bytes);
@@ -1827,7 +1827,7 @@ public class DocVisibleCorpusTests
         Assert.False(string.IsNullOrWhiteSpace(expected.Item3));
         foreach (var (binary, savedStats) in new[]
         {
-            (File.ReadAllBytes(Path.Combine(directory, name + ".doc")),
+            (File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc")),
                 name == "WordNumWordsCharsMixedStories"
                     ? ("1", "12", "67") : expected),
             (DxpDocExport.Export(source), expected)
@@ -1843,10 +1843,10 @@ public class DocVisibleCorpusTests
     [Fact]
     public void OmittedTableLookUsesWordDefaultsInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         using var source = new MemoryStream();
-        source.Write(File.ReadAllBytes(Path.Combine(directory,
+        source.Write(File.ReadAllBytes(FixturePath.Combine(directory,
             "WordConditionalFirstRowParagraphAllStories.docx")));
         using (var document = WordprocessingDocument.Open(source, true))
         {
@@ -1885,7 +1885,7 @@ public class DocVisibleCorpusTests
         var generated = DxpDocExport.Export(source.ToArray());
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var sourcePath = Path.Combine(Path.GetTempPath(),
+            var sourcePath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-implicit-look-{Guid.NewGuid():N}.docx");
             var docPath = Path.ChangeExtension(sourcePath, ".doc");
             File.WriteAllBytes(sourcePath, source.ToArray());
@@ -1961,11 +1961,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordAuthoredConditionalBordersKeepReusableGeneratedRules()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         const string name = "WordConditionalColumnBorders";
         var generated = DxpDocExport.Export(File.ReadAllBytes(
-            Path.Combine(directory, name + ".docx")));
+            FixturePath.Combine(directory, name + ".docx")));
         var rules = new (ushort Code, TableStyleOverrideValues Kind,
             string Edge, uint Color)[]
         {
@@ -2000,7 +2000,7 @@ public class DocVisibleCorpusTests
         foreach (var binary in new[]
         {
             generated,
-            File.ReadAllBytes(Path.Combine(directory, name + ".doc"))
+            File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc"))
         })
         {
             using var lookStream = new MemoryStream(DxpDocToDocx.Project(binary).DocxBytes);
@@ -2037,10 +2037,10 @@ public class DocVisibleCorpusTests
     [Fact]
     public void AllConditionalTableStyleRegionsSurviveGeneratedDocAndThirdHop()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         using var source = new MemoryStream();
-        source.Write(File.ReadAllBytes(Path.Combine(directory,
+        source.Write(File.ReadAllBytes(FixturePath.Combine(directory,
             "WordConditionalFirstRowParagraphAllStories.docx")));
         var regions = new (ushort Code, TableStyleOverrideValues Kind)[]
         {
@@ -2116,9 +2116,9 @@ public class DocVisibleCorpusTests
         var projected = DxpDocToDocx.Project(generated).DocxBytes;
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var docPath = Path.Combine(Path.GetTempPath(),
+            var docPath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-all-conditions-{Guid.NewGuid():N}.doc");
-            var docxPath = Path.ChangeExtension(docPath, ".docx");
+            var docxPath = FixturePath.Resolve(Path.ChangeExtension(docPath, ".docx"));
             File.WriteAllBytes(docPath, generated);
             dynamic word = Activator.CreateInstance(
                 Type.GetTypeFromProgID("Word.Application")!)!;
@@ -2202,12 +2202,12 @@ public class DocVisibleCorpusTests
     public void LastSavedByFieldAndMetadataSurviveBothDocRoutesAndThirdHop(
         string name, string fieldSemantics)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var stem = Path.Combine(directory, name);
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var stem = FixturePath.Combine(directory, name);
         var source = File.ReadAllBytes(stem + ".docx");
         var generated = DxpDocExport.Export(source);
-        var native = File.ReadAllBytes(stem + ".doc");
+        var native = File.ReadAllBytes(FixturePath.Resolve(stem + ".doc"));
         static string? LastAuthor(byte[] bytes)
         {
             using var stream = new MemoryStream(bytes);
@@ -2243,14 +2243,14 @@ public class DocVisibleCorpusTests
     public void StandaloneCorePropertyFieldAndMetadataSurviveBothDocRoutesAndThirdHop(
         string name, string fieldName, string expectedValue)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var stem = Path.Combine(directory, name);
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var stem = FixturePath.Combine(directory, name);
         var source = File.ReadAllBytes(stem + ".docx");
         Assert.Contains("FIELD:" + fieldName, ReadEditableFieldSemantics(source));
         foreach (var doc in new[]
         {
-            DxpDocExport.Export(source), File.ReadAllBytes(stem + ".doc")
+            DxpDocExport.Export(source), File.ReadAllBytes(FixturePath.Resolve(stem + ".doc"))
         })
         {
             var projected = DxpDocToDocx.Project(doc).DocxBytes;
@@ -2282,13 +2282,13 @@ public class DocVisibleCorpusTests
     public void DistributedParagraphAlignmentSurvivesBothDocRoutes(
         string name, bool styled)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var stem = Path.Combine(directory, name);
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var stem = FixturePath.Combine(directory, name);
         var source = File.ReadAllBytes(stem + ".docx");
         foreach (var doc in new[]
         {
-            File.ReadAllBytes(stem + ".doc"), DxpDocExport.Export(source)
+            File.ReadAllBytes(FixturePath.Resolve(stem + ".doc")), DxpDocExport.Export(source)
         })
         {
             using var input = new MemoryStream(doc);
@@ -2315,13 +2315,13 @@ public class DocVisibleCorpusTests
     [Fact]
     public void DistributedStyleInheritanceAndHeaderOverrideSurviveBothDocRoutes()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var stem = Path.Combine(directory, "WordDistributedStyleInheritanceAllStories");
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var stem = FixturePath.Combine(directory, "WordDistributedStyleInheritanceAllStories");
         var source = File.ReadAllBytes(stem + ".docx");
         foreach (var doc in new[]
         {
-            File.ReadAllBytes(stem + ".doc"), DxpDocExport.Export(source)
+            File.ReadAllBytes(FixturePath.Resolve(stem + ".doc")), DxpDocExport.Export(source)
         })
         {
             using var input = new MemoryStream(doc);
@@ -2353,10 +2353,10 @@ public class DocVisibleCorpusTests
     public void ConditionalFirstRowRunStyleSurvivesBothDocRoutes(
         string name, bool centered, bool lastRowRight)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
         using (var stream = new MemoryStream(source))
         using (var document = WordprocessingDocument.Open(stream, false))
         {
@@ -2405,9 +2405,9 @@ public class DocVisibleCorpusTests
         if (lastRowRight &&
             Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var nativePath = Path.Combine(Path.GetTempPath(),
+            var nativePath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-conditional-style-{Guid.NewGuid():N}.doc");
-            var savedPath = Path.ChangeExtension(nativePath, ".docx");
+            var savedPath = FixturePath.Resolve(Path.ChangeExtension(nativePath, ".docx"));
             File.WriteAllBytes(nativePath, generated);
             dynamic word = Activator.CreateInstance(
                 Type.GetTypeFromProgID("Word.Application")!)!;
@@ -2449,7 +2449,7 @@ public class DocVisibleCorpusTests
         }
         foreach (var binary in new[]
         {
-            File.ReadAllBytes(Path.Combine(directory, name + ".doc")),
+            File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc")),
             generated
         })
         {
@@ -2527,11 +2527,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordNativeConditionalFirstRowFillSurvivesAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "legacy"));
         const string name = "WordConditionalFirstRowShadingAllStories";
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
         using (var stream = new MemoryStream(source))
         using (var document = WordprocessingDocument.Open(stream, false))
         {
@@ -2544,7 +2544,7 @@ public class DocVisibleCorpusTests
         }
         foreach (var binary in new[]
         {
-            File.ReadAllBytes(Path.Combine(directory, name + ".doc")),
+            File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc")),
             DxpDocExport.Export(source)
         })
         {
@@ -2583,10 +2583,10 @@ public class DocVisibleCorpusTests
     [Fact]
     public void StylelessTablesUseWordImplicitCellPadding()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordOccupiedHMergeAllStories.docx"));
         using (var stream = new MemoryStream(source))
         using (var document = WordprocessingDocument.Open(stream, false))
@@ -2598,7 +2598,7 @@ public class DocVisibleCorpusTests
         }
         foreach (var binary in new[]
         {
-            File.ReadAllBytes(Path.Combine(directory,
+            File.ReadAllBytes(FixturePath.Combine(directory,
                 "WordOccupiedHMergeAllStories.doc")),
             DxpDocExport.Export(source)
         })
@@ -2627,8 +2627,8 @@ public class DocVisibleCorpusTests
         const string longText = "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW";
         Assert.True(metrics.TryMeasure(longText, 12, out var widthPoints));
         var minimumTwips = widthPoints * 20 + 20;
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordOccupiedThreeCellHMergeArialAllStories.docx"));
         using var source = new MemoryStream();
         source.Write(File.ReadAllBytes(path));
@@ -2666,10 +2666,10 @@ public class DocVisibleCorpusTests
     public void OccupiedHorizontalMergesKeepPhysicalCellsInAllStories(
         string name, int mergedCellCount)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory, name + ".doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
+        var native = File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc"));
         var generated = DxpDocExport.Export(source);
         foreach (var binary in new[] { native, generated })
         {
@@ -2775,14 +2775,14 @@ public class DocVisibleCorpusTests
     [Fact]
     public void ArialAutoWidthNoWrapKnownGapRetainsEditableSemanticsInBothDocRoutes()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "DocKnownGaps", "WordVisibleNoWrapArialAllStories.docx"));
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "regressions", "WordVisibleNoWrapArialAllStories.docx"));
         var source = File.ReadAllBytes(path);
         var expectedStories = ReadStories(source);
         foreach (var doc in new[]
         {
-            File.ReadAllBytes(Path.ChangeExtension(path, ".doc")),
+            File.ReadAllBytes(FixturePath.Resolve(Path.ChangeExtension(path, ".doc"))),
             DxpDocExport.Export(source)
         })
         {
@@ -2841,8 +2841,8 @@ public class DocVisibleCorpusTests
     [InlineData("WordVisibleNoWrapAllStories")]
     public void GeneratedAutoWidthRowsCarryReferencedModernCellDefinitions(string name)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             name + ".docx"));
         var generated = DxpDocExport.Export(File.ReadAllBytes(path));
         using var input = new MemoryStream(generated);
@@ -2901,8 +2901,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void GeneratedThemeTintShadeMatchesSourceRgbAcrossStories()
     {
-        var sourcePath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var sourcePath = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordVisibleThemeTintShadeAllStories.docx"));
         var source = File.ReadAllBytes(sourcePath);
         var generatedDoc = DxpDocExport.Export(source);
@@ -2926,12 +2926,12 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordNativeLegacyTableBorderOperandsSurviveBothRoutes()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordLegacyTableBordersAllStories.doc"));
         var native = File.ReadAllBytes(path);
         var generated = DxpDocExport.Export(File.ReadAllBytes(
-            Path.ChangeExtension(path, ".docx")));
+            FixturePath.Resolve(Path.ChangeExtension(path, ".docx"))));
         static short?[] RowOrigins(byte[] bytes)
         {
             using var index = new DocTextIndexWalker().Index(new MemoryStream(bytes));
@@ -2968,14 +2968,14 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordNativeLegacyCellBorderOperandsSurviveBothRoutes()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         static IEnumerable<DocStructureNode> Descendants(DocStructureNode node) =>
             node.Children.SelectMany(child => new[] { child }.Concat(Descendants(child)));
-        var path = Path.Combine(directory, "WordDiagonalBordersAllStories.doc");
+        var path = FixturePath.Combine(directory, "WordDiagonalBordersAllStories.doc");
         var native = File.ReadAllBytes(path);
         var generated = DxpDocExport.Export(File.ReadAllBytes(
-            Path.ChangeExtension(path, ".docx")));
+            FixturePath.Resolve(Path.ChangeExtension(path, ".docx"))));
         foreach (var (doc, route) in new[] { native, generated,
             DxpDocExport.Export(DxpDocToDocx.Project(native).DocxBytes),
             DxpDocExport.Export(DxpDocToDocx.Project(generated).DocxBytes) }
@@ -3001,10 +3001,10 @@ public class DocVisibleCorpusTests
     public void GeneratedDocPreservesConditionalShadingResetsInAllStories(
         string pattern, int cellIndex)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         using var source = new MemoryStream();
-        source.Write(File.ReadAllBytes(Path.Combine(directory,
+        source.Write(File.ReadAllBytes(FixturePath.Combine(directory,
             "WordConditionalFirstRowShadingAllStories.docx")));
         using (var package = WordprocessingDocument.Open(source, true))
         {
@@ -3065,10 +3065,10 @@ public class DocVisibleCorpusTests
     public void PairedTableShadingResetsKeepVisibleFillsInAllStories(
         string name, bool shadedSecondRow)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory, name + ".doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
+        var native = File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc"));
         var generated = DxpDocExport.Export(source);
         var routes = new[]
         {
@@ -3143,10 +3143,10 @@ public class DocVisibleCorpusTests
     [Fact]
     public void GeneratedDocClearsExplicitNilParagraphShading()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         using var source = new MemoryStream();
-        source.Write(File.ReadAllBytes(Path.Combine(directory,
+        source.Write(File.ReadAllBytes(FixturePath.Combine(directory,
             "WordStyledParagraphShadingResetAllStories.docx")));
         using (var package = WordprocessingDocument.Open(source, true))
         {
@@ -3184,11 +3184,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordSavedParagraphShadingClearIsIndexedFromBothDocRoutes()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordStyledParagraphShadingResetAllStories.docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory,
+        var native = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordStyledParagraphShadingResetAllStories.doc"));
         foreach (var (doc, route) in new[]
             { (native, "native"), (DxpDocExport.Export(source), "generated") })
@@ -3225,11 +3225,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordSavedRunShadingClearIsIndexedFromBothDocRoutes()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordStyledRunShadingResetAllStories.docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory,
+        var native = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordStyledRunShadingResetAllStories.doc"));
         foreach (var (doc, route) in new[]
             { (DxpDocExport.Export(source), "generated"), (native, "native") })
@@ -3257,9 +3257,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void GeneratedDocClearsExplicitNilRunShading()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var bytes = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var bytes = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordStyledRunShadingResetAllStories.docx"));
         using var source = new MemoryStream();
         source.Write(bytes);
@@ -3300,11 +3300,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordSavedStyledRgbRunShadingSurvivesBothRoutes()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordStyledRgbRunShadingAllStories.docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory,
+        var native = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordStyledRgbRunShadingAllStories.doc"));
         AssertStyledRgbRunShading(source);
         foreach (var doc in new[] { native, DxpDocExport.Export(source) })
@@ -3356,11 +3356,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordSavedRgbRunShadingSurvivesBothRoutes()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordRgbRunShadingAllStories.docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory,
+        var native = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordRgbRunShadingAllStories.doc"));
         AssertRgbRunShading(source);
         foreach (var doc in new[] { native, DxpDocExport.Export(source) })
@@ -3401,11 +3401,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordSavedUnderlineColorStyleOverridesSurviveBothRoutes()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordUnderlineColorStyleOverridesAllStories.docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory,
+        var native = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordUnderlineColorStyleOverridesAllStories.doc"));
         AssertUnderlineColorStyleOverrides(source);
         foreach (var doc in new[] { native, DxpDocExport.Export(source) })
@@ -3468,11 +3468,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordSavedCharacterSpacingStyleOverridesSurviveBothRoutes()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordCharacterSpacingStyleOverridesAllStories.docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory,
+        var native = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordCharacterSpacingStyleOverridesAllStories.doc"));
         AssertCharacterSpacingStyleOverrides(source);
         foreach (var doc in new[] { native, DxpDocExport.Export(source) })
@@ -3554,11 +3554,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordSavedSixSlotInheritedRunBordersSurviveBothRoutes()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordSixSlotRunBorderInheritance.docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory,
+        var native = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordSixSlotRunBorderInheritance.doc"));
         AssertSixSlotInheritedRunBorders(source);
         foreach (var doc in new[] { native, DxpDocExport.Export(source) })
@@ -3612,11 +3612,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordSavedLayeredRunBordersSurviveBothRoutes()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordLayeredRunBordersAllStories.docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory,
+        var native = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordLayeredRunBordersAllStories.doc"));
         AssertLayeredRunBorders(source);
         foreach (var doc in new[] { native, DxpDocExport.Export(source) })
@@ -3669,11 +3669,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordSavedParagraphStyleRunBorderResetSurvivesBothRoutes()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordParagraphStyleRunBorderResetAllStories.docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory,
+        var native = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordParagraphStyleRunBorderResetAllStories.doc"));
         AssertParagraphStyleRunBorderReset(source);
         foreach (var doc in new[] { native, DxpDocExport.Export(source) })
@@ -3729,11 +3729,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordSavedRgbShadowRunBordersSurviveBothRoutesAndThirdHop()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordRgbShadowRunBordersAllStories.docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory,
+        var native = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordRgbShadowRunBordersAllStories.doc"));
         AssertRgbShadowRunBorders(source);
         foreach (var doc in new[] { native, DxpDocExport.Export(source) })
@@ -3775,11 +3775,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordSavedInheritedRunBorderResetSurvivesBothRoutesAndThirdHop()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordInheritedRunBorderResetAllStories.docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory,
+        var native = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordInheritedRunBorderResetAllStories.doc"));
         AssertDirectRunBorderReset(source);
         foreach (var doc in new[] { native, DxpDocExport.Export(source) })
@@ -3821,11 +3821,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordSavedDerivedCharacterStyleInheritsRunBordersThroughBothRoutes()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordDerivedCharacterStyleRunBordersAllStories.docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory,
+        var native = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordDerivedCharacterStyleRunBordersAllStories.doc"));
         AssertTextFrameStyleBorder(source, "Text Frame Emphasis");
         foreach (var (doc, expectBasedOn) in new[]
@@ -3863,11 +3863,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordSavedCharacterStyleRunBordersSurviveBothRoutesAndThirdHop()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordCharacterStyleRunBordersAllStories.docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory,
+        var native = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordCharacterStyleRunBordersAllStories.doc"));
         AssertTextFrameStyleBorder(source);
         foreach (var doc in new[] { native, DxpDocExport.Export(source) })
@@ -3926,11 +3926,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordSavedRunBordersSurviveBothRoutesAndThirdHop()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordRunBordersAllStories.docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory,
+        var native = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordRunBordersAllStories.doc"));
         var expected = new[]
         {
@@ -3978,12 +3978,12 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordSavedLegacyShadingPercentagesSurviveBothRoutes()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordLegacyShadingPercentages.doc"));
         var native = File.ReadAllBytes(path);
         var generated = DxpDocExport.Export(File.ReadAllBytes(
-            Path.ChangeExtension(path, ".docx")));
+            FixturePath.Resolve(Path.ChangeExtension(path, ".docx"))));
         using (var source = new MemoryStream(native))
         using (var structure = new DocStructureWalker().Accept(source,
             new DocStructurePrintVisitor(TextWriter.Null)))
@@ -4019,12 +4019,12 @@ public class DocVisibleCorpusTests
     public void WordSavedDirectRunLegacyShadingSurvivesBothDocHops(
         string fixtureName, int pattern)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             fixtureName + ".doc"));
         var native = File.ReadAllBytes(path);
         var generated = DxpDocExport.Export(File.ReadAllBytes(
-            Path.ChangeExtension(path, ".docx")));
+            FixturePath.Resolve(Path.ChangeExtension(path, ".docx"))));
         using (var input = new MemoryStream(native))
         using (var structure = new DocStructureWalker().Accept(input,
             new DocStructurePrintVisitor(TextWriter.Null)))
@@ -4075,9 +4075,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordSavedCharacterStyleLegacyShadingSurvivesDocProjectionAndThirdHop()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var nativePath = Path.Combine(directory, "WordStyledParagraphDecorations.doc");
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var nativePath = FixturePath.Combine(directory, "WordStyledParagraphDecorations.doc");
         using (var input = File.OpenRead(nativePath))
         using (var structure = new DocStructureWalker().Accept(input,
             new DocStructurePrintVisitor(TextWriter.Null)))
@@ -4092,7 +4092,7 @@ public class DocVisibleCorpusTests
         }
         var native = File.ReadAllBytes(nativePath);
         var generated = DxpDocExport.Export(File.ReadAllBytes(
-            Path.ChangeExtension(nativePath, ".docx")));
+            FixturePath.Resolve(Path.ChangeExtension(nativePath, ".docx"))));
         foreach (var doc in new[] { native, generated })
         {
             using var index = new DocTextIndexWalker().Index(new MemoryStream(doc));
@@ -4121,9 +4121,9 @@ public class DocVisibleCorpusTests
     [InlineData("WordVisibleNoWrapAllStories")]
     public void WordNativeAutoWidthGeometrySurvivesDocxAndDocHop(string name)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var native = File.ReadAllBytes(Path.Combine(directory, name + ".doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var native = File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc"));
         static short[] FirstCellEdges(byte[] bytes)
         {
             using var input = new MemoryStream(bytes);
@@ -4139,10 +4139,10 @@ public class DocVisibleCorpusTests
     [Fact]
     public void DocxVisitorRebuildsEveryExplicitHeaderStoryFromBinaryDoc()
     {
-        var inputPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var inputPath = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordArbitraryRotationStories.doc"));
-        var outputPath = Path.Combine(Path.GetTempPath(), $"docxport-headers-{Guid.NewGuid():N}.docx");
+        var outputPath = FixturePath.Combine(Path.GetTempPath(), $"docxport-headers-{Guid.NewGuid():N}.docx");
         try
         {
             DxpExport.ExportToFile(inputPath,
@@ -4162,10 +4162,10 @@ public class DocVisibleCorpusTests
     [Fact]
     public void EvaluatedDocxExportKeepsHyperlinkFieldFormatting()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var inputPath = Path.Combine(directory, "WordFieldsAndLink.doc");
-        var outputPath = Path.Combine(Path.GetTempPath(), $"docxport-links-{Guid.NewGuid():N}.docx");
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var inputPath = FixturePath.Combine(directory, "WordFieldsAndLink.doc");
+        var outputPath = FixturePath.Combine(Path.GetTempPath(), $"docxport-links-{Guid.NewGuid():N}.docx");
         try
         {
             var projected = DxpDocToDocx.Project(File.ReadAllBytes(inputPath)).DocxBytes;
@@ -4187,10 +4187,10 @@ public class DocVisibleCorpusTests
     [MemberData(nameof(PairedFixtures))]
     public void EvaluatedDocxExportRetainsEditableFieldsFromBinaryDoc(string name)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var inputPath = Path.Combine(directory, name + ".doc");
-        var outputPath = Path.Combine(Path.GetTempPath(), $"docxport-fields-{Guid.NewGuid():N}.docx");
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var inputPath = FixturePath.Combine(directory, name + ".doc");
+        var outputPath = FixturePath.Combine(Path.GetTempPath(), $"docxport-fields-{Guid.NewGuid():N}.docx");
         try
         {
             var projected = DxpDocToDocx.Project(File.ReadAllBytes(inputPath)).DocxBytes;
@@ -4258,10 +4258,10 @@ public class DocVisibleCorpusTests
     [MemberData(nameof(PairedFixtures))]
     public void DocxVisitorRetainsProjectedVisibleStoriesFromBinaryDoc(string name)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var inputPath = Path.Combine(directory, name + ".doc");
-        var outputPath = Path.Combine(Path.GetTempPath(), $"docxport-visitor-{Guid.NewGuid():N}.docx");
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var inputPath = FixturePath.Combine(directory, name + ".doc");
+        var outputPath = FixturePath.Combine(Path.GetTempPath(), $"docxport-visitor-{Guid.NewGuid():N}.docx");
         try
         {
             var projected = DxpDocToDocx.Project(File.ReadAllBytes(inputPath)).DocxBytes;
@@ -4299,11 +4299,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordSavedBaselineOffsetsSurviveBothDocRoutes()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordBaselineOffsetLayeredStories.docx"));
         var source = File.ReadAllBytes(path);
-        foreach (var binary in new[] { File.ReadAllBytes(Path.ChangeExtension(path, ".doc")),
+        foreach (var binary in new[] { File.ReadAllBytes(FixturePath.Resolve(Path.ChangeExtension(path, ".doc"))),
             DxpDocExport.Export(source) })
         {
             using var input = new MemoryStream(binary);
@@ -4328,11 +4328,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordSavedCharacterScaleSurvivesBothDocRoutes()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordCharacterScaleLayeredStories.docx"));
         var source = File.ReadAllBytes(path);
-        foreach (var binary in new[] { File.ReadAllBytes(Path.ChangeExtension(path, ".doc")),
+        foreach (var binary in new[] { File.ReadAllBytes(FixturePath.Resolve(Path.ChangeExtension(path, ".doc"))),
             DxpDocExport.Export(source) })
         {
             using var input = new MemoryStream(binary);
@@ -4357,8 +4357,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordSavedSizedEmptyParagraphMarksSurviveBothDocRoutes()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordVisibleSizedEmptyParagraphsAllStories.docx"));
         var source = File.ReadAllBytes(path);
         var expected = ReadInteriorEmptyParagraphMarks(source, details: true);
@@ -4367,7 +4367,7 @@ public class DocVisibleCorpusTests
             expected["section0.header.default.paragraph1"]);
         Assert.Equal("bold|48|008000",
             expected["section0.footer.default.paragraph1"]);
-        foreach (var binary in new[] { File.ReadAllBytes(Path.ChangeExtension(path, ".doc")),
+        foreach (var binary in new[] { File.ReadAllBytes(FixturePath.Resolve(Path.ChangeExtension(path, ".doc"))),
             DxpDocExport.Export(source) })
         {
             var projected = DxpDocToDocx.Project(binary).DocxBytes;
@@ -4385,11 +4385,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void DoubleStrikeStyleLayersSurviveBothDocRoutes()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordDoubleStrikeLayeredStories.docx"));
         var source = File.ReadAllBytes(path);
-        var native = File.ReadAllBytes(Path.ChangeExtension(path, ".doc"));
+        var native = File.ReadAllBytes(FixturePath.Resolve(Path.ChangeExtension(path, ".doc")));
         static void CheckDoc(byte[] bytes)
         {
             using var stream = new MemoryStream(bytes);
@@ -4428,11 +4428,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordSavedCharacterEffectsSurviveBothDocRoutes()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordCharacterEffectsLayeredStories.docx"));
         var source = File.ReadAllBytes(path);
-        var native = File.ReadAllBytes(Path.ChangeExtension(path, ".doc"));
+        var native = File.ReadAllBytes(FixturePath.Resolve(Path.ChangeExtension(path, ".doc")));
         foreach (var binary in new[] { native, DxpDocExport.Export(source) })
         {
             using var input = new MemoryStream(binary);
@@ -4457,8 +4457,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordSavedFontMetadataIsIndexed()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordMissingFontStyleStories.doc"));
         using var input = File.OpenRead(path);
         using var index = new DocTextIndexWalker().Index(input);
@@ -4476,11 +4476,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void DocxFontMetadataWritesRealDocFontRecord()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordMissingFontStyleStories.docx"));
         var source = File.ReadAllBytes(path);
-        var native = File.ReadAllBytes(Path.ChangeExtension(path, ".doc"));
+        var native = File.ReadAllBytes(FixturePath.Resolve(Path.ChangeExtension(path, ".doc")));
         var expectedStories = ReadStories(source);
         const string fontName = "Docxport Missing Font XYZ";
         var sourceStyles = ReadCustomStyleRunFormatting(source);
@@ -4553,10 +4553,10 @@ public class DocVisibleCorpusTests
     [Fact]
     public void TopGutterSurvivesBothDocRoutes()
     {
-        var dir = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(dir, "WordVisibleTopGutterAllStories.docx"));
-        var native = File.ReadAllBytes(Path.Combine(dir, "WordVisibleTopGutterAllStories.doc"));
+        var dir = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(dir, "WordVisibleTopGutterAllStories.docx"));
+        var native = File.ReadAllBytes(FixturePath.Combine(dir, "WordVisibleTopGutterAllStories.doc"));
         static bool? Read(byte[] bytes)
         {
             using var input = new MemoryStream(bytes);
@@ -4580,10 +4580,10 @@ public class DocVisibleCorpusTests
     [Fact]
     public void MirrorMarginsSurviveBothDocRoutes()
     {
-        var dir = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(dir, "WordVisibleMirrorMarginsAllStories.docx"));
-        var native = File.ReadAllBytes(Path.Combine(dir, "WordVisibleMirrorMarginsAllStories.doc"));
+        var dir = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(dir, "WordVisibleMirrorMarginsAllStories.docx"));
+        var native = File.ReadAllBytes(FixturePath.Combine(dir, "WordVisibleMirrorMarginsAllStories.doc"));
         static bool? Read(byte[] bytes)
         {
             using var input = new MemoryStream(bytes);
@@ -4607,10 +4607,10 @@ public class DocVisibleCorpusTests
     [Fact]
     public void DefaultTabIntervalSurvivesBothDocRoutes()
     {
-        var dir = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var native = File.ReadAllBytes(Path.Combine(dir, "WordVisibleTextualListFormatsAllStories.doc"));
-        var source = File.ReadAllBytes(Path.Combine(dir, "WordVisibleTextualListFormatsAllStories.docx"));
+        var dir = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var native = File.ReadAllBytes(FixturePath.Combine(dir, "WordVisibleTextualListFormatsAllStories.doc"));
+        var source = File.ReadAllBytes(FixturePath.Combine(dir, "WordVisibleTextualListFormatsAllStories.docx"));
         static short? TabInterval(byte[] bytes)
         {
             using var stream = new MemoryStream(bytes);
@@ -4619,7 +4619,7 @@ public class DocVisibleCorpusTests
         }
         Assert.Equal((short?)720, TabInterval(native));
         Assert.Equal((short?)720, TabInterval(DxpDocExport.Export(source)));
-        var nativeCustom = File.ReadAllBytes(Path.Combine(dir,
+        var nativeCustom = File.ReadAllBytes(FixturePath.Combine(dir,
             "WordVisibleCustomDefaultTabsAllStories.doc"));
         Assert.Equal((short?)1080, TabInterval(nativeCustom));
         var fromNative = DxpDocToDocx.Project(nativeCustom).DocxBytes;
@@ -4658,8 +4658,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void ColorSchemeMappingChangesVisibleStyleAndStoryColors()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordVisibleThemeColorMappingAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using (var stream = new MemoryStream(source))
@@ -4683,8 +4683,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void ThemeTextColorsOverrideDifferentFallbackValuesInAllStories()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordVisibleThemeTextColorsAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using (var stream = new MemoryStream(source))
@@ -4720,10 +4720,10 @@ public class DocVisibleCorpusTests
     public void ThemedBaseStyleColorRemainsEditableAcrossBothDocRoutes(
         string name, string generatedRgb, string nativeRgb)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory, name + ".doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
+        var native = File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc"));
         foreach (var (binary, expectedRgb, nativeRounding) in new[]
         {
             (native, nativeRgb, nativeRgb != generatedRgb),
@@ -4758,11 +4758,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void ThemeFontsResolveThroughStyledBodyAndDirectHeaderFooterRuns()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordVisibleThemeFontsAllStories.docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory,
+        var native = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordVisibleThemeFontsAllStories.doc"));
         static void AssertFonts(byte[] binary)
         {
@@ -4798,11 +4798,11 @@ public class DocVisibleCorpusTests
     public void ExplicitEmptyStoriesStayDistinctFromInheritedStories(
         string fixtureName, bool emptyFooter)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             fixtureName + ".docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory,
+        var native = File.ReadAllBytes(FixturePath.Combine(directory,
             fixtureName + ".doc"));
         void AssertEmptyThenInherited(byte[] bytes)
         {
@@ -4842,11 +4842,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void BaseDerivedAndDirectParagraphDirectionPrecedenceSurvivesAllDocRoutes()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordVisibleStyledBidiPrecedenceAllStories.docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory,
+        var native = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordVisibleStyledBidiPrecedenceAllStories.doc"));
         static void AssertDirectionPrecedence(byte[] bytes)
         {
@@ -4887,11 +4887,11 @@ public class DocVisibleCorpusTests
     [InlineData("WordVisibleStyledBidiResetAllStories")]
     public void StyledParagraphDirectionSurvivesBodyHeaderFooterDocRoutes(string fixtureName)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             fixtureName + ".docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory,
+        var native = File.ReadAllBytes(FixturePath.Combine(directory,
             fixtureName + ".doc"));
         static bool HasStyledBidi(byte[] bytes)
         {
@@ -4936,8 +4936,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordNativeExplicitRtlHeaderCarriesModernAndCompatibilityRowProperties()
     {
-        var fixture = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var fixture = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordLogicalRightRtlHeader.doc"));
         using var input = File.OpenRead(fixture);
         using var structure = new DocStructureWalker().Accept(input,
@@ -4985,11 +4985,11 @@ public class DocVisibleCorpusTests
     public void WordSavedOmittedRowGapWidthUsesRowOriginInAllStories(
         string fixtureName, int skippedColumns, int leadingWidth)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             fixtureName + ".docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory,
+        var native = File.ReadAllBytes(FixturePath.Combine(directory,
             fixtureName + ".doc"));
         using var stream = new MemoryStream(native);
         using var index = new DocTextIndexWalker().Index(stream);
@@ -5082,11 +5082,11 @@ public class DocVisibleCorpusTests
     public void WordSavedRowGridGapsKeepCellPositionsThroughBothDocRoutes(
         string fixtureName, int tableCount)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             fixtureName + ".docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory,
+        var native = File.ReadAllBytes(FixturePath.Combine(directory,
             fixtureName + ".doc"));
         static IEnumerable<Table> Tables(WordprocessingDocument document)
         {
@@ -5146,8 +5146,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void ImplicitThemeFontReachesDocDefaultsInAllStoriesFixture()
     {
-        var fixture = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var fixture = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordVisibleImplicitThemeAllStories.docx"));
         using var stream = new MemoryStream(DxpDocExport.Export(File.ReadAllBytes(fixture)));
         using var index = new DocTextIndexWalker().Index(stream);
@@ -5157,8 +5157,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordNativeAutoWidthRowsExposeReferencedTableProperties()
     {
-        var fixture = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var fixture = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordVisibleNoWrapOffAllStories.doc"));
         using var input = File.OpenRead(fixture);
         using var structure = new DocStructureWalker().Accept(input,
@@ -5209,11 +5209,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordNativeAutoWidthRowsExposeContentFittedCellOrigins()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         int[] FirstCellEdges(string name)
         {
-            using var stream = new MemoryStream(File.ReadAllBytes(Path.Combine(directory, name + ".doc")));
+            using var stream = new MemoryStream(File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc")));
             using var index = new DocTextIndexWalker().Index(stream);
             return index.ParagraphStyles.Where(x =>
                 x.Formatting?.TableTerminator == true).Select(x =>
@@ -5236,7 +5236,7 @@ public class DocVisibleCorpusTests
                 ("WordVisibleNoWrapAllStories", 8653)
             })
             {
-                opened = word.Documents.Open(Path.Combine(directory, name + ".docx"),
+                opened = word.Documents.Open(FixturePath.Combine(directory, name + ".docx"),
                     ReadOnly: true, AddToRecentFiles: false);
                 var actualTwips = Convert.ToDouble(opened.Tables.Item(1)
                     .Cell(1, 1).Width) * 20;
@@ -5259,13 +5259,13 @@ public class DocVisibleCorpusTests
     [Fact]
     public void InheritedBandRulesAndDirectCellBordersKeepTheirPrecedence()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         const string name = "WordConditionalBandInheritedDirectAllStories";
         foreach (var binary in new[]
         {
-            File.ReadAllBytes(Path.Combine(directory, name + ".doc")),
-            DxpDocExport.Export(File.ReadAllBytes(Path.Combine(directory,
+            File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc")),
+            DxpDocExport.Export(File.ReadAllBytes(FixturePath.Combine(directory,
                 name + ".docx")))
         })
         {
@@ -5299,12 +5299,12 @@ public class DocVisibleCorpusTests
     [Fact]
     public void InheritedBandStyleIdentityFollowsEncodedRowReferences()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         const string name = "WordConditionalBandInheritedAllStories";
-        var native = File.ReadAllBytes(Path.Combine(directory, name + ".doc"));
+        var native = File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc"));
         var generated = DxpDocExport.Export(File.ReadAllBytes(
-            Path.Combine(directory, name + ".docx")));
+            FixturePath.Combine(directory, name + ".docx")));
         foreach (var (bytes, encodedReference) in new[]
         {
             (native, false), (generated, true)
@@ -5346,13 +5346,13 @@ public class DocVisibleCorpusTests
     [Fact]
     public void DerivedBandStyleOverridesOnlyItsSecondHorizontalBand()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         const string name = "WordConditionalBandInheritedAllStories";
         foreach (var binary in new[]
         {
-            File.ReadAllBytes(Path.Combine(directory, name + ".doc")),
-            DxpDocExport.Export(File.ReadAllBytes(Path.Combine(directory,
+            File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc")),
+            DxpDocExport.Export(File.ReadAllBytes(FixturePath.Combine(directory,
                 name + ".docx")))
         })
         {
@@ -5385,13 +5385,13 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordBandBordersAlternateAcrossBodyHeaderAndFooterRows()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         const string name = "WordConditionalBandBordersThreeRowsAllStories";
         foreach (var binary in new[]
         {
-            File.ReadAllBytes(Path.Combine(directory, name + ".doc")),
-            DxpDocExport.Export(File.ReadAllBytes(Path.Combine(directory,
+            File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc")),
+            DxpDocExport.Export(File.ReadAllBytes(FixturePath.Combine(directory,
                 name + ".docx")))
         })
         {
@@ -5423,13 +5423,13 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordBandBorderDirectOverridesWinInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         const string name = "WordConditionalBandDirectOverrideAllStories";
         foreach (var binary in new[]
         {
-            File.ReadAllBytes(Path.Combine(directory, name + ".doc")),
-            DxpDocExport.Export(File.ReadAllBytes(Path.Combine(directory,
+            File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc")),
+            DxpDocExport.Export(File.ReadAllBytes(FixturePath.Combine(directory,
                 name + ".docx")))
         })
         {
@@ -5457,8 +5457,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void HorizontalAndVerticalBandStyleBordersSurviveGeneratedDocHops()
     {
-        var fixture = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var fixture = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordConditionalFirstRowParagraphAllStories.docx"));
         using var source = new MemoryStream(File.ReadAllBytes(fixture));
         using (var document = WordprocessingDocument.Open(source, true))
@@ -5548,9 +5548,9 @@ public class DocVisibleCorpusTests
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var docPath = Path.Combine(Path.GetTempPath(),
+            var docPath = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-band-borders-{Guid.NewGuid():N}.doc");
-            var docxPath = Path.ChangeExtension(docPath, ".docx");
+            var docxPath = FixturePath.Resolve(Path.ChangeExtension(docPath, ".docx"));
             File.WriteAllBytes(docPath, generated);
             dynamic word = Activator.CreateInstance(
                 Type.GetTypeFromProgID("Word.Application")!)!;
@@ -5597,8 +5597,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void StyledStartAndDirectEndBordersAreBothFlattenedIntoDocCells()
     {
-        var fixture = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var fixture = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordStyleDirectLogicalTableBordersAllStories.docx"));
         var binary = DxpDocExport.Export(File.ReadAllBytes(fixture));
         using var stream = new MemoryStream(binary);
@@ -5613,8 +5613,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void TablePropertyExceptionBorderAppliesOnlyToItsRowInDoc()
     {
-        var fixture = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var fixture = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordRowBorderExceptionsAllStories.docx"));
         using var stream = new MemoryStream(DxpDocExport.Export(File.ReadAllBytes(fixture)));
         using var index = new DocTextIndexWalker().Index(stream);
@@ -5629,8 +5629,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void TablePropertyExceptionCellMarginsApplyOnlyToTheirRows()
     {
-        var fixture = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var fixture = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordRowCellMarginsAllStories.docx"));
         using var stream = new MemoryStream(DxpDocExport.Export(File.ReadAllBytes(fixture)));
         using var index = new DocTextIndexWalker().Index(stream);
@@ -5646,11 +5646,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void RowCellMarginsRemainRowSpecificAfterBothDocRoutes()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordRowCellMarginsAllStories.docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory,
+        var native = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordRowCellMarginsAllStories.doc"));
         static int? LeftMargin(DocumentFormat.OpenXml.OpenXmlElement? margins)
         {
@@ -5695,11 +5695,11 @@ public class DocVisibleCorpusTests
 
     public static IEnumerable<object[]> PairedFixtures()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         return Directory.EnumerateFiles(directory, "*.docx")
             .Select(Path.GetFileNameWithoutExtension)
-            .Where(name => name != null && File.Exists(Path.Combine(directory, name + ".doc")))
+            .Where(name => name != null && File.Exists(FixturePath.Combine(directory, name + ".doc")))
             .OrderBy(name => name, StringComparer.Ordinal)
             .Select(name => new object[] { name! });
     }
@@ -5707,19 +5707,19 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedPngPayloadsSurviveBothDocRoutesAndAnotherHop()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         var checkedFixtures = 0;
         foreach (var fixture in PairedFixtures())
         {
             var name = (string)fixture[0];
-            var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
+            var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
             var expected = ReadDistinctPngPayloadHashes(source);
             if (expected.Length == 0) continue;
             checkedFixtures++;
             foreach (var (binary, nativeRoute) in new[]
             {
-                (File.ReadAllBytes(Path.Combine(directory, name + ".doc")), true),
+                (File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc")), true),
                 (DxpDocExport.Export(source), false)
             })
             {
@@ -5765,14 +5765,14 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedDocCharacterRunsStayWithinOnePhysicalTextPiece()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         var checkedRuns = 0;
         var multiPieceRuns = 0;
         foreach (var fixture in PairedFixtures())
         {
             var name = (string)fixture[0];
-            using var stream = File.OpenRead(Path.Combine(directory, name + ".doc"));
+            using var stream = File.OpenRead(FixturePath.Combine(directory, name + ".doc"));
             using var index = new DocTextIndexWalker().Index(stream);
             var stories = new[] { index.ReadStory("Main") }
                 .Concat(index.HeaderStories.Where(x => !x.IsEmpty)
@@ -5827,13 +5827,13 @@ public class DocVisibleCorpusTests
     [Fact]
     public void InheritedHeaderFooterTablesKeepEditablePageFields()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         const string name = "WordInheritedTablePageFields";
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
         var binaries = new[]
         {
-            File.ReadAllBytes(Path.Combine(directory, name + ".doc")),
+            File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc")),
             DxpDocExport.Export(source)
         };
         foreach (var bytes in new[] { source }.Concat(binaries.Select(x =>
@@ -5881,13 +5881,13 @@ public class DocVisibleCorpusTests
     [Fact]
     public void InheritedTableStoriesKeepImagesAndEditablePageFields()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         const string name = "WordInheritedTableMixedContent";
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
         var binaries = new[]
         {
-            File.ReadAllBytes(Path.Combine(directory, name + ".doc")),
+            File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc")),
             DxpDocExport.Export(source)
         };
         byte[]? expectedImage = null;
@@ -5955,13 +5955,13 @@ public class DocVisibleCorpusTests
     public void ThreeSectionStyledHeaderFooterTablesRemainInherited(
         string name, bool rotated)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
         foreach (var bytes in new[]
         {
             source,
-            DxpDocToDocx.Project(File.ReadAllBytes(Path.Combine(directory,
+            DxpDocToDocx.Project(File.ReadAllBytes(FixturePath.Combine(directory,
                 name + ".doc"))).DocxBytes,
             DxpDocToDocx.Project(DxpDocExport.Export(source)).DocxBytes
         })
@@ -6013,11 +6013,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesLinkedParagraphAndCharacterStyles()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         var name = "WordLinkedStylesAllStories";
         Assert.Contains(PairedFixtures(), x => (string)x[0] == name);
-        var links = ReadLinkedCustomStyles(File.ReadAllBytes(Path.Combine(
+        var links = ReadLinkedCustomStyles(File.ReadAllBytes(FixturePath.Combine(
             directory, name + ".docx")));
         Assert.Equal("Linked character", links["Linked paragraph"]);
         Assert.Equal("Linked paragraph", links["Linked character"]);
@@ -6026,11 +6026,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void CommonBuiltInParagraphStylesUseWordNativeInvariantIds()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordArbitraryRotationStories.docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory,
+        var native = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordArbitraryRotationStories.doc"));
         var expected = new Dictionary<string, int>
         {
@@ -6059,15 +6059,15 @@ public class DocVisibleCorpusTests
     [Fact]
     public void GeneratedDocMatchesWordNativeBuiltInStyleIdentifiersAcrossCorpus()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         foreach (var fixture in PairedFixtures())
         {
             var name = (string)fixture[0];
-            using var native = new DocTextIndexWalker().Index(Path.Combine(directory,
+            using var native = new DocTextIndexWalker().Index(FixturePath.Combine(directory,
                 name + ".doc"));
             using var generatedStream = new MemoryStream(DxpDocExport.Export(
-                File.ReadAllBytes(Path.Combine(directory, name + ".docx"))));
+                File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"))));
             using var generated = new DocTextIndexWalker().Index(generatedStream);
             var byName = generated.StyleDefinitions.GroupBy(x => x.Name,
                 StringComparer.Ordinal).ToDictionary(x => x.Key,
@@ -6085,11 +6085,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordNativeDocFlattensCharacterStyleBaseWhileGeneratedDocRetainsIt()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordThreeLevelStyleOverrides.docx"));
         var source = File.ReadAllBytes(path);
-        var native = File.ReadAllBytes(Path.ChangeExtension(path, ".doc"));
+        var native = File.ReadAllBytes(FixturePath.Resolve(Path.ChangeExtension(path, ".doc")));
         var generatedProjection = DxpDocToDocx.Project(
             DxpDocExport.Export(source)).DocxBytes;
         var first = DxpDocToDocx.Project(native).DocxBytes;
@@ -6115,9 +6115,9 @@ public class DocVisibleCorpusTests
     public void WordRtlTablePhysicalAndLogicalJustificationStayDistinct(
         string name, int? logicalAlignment)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var binary = File.ReadAllBytes(Path.Combine(directory, name + ".doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var binary = File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc"));
         using var input = new MemoryStream(binary);
         using var index = new DocTextIndexWalker().Index(input);
         var row = Assert.Single(index.ParagraphStyles, x =>
@@ -6128,7 +6128,7 @@ public class DocVisibleCorpusTests
         Assert.Equal(nativeAlignment, (int?)row.Formatting.TableJustification);
         var projected = DxpDocToDocx.Project(binary).DocxBytes;
         var generated = DxpDocToDocx.Project(DxpDocExport.Export(File.ReadAllBytes(
-            Path.Combine(directory, name + ".docx")))).DocxBytes;
+            FixturePath.Combine(directory, name + ".docx")))).DocxBytes;
         var repeated = DxpDocToDocx.Project(DxpDocExport.Export(projected)).DocxBytes;
         foreach (var (bytes, expectedAlignment) in new[]
             { (projected, nativeAlignment), (generated, logicalAlignment),
@@ -6158,9 +6158,9 @@ public class DocVisibleCorpusTests
     public void WordSavedFirstPageFooterTableRetainsBorders(string name,
         bool suppressFirstTop)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        using var input = File.OpenRead(Path.Combine(directory, name + ".doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        using var input = File.OpenRead(FixturePath.Combine(directory, name + ".doc"));
         using var index = new DocTextIndexWalker().Index(input);
         var rows = index.ParagraphStyles.Where(x =>
             x.Formatting?.TableTerminator == true).ToArray();
@@ -6179,8 +6179,8 @@ public class DocVisibleCorpusTests
                     .TopRightToBottomLeft?.Type);
             }
         });
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
-        var projected = DxpDocToDocx.Project(File.ReadAllBytes(Path.Combine(
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
+        var projected = DxpDocToDocx.Project(File.ReadAllBytes(FixturePath.Combine(
             directory, name + ".doc"))).DocxBytes;
         var generated = DxpDocToDocx.Project(DxpDocExport.Export(source)).DocxBytes;
         var repeated = DxpDocToDocx.Project(DxpDocExport.Export(projected)).DocxBytes;
@@ -6218,16 +6218,16 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordPairedCorpusRetainsVisibleStoriesAfterThirdDocHop()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         var failures = new List<string>();
         foreach (var fixture in PairedFixtures())
         {
             var name = (string)fixture[0];
             try
             {
-                var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
-                var doc = File.ReadAllBytes(Path.Combine(directory, name + ".doc"));
+                var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
+                var doc = File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc"));
                 var projected = DxpDocToDocx.Project(doc);
                 Assert.Empty(projected.Coverage.OmittedCharacters);
                 Assert.Empty(projected.Coverage.ApproximateCharacters);
@@ -6309,10 +6309,10 @@ public class DocVisibleCorpusTests
     [Fact]
     public void RenamedBuiltInHeadingRetainsAliasAndIdentityAcrossDocRoutes()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var docx = File.ReadAllBytes(Path.Combine(directory, "WordRenamedHeadingStories.docx"));
-        var nativeDoc = File.ReadAllBytes(Path.Combine(directory, "WordRenamedHeadingStories.doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var docx = File.ReadAllBytes(FixturePath.Combine(directory, "WordRenamedHeadingStories.docx"));
+        var nativeDoc = File.ReadAllBytes(FixturePath.Combine(directory, "WordRenamedHeadingStories.doc"));
         var generatedDoc = DxpDocExport.Export(docx);
         foreach (var doc in new[] { nativeDoc, generatedDoc })
         {
@@ -6342,11 +6342,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void RenamedCustomStyleRetainsMultipleAliasesInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var docx = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var docx = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordRenamedCustomStyleStories.docx"));
-        var nativeDoc = File.ReadAllBytes(Path.Combine(directory,
+        var nativeDoc = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordRenamedCustomStyleStories.doc"));
         var generatedDoc = DxpDocExport.Export(docx);
         foreach (var doc in new[] { nativeDoc, generatedDoc,
@@ -6372,10 +6372,10 @@ public class DocVisibleCorpusTests
     [Fact]
     public void CustomNextParagraphStyleRetainsLinkAcrossDocRoutes()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var docx = File.ReadAllBytes(Path.Combine(directory, "WordNextStyleStories.docx"));
-        var nativeDoc = File.ReadAllBytes(Path.Combine(directory, "WordNextStyleStories.doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var docx = File.ReadAllBytes(FixturePath.Combine(directory, "WordNextStyleStories.docx"));
+        var nativeDoc = File.ReadAllBytes(FixturePath.Combine(directory, "WordNextStyleStories.doc"));
         foreach (var doc in new[] { nativeDoc, DxpDocExport.Export(docx),
             DxpDocExport.Export(DxpDocToDocx.Project(nativeDoc).DocxBytes) })
         {
@@ -6406,17 +6406,17 @@ public class DocVisibleCorpusTests
     [InlineData("WordMixedSectionStyledStories")]
     public void WordSavedMixedSectionsCrossMainAndHeaderPieceBoundary(string name)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var sourceDocx = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var sourceDocx = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
         var reference = ReadStories(sourceDocx);
-        using var input = File.OpenRead(Path.Combine(directory, name + ".doc"));
+        using var input = File.OpenRead(FixturePath.Combine(directory, name + ".doc"));
         using var index = new DocTextIndexWalker().Index(input);
         var main = index.Parts.Single(x => x.Name == "Main");
         var headers = index.Parts.Single(x => x.Name == "Headers");
         Assert.Contains(index.Pieces, x => x.CpStart < main.CpEnd &&
             x.CpStart < headers.CpStart && x.CpEnd > headers.CpStart);
-        var projected = DxpDocToDocx.Project(File.ReadAllBytes(Path.Combine(
+        var projected = DxpDocToDocx.Project(File.ReadAllBytes(FixturePath.Combine(
             directory, name + ".doc")));
         Assert.Equal(reference, ReadStories(projected.DocxBytes));
         var rewritten = DxpDocExport.Export(projected.DocxBytes);
@@ -6437,16 +6437,16 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesVisibleParagraphFlowProperties()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         var properties = PairedFixtures()
             .SelectMany(x => ReadEffectiveParagraphLayout(File.ReadAllBytes(
-                Path.Combine(directory, (string)x[0] + ".docx"))).Keys)
+                FixturePath.Combine(directory, (string)x[0] + ".docx"))).Keys)
             .ToArray();
         Assert.Contains(properties, x => x.EndsWith(".line", StringComparison.Ordinal));
         Assert.Contains(properties, x => x.EndsWith(".keepNext", StringComparison.Ordinal));
         Assert.Contains(properties, x => x.EndsWith(".keepLines", StringComparison.Ordinal));
-        var threeSections = File.ReadAllBytes(Path.Combine(directory,
+        var threeSections = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordThreeSectionStories.docx"));
         Assert.Equal("left|none", ReadEffectiveTabStops(threeSections)[
             "body.paragraph0.tab2160"]);
@@ -6456,9 +6456,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesPageBreakBeforeAndWidowControl()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var layout = ReadEffectiveParagraphLayout(File.ReadAllBytes(Path.Combine(
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var layout = ReadEffectiveParagraphLayout(File.ReadAllBytes(FixturePath.Combine(
             directory, "WordPaginationAllStories.docx")));
         Assert.Equal("true", layout["body.paragraph2.pageBreakBefore"]);
         Assert.Equal("false", layout["body.paragraph0.widowControl"]);
@@ -6469,10 +6469,10 @@ public class DocVisibleCorpusTests
     [InlineData(true)]
     public void PairedCorpusExercisesInheritedCjkBreakingInAllStories(bool native)
     {
-        var stem = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var stem = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordInheritedCjkBreakAllStories"));
-        var bytes = native ? File.ReadAllBytes(stem + ".doc") :
+        var bytes = native ? File.ReadAllBytes(FixturePath.Resolve(stem + ".doc")) :
             DxpDocExport.Export(File.ReadAllBytes(stem + ".docx"));
         foreach (var binary in new[] { bytes,
             DxpDocExport.Export(DxpDocToDocx.Project(bytes).DocxBytes) })
@@ -6497,10 +6497,10 @@ public class DocVisibleCorpusTests
     [InlineData(true)]
     public void PairedCorpusExercisesInheritedCjkSpacingInAllStories(bool native)
     {
-        var stem = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var stem = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordInheritedCjkSpacingAllStories"));
-        var bytes = native ? File.ReadAllBytes(stem + ".doc") :
+        var bytes = native ? File.ReadAllBytes(FixturePath.Resolve(stem + ".doc")) :
             DxpDocExport.Export(File.ReadAllBytes(stem + ".docx"));
         foreach (var binary in new[] { bytes,
             DxpDocExport.Export(DxpDocToDocx.Project(bytes).DocxBytes) })
@@ -6525,10 +6525,10 @@ public class DocVisibleCorpusTests
     [InlineData(true)]
     public void PairedCorpusExercisesInheritedOutlineInAllStories(bool native)
     {
-        var stem = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var stem = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordInheritedOutlineAllStories"));
-        var bytes = native ? File.ReadAllBytes(stem + ".doc") :
+        var bytes = native ? File.ReadAllBytes(FixturePath.Resolve(stem + ".doc")) :
             DxpDocExport.Export(File.ReadAllBytes(stem + ".docx"));
         foreach (var binary in new[] { bytes,
             DxpDocExport.Export(DxpDocToDocx.Project(bytes).DocxBytes) })
@@ -6550,10 +6550,10 @@ public class DocVisibleCorpusTests
     [InlineData(true)]
     public void PairedCorpusExercisesInheritedBidiInAllStories(bool native)
     {
-        var stem = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var stem = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordInheritedBidiAllStories"));
-        var bytes = native ? File.ReadAllBytes(stem + ".doc") :
+        var bytes = native ? File.ReadAllBytes(FixturePath.Resolve(stem + ".doc")) :
             DxpDocExport.Export(File.ReadAllBytes(stem + ".docx"));
         foreach (var binary in new[] { bytes,
             DxpDocExport.Export(DxpDocToDocx.Project(bytes).DocxBytes) })
@@ -6573,8 +6573,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesInheritedPaginationStyle()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordInheritedPaginationStyleStories.docx"));
         var source = File.ReadAllBytes(path);
         var styles = ReadCustomStyleParagraphFormatting(source);
@@ -6590,9 +6590,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesTextFlowAcrossTwoColumns()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordTwoColumnsStories.docx"));
         var layout = ReadSectionLayout(source);
         Assert.Equal("2", layout["section0.columns.count"]);
@@ -6609,9 +6609,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesUnbasedStyleDefaultsAndKerningInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordKerningStyleAllStories.docx"));
         var formatting = ReadEffectiveRunFormatting(source);
         Assert.Equal("24", formatting["body.paragraph0.char0.size"]);
@@ -6624,8 +6624,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusKeepsUnbasedStyleDefaultsSeparateFromNormalOverride()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordUnbasedDefaultsAgainstNormalAllStories.docx"));
         using var document = WordprocessingDocument.Open(path, false);
         var normal = Assert.Single(document.MainDocumentPart!.StyleDefinitionsPart!
@@ -6640,8 +6640,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusKeepsUnbasedParagraphSpacingSeparateFromNormalOverride()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordUnbasedParagraphDefaultsAgainstNormalAllStories.docx"));
         using var document = WordprocessingDocument.Open(path, false);
         var normal = Assert.Single(document.MainDocumentPart!.StyleDefinitionsPart!
@@ -6657,8 +6657,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusDerivesAllStoryStyleFromUnbasedDefaults()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordDerivedFromUnbasedDefaultsAllStories.docx"));
         var source = File.ReadAllBytes(path);
         Assert.Equal("Mirrored body", ReadStyleRelationships(source, false)
@@ -6680,9 +6680,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesUnequalColumnWidths()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var layout = ReadSectionLayout(File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var layout = ReadSectionLayout(File.ReadAllBytes(FixturePath.Combine(directory,
             "WordUnequalColumnsStories.docx")));
         Assert.Equal("2", layout["section0.columns.count"]);
         Assert.Equal("False", layout["section0.columns.equalWidth"]);
@@ -6694,9 +6694,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesSectionPageNumberRestart()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordSectionPageRestart.docx"));
         var layout = ReadSectionLayout(source);
         Assert.Equal("3", layout["sectionCount"]);
@@ -6707,9 +6707,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesFourSidedPageBorders()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var layout = ReadSectionLayout(File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var layout = ReadSectionLayout(File.ReadAllBytes(FixturePath.Combine(directory,
             "WordPageBorderSectionSetup.docx")));
         Assert.Equal("single", layout["section0.pageBorders.top.val"]);
         Assert.Equal("AA3366", layout["section0.pageBorders.top.color"]);
@@ -6727,9 +6727,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesPageBordersWithDistinctSectionStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordMixedGeometryPageBorderStories.docx"));
         var layout = ReadSectionLayout(source);
         Assert.Equal("2", layout["sectionCount"]);
@@ -6748,9 +6748,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesInlinePictureFlipsInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordFlippedImageStories.docx"));
         var geometry = ReadDrawingGeometry(source);
         Assert.Equal("True", geometry["body.drawing0.flipH"]);
@@ -6764,9 +6764,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesRightAngleInlinePictureRotationInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordRightAngleImageStories.docx"));
         var geometry = ReadDrawingGeometry(source);
         Assert.Equal("5400000", geometry["body.drawing0.rotation"]);
@@ -6777,13 +6777,13 @@ public class DocVisibleCorpusTests
     [Fact]
     public void HeaderWrapKnownGapRetainsStoryAndFloatingPictureThroughBothDocRoutes()
     {
-        var stem = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "DocKnownGaps", "WordFloatingHeaderWrapAllStories"));
+        var stem = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "regressions", "WordFloatingHeaderWrapAllStories"));
         var source = File.ReadAllBytes(stem + ".docx");
         Assert.Contains("longer line of nearby words",
             ReadStories(source)["section0.header.default"]);
-        foreach (var binary in new[] { File.ReadAllBytes(stem + ".doc"),
+        foreach (var binary in new[] { File.ReadAllBytes(FixturePath.Resolve(stem + ".doc")),
             DxpDocExport.Export(source) })
         {
             foreach (var doc in new[] { binary,
@@ -6809,9 +6809,9 @@ public class DocVisibleCorpusTests
     [InlineData("WordRotatedFloatingImageStories")]
     public void FloatingPictureTransformsSurviveGeneratedDocAndThirdHop(string name)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "DocKnownGaps", name + ".docx"));
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "regressions", name + ".docx"));
         var source = File.ReadAllBytes(path);
         var projected = DxpDocToDocx.Project(DxpDocExport.Export(source)).DocxBytes;
         AssertDrawingGeometry(source, projected);
@@ -6827,9 +6827,9 @@ public class DocVisibleCorpusTests
     [InlineData("WordRotatedFloatingImageStories")]
     public void WordNativeFloatingPicturesSurviveAnotherDocHop(string name)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "DocKnownGaps", name + ".doc"));
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "doc", "regressions", name + ".doc"));
         var native = File.ReadAllBytes(path);
         var first = DxpDocToDocx.Project(native).DocxBytes;
         var rewritten = DxpDocToDocx.Project(DxpDocExport.Export(first)).DocxBytes;
@@ -6841,11 +6841,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordNativeHeaderTransformIsFlattenedToASeparateRaster()
     {
-        var stem = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "Doc", "WordTransformedFloatingImageStories"));
+        var stem = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "legacy", "WordTransformedFloatingImageStories"));
         var source = File.ReadAllBytes(stem + ".docx");
-        var native = DxpDocToDocx.Project(File.ReadAllBytes(stem + ".doc")).DocxBytes;
+        var native = DxpDocToDocx.Project(File.ReadAllBytes(FixturePath.Resolve(stem + ".doc"))).DocxBytes;
         AssertNativeFlattenedHeaderGeometry(source, native);
     }
 
@@ -6895,9 +6895,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void CombinedInheritedStyleAppliesInAllSixSlotsAcrossSections()
     {
-        var stem = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "Doc", "WordSixSlotCombinedStyles"));
+        var stem = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "legacy", "WordSixSlotCombinedStyles"));
         var source = File.ReadAllBytes(stem + ".docx");
         var expected = ReadStories(source);
         for (var section = 0; section < 2; section++)
@@ -6911,7 +6911,7 @@ public class DocVisibleCorpusTests
         Assert.Equal("C93628", style[derived + "underlineColor"]);
         Assert.Equal("2B9D6F", style[derived + "border.color"]);
         Assert.Equal("B8E0F4", style[derived + "shading.fill"]);
-        foreach (var binary in new[] { File.ReadAllBytes(stem + ".doc"),
+        foreach (var binary in new[] { File.ReadAllBytes(FixturePath.Resolve(stem + ".doc")),
             DxpDocExport.Export(source) })
         {
             var first = DxpDocToDocx.Project(binary).DocxBytes;
@@ -6932,9 +6932,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void CombinedStyleEffectsRemainEditableAcrossBothDocRoutes()
     {
-        var stem = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "Doc", "WordCombinedStyleVisualAllStories"));
+        var stem = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "legacy", "WordCombinedStyleVisualAllStories"));
         var source = File.ReadAllBytes(stem + ".docx");
         var runStyle = ReadCustomStyleRunFormatting(source);
         const string style = "Mirrored body.";
@@ -6947,7 +6947,7 @@ public class DocVisibleCorpusTests
         var stories = ReadStories(source);
         Assert.Contains(stories.Keys, key => key.Contains("header", StringComparison.Ordinal));
         Assert.Contains(stories.Keys, key => key.Contains("footer", StringComparison.Ordinal));
-        foreach (var binary in new[] { File.ReadAllBytes(stem + ".doc"),
+        foreach (var binary in new[] { File.ReadAllBytes(FixturePath.Resolve(stem + ".doc")),
             DxpDocExport.Export(source) })
         {
             var projected = DxpDocToDocx.Project(binary).DocxBytes;
@@ -6969,11 +6969,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordNativeRotationReparameterizesAllThreeFloatingPictures()
     {
-        var stem = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "DocKnownGaps", "WordRotatedFloatingImageStories"));
+        var stem = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "regressions", "WordRotatedFloatingImageStories"));
         var source = File.ReadAllBytes(stem + ".docx");
-        var native = DxpDocToDocx.Project(File.ReadAllBytes(stem + ".doc")).DocxBytes;
+        var native = DxpDocToDocx.Project(File.ReadAllBytes(FixturePath.Resolve(stem + ".doc"))).DocxBytes;
         var original = ReadDrawingGeometry(source);
         var converted = ReadDrawingGeometry(native);
         AssertDrawingGeometry(source,
@@ -7007,9 +7007,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordNativeArbitraryRotationShapeFieldRestoresInlinePicture()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "Doc", "WordArbitraryRotationStories.doc"));
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "doc", "legacy", "WordArbitraryRotationStories.doc"));
         var projection = DxpDocToDocx.Project(File.ReadAllBytes(path));
         Assert.Empty(projection.Coverage.OmittedCharacters);
         using var stream = new MemoryStream(projection.DocxBytes);
@@ -7027,9 +7027,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesDistinctTextControls()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory, "WordTextControls.docx"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, "WordTextControls.docx"));
         var stories = ReadStories(source);
         var body = stories["body"];
         Assert.Contains("Body\ttab\u2028line\fpage\u2011join\u00adsoft", body);
@@ -7040,11 +7040,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusKeepsNonbreakingSpacesInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
         const string name = "WordTextControlsNbspAllStories";
-        var source = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory, name + ".doc"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
+        var native = File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc"));
         var generated = DxpDocExport.Export(source);
         foreach (var bytes in new[]
         {
@@ -7080,9 +7080,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordHyperlinkBinaryPayloadIsNotAnInlinePicture()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        using var input = File.OpenRead(Path.Combine(directory, "WordFieldsAndLink.doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        using var input = File.OpenRead(FixturePath.Combine(directory, "WordFieldsAndLink.doc"));
         using var index = new DocTextIndexWalker().Index(input);
         var atoms = index.Parts.Where(x => x.Name is "Main" or "Headers")
             .SelectMany(x => DocStoryTextReader.Read(index, x.Name).Paragraphs)
@@ -7090,7 +7090,7 @@ public class DocVisibleCorpusTests
             .ToArray();
         Assert.Contains(atoms, x => x.Kind == DocStoryAtomKind.FieldData);
         Assert.DoesNotContain(atoms, x => x.Kind == DocStoryAtomKind.InlinePicture);
-        var sourceDocx = File.ReadAllBytes(Path.Combine(directory,
+        var sourceDocx = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordFieldsAndLink.docx"));
         Assert.Equal(new[] { "FIELD:NUMPAGES", "FIELD:PAGE",
             "LINK:https://example.com" },
@@ -7100,9 +7100,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesDateAndTimeFields()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordDateTimeFields.docx"));
         Assert.Equal(new[] { "FIELD:DATE", "FIELD:NUMPAGES", "FIELD:PAGE",
             "FIELD:TIME", "LINK:https://example.com" },
@@ -7112,9 +7112,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesHyperlinksInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordLinksAllStories.docx"));
         Assert.Equal(new[] { "FIELD:DATE", "FIELD:NUMPAGES", "FIELD:PAGE",
             "FIELD:TIME", "LINK:https://example.com",
@@ -7125,9 +7125,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesTablesInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var grid = ReadTableGrid(File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var grid = ReadTableGrid(File.ReadAllBytes(FixturePath.Combine(directory,
             "WordTablesAllStories.docx")));
         Assert.Equal("1", grid["body.tables"]);
         Assert.Equal("2", grid["body.table0.rows"]);
@@ -7141,9 +7141,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesNumberedTableCellsInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordTableListsAllStories.docx"));
         var lists = ReadListSemantics(source);
         Assert.Equal(3, lists.Count);
@@ -7163,9 +7163,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesCellDecorationsInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var grid = ReadTableGrid(File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var grid = ReadTableGrid(File.ReadAllBytes(FixturePath.Combine(directory,
             "WordCellDecorationsAllStories.docx")));
         Assert.Equal("FFFF00", grid["body.table0.row0.cell0.fill"]);
         Assert.Equal("0000FF", grid["body.table0.row0.cell0.bottom.color"]);
@@ -7182,9 +7182,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesCellVerticalAlignmentInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var grid = ReadTableGrid(File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var grid = ReadTableGrid(File.ReadAllBytes(FixturePath.Combine(directory,
             "WordCellAlignmentAllStories.docx")));
         Assert.Equal("center", grid["body.table0.row0.cell0.verticalAlign"]);
         Assert.Equal("bottom", grid[
@@ -7196,9 +7196,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesRowLayoutInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var grid = ReadTableGrid(File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var grid = ReadTableGrid(File.ReadAllBytes(FixturePath.Combine(directory,
             "WordRowLayoutAllStories.docx")));
         Assert.Equal("exact:600", grid["body.table0.row0.height"]);
         Assert.Equal("atLeast:520", grid[
@@ -7214,15 +7214,15 @@ public class DocVisibleCorpusTests
     [Fact]
     public void NestedTableFixtureRetainsDepthAndGridInBothRoutes()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordNestedTableBody.docx"));
         var grid = ReadTableGrid(source);
         Assert.Equal("2", grid["body.tables"]);
         Assert.Contains("Nested body", ReadStories(source)["body"]);
-        using (var input = File.OpenRead(Path.Combine(directory,
+        using (var input = File.OpenRead(FixturePath.Combine(directory,
             "WordNestedTableBody.doc")))
         using (var index = new DocTextIndexWalker().Index(input))
         {
@@ -7242,7 +7242,7 @@ public class DocVisibleCorpusTests
                     style.CpStart <= x.CpEnd - 1 && x.CpEnd - 1 < style.CpEnd &&
                     style.Formatting?.TableDepth == 2));
         }
-        var projected = DxpDocToDocx.Project(File.ReadAllBytes(Path.Combine(
+        var projected = DxpDocToDocx.Project(File.ReadAllBytes(FixturePath.Combine(
             directory, "WordNestedTableBody.doc")));
         Assert.Equal(ReadStories(source), ReadStories(projected.DocxBytes));
         AssertTableGrid(source, projected.DocxBytes);
@@ -7255,9 +7255,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesNestedTablesInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordNestedTablesAllStories.docx"));
         var grid = ReadTableGrid(source);
         Assert.Equal("2", grid["body.tables"]);
@@ -7276,9 +7276,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesThreeLevelTablesInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordDeepNestedTablesAllStories.docx"));
         var grid = ReadTableGrid(source);
         foreach (var story in new[] { "body", "section0.header.default",
@@ -7289,7 +7289,7 @@ public class DocVisibleCorpusTests
             Assert.Equal("1", grid[$"{story}.table2.parentTable"]);
             Assert.Contains("Deep", grid[$"{story}.table2.row0.cell0.text"]);
         }
-        using var input = File.OpenRead(Path.Combine(directory,
+        using var input = File.OpenRead(FixturePath.Combine(directory,
             "WordDeepNestedTablesAllStories.doc"));
         using var index = new DocTextIndexWalker().Index(input);
         Assert.Contains(index.ParagraphStyles, x => x.Formatting?.TableDepth == 3);
@@ -7298,9 +7298,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesNestedTwoByTwoGridsInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var grid = ReadTableGrid(File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var grid = ReadTableGrid(File.ReadAllBytes(FixturePath.Combine(directory,
             "WordNestedGridsAllStories.docx")));
         foreach (var story in new[] { "body", "section0.header.default",
             "section0.footer.default" })
@@ -7316,9 +7316,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesMergedCellInsideNestedTable()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var grid = ReadTableGrid(File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var grid = ReadTableGrid(File.ReadAllBytes(FixturePath.Combine(directory,
             "WordNestedMergedCell.docx")));
         Assert.Equal("0", grid["body.table1.parentTable"]);
         Assert.Equal("2", grid["body.table1.rows"]);
@@ -7330,9 +7330,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesNumberedParagraphsInsideNestedTables()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordNestedTableListsAllStories.docx"));
         var grid = ReadTableGrid(source);
         foreach (var story in new[] { "body", "section0.header.default",
@@ -7350,9 +7350,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesFormattedEmptyParagraphsInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordEmptyParagraphsAllStories.docx"));
         var stories = ReadStories(source);
         Assert.Contains("First body paragraph\n\nLast body paragraph", stories["body"]);
@@ -7369,9 +7369,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesParagraphBordersAndShadingInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var decorations = ReadParagraphDecorations(File.ReadAllBytes(Path.Combine(
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var decorations = ReadParagraphDecorations(File.ReadAllBytes(FixturePath.Combine(
             directory, "WordParagraphBordersShadingStories.docx")));
         Assert.Equal("FFFF00", decorations["body.paragraph0.fill"]);
         Assert.Equal("0000FF", decorations["body.paragraph0.top.color"]);
@@ -7388,9 +7388,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesStyledDecorationsWithDirectOverrides()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordStyledParagraphDecorations.docx"));
         var decorations = ReadParagraphDecorations(source);
         Assert.Equal("FFFF00", decorations["body.paragraph0.fill"]);
@@ -7414,9 +7414,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesCharacterEffectsInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var formatting = ReadEffectiveRunFormatting(File.ReadAllBytes(Path.Combine(
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var formatting = ReadEffectiveRunFormatting(File.ReadAllBytes(FixturePath.Combine(
             directory, "WordCharacterEffectsStories.docx")));
         Assert.Equal("Arial", formatting["body.paragraph0.char0.font"]);
         Assert.Equal("yellow", formatting["body.paragraph0.char0.highlight"]);
@@ -7430,12 +7430,12 @@ public class DocVisibleCorpusTests
     [Fact]
     public void AdjacentHighlightNoneKeepsRunFormattingLocalInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var stem = Path.Combine(directory, "WordAdjacentHighlightNoneAllStories");
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var stem = FixturePath.Combine(directory, "WordAdjacentHighlightNoneAllStories");
         var source = File.ReadAllBytes(stem + ".docx");
         var generated = DxpDocExport.Export(source);
-        var native = File.ReadAllBytes(stem + ".doc");
+        var native = File.ReadAllBytes(FixturePath.Resolve(stem + ".doc"));
         var generatedProjection = DxpDocToDocx.Project(generated).DocxBytes;
         var nativeProjection = DxpDocToDocx.Project(native).DocxBytes;
         var routes = new[] { source, generatedProjection, nativeProjection,
@@ -7467,13 +7467,13 @@ public class DocVisibleCorpusTests
     [Fact]
     public void CharacterStyleAndDirectHighlightsSurviveAllStoriesAndBothDocRoutes()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var stem = Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var stem = FixturePath.Combine(directory,
             "WordCharacterStyleDirectHighlightsAllStories");
         var source = File.ReadAllBytes(stem + ".docx");
         var generated = DxpDocExport.Export(source);
-        var native = File.ReadAllBytes(stem + ".doc");
+        var native = File.ReadAllBytes(FixturePath.Resolve(stem + ".doc"));
         var routes = new[]
         {
             source,
@@ -7502,13 +7502,13 @@ public class DocVisibleCorpusTests
     [Fact]
     public void CharacterStyleShadingAndDirectHighlightSurviveAllStoriesAndBothDocRoutes()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var stem = Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var stem = FixturePath.Combine(directory,
             "WordCharacterStyleShadeHighlightAllStories");
         var source = File.ReadAllBytes(stem + ".docx");
         var generated = DxpDocExport.Export(source);
-        var native = File.ReadAllBytes(stem + ".doc");
+        var native = File.ReadAllBytes(FixturePath.Resolve(stem + ".doc"));
         var routes = new[]
         {
             source,
@@ -7541,12 +7541,12 @@ public class DocVisibleCorpusTests
     [Fact]
     public void DirectRunDirectionOverridesSurviveStyledStoriesAndBothDocRoutes()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var stem = Path.Combine(directory, "WordRunDirectionOverridesAllStories");
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var stem = FixturePath.Combine(directory, "WordRunDirectionOverridesAllStories");
         var source = File.ReadAllBytes(stem + ".docx");
         var generated = DxpDocExport.Export(source);
-        var native = File.ReadAllBytes(stem + ".doc");
+        var native = File.ReadAllBytes(FixturePath.Resolve(stem + ".doc"));
         var routes = new[]
         {
             source,
@@ -7575,9 +7575,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void HighlightPaletteSurvivesAllStoriesAndBothDocRoutes()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var stem = Path.Combine(directory, "WordHighlightPaletteAllStories");
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var stem = FixturePath.Combine(directory, "WordHighlightPaletteAllStories");
         var source = File.ReadAllBytes(stem + ".docx");
         var generated = DxpDocExport.Export(source);
         var expected = new[]
@@ -7590,7 +7590,7 @@ public class DocVisibleCorpusTests
         {
             source,
             DxpDocToDocx.Project(generated).DocxBytes,
-            DxpDocToDocx.Project(File.ReadAllBytes(stem + ".doc")).DocxBytes,
+            DxpDocToDocx.Project(File.ReadAllBytes(FixturePath.Resolve(stem + ".doc"))).DocxBytes,
             DxpDocToDocx.Project(DxpDocExport.Export(
                 DxpDocToDocx.Project(generated).DocxBytes)).DocxBytes
         })
@@ -7622,16 +7622,16 @@ public class DocVisibleCorpusTests
     [Fact]
     public void RunShadeClearKeepsHighlightOverCharacterStyleInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var stem = Path.Combine(directory, "WordShadeResetWithHighlightAllStories");
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var stem = FixturePath.Combine(directory, "WordShadeResetWithHighlightAllStories");
         var source = File.ReadAllBytes(stem + ".docx");
         var generated = DxpDocExport.Export(source);
         foreach (var docx in new[]
         {
             source,
             DxpDocToDocx.Project(generated).DocxBytes,
-            DxpDocToDocx.Project(File.ReadAllBytes(stem + ".doc")).DocxBytes,
+            DxpDocToDocx.Project(File.ReadAllBytes(FixturePath.Resolve(stem + ".doc"))).DocxBytes,
             DxpDocToDocx.Project(DxpDocExport.Export(
                 DxpDocToDocx.Project(generated).DocxBytes)).DocxBytes
         })
@@ -7657,9 +7657,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void MixedListTableImageFieldDocumentRetainsHighlightsInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var stem = Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var stem = FixturePath.Combine(directory,
             "WordMixedHighlightedListTableFieldPages");
         var source = File.ReadAllBytes(stem + ".docx");
         var generated = DxpDocExport.Export(source);
@@ -7667,7 +7667,7 @@ public class DocVisibleCorpusTests
         {
             source,
             DxpDocToDocx.Project(generated).DocxBytes,
-            DxpDocToDocx.Project(File.ReadAllBytes(stem + ".doc")).DocxBytes,
+            DxpDocToDocx.Project(File.ReadAllBytes(FixturePath.Resolve(stem + ".doc"))).DocxBytes,
             DxpDocToDocx.Project(DxpDocExport.Export(
                 DxpDocToDocx.Project(generated).DocxBytes)).DocxBytes
         };
@@ -7704,12 +7704,12 @@ public class DocVisibleCorpusTests
     public void DocPropertyFieldRemainsEditableInHeaderOrFooter(
         string name, bool header, string propertyName, string value)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var stem = Path.Combine(directory, name);
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var stem = FixturePath.Combine(directory, name);
         var source = File.ReadAllBytes(stem + ".docx");
         var generated = DxpDocExport.Export(source);
-        var native = File.ReadAllBytes(stem + ".doc");
+        var native = File.ReadAllBytes(FixturePath.Resolve(stem + ".doc"));
         foreach (var docx in new[]
         {
             source,
@@ -7760,12 +7760,12 @@ public class DocVisibleCorpusTests
     public void DocPropertyFieldRetainsMetadataAndCachedVisibleResultInBody(
         string name, string propertyName, string value)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var stem = Path.Combine(directory, name);
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var stem = FixturePath.Combine(directory, name);
         var source = File.ReadAllBytes(stem + ".docx");
         var generated = DxpDocExport.Export(source);
-        var native = File.ReadAllBytes(stem + ".doc");
+        var native = File.ReadAllBytes(FixturePath.Resolve(stem + ".doc"));
         foreach (var docx in new[]
         {
             source,
@@ -7805,12 +7805,12 @@ public class DocVisibleCorpusTests
     [Fact]
     public void MergeFieldsRemainEditableWithCachedResultsInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var stem = Path.Combine(directory, "WordMergeFieldsAllStories");
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var stem = FixturePath.Combine(directory, "WordMergeFieldsAllStories");
         var source = File.ReadAllBytes(stem + ".docx");
         var generated = DxpDocExport.Export(source);
-        var native = File.ReadAllBytes(stem + ".doc");
+        var native = File.ReadAllBytes(FixturePath.Resolve(stem + ".doc"));
         foreach (var docx in new[]
         {
             source,
@@ -7846,12 +7846,12 @@ public class DocVisibleCorpusTests
     [Fact]
     public void IfFieldInsideNumberedTableRetainsEditableResultAndHighlight()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var stem = Path.Combine(directory, "WordIfInNumberedTableMixedPages");
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var stem = FixturePath.Combine(directory, "WordIfInNumberedTableMixedPages");
         var source = File.ReadAllBytes(stem + ".docx");
         var generated = DxpDocExport.Export(source);
-        var native = File.ReadAllBytes(stem + ".doc");
+        var native = File.ReadAllBytes(FixturePath.Resolve(stem + ".doc"));
         foreach (var docx in new[]
         {
             source,
@@ -7885,12 +7885,12 @@ public class DocVisibleCorpusTests
     [Fact]
     public void SectionNumberFieldsRemainEditableAcrossIndependentSectionFooters()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var stem = Path.Combine(directory, "WordSectionNumberAcrossSections");
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var stem = FixturePath.Combine(directory, "WordSectionNumberAcrossSections");
         var source = File.ReadAllBytes(stem + ".docx");
         var generated = DxpDocExport.Export(source);
-        var native = File.ReadAllBytes(stem + ".doc");
+        var native = File.ReadAllBytes(FixturePath.Resolve(stem + ".doc"));
         foreach (var docx in new[]
         {
             source,
@@ -7924,12 +7924,12 @@ public class DocVisibleCorpusTests
     [Fact]
     public void SectionPagesFieldUsesEffectiveFirstFooterAcrossSections()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var stem = Path.Combine(directory, "WordSectionPagesAcrossSections");
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var stem = FixturePath.Combine(directory, "WordSectionPagesAcrossSections");
         var source = File.ReadAllBytes(stem + ".docx");
         var generated = DxpDocExport.Export(source);
-        var native = File.ReadAllBytes(stem + ".doc");
+        var native = File.ReadAllBytes(FixturePath.Resolve(stem + ".doc"));
         foreach (var docx in new[]
         {
             source,
@@ -7957,12 +7957,12 @@ public class DocVisibleCorpusTests
     [Fact]
     public void SectionPagesFieldsRemainEditableInAllStoriesThroughBothDocRoutes()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var stem = Path.Combine(directory, "WordSectionPagesAllStories");
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var stem = FixturePath.Combine(directory, "WordSectionPagesAllStories");
         var source = File.ReadAllBytes(stem + ".docx");
         var generated = DxpDocExport.Export(source);
-        var native = File.ReadAllBytes(stem + ".doc");
+        var native = File.ReadAllBytes(FixturePath.Resolve(stem + ".doc"));
         foreach (var docx in new[]
         {
             source,
@@ -7997,12 +7997,12 @@ public class DocVisibleCorpusTests
     [Fact]
     public void IfFieldsRemainEditableInBodyHeaderAndFooterThroughBothDocRoutes()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var stem = Path.Combine(directory, "WordIfFieldsAllStories");
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var stem = FixturePath.Combine(directory, "WordIfFieldsAllStories");
         var source = File.ReadAllBytes(stem + ".docx");
         var generated = DxpDocExport.Export(source);
-        var native = File.ReadAllBytes(stem + ".doc");
+        var native = File.ReadAllBytes(FixturePath.Resolve(stem + ".doc"));
         foreach (var docx in new[]
         {
             source,
@@ -8034,7 +8034,7 @@ public class DocVisibleCorpusTests
                 x == "FIELD:IF:1:=:1:YES:NO"));
         }
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
-        var output = Path.Combine(Path.GetTempPath(),
+        var output = FixturePath.Combine(Path.GetTempPath(),
             $"docxport-if-field-{Guid.NewGuid():N}.doc");
         File.WriteAllBytes(output, generated);
         dynamic word = Activator.CreateInstance(Type.GetTypeFromProgID(
@@ -8062,9 +8062,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordListParagraphRetainsBuiltInStyleIdentity()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        using var input = File.OpenRead(Path.Combine(directory, "WordListsAllStories.doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        using var input = File.OpenRead(FixturePath.Combine(directory, "WordListsAllStories.doc"));
         using var index = new DocTextIndexWalker().Index(input);
         Assert.Equal(179, Assert.Single(index.StyleDefinitions,
             x => x.Name == "List Paragraph").InvariantStyleId);
@@ -8073,9 +8073,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesEditableListsInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var lists = ReadListSemantics(File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var lists = ReadListSemantics(File.ReadAllBytes(FixturePath.Combine(directory,
             "WordListsAllStories.docx")));
         Assert.Equal(7, lists.Count);
         Assert.Equal("decimal|%1.|1|tab|720|360|", lists["body.paragraph0"]);
@@ -8088,9 +8088,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesMixedBulletAndNumberedLists()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var lists = ReadListSemantics(File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var lists = ReadListSemantics(File.ReadAllBytes(FixturePath.Combine(directory,
             "WordMixedListsAllStories.docx")));
         Assert.Equal(7, lists.Count);
         Assert.StartsWith("bullet|", lists["body.paragraph0"]);
@@ -8109,12 +8109,12 @@ public class DocVisibleCorpusTests
     public void WordListFormatUsesNativeDocCodeInAllStories(string fixtureName,
         byte expectedCode, bool allStories)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var stem = Path.Combine(directory, fixtureName);
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var stem = FixturePath.Combine(directory, fixtureName);
         foreach (var bytes in new[]
         {
-            File.ReadAllBytes(stem + ".doc"),
+            File.ReadAllBytes(FixturePath.Resolve(stem + ".doc")),
             DxpDocExport.Export(File.ReadAllBytes(stem + ".docx"))
         })
         {
@@ -8134,12 +8134,12 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordFullAndHalfWidthDecimalListsUseNativeDocCodes()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var stem = Path.Combine(directory, "WordVisibleWidthDecimalListsAllStories");
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var stem = FixturePath.Combine(directory, "WordVisibleWidthDecimalListsAllStories");
         foreach (var bytes in new[]
         {
-            File.ReadAllBytes(stem + ".doc"),
+            File.ReadAllBytes(FixturePath.Resolve(stem + ".doc")),
             DxpDocExport.Export(File.ReadAllBytes(stem + ".docx"))
         })
         {
@@ -8157,14 +8157,14 @@ public class DocVisibleCorpusTests
     public void WordRussianListsRetainNativeCodeInAllStories(
         string name, byte code, bool upperCase)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var stem = Path.Combine(directory, name);
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var stem = FixturePath.Combine(directory, name);
         var source = File.ReadAllBytes(stem + ".docx");
         var generated = DxpDocExport.Export(source);
         foreach (var binary in new[]
         {
-            File.ReadAllBytes(stem + ".doc"), generated,
+            File.ReadAllBytes(FixturePath.Resolve(stem + ".doc")), generated,
             DxpDocExport.Export(DxpDocToDocx.Project(generated).DocxBytes)
         })
         {
@@ -8188,14 +8188,14 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordIdeographDigitalListsRetainNativeCodeInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var stem = Path.Combine(directory, "WordIdeographDigitalListsAllStories");
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var stem = FixturePath.Combine(directory, "WordIdeographDigitalListsAllStories");
         var source = File.ReadAllBytes(stem + ".docx");
         var generated = DxpDocExport.Export(source);
         foreach (var binary in new[]
         {
-            File.ReadAllBytes(stem + ".doc"), generated,
+            File.ReadAllBytes(FixturePath.Resolve(stem + ".doc")), generated,
             DxpDocExport.Export(DxpDocToDocx.Project(generated).DocxBytes)
         })
         {
@@ -8218,13 +8218,13 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordDecimalFullWidth2ListsRetainNativeCodeInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "DocKnownGaps"));
-        var stem = Path.Combine(directory, "WordDecimalFullWidth2ListsAllStories");
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "regressions"));
+        var stem = FixturePath.Combine(directory, "WordDecimalFullWidth2ListsAllStories");
         var source = File.ReadAllBytes(stem + ".docx");
         Assert.Throws<NotSupportedException>(() => DxpDocExport.Export(source));
-        var native = File.ReadAllBytes(stem + ".doc");
+        var native = File.ReadAllBytes(FixturePath.Resolve(stem + ".doc"));
         using (var input = new MemoryStream(native))
         {
             using var index = new DocTextIndexWalker().Index(input);
@@ -8245,10 +8245,10 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordNativeChicagoListProjectsWithEditableNumberFormat()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "DocKnownGaps"));
-        var native = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "regressions"));
+        var native = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordSymbolicChicagoOnly.doc"));
         using (var input = new MemoryStream(native))
         using (var index = new DocTextIndexWalker().Index(input))
@@ -8265,7 +8265,7 @@ public class DocVisibleCorpusTests
 
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") == "1")
         {
-            var path = Path.Combine(Path.GetTempPath(),
+            var path = FixturePath.Combine(Path.GetTempPath(),
                 $"docxport-chicago-projection-{Guid.NewGuid():N}.docx");
             File.WriteAllBytes(path, projected.ToArray());
             dynamic word = Activator.CreateInstance(
@@ -8273,7 +8273,7 @@ public class DocVisibleCorpusTests
             word.Visible = false;
             try
             {
-                dynamic source = word.Documents.Open(Path.Combine(directory,
+                dynamic source = word.Documents.Open(FixturePath.Combine(directory,
                     "WordSymbolicChicagoOnly.docx"), ReadOnly: true);
                 dynamic result = word.Documents.Open(path, ReadOnly: true);
                 try
@@ -8312,9 +8312,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesNestedNumberingAndContinuation()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var lists = ReadListSemantics(File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var lists = ReadListSemantics(File.ReadAllBytes(FixturePath.Combine(directory,
             "WordNestedListsAllStories.docx")));
         Assert.Equal(7, lists.Count);
         Assert.StartsWith("decimal|%1.|1|tab|720|360|",
@@ -8327,9 +8327,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void PairedCorpusExercisesListStartOverride()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var lists = ReadListSemantics(File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var lists = ReadListSemantics(File.ReadAllBytes(FixturePath.Combine(directory,
             "WordRestartListsAllStories.docx")));
         Assert.Equal(7, lists.Count);
         Assert.StartsWith("decimal|%1.|5|tab|720|360|",
@@ -8346,9 +8346,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void CharacterStyleTogglesPreserveStyleLinksAndVisibleRunResets()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var docx = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var docx = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordCharacterStyleToggleStories.docx"));
         using var input = new MemoryStream(DxpDocExport.Export(docx));
         using var index = new DocTextIndexWalker().Index(input);
@@ -8369,9 +8369,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void NativeCharacterStyleRelativeOverridesResolveAgainstBothStyles()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        using var input = File.OpenRead(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        using var input = File.OpenRead(FixturePath.Combine(directory,
             "WordCharacterStyleDirectOverrideStories.doc"));
         using var index = new DocTextIndexWalker().Index(input);
         var baseStyle = Assert.Single(index.StyleDefinitions,
@@ -8385,9 +8385,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void InheritedStrikeToggleWritesVisibleRunReset()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var docx = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var docx = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordCharacterStyleInheritedStrikeStories.docx"));
         using var input = new MemoryStream(DxpDocExport.Export(docx));
         using var index = new DocTextIndexWalker().Index(input);
@@ -8402,9 +8402,9 @@ public class DocVisibleCorpusTests
     [Fact]
     public void NativeRelativeStrikeToggleUsesCombinedStyleState()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        using var input = File.OpenRead(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        using var input = File.OpenRead(FixturePath.Combine(directory,
             "WordCharacterStyleRelativeStrikeStories.doc"));
         using var index = new DocTextIndexWalker().Index(input);
         var baseStyle = Assert.Single(index.StyleDefinitions,
@@ -8419,10 +8419,10 @@ public class DocVisibleCorpusTests
     [MemberData(nameof(PairedFixtures))]
     public void WordPairedCorpusRetainsSectionStoryContentInBothRoutes(string name)
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var docxBytes = File.ReadAllBytes(Path.Combine(directory, name + ".docx"));
-        var docBytes = File.ReadAllBytes(Path.Combine(directory, name + ".doc"));
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var docxBytes = File.ReadAllBytes(FixturePath.Combine(directory, name + ".docx"));
+        var docBytes = File.ReadAllBytes(FixturePath.Combine(directory, name + ".doc"));
 
         var expected = ReadStories(docxBytes);
         var expectedStyleLinks = ReadLinkedCustomStyles(docxBytes);
@@ -8727,11 +8727,11 @@ public class DocVisibleCorpusTests
     [Fact]
     public void ExplicitColumnBreakRemainsAtItsBodyParagraphThroughDocHops()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var source = File.ReadAllBytes(Path.Combine(directory,
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var source = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordExplicitColumnBreakStories.docx"));
-        var native = File.ReadAllBytes(Path.Combine(directory,
+        var native = File.ReadAllBytes(FixturePath.Combine(directory,
             "WordExplicitColumnBreakStories.doc"));
         var expected = new Dictionary<int, int> { [9] = 1 };
         Assert.Equal(expected, ReadColumnBreaks(source));
@@ -8771,8 +8771,8 @@ public class DocVisibleCorpusTests
     public void EmptyParagraphMarkFormattingIsPartOfThePairedGate(
         string story, string fixtureName)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             fixtureName + ".docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -8818,8 +8818,8 @@ public class DocVisibleCorpusTests
     public void EmptyParagraphMarkDecorationsArePartOfThePairedGate(
         string story, string property)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordInheritedEmptyMarkAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -8851,8 +8851,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void EmptyHeaderMarkFontIsPartOfThePairedGate()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordInheritedEmptyMarkAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -8877,8 +8877,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void CustomStyleFontInheritanceIsPartOfThePairedGate()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordInheritedEmptyMarkAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -8906,8 +8906,8 @@ public class DocVisibleCorpusTests
     public void CustomStyleSpacingLanguageAndKerningArePartOfThePairedGate(
         string fixture, string property)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             fixture + ".docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -8943,8 +8943,8 @@ public class DocVisibleCorpusTests
     public void CustomStyleScaleAndPositionArePartOfThePairedGate(
         string fixture, string property)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             fixture + ".docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -8968,8 +8968,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void CustomStyleRunShadingIsPartOfThePairedGate()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordStyledRgbRunShadingAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -8993,8 +8993,8 @@ public class DocVisibleCorpusTests
     public void CustomStyleRunBorderIsPartOfThePairedGate(
         string styleName, string property)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordLayeredRunBordersAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -9020,8 +9020,8 @@ public class DocVisibleCorpusTests
     public void CustomStyleComplexScriptFormattingIsPartOfThePairedGate(
         string styleName, string property)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordStyleLayeredStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -9045,8 +9045,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void CustomStyleFitTextWidthIsPartOfThePairedGate()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordRunFitTextParagraphStyleAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -9067,8 +9067,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void StyledCharacterEffectsReachBodyHeaderAndFooterThroughBothDocRoutes()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordStyledCharacterEffectsAllStories.docx"));
         var source = File.ReadAllBytes(path);
         var expected = ReadEffectiveRunFormatting(source);
@@ -9079,7 +9079,7 @@ public class DocVisibleCorpusTests
                 StringComparison.Ordinal) && x.Value == "true");
         foreach (var binary in new[]
         {
-            File.ReadAllBytes(Path.ChangeExtension(path, ".doc")),
+            File.ReadAllBytes(FixturePath.Resolve(Path.ChangeExtension(path, ".doc"))),
             DxpDocExport.Export(source)
         })
         {
@@ -9098,8 +9098,8 @@ public class DocVisibleCorpusTests
     public void CustomStyleEffectsArePartOfThePairedGate(
         string styleName, string property)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordStyledCharacterEffectsAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -9123,8 +9123,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void CustomStyleOutlineIsPartOfThePairedGate()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordCharacterEffectsLayeredStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -9145,8 +9145,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void UnexpectedEnabledRunEffectIsPartOfThePairedGate()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordStyleLayeredStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -9168,8 +9168,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void UnexpectedHiddenRunIsRejectedByPairedGate()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordStyleLayeredStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -9194,8 +9194,8 @@ public class DocVisibleCorpusTests
     [InlineData(true)]
     public void UnexpectedRunCapsAreRejectedByPairedGate(bool smallCaps)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordStyleLayeredStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -9221,8 +9221,8 @@ public class DocVisibleCorpusTests
     [InlineData(true)]
     public void UnexpectedRunDecorationIsRejectedByPairedGate(bool highlight)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordStyleLayeredStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -9250,8 +9250,8 @@ public class DocVisibleCorpusTests
     [InlineData(true)]
     public void UnexpectedRunFillOrBorderIsRejectedByPairedGate(bool border)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordStyleLayeredStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -9278,8 +9278,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void CustomStyleDoubleStrikeIsPartOfThePairedGate()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordDoubleStrikeLayeredStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -9300,8 +9300,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void CustomStyleUnderlineColorIsPartOfThePairedGate()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordUnderlineColorStyleOverridesAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -9326,8 +9326,8 @@ public class DocVisibleCorpusTests
     public void CustomStyleDecorationsArePartOfThePairedGate(
         string fixture, string styleName, string property)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             fixture + ".docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -9351,8 +9351,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void CustomStyleSmallCapsIsPartOfThePairedGate()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordInheritedEmptyMarkAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -9374,8 +9374,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void CustomStyleCapsIsPartOfThePairedGate()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordCharacterStyleCapsResetAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -9399,8 +9399,8 @@ public class DocVisibleCorpusTests
     [InlineData(true)]
     public void UnexpectedCustomStyleRunDecorationFailsThePairedGate(bool border)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordStyleLayeredStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -9431,8 +9431,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void LiteralCustomStyleColorIsPartOfThePairedGate()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordInheritedDisplayStyleStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -9625,8 +9625,8 @@ public class DocVisibleCorpusTests
     public void CustomParagraphStyleDirectionAndOutlineArePartOfThePairedGate(
         string fixture, string styleName, string property)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             fixture + ".docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -9664,8 +9664,8 @@ public class DocVisibleCorpusTests
     public void CustomStyleTabLeaderAndInheritedClearArePartOfThePairedGate(
         bool removeClear)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordClearedInheritedTabsAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -9693,8 +9693,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void CustomParagraphStyleNumberingIsPartOfThePairedGate()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordMixedSectionStyledStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -9728,8 +9728,8 @@ public class DocVisibleCorpusTests
     public void CustomParagraphStyleLayoutIsPartOfThePairedGate(
         string fixture, string styleName, string property)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             fixture + ".docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -9794,8 +9794,8 @@ public class DocVisibleCorpusTests
     public void CustomParagraphStyleDecorationsArePartOfThePairedGate(
         string property)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordStyledParagraphDecorations.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -10342,8 +10342,8 @@ public class DocVisibleCorpusTests
     [InlineData("footer")]
     public void EmptyParagraphSpacingIsPartOfThePairedLayoutGate(string story)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordEmptyParagraphSpacingAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -10384,8 +10384,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void ImplicitCjkSpacingDefaultIsPartOfThePairedLayoutGate()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordThreeSectionStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -10413,8 +10413,8 @@ public class DocVisibleCorpusTests
     public void InheritedCjkParagraphFlagsArePartOfThePairedLayoutGate(
         string fixture, string styleName, string property)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             fixture + ".docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -10442,8 +10442,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void InheritedOutlineLevelIsPartOfThePairedLayoutGate()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordInheritedOutlineAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -10465,8 +10465,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void DirectGridSnapIsPartOfThePairedLayoutGate()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordSectionLineGridSnapAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -10490,11 +10490,11 @@ public class DocVisibleCorpusTests
     [InlineData(true)]
     public void ConditionalCornerParagraphAlignmentSurvivesBothDocRoutes(bool native)
     {
-        var stem = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var stem = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordConditionalCornerParagraphAllStories"));
         var source = File.ReadAllBytes(stem + ".docx");
-        var bytes = native ? File.ReadAllBytes(stem + ".doc") :
+        var bytes = native ? File.ReadAllBytes(FixturePath.Resolve(stem + ".doc")) :
             DxpDocExport.Export(source);
         foreach (var binary in new[] { bytes,
             DxpDocExport.Export(DxpDocToDocx.Project(bytes).DocxBytes) })
@@ -10524,8 +10524,8 @@ public class DocVisibleCorpusTests
     public void CornerParagraphAlignmentIsPartOfPairedLayoutGate(
         string cornerName)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordConditionalCornerParagraphAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -10561,8 +10561,8 @@ public class DocVisibleCorpusTests
     [InlineData("0020")]
     public void MaskOnlyTableLookControlsEffectiveParagraphAlignment(string mask)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordMaskedTableLookParagraphAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -10596,8 +10596,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void MaskOnlyTableLookControlsEffectiveCornerRunFormatting()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordMaskedTableLookRunStyleAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -10633,14 +10633,14 @@ public class DocVisibleCorpusTests
     [InlineData(true)]
     public void AllConditionalCornerRunStylesSurviveBothDocRoutes(bool native)
     {
-        var stem = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var stem = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordConditionalAllCornerRunStyleAllStories"));
         var source = File.ReadAllBytes(stem + ".docx");
         var expected = ReadEffectiveRunFormatting(source);
         foreach (var color in new[] { "CC00CC", "FF8800", "0000CC", "660099" })
             Assert.Contains(expected.Values, value => value == color);
-        var bytes = native ? File.ReadAllBytes(stem + ".doc") :
+        var bytes = native ? File.ReadAllBytes(FixturePath.Resolve(stem + ".doc")) :
             DxpDocExport.Export(source);
         foreach (var binary in new[] { bytes,
             DxpDocExport.Export(DxpDocToDocx.Project(bytes).DocxBytes) })
@@ -10668,8 +10668,8 @@ public class DocVisibleCorpusTests
     [InlineData(true)]
     public void LowerCornerRunColorIsPartOfThePairedFormattingGate(bool southEast)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordConditionalAllCornerRunStyleAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -10704,8 +10704,8 @@ public class DocVisibleCorpusTests
         string fixtureName, bool removeAnnotations,
         string conditionalAlignment)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             fixtureName + ".docx"));
         var source = File.ReadAllBytes(path);
         if (removeAnnotations)
@@ -10764,14 +10764,14 @@ public class DocVisibleCorpusTests
     [Fact]
     public void CellSpacingZeroResetSurvivesBothDocRoutesAndThirdHop()
     {
-        var stem = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var stem = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordCellSpacingResetAllStories"));
         var source = File.ReadAllBytes(stem + ".docx");
         var sourceGrid = ReadTableGrid(source);
         Assert.Equal("120", sourceGrid["body.table0.row0.cellSpacing"]);
         Assert.Equal("0", sourceGrid["body.table0.row1.cellSpacing"]);
-        foreach (var binary in new[] { File.ReadAllBytes(stem + ".doc"),
+        foreach (var binary in new[] { File.ReadAllBytes(FixturePath.Resolve(stem + ".doc")),
             DxpDocExport.Export(source) })
         {
             foreach (var doc in new[] { binary,
@@ -10791,11 +10791,11 @@ public class DocVisibleCorpusTests
     [InlineData(true)]
     public void StyledCellSpacingAndZeroRowOverrideStayEditable(bool native)
     {
-        var stem = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var stem = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordStyledCellSpacingResetAllStories"));
         var source = File.ReadAllBytes(stem + ".docx");
-        var binary = native ? File.ReadAllBytes(stem + ".doc") :
+        var binary = native ? File.ReadAllBytes(FixturePath.Resolve(stem + ".doc")) :
             DxpDocExport.Export(source);
         foreach (var doc in new[] { binary,
             DxpDocExport.Export(DxpDocToDocx.Project(binary).DocxBytes) })
@@ -10818,8 +10818,8 @@ public class DocVisibleCorpusTests
     [InlineData(true)]
     public void StyledCellSpacingLayerMutationsFailTableGate(bool rowOverride)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordStyledCellSpacingResetAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var editable = new MemoryStream();
@@ -10857,9 +10857,9 @@ public class DocVisibleCorpusTests
     [InlineData("footer")]
     public void FixedLayoutMutationFailsAutoFitTableGate(string story)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "DocKnownGaps", "WordVisibleNoWrapArialAllStories.docx"));
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "regressions", "WordVisibleNoWrapArialAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var editable = new MemoryStream();
         editable.Write(source);
@@ -10895,9 +10895,9 @@ public class DocVisibleCorpusTests
     [InlineData("footer", true)]
     public void FixedPreferredWidthMutationFailsAutoWidthGate(string story, bool cellWidth)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures",
-            "DocKnownGaps", "WordVisibleNoWrapArialAllStories.docx"));
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures",
+            "docx", "regressions", "WordVisibleNoWrapArialAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var editable = new MemoryStream();
         editable.Write(source);
@@ -10933,8 +10933,8 @@ public class DocVisibleCorpusTests
     [InlineData("footer")]
     public void UnexpectedNoWrapFailsTableGate(string story)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordVisibleNoWrapOffAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var editable = new MemoryStream();
@@ -10965,8 +10965,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void UnexpectedCellFitTextFailsTableGate()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordVisibleNoWrapOffAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var editable = new MemoryStream();
@@ -10987,8 +10987,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void CellSpacingZeroResetMutationFailsTableGate()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordCellSpacingResetAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var editable = new MemoryStream();
@@ -11015,8 +11015,8 @@ public class DocVisibleCorpusTests
     [InlineData("row")]
     public void CellSpacingChangesFailTableGate(string location)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordCellSpacingAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var editable = new MemoryStream();
@@ -11062,8 +11062,8 @@ public class DocVisibleCorpusTests
     [InlineData("footer")]
     public void RotatedCellDirectionChangesFailTableGate(string story)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordRotatedTableCellsAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var editable = new MemoryStream();
@@ -11093,14 +11093,14 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordRotatedTableCellsRetainDirectionInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var stem = Path.Combine(directory, "WordRotatedTableCellsAllStories");
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var stem = FixturePath.Combine(directory, "WordRotatedTableCellsAllStories");
         var source = File.ReadAllBytes(stem + ".docx");
         using (var sourcePackage = WordprocessingDocument.Open(
             new MemoryStream(source), false))
             Assert.Empty(new OpenXmlValidator(FileFormatVersions.Office2010).Validate(sourcePackage));
-        var native = File.ReadAllBytes(stem + ".doc");
+        var native = File.ReadAllBytes(FixturePath.Resolve(stem + ".doc"));
         var generated = DxpDocExport.Export(source);
         foreach (var binary in new[] { native, generated,
             DxpDocExport.Export(DxpDocToDocx.Project(native).DocxBytes) })
@@ -11127,14 +11127,14 @@ public class DocVisibleCorpusTests
     [Fact]
     public void WordMixedRotatedCellsRetainFourDirectionsInAllStories()
     {
-        var directory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc"));
-        var stem = Path.Combine(directory, "WordMixedRotatedCellsAllStories");
+        var directory = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy"));
+        var stem = FixturePath.Combine(directory, "WordMixedRotatedCellsAllStories");
         var source = File.ReadAllBytes(stem + ".docx");
         using (var sourcePackage = WordprocessingDocument.Open(
             new MemoryStream(source), false))
             Assert.Empty(new OpenXmlValidator(FileFormatVersions.Office2010).Validate(sourcePackage));
-        var native = File.ReadAllBytes(stem + ".doc");
+        var native = File.ReadAllBytes(FixturePath.Resolve(stem + ".doc"));
         var generated = DxpDocExport.Export(source);
         var expected = new[] { "1,3", "4,5", "3,5", "4,1" };
         foreach (var binary in new[] { native, generated,
@@ -11171,8 +11171,8 @@ public class DocVisibleCorpusTests
     [InlineData("footer")]
     public void UnexpectedRotatedCellDirectionFailsTableGate(string story)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordTablesAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var editable = new MemoryStream();
@@ -11208,11 +11208,11 @@ public class DocVisibleCorpusTests
     public void LayeredCornerParagraphAlignmentSurvivesBothDocRoutes(
         string fixtureName, bool native)
     {
-        var stem = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var stem = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             fixtureName));
         var source = File.ReadAllBytes(stem + ".docx");
-        var bytes = native ? File.ReadAllBytes(stem + ".doc") :
+        var bytes = native ? File.ReadAllBytes(FixturePath.Resolve(stem + ".doc")) :
             DxpDocExport.Export(source);
         foreach (var binary in new[] { bytes,
             DxpDocExport.Export(DxpDocToDocx.Project(bytes).DocxBytes) })
@@ -11231,8 +11231,8 @@ public class DocVisibleCorpusTests
     [InlineData(true)]
     public void LayeredCornerParagraphAlignmentChangesFailLayoutGate(bool direct)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordLayeredCornerParagraphAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -11268,14 +11268,14 @@ public class DocVisibleCorpusTests
     [InlineData(true)]
     public void LayeredCornerRunColorsSurviveBothDocRoutes(bool native)
     {
-        var stem = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var stem = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordLayeredCornerRunStyleAllStories"));
         var source = File.ReadAllBytes(stem + ".docx");
         var values = ReadEffectiveRunFormatting(source);
         Assert.True(values.Values.Count(x => x == "0099AA") >= 3);
         Assert.True(values.Values.Count(x => x == "DDAA00") >= 3);
-        var bytes = native ? File.ReadAllBytes(stem + ".doc") :
+        var bytes = native ? File.ReadAllBytes(FixturePath.Resolve(stem + ".doc")) :
             DxpDocExport.Export(source);
         foreach (var binary in new[] { bytes,
             DxpDocExport.Export(DxpDocToDocx.Project(bytes).DocxBytes) })
@@ -11292,8 +11292,8 @@ public class DocVisibleCorpusTests
     [InlineData(true)]
     public void LayeredCornerRunColorChangesFailFormattingGate(bool direct)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordLayeredCornerRunStyleAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -11324,14 +11324,14 @@ public class DocVisibleCorpusTests
     [InlineData(true)]
     public void ConditionalCornerRunStylesSurviveBothDocRoutes(bool native)
     {
-        var stem = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var stem = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordConditionalCornerRunStyleAllStories"));
         var source = File.ReadAllBytes(stem + ".docx");
         var expected = ReadEffectiveRunFormatting(source);
         Assert.Contains(expected.Values, value => value == "CC00CC");
         Assert.Contains(expected.Values, value => value == "FF8800");
-        var bytes = native ? File.ReadAllBytes(stem + ".doc") :
+        var bytes = native ? File.ReadAllBytes(FixturePath.Resolve(stem + ".doc")) :
             DxpDocExport.Export(source);
         foreach (var binary in new[] { bytes,
             DxpDocExport.Export(DxpDocToDocx.Project(bytes).DocxBytes) })
@@ -11359,8 +11359,8 @@ public class DocVisibleCorpusTests
     public void ConditionalCornerRunColorIsPartOfThePairedFormattingGate(
         bool northEast)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordConditionalCornerRunStyleAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -11387,11 +11387,11 @@ public class DocVisibleCorpusTests
     [InlineData(true)]
     public void ConditionalColumnRunStylesSurviveBothDocRoutes(bool native)
     {
-        var stem = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var stem = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordConditionalColumnRunStyleAllStories"));
         var source = File.ReadAllBytes(stem + ".docx");
-        var bytes = native ? File.ReadAllBytes(stem + ".doc") :
+        var bytes = native ? File.ReadAllBytes(FixturePath.Resolve(stem + ".doc")) :
             DxpDocExport.Export(source);
         foreach (var binary in new[] { bytes,
             DxpDocExport.Export(DxpDocToDocx.Project(bytes).DocxBytes) })
@@ -11427,8 +11427,8 @@ public class DocVisibleCorpusTests
     public void ConditionalColumnRunColorIsPartOfThePairedFormattingGate(
         bool lastColumn)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordConditionalColumnRunStyleAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -11453,8 +11453,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void FirstRowConditionalRunColorIsPartOfThePairedFormattingGate()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordConditionalFirstRowRunStyleAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -11478,8 +11478,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void CharacterStyleEmphasisLayerIsPartOfThePairedFormattingGate()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordInheritedCharacterEmphasisGridAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -11502,8 +11502,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void InheritedEmphasisIsPartOfThePairedFormattingGate()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordInheritedEmphasisAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -11526,8 +11526,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void InheritedRunGridSnapIsPartOfThePairedFormattingGate()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordInheritedRunGridSnapAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -11549,8 +11549,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void UnexpectedRunPositioningIsRejectedByPairedFormattingGate()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordInheritedCharacterEmphasisGridAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -11572,8 +11572,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void InheritedTextAlignmentIsPartOfThePairedLayoutGate()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordInheritedTextAlignmentAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -11596,8 +11596,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void InheritedGridAdjustedRightIndentIsPartOfThePairedLayoutGate()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordInheritedAdjustRightGridAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -11620,8 +11620,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void GridAdjustedRightIndentIsPartOfThePairedLayoutGate()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordCharacterGridAdjustRightAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -11644,8 +11644,8 @@ public class DocVisibleCorpusTests
     [Fact]
     public void UnexpectedAfterSpacingIsRejectedByPairedLayoutGate()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordVisibleEmptyDefaultsAllStories.docx"));
         var source = File.ReadAllBytes(path);
         using var stream = new MemoryStream();
@@ -13430,13 +13430,13 @@ public class DocVisibleCorpusTests
     [InlineData("WordNestedTableListsAllStories")]
     public void IndexedListParagraphsRetainNumberedTableCellsInAllStories(string name)
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             name + ".docx"));
         var source = File.ReadAllBytes(path);
         var generated = DxpDocExport.Export(source);
         var projected = DxpDocToDocx.Project(generated).DocxBytes;
-        foreach (var bytes in new[] { File.ReadAllBytes(Path.ChangeExtension(path, ".doc")),
+        foreach (var bytes in new[] { File.ReadAllBytes(FixturePath.Resolve(Path.ChangeExtension(path, ".doc"))),
                      generated, DxpDocExport.Export(projected) })
         {
             using var stream = new MemoryStream(bytes);
@@ -13464,10 +13464,10 @@ public class DocVisibleCorpusTests
     [Fact]
     public void IndexedListParagraphsBindToStoryPositionsAcrossAllStories()
     {
-        var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
             "WordListsAllStories.docx"));
-        foreach (var bytes in new[] { File.ReadAllBytes(Path.ChangeExtension(path, ".doc")),
+        foreach (var bytes in new[] { File.ReadAllBytes(FixturePath.Resolve(Path.ChangeExtension(path, ".doc"))),
                      DxpDocExport.Export(File.ReadAllBytes(path)) })
         {
             using var stream = new MemoryStream(bytes);

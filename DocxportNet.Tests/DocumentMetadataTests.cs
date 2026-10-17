@@ -56,7 +56,7 @@ public sealed class DocumentMetadataTests
     public void DocDescriptionPropertyDoesNotImplyAComment()
     {
         var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc",
+            "..", "..", "..", "..", "fixtures", "doc", "legacy",
             "WordDocPropertyCommentsBodyFooter.doc"));
         var metadata = DxpMetadata.Inspect(path);
         Assert.False(metadata.HasComments);

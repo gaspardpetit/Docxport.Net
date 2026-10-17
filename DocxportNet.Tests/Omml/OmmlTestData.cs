@@ -9,13 +9,12 @@ internal static class OmmlTestData
 
     public static string FixtureRoot => Path.Combine(
         FindRepositoryRoot(),
-        "DocxportNet.Tests",
-        "Fixtures",
-        "Omml");
+        "fixtures",
+        "omml");
 
-    public static string UpstreamRoot => Path.Combine(FixtureRoot, "Upstream", "Plurimath");
+    public static string UpstreamRoot => Path.Combine(FixtureRoot, "upstream", "plurimath");
 
-    public static string NormativeRoot => Path.Combine(FixtureRoot, "Normative");
+    public static string NormativeRoot => Path.Combine(FixtureRoot, "normative");
 
     public static IReadOnlyList<string> UpstreamFixtures() => Directory
         .EnumerateFiles(UpstreamRoot, "*.omml", SearchOption.AllDirectories)
