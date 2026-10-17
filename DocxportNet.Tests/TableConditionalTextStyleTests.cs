@@ -13,7 +13,7 @@ public class TableConditionalTextStyleTests
     public void FirstRowConditionalTextFormattingIsAvailableToExporters(string fixture, bool centered)
     {
         var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "DocxportNet.Tests", "Fixtures", "Doc", fixture));
+            "..", "..", "..", "..", "fixtures", "docx", "legacy", fixture));
         using var document = WordprocessingDocument.Open(path, false);
         if (!centered)
         {
