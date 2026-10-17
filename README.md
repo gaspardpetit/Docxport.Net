@@ -64,6 +64,20 @@ Full checklist: [docs/supported-fields.md](docs/supported-fields.md)
 
 Most DOCX “save as text” pipelines lose important fidelity: strikethroughs and deletions disappear, list markers collapse to bullets or vanish (pandoc), comments/track changes are missing, images are dropped, and tools like LibreOffice/Interop require UI or platform-specific installs. Docxport.Net walks the OOXML directly, headlessly, and emits Markdown/HTML/plain text while preserving tracked changes, comments, list markers, images, headers/footers, and other semantics.
 
+## Pdfxport source builds
+
+The optional `ext/PDFsharp` submodule pins the MIT-licensed
+[Pdfxport.Net fork](https://github.com/gaspardpetit/Pdfxport.Net). To build against
+its PDFsharp and MigraDoc projects instead of packaged binaries:
+
+```powershell
+git submodule update --init ext/PDFsharp
+dotnet build DocxportNet/DocxportNet.csproj -f netstandard2.0 -p:PdfSharpSourceRoot="$((Resolve-Path ext/PDFsharp).Path)"
+```
+
+The default build does not require the submodule. PDF export will be introduced
+in a separate change.
+
 ## Quick start: DOCX → Markdown
 
 ### Command line
