@@ -2539,12 +2539,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             _ => BreakType.BreakNextPage
         };
         if (properties.GetFirstChild<PageNumberType>()?.Start?.Value is int start)
-        {
             page.StartingNumber = start;
-            if (_sectionCount > 1 && _evenAndOddHeaders && start % 2 != 0 &&
-                properties.GetFirstChild<SectionType>() == null)
-                page.SectionStart = BreakType.BreakOddPage;
-        }
         page.PageWidth = Unit.FromPoint(layout.PageSize?.Width?.Value is uint width ? width / 20.0 : 612);
         page.PageHeight = Unit.FromPoint(layout.PageSize?.Height?.Value is uint height ? height / 20.0 : 792);
         page.LeftMargin = Unit.FromPoint(layout.PageMargin?.Left?.Value is uint left ? left / 20.0 : 72);
@@ -13669,6 +13664,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             {
                 next.Format.PageBreakBefore = true;
                 _paragraph = next;
+                if (_activeHyperlink != null)
+                    _activeHyperlink = next.AddHyperlink(_activeHyperlink.Name, _activeHyperlink.Type);
             }
         }
         else if (_activeHyperlink != null) _activeHyperlink.Elements.AddLineBreak();
@@ -14422,7 +14419,11 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 ? verticalEmu / 12700.0 : 0;
             if (!_paragraphImages.TryGetValue(_paragraph, out var images))
                 _paragraphImages[_paragraph] = images = new List<ParagraphImageOverlay>();
-            images.Add(new ParagraphImageOverlay(bytes, left, top,
+            images.Add(new ParagraphImageOverlay(bytes,
+                left + (frame.FrameWidthPoints.Value -
+                    (transformed?.Width ?? frame.FrameWidthPoints.Value)) / 2,
+                top + (frame.FrameHeightPoints.Value -
+                    (transformed?.Height ?? frame.FrameHeightPoints.Value)) / 2,
                 transformed?.Width ?? frame.FrameWidthPoints.Value,
                 transformed?.Height ?? frame.FrameHeightPoints.Value,
                 ZOrder: zOrder, BehindDocument: behindDocument));

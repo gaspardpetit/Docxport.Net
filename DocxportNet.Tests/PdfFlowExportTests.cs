@@ -182,6 +182,29 @@ public sealed class PdfFlowExportTests
     }
 
     [Fact]
+    public void KeepsImplicitNextPageBreakWithOddPageNumberRestart()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.AddNewPart<DocumentSettingsPart>().Settings = new Settings(new EvenAndOddHeaders());
+            main.Document = new Document(new Body(
+                new Paragraph(new Run(new Text("First section")),
+                    new ParagraphProperties(new SectionProperties())),
+                new Paragraph(new Run(new Text("Second section"))),
+                new SectionProperties(new PageNumberType { Start = 7 })));
+        }
+
+        byte[] result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        Assert.Equal(2, pdf.NumberOfPages);
+        Assert.Contains("Secondsection", pdf.GetPage(2).Text);
+    }
+
+    [Fact]
     public void PreservesSignedTopMargin()
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
@@ -459,6 +482,30 @@ public sealed class PdfFlowExportTests
         using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
         var words = pdf.GetPage(1).GetWords().ToArray();
         Assert.True(words[0].BoundingBox.Bottom > words[1].BoundingBox.Bottom);
+    }
+
+    [Fact]
+    public void KeepsHyperlinkTextAfterPageBreakOnNextPage()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(new Paragraph(
+                new Hyperlink(new Run(new Text("Before"),
+                    new Break { Type = BreakValues.Page }, new Text("After"))) { Anchor = "destination" },
+                new BookmarkStart { Name = "destination", Id = "1" },
+                new BookmarkEnd { Id = "1" })));
+        }
+
+        byte[] result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        Assert.Equal(2, pdf.NumberOfPages);
+        Assert.Contains("Before", pdf.GetPage(1).Text);
+        Assert.DoesNotContain("After", pdf.GetPage(1).Text);
+        Assert.Contains("After", pdf.GetPage(2).Text);
     }
 
     [Fact]
