@@ -11,6 +11,7 @@
 		<RootNamespace>DocxportNet</RootNamespace>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+		<PdfSharpSourceRoot Condition="'$(PdfSharpSourceRoot)' == ''">$(MSBuildThisFileDirectory)../ext/PDFsharp</PdfSharpSourceRoot>
 		<LoggingAbstractionsPackageVersion Condition="'$(PdfSharpSourceRoot)' != ''">10.0.5</LoggingAbstractionsPackageVersion>
 		<LoggingAbstractionsPackageVersion Condition="'$(LoggingAbstractionsPackageVersion)' == ''">6.0.0</LoggingAbstractionsPackageVersion>
 	</PropertyGroup>
