@@ -23,7 +23,12 @@ public sealed record DxpStyleEffectiveRunStyle(
     bool SmallCaps,
     string? FontName,
     int? FontSizeHalfPoints
-);
+)
+{
+    public bool Hidden { get; init; }
+    public string? ColorCss { get; init; }
+    public string? Ligatures { get; init; }
+}
 
 
 public sealed record DxpStyleEffectiveIndentTwips(
