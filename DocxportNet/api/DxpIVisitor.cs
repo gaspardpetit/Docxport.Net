@@ -199,8 +199,6 @@ public interface DxpISectionContext
 
 public sealed record DxpFont(string? fontName, int? fontSizeHalfPoints);
 
-internal interface IDxpCachedHyperlinkFieldVisitor { }
-
 
 public interface DxpIFieldVisitor
 {

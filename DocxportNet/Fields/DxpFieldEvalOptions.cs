@@ -5,7 +5,6 @@ public sealed class DxpFieldEvalOptions
     public bool UseCacheOnNull { get; init; } = true;
     public bool UseCacheOnError { get; init; } = true;
     public bool ErrorOnUnsupported { get; init; } = false;
-    public bool UseMarginStoryMergeFieldPlaceholders { get; init; } = false;
     public DxpMissingDocVariableBehavior MissingDocVariableBehavior { get; init; } =
         DxpMissingDocVariableBehavior.Error;
 }

@@ -26,8 +26,7 @@ using WordStyle = DocumentFormat.OpenXml.Wordprocessing.Style;
 
 namespace DocxportNet.Visitors.Pdf;
 
-public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpAllHeaderFooterVisitor,
-    IDxpCachedHyperlinkFieldVisitor
+public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpAllHeaderFooterVisitor
 {
     private const double CompactHeaderRowReductionPoints = 10.3;
     private const double EmptyParagraphAfterTableExtraPoints = 2.3;
@@ -59,9 +58,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private readonly string? _cjkFontFamily;
     private readonly ISet<string> _availableFontFamilies;
     private readonly Func<char, string?>? _chineseFallbackFont;
-    private readonly DxpFieldEval _fieldEval = new(options: new DxpFieldEvalOptions {
-        UseMarginStoryMergeFieldPlaceholders = true
-    });
+    private readonly DxpFieldEval _fieldEval = new();
     private readonly Dictionary<Section, PageBorders> _pageBorders = new();
     private readonly Dictionary<Section, LineNumberType> _sectionLineNumbers = new();
     private readonly HashSet<MigraDoc.DocumentObjectModel.Paragraph> _sourceBodyParagraphs = new();
