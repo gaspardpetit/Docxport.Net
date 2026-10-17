@@ -632,4 +632,22 @@ public sealed class PdfFlowExportTests
         using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
         Assert.Contains(pdf.GetPages(), page => page.Letters.Any());
     }
+
+    [Theory]
+    [InlineData("shared-hyperlink-carriage-return.docx")]
+    [InlineData("shared-repeated-highlight-stories.docx")]
+    [InlineData("shared-altchunk-charset.docx")]
+    public void RendersSharedExportProbes(string fileName)
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "probes", fileName);
+        using (var document = WordprocessingDocument.Open(source, false))
+            Assert.NotNull(document.MainDocumentPart?.Document?.Body);
+
+        byte[] result = DxpExport.ExportToBytes(source, new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        Assert.Contains(pdf.GetPages(), page => page.Letters.Any());
+    }
 }
