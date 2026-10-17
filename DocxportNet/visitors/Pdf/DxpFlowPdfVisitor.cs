@@ -59,6 +59,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private readonly ISet<string> _availableFontFamilies;
     private readonly Func<char, string?>? _chineseFallbackFont;
     private readonly DxpFieldEval _fieldEval = new();
+    private readonly DxpPdfParagraphFragments _paragraphFragments = new();
     private readonly Dictionary<Section, PageBorders> _pageBorders = new();
     private readonly Dictionary<Section, LineNumberType> _sectionLineNumbers = new();
     private readonly HashSet<MigraDoc.DocumentObjectModel.Paragraph> _sourceBodyParagraphs = new();
@@ -112,8 +113,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private readonly HashSet<MigraDoc.DocumentObjectModel.Paragraph> _trackedLayoutParagraphs = new();
     private readonly HashSet<DocumentFormat.OpenXml.Wordprocessing.Paragraph> _tableOpeningSpacingTransferred = new();
     private readonly HashSet<MigraDoc.DocumentObjectModel.Tables.Table> _noAutoSpacingTables = new();
-    private readonly Dictionary<MigraDoc.DocumentObjectModel.Paragraph,
-        DocumentFormat.OpenXml.Wordprocessing.Paragraph> _styleRefBodyParagraphs = new();
     private readonly List<(string StyleName, string CachedText)> _styleRefHeaders = new();
     private readonly HashSet<MigraDoc.DocumentObjectModel.Paragraph> _suppressedLineNumberParagraphs = new();
     private readonly HashSet<Section> _footerTableDistanceApplied = new();
@@ -566,6 +565,20 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
 
     public override void SetOutput(Stream stream) => _output = stream;
 
+    private bool HasInheritedParagraphFlag(HashSet<MigraDoc.DocumentObjectModel.Paragraph> flags,
+        MigraDoc.DocumentObjectModel.Paragraph paragraph)
+        => _paragraphFragments.HasInheritedFlag(flags, paragraph);
+
+    private bool TryGetInheritedParagraphValue<T>(
+        Dictionary<MigraDoc.DocumentObjectModel.Paragraph, T> values,
+        MigraDoc.DocumentObjectModel.Paragraph paragraph, out T value)
+        => _paragraphFragments.TryGetInheritedValue(values, paragraph, out value!);
+
+    private T GetInheritedParagraphValueOrDefault<T>(
+        Dictionary<MigraDoc.DocumentObjectModel.Paragraph, T> values,
+        MigraDoc.DocumentObjectModel.Paragraph paragraph)
+        => TryGetInheritedParagraphValue(values, paragraph, out var value) ? value : default!;
+
     private PdfDocumentRenderer CreatePdfRenderer(MigraDoc.DocumentObjectModel.Document document)
     {
         var renderer = new PdfDocumentRenderer { Document = document };
@@ -883,7 +896,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 new Func<MigraDoc.DocumentObjectModel.Paragraph, IReadOnlyList<XFont>, double?>(
                     (paragraph, fonts) =>
                         _rubyGuides.ContainsKey(paragraph) ? 1 :
-                        _exactCjkLineParagraphs.Contains(paragraph) &&
+                        HasInheritedParagraphFlag(_exactCjkLineParagraphs, paragraph) &&
                         !fonts.Any(font => font.FontFamily.Name.StartsWith("Yu Mincho",
                             StringComparison.OrdinalIgnoreCase)) ? -3.16 :
                         exactImageBaselineOffset is double imageBaseline &&
@@ -891,8 +904,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                         exactImageBaselineAuto && _exactLineImages.FirstOrDefault(item =>
                             ReferenceEquals(item.Paragraph, paragraph)).LineHeight is > 0 and var imageLineHeight
                             ? imageLineHeight * 0.0119 :
-                        _exactStylelessImplicitAptosParagraphs.Contains(paragraph) ? -2.11 :
-                        _exactStylelessPlainParagraphs.Contains(paragraph) ? -0.89 : null));
+                        HasInheritedParagraphFlag(_exactStylelessImplicitAptosParagraphs, paragraph) ? -2.11 :
+                        HasInheritedParagraphFlag(_exactStylelessPlainParagraphs, paragraph) ? -0.89 : null));
         var useRubyOverflowBaseline =
             Environment.GetEnvironmentVariable("DOCXPORT_DIAG_RUBY_OVERFLOW_BASELINE") == "1";
         var rubyBaselineOffset = 0.0;
@@ -926,7 +939,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         if (typeof(DocumentRenderer).GetProperty("ExactFontBaselineOffset") is { } fontBaselineOption)
             fontBaselineOption.SetValue(renderer.DocumentRenderer,
                 new Func<MigraDoc.DocumentObjectModel.Paragraph, XFont, double?>(
-                    (paragraph, font) => _exactCjkLineParagraphs.Contains(paragraph) &&
+                    (paragraph, font) => HasInheritedParagraphFlag(_exactCjkLineParagraphs, paragraph) &&
                         font.FontFamily.Name.StartsWith("Yu Mincho", StringComparison.OrdinalIgnoreCase)
                         ? 1.34 : Environment.GetEnvironmentVariable("DOCXPORT_DIAG_ARIAL_EXACT_BASELINE") == "1" &&
                             !_documentHasPositionalTabs &&
@@ -937,7 +950,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             typeof(DocumentRenderer).GetProperty("ExactFinalLineHeight") is { } finalHeightOption)
             finalHeightOption.SetValue(renderer.DocumentRenderer,
                 new Func<MigraDoc.DocumentObjectModel.Paragraph, IReadOnlyList<XFont>, double?>(
-                    (paragraph, fonts) => _exactCjkLineParagraphs.Contains(paragraph) &&
+                    (paragraph, fonts) => HasInheritedParagraphFlag(_exactCjkLineParagraphs, paragraph) &&
                         !fonts.Any(font => font.FontFamily.Name.StartsWith("Yu Mincho",
                             StringComparison.OrdinalIgnoreCase)) ? 16.94 : null));
         if (Environment.GetEnvironmentVariable("DOCXPORT_DIAG_CJK_MIXED_LINE_METRICS") == "1" &&
@@ -1217,7 +1230,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _footerLeaderParagraphs.Clear();
         _clearedTabLeaderParagraphs.Clear();
         _narrowJustifiedBodyParagraphs.Clear();
-        _styleRefBodyParagraphs.Clear();
+        _paragraphFragments.Clear();
         _tableOpeningSpacingTransferred.Clear();
         _styleRefHeaders.Clear();
         _suppressedLineNumberParagraphs.Clear();
@@ -3175,7 +3188,9 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         for (var page = 1; page <= renderer.PageCount; page++)
             foreach (var info in renderer.DocumentRenderer.GetRenderInfoFromPage(page))
                 if (info.DocumentObject is MigraDoc.DocumentObjectModel.Paragraph paragraph &&
-                    _styleRefBodyParagraphs.TryGetValue(paragraph, out var source) &&
+                    _paragraphFragments.TryGet(paragraph, out var fragment) &&
+                    fragment.StyleRefCandidate &&
+                    fragment.Source is { } source &&
                     string.Equals(source.ParagraphProperties?.ParagraphStyleId?.Val?.Value,
                         styleId, StringComparison.OrdinalIgnoreCase) &&
                     !string.IsNullOrWhiteSpace(source.InnerText))
@@ -4094,7 +4109,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             _emphasisRanges.ContainsKey(paragraph) ||
             _strikeRanges.ContainsKey(paragraph) && !_includeRevisionMarkup ||
             _textEffectRanges.ContainsKey(paragraph) || _textBorderRanges.ContainsKey(paragraph) ||
-            _characterScales.ContainsKey(paragraph) || _fitTextWidths.ContainsKey(paragraph) ||
+            _characterScales.ContainsKey(paragraph) ||
+            TryGetInheritedParagraphValue(_fitTextWidths, paragraph, out _) ||
             _partialFitGroups.ContainsKey(paragraph) || _characterSpacings.ContainsKey(paragraph) ||
             _paragraphImages.ContainsKey(paragraph) || _tabbedRunShadings.ContainsKey(paragraph) ||
             !DxpFootnoteParagraphSplitter.TryGetText(paragraph, out var content)) return false;
@@ -6445,7 +6461,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             {
                 if (info.DocumentObject is not MigraDoc.DocumentObjectModel.Paragraph paragraph ||
                     info.LayoutInfo.ContentArea is not { } area ||
-                    !_characterScales.ContainsKey(paragraph) && !_fitTextWidths.ContainsKey(paragraph) &&
+                    !_characterScales.ContainsKey(paragraph) &&
+                    !TryGetInheritedParagraphValue(_fitTextWidths, paragraph, out _) &&
                     !_partialFitGroups.ContainsKey(paragraph) &&
                     !_characterSpacings.ContainsKey(paragraph) &&
                     !_textBorderRanges.ContainsKey(paragraph) &&
@@ -6459,10 +6476,11 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 var verticalShift = border == null ? 0 : _bodyParagraphs.Contains(paragraph)
                     ? border.Inset + bodyBorderIndex++ * 8.2 : -border.Inset - 0.9;
                 if (_hangulBaselineShiftParagraphs.Contains(paragraph)) verticalShift += 0.28;
-                if (_fitTextTracking.Contains(paragraph) && _bodyParagraphs.Contains(paragraph) &&
+                if (HasInheritedParagraphFlag(_fitTextTracking, paragraph) &&
+                    _bodyParagraphs.Contains(paragraph) &&
                     !_documentHasFitText)
                     verticalShift += 4;
-                if (_fittedBodyAfterSecondCjkHeader.Contains(paragraph))
+                if (HasInheritedParagraphFlag(_fittedBodyAfterSecondCjkHeader, paragraph))
                     verticalShift -= 1.05;
                 var top = area.Y.Point + offset;
                 var letter = page.Letters.FirstOrDefault(candidate =>
@@ -6472,28 +6490,34 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     page.Height - candidate.GlyphRectangle.Top <= top + area.Height.Point + 5);
                 if (letter != null)
                 {
-                    if (_latinCalibriFitParagraphs.Contains(paragraph) && _headerParagraphCount < 2)
+                    if (HasInheritedParagraphFlag(_latinCalibriFitParagraphs, paragraph) &&
+                        _headerParagraphCount < 2)
                         verticalShift += 0.95;
-                    var fittedCalibriTracking = _latinCalibriFitParagraphs.Contains(paragraph) &&
-                        _bodyParagraphs.Contains(paragraph) && !_fitTextTracking.Contains(paragraph) &&
+                    var fittedCalibriTracking = HasInheritedParagraphFlag(_latinCalibriFitParagraphs, paragraph) &&
+                        _bodyParagraphs.Contains(paragraph) &&
+                        !HasInheritedParagraphFlag(_fitTextTracking, paragraph) &&
                         letter.FontName.Contains("Calibri,BoldItalic", StringComparison.OrdinalIgnoreCase);
-                    var fittedMixedTracking = _mixedCalibriYuMinchoFitParagraphs.Contains(paragraph) &&
-                        _bodyParagraphs.Contains(paragraph) && !_fitTextTracking.Contains(paragraph) &&
+                    var fittedMixedTracking =
+                        HasInheritedParagraphFlag(_mixedCalibriYuMinchoFitParagraphs, paragraph) &&
+                        _bodyParagraphs.Contains(paragraph) &&
+                        !HasInheritedParagraphFlag(_fitTextTracking, paragraph) &&
                         letter.FontName.Contains("Calibri", StringComparison.OrdinalIgnoreCase);
-                    var fittedYuMinchoTracking = _latinYuMinchoFitParagraphs.Contains(paragraph) &&
-                        _bodyParagraphs.Contains(paragraph) && !_fitTextTracking.Contains(paragraph) &&
+                    var fittedYuMinchoTracking = HasInheritedParagraphFlag(_latinYuMinchoFitParagraphs, paragraph) &&
+                        _bodyParagraphs.Contains(paragraph) &&
+                        !HasInheritedParagraphFlag(_fitTextTracking, paragraph) &&
                         letter.FontName.Contains("Yu Mincho", StringComparison.OrdinalIgnoreCase);
                     var fittedTwelvePointTracking = fittedCalibriTracking || fittedMixedTracking ||
                         fittedYuMinchoTracking;
-                    var inheritedTimesTracking = _latinTimesFitParagraphs.Contains(paragraph) &&
-                        _bodyParagraphs.Contains(paragraph) && _fitTextTracking.Contains(paragraph) &&
+                    var inheritedTimesTracking = HasInheritedParagraphFlag(_latinTimesFitParagraphs, paragraph) &&
+                        _bodyParagraphs.Contains(paragraph) &&
+                        HasInheritedParagraphFlag(_fitTextTracking, paragraph) &&
                         letter.FontName.Contains("Times New Roman", StringComparison.OrdinalIgnoreCase);
-                    var fit = _fitTextWidths.TryGetValue(paragraph, out var targetWidth)
+                    var fit = TryGetInheritedParagraphValue(_fitTextWidths, paragraph, out var targetWidth)
                         ? FitTextMetrics(page, letter, area.X.Point, area.Width.Point, targetWidth,
-                            _fitTextTracking.Contains(paragraph) || fittedTwelvePointTracking,
+                            HasInheritedParagraphFlag(_fitTextTracking, paragraph) || fittedTwelvePointTracking,
                             !_bodyParagraphs.Contains(paragraph),
                             fittedTwelvePointTracking || inheritedTimesTracking
-                                ? _fitTextCharacterCounts.GetValueOrDefault(paragraph) : 0,
+                                ? GetInheritedParagraphValueOrDefault(_fitTextCharacterCounts, paragraph) : 0,
                             fittedTwelvePointTracking ? 12.0 / 11 : 1, inheritedTimesTracking) :
                         (Scale: 100.0, Spacing: 0.0);
                     var groups = _partialFitGroups.TryGetValue(paragraph, out var partial)
@@ -6525,7 +6549,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                         _oversizedGridLatinParagraphs.Contains(paragraph),
                         _oversizedStoryLatinParagraphs.Contains(paragraph),
                         _gridBoundaryParagraphs.Contains(paragraph), fittedTwelvePointTracking,
-                        inheritedTimesTracking, _mixedCjkFitBodyParagraphs.Contains(paragraph)));
+                        inheritedTimesTracking,
+                        HasInheritedParagraphFlag(_mixedCjkFitBodyParagraphs, paragraph)));
                     if (_topAlignedFontSizes.TryGetValue(paragraph, out var alignedSize))
                         foreach (var line in page.Letters.Where(candidate =>
                                 candidate.StartBaseLine.Y < letter.StartBaseLine.Y - 0.5 &&
@@ -9464,6 +9489,9 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 .LastOrDefault() as MigraDoc.DocumentObjectModel.Shapes.TextFrame
             : null;
         _paragraph = positionedParagraphFrame?.AddParagraph() ?? AddParagraph();
+        if (_paragraph != null)
+            _paragraphFragments.RegisterSource(_paragraph, paragraph,
+                _container is Section && _activeColumnCell == null);
         if (precedingNotBesideFrame != null && _paragraph != null)
             _notBesideFrameFollowers[precedingNotBesideFrame] = _paragraph;
         var sourceText = paragraph.InnerText.TrimEnd();
@@ -9554,8 +9582,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             };
             if (rise > 0) _bulletBaselineParagraphs[_paragraph] = ("Aptos", rise);
         }
-        if (_container is Section && _activeColumnCell == null)
-            _styleRefBodyParagraphs[_paragraph] = paragraph;
         var underlinedRuns = paragraph.Descendants<Run>()
             .Where(run => run.Descendants<DocumentFormat.OpenXml.Wordprocessing.Text>().Any())
             .Select(run => ResolveRunUnderlineColor(paragraph, run, context)).Distinct().ToArray();
@@ -13218,7 +13244,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             !_runStyle.Superscript && !_runStyle.Subscript)
             span.Size = Unit.FromPoint(12);
         if (Environment.GetEnvironmentVariable("DOCXPORT_DIAG_HIGHANSI_FIT_PAINT_12") == "1" &&
-            _container is Section && _fitTextWidths.ContainsKey(_paragraph) &&
+            _container is Section && TryGetInheritedParagraphValue(_fitTextWidths, _paragraph, out _) &&
             _runHighAnsiFont != null && _runStyle.FontSizeHalfPoints == null)
             span.Size = Unit.FromPoint(12);
         if (_unfittedMixedScriptLatinParagraph && content == "\u2004")
@@ -13269,11 +13295,11 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             string.Equals(_runStyle.FontName, "Calibri", StringComparison.OrdinalIgnoreCase) &&
             content.Any(IsJapaneseFallbackCharacter))
         {
-            var useLayoutFont = _mixedHighAnsiFittedHeaders.Contains(_paragraph) &&
+            var useLayoutFont = HasInheritedParagraphFlag(_mixedHighAnsiFittedHeaders, _paragraph) &&
                 _availableFontFamilies.Contains("MS Mincho");
             span.Font.Name = useLayoutFont ? "MS Mincho" : "Yu Mincho";
             if ((_unfittedCalibriParagraph ||
-                 _fitTextWidths.ContainsKey(_paragraph) &&
+                 TryGetInheritedParagraphValue(_fitTextWidths, _paragraph, out _) &&
                  string.Equals(_runEastAsiaFont, "Calibri", StringComparison.OrdinalIgnoreCase)) &&
                 _container is HeaderFooter &&
                 _availableFontFamilies.Contains("MS Mincho") && !useLayoutFont)
@@ -13707,46 +13733,19 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                         _mirroredParagraphs.Add(next);
                     if (_sourceBodyParagraphs.Contains(current))
                         _sourceBodyParagraphs.Add(next);
-                    if (_styleRefBodyParagraphs.TryGetValue(current, out var styleRefSource))
-                        _styleRefBodyParagraphs[next] = styleRefSource;
                     if (_sourceCellParagraphs.Contains(current))
                         _sourceCellParagraphs.Add(next);
-                    if (_exactCjkLineParagraphs.Contains(current))
-                        _exactCjkLineParagraphs.Add(next);
-                    if (_exactStylelessPlainParagraphs.Contains(current))
-                        _exactStylelessPlainParagraphs.Add(next);
-                    if (_exactStylelessImplicitAptosParagraphs.Contains(current))
-                        _exactStylelessImplicitAptosParagraphs.Add(next);
                     if (_suppressedLineNumberParagraphs.Contains(current))
                         _suppressedLineNumberParagraphs.Add(next);
                     if (_characterSpacings.TryGetValue(current, out var spacing))
                         _characterSpacings[next] = spacing;
                     if (_characterScales.TryGetValue(current, out var scale))
                         _characterScales[next] = scale;
-                    if (_fitTextWidths.TryGetValue(current, out var fitWidth))
-                        _fitTextWidths[next] = fitWidth;
-                    if (_fitTextCharacterCounts.TryGetValue(current, out var fitCount))
-                        _fitTextCharacterCounts[next] = fitCount;
-                    if (_fitTextTracking.Contains(current))
-                        _fitTextTracking.Add(next);
-                    if (_mixedCjkFitBodyParagraphs.Contains(current))
-                        _mixedCjkFitBodyParagraphs.Add(next);
-                    if (_mixedHighAnsiFittedHeaders.Contains(current))
-                        _mixedHighAnsiFittedHeaders.Add(next);
-                    if (_latinTimesFitParagraphs.Contains(current))
-                        _latinTimesFitParagraphs.Add(next);
-                    if (_mixedCalibriYuMinchoFitParagraphs.Contains(current))
-                        _mixedCalibriYuMinchoFitParagraphs.Add(next);
-                    if (_latinYuMinchoFitParagraphs.Contains(current))
-                        _latinYuMinchoFitParagraphs.Add(next);
-                    if (_fittedBodyAfterSecondCjkHeader.Contains(current))
-                        _fittedBodyAfterSecondCjkHeader.Add(next);
-                    if (_latinCalibriFitParagraphs.Contains(current))
-                        _latinCalibriFitParagraphs.Add(next);
                     if (_tabbedRunShadings.TryGetValue(current, out var tabShading))
                         _tabbedRunShadings[next] = tabShading;
                     if (_coloredUnderlineParagraphs.TryGetValue(current, out var underline))
                         _coloredUnderlineParagraphs[next] = underline;
+                    _paragraphFragments.RegisterContinuation(current, next, _paragraphTextLength);
                 }
                 next.Format.PageBreakBefore = true;
                 _paragraph = next;

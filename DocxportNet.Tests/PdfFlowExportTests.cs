@@ -14,6 +14,40 @@ namespace DocxportNet.Tests;
 public sealed class PdfFlowExportTests
 {
     [Fact]
+    public void TracksSourceAndOffsetsAcrossMultipleParagraphFragments()
+    {
+        var fragments = new DxpPdfParagraphFragments();
+        var source = new Paragraph(new Run(new Text("FirstSecondThird")));
+        var document = new MigraDoc.DocumentObjectModel.Document();
+        var section = document.AddSection();
+        var first = section.AddParagraph();
+        var second = section.AddParagraph();
+        var third = section.AddParagraph();
+
+        fragments.RegisterSource(first, source, styleRefCandidate: true);
+        fragments.RegisterContinuation(first, second, 5);
+        fragments.RegisterContinuation(second, third, 6);
+
+        Assert.True(fragments.TryGet(third, out var last));
+        Assert.Same(source, last.Source);
+        Assert.Same(first, last.Root);
+        Assert.Same(first, fragments.RootOf(third));
+        Assert.Equal(11, last.RenderedTextStart);
+        Assert.Equal(2, last.Index);
+        Assert.True(last.StyleRefCandidate);
+        Assert.True(fragments.HasInheritedFlag(new HashSet<MigraDoc.DocumentObjectModel.Paragraph> { first }, third));
+        var widths = new Dictionary<MigraDoc.DocumentObjectModel.Paragraph, double> { [first] = 144 };
+        Assert.True(fragments.TryGetInheritedValue(widths, third, out var inheritedWidth));
+        Assert.Equal(144, inheritedWidth);
+        widths[third] = 90;
+        Assert.True(fragments.TryGetInheritedValue(widths, third, out var localWidth));
+        Assert.Equal(90, localWidth);
+        fragments.Clear();
+        Assert.False(fragments.TryGet(third, out _));
+        Assert.Same(third, fragments.RootOf(third));
+    }
+
+    [Fact]
     public void ResolvesPageRelativeImageAlignment()
     {
         var horizontal = new DocumentFormat.OpenXml.Drawing.Wordprocessing.HorizontalPosition(
@@ -642,6 +676,32 @@ public sealed class PdfFlowExportTests
         var first = Assert.Single(pdf.GetPage(1).GetWords());
         var second = Assert.Single(pdf.GetPage(2).GetWords());
         Assert.InRange(Math.Abs(first.BoundingBox.Width - second.BoundingBox.Width), 0, 0.5);
+    }
+
+    [Fact]
+    public void KeepsFitTextWidthAfterPageBreak()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(new Paragraph(new Run(
+                new RunProperties(new FitText { Val = 400 }),
+                new Text("WWWW"), new Break { Type = BreakValues.Page }, new Text("WWWW"))),
+                new Paragraph(new Run(new Text("WWWW")))));
+        }
+
+        byte[] result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        Assert.Equal(2, pdf.NumberOfPages);
+        var first = Assert.Single(pdf.GetPage(1).GetWords());
+        var secondPageWords = pdf.GetPage(2).GetWords().ToArray();
+        Assert.Equal(2, secondPageWords.Length);
+        var second = secondPageWords[0];
+        Assert.InRange(Math.Abs(first.BoundingBox.Width - second.BoundingBox.Width), 0, 0.5);
+        Assert.True(second.BoundingBox.Width < secondPageWords[1].BoundingBox.Width);
     }
 
     [Fact]
