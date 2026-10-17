@@ -73,7 +73,7 @@ public class ParagraphSpacingTests
     private static WordprocessingDocument OpenSample(string name)
     {
         var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "samples", name));
+            "..", "..", "..", "..", "fixtures", "docx", "samples", name));
         return WordprocessingDocument.Open(path, false);
     }
 }

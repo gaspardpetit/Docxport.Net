@@ -5,7 +5,7 @@ import path from "node:path";
 
 const root = path.resolve("../bin/Release/net10.0/publish/wwwroot");
 const prefix = "/Docxport.Net/";
-const sample = path.resolve("../../samples/sample-no-sectPr.docx");
+const sample = path.resolve("../../fixtures/docx/samples/sample-no-sectPr.docx");
 const mime = new Map([[".html", "text/html"], [".js", "text/javascript"], [".css", "text/css"], [".wasm", "application/wasm"], [".json", "application/json"], [".dat", "application/octet-stream"]]);
 const server = createServer(async (request, response) => {
   try {

@@ -45,7 +45,7 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
     }
 
     private static readonly string ProjectRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", ".."));
-    private static readonly string SamplesDirectory = Path.Combine(ProjectRoot, "samples");
+    private static readonly string SamplesDirectory = Path.Combine(ProjectRoot, "fixtures", "docx", "samples");
 
     public HtmlExportTests(ITestOutputHelper output) : base(output)
     {
@@ -989,8 +989,8 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
         DxpTrackedChangeMode mode,
         DxpFieldEvalExportMode evalMode)
     {
-        string expectedPath = TestPaths.GetSampleOutputPath(sample.DocxPath, expectedExt);
-        string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, actualSuffix);
+        string expectedPath = TestPaths.GetSampleTruthPath(sample.DocxPath, "html-export", expectedExt);
+        string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, "html-export", actualSuffix);
 
         var config = CloneConfig(baseConfig, mode);
         string html = TestCompare.Normalize(ToHtml(sample.DocxPath, config, evalMode));
@@ -1090,8 +1090,8 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
 
     private void VerifyCachedAgainstFixture(Sample sample, DxpHtmlVisitorConfig baseConfig, string expectedExt, string actualSuffix)
     {
-        string expectedPath = TestPaths.GetSampleOutputPath(sample.DocxPath, expectedExt);
-        string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, actualSuffix);
+        string expectedPath = TestPaths.GetSampleTruthPath(sample.DocxPath, "html-export", expectedExt);
+        string actualPath = TestPaths.GetSampleOutputPath(sample.DocxPath, "html-export", actualSuffix);
 
         var config = CloneConfig(baseConfig, DxpTrackedChangeMode.AcceptChanges);
         string html = TestCompare.Normalize(ToHtmlCached(sample.DocxPath, config));

@@ -11,7 +11,7 @@ namespace DocxportNet.Tests;
 public sealed class BrowserExportsTests
 {
     private static readonly string ProjectRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", ".."));
-    private static readonly byte[] Sample = File.ReadAllBytes(Path.Combine(ProjectRoot, "samples", "TestLists.docx"));
+    private static readonly byte[] Sample = File.ReadAllBytes(Path.Combine(ProjectRoot, "fixtures", "docx", "samples", "TestLists.docx"));
 
     [Fact]
     public void BrowserEnvelopeEditsSaveBinaryDocBytes()
@@ -105,7 +105,7 @@ public sealed class BrowserExportsTests
     [Fact]
     public void ResolvesDocVariableIntoAValidDocx()
     {
-        byte[] source = File.ReadAllBytes(Path.Combine(ProjectRoot, "samples", "TestDocVariables.docx"));
+        byte[] source = File.ReadAllBytes(Path.Combine(ProjectRoot, "fixtures", "docx", "samples", "TestDocVariables.docx"));
         byte[] output = BrowserExports.ResolveDocxForTests(source, new BrowserResolveRequest {
             Fields = new BrowserFieldOptions {
                 Mode = BrowserFieldMode.Evaluate,
@@ -149,8 +149,8 @@ public sealed class BrowserExportsTests
     [Fact]
     public void DetectsTrackedChanges()
     {
-        byte[] tracked = File.ReadAllBytes(Path.Combine(ProjectRoot, "samples", "Tracked.docx"));
-        byte[] unchanged = File.ReadAllBytes(Path.Combine(ProjectRoot, "samples", "AutoNumberCompatibility.docx"));
+        byte[] tracked = File.ReadAllBytes(Path.Combine(ProjectRoot, "fixtures", "docx", "samples", "Tracked.docx"));
+        byte[] unchanged = File.ReadAllBytes(Path.Combine(ProjectRoot, "fixtures", "docx", "samples", "AutoNumberCompatibility.docx"));
 
         Assert.True(BrowserExports.InspectForTests(tracked).HasTrackedChanges);
         Assert.False(BrowserExports.InspectForTests(unchanged).HasTrackedChanges);

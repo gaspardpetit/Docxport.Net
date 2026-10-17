@@ -13,7 +13,7 @@ namespace DocxportNet.Tests;
 public sealed class DocxExportTests : TestBase<DocxExportTests>
 {
     private static readonly string ProjectRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", ".."));
-    private static readonly string SamplesDirectory = Path.Combine(ProjectRoot, "samples");
+    private static readonly string SamplesDirectory = Path.Combine(ProjectRoot, "fixtures", "docx", "samples");
 
     public DocxExportTests(ITestOutputHelper output) : base(output) { }
 

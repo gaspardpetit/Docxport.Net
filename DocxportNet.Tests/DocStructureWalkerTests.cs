@@ -9897,7 +9897,7 @@ public class DocStructureWalkerTests
     public void WordListParagraphsExposeOverrideAndLevelInSemanticIndex()
     {
         var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "samples", "TestLists.doc"));
+            "..", "..", "..", "..", "fixtures", "doc", "samples", "TestLists.doc"));
         using var index = new DocTextIndexWalker().Index(path);
         Assert.NotEmpty(index.Lists.Definitions);
         Assert.NotEmpty(index.Lists.Instances);
@@ -9921,7 +9921,7 @@ public class DocStructureWalkerTests
     public void WordListParagraphsProjectAsEditableDocxNumbering()
     {
         var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "samples", "TestLists.doc"));
+            "..", "..", "..", "..", "fixtures", "doc", "samples", "TestLists.doc"));
         var result = DxpDocToDocx.Project(File.ReadAllBytes(path));
         using var stream = new MemoryStream(result.DocxBytes);
         using var document = WordprocessingDocument.Open(stream, false);
@@ -9936,7 +9936,7 @@ public class DocStructureWalkerTests
     public void WordTrackedListEditsProjectAsEditableRevisions()
     {
         var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "samples", "TestLists.doc"));
+            "..", "..", "..", "..", "fixtures", "doc", "samples", "TestLists.doc"));
         using var index = new DocTextIndexWalker().Index(path);
         Assert.Contains(index.CharacterFormatting, x => x.Formatting.DeletedRevision == true);
         Assert.Contains(index.CharacterFormatting, x => x.Formatting.InsertedRevision == true);
@@ -10201,7 +10201,7 @@ public class DocStructureWalkerTests
     public void DocListRoundTripWritesEditableBinaryNumbering()
     {
         var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "samples", "TestLists.doc"));
+            "..", "..", "..", "..", "fixtures", "doc", "samples", "TestLists.doc"));
         var sourceDocx = DxpDocToDocx.Project(File.ReadAllBytes(path)).DocxBytes;
         var binary = DxpDocExport.Export(sourceDocx);
         using (var input = new MemoryStream(binary))
@@ -10288,7 +10288,7 @@ public class DocStructureWalkerTests
     {
         if (Environment.GetEnvironmentVariable("DOCXPORT_VERIFY_WORD") != "1") return;
         var nativePath = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "samples", "TestLists.doc"));
+            "..", "..", "..", "..", "fixtures", "doc", "samples", "TestLists.doc"));
         var native = File.ReadAllBytes(nativePath);
         var projected = DxpDocToDocx.Project(native).DocxBytes;
         var generated = DxpDocExport.Export(projected);

@@ -10,7 +10,7 @@ public sealed class DocTableSpanFidelityTests
     public void TableSpanExportsAndIsReadByDocProjector()
     {
         var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
-            "..", "..", "..", "..", "samples", "TestTableSpan.docx"));
+            "..", "..", "..", "..", "fixtures", "docx", "samples", "TestTableSpan.docx"));
         var source = File.ReadAllBytes(path);
         var binary = DxpDocExport.Export(source);
 
