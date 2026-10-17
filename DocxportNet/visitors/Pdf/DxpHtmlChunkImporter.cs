@@ -15,8 +15,7 @@ internal static class DxpHtmlChunkImporter
     internal static void Append(Section section, Stream stream, string bodyFont,
         Action<Table, double, double, double>? onBorderedTable = null)
     {
-        using var reader = new StreamReader(stream);
-        var document = new HtmlParser().ParseDocument(reader.ReadToEnd());
+        var document = new HtmlParser().ParseDocument(stream);
         if (document.Body == null) return;
         var initialCount = section.Elements.Count;
         foreach (var child in document.Body.ChildNodes)
@@ -84,8 +83,32 @@ internal static class DxpHtmlChunkImporter
         var sourceRows = element.QuerySelectorAll("tr")
             .Where(row => ReferenceEquals(row.Closest("table"), element))
             .Select(row => row.Children.Where(cell => cell.LocalName is "td" or "th").ToArray())
-            .Where(cells => cells.Length > 0).ToArray();
+            .ToArray();
         if (sourceRows.Length == 0) return;
+        var occupied = new List<int>();
+        var cellGrid = new List<(IElement Source, int Column, int Width, int Height)>[sourceRows.Length];
+        var columnCount = 0;
+        for (var rowIndex = 0; rowIndex < sourceRows.Length; rowIndex++)
+        {
+            var cells = cellGrid[rowIndex] = new List<(IElement, int, int, int)>();
+            var column = 0;
+            foreach (var sourceCell in sourceRows[rowIndex])
+            {
+                var width = Span(sourceCell, "colspan");
+                while (Enumerable.Range(column, width)
+                           .Any(index => index < occupied.Count && occupied[index] > 0)) column++;
+                var height = Math.Min(Span(sourceCell, "rowspan"), sourceRows.Length - rowIndex);
+                cells.Add((sourceCell, column, width, height));
+                while (occupied.Count < column + width) occupied.Add(0);
+                for (var span = 0; span < width; span++)
+                    occupied[column + span] = Math.Max(occupied[column + span], height);
+                column += width;
+            }
+            columnCount = Math.Max(columnCount, occupied.Count);
+            for (var index = 0; index < occupied.Count; index++)
+                if (occupied[index] > 0) occupied[index]--;
+        }
+        if (columnCount == 0) return;
         var border = element.HasAttribute("border")
             ? ParsePixels(element.GetAttribute("border"), 1) * 0.72 : 0;
         var spacing = ParsePixels(element.GetAttribute("cellspacing"), 2) * 0.75;
@@ -109,26 +132,28 @@ internal static class DxpHtmlChunkImporter
             if (separateCells)
                 onBorderedTable!(table, border, spacing, padding);
         }
-        var columnCount = sourceRows.Max(cells => cells.Length);
         for (var column = 0; column < columnCount; column++)
             table.AddColumn(Unit.FromPoint(60 + 2 * paddingAdjustment + spacingAdjustment));
-        foreach (var sourceCells in sourceRows)
+        for (var rowIndex = 0; rowIndex < sourceRows.Length; rowIndex++)
         {
             var row = table.AddRow();
             row.HeightRule = RowHeightRule.AtLeast;
             row.Height = Unit.FromPoint(33.24 + 2 * paddingAdjustment +
                 spacingAdjustment - borderAdjustment);
-            for (var column = 0; column < sourceCells.Length; column++)
+        }
+        for (var rowIndex = 0; rowIndex < cellGrid.Length; rowIndex++)
+            foreach (var (sourceCell, column, width, height) in cellGrid[rowIndex])
             {
-                var cell = row.Cells[column];
+                var cell = table.Rows[rowIndex].Cells[column];
+                cell.MergeRight = width - 1;
+                cell.MergeDown = height - 1;
                 var paragraph = cell.AddParagraph();
                 if (column > 0) paragraph.Format.LeftIndent = Unit.FromPoint(-0.84);
                 paragraph.Format.Font.Name = bodyFont;
                 paragraph.Format.Font.Size = Unit.FromPoint(12);
-                paragraph.Format.Font.Bold = sourceCells[column].LocalName == "th";
-                AppendInline(paragraph, sourceCells[column], false, false, false);
+                paragraph.Format.Font.Bold = sourceCell.LocalName == "th";
+                AppendInline(paragraph, sourceCell, false, false, false);
             }
-        }
         var spacer = section.AddParagraph();
         spacer.Format.SpaceAfter = Unit.FromPoint((element.NextElementSibling == null ? 12.67 : 1.7) +
             spacingAdjustment + borderAdjustment);
@@ -139,6 +164,10 @@ internal static class DxpHtmlChunkImporter
             System.Globalization.CultureInfo.InvariantCulture, out var pixels) &&
             double.IsFinite(pixels) && pixels >= 0
             ? pixels : fallback;
+
+    private static int Span(IElement element, string attribute) =>
+        int.TryParse(element.GetAttribute(attribute), out var span) && span > 0
+            ? Math.Min(span, 64) : 1;
 
     private static void AppendParagraph(Section section, INode node, string? tag,
         int initialCount)

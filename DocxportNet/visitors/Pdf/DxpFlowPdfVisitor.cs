@@ -305,6 +305,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private FloatingTextWrap? _activeFloatingTextWrap;
     private readonly List<MigraDoc.DocumentObjectModel.Paragraph> _mirroredParagraphs = new();
     private readonly List<DxpPdfHighlight> _highlights = new();
+    private readonly Dictionary<MigraDoc.DocumentObjectModel.Paragraph, (StringBuilder Text,
+        int NormalizedLength)> _highlightParagraphTexts = new();
     private readonly HashSet<string> _noBreakWords = new(StringComparer.Ordinal);
     private readonly List<MigraDoc.DocumentObjectModel.Paragraph> _noBreakParagraphs = new();
     private readonly HashSet<MigraDoc.DocumentObjectModel.Paragraph> _superscriptHeaderParagraphs = new();
@@ -1385,6 +1387,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _activeFloatingTextWrap = null;
         _mirroredParagraphs.Clear();
         _highlights.Clear();
+        _highlightParagraphTexts.Clear();
         _noBreakWords.Clear();
         _noBreakParagraphs.Clear();
         _superscriptHeaderParagraphs.Clear();
@@ -12675,9 +12678,16 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         if (_runRightToLeft && _availableFontFamilies.Contains("Tahoma"))
             content = ShapeExplicitArabicForPdf(content);
         content = OrderShapedArabicForPdf(content);
+        if (!_highlightParagraphTexts.TryGetValue(_paragraph, out var paragraphText))
+            paragraphText = (new StringBuilder(), 0);
+        var sourceOffset = paragraphText.NormalizedLength;
+        paragraphText.Text.Append(content);
+        paragraphText.NormalizedLength += content.Count(character => !char.IsWhiteSpace(character));
+        _highlightParagraphTexts[_paragraph] = paragraphText;
         if (_runHighlight is { } highlight && !string.IsNullOrWhiteSpace(content))
             _highlights.Add(new DxpPdfHighlight(content, highlight, null,
-                _paragraphLineSize, _container is HeaderFooter && !_inHeader));
+                _paragraphLineSize, _container is HeaderFooter && !_inHeader,
+                ParagraphText: paragraphText.Text, SourceOffset: sourceOffset));
         else if (_runShading is { } shading && !string.IsNullOrWhiteSpace(content))
         {
             var storySpacing = _container is HeaderFooter &&
@@ -12694,7 +12704,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             if (_container is HeaderFooter && _inHeader && _runTextBorder == null && storySpacing < 0)
                 rightPadding += storySpacing;
             _highlights.Add(new DxpPdfHighlight(content, null, shading,
-                _paragraphLineSize, _container is HeaderFooter && !_inHeader, rightPadding));
+                _paragraphLineSize, _container is HeaderFooter && !_inHeader, rightPadding,
+                paragraphText.Text, sourceOffset));
         }
         if (!smallCaps)
         {

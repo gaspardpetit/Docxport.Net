@@ -203,6 +203,30 @@ public sealed class PdfFlowExportTests
     }
 
     [Fact]
+    public void PaintsRepeatedHighlightsAtTheirSourceOffsets()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new PdfDocument();
+        var page = source.AddPage();
+        using (var graphics = XGraphics.FromPdfPage(page))
+            graphics.DrawString("Important Important", new XFont("Arial", 12), XBrushes.Black, 40, 80);
+        var originalStreamCount = page.Contents.Elements.Count;
+        var paragraphText = new System.Text.StringBuilder("Important Important");
+        using var output = new MemoryStream();
+
+        DxpPdfHighlightOverlay.Save(source, output,
+        [
+            new DxpPdfHighlight("Important", HighlightColorValues.Yellow,
+                ParagraphText: paragraphText, SourceOffset: 0),
+            new DxpPdfHighlight("Important", HighlightColorValues.Green,
+                ParagraphText: paragraphText, SourceOffset: 9)
+        ]);
+
+        using var result = PdfReader.Open(new MemoryStream(output.ToArray()), PdfDocumentOpenMode.Import);
+        Assert.True(result.Pages[0].Contents.Elements.Count > originalStreamCount);
+    }
+
+    [Fact]
     public void RendersCarriageReturnAsLineBreak()
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
@@ -432,6 +456,43 @@ public sealed class PdfFlowExportTests
         var image = paragraph.Elements.OfType<MigraDoc.DocumentObjectModel.Shapes.Image>().Single();
         Assert.Equal(expectedWidth, image.Width.Point, 2);
         Assert.Equal(expectedWidth, image.Height.Point, 2);
+    }
+
+    [Fact]
+    public void ImportsHtmlUsingDeclaredWindows1252Encoding()
+    {
+        var document = new MigraDoc.DocumentObjectModel.Document();
+        var section = document.AddSection();
+        var html = "<meta charset='windows-1252'><p>Caf\u00e9</p>";
+        var bytes = System.Text.Encoding.Latin1.GetBytes(html);
+        using var source = new MemoryStream(bytes);
+
+        DxpHtmlChunkImporter.Append(section, source, "Arial");
+
+        var paragraph = section.Elements.OfType<MigraDoc.DocumentObjectModel.Paragraph>().Single();
+        Assert.Contains("Caf\u00e9", paragraph.Elements.OfType<MigraDoc.DocumentObjectModel.FormattedText>()
+            .SelectMany(span => span.Elements.OfType<MigraDoc.DocumentObjectModel.Text>())
+            .Select(text => text.Content));
+    }
+
+    [Fact]
+    public void ImportsHtmlTableCellSpans()
+    {
+        var document = new MigraDoc.DocumentObjectModel.Document();
+        var section = document.AddSection();
+        var html = "<table><tr><td rowspan='2'>A</td><td>B</td></tr>" +
+            "<tr><td>C</td></tr><tr><td colspan='2'>D</td></tr></table>";
+        using var source = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(html));
+
+        DxpHtmlChunkImporter.Append(section, source, "Arial");
+
+        var table = section.Elements.OfType<MigraDoc.DocumentObjectModel.Tables.Table>().Single();
+        Assert.Equal(2, table.Columns.Count);
+        Assert.Equal(3, table.Rows.Count);
+        Assert.Equal(1, table.Rows[0].Cells[0].MergeDown);
+        Assert.Empty(table.Rows[1].Cells[0].Elements);
+        Assert.NotEmpty(table.Rows[1].Cells[1].Elements);
+        Assert.Equal(1, table.Rows[2].Cells[0].MergeRight);
     }
 
     [Fact]

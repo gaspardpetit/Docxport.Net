@@ -11,7 +11,8 @@ using PdfPigDocument = UglyToad.PdfPig.PdfDocument;
 namespace DocxportNet.Visitors.Pdf;
 
 internal sealed record DxpPdfHighlight(string Text, HighlightColorValues? Color, string? Shading = null,
-    double LineSize = 0, bool Footer = false, double RightPadding = 0);
+    double LineSize = 0, bool Footer = false, double RightPadding = 0,
+    StringBuilder? ParagraphText = null, int SourceOffset = 0);
 
 internal static class DxpPdfHighlightOverlay
 {
@@ -30,17 +31,23 @@ internal static class DxpPdfHighlightOverlay
             double RightPadding)>(
             StringComparer.Ordinal);
         var ambiguous = new HashSet<string>(StringComparer.Ordinal);
+        var anchored = new List<(DxpPdfHighlight Highlight, XColor Color)>();
         foreach (var highlight in highlights)
         {
             var text = Normalize(highlight.Text);
             if (text.Length < 3 || !(highlight.Color is { } value && TryColor(value, out var color) ||
                 TryShadingColor(highlight.Shading, out color))) continue;
+            if (highlight.ParagraphText != null)
+            {
+                anchored.Add((highlight, color));
+                continue;
+            }
             if (colors.ContainsKey(text)) ambiguous.Add(text);
             colors[text] = (color, highlight.Shading != null, highlight.LineSize, highlight.Footer,
                 highlight.RightPadding);
         }
         foreach (var text in ambiguous) colors.Remove(text);
-        if (colors.Count == 0)
+        if (colors.Count == 0 && anchored.Count == 0)
         {
             SaveWithoutHighlights(document, output, repairAfterSave);
             return;
@@ -62,7 +69,33 @@ internal static class DxpPdfHighlightOverlay
                     occurrences++;
             if (occurrences != 1) colors.Remove(text);
         }
-        if (colors.Count == 0)
+        var anchoredMatches = new Dictionary<int, List<(int Offset, int Length, XColor Color,
+            bool Shading, double LineSize, bool Footer, double RightPadding)>>();
+        foreach (var (highlight, color) in anchored)
+        {
+            var paragraphText = Normalize(highlight.ParagraphText!.ToString());
+            var text = Normalize(highlight.Text);
+            if (highlight.SourceOffset < 0 || highlight.SourceOffset + text.Length > paragraphText.Length ||
+                string.CompareOrdinal(paragraphText, highlight.SourceOffset, text, 0, text.Length) != 0)
+                continue;
+            var matchPage = -1;
+            var matchOffset = -1;
+            var occurrences = 0;
+            for (var pageIndex = 0; pageIndex < pageTexts.Length && occurrences < 2; pageIndex++)
+                for (var offset = 0; (offset = pageTexts[pageIndex].IndexOf(paragraphText, offset,
+                         StringComparison.Ordinal)) >= 0 && occurrences < 2; offset += paragraphText.Length)
+                {
+                    occurrences++;
+                    matchPage = pageIndex;
+                    matchOffset = offset + highlight.SourceOffset;
+                }
+            if (occurrences != 1) continue;
+            if (!anchoredMatches.TryGetValue(matchPage, out var pageMatches))
+                anchoredMatches[matchPage] = pageMatches = new();
+            pageMatches.Add((matchOffset, text.Length, color, highlight.Shading != null,
+                highlight.LineSize, highlight.Footer, highlight.RightPadding));
+        }
+        if (colors.Count == 0 && anchoredMatches.Count == 0)
         {
             if (repairAfterSave) RepairFontUnicodeMaps(modified);
             modified.Save(output, false);
@@ -102,6 +135,8 @@ internal static class DxpPdfHighlightOverlay
                     matches.Add((offset, text.Length, style.Color, style.Shading, style.LineSize, style.Footer,
                         style.RightPadding));
             }
+            if (anchoredMatches.TryGetValue(pageIndex, out var sourceMatches))
+                matches.AddRange(sourceMatches);
             var highlighted = new Dictionary<int, XColor>();
             foreach (var (offset, length, color, _, _, _, _) in matches)
                 for (var index = offset; index < offset + length; index++) highlighted[index] = color;
