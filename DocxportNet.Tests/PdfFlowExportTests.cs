@@ -2,6 +2,7 @@ using System.Buffers.Binary;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using DocxportNet.API;
 using DocxportNet.Visitors.Pdf;
 using PdfSharp.Drawing;
 using PdfSharp.Fonts;
@@ -356,6 +357,31 @@ public sealed class PdfFlowExportTests
             BinaryPrimitives.WriteInt32LittleEndian(tiff.AsSpan(offset + 4), count);
             BinaryPrimitives.WriteInt32LittleEndian(tiff.AsSpan(offset + 8), value);
         }
+    }
+
+    [Fact]
+    public void TransformsInlineCropsAndQuarterTurns()
+    {
+        Assert.True(DxpFlowPdfVisitor.RequiresRasterTransform(false,
+            new DxpImagePresentation { Crop = new DxpImageCrop(0.1, 0, 0, 0) }));
+        Assert.True(DxpFlowPdfVisitor.RequiresRasterTransform(false,
+            new DxpImagePresentation { RotationDegrees = 90 }));
+        Assert.False(DxpFlowPdfVisitor.RequiresRasterTransform(false, new DxpImagePresentation()));
+    }
+
+    [Fact]
+    public void ConvertsSkippedRle4PixelsThroughPaletteZero()
+    {
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "legacy", "WordBmpRle4DeltaAllStories.docx");
+        using var document = WordprocessingDocument.Open(source, false);
+        using var image = Assert.Single(document.MainDocumentPart!.ImageParts).GetStream();
+        using var data = new MemoryStream();
+        image.CopyTo(data);
+
+        var bitmap = DxpBmp24Converter.Normalize(data.ToArray());
+
+        Assert.Equal(new byte[] { 0, 200, 0 }, bitmap.AsSpan(54 + 4 * 3, 3).ToArray());
     }
 
     [Fact]

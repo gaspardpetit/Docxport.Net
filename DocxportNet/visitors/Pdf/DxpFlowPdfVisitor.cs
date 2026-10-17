@@ -14093,6 +14093,11 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         return contour;
     }
 
+    internal static bool RequiresRasterTransform(bool anchored, DxpImagePresentation? presentation) =>
+        presentation != null && (anchored || Math.Abs(presentation.RotationDegrees) > 0.001 ||
+            presentation.Crop is { IsEmpty: false } || presentation.FlipHorizontal ||
+            presentation.FlipVertical);
+
     public override IDisposable VisitDrawingBegin(Drawing drawing, DxpDrawingInfo? info, DxpIDocumentContext context)
     {
         if (TryAddChart(drawing, info, context)) return DxpDisposable.Empty;
@@ -14135,10 +14140,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             bytes = DxpTiffConverter.ToBmpOrOriginal(bytes);
         else if (info.ContentType?.Equals("image/gif", StringComparison.OrdinalIgnoreCase) == true)
             bytes = DxpRasterImageTransform.ToPngOrOriginal(bytes);
-        var arbitraryRotation = info.Presentation is { } rotation &&
-            Math.Abs(rotation.RotationDegrees % 90) > 0.001;
-        var transformed = (anchored || arbitraryRotation ||
-            info.Presentation?.FlipHorizontal == true || info.Presentation?.FlipVertical == true) &&
+        var transformed = RequiresRasterTransform(anchored, info.Presentation) &&
             info.Presentation is { FrameWidthPoints: > 0, FrameHeightPoints: > 0 } imagePresentation
             ? DxpRasterImageTransform.Transform(bytes, imagePresentation.FrameWidthPoints.Value,
                 imagePresentation.FrameHeightPoints.Value, imagePresentation.RotationDegrees,
