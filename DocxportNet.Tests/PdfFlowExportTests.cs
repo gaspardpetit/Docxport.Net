@@ -272,6 +272,30 @@ public sealed class PdfFlowExportTests
     }
 
     [Fact]
+    public void PaintsWrappedHighlightOnBothLines()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new PdfDocument();
+        var page = source.AddPage();
+        using (var graphics = XGraphics.FromPdfPage(page))
+        {
+            var font = new XFont("Arial", 12);
+            graphics.DrawString("First", font, XBrushes.Black, 40, 80);
+            graphics.DrawString("Second", font, XBrushes.Black, 40, 100);
+        }
+        using var output = new MemoryStream();
+
+        DxpPdfHighlightOverlay.Save(source, output,
+            [new DxpPdfHighlight("FirstSecond", HighlightColorValues.Yellow,
+                ParagraphText: new System.Text.StringBuilder("FirstSecond"))]);
+
+        using var result = PdfReader.Open(new MemoryStream(output.ToArray()), PdfDocumentOpenMode.Import);
+        var content = System.Text.Encoding.Latin1.GetString(
+            result.Pages[0].Contents.CreateSingleContent().Stream!.UnfilteredValue);
+        Assert.True(System.Text.RegularExpressions.Regex.Matches(content, @"\bre\b").Count >= 2);
+    }
+
+    [Fact]
     public void RendersCarriageReturnAsLineBreak()
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
@@ -533,6 +557,14 @@ public sealed class PdfFlowExportTests
         Assert.Contains("Caf\u00e9", paragraph.Elements.OfType<MigraDoc.DocumentObjectModel.FormattedText>()
             .SelectMany(span => span.Elements.OfType<MigraDoc.DocumentObjectModel.Text>())
             .Select(text => text.Content));
+    }
+
+    [Fact]
+    public void ReadsPlainTextChunkUsingPartContentTypeCharset()
+    {
+        var encoding = DxpHtmlChunkImporter.DeclaredEncoding("text/plain; charset=windows-1252");
+        Assert.NotNull(encoding);
+        Assert.Equal("Caf\u00e9", encoding.GetString(System.Text.Encoding.Latin1.GetBytes("Caf\u00e9")));
     }
 
     [Fact]

@@ -16,14 +16,11 @@ internal static class DxpHtmlChunkImporter
     internal static void Append(Section section, Stream stream, string bodyFont,
         Action<Table, double, double, double>? onBorderedTable = null, string? contentType = null)
     {
-        var charset = Regex.Match(contentType ?? "", @"(?:^|;)\s*charset\s*=\s*['"" ]?(?<name>[^;'""\s]+)",
-            RegexOptions.IgnoreCase).Groups["name"].Value;
         var parser = new HtmlParser();
         AngleSharp.Html.Dom.IHtmlDocument document;
-        if (charset.Length > 0)
+        if (DeclaredEncoding(contentType) is { } encoding)
         {
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            using var reader = new StreamReader(stream, Encoding.GetEncoding(charset),
+            using var reader = new StreamReader(stream, encoding,
                 detectEncodingFromByteOrderMarks: true);
             document = parser.ParseDocument(reader.ReadToEnd());
         }
@@ -32,6 +29,16 @@ internal static class DxpHtmlChunkImporter
         var initialCount = section.Elements.Count;
         foreach (var child in document.Body.ChildNodes)
             AppendBlock(section, child, bodyFont, initialCount, onBorderedTable);
+    }
+
+    internal static Encoding? DeclaredEncoding(string? contentType)
+    {
+        var charset = Regex.Match(contentType ?? "", @"(?:^|;)\s*charset\s*=\s*['"" ]?(?<name>[^;'""\s]+)",
+            RegexOptions.IgnoreCase).Groups["name"].Value;
+        if (charset.Length == 0) return null;
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        try { return Encoding.GetEncoding(charset); }
+        catch (ArgumentException) { return null; }
     }
 
     private static void AppendBlock(Section section, INode node, string bodyFont, int initialCount,

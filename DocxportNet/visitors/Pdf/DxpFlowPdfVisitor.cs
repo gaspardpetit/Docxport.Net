@@ -14798,7 +14798,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             return;
         }
         if (!part.ContentType.StartsWith("text/plain", StringComparison.OrdinalIgnoreCase)) return;
-        using var reader = new StreamReader(stream, System.Text.Encoding.UTF8, true);
+        using var reader = new StreamReader(stream,
+            DxpHtmlChunkImporter.DeclaredEncoding(part.ContentType) ?? System.Text.Encoding.UTF8, true);
         var pages = reader.ReadToEnd().Replace("\r\n", "\n").Replace('\r', '\n')
             .Replace('\v', '\n').Split('\f');
         var firstParagraph = true;

@@ -151,29 +151,38 @@ internal static class DxpPdfHighlightOverlay
                 double Right, double Top, double Bottom)>();
             foreach (var (offset, length, color, shading, lineSize, footer, rightPadding) in matches)
             {
-                var first = letters[offset];
-                var last = letters[offset + length - 1];
-                if (Math.Abs(first.StartBaseLine.Y - last.StartBaseLine.Y) > 2) continue;
-                var size = first.PointSize;
-                var left = first.StartBaseLine.X;
-                if (offset > 0 && !whitespaceBefore[offset] &&
-                    highlighted.TryGetValue(offset - 1, out var previousColor) &&
-                    (!shading || previousColor == color) &&
-                    Math.Abs(letters[offset - 1].StartBaseLine.Y - first.StartBaseLine.Y) < 2)
+                for (var segmentStart = offset; segmentStart < offset + length;)
                 {
-                    var previousRight = letters[offset - 1].StartBaseLine.X + letters[offset - 1].Width;
-                    if (left - previousRight is >= 0 and <= 4) left = previousRight;
+                    var segmentEnd = segmentStart + 1;
+                    var first = letters[segmentStart];
+                    while (segmentEnd < offset + length &&
+                           Math.Abs(first.StartBaseLine.Y - letters[segmentEnd].StartBaseLine.Y) <= 2)
+                        segmentEnd++;
+                    var last = letters[segmentEnd - 1];
+                    var size = first.PointSize;
+                    var left = first.StartBaseLine.X;
+                    if (segmentStart > 0 && !whitespaceBefore[segmentStart] &&
+                        highlighted.TryGetValue(segmentStart - 1, out var previousColor) &&
+                        (!shading || previousColor == color) &&
+                        Math.Abs(letters[segmentStart - 1].StartBaseLine.Y - first.StartBaseLine.Y) < 2)
+                    {
+                        var previousRight = letters[segmentStart - 1].StartBaseLine.X +
+                            letters[segmentStart - 1].Width;
+                        if (left - previousRight is >= 0 and <= 4) left = previousRight;
+                    }
+                    var right = last.StartBaseLine.X + last.Width +
+                        (segmentEnd == offset + length ? rightPadding : 0);
+                    var top = page.Height - first.StartBaseLine.Y - size * 0.93;
+                    var height = first.FontName?.Contains("Arial", StringComparison.OrdinalIgnoreCase) == true
+                        ? size * 1.15 : size * 1.22;
+                    if (size < 10 && lineSize > size && lineSize <= 14)
+                    {
+                        height = lineSize * 1.22;
+                        if (footer) top = page.Height - first.StartBaseLine.Y - lineSize * 1.02;
+                    }
+                    rectangles.Add((segmentStart, segmentEnd, color, left, right, top, top + height));
+                    segmentStart = segmentEnd;
                 }
-                var right = last.StartBaseLine.X + last.Width + rightPadding;
-                var top = page.Height - first.StartBaseLine.Y - size * 0.93;
-                var height = first.FontName?.Contains("Arial", StringComparison.OrdinalIgnoreCase) == true
-                    ? size * 1.15 : size * 1.22;
-                if (size < 10 && lineSize > size && lineSize <= 14)
-                {
-                    height = lineSize * 1.22;
-                    if (footer) top = page.Height - first.StartBaseLine.Y - lineSize * 1.02;
-                }
-                rectangles.Add((offset, offset + length, color, left, right, top, top + height));
             }
             rectangles.Sort((first, second) => first.Offset.CompareTo(second.Offset));
             for (var index = 0; index < rectangles.Count; index++)
