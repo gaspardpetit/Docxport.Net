@@ -48,6 +48,11 @@ internal sealed class DxpTableStyleResolver
         var computedBorder = CollapseToSingleBorder(computedBorders) ?? baseCell.Border ?? tableStyle.DefaultCellBorder;
         var computedBackground = baseCell.BackgroundColorCss;
         var computedVAlign = baseCell.VerticalAlign;
+        string? conditionalTextColor = null;
+        bool? conditionalBold = null;
+        bool? conditionalItalic = null;
+        bool? conditionalUnderline = null;
+        DxpComputedTextAlign? conditionalTextAlign = null;
 
         // Apply conditional formatting (tblStylePr) from the table style chain.
         foreach (var type in resolved.GetApplicableConditionalTypes(rowIndex, colIndex))
@@ -67,6 +72,12 @@ internal sealed class DxpTableStyleResolver
                 computedBackground = ov.BackgroundColorCss;
             if (ov.VerticalAlignSet)
                 computedVAlign = ov.VerticalAlign;
+            if (ov.TextColorSet)
+                conditionalTextColor = ov.TextColorCss;
+            conditionalBold = ov.Bold ?? conditionalBold;
+            conditionalItalic = ov.Italic ?? conditionalItalic;
+            conditionalUnderline = ov.Underline ?? conditionalUnderline;
+            conditionalTextAlign = ov.TextAlign ?? conditionalTextAlign;
         }
 
         // Direct cell formatting always wins.
@@ -88,7 +99,12 @@ internal sealed class DxpTableStyleResolver
             computedVAlign = direct.VerticalAlign;
 
         return new DxpComputedTableCellStyle(Border: computedBorder, BackgroundColorCss: computedBackground, VerticalAlign: computedVAlign) {
-            Borders = computedBorders
+            Borders = computedBorders,
+            ConditionalTextColorCss = conditionalTextColor,
+            ConditionalBold = conditionalBold,
+            ConditionalItalic = conditionalItalic,
+            ConditionalUnderline = conditionalUnderline,
+            ConditionalTextAlign = conditionalTextAlign
         };
     }
 
@@ -169,6 +185,37 @@ internal sealed class DxpTableStyleResolver
                 var t = GetAttributeValue(el, "type");
                 if (!string.Equals(t, type, StringComparison.OrdinalIgnoreCase))
                     continue;
+
+                var runProperties = FindFirstChildByLocalName(el, "rPr");
+                if (runProperties != null)
+                {
+                    result.Bold = ReadOnOff(runProperties, "b") ?? result.Bold;
+                    result.Italic = ReadOnOff(runProperties, "i") ?? result.Italic;
+                    var underline = FindFirstChildByLocalName(runProperties, "u");
+                    if (underline != null)
+                        result.Underline = !string.Equals(GetAttributeValue(underline, "val"),
+                            "none", StringComparison.OrdinalIgnoreCase);
+                    var color = FindFirstChildByLocalName(runProperties, "color");
+                    if (color != null)
+                    {
+                        var value = GetAttributeValue(color, "val");
+                        result.TextColorSet = true;
+                        result.TextColorCss = value?.Length == 6 && value.All(Uri.IsHexDigit)
+                            ? "#" + value : null;
+                    }
+                }
+                var paragraphProperties = FindFirstChildByLocalName(el, "pPr");
+                var justification = paragraphProperties == null ? null :
+                    FindFirstChildByLocalName(paragraphProperties, "jc");
+                if (justification != null)
+                    result.TextAlign = GetAttributeValue(justification, "val") switch
+                    {
+                        "left" => DxpComputedTextAlign.Left,
+                        "center" => DxpComputedTextAlign.Center,
+                        "right" => DxpComputedTextAlign.Right,
+                        "both" => DxpComputedTextAlign.Justify,
+                        _ => null
+                    };
 
                 // styles.xml can surface tblStylePr content as unknown elements, so we use LocalName/attributes parsing.
                 OpenXmlElement? tcPr =
@@ -289,6 +336,16 @@ internal sealed class DxpTableStyleResolver
                 return c;
         }
         return null;
+    }
+
+    private static bool? ReadOnOff(OpenXmlElement parent, string localName)
+    {
+        var element = FindFirstChildByLocalName(parent, localName);
+        if (element == null) return null;
+        var value = GetAttributeValue(element, "val");
+        return !string.Equals(value, "0", StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(value, "false", StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(value, "off", StringComparison.OrdinalIgnoreCase);
     }
 
     private static DxpComputedBoxBorders? ParseBoxBordersFromRaw(OpenXmlElement tcBorders)
@@ -483,6 +540,12 @@ internal sealed class DxpTableStyleResolver
         public string? BackgroundColorCss;
         public bool VerticalAlignSet;
         public DxpComputedVerticalAlign? VerticalAlign;
+        public bool TextColorSet;
+        public string? TextColorCss;
+        public bool? Bold;
+        public bool? Italic;
+        public bool? Underline;
+        public DxpComputedTextAlign? TextAlign;
 
         public void ApplyCellProperties(OpenXmlElement cellPropertiesElement)
         {
