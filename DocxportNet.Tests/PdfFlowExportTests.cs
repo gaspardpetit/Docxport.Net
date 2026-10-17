@@ -2,7 +2,10 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.Visitors.Pdf;
+using PdfSharp.Drawing;
 using PdfSharp.Fonts;
+using PdfSharp.Pdf;
+using PdfSharp.Pdf.IO;
 
 namespace DocxportNet.Tests;
 
@@ -56,6 +59,120 @@ public sealed class PdfFlowExportTests
         Assert.InRange(pdf.GetPage(1).Height, 791.9, 792.1);
         Assert.Contains("Firstpage", pdf.GetPage(1).Text);
         Assert.Contains("Secondpage", pdf.GetPage(2).Text);
+    }
+
+    [Fact]
+    public void StartsOddSectionOnAnOddPage()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(
+                new Paragraph(new Run(new Text("First section")),
+                    new ParagraphProperties(new SectionProperties())),
+                new Paragraph(new Run(new Text("Odd section"))),
+                new SectionProperties(new SectionType { Val = SectionMarkValues.OddPage })));
+        }
+
+        byte[] result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        Assert.Equal(3, pdf.NumberOfPages);
+        Assert.Contains("Firstsection", pdf.GetPage(1).Text);
+        Assert.Contains("Oddsection", pdf.GetPage(3).Text);
+    }
+
+    [Fact]
+    public void KeepsSimpleContinuousSectionOnTheSamePage()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(
+                new Paragraph(new Run(new Text("Before")),
+                    new ParagraphProperties(new SectionProperties())),
+                new Paragraph(new Run(new Text("After"))),
+                new SectionProperties(new SectionType { Val = SectionMarkValues.Continuous })));
+        }
+
+        byte[] result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        var page = Assert.Single(pdf.GetPages());
+        Assert.Contains("Before", page.Text);
+        Assert.Contains("After", page.Text);
+    }
+
+    [Fact]
+    public void PreservesSignedTopMargin()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(
+                new Paragraph(new Run(new Text("Signed margin"))),
+                new SectionProperties(new PageMargin { Top = -1100, Bottom = -1200 })));
+        }
+
+        byte[] result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        Assert.Single(pdf.GetPages());
+        Assert.True(pdf.GetPage(1).Letters.Min(letter => letter.GlyphRectangle.Bottom) > 720);
+    }
+
+    [Fact]
+    public void FormatsFootnoteReferenceAndNoteFromSectionProperties()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            var notes = main.AddNewPart<FootnotesPart>();
+            notes.Footnotes = new Footnotes(new Footnote(
+                new Paragraph(new Run(new FootnoteReferenceMark()), new Run(new Text(" Note body"))))
+                { Id = 1 });
+            main.Document = new Document(new Body(
+                new Paragraph(new Run(new Text("Body")), new Run(new FootnoteReference { Id = 1 })),
+                new SectionProperties(new FootnoteProperties(
+                    new NumberingFormat { Val = NumberFormatValues.UpperRoman },
+                    new NumberingStart { Val = 3 }))));
+        }
+
+        byte[] result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        Assert.Contains("III", string.Concat(pdf.GetPages().Select(page => page.Text)));
+        Assert.DoesNotContain("Body1", string.Concat(pdf.GetPages().Select(page => page.Text)));
+    }
+
+    [Fact]
+    public void DoesNotPaintAmbiguousHighlightMatches()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new PdfDocument();
+        var page = source.AddPage();
+        using (var graphics = XGraphics.FromPdfPage(page))
+        {
+            var font = new XFont("Arial", 12);
+            graphics.DrawString("Important", font, XBrushes.Black, 40, 80);
+            graphics.DrawString("Important", font, XBrushes.Black, 40, 120);
+        }
+        var originalStreamCount = page.Contents.Elements.Count;
+        using var output = new MemoryStream();
+
+        DxpPdfHighlightOverlay.Save(source, output,
+            [new DxpPdfHighlight("Important", HighlightColorValues.Yellow)]);
+
+        using var result = PdfReader.Open(new MemoryStream(output.ToArray()), PdfDocumentOpenMode.Import);
+        Assert.Equal(originalStreamCount, result.Pages[0].Contents.Elements.Count);
     }
 
     [Fact]

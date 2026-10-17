@@ -29,17 +29,17 @@ internal static class DxpPdfHighlightOverlay
         var colors = new Dictionary<string, (XColor Color, bool Shading, double LineSize, bool Footer,
             double RightPadding)>(
             StringComparer.Ordinal);
+        var ambiguous = new HashSet<string>(StringComparer.Ordinal);
         foreach (var highlight in highlights)
         {
             var text = Normalize(highlight.Text);
             if (text.Length < 3 || !(highlight.Color is { } value && TryColor(value, out var color) ||
                 TryShadingColor(highlight.Shading, out color))) continue;
-            if (colors.TryGetValue(text, out var existing) && existing.Color != color)
-                colors.Remove(text);
-            else
-                colors[text] = (color, highlight.Shading != null, highlight.LineSize, highlight.Footer,
-                    highlight.RightPadding);
+            if (colors.ContainsKey(text)) ambiguous.Add(text);
+            colors[text] = (color, highlight.Shading != null, highlight.LineSize, highlight.Footer,
+                highlight.RightPadding);
         }
+        foreach (var text in ambiguous) colors.Remove(text);
         if (colors.Count == 0)
         {
             SaveWithoutHighlights(document, output, repairAfterSave);
@@ -50,6 +50,24 @@ internal static class DxpPdfHighlightOverlay
         stream.Position = 0;
         using var parsed = PdfPigDocument.Open(stream);
         using var modified = PdfReader.Open(new MemoryStream(stream.ToArray()), PdfDocumentOpenMode.Modify);
+        var pageTexts = parsed.GetPages()
+            .Select(page => Normalize(string.Concat(page.Letters.Select(letter => letter.Value))))
+            .ToArray();
+        foreach (var text in colors.Keys.ToArray())
+        {
+            var occurrences = 0;
+            foreach (var pageText in pageTexts)
+                for (var offset = 0; (offset = pageText.IndexOf(text, offset,
+                         StringComparison.Ordinal)) >= 0 && occurrences < 2; offset += text.Length)
+                    occurrences++;
+            if (occurrences != 1) colors.Remove(text);
+        }
+        if (colors.Count == 0)
+        {
+            if (repairAfterSave) RepairFontUnicodeMaps(modified);
+            modified.Save(output, false);
+            return;
+        }
         for (var pageIndex = 0; pageIndex < modified.PageCount; pageIndex++)
         {
             var page = parsed.GetPage(pageIndex + 1);
