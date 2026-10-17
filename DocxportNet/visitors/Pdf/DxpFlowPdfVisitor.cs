@@ -8567,11 +8567,11 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private sealed record FooterImageOverlay(HeaderFooterValues Kind, byte[] Bytes,
         double Left, double Top, double Width, double Height, bool Header = false,
         MigraDoc.DocumentObjectModel.Paragraph? AnchorParagraph = null, bool BehindDocument = false,
-        long ZOrder = 0, bool PageRelative = false);
+        long ZOrder = 0, bool PageRelative = false, bool MirrorHorizontal = false);
 
     private sealed record ParagraphImageOverlay(byte[] Bytes, double Left, double Top,
         double Width, double Height, bool PageRelative = false, long ZOrder = 0,
-        bool BehindDocument = false);
+        bool BehindDocument = false, bool MirrorHorizontal = false);
     private sealed record FloatingTextWrap(double Left, double Right);
 
     private void ClipExactLineImages(PdfDocumentRenderer renderer, PdfDocument document)
@@ -8640,8 +8640,21 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     {
         if (_paragraphImages.Count == 0) return;
         var drawnParagraphs = new HashSet<MigraDoc.DocumentObjectModel.Paragraph>();
+        Section? previousSection = null;
+        var sectionPage = 0;
+        var displayedPage = 0;
         for (var index = 0; index < renderer.PageCount; index++)
         {
+            var section = renderer.DocumentRenderer.GetRenderInfoFromPage(index + 1)?
+                .Select(info => info.DocumentObject.Section)
+                .FirstOrDefault(candidate => candidate != null);
+            if (section != null)
+            {
+                sectionPage = ReferenceEquals(section, previousSection) ? sectionPage + 1 : 1;
+                displayedPage = sectionPage == 1 && section.PageSetup.StartingNumber > 0
+                    ? section.PageSetup.StartingNumber : displayedPage + 1;
+                previousSection = section;
+            }
             foreach (var info in renderer.DocumentRenderer.GetRenderInfoFromPage(index + 1))
             {
                 if (info.DocumentObject is not MigraDoc.DocumentObjectModel.Paragraph paragraph ||
@@ -8657,7 +8670,11 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                         overlay.BehindDocument ? XGraphicsPdfPageOptions.Prepend : XGraphicsPdfPageOptions.Append);
                     using var stream = new MemoryStream(overlay.Bytes);
                     using var image = XImage.FromStream(stream);
-                    graphics.DrawImage(image, overlay.PageRelative ? overlay.Left : area.X.Point + overlay.Left,
+                    graphics.DrawImage(image, overlay.PageRelative
+                            ? MirroredPageImageLeft(overlay.Left, overlay.Width,
+                                renderer.PdfDocument.Pages[index].Width.Point, displayedPage,
+                                overlay.MirrorHorizontal)
+                            : area.X.Point + overlay.Left,
                         overlay.PageRelative ? overlay.Top : area.Y.Point + overlay.Top,
                         overlay.Width, overlay.Height);
                 }
@@ -8778,7 +8795,11 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     : overlay.Header ? section.PageSetup.HeaderDistance.Point :
                         section.PageSetup.TopMargin.Point);
                 graphics.DrawImage(image,
-                    overlay.PageRelative ? overlay.Left : section.PageSetup.LeftMargin.Point + overlay.Left,
+                    overlay.PageRelative
+                        ? MirroredPageImageLeft(overlay.Left, overlay.Width,
+                            renderer.PdfDocument.Pages[index].Width.Point, displayedPage,
+                            overlay.MirrorHorizontal)
+                        : section.PageSetup.LeftMargin.Point + overlay.Left,
                     overlay.PageRelative ? overlay.Top : storyTop + overlay.Top,
                     overlay.Width, overlay.Height);
             }
@@ -14409,7 +14430,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     (transformed?.Height ?? pageFrame.FrameHeightPoints.Value)) / 2,
                 transformed?.Width ?? pageFrame.FrameWidthPoints.Value,
                 transformed?.Height ?? pageFrame.FrameHeightPoints.Value, PageRelative: true,
-                ZOrder: zOrder, BehindDocument: behindDocument));
+                ZOrder: zOrder, BehindDocument: behindDocument,
+                MirrorHorizontal: IsMirroredPageAlignment(horizontal)));
             return DxpDisposable.Empty;
         }
         if (anchored && _container is HeaderFooter && _section != null &&
@@ -14429,7 +14451,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 transformed?.Width ?? headerPageFrame.FrameWidthPoints.Value,
                 transformed?.Height ?? headerPageFrame.FrameHeightPoints.Value,
                 Header: _inHeader, BehindDocument: behindDocument, ZOrder: zOrder,
-                PageRelative: true));
+                PageRelative: true, MirrorHorizontal: IsMirroredPageAlignment(horizontal)));
             return DxpDisposable.Empty;
         }
         var paragraphAnchor = anchored && _container is Section &&
@@ -14688,10 +14710,20 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             "right" when horizontal => pageLength - imageLength,
             "bottom" when !horizontal => pageLength - imageLength,
             "left" when horizontal => 0,
+            "inside" when horizontal => 0,
+            "outside" when horizontal => pageLength - imageLength,
             "top" when !horizontal => 0,
             _ => null
         };
     }
+
+    private static bool IsMirroredPageAlignment(OpenXmlElement? position)
+        => position?.ChildElements.FirstOrDefault(element => element.LocalName == "align")?.InnerText
+            is "inside" or "outside";
+
+    internal static double MirroredPageImageLeft(double left, double width, double pageWidth,
+        int displayedPage, bool mirrorHorizontal)
+        => mirrorHorizontal && displayedPage % 2 == 0 ? pageWidth - width - left : left;
 
     private bool TryAddChart(Drawing drawing, DxpDrawingInfo? info, DxpIDocumentContext context)
     {

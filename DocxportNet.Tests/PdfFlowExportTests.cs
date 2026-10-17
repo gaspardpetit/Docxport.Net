@@ -25,6 +25,15 @@ public sealed class PdfFlowExportTests
 
         Assert.Equal(246, DxpFlowPdfVisitor.PageImageOffset(horizontal, true, 612, 120));
         Assert.Equal(692, DxpFlowPdfVisitor.PageImageOffset(vertical, false, 792, 100));
+
+        horizontal.RemoveAllChildren();
+        horizontal.AppendChild(new DocumentFormat.OpenXml.Drawing.Wordprocessing.HorizontalAlignment("inside"));
+        Assert.Equal(0, DxpFlowPdfVisitor.PageImageOffset(horizontal, true, 612, 120));
+        Assert.Equal(492, DxpFlowPdfVisitor.MirroredPageImageLeft(0, 120, 612, 2, true));
+        horizontal.RemoveAllChildren();
+        horizontal.AppendChild(new DocumentFormat.OpenXml.Drawing.Wordprocessing.HorizontalAlignment("outside"));
+        Assert.Equal(492, DxpFlowPdfVisitor.PageImageOffset(horizontal, true, 612, 120));
+        Assert.Equal(0, DxpFlowPdfVisitor.MirroredPageImageLeft(492, 120, 612, 2, true));
     }
 
     [Fact]
