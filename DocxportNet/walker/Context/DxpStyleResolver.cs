@@ -23,6 +23,9 @@ public struct DxpEffectiveRunStyleBuilder
     public bool? SmallCaps;
     public string? FontName;
     public int? FontSizeHalfPoints;
+    public bool? Hidden;
+    public string? ColorCss;
+    public string? Ligatures;
 
     public DxpStyleEffectiveRunStyle ToImmutable() => new(
         Bold ?? false,
@@ -36,7 +39,11 @@ public struct DxpEffectiveRunStyleBuilder
         SmallCaps ?? false,
         FontName,
         FontSizeHalfPoints
-    );
+    ) {
+        Hidden = Hidden ?? false,
+        ColorCss = ColorCss,
+        Ligatures = Ligatures
+    };
 
     public static DxpEffectiveRunStyleBuilder FromDefaults(RunPropertiesBaseStyle? defaults, Func<string, string?>? themeFontResolver = null)
     {
@@ -53,7 +60,7 @@ public struct DxpEffectiveRunStyleBuilder
         ApplyStyle(
             rp.Bold, rp.Italic, rp.Underline, rp.Strike, rp.DoubleStrike,
             rp.VerticalTextAlignment, rp.RunFonts, rp.FontSize,
-            rp.Caps, rp.SmallCaps,
+            rp.Caps, rp.SmallCaps, rp,
             themeFontResolver,
             ref acc
         );
@@ -67,7 +74,7 @@ public struct DxpEffectiveRunStyleBuilder
         ApplyStyle(
             rp.Bold, rp.Italic, rp.Underline, rp.Strike, rp.DoubleStrike,
             rp.VerticalTextAlignment, rp.RunFonts, rp.FontSize,
-            rp.Caps, rp.SmallCaps,
+            rp.Caps, rp.SmallCaps, rp,
             themeFontResolver,
             ref acc
         );
@@ -81,7 +88,7 @@ public struct DxpEffectiveRunStyleBuilder
         ApplyStyle(
             rp.Bold, rp.Italic, rp.Underline, rp.Strike, rp.DoubleStrike,
             rp.VerticalTextAlignment, rp.RunFonts, rp.FontSize,
-            rp.Caps, rp.SmallCaps,
+            rp.Caps, rp.SmallCaps, rp,
             themeFontResolver,
             ref acc
         );
@@ -99,6 +106,7 @@ public struct DxpEffectiveRunStyleBuilder
         FontSize? fontSize,
         Caps? caps,
         SmallCaps? smallCaps,
+        OpenXmlElement runProperties,
         Func<string, string?>? themeFontResolver,
     ref DxpEffectiveRunStyleBuilder acc)
     {
@@ -126,6 +134,26 @@ public struct DxpEffectiveRunStyleBuilder
             acc.AllCaps = IsOn(caps.Val);
         if (smallCaps != null)
             acc.SmallCaps = IsOn(smallCaps.Val);
+
+        var vanish = runProperties.GetFirstChild<Vanish>();
+        if (vanish != null)
+            acc.Hidden = IsOn(vanish.Val);
+        var webHidden = runProperties.GetFirstChild<WebHidden>();
+        if (webHidden != null)
+            acc.Hidden = IsOn(webHidden.Val);
+
+        var color = runProperties.GetFirstChild<Color>();
+        if (color != null)
+        {
+            var value = color.Val?.Value;
+            acc.ColorCss = value?.Length == 6 && value.All(Uri.IsHexDigit) ? "#" + value : null;
+        }
+
+        const string word2010Namespace = "http://schemas.microsoft.com/office/word/2010/wordml";
+        var ligatures = runProperties.ChildElements.FirstOrDefault(element =>
+            element.LocalName == "ligatures" && element.NamespaceUri == word2010Namespace);
+        if (ligatures != null)
+            acc.Ligatures = ligatures.GetAttribute("val", word2010Namespace).Value;
 
         if (fonts != null)
         {
