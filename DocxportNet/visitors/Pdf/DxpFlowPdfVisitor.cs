@@ -1120,6 +1120,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         {
             _fieldEval.Context.ResetForDocument();
             _fieldEval.Context.InitFromDocumentContext(context, true, true);
+            if (_fieldEval.Context.TableResolver is DxpWalkerTableValueResolver)
+                _fieldEval.Context.TableResolver = new DxpWalkerTableValueResolver(context);
         }
         _hasVisitedDocument = true;
         _sourceWordDocument = doc;
