@@ -32,11 +32,16 @@ internal sealed class DxpTableStyleResolver
         var look = ParseTblLook(tableProperties?.TableLook);
         string? styleId = tableProperties?.TableStyle?.Val?.Value;
         var styleChain = ResolveTableStyleChain(styleId);
+        var direction = tableProperties?.GetFirstChild<BiDiVisual>() ??
+            styleChain.Select(style => style.GetFirstChild<StyleTableProperties>()?.GetFirstChild<BiDiVisual>())
+                .LastOrDefault(value => value != null);
+        var rightToLeft = direction != null && direction.Val?.Value != OnOffOnlyValues.Off;
 
-        var baseTableStyle = ComputeBaseTableStyle(styleChain, tableProperties);
-        var baseCell = ComputeBaseCellStyleFromStyles(styleChain, baseTableStyle);
+        var baseTableStyle = ComputeBaseTableStyle(styleChain, tableProperties, rightToLeft);
+        var baseCell = ComputeBaseCellStyleFromStyles(styleChain, baseTableStyle, rightToLeft);
 
-        return new DxpResolvedTableStyle(styleId, look, rowCount, colCount, styleChain, baseTableStyle, baseCell);
+        return new DxpResolvedTableStyle(styleId, look, rowCount, colCount, styleChain,
+            baseTableStyle, baseCell, rightToLeft);
     }
 
     public static DxpComputedTableCellStyle ComputeCellStyle(DxpResolvedTableStyle resolved, TableCellProperties? cellProperties, int rowIndex, int colIndex, int rowSpan, int colSpan)
@@ -57,7 +62,7 @@ internal sealed class DxpTableStyleResolver
         // Apply conditional formatting (tblStylePr) from the table style chain.
         foreach (var type in resolved.GetApplicableConditionalTypes(rowIndex, colIndex))
         {
-            var ov = ComputeConditionalOverride(resolved.StyleChain, type);
+            var ov = ComputeConditionalOverride(resolved.StyleChain, type, resolved.RightToLeft);
             if (ov.BordersSet && ov.Borders != null)
             {
                 computedBorders = ApplyBorderOverride(computedBorders, ov.Borders);
@@ -82,7 +87,7 @@ internal sealed class DxpTableStyleResolver
 
         // Direct cell formatting always wins.
         var direct = DxpTableStyleComputer.ComputeDirectCellStyle(cellProperties);
-        var directBorders = ComputeDirectCellBorders(cellProperties);
+        var directBorders = ComputeDirectCellBorders(cellProperties, resolved.RightToLeft);
         if (directBorders != null)
         {
             computedBorders = ApplyBorderOverride(computedBorders, directBorders);
@@ -108,7 +113,8 @@ internal sealed class DxpTableStyleResolver
         };
     }
 
-    private static DxpComputedTableStyle ComputeBaseTableStyle(IReadOnlyList<Style> styleChain, TableProperties? directTableProperties)
+    private static DxpComputedTableStyle ComputeBaseTableStyle(IReadOnlyList<Style> styleChain,
+        TableProperties? directTableProperties, bool rightToLeft)
     {
         // Merge tblBorders across the style chain (base -> derived), then overlay direct formatting.
         var merged = new MergedTableBorders();
@@ -116,9 +122,9 @@ internal sealed class DxpTableStyleResolver
         {
             var stp = s.GetFirstChild<StyleTableProperties>();
             var borders = stp?.GetFirstChild<TableBorders>();
-            merged.Apply(borders);
+            merged.Apply(borders, rightToLeft);
         }
-        merged.Apply(directTableProperties?.TableBorders);
+        merged.Apply(directTableProperties?.TableBorders, rightToLeft);
 
         var tableBorders = ComputeTableBoxBorders(merged, out var anyTableBorderSpecified);
         var tableBorder = PickComputedBorder(merged).Border;
@@ -143,7 +149,8 @@ internal sealed class DxpTableStyleResolver
         return result;
     }
 
-    private static DxpComputedTableCellStyle ComputeBaseCellStyleFromStyles(IReadOnlyList<Style> styleChain, DxpComputedTableStyle tableStyle)
+    private static DxpComputedTableCellStyle ComputeBaseCellStyleFromStyles(IReadOnlyList<Style> styleChain,
+        DxpComputedTableStyle tableStyle, bool rightToLeft)
     {
         var mergedBorders = new MergedCellBorders();
         ResolvedOverride mergedOverrides = default;
@@ -154,7 +161,7 @@ internal sealed class DxpTableStyleResolver
             if (stcp == null)
                 continue;
 
-            mergedBorders.Apply(stcp.GetFirstChild<TableCellBorders>());
+            mergedBorders.Apply(stcp.GetFirstChild<TableCellBorders>(), rightToLeft);
             mergedOverrides.ApplyCellProperties(stcp);
         }
 
@@ -169,7 +176,8 @@ internal sealed class DxpTableStyleResolver
         };
     }
 
-    private static ResolvedOverride ComputeConditionalOverride(IReadOnlyList<Style> styleChain, string type)
+    private static ResolvedOverride ComputeConditionalOverride(IReadOnlyList<Style> styleChain,
+        string type, bool rightToLeft)
     {
         ResolvedOverride result = default;
         var mergedBorders = new MergedCellBorders();
@@ -225,13 +233,13 @@ internal sealed class DxpTableStyleResolver
 
                 if (tcPr != null)
                 {
-                    mergedBorders.Apply(tcPr.GetFirstChild<TableCellBorders>());
+                    mergedBorders.Apply(tcPr.GetFirstChild<TableCellBorders>(), rightToLeft);
                     result.ApplyCellProperties(tcPr);
 
                     var tcBorders = FindFirstChildByLocalName(tcPr, "tcBorders");
                     if (tcBorders != null)
                     {
-                        var raw = ParseBoxBordersFromRaw(tcBorders);
+                        var raw = ParseBoxBordersFromRaw(tcBorders, rightToLeft);
                         if (raw != null)
                             rawMerged = rawMerged == null ? raw : ApplyBorderOverride(rawMerged, raw);
                     }
@@ -348,12 +356,15 @@ internal sealed class DxpTableStyleResolver
             !string.Equals(value, "off", StringComparison.OrdinalIgnoreCase);
     }
 
-    private static DxpComputedBoxBorders? ParseBoxBordersFromRaw(OpenXmlElement tcBorders)
+    private static DxpComputedBoxBorders? ParseBoxBordersFromRaw(OpenXmlElement tcBorders,
+        bool rightToLeft)
     {
         DxpComputedBorder? top = ParseBorderFromRaw(tcBorders, "top");
-        DxpComputedBorder? right = ParseBorderFromRaw(tcBorders, "right");
+        DxpComputedBorder? right = ParseBorderFromRaw(tcBorders, rightToLeft ? "start" : "end") ??
+            ParseBorderFromRaw(tcBorders, "right");
         DxpComputedBorder? bottom = ParseBorderFromRaw(tcBorders, "bottom");
-        DxpComputedBorder? left = ParseBorderFromRaw(tcBorders, "left");
+        DxpComputedBorder? left = ParseBorderFromRaw(tcBorders, rightToLeft ? "end" : "start") ??
+            ParseBorderFromRaw(tcBorders, "left");
 
         if (top == null && right == null && bottom == null && left == null)
             return null;
@@ -465,8 +476,11 @@ internal sealed class DxpTableStyleResolver
         public IReadOnlyList<Style> StyleChain { get; }
         public DxpComputedTableStyle ComputedTableStyle { get; }
         public DxpComputedTableCellStyle BaseCellStyle { get; }
+        public bool RightToLeft { get; }
 
-        public DxpResolvedTableStyle(string? tableStyleId, DxpTableLook look, int rowCount, int colCount, IReadOnlyList<Style> styleChain, DxpComputedTableStyle computedTableStyle, DxpComputedTableCellStyle baseCellStyle)
+        public DxpResolvedTableStyle(string? tableStyleId, DxpTableLook look, int rowCount, int colCount,
+            IReadOnlyList<Style> styleChain, DxpComputedTableStyle computedTableStyle,
+            DxpComputedTableCellStyle baseCellStyle, bool rightToLeft)
         {
             TableStyleId = tableStyleId;
             Look = look;
@@ -475,6 +489,7 @@ internal sealed class DxpTableStyleResolver
             StyleChain = styleChain;
             ComputedTableStyle = computedTableStyle;
             BaseCellStyle = baseCellStyle;
+            RightToLeft = rightToLeft;
         }
 
         public IEnumerable<string> GetApplicableConditionalTypes(int rowIndex, int colIndex)
@@ -591,7 +606,10 @@ internal sealed class DxpTableStyleResolver
     {
         // Start from the position-based table defaults (outer vs inside borders),
         // then apply style-level defaults (tcPr), then conditional, then direct tcPr.
-        var borders = ComputePositionBasedTableCellBorders(resolved, tableStyle, rowIndex, colIndex, rowSpan, colSpan);
+        var visualColumn = resolved.RightToLeft
+            ? resolved.ColCount - colIndex - Math.Max(1, colSpan) : colIndex;
+        var borders = ComputePositionBasedTableCellBorders(resolved, tableStyle, rowIndex,
+            visualColumn, rowSpan, colSpan);
 
         if (baseCell.Border != null)
             borders = new DxpComputedBoxBorders(baseCell.Border, baseCell.Border, baseCell.Border, baseCell.Border);
@@ -652,7 +670,8 @@ internal sealed class DxpTableStyleResolver
         return false;
     }
 
-    private static DxpComputedBoxBorders? ComputeDirectCellBorders(TableCellProperties? cellProperties)
+    private static DxpComputedBoxBorders? ComputeDirectCellBorders(TableCellProperties? cellProperties,
+        bool rightToLeft)
     {
         var borders = cellProperties?.TableCellBorders;
         if (borders == null)
@@ -660,9 +679,11 @@ internal sealed class DxpTableStyleResolver
 
         // Only treat explicitly-specified sides as overrides; null means "fall back".
         var top = ToComputedBorder(borders.TopBorder);
-        var right = ToComputedBorder(borders.RightBorder);
+        var right = ToComputedBorder(rightToLeft ? borders.StartBorder : borders.EndBorder) ??
+            ToComputedBorder(borders.RightBorder);
         var bottom = ToComputedBorder(borders.BottomBorder);
-        var left = ToComputedBorder(borders.LeftBorder);
+        var left = ToComputedBorder(rightToLeft ? borders.EndBorder : borders.StartBorder) ??
+            ToComputedBorder(borders.LeftBorder);
 
         if (top == null && right == null && bottom == null && left == null)
             return null;
@@ -726,7 +747,7 @@ internal sealed class DxpTableStyleResolver
         public BorderType? InsideV;
         public bool AnySpecified { get; private set; }
 
-        public void Apply(TableBorders? borders)
+        public void Apply(TableBorders? borders, bool rightToLeft)
         {
             if (borders == null)
                 return;
@@ -735,6 +756,16 @@ internal sealed class DxpTableStyleResolver
             Apply(ref Left, borders.LeftBorder);
             Apply(ref Bottom, borders.BottomBorder);
             Apply(ref Right, borders.RightBorder);
+            if (rightToLeft)
+            {
+                Apply(ref Right, borders.StartBorder);
+                Apply(ref Left, borders.EndBorder);
+            }
+            else
+            {
+                Apply(ref Left, borders.StartBorder);
+                Apply(ref Right, borders.EndBorder);
+            }
             Apply(ref InsideH, borders.InsideHorizontalBorder);
             Apply(ref InsideV, borders.InsideVerticalBorder);
         }
@@ -769,7 +800,7 @@ internal sealed class DxpTableStyleResolver
         public BorderType? InsideV;
         public bool AnySpecified { get; private set; }
 
-        public void Apply(TableCellBorders? borders)
+        public void Apply(TableCellBorders? borders, bool rightToLeft)
         {
             if (borders == null)
                 return;
@@ -778,6 +809,16 @@ internal sealed class DxpTableStyleResolver
             Apply(ref Left, borders.LeftBorder);
             Apply(ref Bottom, borders.BottomBorder);
             Apply(ref Right, borders.RightBorder);
+            if (rightToLeft)
+            {
+                Apply(ref Right, borders.StartBorder);
+                Apply(ref Left, borders.EndBorder);
+            }
+            else
+            {
+                Apply(ref Left, borders.StartBorder);
+                Apply(ref Right, borders.EndBorder);
+            }
             Apply(ref InsideH, borders.InsideHorizontalBorder);
             Apply(ref InsideV, borders.InsideVerticalBorder);
         }
