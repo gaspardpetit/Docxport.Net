@@ -2,22 +2,20 @@ namespace DocxportNet.Tests.Utils;
 
 public static class TestPaths
 {
-    public static string GetSampleOutputDirectory(string docxPath)
+    private static string GetSampleResultPath(string docxPath, string suite, string suffix, bool generated)
     {
-        string? samplesDir = Path.GetDirectoryName(docxPath);
-        if (string.IsNullOrWhiteSpace(samplesDir))
-            throw new ArgumentException("DOCX path must have a directory.", nameof(docxPath));
-
+        string projectRoot = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(docxPath) ??
+            throw new ArgumentException("DOCX path must have a directory.", nameof(docxPath)), "..", "..", ".."));
         string sampleName = Path.GetFileNameWithoutExtension(docxPath);
-        string outputDir = Path.Combine(samplesDir, sampleName);
-        Directory.CreateDirectory(outputDir);
-        return outputDir;
+        string resultDir = Path.Combine(projectRoot, generated ? "output" : "truth", suite, sampleName);
+        if (generated)
+            Directory.CreateDirectory(resultDir);
+        return Path.Combine(resultDir, $"{sampleName}{suffix}");
     }
 
-    public static string GetSampleOutputPath(string docxPath, string suffix)
-    {
-        string outputDir = GetSampleOutputDirectory(docxPath);
-        string sampleName = Path.GetFileNameWithoutExtension(docxPath);
-        return Path.Combine(outputDir, $"{sampleName}{suffix}");
-    }
+    public static string GetSampleTruthPath(string docxPath, string suite, string suffix) =>
+        GetSampleResultPath(docxPath, suite, suffix, generated: false);
+
+    public static string GetSampleOutputPath(string docxPath, string suite, string suffix) =>
+        GetSampleResultPath(docxPath, suite, suffix, generated: true);
 }
