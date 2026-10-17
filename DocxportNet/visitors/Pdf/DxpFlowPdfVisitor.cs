@@ -13679,6 +13679,18 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                         _manualParagraphShades.Add(next);
                     if (_mirroredParagraphs.Contains(current))
                         _mirroredParagraphs.Add(next);
+                    if (_sourceBodyParagraphs.Contains(current))
+                        _sourceBodyParagraphs.Add(next);
+                    if (_sourceCellParagraphs.Contains(current))
+                        _sourceCellParagraphs.Add(next);
+                    if (_suppressedLineNumberParagraphs.Contains(current))
+                        _suppressedLineNumberParagraphs.Add(next);
+                    if (_characterSpacings.TryGetValue(current, out var spacing))
+                        _characterSpacings[next] = spacing;
+                    if (_characterScales.TryGetValue(current, out var scale))
+                        _characterScales[next] = scale;
+                    if (_tabbedRunShadings.TryGetValue(current, out var tabShading))
+                        _tabbedRunShadings[next] = tabShading;
                 }
                 next.Format.PageBreakBefore = true;
                 _paragraph = next;
