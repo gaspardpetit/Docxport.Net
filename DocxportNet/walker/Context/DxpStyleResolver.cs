@@ -610,7 +610,26 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
     private void ApplyCharacterStyleChainRunProps(string? styleId, ref DxpEffectiveRunStyleBuilder acc)
     {
         foreach (var style in EnumerateStyleChain(styleId, StyleValues.Character).Reverse())
-            DxpEffectiveRunStyleBuilder.ApplyStyleRunProperties(style.StyleRunProperties, ResolveThemeFont, ref acc);
+        {
+            var properties = style.StyleRunProperties;
+            if (properties == null)
+                continue;
+
+            var previousBold = acc.Bold ?? false;
+            var previousItalic = acc.Italic ?? false;
+            var previousStrike = acc.Strike ?? false;
+            var previousDoubleStrike = acc.DoubleStrike ?? false;
+            DxpEffectiveRunStyleBuilder.ApplyStyleRunProperties(properties, ResolveThemeFont, ref acc);
+
+            if (properties.Bold != null)
+                acc.Bold = properties.Bold.Val?.Value == false ? previousBold : !previousBold;
+            if (properties.Italic != null)
+                acc.Italic = properties.Italic.Val?.Value == false ? previousItalic : !previousItalic;
+            if (properties.Strike != null)
+                acc.Strike = properties.Strike.Val?.Value == false ? previousStrike : !previousStrike;
+            if (properties.DoubleStrike != null)
+                acc.DoubleStrike = properties.DoubleStrike.Val?.Value == false ? previousDoubleStrike : !previousDoubleStrike;
+        }
     }
 
     private IEnumerable<Style> EnumerateStyleChain(string? styleId, StyleValues preferredType)
