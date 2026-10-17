@@ -401,6 +401,40 @@ public sealed class PdfFlowExportTests
     }
 
     [Fact]
+    public void DoesNotImportNestedHtmlRowsAsOuterRows()
+    {
+        var document = new MigraDoc.DocumentObjectModel.Document();
+        var section = document.AddSection();
+        using var source = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(
+            "<table><tr><td>Outer<table><tr><td>Inner</td></tr></table></td></tr></table>"));
+
+        DxpHtmlChunkImporter.Append(section, source, "Arial");
+
+        var table = section.Elements.OfType<MigraDoc.DocumentObjectModel.Tables.Table>().Single();
+        Assert.Single(table.Rows);
+    }
+
+    [Theory]
+    [InlineData("", 0.75)]
+    [InlineData(" width='20'", 15)]
+    public void ImportsHtmlImageUsingIntrinsicDimensions(string attributes, double expectedWidth)
+    {
+        var document = new MigraDoc.DocumentObjectModel.Document();
+        var section = document.AddSection();
+        var html = "<p><img src='data:image/png;base64," +
+            "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4//8/AwAI/AL+p5qgoAAAAABJRU5ErkJggg==" +
+            "'" + attributes + "></p>";
+        using var source = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(html));
+
+        DxpHtmlChunkImporter.Append(section, source, "Arial");
+
+        var paragraph = section.Elements.OfType<MigraDoc.DocumentObjectModel.Paragraph>().Single();
+        var image = paragraph.Elements.OfType<MigraDoc.DocumentObjectModel.Shapes.Image>().Single();
+        Assert.Equal(expectedWidth, image.Width.Point, 2);
+        Assert.Equal(expectedWidth, image.Height.Point, 2);
+    }
+
+    [Fact]
     public void EmbedsInlineImage()
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;

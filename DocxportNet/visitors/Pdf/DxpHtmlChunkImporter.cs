@@ -2,6 +2,7 @@ using AngleSharp.Dom;
 using AngleSharp.Html.Parser;
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
+using StbImageSharp;
 using System.Text.RegularExpressions;
 
 namespace DocxportNet.Visitors.Pdf;
@@ -81,6 +82,7 @@ internal static class DxpHtmlChunkImporter
         Action<Table, double, double, double>? onBorderedTable)
     {
         var sourceRows = element.QuerySelectorAll("tr")
+            .Where(row => ReferenceEquals(row.Closest("table"), element))
             .Select(row => row.Children.Where(cell => cell.LocalName is "td" or "th").ToArray())
             .Where(cells => cells.Length > 0).ToArray();
         if (sourceRows.Length == 0) return;
@@ -180,14 +182,33 @@ internal static class DxpHtmlChunkImporter
                 var match = Regex.Match(source,
                     @"^data:image/(?:png|jpeg);base64,(?<data>[A-Za-z0-9+/=]+)$",
                     RegexOptions.IgnoreCase);
-                if (!double.TryParse(element.GetAttribute("width"),
+                var hasWidth = double.TryParse(element.GetAttribute("width"),
                         System.Globalization.NumberStyles.Float,
-                        System.Globalization.CultureInfo.InvariantCulture, out var widthPixels) ||
-                    !double.TryParse(element.GetAttribute("height"),
+                        System.Globalization.CultureInfo.InvariantCulture, out var widthPixels) &&
+                    double.IsFinite(widthPixels) && widthPixels > 0;
+                var hasHeight = double.TryParse(element.GetAttribute("height"),
                         System.Globalization.NumberStyles.Float,
-                        System.Globalization.CultureInfo.InvariantCulture, out var heightPixels) ||
-                    widthPixels <= 0 || heightPixels <= 0)
-                    return;
+                        System.Globalization.CultureInfo.InvariantCulture, out var heightPixels) &&
+                    double.IsFinite(heightPixels) && heightPixels > 0;
+                if (!hasWidth || !hasHeight)
+                {
+                    if (!match.Success) return;
+                    try
+                    {
+                        var intrinsic = ImageResult.FromMemory(
+                            Convert.FromBase64String(match.Groups["data"].Value),
+                            StbImageSharp.ColorComponents.RedGreenBlueAlpha);
+                        if (!hasWidth) widthPixels = hasHeight
+                            ? heightPixels * intrinsic.Width / intrinsic.Height : intrinsic.Width;
+                        if (!hasHeight) heightPixels = hasWidth
+                            ? widthPixels * intrinsic.Height / intrinsic.Width : intrinsic.Height;
+                    }
+                    catch (Exception exception) when (exception is FormatException or InvalidDataException or
+                        ArgumentException or OutOfMemoryException)
+                    {
+                        return;
+                    }
+                }
                 var image = paragraph.AddImage("base64:" +
                     (match.Success ? match.Groups["data"].Value : MissingImagePixel));
                 image.Width = Unit.FromPoint(widthPixels * 0.75);
