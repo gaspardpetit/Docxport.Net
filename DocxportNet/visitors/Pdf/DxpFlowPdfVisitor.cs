@@ -8571,7 +8571,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
 
     private sealed record FooterImageOverlay(HeaderFooterValues Kind, byte[] Bytes,
         double Left, double Top, double Width, double Height, bool Header = false,
-        MigraDoc.DocumentObjectModel.Paragraph? AnchorParagraph = null, bool BehindDocument = false);
+        MigraDoc.DocumentObjectModel.Paragraph? AnchorParagraph = null, bool BehindDocument = false,
+        long ZOrder = 0);
 
     private sealed record ParagraphImageOverlay(byte[] Bytes, double Left, double Top,
         double Width, double Height, bool PageRelative = false, long ZOrder = 0,
@@ -8758,8 +8759,10 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     ? HeaderFooterValues.Even : HeaderFooterValues.Default;
             var selected = images.Where(image => image.Kind == kind).ToArray();
             if (selected.Length == 0) continue;
-            foreach (var overlay in selected.Where(image => image.BehindDocument).Reverse()
-                         .Concat(selected.Where(image => !image.BehindDocument)))
+            foreach (var overlay in selected.Where(image => image.BehindDocument)
+                         .OrderByDescending(image => image.ZOrder)
+                         .Concat(selected.Where(image => !image.BehindDocument)
+                             .OrderBy(image => image.ZOrder)))
             {
                 using var graphics = XGraphics.FromPdfPage((target ?? renderer.PdfDocument).Pages[index],
                     overlay.BehindDocument ? XGraphicsPdfPageOptions.Prepend : XGraphicsPdfPageOptions.Append);
@@ -14363,7 +14366,11 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         {
             if (!_paragraphImages.TryGetValue(_paragraph, out var images))
                 _paragraphImages[_paragraph] = images = new List<ParagraphImageOverlay>();
-            images.Add(new ParagraphImageOverlay(bytes, pageLeft, pageTop,
+            images.Add(new ParagraphImageOverlay(bytes,
+                pageLeft + (pageFrame.FrameWidthPoints.Value -
+                    (transformed?.Width ?? pageFrame.FrameWidthPoints.Value)) / 2,
+                pageTop + (pageFrame.FrameHeightPoints.Value -
+                    (transformed?.Height ?? pageFrame.FrameHeightPoints.Value)) / 2,
                 transformed?.Width ?? pageFrame.FrameWidthPoints.Value,
                 transformed?.Height ?? pageFrame.FrameHeightPoints.Value, PageRelative: true,
                 ZOrder: zOrder, BehindDocument: behindDocument));
@@ -14418,7 +14425,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             images.Add(new ParagraphImageOverlay(bytes, left, top,
                 transformed?.Width ?? frame.FrameWidthPoints.Value,
                 transformed?.Height ?? frame.FrameHeightPoints.Value,
-                BehindDocument: behindDocument));
+                ZOrder: zOrder, BehindDocument: behindDocument));
             _paragraph.Format.LeftIndent = Unit.FromPoint(_paragraph.Format.LeftIndent.Point +
                 frame.FrameWidthPoints.Value + rightDistance);
             return DxpDisposable.Empty;
@@ -14444,7 +14451,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 fontSize + 0.35,
                 transformed?.Width ?? inlineAnchorFrame.FrameWidthPoints.Value,
                 transformed?.Height ?? inlineAnchorFrame.FrameHeightPoints.Value,
-                BehindDocument: behindDocument));
+                ZOrder: zOrder, BehindDocument: behindDocument));
             imageData = "base64:iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4//8/AwAI/AL+p5qgoAAAAABJRU5ErkJggg==";
             reservesCenteredParagraphImageFlow = true;
         }
@@ -14460,7 +14467,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             images.Add(new FooterImageOverlay(_headerFooterKind, bytes, storyLeft, storyTop,
                 transformed?.Width ?? storyFrame.FrameWidthPoints.Value,
                 transformed?.Height ?? storyFrame.FrameHeightPoints.Value,
-                Header: _inHeader, AnchorParagraph: _paragraph, BehindDocument: behindDocument));
+                Header: _inHeader, AnchorParagraph: _paragraph, BehindDocument: behindDocument,
+                ZOrder: zOrder));
             if (drawing.Descendants().Any(element => element.LocalName == "wrapSquare") &&
                 drawing.Ancestors<DocumentFormat.OpenXml.Wordprocessing.Paragraph>().FirstOrDefault()?
                     .Descendants<DocumentFormat.OpenXml.Wordprocessing.Text>().Any() == true)
@@ -14484,7 +14492,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 footerLeft + (footerWidth - (transformed?.Width ?? footerWidth)) / 2,
                 footerTop + (footerHeight - (transformed?.Height ?? footerHeight)) / 2,
                 transformed?.Width ?? footerWidth, transformed?.Height ?? footerHeight,
-                BehindDocument: behindDocument));
+                BehindDocument: behindDocument, ZOrder: zOrder));
             return DxpDisposable.Empty;
         }
         if (!anchored && transformed is { } headerRaster && _inHeader &&
