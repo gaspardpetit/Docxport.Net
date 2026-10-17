@@ -8,7 +8,8 @@ using System.Xml.Linq;
 
 namespace DocxportNet.Middleware;
 
-public abstract class DxpMiddleware : DxpIVisitor, IDxpCoveredTableCellVisitor
+public abstract class DxpMiddleware : DxpIVisitor, IDxpCoveredTableCellVisitor,
+    DxpIMovedRunContentVisitor
 {
     protected DxpMiddleware()
     {}
@@ -690,6 +691,13 @@ public abstract class DxpMiddleware : DxpIVisitor, IDxpCoveredTableCellVisitor
         Next?.VisitMoveFromRun(mfr, d);
     }
 
+    public virtual IDisposable? VisitMoveFromRunBegin(MoveFromRun mfr, DxpIDocumentContext d)
+    {
+        if (!ShouldForwardContent(d))
+            return null;
+        return (Next as DxpIMovedRunContentVisitor)?.VisitMoveFromRunBegin(mfr, d);
+    }
+
     public virtual void VisitMoveToRangeEnd(MoveToRangeEnd mtre, DxpIDocumentContext d)
     {
         if (!ShouldForwardContent(d))
@@ -709,6 +717,13 @@ public abstract class DxpMiddleware : DxpIVisitor, IDxpCoveredTableCellVisitor
         if (!ShouldForwardContent(d))
             return;
         Next?.VisitMoveToRun(mtr, d);
+    }
+
+    public virtual IDisposable? VisitMoveToRunBegin(MoveToRun mtr, DxpIDocumentContext d)
+    {
+        if (!ShouldForwardContent(d))
+            return null;
+        return (Next as DxpIMovedRunContentVisitor)?.VisitMoveToRunBegin(mtr, d);
     }
 
     public virtual void VisitNoBreakHyphen(NoBreakHyphen h, DxpIDocumentContext d)

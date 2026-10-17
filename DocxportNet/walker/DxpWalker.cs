@@ -845,10 +845,10 @@ public class DxpWalker
                         WalkDeletedRun(del, d, v);
                         break;
                     case MoveFromRun mfr:
-                        v.VisitMoveFromRun(mfr, d);
+                        WalkMoveFromRun(mfr, d, v);
                         break;
                     case MoveToRun mtr:
-                        v.VisitMoveToRun(mtr, d);
+                        WalkMoveToRun(mtr, d, v);
                         break;
 
                     // customXml range start/end + Office 2010 conflict ranges also valid here
@@ -1074,10 +1074,10 @@ public class DxpWalker
                         WalkDeleted(del, d, v);
                         break;
                     case MoveFromRun mfr:
-                        v.VisitMoveFromRun(mfr, d);
+                        WalkMoveFromRun(mfr, d, v);
                         break;
                     case MoveToRun mtr:
-                        v.VisitMoveToRun(mtr, d);
+                        WalkMoveToRun(mtr, d, v);
                         break;
                     case MoveFromRangeStart mfrs:
                         v.VisitMoveFromRangeStart(mfrs, d);
@@ -1266,10 +1266,10 @@ public class DxpWalker
                         WalkDeletedRun(delRun, d, v);
                         break;
                     case MoveFromRun moveFromRun:
-                        v.VisitMoveFromRun(moveFromRun, d);
+                        WalkMoveFromRun(moveFromRun, d, v);
                         break;
                     case MoveToRun moveToRun:
-                        v.VisitMoveToRun(moveToRun, d);
+                        WalkMoveToRun(moveToRun, d, v);
                         break;
 
                     // ---- Office Math (inline & display) ----
@@ -1411,10 +1411,10 @@ public class DxpWalker
                         WalkDeletedRun(delRun, d, v);
                         break;
                     case MoveFromRun moveFromRun:
-                        v.VisitMoveFromRun(moveFromRun, d);
+                        WalkMoveFromRun(moveFromRun, d, v);
                         break;
                     case MoveToRun moveToRun:
-                        v.VisitMoveToRun(moveToRun, d);
+                        WalkMoveToRun(moveToRun, d, v);
                         break;
 
                     // ---- Office Math (inline & display) ----
@@ -1550,10 +1550,10 @@ public class DxpWalker
                         WalkDeletedRun(delRun, d, v);
                         break;
                     case MoveFromRun moveFromRun:
-                        v.VisitMoveFromRun(moveFromRun, d);
+                        WalkMoveFromRun(moveFromRun, d, v);
                         break;
                     case MoveToRun moveToRun:
-                        v.VisitMoveToRun(moveToRun, d);
+                        WalkMoveToRun(moveToRun, d, v);
                         break;
 
                     // Office Math (inline & display)
@@ -1700,10 +1700,10 @@ public class DxpWalker
                                 WalkDeletedRun(delRun, d, v);
                                 break;
                             case MoveFromRun moveFromRun:
-                                v.VisitMoveFromRun(moveFromRun, d);
+                                WalkMoveFromRun(moveFromRun, d, v);
                                 break;
                             case MoveToRun moveToRun:
-                                v.VisitMoveToRun(moveToRun, d);
+                                WalkMoveToRun(moveToRun, d, v);
                                 break;
 
                             // ---- Office Math (inline & display) ----
@@ -1824,10 +1824,10 @@ public class DxpWalker
                             WalkDeletedRun(delRun, d, v);
                             break;
                         case MoveFromRun moveFromRun:
-                            v.VisitMoveFromRun(moveFromRun, d);
+                            WalkMoveFromRun(moveFromRun, d, v);
                             break;
                         case MoveToRun moveToRun:
-                            v.VisitMoveToRun(moveToRun, d);
+                            WalkMoveToRun(moveToRun, d, v);
                             break;
 
                         // ---- Office Math (inline & display) ----
@@ -1966,10 +1966,10 @@ public class DxpWalker
                         WalkDeletedRun(delRun, d, v);
                         break;
                     case MoveFromRun moveFromRun:
-                        v.VisitMoveFromRun(moveFromRun, d);
+                        WalkMoveFromRun(moveFromRun, d, v);
                         break;
                     case MoveToRun moveToRun:
-                        v.VisitMoveToRun(moveToRun, d);
+                        WalkMoveToRun(moveToRun, d, v);
                         break;
 
                     // ---- Move location containers (range start/end) ----
@@ -2133,10 +2133,10 @@ public class DxpWalker
                         WalkDeletedRun(innerDel, d, v);
                         break;
                     case MoveFromRun moveFromRun:
-                        v.VisitMoveFromRun(moveFromRun, d);
+                        WalkMoveFromRun(moveFromRun, d, v);
                         break;
                     case MoveToRun moveToRun:
-                        v.VisitMoveToRun(moveToRun, d);
+                        WalkMoveToRun(moveToRun, d, v);
                         break;
 
                     // ---- Office Math (both forms are permitted) ----
@@ -2160,6 +2160,24 @@ public class DxpWalker
         }
     }
 
+
+    private void WalkMoveToRun(MoveToRun moved, DxpDocumentContext context, DxpIVisitor visitor)
+    {
+        visitor.VisitMoveToRun(moved, context);
+        using var scope = (visitor as DxpIMovedRunContentVisitor)?.VisitMoveToRunBegin(moved, context);
+        if (scope == null) return;
+        foreach (var child in moved.ChildElements)
+            WalkParagraphChild(child, context, visitor);
+    }
+
+    private void WalkMoveFromRun(MoveFromRun moved, DxpDocumentContext context, DxpIVisitor visitor)
+    {
+        visitor.VisitMoveFromRun(moved, context);
+        using var scope = (visitor as DxpIMovedRunContentVisitor)?.VisitMoveFromRunBegin(moved, context);
+        if (scope == null) return;
+        foreach (var child in moved.ChildElements)
+            WalkParagraphChild(child, context, visitor);
+    }
 
     private void WalkInsertedRun(InsertedRun ir, DxpDocumentContext d, DxpIVisitor v)
     {
@@ -2267,10 +2285,10 @@ public class DxpWalker
                         WalkDeletedRun(dr, d, v);
                         break;
                     case MoveFromRun moveFromRun:
-                        v.VisitMoveFromRun(moveFromRun, d);
+                        WalkMoveFromRun(moveFromRun, d, v);
                         break;
                     case MoveToRun moveToRun:
-                        v.VisitMoveToRun(moveToRun, d);
+                        WalkMoveToRun(moveToRun, d, v);
                         break;
 
                     // ---- Office Math (inline & display) ----
@@ -2411,10 +2429,10 @@ public class DxpWalker
                         WalkDeletedRun(delRun, d, v);
                         break;
                     case MoveFromRun moveFromRun:
-                        v.VisitMoveFromRun(moveFromRun, d);
+                        WalkMoveFromRun(moveFromRun, d, v);
                         break;
                     case MoveToRun moveToRun:
-                        v.VisitMoveToRun(moveToRun, d);
+                        WalkMoveToRun(moveToRun, d, v);
                         break;
 
                     // ---- Office Math (inline & display) ----
@@ -3441,10 +3459,10 @@ public class DxpWalker
                         WalkDeletedRun(delRun, d, v);
                         break;
                     case MoveFromRun mfr:
-                        v.VisitMoveFromRun(mfr, d); // WalkMoveFromRun can be used if expanded
+                        WalkMoveFromRun(mfr, d, v);
                         break;
                     case MoveToRun mtr:
-                        v.VisitMoveToRun(mtr, d);   // WalkMoveToRun can be used if expanded
+                        WalkMoveToRun(mtr, d, v);
                         break;
 
                     // ---- ContentPart (Office 2010) – embedded external content reference ----
@@ -3739,10 +3757,10 @@ public class DxpWalker
                 break; // w14:customXmlConflictDelRangeEnd (Office 2010 conflict delete end).
 
             case MoveFromRun mfr:
-                v.VisitMoveFromRun(mfr, d);
+                WalkMoveFromRun(mfr, d, v);
                 break; // w:moveFrom (run container for moved-out text).
             case MoveToRun mtr:
-                v.VisitMoveToRun(mtr, d);
+                WalkMoveToRun(mtr, d, v);
                 break; // w:moveTo (run container for moved-in text).
 
             case ContentPart cp:
