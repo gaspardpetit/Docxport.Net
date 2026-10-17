@@ -25,6 +25,7 @@ public struct DxpEffectiveRunStyleBuilder
     public int? FontSizeHalfPoints;
     public bool? Hidden;
     public string? ColorCss;
+    public Color? Color;
     public string? Ligatures;
 
     public DxpStyleEffectiveRunStyle ToImmutable() => new(
@@ -164,6 +165,7 @@ public struct DxpEffectiveRunStyleBuilder
         var color = runProperties.GetFirstChild<Color>();
         if (color != null)
         {
+            acc.Color = color;
             var value = color.Val?.Value;
             acc.ColorCss = value?.Length == 6 && value.All(Uri.IsHexDigit) ? "#" + value : null;
         }
@@ -237,6 +239,8 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
     private readonly ParagraphPropertiesBaseStyle? _docDefaultParaProps;
     private readonly string? _themeMajorLatinFont;
     private readonly string? _themeMinorLatinFont;
+    private readonly IReadOnlyDictionary<string, string> _themeColors;
+    private readonly IReadOnlyDictionary<string, string> _themeColorMapping;
 
     public DxpStyleEffectiveIndentTwips GetIndentation(
     Paragraph p,
@@ -359,6 +363,12 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
         _docDefaultParaProps = docDefaults?.ParagraphPropertiesDefault?.ParagraphPropertiesBaseStyle;
 
         (_themeMajorLatinFont, _themeMinorLatinFont) = TryGetThemeLatinFonts(doc);
+        _themeColors = ReadThemeColors(doc.MainDocumentPart?.ThemePart);
+        _themeColorMapping = doc.MainDocumentPart?.DocumentSettingsPart?.Settings?
+            .GetFirstChild<ColorSchemeMapping>()?.GetAttributes()
+            .ToDictionary(attribute => attribute.LocalName, attribute => attribute.Value,
+                StringComparer.OrdinalIgnoreCase) ??
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         int crossTypeSharedIds = _byIdAllTypes.Count(kvp => kvp.Value.Count > 1);
         if (sameTypeOverrideCount > 0)
@@ -394,6 +404,86 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
         {
             return (null, null);
         }
+    }
+
+    private static IReadOnlyDictionary<string, string> ReadThemeColors(ThemePart? part)
+    {
+        var colors = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        if (part == null) return colors;
+        using var stream = part.GetStream(FileMode.Open, FileAccess.Read);
+        var document = XDocument.Load(stream);
+        XNamespace drawing = "http://schemas.openxmlformats.org/drawingml/2006/main";
+        var scheme = document.Descendants(drawing + "clrScheme").FirstOrDefault();
+        if (scheme == null) return colors;
+        foreach (var entry in scheme.Elements())
+        {
+            var color = entry.Elements().FirstOrDefault();
+            var value = color?.Attribute("val")?.Value;
+            if (value?.Length != 6 || !value.All(Uri.IsHexDigit))
+                value = color?.Attribute("lastClr")?.Value;
+            if (value?.Length == 6 && value.All(Uri.IsHexDigit))
+                colors[entry.Name.LocalName] = value;
+        }
+        return colors;
+    }
+
+    private string? ResolveThemeRunColor(Color? color)
+    {
+        if (color?.ThemeColor?.Value is not { } theme) return null;
+        var mappedKey = theme switch
+        {
+            var value when value == ThemeColorValues.Dark1 => "dark1",
+            var value when value == ThemeColorValues.Light1 => "light1",
+            var value when value == ThemeColorValues.Dark2 => "dark2",
+            var value when value == ThemeColorValues.Light2 => "light2",
+            var value when value == ThemeColorValues.Text1 => "t1",
+            var value when value == ThemeColorValues.Background1 => "bg1",
+            var value when value == ThemeColorValues.Text2 => "t2",
+            var value when value == ThemeColorValues.Background2 => "bg2",
+            var value when value == ThemeColorValues.Hyperlink => "hyperlink",
+            var value when value == ThemeColorValues.FollowedHyperlink => "followedHyperlink",
+            var value when value == ThemeColorValues.Accent1 => "accent1",
+            var value when value == ThemeColorValues.Accent2 => "accent2",
+            var value when value == ThemeColorValues.Accent3 => "accent3",
+            var value when value == ThemeColorValues.Accent4 => "accent4",
+            var value when value == ThemeColorValues.Accent5 => "accent5",
+            var value when value == ThemeColorValues.Accent6 => "accent6",
+            _ => null
+        };
+        if (mappedKey == null) return null;
+        var visited = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        while (true)
+        {
+            if (!visited.Add(mappedKey))
+                throw new InvalidDataException("The DOCX theme color mapping contains a cycle.");
+            if (!_themeColorMapping.TryGetValue(mappedKey, out var next) ||
+                string.Equals(next, mappedKey, StringComparison.OrdinalIgnoreCase))
+                break;
+            mappedKey = next;
+        }
+        var schemeKey = mappedKey switch
+        {
+            "dark1" or "text1" or "t1" => "dk1",
+            "light1" or "background1" or "bg1" => "lt1",
+            "dark2" or "text2" or "t2" => "dk2",
+            "light2" or "background2" or "bg2" => "lt2",
+            "hyperlink" => "hlink",
+            "followedHyperlink" => "folHlink",
+            _ => mappedKey
+        };
+        if (!_themeColors.TryGetValue(schemeKey, out var rgb)) return null;
+        var tint = color.ThemeTint?.Value;
+        var shade = color.ThemeShade?.Value;
+        var resolved = tint == null && shade == null ? rgb :
+            DxpThemeColor.ApplyLuminance(rgb, tint ?? shade!, tint != null) ?? rgb;
+        if (color.Val?.Value is { Length: 6 } cached &&
+            uint.TryParse(cached, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var cachedRgb) &&
+            uint.TryParse(resolved, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var resolvedRgb) &&
+            Math.Abs((int)(cachedRgb >> 16) - (int)(resolvedRgb >> 16)) <= 1 &&
+            Math.Abs((int)((cachedRgb >> 8) & 255) - (int)((resolvedRgb >> 8) & 255)) <= 1 &&
+            Math.Abs((int)(cachedRgb & 255) - (int)(resolvedRgb & 255)) <= 1)
+            return "#" + cached;
+        return "#" + resolved;
     }
 
     private string? ResolveThemeFont(string themeRef)
@@ -552,6 +642,8 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
 
         // 5) Apply direct run formatting (highest precedence)
         DxpEffectiveRunStyleBuilder.ApplyRunProperties(r.RunProperties, ResolveThemeFont, ref acc);
+
+        acc.ColorCss = ResolveThemeRunColor(acc.Color) ?? acc.ColorCss;
 
         return acc.ToImmutable();
     }
