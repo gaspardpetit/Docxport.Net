@@ -13,6 +13,75 @@ public class StyleResolverDuplicateStylesTests : TestBase<StyleResolverDuplicate
     }
 
     [Fact]
+    public void CharacterStyleToggle_ReversesInheritedFormattingWithoutChangingDirectRunFormatting()
+    {
+        using var doc = CreateDocument((body, styles) => {
+            styles.Append(new Style {
+                StyleId = "ParagraphStyle", Type = StyleValues.Paragraph,
+                StyleRunProperties = new StyleRunProperties(new Bold(), new Italic(), new Strike(), new DoubleStrike())
+            });
+            styles.Append(new Style {
+                StyleId = "CharacterStyle", Type = StyleValues.Character,
+                StyleRunProperties = new StyleRunProperties(new Bold(), new Italic(), new Strike(), new DoubleStrike())
+            });
+            styles.Append(new Style {
+                StyleId = "OffStyle", Type = StyleValues.Character,
+                StyleRunProperties = new StyleRunProperties(new Bold { Val = false })
+            });
+            body.Append(new Paragraph(
+                new ParagraphProperties(new ParagraphStyleId { Val = "ParagraphStyle" }),
+                new Run(new Text("paragraph")),
+                new Run(new RunProperties(new RunStyle { Val = "CharacterStyle" }), new Text("toggle")),
+                new Run(new RunProperties(new RunStyle { Val = "CharacterStyle" }, new Bold()), new Text("direct")),
+                new Run(new RunProperties(new RunStyle { Val = "OffStyle" }), new Text("off"))));
+        });
+
+        var resolver = new DxpStyleResolver(doc, Logger);
+        var paragraph = doc.MainDocumentPart!.Document!.Body!.Elements<Paragraph>().First();
+        var runs = paragraph.Elements<Run>().ToArray();
+
+        var paragraphStyle = resolver.ResolveRunStyle(paragraph, runs[0]);
+        Assert.True(paragraphStyle.Bold);
+        Assert.True(paragraphStyle.Italic);
+        Assert.True(paragraphStyle.Strike);
+        Assert.True(paragraphStyle.DoubleStrike);
+
+        var toggled = resolver.ResolveRunStyle(paragraph, runs[1]);
+        Assert.False(toggled.Bold);
+        Assert.False(toggled.Italic);
+        Assert.False(toggled.Strike);
+        Assert.False(toggled.DoubleStrike);
+        Assert.True(resolver.ResolveRunStyle(paragraph, runs[2]).Bold);
+        Assert.True(resolver.ResolveRunStyle(paragraph, runs[3]).Bold);
+    }
+
+    [Fact]
+    public void CharacterStyleToggle_UsesEachBaseStyleResult()
+    {
+        using var doc = CreateDocument((body, styles) => {
+            styles.Append(new Style {
+                StyleId = "Base", Type = StyleValues.Character,
+                StyleRunProperties = new StyleRunProperties(new Bold())
+            });
+            styles.Append(new Style {
+                StyleId = "Derived", Type = StyleValues.Character,
+                BasedOn = new BasedOn { Val = "Base" },
+                StyleRunProperties = new StyleRunProperties(new Bold())
+            });
+            body.Append(new Paragraph(
+                new Run(new RunProperties(new RunStyle { Val = "Base" }), new Text("base")),
+                new Run(new RunProperties(new RunStyle { Val = "Derived" }), new Text("derived"))));
+        });
+
+        var resolver = new DxpStyleResolver(doc, Logger);
+        var paragraph = doc.MainDocumentPart!.Document!.Body!.Elements<Paragraph>().First();
+        var runs = paragraph.Elements<Run>().ToArray();
+
+        Assert.True(resolver.ResolveRunStyle(paragraph, runs[0]).Bold);
+        Assert.False(resolver.ResolveRunStyle(paragraph, runs[1]).Bold);
+    }
+
+    [Fact]
     public void RunStyle_InheritsAndOverridesVisualProperties()
     {
         using var doc = CreateDocument((body, styles) => {
