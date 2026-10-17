@@ -44,7 +44,7 @@ public class DxpStyleVisitor : DxpIStyleVisitor
 
 
 
-public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
+public class DxpVisitor : DxpStyleVisitor, DxpIVisitor, DxpIMovedRunContentVisitor
 {
     private readonly ILogger? _logger;
     public DxpVisitor(ILogger? logger)
@@ -280,7 +280,9 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor
     public virtual void VisitCustomXmlConflictDeletionRangeEnd(CustomXmlConflictDeletionRangeEnd cxCde, DxpIDocumentContext d) => Ignored(nameof(VisitCustomXmlConflictDeletionRangeEnd), cxCde);
 
     public virtual void VisitMoveFromRun(MoveFromRun mfr, DxpIDocumentContext d) => Ignored(nameof(VisitMoveFromRun), mfr);
+    public virtual IDisposable? VisitMoveFromRunBegin(MoveFromRun mfr, DxpIDocumentContext d) => null;
     public virtual void VisitMoveToRun(MoveToRun mtr, DxpIDocumentContext d) => Ignored(nameof(VisitMoveToRun), mtr);
+    public virtual IDisposable? VisitMoveToRunBegin(MoveToRun mtr, DxpIDocumentContext d) => null;
 
     public virtual void VisitContentPart(DocumentFormat.OpenXml.Wordprocessing.ContentPart cp, DxpIDocumentContext d) => Ignored(nameof(VisitContentPart), cp);
 
