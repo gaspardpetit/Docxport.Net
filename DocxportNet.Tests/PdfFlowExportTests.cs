@@ -555,6 +555,29 @@ public sealed class PdfFlowExportTests
     }
 
     [Fact]
+    public void AppliesParagraphSpaceBeforeOnlyBeforeFirstFragment()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(new Paragraph(
+                new ParagraphProperties(new SpacingBetweenLines { Before = "400", After = "400" }),
+                new Run(new Text("First"), new Break { Type = BreakValues.Page },
+                    new Text("Second")))));
+        }
+
+        byte[] result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        Assert.Equal(2, pdf.NumberOfPages);
+        var first = Assert.Single(pdf.GetPage(1).GetWords());
+        var second = Assert.Single(pdf.GetPage(2).GetWords());
+        Assert.InRange(second.BoundingBox.Bottom - first.BoundingBox.Bottom, 19, 21);
+    }
+
+    [Fact]
     public void BottomAlignsMultilineSectionWithoutSplittingIt()
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;

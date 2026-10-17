@@ -13671,6 +13671,14 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     next.Style = current.Style;
                     next.Format = (ParagraphFormat)current.Format.Clone();
                     next.Format.FirstLineIndent = Unit.Zero;
+                    next.Format.SpaceBefore = Unit.Zero;
+                    current.Format.SpaceAfter = Unit.Zero;
+                    if (_paragraphShades.TryGetValue(current, out var shade))
+                        _paragraphShades[next] = shade;
+                    if (_manualParagraphShades.Contains(current))
+                        _manualParagraphShades.Add(next);
+                    if (_mirroredParagraphs.Contains(current))
+                        _mirroredParagraphs.Add(next);
                 }
                 next.Format.PageBreakBefore = true;
                 _paragraph = next;
