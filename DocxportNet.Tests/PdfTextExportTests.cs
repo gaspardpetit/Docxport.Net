@@ -8,10 +8,12 @@ namespace DocxportNet.Tests;
 
 public sealed class PdfTextExportTests
 {
+    private static readonly IFontResolver FontResolver = new TestFontResolver();
+
     [Fact]
     public void ExportsParagraphsAndExplicitPageBreak()
     {
-        GlobalFontSettings.UseWindowsFontsUnderWindows = true;
+        GlobalFontSettings.FontResolver = FontResolver;
         using var source = new MemoryStream();
         using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
         {
@@ -33,7 +35,7 @@ public sealed class PdfTextExportTests
     [Fact]
     public void WrapsLongParagraphAcrossPages()
     {
-        GlobalFontSettings.UseWindowsFontsUnderWindows = true;
+        GlobalFontSettings.FontResolver = FontResolver;
         using var source = new MemoryStream();
         using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
         {
@@ -48,5 +50,16 @@ public sealed class PdfTextExportTests
         Assert.True(pdf.NumberOfPages > 1);
         Assert.Contains("wrapped", pdf.GetPage(1).Text);
         Assert.Contains("wrapped", pdf.GetPage(pdf.NumberOfPages).Text);
+    }
+
+    private sealed class TestFontResolver : IFontResolver
+    {
+        private readonly byte[] _fontData = File.ReadAllBytes(OperatingSystem.IsWindows()
+            ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Fonts), "arial.ttf")
+            : "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf");
+
+        public FontResolverInfo ResolveTypeface(string familyName, bool bold, bool italic) => new("test-font");
+
+        public byte[] GetFont(string faceName) => _fontData;
     }
 }
