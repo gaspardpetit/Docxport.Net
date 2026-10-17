@@ -108,6 +108,31 @@ public sealed class PdfFlowExportTests
     }
 
     [Fact]
+    public void ExplicitEvenSectionBreakWinsOverOddPageNumberRestart()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.AddNewPart<DocumentSettingsPart>().Settings = new Settings(new EvenAndOddHeaders());
+            main.Document = new Document(new Body(
+                new Paragraph(new Run(new Text("First section")),
+                    new ParagraphProperties(new SectionProperties())),
+                new Paragraph(new Run(new Text("Even section"))),
+                new SectionProperties(
+                    new SectionType { Val = SectionMarkValues.EvenPage },
+                    new PageNumberType { Start = 7 })));
+        }
+
+        byte[] result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        Assert.Equal(2, pdf.NumberOfPages);
+        Assert.Contains("Evensection", pdf.GetPage(2).Text);
+    }
+
+    [Fact]
     public void PreservesSignedTopMargin()
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
@@ -173,6 +198,70 @@ public sealed class PdfFlowExportTests
 
         using var result = PdfReader.Open(new MemoryStream(output.ToArray()), PdfDocumentOpenMode.Import);
         Assert.Equal(originalStreamCount, result.Pages[0].Contents.Elements.Count);
+    }
+
+    [Fact]
+    public void RendersCarriageReturnAsLineBreak()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(new Paragraph(
+                new Run(new Text("First"), new CarriageReturn(), new Text("Second")))));
+        }
+
+        byte[] result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        var words = pdf.GetPage(1).GetWords().ToArray();
+        Assert.True(words[0].BoundingBox.Bottom > words[1].BoundingBox.Bottom);
+    }
+
+    [Fact]
+    public void BottomAlignsMultilineSectionWithoutSplittingIt()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(
+                new Paragraph(new Run(new Text("First line"), new Break(),
+                    new Text("Second line"), new Break(), new Text("Third line"))),
+                new SectionProperties(new VerticalTextAlignmentOnPage { Val = VerticalJustificationValues.Bottom })));
+        }
+
+        byte[] result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        var page = Assert.Single(pdf.GetPages());
+        Assert.Contains("Thirdline", page.Text);
+        Assert.InRange(page.Letters.Min(letter => letter.GlyphRectangle.Bottom), 0, 100);
+    }
+
+    [Fact]
+    public void PlacesFootnoteWithMirroredParagraphIndent()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            var notes = main.AddNewPart<FootnotesPart>();
+            notes.Footnotes = new Footnotes(new Footnote(new Paragraph(
+                new Run(new FootnoteReferenceMark()), new Run(new Text(" Mirrored note")))) { Id = 1 });
+            main.Document = new Document(new Body(new Paragraph(
+                new ParagraphProperties(new MirrorIndents()),
+                new Run(new Text("Mirrored body")), new Run(new FootnoteReference { Id = 1 }))));
+        }
+
+        byte[] result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        var page = Assert.Single(pdf.GetPages());
+        Assert.Contains("Mirrorednote", page.Text);
     }
 
     [Fact]

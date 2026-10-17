@@ -268,6 +268,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private readonly HashSet<Section> _headersWithStyledEmptyLine = new();
     private readonly HashSet<Section> _headersWithMarginAnchoredWrap = new();
     private readonly Dictionary<Section, double> _headerRunBorderClearances = new();
+    private readonly Dictionary<Section, string> _verticallyAlignedSections = new();
     private readonly HashSet<Section> _sectionsWithLinkedHeaders = new();
     private readonly HashSet<DocumentFormat.OpenXml.Wordprocessing.Paragraph> _bodyParagraphsUnderHeaderWrap = new();
     private readonly HashSet<Section> _headersWithStyledTrailingLine = new();
@@ -1354,6 +1355,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _headersWithStyledEmptyLine.Clear();
         _headersWithMarginAnchoredWrap.Clear();
         _headerRunBorderClearances.Clear();
+        _verticallyAlignedSections.Clear();
         _sectionsWithLinkedHeaders.Clear();
         _bodyParagraphsUnderHeaderWrap.Clear();
         _headersWithStyledTrailingLine.Clear();
@@ -1531,6 +1533,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             RepeatFloatingTableTopBorders();
             SplitOverpageTableCells();
             RestoreNestedFragmentPageBorders();
+            AlignSectionContentVertically();
             MigraDoc.DocumentObjectModel.Document? evenDocument = null;
             if (_mirroredParagraphs.Count > 0)
             {
@@ -1558,7 +1561,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             PdfDocumentRenderer? footnoteRenderer = null;
             List<(int Page, int Index, MigraDoc.DocumentObjectModel.Paragraph Note, double Y,
                 int PageOffset)> footnoteOverlays = new();
-            if (_footnoteParagraphs.Count > 0 && _mirroredParagraphs.Count == 0)
+            if (_footnoteParagraphs.Count > 0)
             {
                 var hasBodyTables = _document!.Sections.Cast<Section>().Any(section =>
                     section.Elements.OfType<MigraDoc.DocumentObjectModel.Tables.Table>().Any());
@@ -1586,6 +1589,22 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 footnoteRenderer = CreatePdfRenderer(preflight);
                 footnoteRenderer.RenderDocument();
                 footnoteOverlays = PlaceFittingFootnotes(footnoteRenderer, preflight);
+            }
+            if (evenDocument != null && footnoteRenderer != null)
+            {
+                foreach (var paragraph in _mirroredParagraphs)
+                {
+                    var leftIndent = paragraph.Format.LeftIndent;
+                    paragraph.Format.LeftIndent = paragraph.Format.RightIndent;
+                    paragraph.Format.RightIndent = leftIndent;
+                }
+                evenDocument = (MigraDoc.DocumentObjectModel.Document)_document!.Clone();
+                foreach (var paragraph in _mirroredParagraphs)
+                {
+                    var leftIndent = paragraph.Format.LeftIndent;
+                    paragraph.Format.LeftIndent = paragraph.Format.RightIndent;
+                    paragraph.Format.RightIndent = leftIndent;
+                }
             }
             var styleRefTemplate = _styleRefHeaders.Count > 0
                 ? (MigraDoc.DocumentObjectModel.Document)_document!.Clone() : null;
@@ -1678,6 +1697,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             }
             var evenRenderer = CreatePdfRenderer(evenDocument);
             evenRenderer.RenderDocument();
+            if (footnoteRenderer != null)
+                RenderFittingFootnotes(evenRenderer, footnoteRenderer, footnoteOverlays);
             DisableRasterInterpolation(evenRenderer.PdfDocument);
             if (evenRenderer.PageCount != renderer.PageCount)
             {
@@ -2525,7 +2546,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         if (properties.GetFirstChild<PageNumberType>()?.Start?.Value is int start)
         {
             page.StartingNumber = start;
-            if (_sectionCount > 1 && _evenAndOddHeaders && start % 2 != 0)
+            if (_sectionCount > 1 && _evenAndOddHeaders && start % 2 != 0 &&
+                properties.GetFirstChild<SectionType>() == null)
                 page.SectionStart = BreakType.BreakOddPage;
         }
         page.PageWidth = Unit.FromPoint(layout.PageSize?.Width?.Value is uint width ? width / 20.0 : 612);
@@ -2547,13 +2569,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             ? bottom / 20.0 : 72);
         var verticalAlignment = properties.ChildElements.FirstOrDefault(child => child.LocalName == "vAlign");
         var sectionAlignment = verticalAlignment == null ? null : AttributeValue(verticalAlignment, "val");
-        if (sectionAlignment == "center")
-            page.TopMargin = Unit.FromPoint(page.TopMargin.Point +
-                (page.PageHeight.Point - page.TopMargin.Point - page.BottomMargin.Point -
-                    2 * _defaultParagraphLinePoints) / 2);
-        else if (sectionAlignment == "bottom")
-            page.TopMargin = Unit.FromPoint(page.PageHeight.Point - page.BottomMargin.Point -
-                _defaultParagraphLinePoints);
+        if (sectionAlignment is "center" or "bottom")
+            _verticallyAlignedSections[_section] = sectionAlignment;
         page.HeaderDistance = Unit.FromPoint(layout.PageMargin?.Header?.Value is uint header ? header / 20.0 : 36);
         if (_gridLinePitchPoints is > 0 && _gridCharSpacingPoints is > 0)
             page.HeaderDistance = Unit.FromPoint(Math.Max(0, page.HeaderDistance.Point - 5));
@@ -3247,6 +3264,39 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             position = next;
         }
         return inserted;
+    }
+
+    private void AlignSectionContentVertically()
+    {
+        if (_verticallyAlignedSections.Count == 0 || _footnoteParagraphs.Count > 0) return;
+        var layout = (MigraDoc.DocumentObjectModel.Document)_document!.Clone();
+        var renderer = CreatePdfRenderer(layout);
+        renderer.RenderDocument();
+        for (var sectionIndex = 0; sectionIndex < _document.Sections.Count; sectionIndex++)
+        {
+            var section = (Section)_document.Sections[sectionIndex];
+            if (!_verticallyAlignedSections.TryGetValue(section, out var alignment)) continue;
+            var layoutSection = (Section)layout.Sections[sectionIndex];
+            var pages = Enumerable.Range(1, renderer.PageCount)
+                .Select(pageNumber => renderer.DocumentRenderer.GetRenderInfoFromPage(pageNumber)
+                    .Where(info => ReferenceEquals(info.DocumentObject.Section, layoutSection) &&
+                        layoutSection.Elements.IndexOf(info.DocumentObject) >= 0 &&
+                        info.DocumentObject is MigraDoc.DocumentObjectModel.Paragraph or
+                            MigraDoc.DocumentObjectModel.Tables.Table &&
+                        info.LayoutInfo.ContentArea != null)
+                    .Select(info => info.LayoutInfo.ContentArea!)
+                    .ToArray())
+                .Where(areas => areas.Length > 0).ToArray();
+            if (pages.Length != 1) continue;
+            var top = pages[0].Min(area => area.Y.Point);
+            var bottom = pages[0].Max(area => area.Y.Point + area.Height.Point);
+            var page = section.PageSetup;
+            var available = page.PageHeight.Point - page.TopMargin.Point - page.BottomMargin.Point;
+            var freeSpace = available - (bottom - top);
+            if (freeSpace <= 0) continue;
+            var desiredTop = page.TopMargin.Point + freeSpace * (alignment == "center" ? 0.5 : 1);
+            page.TopMargin = Unit.FromPoint(page.TopMargin.Point + desiredTop - top);
+        }
     }
 
     private void RenderPageBorders(PdfDocumentRenderer renderer, PdfDocument? target = null)
@@ -13584,6 +13634,9 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         }
         else _paragraph?.AddLineBreak();
     }
+
+    public override void VisitCarriageReturn(CarriageReturn carriageReturn, DxpIDocumentContext context) =>
+        _paragraph?.AddLineBreak();
 
     private MigraDoc.DocumentObjectModel.Paragraph? AddParagraph()
     {
