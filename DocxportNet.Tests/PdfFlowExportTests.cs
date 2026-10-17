@@ -110,6 +110,30 @@ public sealed class PdfFlowExportTests
     }
 
     [Fact]
+    public void PlacesThreeColumnBreaksInDistinctColumns()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(
+                new Paragraph(new Run(new Text("First"), new Break { Type = BreakValues.Column })),
+                new Paragraph(new Run(new Text("Second"), new Break { Type = BreakValues.Column })),
+                new Paragraph(new Run(new Text("Third"))),
+                new SectionProperties(new Columns { ColumnCount = 3, Space = "360" })));
+        }
+
+        byte[] result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        var words = Assert.Single(pdf.GetPages()).GetWords().ToDictionary(word => word.Text);
+        Assert.Equal(3, words.Count);
+        Assert.True(words["First"].BoundingBox.Left < words["Second"].BoundingBox.Left);
+        Assert.True(words["Second"].BoundingBox.Left < words["Third"].BoundingBox.Left);
+    }
+
+    [Fact]
     public void ExplicitEvenSectionBreakWinsOverOddPageNumberRestart()
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
@@ -178,6 +202,31 @@ public sealed class PdfFlowExportTests
         using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
         Assert.Contains("III", string.Concat(pdf.GetPages().Select(page => page.Text)));
         Assert.DoesNotContain("Body1", string.Concat(pdf.GetPages().Select(page => page.Text)));
+    }
+
+    [Fact]
+    public void UsesCustomEndnoteMarkWithoutGeneratedOrdinal()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            var notes = main.AddNewPart<EndnotesPart>();
+            notes.Endnotes = new Endnotes(new Endnote(new Paragraph(
+                new Run(new EndnoteReferenceMark(), new Text("* N")))) { Id = 1 });
+            main.Document = new Document(new Body(new Paragraph(
+                new Run(new Text("B")),
+                new Run(new EndnoteReference { Id = 1, CustomMarkFollows = true }),
+                new Run(new Text("*")))));
+        }
+
+        byte[] result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        var text = string.Concat(pdf.GetPages().Select(page => page.Text));
+        Assert.Contains("*", text);
+        Assert.DoesNotContain("i", text, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

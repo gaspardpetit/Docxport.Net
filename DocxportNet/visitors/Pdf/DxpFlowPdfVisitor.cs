@@ -513,6 +513,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private int? _activeEndnoteIndex;
     private readonly Dictionary<long, int> _endnoteOrdinals = new();
     private readonly Dictionary<int, string> _endnoteLabels = new();
+    private readonly HashSet<int> _customEndnoteMarks = new();
     private readonly Dictionary<long, Section> _endnoteSections = new();
     private readonly HashSet<Section> _endnoteSeparatorSections = new();
     private readonly HashSet<int> _endnoteDestinationOrdinals = new();
@@ -2583,16 +2584,17 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _columnWidths = null;
         _activeColumnCell = null;
         _columnCells = null;
-        if (layout.Columns?.ColumnCount?.Value == 2)
+        if (layout.Columns?.ColumnCount?.Value is short columnCount && columnCount > 1)
         {
             _columnGapPoints = int.TryParse(layout.Columns.Space?.Value, out var gapTwips)
                 ? gapTwips / 20.0 : 36;
             var available = page.PageWidth.Point - page.LeftMargin.Point - page.RightMargin.Point -
-                _columnGapPoints;
+                _columnGapPoints * (columnCount - 1);
             var widths = layout.Columns.Elements<DocumentFormat.OpenXml.Wordprocessing.Column>().Select(column =>
                 int.TryParse(column.Width?.Value, out var twips) ? twips / 20.0 : 0).ToArray();
-            _columnWidths = layout.Columns.EqualWidth?.Value == false && widths.Length == 2 &&
-                widths.All(width => width > 0) ? widths : [available / 2, available / 2];
+            _columnWidths = layout.Columns.EqualWidth?.Value == false && widths.Length == columnCount &&
+                widths.All(width => width > 0) ? widths :
+                Enumerable.Repeat(available / columnCount, columnCount).ToArray();
             _columnParagraphCapacity = Math.Max(1, (int)Math.Floor(
                 (page.PageHeight.Point - page.TopMargin.Point - page.BottomMargin.Point + 2) /
                 SimpleColumnParagraphPitchPoints));
@@ -8879,13 +8881,16 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         table.RightPadding = Unit.Zero;
         table.TopPadding = Unit.Zero;
         table.BottomPadding = Unit.Zero;
-        table.AddColumn(Unit.FromPoint(_columnWidths![0]));
-        table.AddColumn(Unit.FromPoint(_columnGapPoints));
-        table.AddColumn(Unit.FromPoint(_columnWidths[1]));
+        for (var index = 0; index < _columnWidths!.Length; index++)
+        {
+            if (index > 0) table.AddColumn(Unit.FromPoint(_columnGapPoints));
+            table.AddColumn(Unit.FromPoint(_columnWidths[index]));
+        }
         var row = table.AddRow();
         row.TopPadding = Unit.Zero;
         row.BottomPadding = Unit.Zero;
-        _columnCells = [row.Cells[0], row.Cells[2]];
+        _columnCells = Enumerable.Range(0, _columnWidths.Length)
+            .Select(index => row.Cells[index * 2]).ToArray();
         _activeColumnCell = _columnCells[0];
     }
 
@@ -8895,7 +8900,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         if (_lastParagraph != null)
             _lastParagraph.Format.SpaceAfter = Unit.Zero;
         _columnIndex++;
-        if (_columnIndex == 2)
+        if (_columnIndex == _columnWidths!.Length)
         {
             _section!.AddPageBreak();
             AddColumnPage();
@@ -13763,8 +13768,12 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             _endnoteOrdinals[id] = index = _endnoteOrdinals.Count + 1;
         if (!_endnoteLabels.TryGetValue(index, out var labelText))
             _endnoteLabels[index] = labelText = FormatEndnoteIndex(index, context);
+        var customMark = reference.GetAttributes().FirstOrDefault(attribute =>
+            attribute.LocalName == "customMarkFollows").Value is "1" or "true";
+        if (customMark) _customEndnoteMarks.Add(index);
         if (_section != null)
             _endnoteSections.TryAdd(id, _section);
+        if (customMark) return;
         var markerLink = _activeHyperlink ?? _paragraph.AddHyperlink($"dxp-endnote-{index}");
         var marker = markerLink.AddFormattedText(labelText);
         marker.Superscript = _runStyle?.Superscript == true;
@@ -13815,7 +13824,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
 
     public override void VisitEndnoteReferenceMark(EndnoteReferenceMark mark, DxpIDocumentContext context)
     {
-        if (_paragraph == null || _activeEndnoteIndex is not int index) return;
+        if (_paragraph == null || _activeEndnoteIndex is not int index ||
+            _customEndnoteMarks.Contains(index)) return;
         var label = _paragraph.AddFormattedText(_endnoteLabels.GetValueOrDefault(index) ??
             FormatEndnoteIndex(index, context));
         label.Superscript = _runStyle?.Superscript == true;
@@ -14334,7 +14344,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             images.Add(new ParagraphImageOverlay(bytes, pageLeft, pageTop,
                 transformed?.Width ?? pageFrame.FrameWidthPoints.Value,
                 transformed?.Height ?? pageFrame.FrameHeightPoints.Value, PageRelative: true,
-                BehindDocument: behindDocument));
+                ZOrder: zOrder, BehindDocument: behindDocument));
             return DxpDisposable.Empty;
         }
         var paragraphAnchor = anchored && _container is Section &&
