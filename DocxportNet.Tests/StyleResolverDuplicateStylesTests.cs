@@ -13,6 +13,37 @@ public class StyleResolverDuplicateStylesTests : TestBase<StyleResolverDuplicate
     }
 
     [Fact]
+    public void ParagraphShading_ExplicitAutoFillCancelsInheritedFill()
+    {
+        using var doc = CreateDocument((body, styles) => {
+            styles.Append(new DocDefaults(new ParagraphPropertiesDefault(
+                new ParagraphPropertiesBaseStyle(new Shading { Fill = "AA0000" }))));
+            styles.Append(new Style {
+                StyleId = "Base", Type = StyleValues.Paragraph,
+                StyleParagraphProperties = new StyleParagraphProperties(new Shading { Fill = "00AA00" })
+            });
+            styles.Append(new Style {
+                StyleId = "Derived", Type = StyleValues.Paragraph,
+                BasedOn = new BasedOn { Val = "Base" },
+                StyleParagraphProperties = new StyleParagraphProperties(new Shading { Fill = "auto" })
+            });
+            body.Append(new Paragraph(new ParagraphProperties(new ParagraphStyleId { Val = "Base" }),
+                new Run(new Text("base"))));
+            body.Append(new Paragraph(new ParagraphProperties(new ParagraphStyleId { Val = "Derived" }),
+                new Run(new Text("derived"))));
+            body.Append(new Paragraph(new ParagraphProperties(new ParagraphStyleId { Val = "Base" },
+                new Shading { Fill = "auto" }), new Run(new Text("direct"))));
+        });
+
+        var resolver = new DxpStyleResolver(doc, Logger);
+        var paragraphs = doc.MainDocumentPart!.Document!.Body!.Elements<Paragraph>().ToArray();
+
+        Assert.Equal("00AA00", resolver.GetParagraphShading(paragraphs[0])?.Fill?.Value);
+        Assert.Equal("auto", resolver.GetParagraphShading(paragraphs[1])?.Fill?.Value);
+        Assert.Equal("auto", resolver.GetParagraphShading(paragraphs[2])?.Fill?.Value);
+    }
+
+    [Fact]
     public void RunStyle_ResolvesThemeColorMappingAndDirectOverrides()
     {
         var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,

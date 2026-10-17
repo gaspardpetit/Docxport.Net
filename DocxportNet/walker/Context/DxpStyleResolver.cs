@@ -813,19 +813,19 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
     public Shading? GetParagraphShading(Paragraph p)
     {
         var direct = p.ParagraphProperties?.Shading;
-        if (HasMeaningfulShadingFill(direct))
+        if (direct != null)
             return direct;
 
         var pStyleId = p.ParagraphProperties?.ParagraphStyleId?.Val?.Value;
         foreach (var s in EnumerateStyleChainRaw(pStyleId, StyleValues.Paragraph))
         {
             var shd = s.StyleParagraphProperties?.Shading;
-            if (HasMeaningfulShadingFill(shd))
+            if (shd != null)
                 return shd;
         }
 
         var defaults = _docDefaultParaProps?.Shading;
-        return HasMeaningfulShadingFill(defaults) ? defaults : null;
+        return defaults;
     }
 
     public Tabs? GetParagraphTabs(Paragraph p)
@@ -910,16 +910,6 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
         }
 
         return false;
-    }
-
-    private static bool HasMeaningfulShadingFill(Shading? shd)
-    {
-        var fill = shd?.Fill?.Value;
-        if (string.IsNullOrWhiteSpace(fill))
-            return false;
-        if (string.Equals(fill, "auto", StringComparison.OrdinalIgnoreCase))
-            return false;
-        return true;
     }
 
     private TBorder? ResolveBorderSide<TBorder>(
