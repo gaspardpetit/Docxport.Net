@@ -13,6 +13,70 @@ public class StyleResolverDuplicateStylesTests : TestBase<StyleResolverDuplicate
     }
 
     [Fact]
+    public void RunStyle_InheritsAndOverridesVisualProperties()
+    {
+        using var doc = CreateDocument((body, styles) => {
+            styles.Append(new DocDefaults(new RunPropertiesDefault(new RunPropertiesBaseStyle(
+                new Vanish(), new Color { Val = "112233" }))));
+            styles.Append(new Style {
+                StyleId = "ParagraphStyle", Type = StyleValues.Paragraph,
+                StyleRunProperties = new StyleRunProperties(new Color { Val = "445566" })
+            });
+            styles.Append(new Style {
+                StyleId = "CharacterStyle", Type = StyleValues.Character,
+                StyleRunProperties = new StyleRunProperties(new Vanish { Val = false })
+            });
+            body.Append(new Paragraph(
+                new ParagraphProperties(new ParagraphStyleId { Val = "ParagraphStyle" }),
+                new Run(new Text("inherited")),
+                new Run(new RunProperties(new RunStyle { Val = "CharacterStyle" },
+                    new Color { Val = "AABBCC" }), new Text("override"))));
+        });
+
+        var resolver = new DxpStyleResolver(doc, Logger);
+        var paragraph = doc.MainDocumentPart!.Document!.Body!.Elements<Paragraph>().First();
+        var runs = paragraph.Elements<Run>().ToArray();
+
+        var inherited = resolver.ResolveRunStyle(paragraph, runs[0]);
+        Assert.True(inherited.Hidden);
+        Assert.Equal("#445566", inherited.ColorCss);
+
+        var overridden = resolver.ResolveRunStyle(paragraph, runs[1]);
+        Assert.False(overridden.Hidden);
+        Assert.Equal("#AABBCC", overridden.ColorCss);
+    }
+
+    [Fact]
+    public void RunStyle_ResolvesWord2010LigaturesAcrossStyles()
+    {
+        const string word2010Namespace = "http://schemas.microsoft.com/office/word/2010/wordml";
+        using var doc = CreateDocument((body, styles) => {
+            var styleProperties = new StyleRunProperties();
+            var styleLigatures = new OpenXmlUnknownElement("w14", "ligatures", word2010Namespace);
+            styleLigatures.SetAttribute(new OpenXmlAttribute("w14", "val", word2010Namespace, "standardContextual"));
+            styleProperties.Append(styleLigatures);
+            styles.Append(new Style {
+                StyleId = "CharacterStyle", Type = StyleValues.Character,
+                StyleRunProperties = styleProperties
+            });
+            var directProperties = new RunProperties(new RunStyle { Val = "CharacterStyle" });
+            var directLigatures = new OpenXmlUnknownElement("w14", "ligatures", word2010Namespace);
+            directLigatures.SetAttribute(new OpenXmlAttribute("w14", "val", word2010Namespace, "none"));
+            directProperties.Append(directLigatures);
+            body.Append(new Paragraph(
+                new Run(new RunProperties(new RunStyle { Val = "CharacterStyle" }), new Text("inherited")),
+                new Run(directProperties, new Text("override"))));
+        });
+
+        var resolver = new DxpStyleResolver(doc, Logger);
+        var paragraph = doc.MainDocumentPart!.Document!.Body!.Elements<Paragraph>().First();
+        var runs = paragraph.Elements<Run>().ToArray();
+
+        Assert.Equal("standardContextual", resolver.ResolveRunStyle(paragraph, runs[0]).Ligatures);
+        Assert.Equal("none", resolver.ResolveRunStyle(paragraph, runs[1]).Ligatures);
+    }
+
+    [Fact]
     public void CrossTypeDuplicateStyleId_DoesNotCrash_AndResolvesByContext()
     {
         using var doc = CreateDocument((body, styles) => {
