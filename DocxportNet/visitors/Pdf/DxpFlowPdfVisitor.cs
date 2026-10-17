@@ -3268,7 +3268,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
 
     private void AlignSectionContentVertically()
     {
-        if (_verticallyAlignedSections.Count == 0 || _footnoteParagraphs.Count > 0) return;
+        if (_verticallyAlignedSections.Count == 0) return;
         var layout = (MigraDoc.DocumentObjectModel.Document)_document!.Clone();
         var renderer = CreatePdfRenderer(layout);
         renderer.RenderDocument();
@@ -3277,10 +3277,15 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             var section = (Section)_document.Sections[sectionIndex];
             if (!_verticallyAlignedSections.TryGetValue(section, out var alignment)) continue;
             var layoutSection = (Section)layout.Sections[sectionIndex];
+            var noteIndexes = _footnoteParagraphs
+                .Where(note => ReferenceEquals(note.Paragraph.Section, section))
+                .Select(note => section.Elements.IndexOf(note.Paragraph))
+                .ToHashSet();
             var pages = Enumerable.Range(1, renderer.PageCount)
                 .Select(pageNumber => renderer.DocumentRenderer.GetRenderInfoFromPage(pageNumber)
                     .Where(info => ReferenceEquals(info.DocumentObject.Section, layoutSection) &&
-                        layoutSection.Elements.IndexOf(info.DocumentObject) >= 0 &&
+                        layoutSection.Elements.IndexOf(info.DocumentObject) is var elementIndex &&
+                        elementIndex >= 0 && !noteIndexes.Contains(elementIndex) &&
                         info.DocumentObject is MigraDoc.DocumentObjectModel.Paragraph or
                             MigraDoc.DocumentObjectModel.Tables.Table &&
                         info.LayoutInfo.ContentArea != null)
@@ -3292,7 +3297,14 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             var bottom = pages[0].Max(area => area.Y.Point + area.Height.Point);
             var page = section.PageSetup;
             var available = page.PageHeight.Point - page.TopMargin.Point - page.BottomMargin.Point;
-            var freeSpace = available - (bottom - top);
+            var noteHeight = noteIndexes.Count == 0 ? 0 :
+                Enumerable.Range(1, renderer.PageCount)
+                    .SelectMany(pageNumber => renderer.DocumentRenderer.GetRenderInfoFromPage(pageNumber))
+                    .Where(info => ReferenceEquals(info.DocumentObject.Section, layoutSection) &&
+                        noteIndexes.Contains(layoutSection.Elements.IndexOf(info.DocumentObject)) &&
+                        info.LayoutInfo.ContentArea != null)
+                    .Sum(info => info.LayoutInfo.ContentArea!.Height.Point) + 20;
+            var freeSpace = available - (bottom - top) - noteHeight;
             if (freeSpace <= 0) continue;
             var desiredTop = page.TopMargin.Point + freeSpace * (alignment == "center" ? 0.5 : 1);
             page.TopMargin = Unit.FromPoint(page.TopMargin.Point + desiredTop - top);
@@ -13632,11 +13644,15 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 _paragraph = next;
             }
         }
+        else if (_activeHyperlink != null) _activeHyperlink.Elements.AddLineBreak();
         else _paragraph?.AddLineBreak();
     }
 
-    public override void VisitCarriageReturn(CarriageReturn carriageReturn, DxpIDocumentContext context) =>
-        _paragraph?.AddLineBreak();
+    public override void VisitCarriageReturn(CarriageReturn carriageReturn, DxpIDocumentContext context)
+    {
+        if (_activeHyperlink != null) _activeHyperlink.Elements.AddLineBreak();
+        else _paragraph?.AddLineBreak();
+    }
 
     private MigraDoc.DocumentObjectModel.Paragraph? AddParagraph()
     {

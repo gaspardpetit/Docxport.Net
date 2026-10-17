@@ -1,3 +1,4 @@
+using System.Buffers.Binary;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
@@ -220,6 +221,28 @@ public sealed class PdfFlowExportTests
     }
 
     [Fact]
+    public void KeepsCarriageReturnInsideHyperlinkInTextOrder()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(new Paragraph(
+                new Hyperlink(new Run(new Text("First"), new CarriageReturn(),
+                    new Text("Second"))) { Anchor = "destination" },
+                new BookmarkStart { Name = "destination", Id = "1" },
+                new BookmarkEnd { Id = "1" })));
+        }
+
+        byte[] result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        var words = pdf.GetPage(1).GetWords().ToArray();
+        Assert.True(words[0].BoundingBox.Bottom > words[1].BoundingBox.Bottom);
+    }
+
+    [Fact]
     public void BottomAlignsMultilineSectionWithoutSplittingIt()
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
@@ -262,6 +285,77 @@ public sealed class PdfFlowExportTests
         using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
         var page = Assert.Single(pdf.GetPages());
         Assert.Contains("Mirrorednote", page.Text);
+    }
+
+    [Fact]
+    public void AlignsSectionBodyWhenFootnotesExist()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            var notes = main.AddNewPart<FootnotesPart>();
+            notes.Footnotes = new Footnotes(new Footnote(new Paragraph(
+                new Run(new FootnoteReferenceMark()), new Run(new Text(" Note")))) { Id = 1 });
+            main.Document = new Document(new Body(
+                new Paragraph(new Run(new Text("Aligned body")),
+                    new Run(new FootnoteReference { Id = 1 })),
+                new SectionProperties(new VerticalTextAlignmentOnPage
+                    { Val = VerticalJustificationValues.Bottom })));
+        }
+
+        byte[] result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        var page = Assert.Single(pdf.GetPages());
+        var body = page.GetWords().First(word => word.Text == "Aligned");
+        Assert.InRange(body.BoundingBox.Bottom, 0, 150);
+    }
+
+    [Fact]
+    public void ConvertsRedRgbTiffToRedBmp()
+    {
+        var tiff = new byte[158];
+        tiff[0] = (byte)'I';
+        tiff[1] = (byte)'I';
+        BinaryPrimitives.WriteUInt16LittleEndian(tiff.AsSpan(2), 42);
+        BinaryPrimitives.WriteInt32LittleEndian(tiff.AsSpan(4), 8);
+        BinaryPrimitives.WriteUInt16LittleEndian(tiff.AsSpan(8), 11);
+        WriteEntry(0, 256, 4, 1);
+        WriteEntry(1, 257, 4, 1);
+        WriteEntry(2, 258, 3, 146, 3);
+        WriteEntry(3, 259, 3, 5);
+        WriteEntry(4, 262, 3, 2);
+        WriteEntry(5, 273, 4, 152);
+        WriteEntry(6, 274, 3, 1);
+        WriteEntry(7, 277, 3, 3);
+        WriteEntry(8, 278, 4, 1);
+        WriteEntry(9, 279, 4, 6);
+        WriteEntry(10, 284, 3, 1);
+        for (var sample = 0; sample < 3; sample++)
+            BinaryPrimitives.WriteUInt16LittleEndian(tiff.AsSpan(146 + sample * 2), 8);
+        var codes = new[] { 256, 255, 0, 0, 257 };
+        for (var codeIndex = 0; codeIndex < codes.Length; codeIndex++)
+            for (var bit = 0; bit < 9; bit++)
+            {
+                var bitIndex = codeIndex * 9 + bit;
+                tiff[152 + bitIndex / 8] |= (byte)(((codes[codeIndex] >> (8 - bit)) & 1) <<
+                    (7 - bitIndex % 8));
+            }
+
+        var bitmap = DxpTiffConverter.ToBmp(tiff);
+
+        Assert.Equal(new byte[] { 0, 0, 255 }, bitmap.AsSpan(54, 3).ToArray());
+
+        void WriteEntry(int index, ushort tag, ushort type, int value, int count = 1)
+        {
+            var offset = 10 + index * 12;
+            BinaryPrimitives.WriteUInt16LittleEndian(tiff.AsSpan(offset), tag);
+            BinaryPrimitives.WriteUInt16LittleEndian(tiff.AsSpan(offset + 2), type);
+            BinaryPrimitives.WriteInt32LittleEndian(tiff.AsSpan(offset + 4), count);
+            BinaryPrimitives.WriteInt32LittleEndian(tiff.AsSpan(offset + 8), value);
+        }
     }
 
     [Fact]
