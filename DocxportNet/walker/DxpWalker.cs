@@ -3574,7 +3574,7 @@ public class DxpWalker
         }
     }
 
-    private sealed class DxpTableContext : DxpITableContext
+    private sealed class DxpTableContext : DxpITableContext, DxpIRightToLeftTableContext
     {
         public Table Table { get; }
         public TableProperties? Properties { get; private set; }

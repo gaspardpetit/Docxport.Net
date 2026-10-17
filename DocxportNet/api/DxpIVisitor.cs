@@ -78,6 +78,10 @@ public interface DxpITableContext
     TableProperties? Properties { get; }
     TableGrid? Grid { get; }
     DxpComputedTableStyle ComputedStyle { get; }
+}
+
+public interface DxpIRightToLeftTableContext
+{
     bool RightToLeft { get; }
 }
 

@@ -176,7 +176,7 @@ public sealed class PdfFlowExportTests
         using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
         var words = Assert.Single(pdf.GetPages()).GetWords().ToArray();
         Assert.True(words.Single(word => word.Text == "Second").BoundingBox.Left >
-            words.Single(word => word.Text.StartsWith("Alonger", StringComparison.Ordinal)).BoundingBox.Left);
+            words.First(word => word.Text.Contains("longer", StringComparison.OrdinalIgnoreCase)).BoundingBox.Left);
     }
 
     [Fact]

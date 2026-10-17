@@ -1218,6 +1218,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _clearedTabLeaderParagraphs.Clear();
         _narrowJustifiedBodyParagraphs.Clear();
         _styleRefBodyParagraphs.Clear();
+        _tableOpeningSpacingTransferred.Clear();
         _styleRefHeaders.Clear();
         _suppressedLineNumberParagraphs.Clear();
         _footerTableDistanceApplied.Clear();
@@ -13706,6 +13707,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                         _mirroredParagraphs.Add(next);
                     if (_sourceBodyParagraphs.Contains(current))
                         _sourceBodyParagraphs.Add(next);
+                    if (_styleRefBodyParagraphs.TryGetValue(current, out var styleRefSource))
+                        _styleRefBodyParagraphs[next] = styleRefSource;
                     if (_sourceCellParagraphs.Contains(current))
                         _sourceCellParagraphs.Add(next);
                     if (_suppressedLineNumberParagraphs.Contains(current))
@@ -15506,7 +15509,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             table.Elements<TableRow>().Any(row => row.TableRowProperties?.ChildElements
                 .Any(child => child.LocalName is "gridBefore" or "gridAfter") == true))
             _headerMinimumRowClearancePoints += 3.2;
-        _tableRightToLeft = tableContext.RightToLeft;
+        _tableRightToLeft = tableContext is DxpIRightToLeftTableContext { RightToLeft: true };
         if (_horizontalMergeTable && _container is HeaderFooter)
         {
             if (_inHeader)
