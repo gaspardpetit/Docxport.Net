@@ -13670,9 +13670,13 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 {
                     next.Style = current.Style;
                     next.Format = (ParagraphFormat)current.Format.Clone();
+                    next.Format.FirstLineIndent = Unit.Zero;
                 }
                 next.Format.PageBreakBefore = true;
                 _paragraph = next;
+                _paragraphTextLength = 0;
+                _paragraphBorderLetterLength = 0;
+                _revisedListMarkerLength = 0;
                 if (_activeHyperlink != null)
                     _activeHyperlink = next.AddHyperlink(_activeHyperlink.Name, _activeHyperlink.Type);
             }
