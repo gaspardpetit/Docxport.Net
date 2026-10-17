@@ -3574,12 +3574,13 @@ public class DxpWalker
         }
     }
 
-    private sealed class DxpTableContext : DxpITableContext
+    private sealed class DxpTableContext : DxpITableContext, DxpIRightToLeftTableContext
     {
         public Table Table { get; }
         public TableProperties? Properties { get; private set; }
         public TableGrid? Grid { get; private set; }
         public DxpComputedTableStyle ComputedStyle { get; }
+        public bool RightToLeft => ResolvedStyle.RightToLeft;
         internal DxpTableStyleResolver.DxpResolvedTableStyle ResolvedStyle { get; }
 
         public DxpTableContext(Table table, TableProperties? properties, TableGrid? grid, DxpTableStyleResolver.DxpResolvedTableStyle resolvedStyle)

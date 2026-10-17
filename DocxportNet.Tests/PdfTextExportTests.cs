@@ -8,7 +8,7 @@ namespace DocxportNet.Tests;
 
 public sealed class PdfTextExportTests
 {
-    private static readonly IFontResolver FontResolver = new TestFontResolver();
+    internal static readonly IFontResolver FontResolver = new TestFontResolver();
 
     [Fact]
     public void ExportsParagraphsAndExplicitPageBreak()

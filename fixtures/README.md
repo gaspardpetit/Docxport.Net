@@ -7,6 +7,9 @@ DOC and DOCX inputs are grouped by source format and purpose:
 
 - `docx/features/`: cross-cutting features, including `text-boxes/`.
 - `docx/probes/`: exploratory and targeted regression probes.
+- `docx/probes/shared-*`: small DOCX cases intended for reuse across PDF, HTML,
+  Markdown, and text exporters. Regenerate them with
+  `scripts/generate-shared-export-probes.ps1`.
 - `docx/legacy/` and `doc/legacy/`: paired Word-authored compatibility cases.
 - `docx/regressions/` and `doc/regressions/`: focused regression cases.
 - `docx/native-oracle/` and `doc/native-oracle/`: native Word comparison cases.

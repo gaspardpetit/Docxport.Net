@@ -362,7 +362,7 @@ public class DxpVisitor : DxpStyleVisitor, DxpIVisitor, DxpIMovedRunContentVisit
         return DxpDisposable.Empty;
     }
 
-    public bool AcceptAlternateContentChoice(AlternateContentChoice choice, IReadOnlyList<string> required, DxpIDocumentContext d)
+    public virtual bool AcceptAlternateContentChoice(AlternateContentChoice choice, IReadOnlyList<string> required, DxpIDocumentContext d)
     {
         Ignored(nameof(AcceptAlternateContentChoice), choice);
         return false; // base behavior: don’t accept any choices
