@@ -13711,6 +13711,12 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                         _styleRefBodyParagraphs[next] = styleRefSource;
                     if (_sourceCellParagraphs.Contains(current))
                         _sourceCellParagraphs.Add(next);
+                    if (_exactCjkLineParagraphs.Contains(current))
+                        _exactCjkLineParagraphs.Add(next);
+                    if (_exactStylelessPlainParagraphs.Contains(current))
+                        _exactStylelessPlainParagraphs.Add(next);
+                    if (_exactStylelessImplicitAptosParagraphs.Contains(current))
+                        _exactStylelessImplicitAptosParagraphs.Add(next);
                     if (_suppressedLineNumberParagraphs.Contains(current))
                         _suppressedLineNumberParagraphs.Add(next);
                     if (_characterSpacings.TryGetValue(current, out var spacing))
