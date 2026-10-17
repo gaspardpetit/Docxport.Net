@@ -5,7 +5,6 @@ using DocxportNet.Core;
 using Microsoft.Extensions.Logging;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace DocxportNet.Visitors.Pdf;
@@ -18,7 +17,8 @@ public sealed class DxpPdfVisitor : DxpVisitor, IDisposable
 {
     private readonly string _fontFamily;
     private readonly double _fontSize;
-    private readonly StringBuilder _paragraph = new();
+    private readonly List<StyledFragment> _paragraph = new();
+    private readonly Dictionary<(string Family, double Size, XFontStyleEx Style), XFont> _fonts = new();
     private Stream? _output;
     private PdfDocument? _document;
     private XGraphics? _graphics;
@@ -26,6 +26,8 @@ public sealed class DxpPdfVisitor : DxpVisitor, IDisposable
     private PdfPage? _page;
     private double _y;
     private bool _saved;
+
+    private sealed record StyledFragment(string Text, XFont Font);
 
     public DxpPdfVisitor(string fontFamily = "Arial", double fontSize = 11, ILogger? logger = null)
         : base(logger)
@@ -48,6 +50,7 @@ public sealed class DxpPdfVisitor : DxpVisitor, IDisposable
         if (_output == null) throw new InvalidOperationException("SetOutput must be called before walking the document.");
         _document = new PdfDocument();
         _font = new XFont(_fontFamily, _fontSize, XFontStyleEx.Regular);
+        _fonts.Add((_fontFamily, _fontSize, XFontStyleEx.Regular), _font);
         NewPage();
         return DxpDisposable.Create(Save);
     }
@@ -56,13 +59,27 @@ public sealed class DxpPdfVisitor : DxpVisitor, IDisposable
     {
         _paragraph.Clear();
         if (paragraphContext.MarkerAccept?.marker is string marker)
-            _paragraph.Append(NormalizeMarker(marker)).Append(' ');
+            _paragraph.Add(new StyledFragment(NormalizeMarker(marker) + " ", _font!));
         return DxpDisposable.Create(FlushParagraph);
     }
 
-    public override void VisitText(Text text, DxpIDocumentContext context) => _paragraph.Append(text.Text);
+    public override void VisitText(Text text, DxpIDocumentContext context)
+    {
+        if (string.IsNullOrEmpty(text.Text)) return;
+        var style = context.CurrentRun?.Style;
+        string family = style?.FontName ?? _fontFamily;
+        double size = style?.FontSizeHalfPoints is int halfPoints && halfPoints > 0
+            ? halfPoints / 2.0 : _fontSize;
+        var fontStyle = (style?.Bold == true ? XFontStyleEx.Bold : XFontStyleEx.Regular) |
+            (style?.Italic == true ? XFontStyleEx.Italic : XFontStyleEx.Regular);
+        var key = (family, size, fontStyle);
+        if (!_fonts.TryGetValue(key, out var font))
+            _fonts.Add(key, font = new XFont(family, size, fontStyle));
+        _paragraph.Add(new StyledFragment(text.Text, font));
+    }
 
-    public override void VisitTab(TabChar tab, DxpIDocumentContext context) => _paragraph.Append("    ");
+    public override void VisitTab(TabChar tab, DxpIDocumentContext context) =>
+        _paragraph.Add(new StyledFragment("    ", _font!));
 
     public override void VisitBreak(Break br, DxpIDocumentContext context)
     {
@@ -73,7 +90,7 @@ public sealed class DxpPdfVisitor : DxpVisitor, IDisposable
         }
         else
         {
-            _paragraph.Append('\n');
+            _paragraph.Add(new StyledFragment("\n", _font!));
         }
     }
 
@@ -90,37 +107,76 @@ public sealed class DxpPdfVisitor : DxpVisitor, IDisposable
     private void FlushParagraph()
     {
         if (_graphics == null || _font == null || _page == null) return;
-        var availableWidth = _page.Width.Point - 100;
-        foreach (var sourceLine in _paragraph.ToString().Split('\n'))
+        double availableWidth = _page.Width.Point - 100;
+        var line = new List<StyledFragment>();
+        var word = new List<StyledFragment>();
+        var spaces = new List<StyledFragment>();
+        double lineWidth = 0;
+
+        void AddWord()
         {
-            var line = new StringBuilder();
-            foreach (var word in sourceLine.Split(' '))
+            if (word.Count == 0) return;
+            double wordWidth = Measure(word);
+            double spaceWidth = line.Count == 0 ? 0 : Measure(spaces);
+            if (line.Count > 0 && lineWidth + spaceWidth + wordWidth > availableWidth)
             {
-                var candidate = line.Length == 0 ? word : line + " " + word;
-                if (line.Length > 0 && _graphics.MeasureString(candidate, _font).Width > availableWidth)
+                DrawLine(line);
+                line.Clear();
+                lineWidth = 0;
+                spaceWidth = 0;
+            }
+            if (spaceWidth > 0)
+                line.AddRange(spaces);
+            line.AddRange(word);
+            lineWidth += spaceWidth + wordWidth;
+            word.Clear();
+            spaces.Clear();
+        }
+
+        foreach (var fragment in _paragraph)
+        {
+            foreach (Match token in Regex.Matches(fragment.Text, "\\n| +|[^ \\n]+"))
+            {
+                if (token.Value == "\n")
                 {
-                    DrawLine(line.ToString());
+                    AddWord();
+                    DrawLine(line);
                     line.Clear();
-                    line.Append(word);
+                    lineWidth = 0;
+                    spaces.Clear();
+                }
+                else if (token.Value[0] == ' ')
+                {
+                    AddWord();
+                    spaces.Add(new StyledFragment(token.Value, fragment.Font));
                 }
                 else
                 {
-                    line.Clear();
-                    line.Append(candidate);
+                    word.Add(new StyledFragment(token.Value, fragment.Font));
                 }
             }
-            DrawLine(line.ToString());
         }
+        AddWord();
+        DrawLine(line);
         _y += _fontSize * 0.5;
         _paragraph.Clear();
     }
 
-    private void DrawLine(string text)
+    private double Measure(IEnumerable<StyledFragment> fragments) =>
+        fragments.Sum(fragment => _graphics!.MeasureString(fragment.Text, fragment.Font).Width);
+
+    private void DrawLine(IReadOnlyList<StyledFragment> line)
     {
         if (_page == null || _font == null) return;
-        if (_y + _fontSize * 1.4 > _page.Height.Point - 50) NewPage();
-        _graphics!.DrawString(text, _font, XBrushes.Black, new XPoint(50, _y + _fontSize));
-        _y += _fontSize * 1.4;
+        double fontSize = line.Count == 0 ? _fontSize : line.Max(fragment => fragment.Font.Size);
+        if (_y + fontSize * 1.4 > _page.Height.Point - 50) NewPage();
+        double x = 50;
+        foreach (var fragment in line)
+        {
+            _graphics!.DrawString(fragment.Text, fragment.Font, XBrushes.Black, new XPoint(x, _y + fontSize));
+            x += _graphics.MeasureString(fragment.Text, fragment.Font).Width;
+        }
+        _y += fontSize * 1.4;
     }
 
     private void NewPage()

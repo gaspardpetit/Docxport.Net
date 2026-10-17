@@ -75,10 +75,11 @@ git submodule update --init ext/PDFsharp
 dotnet build DocxportNet/DocxportNet.csproj -f netstandard2.0
 ```
 
-`DxpPdfVisitor` provides the first text-focused PDF slice through the standard
+`DxpPdfVisitor` provides a text-focused PDF slice through the standard
 `DxpExport.ExportToBytes` and `ExportToFile` APIs. It handles paragraphs, list
-markers, explicit page breaks, line wrapping, and page overflow. It does not yet
-reproduce Word's run formatting, tables, images, or page geometry. Configure a
+markers, explicit page breaks, line wrapping, page overflow, and effective run
+font family, size, bold, and italic. It does not yet reproduce Word's full run
+effects, tables, images, or page geometry. Configure a
 PDFsharp font resolver before exporting; on Windows, set
 `PdfSharp.Fonts.GlobalFontSettings.UseWindowsFontsUnderWindows = true`.
 

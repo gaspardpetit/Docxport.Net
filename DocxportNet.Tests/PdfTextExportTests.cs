@@ -52,6 +52,59 @@ public sealed class PdfTextExportTests
         Assert.Contains("wrapped", pdf.GetPage(pdf.NumberOfPages).Text);
     }
 
+    [Fact]
+    public void UsesEffectiveRunFontSizeWithoutBreakingStyledWords()
+    {
+        GlobalFontSettings.FontResolver = FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(new Paragraph(
+                new Run(new Text("small ") { Space = SpaceProcessingModeValues.Preserve }),
+                new Run(new RunProperties(new Bold(), new Italic(), new FontSize { Val = "40" }),
+                    new Text("inter")),
+                new Run(new Text("national")))));
+        }
+
+        byte[] result = DxpExport.ExportToBytes(source.ToArray(), new DxpPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        var page = Assert.Single(pdf.GetPages());
+        Assert.Contains("international", page.Text.Replace(" ", string.Empty, StringComparison.Ordinal));
+        var small = Assert.Single(page.Letters.Where(letter => letter.Value == "s"));
+        var large = page.Letters.First(letter => letter.Value == "i");
+        Assert.True(large.FontSize > small.FontSize * 1.5);
+        Assert.Equal(large.StartBaseLine.Y, small.StartBaseLine.Y);
+    }
+
+    [Fact]
+    public void InheritsFontSizeFromParagraphStyle()
+    {
+        GlobalFontSettings.FontResolver = FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.AddNewPart<StyleDefinitionsPart>().Styles = new Styles(new Style
+            {
+                StyleId = "Large", Type = StyleValues.Paragraph,
+                StyleRunProperties = new StyleRunProperties(new FontSize { Val = "36" })
+            });
+            main.Document = new Document(new Body(
+                new Paragraph(new ParagraphProperties(new ParagraphStyleId { Val = "Large" }),
+                    new Run(new Text("Big"))),
+                new Paragraph(new Run(new Text("small")))));
+        }
+
+        byte[] result = DxpExport.ExportToBytes(source.ToArray(), new DxpPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        var letters = Assert.Single(pdf.GetPages()).Letters.ToArray();
+        Assert.True(letters.First(letter => letter.Value == "B").FontSize >
+            letters.First(letter => letter.Value == "s").FontSize * 1.5);
+    }
+
     private sealed class TestFontResolver : IFontResolver
     {
         private readonly byte[] _fontData = File.ReadAllBytes(OperatingSystem.IsWindows()
