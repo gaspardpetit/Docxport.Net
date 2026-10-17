@@ -113,7 +113,7 @@ internal static class DxpHtmlChunkImporter
         foreach (var sourceCells in sourceRows)
         {
             var row = table.AddRow();
-            row.HeightRule = RowHeightRule.Exactly;
+            row.HeightRule = RowHeightRule.AtLeast;
             row.Height = Unit.FromPoint(33.24 + 2 * paddingAdjustment +
                 spacingAdjustment - borderAdjustment);
             for (var column = 0; column < sourceCells.Length; column++)

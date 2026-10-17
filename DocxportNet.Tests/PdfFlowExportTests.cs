@@ -385,6 +385,22 @@ public sealed class PdfFlowExportTests
     }
 
     [Fact]
+    public void LetsImportedHtmlTableRowsGrowWithWrappedText()
+    {
+        var document = new MigraDoc.DocumentObjectModel.Document();
+        var section = document.AddSection();
+        var html = "<table><tr><td>Long text that wraps into several lines in a narrow table cell</td></tr>" +
+            "<tr><td>Following row</td></tr></table>";
+        using var source = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(html));
+
+        DxpHtmlChunkImporter.Append(section, source, "Arial");
+
+        var table = section.Elements.OfType<MigraDoc.DocumentObjectModel.Tables.Table>().Single();
+        Assert.All(table.Rows.Cast<MigraDoc.DocumentObjectModel.Tables.Row>(), row =>
+            Assert.Equal(MigraDoc.DocumentObjectModel.Tables.RowHeightRule.AtLeast, row.HeightRule));
+    }
+
+    [Fact]
     public void EmbedsInlineImage()
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
