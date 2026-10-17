@@ -46,4 +46,9 @@ public sealed record DxpComputedTableCellStyle(
 )
 {
     public DxpComputedBoxBorders? Borders { get; init; }
+    public string? ConditionalTextColorCss { get; init; }
+    public bool? ConditionalBold { get; init; }
+    public bool? ConditionalItalic { get; init; }
+    public bool? ConditionalUnderline { get; init; }
+    public DxpComputedTextAlign? ConditionalTextAlign { get; init; }
 }
