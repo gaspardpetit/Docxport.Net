@@ -38,7 +38,8 @@ internal sealed class DxpTableStyleResolver
         var rightToLeft = direction != null && direction.Val?.Value != OnOffOnlyValues.Off;
 
         var baseTableStyle = ComputeBaseTableStyle(styleChain, tableProperties, rightToLeft);
-        var baseCell = ComputeBaseCellStyleFromStyles(styleChain, baseTableStyle, rightToLeft);
+        var baseCell = ComputeBaseCellStyleFromStyles(styleChain, baseTableStyle,
+            tableProperties, rightToLeft);
 
         return new DxpResolvedTableStyle(styleId, look, rowCount, colCount, styleChain,
             baseTableStyle, baseCell, rightToLeft);
@@ -98,7 +99,11 @@ internal sealed class DxpTableStyleResolver
             computedBorders = new DxpComputedBoxBorders(direct.Border, direct.Border, direct.Border, direct.Border);
             computedBorder = direct.Border;
         }
-        if (direct.BackgroundColorCss != null)
+        if (cellProperties?.Shading?.Val?.Value == ShadingPatternValues.Clear &&
+            (cellProperties.Shading.Fill?.Value == null ||
+             string.Equals(cellProperties.Shading.Fill.Value, "auto", StringComparison.OrdinalIgnoreCase)))
+            computedBackground = null;
+        else if (direct.BackgroundColorCss != null)
             computedBackground = direct.BackgroundColorCss;
         if (direct.VerticalAlign != null)
             computedVAlign = direct.VerticalAlign;
@@ -150,20 +155,24 @@ internal sealed class DxpTableStyleResolver
     }
 
     private static DxpComputedTableCellStyle ComputeBaseCellStyleFromStyles(IReadOnlyList<Style> styleChain,
-        DxpComputedTableStyle tableStyle, bool rightToLeft)
+        DxpComputedTableStyle tableStyle, TableProperties? directTableProperties, bool rightToLeft)
     {
         var mergedBorders = new MergedCellBorders();
         ResolvedOverride mergedOverrides = default;
 
         foreach (var s in styleChain)
         {
+            if (s.GetFirstChild<StyleTableProperties>() is { } tableProperties)
+                mergedOverrides.ApplyCellProperties(tableProperties);
             var stcp = s.GetFirstChild<StyleTableCellProperties>();
-            if (stcp == null)
-                continue;
-
-            mergedBorders.Apply(stcp.GetFirstChild<TableCellBorders>(), rightToLeft);
-            mergedOverrides.ApplyCellProperties(stcp);
+            if (stcp != null)
+            {
+                mergedBorders.Apply(stcp.GetFirstChild<TableCellBorders>(), rightToLeft);
+                mergedOverrides.ApplyCellProperties(stcp);
+            }
         }
+        if (directTableProperties != null)
+            mergedOverrides.ApplyCellProperties(directTableProperties);
 
         var styleBox = ComputeCellBoxBordersFromMerged(mergedBorders);
         var border = styleBox != null ? CollapseToSingleBorder(styleBox) : null;
