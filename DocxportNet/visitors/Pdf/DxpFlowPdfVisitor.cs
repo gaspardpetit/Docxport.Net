@@ -13693,6 +13693,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                         _characterScales[next] = scale;
                     if (_tabbedRunShadings.TryGetValue(current, out var tabShading))
                         _tabbedRunShadings[next] = tabShading;
+                    if (_coloredUnderlineParagraphs.TryGetValue(current, out var underline))
+                        _coloredUnderlineParagraphs[next] = underline;
                 }
                 next.Format.PageBreakBefore = true;
                 _paragraph = next;
@@ -14393,8 +14395,10 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             horizontal?.GetAttribute("relativeFrom", "").Value == "page" &&
             vertical?.GetAttribute("relativeFrom", "").Value == "page" &&
             info.Presentation is { FrameWidthPoints: > 0, FrameHeightPoints: > 0 } pageFrame &&
-            PositionImageOffset(horizontal, "page") is double pageLeft &&
-            PositionImageOffset(vertical, "page") is double pageTop)
+            PageImageOffset(horizontal, true, _section!.PageSetup.PageWidth.Point,
+                pageFrame.FrameWidthPoints.Value) is double pageLeft &&
+            PageImageOffset(vertical, false, _section.PageSetup.PageHeight.Point,
+                pageFrame.FrameHeightPoints.Value) is double pageTop)
         {
             if (!_paragraphImages.TryGetValue(_paragraph, out var images))
                 _paragraphImages[_paragraph] = images = new List<ParagraphImageOverlay>();
@@ -14409,9 +14413,11 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             return DxpDisposable.Empty;
         }
         if (anchored && _container is HeaderFooter && _section != null &&
-            PositionImageOffset(horizontal, "page") is double headerPageLeft &&
-            PositionImageOffset(vertical, "page") is double headerPageTop &&
-            info.Presentation is { FrameWidthPoints: > 0, FrameHeightPoints: > 0 } headerPageFrame)
+            info.Presentation is { FrameWidthPoints: > 0, FrameHeightPoints: > 0 } headerPageFrame &&
+            PageImageOffset(horizontal, true, _section.PageSetup.PageWidth.Point,
+                headerPageFrame.FrameWidthPoints.Value) is double headerPageLeft &&
+            PageImageOffset(vertical, false, _section.PageSetup.PageHeight.Point,
+                headerPageFrame.FrameHeightPoints.Value) is double headerPageTop)
         {
             if (!_footerImages.TryGetValue(_section, out var images))
                 _footerImages[_section] = images = new List<FooterImageOverlay>();
@@ -14669,6 +14675,22 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             !int.TryParse(position.ChildElements.FirstOrDefault(element => element.LocalName == "posOffset")?.InnerText,
                 out var offset)) return null;
         return offset / 12700.0;
+    }
+
+    internal static double? PageImageOffset(OpenXmlElement? position, bool horizontal,
+        double pageLength, double imageLength)
+    {
+        if (PositionImageOffset(position, "page") is double offset) return offset;
+        if (position?.GetAttribute("relativeFrom", "").Value != "page") return null;
+        return position.ChildElements.FirstOrDefault(element => element.LocalName == "align")?.InnerText switch
+        {
+            "center" => (pageLength - imageLength) / 2,
+            "right" when horizontal => pageLength - imageLength,
+            "bottom" when !horizontal => pageLength - imageLength,
+            "left" when horizontal => 0,
+            "top" when !horizontal => 0,
+            _ => null
+        };
     }
 
     private bool TryAddChart(Drawing drawing, DxpDrawingInfo? info, DxpIDocumentContext context)

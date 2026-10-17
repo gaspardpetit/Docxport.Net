@@ -14,6 +14,20 @@ namespace DocxportNet.Tests;
 public sealed class PdfFlowExportTests
 {
     [Fact]
+    public void ResolvesPageRelativeImageAlignment()
+    {
+        var horizontal = new DocumentFormat.OpenXml.Drawing.Wordprocessing.HorizontalPosition(
+            new DocumentFormat.OpenXml.Drawing.Wordprocessing.HorizontalAlignment("center"));
+        horizontal.SetAttribute(new OpenXmlAttribute("relativeFrom", null, "page"));
+        var vertical = new DocumentFormat.OpenXml.Drawing.Wordprocessing.VerticalPosition(
+            new DocumentFormat.OpenXml.Drawing.Wordprocessing.VerticalAlignment("bottom"));
+        vertical.SetAttribute(new OpenXmlAttribute("relativeFrom", null, "page"));
+
+        Assert.Equal(246, DxpFlowPdfVisitor.PageImageOffset(horizontal, true, 612, 120));
+        Assert.Equal(692, DxpFlowPdfVisitor.PageImageOffset(vertical, false, 792, 100));
+    }
+
+    [Fact]
     public void RendersTableCellsAndParagraphs()
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
