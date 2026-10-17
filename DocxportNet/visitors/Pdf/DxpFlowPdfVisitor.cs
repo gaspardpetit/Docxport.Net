@@ -13720,6 +13720,20 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                         _fitTextCharacterCounts[next] = fitCount;
                     if (_fitTextTracking.Contains(current))
                         _fitTextTracking.Add(next);
+                    if (_mixedCjkFitBodyParagraphs.Contains(current))
+                        _mixedCjkFitBodyParagraphs.Add(next);
+                    if (_mixedHighAnsiFittedHeaders.Contains(current))
+                        _mixedHighAnsiFittedHeaders.Add(next);
+                    if (_latinTimesFitParagraphs.Contains(current))
+                        _latinTimesFitParagraphs.Add(next);
+                    if (_mixedCalibriYuMinchoFitParagraphs.Contains(current))
+                        _mixedCalibriYuMinchoFitParagraphs.Add(next);
+                    if (_latinYuMinchoFitParagraphs.Contains(current))
+                        _latinYuMinchoFitParagraphs.Add(next);
+                    if (_fittedBodyAfterSecondCjkHeader.Contains(current))
+                        _fittedBodyAfterSecondCjkHeader.Add(next);
+                    if (_latinCalibriFitParagraphs.Contains(current))
+                        _latinCalibriFitParagraphs.Add(next);
                     if (_tabbedRunShadings.TryGetValue(current, out var tabShading))
                         _tabbedRunShadings[next] = tabShading;
                     if (_coloredUnderlineParagraphs.TryGetValue(current, out var underline))
