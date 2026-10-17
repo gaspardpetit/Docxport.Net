@@ -14,6 +14,27 @@ namespace DocxportNet.Tests;
 public sealed class PdfFlowExportTests
 {
     [Fact]
+    public void ResetsFieldDocumentStateWithoutChangingConfiguration()
+    {
+        var context = new DocxportNet.Fields.DxpFieldEvalContext
+        {
+            CreatedDate = new DateTimeOffset(2020, 1, 1, 0, 0, 0, TimeSpan.Zero),
+            Culture = System.Globalization.CultureInfo.GetCultureInfo("fr-CA")
+        };
+        context.SetDocumentProperty("Title", "first document");
+        context.SetBookmarkValue("Target", new DocxportNet.Fields.DxpFieldValue("first"));
+        context.SetSequence("Figure", 4);
+
+        context.ResetForDocument();
+
+        Assert.Null(context.CreatedDate);
+        Assert.False(context.TryGetDocumentProperty("Title", out _));
+        Assert.False(context.TryGetBookmarkValue("Target", out _));
+        Assert.Equal(0, context.GetSequence("Figure"));
+        Assert.Equal("fr-CA", context.Culture?.Name);
+    }
+
+    [Fact]
     public void ResolvesPageRelativeImageAlignment()
     {
         var horizontal = new DocumentFormat.OpenXml.Drawing.Wordprocessing.HorizontalPosition(

@@ -59,6 +59,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private readonly ISet<string> _availableFontFamilies;
     private readonly Func<char, string?>? _chineseFallbackFont;
     private readonly DxpFieldEval _fieldEval = new();
+    private bool _hasVisitedDocument;
     private readonly Dictionary<Section, PageBorders> _pageBorders = new();
     private readonly Dictionary<Section, LineNumberType> _sectionLineNumbers = new();
     private readonly HashSet<MigraDoc.DocumentObjectModel.Paragraph> _sourceBodyParagraphs = new();
@@ -1115,6 +1116,12 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
 
     public override IDisposable VisitDocumentBegin(WordprocessingDocument doc, DxpIDocumentContext context)
     {
+        if (_hasVisitedDocument)
+        {
+            _fieldEval.Context.ResetForDocument();
+            _fieldEval.Context.InitFromDocumentContext(context, true, true);
+        }
+        _hasVisitedDocument = true;
         _sourceWordDocument = doc;
         _textBoxTextColor = null;
         _safeClosingMarkTokens.Clear();

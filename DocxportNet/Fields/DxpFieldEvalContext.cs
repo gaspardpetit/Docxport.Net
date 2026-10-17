@@ -192,6 +192,24 @@ public sealed partial class DxpFieldEvalContext
         MergeRecordAction = DxpMergeRecordAction.None;
     }
 
+    public void ResetForDocument()
+    {
+        ResetForRecord();
+        _documentProperties.Clear();
+        _documentPropertyValues.Clear();
+        _mergeFieldAliases.Clear();
+        _promptOnceResponses.Clear();
+        _lastPromptResponse = null;
+        _hasLastPromptResponse = false;
+        _includeTextStack.Clear();
+        _htmlIncludeConversions.Clear();
+        CreatedDate = null;
+        SavedDate = null;
+        PrintDate = null;
+        CurrentDocumentOrder = null;
+        MergeSequence = 0;
+    }
+
     public void ResetMergeSequence() => MergeSequence = 0;
 
     public void IncrementMergeSequence() => MergeSequence++;
