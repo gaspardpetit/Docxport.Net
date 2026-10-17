@@ -567,6 +567,17 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private PdfDocumentRenderer CreatePdfRenderer(MigraDoc.DocumentObjectModel.Document document)
     {
         var renderer = new PdfDocumentRenderer { Document = document };
+        foreach (var frame in _behindTextBoxes)
+            frame.Layer = MigraDoc.DocumentObjectModel.Shapes.TextFrameLayer.BehindContent;
+        foreach (var frame in _aboveContentTextBoxes)
+            frame.Layer = MigraDoc.DocumentObjectModel.Shapes.TextFrameLayer.AboveContent;
+        foreach (var frame in _clippedTextBoxes)
+            frame.ClipContent = true;
+        foreach (var (frame, rotation) in _textBoxRotations)
+            frame.Rotation = rotation;
+        if (Environment.GetEnvironmentVariable("DOCXPORT_PAGINATE_FLOATING_TABLES") != "0")
+            foreach (var frame in _floatingTableFrames)
+                frame.PaginateContent = true;
         if ((_splitOverpageTables.Count > 0 || _tableFragmentBorders.Count > 0) &&
             typeof(DocumentRenderer).GetProperty("TableFragmentTopBorderWidth") is { } fragmentBorderOption)
             fragmentBorderOption.SetValue(renderer.DocumentRenderer,
@@ -574,16 +585,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     (table, startRow) => startRow > 0 && _splitOverpageTables.Contains(table)
                         ? Math.Max(0.5, FragmentTopBorderReservation(table, startRow) ?? 0)
                         : FragmentTopBorderReservation(table, startRow)));
-        if (_behindTextBoxes.Count > 0)
-            typeof(DocumentRenderer).GetProperty("TextFrameBehindContent")?.SetValue(
-                renderer.DocumentRenderer,
-                new Func<MigraDoc.DocumentObjectModel.Shapes.TextFrame, bool>(
-                    frame => _behindTextBoxes.Contains(frame)));
-        if (_aboveContentTextBoxes.Count > 0)
-            typeof(DocumentRenderer).GetProperty("TextFrameAboveContent")?.SetValue(
-                renderer.DocumentRenderer,
-                new Func<MigraDoc.DocumentObjectModel.Shapes.TextFrame, bool>(
-                    frame => _aboveContentTextBoxes.Contains(frame)));
         if (SupportsContourLayout)
             typeof(DocumentRenderer).GetProperty("WrapContour")?.SetValue(renderer.DocumentRenderer,
                 new Func<MigraDoc.DocumentObjectModel.Shapes.Shape, IReadOnlyList<XPoint>?>(
@@ -744,23 +745,10 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 _positionedLayoutApplied = true;
             }
         }
-        if (Environment.GetEnvironmentVariable("DOCXPORT_PAGINATE_FLOATING_TABLES") != "0" &&
-            typeof(DocumentRenderer).GetProperty("PaginateTextFrame") is { } paginateOption)
-            paginateOption.SetValue(renderer.DocumentRenderer,
-                new Func<MigraDoc.DocumentObjectModel.Shapes.TextFrame, bool>(
-                    frame => _floatingTableFrames.Contains(frame)));
-        if (typeof(DocumentRenderer).GetProperty("TextFrameRotation") is { } rotationOption)
-            rotationOption.SetValue(renderer.DocumentRenderer,
-                new Func<MigraDoc.DocumentObjectModel.Shapes.TextFrame, double?>(
-                    frame => _textBoxRotations.TryGetValue(frame, out var angle) ? angle : null));
         if (typeof(DocumentRenderer).GetProperty("CenterTextFrameContentVertically") is { } centerOption)
             centerOption.SetValue(renderer.DocumentRenderer,
                 new Func<MigraDoc.DocumentObjectModel.Shapes.TextFrame, bool>(
                     frame => _verticallyCenteredTextBoxes.Contains(frame)));
-        if (typeof(DocumentRenderer).GetProperty("ClipTextFrameContent") is { } clipOption)
-            clipOption.SetValue(renderer.DocumentRenderer,
-                new Func<MigraDoc.DocumentObjectModel.Shapes.TextFrame, bool>(
-                    frame => _clippedTextBoxes.Contains(frame)));
         if (typeof(DocumentRenderer).GetProperty("BreakOversizedNoBreakGroup") is { } emergencyOption)
             emergencyOption.SetValue(renderer.DocumentRenderer,
                 new Func<MigraDoc.DocumentObjectModel.Paragraph, bool>(
