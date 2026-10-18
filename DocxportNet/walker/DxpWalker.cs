@@ -568,7 +568,17 @@ public class DxpWalker
         foreach (var fn in d.Footnotes.GetFootnotes())
             WalkFootnote(fn.Item1, fn.Item2, fn.Item3, d, v);
 
-        foreach (var en in d.Endnotes.GetEndnotes())
+        var endnoteOrder = new Dictionary<long, int>();
+        foreach (var reference in d.MainDocumentPart?.Document?.Descendants<EndnoteReference>() ??
+                     Enumerable.Empty<EndnoteReference>())
+        {
+            if (reference.Id?.Value is long id && !endnoteOrder.ContainsKey(id))
+                endnoteOrder[id] = endnoteOrder.Count;
+        }
+
+        foreach (var en in d.Endnotes.GetEndnotes()
+                     .OrderBy(en => endnoteOrder.TryGetValue(en.Item3, out var order)
+                         ? order : int.MaxValue))
             WalkEndnote(en.Item1, en.Item2, en.Item3, d, v);
     }
 
@@ -3671,6 +3681,15 @@ public class DxpWalker
 
             case Run r:
                 WalkRun(r, d, v);
+                break;
+
+            case Ruby ruby:
+                WalkRuby(ruby, d, v);
+                break;
+
+            case OpenXmlUnknownElement unknownRuby when unknownRuby.LocalName == "ruby" &&
+                unknownRuby.NamespaceUri == "http://schemas.openxmlformats.org/wordprocessingml/2006/main":
+                WalkRuby(new Ruby { InnerXml = unknownRuby.InnerXml }, d, v);
                 break;
 
             case Hyperlink link:

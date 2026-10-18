@@ -1655,6 +1655,36 @@ public sealed class PdfFlowExportTests
     }
 
     [Fact]
+    public void OrdersEndnotesByReferenceRatherThanPartOrder()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(
+                new Paragraph(new Run(new Text("First reference"), new EndnoteReference { Id = 2 })),
+                new Paragraph(new Run(new Text("Second reference"), new EndnoteReference { Id = 1 }))));
+            main.Document.Save();
+            var notes = main.AddNewPart<EndnotesPart>();
+            notes.Endnotes = new Endnotes(
+                new Endnote(new Paragraph(new Run(new EndnoteReferenceMark(),
+                    new Text("First note body")))) { Id = 1 },
+                new Endnote(new Paragraph(new Run(new EndnoteReferenceMark(),
+                    new Text("Second note body")))) { Id = 2 });
+            notes.Endnotes.Save();
+        }
+
+        var bytes = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(bytes));
+        var text = string.Concat(pdf.GetPages().SelectMany(page => page.Letters)
+            .Select(letter => letter.Value));
+        Assert.Contains("FirstreferenceiSecondreferenceii", text);
+        Assert.Contains("iSecondnotebodyiiFirstnotebody", text);
+    }
+
+    [Fact]
     public void PreservesCachedMergeFieldResultsInMarginStories()
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
