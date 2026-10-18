@@ -26,7 +26,8 @@ using WordStyle = DocumentFormat.OpenXml.Wordprocessing.Style;
 
 namespace DocxportNet.Visitors.Pdf;
 
-public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpAllHeaderFooterVisitor
+public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpAllHeaderFooterVisitor,
+    IDxpLayoutAwareFieldVisitor
 {
     private const double CompactHeaderRowReductionPoints = 10.3;
     private const double EmptyParagraphAfterTableExtraPoints = 2.3;
@@ -12195,6 +12196,19 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         var previous = _activeHyperlink;
         _activeHyperlink = pdfLink;
         return DxpDisposable.Create(() => _activeHyperlink = previous);
+    }
+
+    public override IDisposable VisitSimpleFieldBegin(SimpleField field, DxpIDocumentContext context)
+    {
+        var instruction = field.Instruction?.Value;
+        if (!DxpFieldInstructionClassifier.IsHyperlinkInstruction(instruction))
+            return DxpDisposable.Empty;
+
+        VisitComplexFieldBegin(new FieldChar { FieldCharType = FieldCharValues.Begin }, context);
+        VisitComplexFieldInstruction(new FieldCode(instruction), instruction!, context);
+        VisitComplexFieldSeparate(new FieldChar { FieldCharType = FieldCharValues.Separate }, context);
+        return DxpDisposable.Create(() =>
+            VisitComplexFieldEnd(new FieldChar { FieldCharType = FieldCharValues.End }, context));
     }
 
     public override void VisitComplexFieldBegin(FieldChar begin, DxpIDocumentContext context)

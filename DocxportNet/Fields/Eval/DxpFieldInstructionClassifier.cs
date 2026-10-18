@@ -109,6 +109,9 @@ internal static class DxpFieldInstructionClassifier
     internal static bool IsIncludeTextInstruction(string? instruction)
         => StartsWithField(instruction, "INCLUDETEXT");
 
+    internal static bool IsIncludePictureInstruction(string? instruction)
+        => StartsWithField(instruction, "INCLUDEPICTURE");
+
     internal static bool IsAutoNumberInstruction(string? instruction)
         => StartsWithField(instruction, "AUTONUM")
             || StartsWithField(instruction, "AUTONUMLGL")
@@ -143,6 +146,9 @@ internal static class DxpFieldInstructionClassifier
             || StartsWithField(instruction, "SECTION")
             || StartsWithField(instruction, "SECTIONPAGES")
             || StartsWithField(instruction, "PAGEREF");
+
+    internal static bool IsPageInstruction(string? instruction)
+        => StartsWithField(instruction, "PAGE");
 
     internal static bool IsPaginationDependentInstruction(string? instruction)
         => IsLayoutDependentInstruction(instruction)
