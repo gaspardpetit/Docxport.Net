@@ -87,6 +87,32 @@ public sealed class FieldEvalMiddlewareRegressionTests : TestBase<FieldEvalMiddl
         Assert.Contains("cached text", writer.ToString(), StringComparison.Ordinal);
     }
 
+    [Theory]
+    [InlineData(DxpFieldEvalExportMode.Evaluate)]
+    [InlineData(DxpFieldEvalExportMode.Cache)]
+    public void InstructionlessDeletedFieldPreservesCachedResult(DxpFieldEvalExportMode mode)
+    {
+        using var stream = new MemoryStream();
+        using (var created = WordprocessingDocument.Create(stream,
+                   WordprocessingDocumentType.Document, true))
+        {
+            var main = created.AddMainDocumentPart();
+            main.Document = new Document(new Body(new Paragraph(new DeletedRun(
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Separate }),
+                new Run(new DeletedText("https://example.test/deleted")),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.End })))));
+            main.Document.Save();
+        }
+        stream.Position = 0;
+        using var document = WordprocessingDocument.Open(stream, false);
+        var visitor = new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateRejectConfig(), Logger);
+        var output = DxpExport.ExportToString(document, visitor,
+            new DxpExportOptions { FieldEvalMode = mode }, Logger);
+
+        Assert.Contains("https://example.test/deleted", output, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void Factory_CachedMiddleware_AutoNumWithoutSeparate_EmitsSequenceLabel()
     {

@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
+using DocxportNet.Fields;
 using DocxportNet.Visitors.Pdf;
 using PdfSharp.Drawing;
 using PdfSharp.Fonts;
@@ -1651,6 +1652,184 @@ public sealed class PdfFlowExportTests
         Assert.Empty(table.Rows[1].Cells[0].Elements);
         Assert.NotEmpty(table.Rows[1].Cells[1].Elements);
         Assert.Equal(1, table.Rows[2].Cells[0].MergeRight);
+    }
+
+    [Fact]
+    public void PreservesCachedMergeFieldResultsInMarginStories()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "legacy", "WordMergeFieldsAllStories.docx");
+        var bytes = DxpExport.ExportToBytes(source, new DxpFlowPdfVisitor(),
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Cache });
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(bytes));
+        Assert.Contains("Alice", pdf.GetPage(1).Text);
+        Assert.Contains("Alice", pdf.GetPage(2).Text);
+        Assert.DoesNotContain("«CustomerName»", pdf.GetPage(1).Text);
+    }
+
+    [Fact]
+    public void UpdatesArabicPageFieldWithoutChangingRomanCachedResult()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            static Paragraph PageField(string instruction, string cached, bool hidden = false) => new(
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldCode(instruction)),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Separate }),
+                new Run(hidden ? new RunProperties(new Vanish()) : new RunProperties(), new Text(cached)),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.End }));
+            main.Document = new Document(new Body(
+                PageField(" PAGE \\* MERGEFORMAT ", "9"), PageField(" PAGE \\* ROMAN ", "IX"),
+                PageField(" PAGE ", "7", hidden: true)));
+            main.Document.Save();
+        }
+
+        var bytes = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(bytes));
+        Assert.Contains("1", pdf.GetPage(1).Text);
+        Assert.Contains("IX", pdf.GetPage(1).Text);
+        Assert.DoesNotContain("9", pdf.GetPage(1).Text);
+        Assert.DoesNotContain("7", pdf.GetPage(1).Text);
+    }
+
+    [Theory]
+    [InlineData(DxpFieldEvalExportMode.Cache)]
+    [InlineData(DxpFieldEvalExportMode.Evaluate)]
+    public void ResolvesHeaderStyleReferenceOnEachPage(DxpFieldEvalExportMode mode)
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "legacy", "WordStyleReferenceAcrossPages.docx");
+        var bytes = DxpExport.ExportToBytes(source, new DxpFlowPdfVisitor(),
+            new DxpExportOptions { FieldEvalMode = mode });
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(bytes));
+        Assert.Equal(2, pdf.NumberOfPages);
+        Assert.Contains("Heading:Openexamplesite", pdf.GetPage(1).Text);
+        Assert.Contains("Heading:Secondheading", pdf.GetPage(2).Text);
+        Assert.DoesNotContain("Heading:Secondheading", pdf.GetPage(1).Text);
+    }
+
+    [Theory]
+    [InlineData(DxpFieldEvalExportMode.Cache)]
+    [InlineData(DxpFieldEvalExportMode.Evaluate)]
+    public void PreservesComplexFieldHyperlinksInFootnotes(DxpFieldEvalExportMode mode)
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "samples", "Right to Repair.docx");
+        var bytes = DxpExport.ExportToBytes(source, new DxpFlowPdfVisitor(),
+            new DxpExportOptions { FieldEvalMode = mode });
+
+        using var pdf = PdfReader.Open(new MemoryStream(bytes), PdfDocumentOpenMode.Import);
+        var links = pdf.Pages.Cast<PdfPage>()
+            .SelectMany(page => page.Annotations.Cast<PdfSharp.Pdf.Annotations.PdfAnnotation>())
+            .Select(annotation => annotation.Elements.GetDictionary("/A")?.Elements.GetString("/URI"))
+            .Where(uri => !string.IsNullOrEmpty(uri)).ToArray();
+        Assert.True(links.Length >= 45, $"Expected at least 45 links; found {links.Length}.");
+        Assert.Equal(30, links.Distinct().Count());
+        Assert.Contains("https://www.parl.ca/legisinfo/en/bill/44-1/c-244", links);
+    }
+
+    [Fact]
+    public void CachedFieldsCanRefreshOnlyDateAndTime()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var dateSource = Path.Combine(root, "fixtures", "docx", "legacy", "WordDateTimeFields.docx");
+        var cachedOptions = new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Cache };
+        var refreshOptions = new DxpExportOptions {
+            FieldEvalMode = DxpFieldEvalExportMode.Cache,
+            EvaluateDateTimeFieldsInCacheMode = true
+        };
+
+        string Extract(string source, DxpExportOptions options)
+        {
+            var bytes = DxpExport.ExportToBytes(source, new DxpFlowPdfVisitor(), options: options);
+            using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(bytes));
+            return string.Join(" ", pdf.GetPages().SelectMany(page => page.GetWords())
+                .Select(word => word.Text));
+        }
+
+        var before = DateTime.Now.ToString("yyyy-MM-dd");
+        var cached = Extract(dateSource, cachedOptions);
+        var refreshed = Extract(dateSource, refreshOptions);
+        var after = DateTime.Now.ToString("yyyy-MM-dd");
+        Assert.Contains("2026-10-01", cached, StringComparison.Ordinal);
+        Assert.True(refreshed.Contains(before, StringComparison.Ordinal) ||
+            refreshed.Contains(after, StringComparison.Ordinal));
+        Assert.Contains("Page 1 of 2", refreshed, StringComparison.Ordinal);
+
+        var tocSource = Path.Combine(root, "fixtures", "docx", "samples", "TOC.docx");
+        Assert.Equal(Extract(tocSource, cachedOptions), Extract(tocSource, refreshOptions));
+    }
+
+    [Theory]
+    [InlineData(DxpFieldEvalExportMode.Cache, false)]
+    [InlineData(DxpFieldEvalExportMode.Cache, true)]
+    [InlineData(DxpFieldEvalExportMode.Evaluate, false)]
+    [InlineData(DxpFieldEvalExportMode.Evaluate, true)]
+    public void IncludePictureFieldPreservesCachedImage(DxpFieldEvalExportMode mode, bool drawingResult)
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        using var fixture = System.IO.Compression.ZipFile.OpenRead(
+            Path.Combine(root, "fixtures", "docx", "samples", "TestLists.docx"));
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            var imagePart = main.AddImagePart(ImagePartType.Gif, "rIdImage");
+            using (var imageStream = imagePart.GetStream(FileMode.Create, FileAccess.Write))
+            using (var gifStream = fixture.GetEntry("word/media/image1.gif")!.Open())
+                gifStream.CopyTo(imageStream);
+
+            OpenXmlElement image;
+            if (drawingResult)
+            {
+                var drawing = new Drawing();
+                drawing.InnerXml =
+                    "<wp:inline xmlns:wp=\"http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing\" " +
+                    "xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" " +
+                    "xmlns:pic=\"http://schemas.openxmlformats.org/drawingml/2006/picture\" " +
+                    "xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\">" +
+                    "<wp:extent cx=\"914400\" cy=\"609600\"/><wp:docPr id=\"1\" name=\"Picture\"/>" +
+                    "<a:graphic><a:graphicData uri=\"http://schemas.openxmlformats.org/drawingml/2006/picture\">" +
+                    "<pic:pic><pic:nvPicPr><pic:cNvPr id=\"1\" name=\"Picture\"/><pic:cNvPicPr/></pic:nvPicPr>" +
+                    "<pic:blipFill><a:blip r:embed=\"rIdImage\"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill>" +
+                    "<pic:spPr><a:xfrm><a:off x=\"0\" y=\"0\"/><a:ext cx=\"914400\" cy=\"609600\"/></a:xfrm>" +
+                    "<a:prstGeom prst=\"rect\"><a:avLst/></a:prstGeom></pic:spPr></pic:pic>" +
+                    "</a:graphicData></a:graphic></wp:inline>";
+                image = drawing;
+            }
+            else
+            {
+                var picture = new Picture();
+                picture.InnerXml =
+                    "<v:shape xmlns:v=\"urn:schemas-microsoft-com:vml\" " +
+                    "xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" " +
+                    "style=\"width:72pt;height:48pt\"><v:imagedata r:id=\"rIdImage\"/></v:shape>";
+                image = picture;
+            }
+
+            main.Document = new Document(new Body(new Paragraph(
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                new Run(new FieldCode(" INCLUDEPICTURE image1.gif ")),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.Separate }),
+                new Run(image),
+                new Run(new FieldChar { FieldCharType = FieldCharValues.End }))));
+            main.Document.Save();
+        }
+
+        var bytes = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor(),
+            new DxpExportOptions { FieldEvalMode = mode });
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(bytes));
+        Assert.Single(pdf.GetPage(1).GetImages());
     }
 
     [Fact]

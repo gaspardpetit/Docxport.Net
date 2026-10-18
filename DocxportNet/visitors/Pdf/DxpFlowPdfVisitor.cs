@@ -26,7 +26,8 @@ using WordStyle = DocumentFormat.OpenXml.Wordprocessing.Style;
 
 namespace DocxportNet.Visitors.Pdf;
 
-public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpAllHeaderFooterVisitor
+public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpAllHeaderFooterVisitor,
+    IDxpCachedHyperlinkFieldVisitor
 {
     private const double CompactHeaderRowReductionPoints = 10.3;
     private const double EmptyParagraphAfterTableExtraPoints = 2.3;

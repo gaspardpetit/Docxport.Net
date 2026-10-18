@@ -16,6 +16,8 @@ internal sealed class DxpCachedFieldRouterFrame : DxpMiddleware, DxpIFieldEvalFr
     public override DxpIVisitor Next { get; }
 
     private readonly DxpFieldEvalContext _evalContext;
+    private readonly DxpFieldEval _eval;
+    private readonly bool _evaluateDateTimeFields;
     private readonly ILogger? _logger;
     private string? _instructionText;
     private bool _seenSeparate;
@@ -29,16 +31,20 @@ internal sealed class DxpCachedFieldRouterFrame : DxpMiddleware, DxpIFieldEvalFr
 
     public DxpCachedFieldRouterFrame(
         DxpIVisitor next,
+        DxpFieldEval eval,
         DxpFieldEvalContext evalContext,
         ILogger? logger,
+        bool evaluateDateTimeFields = false,
         bool initialInResult = false,
         bool initialSeenSeparate = false,
         string? initialInstructionText = null)
         : base()
     {
         Next = next ?? throw new ArgumentNullException(nameof(next));
+        _eval = eval ?? throw new ArgumentNullException(nameof(eval));
         _evalContext = evalContext ?? throw new ArgumentNullException(nameof(evalContext));
         _logger = logger;
+        _evaluateDateTimeFields = evaluateDateTimeFields;
         _inResult = initialInResult;
         _seenSeparate = initialSeenSeparate;
         _instructionText = initialInstructionText;
@@ -65,7 +71,8 @@ internal sealed class DxpCachedFieldRouterFrame : DxpMiddleware, DxpIFieldEvalFr
             _inResult = true;
         }
 
-        _delegate = FrameFactory.Create(_instructionText, Next, _evalContext, _logger);
+        _delegate = FrameFactory.Create(_instructionText, Next, _eval, _evalContext, _logger,
+            _evaluateDateTimeFields);
         _delegate.VisitComplexFieldSeparate(separate, d);
     }
 
@@ -102,7 +109,8 @@ internal sealed class DxpCachedFieldRouterFrame : DxpMiddleware, DxpIFieldEvalFr
 
         _inResult = true;
         _seenSeparate = true;
-        _delegate = FrameFactory.Create(_instructionText, Next, _evalContext, _logger);
+        _delegate = FrameFactory.Create(_instructionText, Next, _eval, _evalContext, _logger,
+            _evaluateDateTimeFields);
         var inner = _delegate.VisitSimpleFieldBegin(fld, d);
         return DxpDisposable.Create(() => {
             inner.Dispose();
@@ -125,6 +133,31 @@ internal sealed class DxpCachedFieldRouterFrame : DxpMiddleware, DxpIFieldEvalFr
         return DxpDisposable.Empty;
     }
 
+    public override IDisposable VisitLegacyPictureBegin(Picture picture, DxpIDocumentContext context)
+    {
+        if (_delegate == null || !_inResult)
+            return DxpDisposable.Empty;
+        _hasCachedResultContent = true;
+        return _delegate.VisitLegacyPictureBegin(picture, context);
+    }
+
+    public override IDisposable VisitDrawingBegin(Drawing drawing, DxpDrawingInfo? info,
+        DxpIDocumentContext context)
+    {
+        if (_delegate == null || !_inResult)
+            return DxpDisposable.Empty;
+        _hasCachedResultContent = true;
+        return _delegate.VisitDrawingBegin(drawing, info, context);
+    }
+
+    public override void VisitEmbeddedObject(EmbeddedObject embeddedObject, DxpIDocumentContext context)
+    {
+        if (_delegate == null || !_inResult)
+            return;
+        _hasCachedResultContent = true;
+        _delegate.VisitEmbeddedObject(embeddedObject, context);
+    }
+
     public override void VisitText(Text t, DxpIDocumentContext d)
     {
         if (_delegate != null && _inResult)
@@ -135,6 +168,15 @@ internal sealed class DxpCachedFieldRouterFrame : DxpMiddleware, DxpIFieldEvalFr
 
         if (!_inResult)
             AppendInstructionText(t.Text);
+    }
+
+    public override void VisitDeletedText(DeletedText deleted, DxpIDocumentContext context)
+    {
+        if (_delegate == null || !_inResult)
+            return;
+        if (!string.IsNullOrEmpty(deleted.Text))
+            _hasCachedResultContent = true;
+        _delegate.VisitDeletedText(deleted, context);
     }
 
     public override void VisitBreak(Break br, DxpIDocumentContext d)

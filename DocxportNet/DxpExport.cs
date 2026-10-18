@@ -521,7 +521,10 @@ public static class DxpExport
                         next,
                         provider.FieldEval,
                         includeCustomProperties: true,
-                        logger: logger)
+                        logger: logger,
+                        options: new DxpCachedFieldMiddlewareOptions {
+                            EvaluateDateTimeFields = options?.EvaluateDateTimeFieldsInCacheMode == true
+                        })
                     : DxpFieldEvalMiddleware.CreateEvaluatedFieldMiddleware(
                         next,
                         provider.FieldEval,
@@ -532,7 +535,11 @@ public static class DxpExport
                             PreserveReferenceFields = preserveDocxFields,
                             EmitStructuredDatabaseResults = visitor is DxpIPreserveLayoutFields,
                             FieldEvaluationFilter = options?.FieldEvaluationFilter ??
-                                (preserveDocxFields
+                                (visitor is DocxportNet.Visitors.Pdf.DxpFlowPdfVisitor
+                                    ? instruction => !DxpFieldInstructionClassifier.IsPageInstruction(instruction) &&
+                                        !DxpFieldInstructionClassifier.IsStyleRefInstruction(instruction) &&
+                                        !DxpFieldInstructionClassifier.IsHyperlinkInstruction(instruction)
+                                    : preserveDocxFields
                                     ? instruction =>
                                         !DxpFieldInstructionClassifier.IsIfInstruction(instruction) &&
                                         !DxpFieldInstructionClassifier.IsMergeFieldInstruction(instruction) &&
