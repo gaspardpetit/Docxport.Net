@@ -16,7 +16,7 @@ public sealed class PdfFlowExportTests
     [Fact]
     public void CapitalizesTextualListLabelsInPdf()
     {
-        GlobalFontSettings.UseWindowsFontsUnderWindows = true;
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
         var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
         var source = Path.Combine(root, "fixtures", "docx", "legacy",
             "WordVisibleTextualListFormatsAllStories.docx");
