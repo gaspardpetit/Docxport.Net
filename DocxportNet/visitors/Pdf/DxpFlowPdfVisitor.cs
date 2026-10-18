@@ -1766,6 +1766,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 ApplyLongJustifiedTrackedKerning(painted ?? finalDocument);
                 MatchElevenPointAptosPaint(painted ?? finalDocument);
                 DisableRasterInterpolation(painted ?? finalDocument);
+                ClipExactLineImages(renderer, painted ?? finalDocument);
                 using var annotatedFallback = RenderCommentAnnotations(renderer, painted ?? finalDocument);
                 using var formattedFallback = ApplyFormattingBalloons(renderer,
                     annotatedFallback ?? painted ?? finalDocument);
@@ -1784,6 +1785,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             using var combined = new PdfDocument();
             for (var index = 0; index < renderer.PageCount; index++)
                 combined.AddPage((index % 2 == 0 ? oddPages : evenPages).Pages[index]);
+            CopyNamedDestinations(oddPages, combined, pageIndex => pageIndex % 2 == 0);
+            CopyNamedDestinations(evenPages, combined, pageIndex => pageIndex % 2 == 1);
             RenderPageBorders(renderer, combined);
             RenderLineNumbers(renderer, combined);
             RenderTableFragmentBorders(renderer, combined);
@@ -1824,6 +1827,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             ApplyLongJustifiedTrackedKerning(finalCombined);
             MatchElevenPointAptosPaint(finalCombined);
             DisableRasterInterpolation(finalCombined);
+            ClipExactLineImages(renderer, finalCombined);
             using var annotatedFinal = RenderCommentAnnotations(renderer, finalCombined);
             using var formattedFinal = ApplyFormattingBalloons(renderer, annotatedFinal ?? finalCombined);
             DxpPdfHighlightOverlay.Save(formattedFinal ?? annotatedFinal ?? finalCombined,
@@ -8437,7 +8441,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         return annotated;
     }
 
-    private static void CopyNamedDestinations(PdfDocument source, PdfDocument destination)
+    private static void CopyNamedDestinations(PdfDocument source, PdfDocument destination,
+        Func<int, bool>? includePage = null)
     {
         var names = source.Internals.Catalog.Names?.NameTree;
         if (names == null) return;
@@ -8453,7 +8458,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     pageIndex = index;
                     break;
                 }
-            if (pageIndex < 0) continue;
+            if (pageIndex < 0 || includePage?.Invoke(pageIndex) == false) continue;
             static double? Number(PdfItem item) => item switch
             {
                 PdfReal real => real.Value,

@@ -1309,6 +1309,74 @@ public sealed class PdfFlowExportTests
     }
 
     [Fact]
+    public void KeepsNamedDestinationsWhenCombiningMirroredPages()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(
+                new Paragraph(new ParagraphProperties(new MirrorIndents()),
+                    new BookmarkStart { Name = "oddDestination", Id = "1" },
+                    new Run(new Text("First page")), new BookmarkEnd { Id = "1" },
+                    new Hyperlink(new Run(new Text("Next"))) { Anchor = "evenDestination" }),
+                new Paragraph(new Run(new Break { Type = BreakValues.Page }),
+                    new BookmarkStart { Name = "evenDestination", Id = "2" },
+                    new Run(new Text("Second page")), new BookmarkEnd { Id = "2" },
+                    new Hyperlink(new Run(new Text("Return"))) { Anchor = "oddDestination" })));
+        }
+
+        var result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = PdfReader.Open(new MemoryStream(result), PdfDocumentOpenMode.Import);
+        Assert.Equal(2, pdf.PageCount);
+        var names = pdf.Internals.Catalog.Names!.NameTree!.GetNames(true);
+        Assert.Contains("oddDestination", names);
+        Assert.Contains("evenDestination", names);
+    }
+
+    [Fact]
+    public void ClipsExactLineImageWhenCombiningMirroredPages()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "legacy", "WordImageStories.docx");
+        using var docx = new MemoryStream();
+        docx.Write(File.ReadAllBytes(source));
+        docx.Position = 0;
+        using (var word = WordprocessingDocument.Open(docx, true))
+        {
+            var body = word.MainDocumentPart!.Document.Body!;
+            var imageParagraph = body.Descendants<Paragraph>()
+                .First(paragraph => paragraph.Descendants<Drawing>().Any());
+            var properties = imageParagraph.ParagraphProperties ??
+                imageParagraph.PrependChild(new ParagraphProperties());
+            properties.Append(new MirrorIndents(),
+                new SpacingBetweenLines { Line = "200", LineRule = LineSpacingRuleValues.Exact });
+            var nextPage = new Paragraph(
+                new ParagraphProperties(new PageBreakBefore(), new MirrorIndents(),
+                    new SpacingBetweenLines { Line = "200", LineRule = LineSpacingRuleValues.Exact }),
+                new Run(imageParagraph.Descendants<Drawing>().First().CloneNode(true)),
+                new Run(new Text("Following page")));
+            body.InsertBefore(nextPage, body.GetFirstChild<SectionProperties>());
+            word.MainDocumentPart.Document.Save();
+        }
+
+        var result = DxpExport.ExportToBytes(docx.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = PdfReader.Open(new MemoryStream(result), PdfDocumentOpenMode.Import);
+        Assert.Equal(2, pdf.PageCount);
+        foreach (PdfPage page in pdf.Pages)
+            Assert.Contains(page.Contents.Elements.OfType<PdfSharp.Pdf.Advanced.PdfReference>()
+                .Where(reference => reference.Value is PdfSharp.Pdf.Advanced.PdfContent)
+                .Select(reference => (PdfSharp.Pdf.Advanced.PdfContent)reference.Value)
+                .Where(content => content.Stream != null)
+                .Select(content => System.Text.Encoding.Latin1.GetString(content.Stream!.UnfilteredValue)),
+                commands => commands.Contains(" re W n", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void AlignsSectionBodyWhenFootnotesExist()
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
