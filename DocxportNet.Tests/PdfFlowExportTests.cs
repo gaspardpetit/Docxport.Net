@@ -15,6 +15,153 @@ namespace DocxportNet.Tests;
 public sealed class PdfFlowExportTests
 {
     [Fact]
+    public void OmitsCommentStoriesAndAnnotationsByDefault()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "samples", "TestComments.docx");
+
+        var bytes = DxpExport.ExportToBytes(source, new DxpFlowPdfVisitor());
+
+        using var text = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(bytes));
+        Assert.Contains("BeforeComment", text.GetPage(1).Text);
+        Assert.DoesNotContain("FirstReply", text.GetPage(1).Text);
+        using var pdf = PdfReader.Open(new MemoryStream(bytes), PdfDocumentOpenMode.Import);
+        Assert.DoesNotContain(pdf.Pages.Cast<PdfPage>()
+            .SelectMany(page => page.Annotations.Cast<PdfSharp.Pdf.Annotations.PdfAnnotation>()),
+            annotation => annotation.Elements.GetName("/Subtype") is "/Text" or "/Highlight");
+    }
+
+    [Fact]
+    public void ExportsCommentThreadsAsLinkedPdfAnnotations()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "samples", "TestComments.docx");
+
+        var bytes = DxpExport.ExportToBytes(source, new DxpFlowPdfVisitor(includePdfComments: true));
+
+        using var pdf = PdfReader.Open(new MemoryStream(bytes), PdfDocumentOpenMode.Import);
+        var annotations = pdf.Pages.Cast<PdfPage>()
+            .SelectMany(page => page.Annotations.Cast<PdfSharp.Pdf.Annotations.PdfAnnotation>())
+            .ToArray();
+        Assert.Equal(6, annotations.Length);
+        var roots = annotations.Where(annotation => annotation.Elements.GetReference("/IRT") == null).ToArray();
+        Assert.Equal(2, roots.Length);
+        Assert.All(roots, annotation =>
+        {
+            Assert.Equal("/Highlight", annotation.Elements.GetName("/Subtype"));
+            Assert.Equal(8, annotation.Elements.GetArray("/QuadPoints")!.Elements.Count);
+        });
+        var first = Assert.Single(roots.Where(annotation => annotation.Contents == "Comment 1"));
+        var replies = annotations.Where(annotation => annotation.Elements.GetReference("/IRT") != null).ToArray();
+        Assert.Equal(4, replies.Length);
+        Assert.All(replies, reply =>
+        {
+            Assert.Equal("/Text", reply.Elements.GetName("/Subtype"));
+            Assert.Equal("/R", reply.Elements.GetName("/RT"));
+            Assert.Equal(first.Reference!.ObjectID, reply.Elements.GetReference("/IRT")!.ObjectID);
+        });
+    }
+
+    [Fact]
+    public void PlacesCommentAnnotationsOnTheirSourcePages()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "features", "CommentMultiPage.docx");
+
+        var bytes = DxpExport.ExportToBytes(source, new DxpFlowPdfVisitor(includePdfComments: true));
+
+        using var pdf = PdfReader.Open(new MemoryStream(bytes), PdfDocumentOpenMode.Import);
+        Assert.Equal(2, pdf.PageCount);
+        var first = Assert.Single(pdf.Pages[0].Annotations.Cast<PdfSharp.Pdf.Annotations.PdfAnnotation>());
+        var second = Assert.Single(pdf.Pages[1].Annotations.Cast<PdfSharp.Pdf.Annotations.PdfAnnotation>());
+        Assert.Contains("First page note", first.Contents);
+        Assert.Contains("Second page note", second.Contents);
+    }
+
+    [Fact]
+    public void ContinuesCommentHighlightAcrossPages()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "features", "CommentCrossPageRange.docx");
+
+        var bytes = DxpExport.ExportToBytes(source, new DxpFlowPdfVisitor(includePdfComments: true));
+
+        using var pdf = PdfReader.Open(new MemoryStream(bytes), PdfDocumentOpenMode.Import);
+        Assert.Equal(2, pdf.PageCount);
+        foreach (PdfPage page in pdf.Pages)
+        {
+            var highlight = Assert.Single(page.Annotations.Cast<PdfSharp.Pdf.Annotations.PdfAnnotation>());
+            Assert.Equal("/Highlight", highlight.Elements.GetName("/Subtype"));
+            Assert.Equal("Cross-page note", highlight.Contents);
+            Assert.Equal(8, highlight.Elements.GetArray("/QuadPoints")!.Elements.Count);
+        }
+    }
+
+    [Fact]
+    public void ExcludesRepeatedHeadersAndFootersFromCommentHighlight()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "features", "CommentThreePageRange.docx");
+
+        var bytes = DxpExport.ExportToBytes(source, new DxpFlowPdfVisitor(includePdfComments: true));
+
+        using var pdf = PdfReader.Open(new MemoryStream(bytes), PdfDocumentOpenMode.Import);
+        Assert.Equal(3, pdf.PageCount);
+        foreach (PdfPage page in pdf.Pages)
+        {
+            var highlight = Assert.Single(page.Annotations.Cast<PdfSharp.Pdf.Annotations.PdfAnnotation>());
+            Assert.Equal("/Highlight", highlight.Elements.GetName("/Subtype"));
+            Assert.Equal("Three-page note", highlight.Contents);
+            Assert.Equal(8, highlight.Elements.GetArray("/QuadPoints")!.Elements.Count);
+        }
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void LimitsCommentHighlightToItsTableCell(bool multiline)
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "features", "CommentMultiPage.docx");
+        using var stream = new MemoryStream();
+        stream.Write(File.ReadAllBytes(source));
+        stream.Position = 0;
+        using (var document = WordprocessingDocument.Open(stream, true))
+        {
+            var body = document.MainDocumentPart!.Document.Body!;
+            var paragraph = body.Elements<Paragraph>().First();
+            var left = (Paragraph)paragraph.CloneNode(true);
+            var rangeEnd = left.Descendants<CommentRangeEnd>().Single();
+            rangeEnd.Parent!.InsertBefore(new Run(new Text(" nearby extra phrase")), rangeEnd);
+            if (multiline)
+                rangeEnd.Parent!.InsertBefore(new Run(new Break(), new Text("Continuation")), rangeEnd);
+            var right = new Paragraph(new Run(new Text("Other column first line")),
+                new Run(new Break(), new Text("Other column second line")));
+            var table = new Table(
+                new TableProperties(new TableWidth { Width = "8000", Type = TableWidthUnitValues.Dxa }),
+                new TableGrid(new GridColumn { Width = "4000" }, new GridColumn { Width = "4000" }),
+                new TableRow(new TableCell(left), new TableCell(right)));
+            body.ReplaceChild(table, paragraph);
+            document.MainDocumentPart.Document.Save();
+        }
+
+        var bytes = DxpExport.ExportToBytes(stream.ToArray(),
+            new DxpFlowPdfVisitor(includePdfComments: true));
+        using var pdf = PdfReader.Open(new MemoryStream(bytes), PdfDocumentOpenMode.Import);
+        var highlight = Assert.Single(pdf.Pages[0].Annotations
+            .Cast<PdfSharp.Pdf.Annotations.PdfAnnotation>());
+        Assert.Equal("/Highlight", highlight.Elements.GetName("/Subtype"));
+        Assert.Equal(multiline ? 16 : 8, highlight.Elements.GetArray("/QuadPoints")!.Elements.Count);
+        Assert.True(highlight.Rectangle.X2 < 300);
+    }
+
+    [Fact]
     public void CapitalizesTextualListLabelsInPdf()
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
