@@ -2884,8 +2884,9 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     public override bool AcceptAlternateContentChoice(AlternateContentChoice choice,
         IReadOnlyList<string> required, DxpIDocumentContext context) =>
         required.Count > 0 && required.All(prefix => prefix == "wps") &&
-        choice.Descendants<TextBoxContent>().Any() &&
-        choice.Descendants().Any(element => element.LocalName == "wrapNone");
+        choice.Descendants<TextBoxContent>().Any(textBox => textBox.Ancestors<Drawing>().Any(drawing =>
+            drawing.Descendants().Any(element => element.LocalName is "anchor" or "inline" &&
+                element.ChildElements.Any(child => child.LocalName == "extent"))));
 
     public override IDisposable VisitTextBoxContentBegin(TextBoxContent textBox, DxpIDocumentContext context)
     {

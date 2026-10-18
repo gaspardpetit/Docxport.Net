@@ -1681,8 +1681,10 @@ public sealed class PdfFlowExportTests
         Assert.Contains(pdf.GetPages(), page => page.Letters.Any());
     }
 
-    [Fact]
-    public void RendersInlineDrawingTextBoxInAFrame()
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void RendersDrawingTextBoxWithoutVmlFallback(bool inlineDrawing)
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
         var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
@@ -1693,14 +1695,25 @@ public sealed class PdfFlowExportTests
         docx.Position = 0;
         using (var word = WordprocessingDocument.Open(docx, true))
         {
-            var drawing = word.MainDocumentPart!.Document.Descendants<Drawing>().First();
+            var alternate = word.MainDocumentPart!.Document.Descendants<AlternateContent>().First();
+            alternate.Elements<AlternateContentFallback>().First().Remove();
+            var drawing = alternate.Descendants<Drawing>().First();
             var anchor = drawing.ChildElements.First(element => element.LocalName == "anchor");
-            var inline = new DocumentFormat.OpenXml.Drawing.Wordprocessing.Inline();
-            foreach (var child in anchor.ChildElements)
-                if (child.LocalName is "extent" or "effectExtent" or "docPr" or
-                    "cNvGraphicFramePr" or "graphic")
-                    inline.Append(child.CloneNode(true));
-            drawing.ReplaceChild(inline, anchor);
+            if (inlineDrawing)
+            {
+                var inline = new DocumentFormat.OpenXml.Drawing.Wordprocessing.Inline();
+                foreach (var child in anchor.ChildElements)
+                    if (child.LocalName is "extent" or "effectExtent" or "docPr" or
+                        "cNvGraphicFramePr" or "graphic")
+                        inline.Append(child.CloneNode(true));
+                drawing.ReplaceChild(inline, anchor);
+            }
+            else
+            {
+                var wrap = anchor.ChildElements.First(element => element.LocalName == "wrapNone");
+                anchor.ReplaceChild(new DocumentFormat.OpenXml.Drawing.Wordprocessing.WrapSquare
+                    { WrapText = DocumentFormat.OpenXml.Drawing.Wordprocessing.WrapTextValues.BothSides }, wrap);
+            }
             word.MainDocumentPart.Document.Save();
         }
 
