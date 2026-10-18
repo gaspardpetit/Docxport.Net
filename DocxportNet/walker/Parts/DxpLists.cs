@@ -278,6 +278,9 @@ public static class DxpListMarkerFormatter
             string formatted = customWidth != null
                 ? cur.Value.ToString(CultureInfo.InvariantCulture).PadLeft(customWidth.Value, '0')
                 : FormatNumber(cur.Value, refFmt, culture);
+            if ((refFmt == NumberFormatValues.CardinalText || refFmt == NumberFormatValues.OrdinalText) &&
+                formatted.Length > 0)
+                formatted = char.ToUpper(formatted[0], culture ?? CultureInfo.CurrentCulture) + formatted.Substring(1);
 
             result = result.Replace(placeholder, formatted);
 
@@ -293,8 +296,30 @@ public static class DxpListMarkerFormatter
             return n.ToString(CultureInfo.InvariantCulture);
         if (fmt == NumberFormatValues.DecimalZero)
             return n < 10 ? "0" + n.ToString(CultureInfo.InvariantCulture) : n.ToString(CultureInfo.InvariantCulture);
+        if (fmt == NumberFormatValues.DecimalEnclosedCircle)
+            return n switch
+            {
+                0 => "\u24ea",
+                >= 1 and <= 20 => ((char)('\u2460' + n - 1)).ToString(),
+                >= 21 and <= 35 => ((char)('\u3251' + n - 21)).ToString(),
+                >= 36 and <= 50 => ((char)('\u32b1' + n - 36)).ToString(),
+                _ => n.ToString(CultureInfo.InvariantCulture)
+            };
+        if (fmt == NumberFormatValues.NumberInDash)
+            return "- " + n.ToString(CultureInfo.InvariantCulture) + " -";
+        if (fmt == NumberFormatValues.DecimalFullWidth || fmt == NumberFormatValues.DecimalFullWidth2)
+            return string.Concat(n.ToString(CultureInfo.InvariantCulture)
+                .Select(digit => digit is >= '0' and <= '9' ? (char)('０' + digit - '0') : digit));
+        if (fmt == NumberFormatValues.IdeographDigital)
+            return string.Concat(n.ToString(CultureInfo.InvariantCulture)
+                .Select(digit => digit is >= '0' and <= '9' ? "〇一二三四五六七八九"[digit - '0'] : digit));
         if (fmt == NumberFormatValues.Hex)
             return n.ToString("X", CultureInfo.InvariantCulture);
+        if (fmt == NumberFormatValues.Chicago && n > 0)
+        {
+            const string symbols = "*†‡§";
+            return FormatRepeatedSymbol(n, symbols);
+        }
         if (fmt == NumberFormatValues.UpperRoman)
             return ToRoman(n).ToUpperInvariant();
         if (fmt == NumberFormatValues.LowerRoman)
@@ -303,6 +328,10 @@ public static class DxpListMarkerFormatter
             return ToAlpha(n).ToUpperInvariant();
         if (fmt == NumberFormatValues.LowerLetter)
             return ToAlpha(n).ToLowerInvariant();
+        if (fmt == NumberFormatValues.RussianLower)
+            return ToRepeatedAlphabet(n, "абвгдежзиклмнопрстуфхцчшщыэюя");
+        if (fmt == NumberFormatValues.RussianUpper)
+            return ToRepeatedAlphabet(n, "АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЭЮЯ");
         if (fmt == NumberFormatValues.CardinalText)
             return ResolveNumberProvider(culture).ToCardinal(n);
         if (fmt == NumberFormatValues.OrdinalText)
@@ -345,6 +374,21 @@ public static class DxpListMarkerFormatter
             n /= 26;
         }
         return s;
+    }
+
+    private static string ToRepeatedAlphabet(int number, string alphabet)
+    {
+        if (number <= 0)
+            return number.ToString(CultureInfo.InvariantCulture);
+        return FormatRepeatedSymbol(number, alphabet);
+    }
+
+    private static string FormatRepeatedSymbol(int number, string symbols)
+    {
+        int repetitions = (number - 1) / symbols.Length + 1;
+        return repetitions > 256
+            ? number.ToString(CultureInfo.InvariantCulture)
+            : new string(symbols[(number - 1) % symbols.Length], repetitions);
     }
 
     private static string ToRoman(int number)

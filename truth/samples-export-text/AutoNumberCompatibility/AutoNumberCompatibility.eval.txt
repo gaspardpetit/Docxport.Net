@@ -48,46 +48,46 @@ A.AUTONUM level 0
 
 1-AUTONUM level 0
 
-1.AUTONUMLGL level 1
+5.AUTONUMLGL level 1
 --------------------
 
-1.1.AUTONUMLGL level 2
+5.1.AUTONUMLGL level 2
 ----------------------
 
-1.1.1.AUTONUMLGL level 3
+5.1.1.AUTONUMLGL level 3
 ------------------------
 
-1.1.1.1.AUTONUMLGL level 0
+5.1.1.1.AUTONUMLGL level 0
 
-2AUTONUMLGL level 1
+6AUTONUMLGL level 1
 -------------------
 
-2.1AUTONUMLGL level 2
+6.1AUTONUMLGL level 2
 ---------------------
 
-2.1.1AUTONUMLGL level 3
+6.1.1AUTONUMLGL level 3
 -----------------------
 
-2.1.1.1AUTONUMLGL level 0
+6.1.1.1AUTONUMLGL level 0
 
-3-AUTONUMLGL level 1
+7-AUTONUMLGL level 1
 --------------------
 
-3-1-AUTONUMLGL level 2
+7-1-AUTONUMLGL level 2
 ----------------------
 
-3-1-1-AUTONUMLGL level 3
+7-1-1-AUTONUMLGL level 3
 ------------------------
 
-3-1-1-1-AUTONUMLGL level 0
+7-1-1-1-AUTONUMLGL level 0
 
-I.AUTONUMOUT level 1
+VIII.AUTONUMOUT level 1
+-----------------------
+
+A.AUTONUMOUT level 2
 --------------------
 
-I.A.AUTONUMOUT level 2
-----------------------
+1.AUTONUMOUT level 3
+--------------------
 
-I.A.1.AUTONUMOUT level 3
-------------------------
-
-I.A.1.a.AUTONUMOUT level 0
+1.AUTONUMOUT level 0

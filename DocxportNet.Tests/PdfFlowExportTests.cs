@@ -14,6 +14,24 @@ namespace DocxportNet.Tests;
 public sealed class PdfFlowExportTests
 {
     [Fact]
+    public void CapitalizesTextualListLabelsInPdf()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "legacy",
+            "WordVisibleTextualListFormatsAllStories.docx");
+
+        var bytes = DxpExport.ExportToBytes(source, new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(bytes));
+        var page = pdf.GetPage(1);
+        Assert.Contains("One.", page.Text);
+        Assert.Contains("Two.", page.Text);
+        Assert.Contains("First.", page.Text);
+        Assert.Contains("Second.", page.Text);
+    }
+
+    [Fact]
     public void TracksSourceAndOffsetsAcrossMultipleParagraphFragments()
     {
         var fragments = new DxpPdfParagraphFragments();
