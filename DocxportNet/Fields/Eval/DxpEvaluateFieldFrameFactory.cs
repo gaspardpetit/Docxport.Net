@@ -13,7 +13,12 @@ internal sealed class DxpEvaluateFieldFrameFactory
         DxpFieldEvalContext context,
         ILogger? logger)
     {
+        if (string.IsNullOrWhiteSpace(instruction))
+            return new DxpPassthroughFieldEvalFrame(next);
         if (context.FieldEvaluationFilter?.Invoke(instruction) == false)
+            return new DxpPassthroughFieldEvalFrame(next);
+
+        if (DxpFieldInstructionClassifier.IsIncludePictureInstruction(instruction))
             return new DxpPassthroughFieldEvalFrame(next);
 
         if (context.PreserveLayoutDependentFields &&

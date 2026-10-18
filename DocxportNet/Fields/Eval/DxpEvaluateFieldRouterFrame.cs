@@ -162,6 +162,39 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         _events.Add(FieldEvent.Text(t));
     }
 
+    public override void VisitDeletedText(DeletedText deleted, DxpIDocumentContext context)
+    {
+        if (!_inResult)
+            return;
+        if (!string.IsNullOrEmpty(deleted.Text))
+            _cachedResult.Append(deleted.Text);
+        _cachedResultRecorder.VisitDeletedText(deleted, context);
+        _events.Add(FieldEvent.DeletedText(deleted));
+    }
+
+    public override IDisposable VisitLegacyPictureBegin(Picture picture, DxpIDocumentContext context)
+    {
+        if (!_inResult)
+            return DxpDisposable.Empty;
+        _events.Add(FieldEvent.PictureBegin(picture));
+        return DxpDisposable.Create(() => _events.Add(FieldEvent.PictureEnd()));
+    }
+
+    public override IDisposable VisitDrawingBegin(Drawing drawing, DxpDrawingInfo? info,
+        DxpIDocumentContext context)
+    {
+        if (!_inResult)
+            return DxpDisposable.Empty;
+        _events.Add(FieldEvent.DrawingBegin(drawing, info));
+        return DxpDisposable.Create(() => _events.Add(FieldEvent.DrawingEnd()));
+    }
+
+    public override void VisitEmbeddedObject(EmbeddedObject embeddedObject, DxpIDocumentContext context)
+    {
+        if (_inResult)
+            _events.Add(FieldEvent.EmbeddedObject(embeddedObject));
+    }
+
     public override void VisitBreak(Break br, DxpIDocumentContext d)
     {
         if (!_inResult)
@@ -327,6 +360,10 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
 
     private bool TryReplaySemanticExpression(DxpIDocumentContext context)
     {
+        if (string.IsNullOrWhiteSpace(InstructionText))
+            return false;
+        if (DxpFieldInstructionClassifier.IsIncludePictureInstruction(InstructionText))
+            return false;
         if (EvalContext.PreserveLayoutDependentFields &&
             (DxpFieldInstructionClassifier.IsHyperlinkInstruction(InstructionText) ||
              DxpFieldInstructionClassifier.IsDateTimeInstruction(InstructionText) ||
@@ -506,6 +543,14 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         public static FieldEvent HyperlinkBegin(Hyperlink link, DxpLinkAnchor? target) => new(FieldEventKind.HyperlinkBegin, link, target);
         public static FieldEvent HyperlinkEnd() => new(FieldEventKind.HyperlinkEnd);
         public static FieldEvent Text(Text text) => new(FieldEventKind.Text, text);
+        public static FieldEvent DeletedText(DeletedText text) => new(FieldEventKind.DeletedText, text);
+        public static FieldEvent PictureBegin(Picture picture) => new(FieldEventKind.PictureBegin, picture);
+        public static FieldEvent PictureEnd() => new(FieldEventKind.PictureEnd);
+        public static FieldEvent DrawingBegin(Drawing drawing, DxpDrawingInfo? info) =>
+            new(FieldEventKind.DrawingBegin, drawing, info);
+        public static FieldEvent DrawingEnd() => new(FieldEventKind.DrawingEnd);
+        public static FieldEvent EmbeddedObject(EmbeddedObject embeddedObject) =>
+            new(FieldEventKind.EmbeddedObject, embeddedObject);
         public static FieldEvent CachedResultText(string text) => new(FieldEventKind.CachedResultText, text);
         public static FieldEvent Break(Break br) => new(FieldEventKind.Break, br);
         public static FieldEvent Tab(TabChar tab) => new(FieldEventKind.Tab, tab);
@@ -547,6 +592,26 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
                     break;
                 case FieldEventKind.Text:
                     visitor.VisitText((Text)Data1!, d);
+                    break;
+                case FieldEventKind.DeletedText:
+                    visitor.VisitDeletedText((DeletedText)Data1!, d);
+                    break;
+                case FieldEventKind.PictureBegin:
+                    scopes.Push(visitor.VisitLegacyPictureBegin((Picture)Data1!, d));
+                    break;
+                case FieldEventKind.PictureEnd:
+                    if (scopes.Count > 0)
+                        scopes.Pop().Dispose();
+                    break;
+                case FieldEventKind.DrawingBegin:
+                    scopes.Push(visitor.VisitDrawingBegin((Drawing)Data1!, (DxpDrawingInfo?)Data2, d));
+                    break;
+                case FieldEventKind.DrawingEnd:
+                    if (scopes.Count > 0)
+                        scopes.Pop().Dispose();
+                    break;
+                case FieldEventKind.EmbeddedObject:
+                    visitor.VisitEmbeddedObject((EmbeddedObject)Data1!, d);
                     break;
                 case FieldEventKind.CachedResultText:
                     visitor.VisitComplexFieldCachedResultText((string)Data1!, d);
@@ -599,6 +664,12 @@ internal sealed class DxpEvaluateFieldRouterFrame : DxpMiddleware, DxpIFieldEval
         HyperlinkBegin,
         HyperlinkEnd,
         Text,
+        DeletedText,
+        PictureBegin,
+        PictureEnd,
+        DrawingBegin,
+        DrawingEnd,
+        EmbeddedObject,
         CachedResultText,
         Break,
         Tab,

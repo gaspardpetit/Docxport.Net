@@ -65,6 +65,8 @@ public sealed class DxpExportOptions
     /// </summary>
     public DxpDocxFieldPolicy? DocxFieldPolicy { get; set; }
     public Func<string?, bool>? FieldEvaluationFilter { get; set; }
+    /// <summary>Refresh DATE and TIME fields while preserving all other cached field results.</summary>
+    public bool EvaluateDateTimeFieldsInCacheMode { get; set; }
     /// <summary>
     /// Optional progress reporter. Supplying one enables a lightweight paragraph-counting pre-pass.
     /// </summary>
