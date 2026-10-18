@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Buffers.Binary;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
 
@@ -11,17 +12,18 @@ internal static class DocSystemFontAdvances
         new(StringComparer.OrdinalIgnoreCase);
 
     public static DocOpenTypeAdvances? Find(string? family, bool bold = false,
-        bool italic = false)
+        bool italic = false, bool includeCloudFonts = true)
     {
         if (string.IsNullOrWhiteSpace(family)) return null;
         var face = family + (bold && italic ? " Bold Italic" :
             bold ? " Bold" : italic ? " Italic" : "");
         var directory = Environment.GetEnvironmentVariable("DOCXPORT_FONT_DIRECTORY");
-        return Cache.GetOrAdd((directory ?? "") + "|" + face, _ =>
-            new Lazy<DocOpenTypeAdvances?>(() => Load(face, directory))).Value;
+        return Cache.GetOrAdd((directory ?? "") + "|" + includeCloudFonts + "|" + face, _ =>
+            new Lazy<DocOpenTypeAdvances?>(() => Load(face, directory, includeCloudFonts))).Value;
     }
 
-    private static DocOpenTypeAdvances? Load(string family, string? overrideDirectory)
+    private static DocOpenTypeAdvances? Load(string family, string? overrideDirectory,
+        bool includeCloudFonts)
     {
         try
         {
@@ -46,15 +48,39 @@ internal static class DocSystemFontAdvances
             })
             {
                 using var key = hive.OpenSubKey(fontsKey);
-                var matchingName = key?.GetValueNames().FirstOrDefault(name =>
-                    name.Equals(family + " (TrueType)", StringComparison.OrdinalIgnoreCase) ||
-                    name.Equals(family + " (OpenType)", StringComparison.OrdinalIgnoreCase));
-                if (matchingName == null || key!.GetValue(matchingName) is not string file)
-                    continue;
-                var path = Path.IsPathRooted(file) ? file : Path.Combine(directory, file);
-                if (File.Exists(path))
-                    return new DocOpenTypeAdvances(File.ReadAllBytes(path));
+                if (key == null) continue;
+                foreach (var name in key.GetValueNames())
+                {
+                    var suffix = name.EndsWith(" (TrueType)", StringComparison.OrdinalIgnoreCase)
+                        ? " (TrueType)" : name.EndsWith(" (OpenType)", StringComparison.OrdinalIgnoreCase)
+                            ? " (OpenType)" : null;
+                    if (suffix == null) continue;
+                    var faces = name.Substring(0, name.Length - suffix.Length)
+                        .Split(new[] { " & " }, StringSplitOptions.None);
+                    var faceIndex = Array.FindIndex(faces, face =>
+                        face.Equals(family, StringComparison.OrdinalIgnoreCase));
+                    if (faceIndex < 0 || key.GetValue(name) is not string file) continue;
+                    var path = Path.IsPathRooted(file) ? file : Path.Combine(directory, file);
+                    if (File.Exists(path))
+                        return new DocOpenTypeAdvances(File.ReadAllBytes(path), faceIndex);
+                }
             }
+            var cache = Path.Combine(Environment.GetFolderPath(
+                Environment.SpecialFolder.LocalApplicationData), "Microsoft", "FontCache");
+            if (includeCloudFonts && Directory.Exists(cache))
+                foreach (var version in Directory.GetDirectories(cache))
+                {
+                    var folder = Path.Combine(version, "CloudFonts", family.Replace(" Bold Italic", "")
+                        .Replace(" Bold", "").Replace(" Italic", ""));
+                    if (!Directory.Exists(folder)) continue;
+                    foreach (var path in Directory.GetFiles(folder, "*.ttf").OrderBy(path => path))
+                    {
+                        var bytes = File.ReadAllBytes(path);
+                        if (MatchesStyle(bytes, family.Contains(" Bold", StringComparison.Ordinal),
+                            family.EndsWith(" Italic", StringComparison.Ordinal)))
+                            return new DocOpenTypeAdvances(bytes);
+                    }
+                }
             return null;
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or
@@ -62,5 +88,22 @@ internal static class DocSystemFontAdvances
         {
             return null;
         }
+    }
+
+    private static bool MatchesStyle(byte[] bytes, bool bold, bool italic)
+    {
+        if (bytes.Length < 12) return false;
+        var count = BinaryPrimitives.ReadUInt16BigEndian(bytes.AsSpan(4, 2));
+        for (var index = 0; index < count && 12 + (index + 1) * 16 <= bytes.Length; index++)
+        {
+            var record = bytes.AsSpan(12 + index * 16, 16);
+            if (!record.Slice(0, 4).SequenceEqual("OS/2"u8)) continue;
+            var offset = BinaryPrimitives.ReadUInt32BigEndian(record.Slice(8, 4));
+            if (offset > bytes.Length - 64) return false;
+            var weight = BinaryPrimitives.ReadUInt16BigEndian(bytes.AsSpan((int)offset + 4, 2));
+            var flags = BinaryPrimitives.ReadUInt16BigEndian(bytes.AsSpan((int)offset + 62, 2));
+            return weight == (bold ? 700 : 400) && ((flags & 1) != 0) == italic;
+        }
+        return false;
     }
 }

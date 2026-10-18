@@ -40,11 +40,19 @@
 	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(LoggingAbstractionsPackageVersion)" />
   <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
 	  <PackageReference Include="OpenMcdf" Version="3.3.0" />
+	  <PackageReference Include="PdfPig" Version="0.1.16" />
+	  <PackageReference Include="StbImageSharp" Version="2.30.16" />
+	  <PackageReference Include="StbImageWriteSharp" Version="1.16.7" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(PdfSharpSourceRoot)' != ''">
 	  <ProjectReference Include="$(PdfSharpSourceRoot)/src/foundation/src/PDFsharp/src/PdfSharp/PdfSharp.csproj" />
 	  <ProjectReference Include="$(PdfSharpSourceRoot)/src/foundation/src/MigraDoc/src/MigraDoc.Rendering/MigraDoc.Rendering.csproj" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+	  <Compile Remove="visitors/Pdf/**" />
+	  <Compile Include="visitors/Pdf/DxpPdfVisitor.cs" />
 	</ItemGroup>
 
 </Project>
