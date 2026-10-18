@@ -318,7 +318,7 @@ public static class DxpListMarkerFormatter
         if (fmt == NumberFormatValues.Chicago && n > 0)
         {
             const string symbols = "*†‡§";
-            return new string(symbols[(n - 1) % symbols.Length], (n - 1) / symbols.Length + 1);
+            return FormatRepeatedSymbol(n, symbols);
         }
         if (fmt == NumberFormatValues.UpperRoman)
             return ToRoman(n).ToUpperInvariant();
@@ -380,8 +380,15 @@ public static class DxpListMarkerFormatter
     {
         if (number <= 0)
             return number.ToString(CultureInfo.InvariantCulture);
-        return new string(alphabet[(number - 1) % alphabet.Length],
-            (number - 1) / alphabet.Length + 1);
+        return FormatRepeatedSymbol(number, alphabet);
+    }
+
+    private static string FormatRepeatedSymbol(int number, string symbols)
+    {
+        int repetitions = (number - 1) / symbols.Length + 1;
+        return repetitions > 256
+            ? number.ToString(CultureInfo.InvariantCulture)
+            : new string(symbols[(number - 1) % symbols.Length], repetitions);
     }
 
     private static string ToRoman(int number)
