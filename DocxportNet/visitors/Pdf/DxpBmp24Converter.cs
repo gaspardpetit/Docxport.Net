@@ -19,7 +19,7 @@ internal static class DxpBmp24Converter
     public static byte[] Transform(byte[] bitmap, double rotationDegrees, bool flipHorizontal, bool flipVertical)
     {
         var sourceTurns = (int)Math.Round(rotationDegrees / 90.0) % 4;
-        var quarterTurns = (4 - sourceTurns) % 4;
+        var quarterTurns = (sourceTurns + 4) % 4;
         if (Math.Abs(rotationDegrees - sourceTurns * 90.0) > 0.001 ||
             quarterTurns == 0 && !flipHorizontal && !flipVertical)
             return bitmap;
@@ -104,9 +104,6 @@ internal static class DxpBmp24Converter
         BinaryPrimitives.WriteUInt16LittleEndian(output.AsSpan(28), 24);
         BinaryPrimitives.WriteInt32LittleEndian(output.AsSpan(34), destinationStride * height);
         var rlePixels = compression == 1 ? DecodeRle8(dib, pixelOffset, width, height) : null;
-        var rle4Presence = BinaryPrimitives.ReadUInt32LittleEndian(bitmap.AsSpan(30)) == 2
-            ? DecodeRle4Presence(bitmap, BinaryPrimitives.ReadInt32LittleEndian(bitmap.AsSpan(10)), width, height)
-            : null;
         var redMask = compression == 3 ? BinaryPrimitives.ReadUInt32LittleEndian(dib.AsSpan(40)) : bits == 16 ? 0x7C00u : 0x00FF0000u;
         var greenMask = compression == 3 ? BinaryPrimitives.ReadUInt32LittleEndian(dib.AsSpan(44)) : bits == 16 ? 0x03E0u : 0x0000FF00u;
         var blueMask = compression == 3 ? BinaryPrimitives.ReadUInt32LittleEndian(dib.AsSpan(48)) : bits == 16 ? 0x001Fu : 0x000000FFu;
@@ -118,7 +115,6 @@ internal static class DxpBmp24Converter
                 var target = 54 + row * destinationStride + column * 3;
                 if (bits <= 8)
                 {
-                    if (rle4Presence != null && !rle4Presence[row * width + column]) continue;
                     var index = rlePixels != null ? rlePixels[row * width + column] :
                         bits == 8 ? dib[source + column] :
                         bits == 4 ? (dib[source + column / 2] >> (column % 2 == 0 ? 4 : 0)) & 15 :
@@ -185,42 +181,4 @@ internal static class DxpBmp24Converter
         }
     }
 
-    private static bool[] DecodeRle4Presence(byte[] bitmap, int offset, int width, int height)
-    {
-        var present = new bool[checked(width * height)];
-        var column = 0;
-        var row = 0;
-        while (offset + 1 < bitmap.Length)
-        {
-            var count = bitmap[offset++];
-            var value = bitmap[offset++];
-            if (count > 0)
-            {
-                for (var index = 0; index < count; index++) Mark();
-            }
-            else if (value == 0) { column = 0; row++; }
-            else if (value == 1) return present;
-            else if (value == 2)
-            {
-                if (offset + 1 >= bitmap.Length) throw new InvalidDataException("Truncated BMP RLE delta.");
-                column += bitmap[offset++];
-                row += bitmap[offset++];
-            }
-            else
-            {
-                var packetBytes = (value + 1) / 2;
-                if (offset + packetBytes + packetBytes % 2 > bitmap.Length)
-                    throw new InvalidDataException("Truncated BMP RLE run.");
-                for (var index = 0; index < value; index++) Mark();
-                offset += packetBytes + packetBytes % 2;
-            }
-        }
-        throw new InvalidDataException("BMP RLE stream has no end marker.");
-
-        void Mark()
-        {
-            if (column >= width || row >= height) throw new InvalidDataException("BMP RLE pixel exceeds its bounds.");
-            present[row * width + column++] = true;
-        }
-    }
 }

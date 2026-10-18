@@ -2,6 +2,8 @@ using AngleSharp.Dom;
 using AngleSharp.Html.Parser;
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
+using StbImageSharp;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace DocxportNet.Visitors.Pdf;
@@ -12,30 +14,51 @@ internal static class DxpHtmlChunkImporter
         "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4//8/AwAI/AL+p5qgoAAAAABJRU5ErkJggg==";
 
     internal static void Append(Section section, Stream stream, string bodyFont,
-        Action<Table, double, double, double>? onBorderedTable = null)
+        Action<Table, double, double, double>? onBorderedTable = null, string? contentType = null)
+        => Append(section.Elements, stream, bodyFont, onBorderedTable, contentType);
+
+    internal static void Append(DocumentElements elements, Stream stream, string bodyFont,
+        Action<Table, double, double, double>? onBorderedTable = null, string? contentType = null)
     {
-        using var reader = new StreamReader(stream);
-        var document = new HtmlParser().ParseDocument(reader.ReadToEnd());
+        var parser = new HtmlParser();
+        AngleSharp.Html.Dom.IHtmlDocument document;
+        if (DeclaredEncoding(contentType) is { } encoding)
+        {
+            using var reader = new StreamReader(stream, encoding,
+                detectEncodingFromByteOrderMarks: true);
+            document = parser.ParseDocument(reader.ReadToEnd());
+        }
+        else document = parser.ParseDocument(stream);
         if (document.Body == null) return;
-        var initialCount = section.Elements.Count;
+        var initialCount = elements.Count;
         foreach (var child in document.Body.ChildNodes)
-            AppendBlock(section, child, bodyFont, initialCount, onBorderedTable);
+            AppendBlock(elements, child, bodyFont, initialCount, onBorderedTable);
     }
 
-    private static void AppendBlock(Section section, INode node, string bodyFont, int initialCount,
+    internal static Encoding? DeclaredEncoding(string? contentType)
+    {
+        var charset = Regex.Match(contentType ?? "", @"(?:^|;)\s*charset\s*=\s*['"" ]?(?<name>[^;'""\s]+)",
+            RegexOptions.IgnoreCase).Groups["name"].Value;
+        if (charset.Length == 0) return null;
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        try { return Encoding.GetEncoding(charset); }
+        catch (ArgumentException) { return null; }
+    }
+
+    private static void AppendBlock(DocumentElements elements, INode node, string bodyFont, int initialCount,
         Action<Table, double, double, double>? onBorderedTable)
     {
         if (node is not IElement element)
         {
             if (!string.IsNullOrWhiteSpace(node.TextContent))
-                AppendParagraph(section, node, null, initialCount);
+                AppendParagraph(elements, node, null, initialCount);
             return;
         }
 
         var tag = element.LocalName.ToLowerInvariant();
         if (tag == "table")
         {
-            AppendTable(section, element, bodyFont, onBorderedTable);
+            AppendTable(elements, element, bodyFont, onBorderedTable);
             return;
         }
         if (tag is "ul" or "ol")
@@ -43,7 +66,7 @@ internal static class DxpHtmlChunkImporter
             var items = element.Children.Where(child => child.LocalName == "li").ToArray();
             for (var index = 0; index < items.Length; index++)
             {
-                var paragraph = section.AddParagraph();
+                var paragraph = elements.AddParagraph();
                 paragraph.Format.Font.Name = bodyFont;
                 paragraph.Format.Font.Size = Unit.FromPoint(12);
                 paragraph.Format.LeftIndent = Unit.FromPoint(18);
@@ -65,25 +88,50 @@ internal static class DxpHtmlChunkImporter
             element.Children.Any(child => IsBlock(child.LocalName)))
         {
             foreach (var child in element.ChildNodes)
-                AppendBlock(section, child, bodyFont, initialCount, onBorderedTable);
+                AppendBlock(elements, child, bodyFont, initialCount, onBorderedTable);
             return;
         }
         if (IsBlock(tag))
-            AppendParagraph(section, element, tag, initialCount);
+            AppendParagraph(elements, element, tag, initialCount);
         else if (!string.IsNullOrWhiteSpace(element.TextContent))
-            AppendParagraph(section, element, null, initialCount);
+            AppendParagraph(elements, element, null, initialCount);
     }
 
     private static bool IsBlock(string tag)
         => tag is "p" or "div" or "ul" or "ol" or "table" or "h1" or "h2" or "h3" or "h4" or "h5" or "h6";
 
-    private static void AppendTable(Section section, IElement element, string bodyFont,
+    private static void AppendTable(DocumentElements elements, IElement element, string bodyFont,
         Action<Table, double, double, double>? onBorderedTable)
     {
         var sourceRows = element.QuerySelectorAll("tr")
+            .Where(row => ReferenceEquals(row.Closest("table"), element))
             .Select(row => row.Children.Where(cell => cell.LocalName is "td" or "th").ToArray())
-            .Where(cells => cells.Length > 0).ToArray();
+            .ToArray();
         if (sourceRows.Length == 0) return;
+        var occupied = new List<int>();
+        var cellGrid = new List<(IElement Source, int Column, int Width, int Height)>[sourceRows.Length];
+        var columnCount = 0;
+        for (var rowIndex = 0; rowIndex < sourceRows.Length; rowIndex++)
+        {
+            var cells = cellGrid[rowIndex] = new List<(IElement, int, int, int)>();
+            var column = 0;
+            foreach (var sourceCell in sourceRows[rowIndex])
+            {
+                var width = Span(sourceCell, "colspan");
+                while (Enumerable.Range(column, width)
+                           .Any(index => index < occupied.Count && occupied[index] > 0)) column++;
+                var height = Math.Min(Span(sourceCell, "rowspan"), sourceRows.Length - rowIndex);
+                cells.Add((sourceCell, column, width, height));
+                while (occupied.Count < column + width) occupied.Add(0);
+                for (var span = 0; span < width; span++)
+                    occupied[column + span] = Math.Max(occupied[column + span], height);
+                column += width;
+            }
+            columnCount = Math.Max(columnCount, occupied.Count);
+            for (var index = 0; index < occupied.Count; index++)
+                if (occupied[index] > 0) occupied[index]--;
+        }
+        if (columnCount == 0) return;
         var border = element.HasAttribute("border")
             ? ParsePixels(element.GetAttribute("border"), 1) * 0.72 : 0;
         var spacing = ParsePixels(element.GetAttribute("cellspacing"), 2) * 0.75;
@@ -92,7 +140,7 @@ internal static class DxpHtmlChunkImporter
         var paddingAdjustment = separateCells ? padding - 3 : 0;
         var spacingAdjustment = separateCells ? spacing - 1.5 : 0;
         var borderAdjustment = separateCells ? border - 0.72 : 0;
-        var table = section.AddTable();
+        var table = elements.AddTable();
         table.Rows.LeftIndent = Unit.FromPoint(-6);
         table.LeftPadding = Unit.FromPoint(Math.Max(0, 5.3 - borderAdjustment -
             (separateCells && spacing == 0 ? border / 2 : 0)));
@@ -107,27 +155,29 @@ internal static class DxpHtmlChunkImporter
             if (separateCells)
                 onBorderedTable!(table, border, spacing, padding);
         }
-        var columnCount = sourceRows.Max(cells => cells.Length);
         for (var column = 0; column < columnCount; column++)
             table.AddColumn(Unit.FromPoint(60 + 2 * paddingAdjustment + spacingAdjustment));
-        foreach (var sourceCells in sourceRows)
+        for (var rowIndex = 0; rowIndex < sourceRows.Length; rowIndex++)
         {
             var row = table.AddRow();
-            row.HeightRule = RowHeightRule.Exactly;
+            row.HeightRule = RowHeightRule.AtLeast;
             row.Height = Unit.FromPoint(33.24 + 2 * paddingAdjustment +
                 spacingAdjustment - borderAdjustment);
-            for (var column = 0; column < sourceCells.Length; column++)
+        }
+        for (var rowIndex = 0; rowIndex < cellGrid.Length; rowIndex++)
+            foreach (var (sourceCell, column, width, height) in cellGrid[rowIndex])
             {
-                var cell = row.Cells[column];
+                var cell = table.Rows[rowIndex].Cells[column];
+                cell.MergeRight = width - 1;
+                cell.MergeDown = height - 1;
                 var paragraph = cell.AddParagraph();
                 if (column > 0) paragraph.Format.LeftIndent = Unit.FromPoint(-0.84);
                 paragraph.Format.Font.Name = bodyFont;
                 paragraph.Format.Font.Size = Unit.FromPoint(12);
-                paragraph.Format.Font.Bold = sourceCells[column].LocalName == "th";
-                AppendInline(paragraph, sourceCells[column], false, false, false);
+                paragraph.Format.Font.Bold = sourceCell.LocalName == "th";
+                AppendInline(paragraph, sourceCell, false, false, false);
             }
-        }
-        var spacer = section.AddParagraph();
+        var spacer = elements.AddParagraph();
         spacer.Format.SpaceAfter = Unit.FromPoint((element.NextElementSibling == null ? 12.67 : 1.7) +
             spacingAdjustment + borderAdjustment);
     }
@@ -138,11 +188,15 @@ internal static class DxpHtmlChunkImporter
             double.IsFinite(pixels) && pixels >= 0
             ? pixels : fallback;
 
-    private static void AppendParagraph(Section section, INode node, string? tag,
+    private static int Span(IElement element, string attribute) =>
+        int.TryParse(element.GetAttribute(attribute), out var span) && span > 0
+            ? Math.Min(span, 64) : 1;
+
+    private static void AppendParagraph(DocumentElements elements, INode node, string? tag,
         int initialCount)
     {
-        var firstImportedParagraph = section.Elements.Count == initialCount;
-        var paragraph = section.AddParagraph();
+        var firstImportedParagraph = elements.Count == initialCount;
+        var paragraph = elements.AddParagraph();
         paragraph.Format.Font.Name = "Times New Roman";
         paragraph.Format.Font.Size = Unit.FromPoint(tag switch
         {
@@ -180,14 +234,33 @@ internal static class DxpHtmlChunkImporter
                 var match = Regex.Match(source,
                     @"^data:image/(?:png|jpeg);base64,(?<data>[A-Za-z0-9+/=]+)$",
                     RegexOptions.IgnoreCase);
-                if (!double.TryParse(element.GetAttribute("width"),
+                var hasWidth = double.TryParse(element.GetAttribute("width"),
                         System.Globalization.NumberStyles.Float,
-                        System.Globalization.CultureInfo.InvariantCulture, out var widthPixels) ||
-                    !double.TryParse(element.GetAttribute("height"),
+                        System.Globalization.CultureInfo.InvariantCulture, out var widthPixels) &&
+                    double.IsFinite(widthPixels) && widthPixels > 0;
+                var hasHeight = double.TryParse(element.GetAttribute("height"),
                         System.Globalization.NumberStyles.Float,
-                        System.Globalization.CultureInfo.InvariantCulture, out var heightPixels) ||
-                    widthPixels <= 0 || heightPixels <= 0)
-                    return;
+                        System.Globalization.CultureInfo.InvariantCulture, out var heightPixels) &&
+                    double.IsFinite(heightPixels) && heightPixels > 0;
+                if (!hasWidth || !hasHeight)
+                {
+                    if (!match.Success) return;
+                    try
+                    {
+                        var intrinsic = ImageResult.FromMemory(
+                            Convert.FromBase64String(match.Groups["data"].Value),
+                            StbImageSharp.ColorComponents.RedGreenBlueAlpha);
+                        if (!hasWidth) widthPixels = hasHeight
+                            ? heightPixels * intrinsic.Width / intrinsic.Height : intrinsic.Width;
+                        if (!hasHeight) heightPixels = hasWidth
+                            ? widthPixels * intrinsic.Height / intrinsic.Width : intrinsic.Height;
+                    }
+                    catch (Exception exception) when (exception is FormatException or InvalidDataException or
+                        ArgumentException or OutOfMemoryException)
+                    {
+                        return;
+                    }
+                }
                 var image = paragraph.AddImage("base64:" +
                     (match.Success ? match.Groups["data"].Value : MissingImagePixel));
                 image.Width = Unit.FromPoint(widthPixels * 0.75);

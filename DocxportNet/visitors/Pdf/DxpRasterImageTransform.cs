@@ -56,7 +56,12 @@ internal static class DxpRasterImageTransform
             var pixelHeight = rotationDegrees == 0 && !flipHorizontal && !flipVertical
                 ? Math.Max(1, (int)Math.Round(input.Height * visibleHeight))
                 : Math.Max(1, (int)Math.Ceiling(height * density));
-            if (pixelWidth > 4096 || pixelHeight > 4096) return null;
+            var scale = Math.Min(1.0, 4096.0 / Math.Max(pixelWidth, pixelHeight));
+            if (scale < 1)
+            {
+                pixelWidth = Math.Max(1, (int)Math.Round(pixelWidth * scale));
+                pixelHeight = Math.Max(1, (int)Math.Round(pixelHeight * scale));
+            }
             var pixels = new byte[checked(pixelWidth * pixelHeight * 4)];
             for (var row = 0; row < pixelHeight; row++)
             {

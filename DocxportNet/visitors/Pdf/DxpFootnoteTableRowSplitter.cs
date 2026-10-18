@@ -6,6 +6,41 @@ namespace DocxportNet.Visitors.Pdf;
 
 internal static class DxpFootnoteTableRowSplitter
 {
+    internal static bool TrySplitAfterParagraphs(Row row, int firstFragmentParagraphs,
+        out Row? firstFragment, out Row? continuation)
+    {
+        firstFragment = null;
+        continuation = null;
+        if (firstFragmentParagraphs < 1 || row.Cells.Count == 0 ||
+            row.Cells.Cast<Cell>().Any(cell => cell.MergeRight > 0 || cell.MergeDown > 0 ||
+                cell.Elements.Count <= firstFragmentParagraphs ||
+                cell.Elements.Cast<DocumentObject>().Any(element => element is not Paragraph)))
+            return false;
+
+        var first = (Row)row.Clone();
+        var second = (Row)row.Clone();
+        for (var index = 0; index < row.Cells.Count; index++)
+        {
+            var firstCell = first.Cells[index];
+            var secondCell = second.Cells[index];
+            for (var elementIndex = firstCell.Elements.Count - 1;
+                 elementIndex >= firstFragmentParagraphs; elementIndex--)
+                firstCell.Elements.RemoveObjectAt(elementIndex);
+            for (var elementIndex = firstFragmentParagraphs - 1; elementIndex >= 0; elementIndex--)
+                secondCell.Elements.RemoveObjectAt(elementIndex);
+            if (secondCell.Elements[0] is Paragraph firstContinuation)
+                firstContinuation.Format.SpaceBefore = Unit.Zero;
+            firstCell.Borders.Bottom.Visible = false;
+            secondCell.Borders.Top.Visible = false;
+        }
+        first.Borders.Bottom.Visible = false;
+        second.Borders.Top.Visible = false;
+        second.HeadingFormat = false;
+        firstFragment = first;
+        continuation = second;
+        return true;
+    }
+
     internal static bool TrySplit(Row row, IReadOnlyList<int> firstFragmentWords,
         out Row? firstFragment, out Row? continuation, int paragraphIndex = 0)
     {

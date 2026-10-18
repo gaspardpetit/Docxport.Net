@@ -83,9 +83,9 @@ internal static class DxpTiffConverter
             {
                 var source = (row * width + column) * pixelBytes;
                 var target = 54 + row * stride + column * 3;
-                bitmap[target] = Sample(source);
+                bitmap[target] = Sample(source + 2 * bytesPerSample);
                 bitmap[target + 1] = Sample(source + bytesPerSample);
-                bitmap[target + 2] = Sample(source + 2 * bytesPerSample);
+                bitmap[target + 2] = Sample(source);
             }
         return bitmap;
 

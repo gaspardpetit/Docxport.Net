@@ -26,8 +26,7 @@ using WordStyle = DocumentFormat.OpenXml.Wordprocessing.Style;
 
 namespace DocxportNet.Visitors.Pdf;
 
-public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpAllHeaderFooterVisitor,
-    IDxpCachedHyperlinkFieldVisitor
+public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpAllHeaderFooterVisitor
 {
     private const double CompactHeaderRowReductionPoints = 10.3;
     private const double EmptyParagraphAfterTableExtraPoints = 2.3;
@@ -43,6 +42,9 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private const double CommentLineSegmentGapPoints = 60;
     private const double TocEmptyParagraphClearancePoints = 2.2;
     private const double RepeatingTableFooterClearancePoints = 35;
+    private const double ContinuedFootnoteClearancePoints = 25.5;
+    private const double MarkupFootnoteSeparatorClearancePoints = 8;
+    private const double DenseFootnoteBodyClearancePoints = 50;
     private const double DenseTrackedLayoutAllowancePoints = 1;
     private const double ClassicAptosStoryClearancePoints = 0.55;
     private const double EmptyModernDefaultsBodyClearancePoints = 0.2;
@@ -54,11 +56,10 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
          Environment.GetEnvironmentVariable("DOCXPORT_DIAG_BASIC_CONTOUR") == "1");
     private readonly string _fontFamily;
     private readonly string? _cjkFontFamily;
-    private readonly IReadOnlySet<string> _availableFontFamilies;
+    private readonly ISet<string> _availableFontFamilies;
     private readonly Func<char, string?>? _chineseFallbackFont;
-    private readonly DxpFieldEval _fieldEval = new(options: new DxpFieldEvalOptions {
-        UseMarginStoryMergeFieldPlaceholders = true
-    });
+    private readonly DxpFieldEval _fieldEval = new();
+    private readonly DxpPdfParagraphFragments _paragraphFragments = new();
     private readonly Dictionary<Section, PageBorders> _pageBorders = new();
     private readonly Dictionary<Section, LineNumberType> _sectionLineNumbers = new();
     private readonly HashSet<MigraDoc.DocumentObjectModel.Paragraph> _sourceBodyParagraphs = new();
@@ -76,6 +77,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         (MigraDoc.DocumentObjectModel.Tables.Table Table, DxpComputedBorder Border)>
         _floatingContinuationTopBorders = new();
     private readonly Dictionary<MigraDoc.DocumentObjectModel.Shapes.TextFrame, double> _textBoxRotations = new();
+    private readonly Dictionary<MigraDoc.DocumentObjectModel.Shapes.TextFrame,
+        MigraDoc.DocumentObjectModel.Paragraph> _notBesideFrameFollowers = new();
     private readonly HashSet<MigraDoc.DocumentObjectModel.Shapes.TextFrame> _verticallyCenteredTextBoxes = new();
     private readonly HashSet<MigraDoc.DocumentObjectModel.Shapes.TextFrame> _clippedTextBoxes = new();
     private readonly List<(Section Section, MigraDoc.DocumentObjectModel.Shapes.TextFrame Frame,
@@ -90,6 +93,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private readonly bool _includePdfComments;
     private readonly bool _includeRevisionMarkup;
     private readonly XColor _revisionMarkupColor;
+    private readonly XColor _revisionDeletionColor;
     private bool _insideInsertedRun;
     private bool _insideDeletedRun;
     private bool _insideMoveToRun;
@@ -109,8 +113,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private readonly HashSet<MigraDoc.DocumentObjectModel.Paragraph> _trackedLayoutParagraphs = new();
     private readonly HashSet<DocumentFormat.OpenXml.Wordprocessing.Paragraph> _tableOpeningSpacingTransferred = new();
     private readonly HashSet<MigraDoc.DocumentObjectModel.Tables.Table> _noAutoSpacingTables = new();
-    private readonly Dictionary<MigraDoc.DocumentObjectModel.Paragraph,
-        DocumentFormat.OpenXml.Wordprocessing.Paragraph> _styleRefBodyParagraphs = new();
     private readonly List<(string StyleName, string CachedText)> _styleRefHeaders = new();
     private readonly HashSet<MigraDoc.DocumentObjectModel.Paragraph> _suppressedLineNumberParagraphs = new();
     private readonly HashSet<Section> _footerTableDistanceApplied = new();
@@ -166,6 +168,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private readonly HashSet<MigraDoc.DocumentObjectModel.Paragraph> _revisionParagraphs = new();
     private readonly Dictionary<MigraDoc.DocumentObjectModel.Paragraph, List<string>>
         _formattingBalloons = new();
+    private readonly Dictionary<string, int> _changedFieldUrls = new(StringComparer.Ordinal);
     private readonly Dictionary<MigraDoc.DocumentObjectModel.Paragraph, HashSet<int>>
         _strikeTabBoundaries = new();
     private readonly Dictionary<MigraDoc.DocumentObjectModel.Paragraph, List<TextEffectRange>>
@@ -254,13 +257,17 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private readonly HashSet<MigraDoc.DocumentObjectModel.Paragraph> _cjkNumberedBodyParagraphs = new();
     private readonly Dictionary<MigraDoc.DocumentObjectModel.Paragraph, (string Family, double Rise)> _bulletBaselineParagraphs = new();
     private readonly Dictionary<int, MigraDoc.DocumentObjectModel.Paragraph> _footnoteReferences = new();
+    private readonly Dictionary<int, string> _footnoteLabels = new();
+    private readonly HashSet<int> _customFootnoteMarks = new();
+    private readonly Dictionary<int, int> _footnoteSectionStarts = new();
     private readonly Dictionary<MigraDoc.DocumentObjectModel.Paragraph,
         MigraDoc.DocumentObjectModel.Paragraph> _footnoteSplitContinuations = new();
-    private readonly List<(int Index, MigraDoc.DocumentObjectModel.Paragraph Paragraph)> _footnoteParagraphs = new();
+    private readonly List<(int Index, MigraDoc.DocumentObjectModel.Paragraph Paragraph, int PageOffset)> _footnoteParagraphs = new();
     private int? _activeFootnoteIndex;
     private readonly HashSet<Section> _headersWithStyledEmptyLine = new();
     private readonly HashSet<Section> _headersWithMarginAnchoredWrap = new();
     private readonly Dictionary<Section, double> _headerRunBorderClearances = new();
+    private readonly Dictionary<Section, string> _verticallyAlignedSections = new();
     private readonly HashSet<Section> _sectionsWithLinkedHeaders = new();
     private readonly HashSet<DocumentFormat.OpenXml.Wordprocessing.Paragraph> _bodyParagraphsUnderHeaderWrap = new();
     private readonly HashSet<Section> _headersWithStyledTrailingLine = new();
@@ -297,6 +304,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private FloatingTextWrap? _activeFloatingTextWrap;
     private readonly List<MigraDoc.DocumentObjectModel.Paragraph> _mirroredParagraphs = new();
     private readonly List<DxpPdfHighlight> _highlights = new();
+    private readonly Dictionary<MigraDoc.DocumentObjectModel.Paragraph, (StringBuilder Text,
+        int NormalizedLength)> _highlightParagraphTexts = new();
     private readonly HashSet<string> _noBreakWords = new(StringComparer.Ordinal);
     private readonly List<MigraDoc.DocumentObjectModel.Paragraph> _noBreakParagraphs = new();
     private readonly HashSet<MigraDoc.DocumentObjectModel.Paragraph> _superscriptHeaderParagraphs = new();
@@ -503,6 +512,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private int? _activeEndnoteIndex;
     private readonly Dictionary<long, int> _endnoteOrdinals = new();
     private readonly Dictionary<int, string> _endnoteLabels = new();
+    private readonly HashSet<int> _customEndnoteMarks = new();
+    private readonly Dictionary<int, int> _endnoteSectionStarts = new();
     private readonly Dictionary<long, Section> _endnoteSections = new();
     private readonly HashSet<Section> _endnoteSeparatorSections = new();
     private readonly HashSet<int> _endnoteDestinationOrdinals = new();
@@ -513,7 +524,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     public DxpFlowPdfVisitor(string fontFamily = "Arial", string? cjkFontFamily = null,
         IEnumerable<string>? availableFontFamilies = null,
         Func<char, string?>? chineseFallbackFont = null, bool includePdfComments = false,
-        bool includeRevisionMarkup = false, XColor? revisionMarkupColor = null) : base(null)
+        bool includeRevisionMarkup = false, XColor? revisionMarkupColor = null,
+        XColor? revisionDeletionColor = null) : base(null)
     {
         _fontFamily = fontFamily;
         _cjkFontFamily = cjkFontFamily;
@@ -522,6 +534,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _includePdfComments = includePdfComments;
         _includeRevisionMarkup = includeRevisionMarkup;
         _revisionMarkupColor = revisionMarkupColor ?? XColor.FromArgb(209, 52, 56);
+        _revisionDeletionColor = revisionDeletionColor ?? XColor.FromArgb(209, 52, 56);
     }
 
     private static string? ReadMinorThemeLatinFont(WordprocessingDocument document)
@@ -552,9 +565,34 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
 
     public override void SetOutput(Stream stream) => _output = stream;
 
+    private bool HasInheritedParagraphFlag(HashSet<MigraDoc.DocumentObjectModel.Paragraph> flags,
+        MigraDoc.DocumentObjectModel.Paragraph paragraph)
+        => _paragraphFragments.HasInheritedFlag(flags, paragraph);
+
+    private bool TryGetInheritedParagraphValue<T>(
+        Dictionary<MigraDoc.DocumentObjectModel.Paragraph, T> values,
+        MigraDoc.DocumentObjectModel.Paragraph paragraph, out T value)
+        => _paragraphFragments.TryGetInheritedValue(values, paragraph, out value!);
+
+    private T GetInheritedParagraphValueOrDefault<T>(
+        Dictionary<MigraDoc.DocumentObjectModel.Paragraph, T> values,
+        MigraDoc.DocumentObjectModel.Paragraph paragraph)
+        => TryGetInheritedParagraphValue(values, paragraph, out var value) ? value : default!;
+
     private PdfDocumentRenderer CreatePdfRenderer(MigraDoc.DocumentObjectModel.Document document)
     {
         var renderer = new PdfDocumentRenderer { Document = document };
+        foreach (var frame in _behindTextBoxes)
+            frame.Layer = MigraDoc.DocumentObjectModel.Shapes.TextFrameLayer.BehindContent;
+        foreach (var frame in _aboveContentTextBoxes)
+            frame.Layer = MigraDoc.DocumentObjectModel.Shapes.TextFrameLayer.AboveContent;
+        foreach (var frame in _clippedTextBoxes)
+            frame.ClipContent = true;
+        foreach (var (frame, rotation) in _textBoxRotations)
+            frame.Rotation = rotation;
+        if (Environment.GetEnvironmentVariable("DOCXPORT_PAGINATE_FLOATING_TABLES") != "0")
+            foreach (var frame in _floatingTableFrames)
+                frame.PaginateContent = true;
         if ((_splitOverpageTables.Count > 0 || _tableFragmentBorders.Count > 0) &&
             typeof(DocumentRenderer).GetProperty("TableFragmentTopBorderWidth") is { } fragmentBorderOption)
             fragmentBorderOption.SetValue(renderer.DocumentRenderer,
@@ -562,16 +600,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     (table, startRow) => startRow > 0 && _splitOverpageTables.Contains(table)
                         ? Math.Max(0.5, FragmentTopBorderReservation(table, startRow) ?? 0)
                         : FragmentTopBorderReservation(table, startRow)));
-        if (_behindTextBoxes.Count > 0)
-            typeof(DocumentRenderer).GetProperty("TextFrameBehindContent")?.SetValue(
-                renderer.DocumentRenderer,
-                new Func<MigraDoc.DocumentObjectModel.Shapes.TextFrame, bool>(
-                    frame => _behindTextBoxes.Contains(frame)));
-        if (_aboveContentTextBoxes.Count > 0)
-            typeof(DocumentRenderer).GetProperty("TextFrameAboveContent")?.SetValue(
-                renderer.DocumentRenderer,
-                new Func<MigraDoc.DocumentObjectModel.Shapes.TextFrame, bool>(
-                    frame => _aboveContentTextBoxes.Contains(frame)));
         if (SupportsContourLayout)
             typeof(DocumentRenderer).GetProperty("WrapContour")?.SetValue(renderer.DocumentRenderer,
                 new Func<MigraDoc.DocumentObjectModel.Shapes.Shape, IReadOnlyList<XPoint>?>(
@@ -601,23 +629,32 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     if (leader is MigraDoc.DocumentObjectModel.TabLeader.Heavy or
                         MigraDoc.DocumentObjectModel.TabLeader.Lines)
                     {
-                        if (_positionalLeaderParagraphs.Contains(paragraph)) return (0.001, 4, 2.03);
-                        return (0.001, 0, _footerLeaderParagraphs.Contains(paragraph) ? 3.43 : 1);
+                        if (HasInheritedParagraphFlag(_positionalLeaderParagraphs, paragraph))
+                            return (0.001, 4, 2.03);
+                        return (0.001, 0,
+                            HasInheritedParagraphFlag(_footerLeaderParagraphs, paragraph) ? 3.43 : 1);
                     }
                     if (leader == MigraDoc.DocumentObjectModel.TabLeader.Dashes)
-                        return (0.001, 0, _positionalLeaderParagraphs.Contains(paragraph) ? 0 :
-                            _clearedTabLeaderParagraphs.Contains(paragraph) ? 3.69 : 2.3);
+                        return (0.001, 0,
+                            HasInheritedParagraphFlag(_positionalLeaderParagraphs, paragraph) ? 0 :
+                            HasInheritedParagraphFlag(_clearedTabLeaderParagraphs, paragraph) ? 3.69 : 2.3);
                     if (leader == MigraDoc.DocumentObjectModel.TabLeader.MiddleDot &&
-                        _positionalLeaderParagraphs.Contains(paragraph)) return (0.0523, 0, 3.24);
+                        HasInheritedParagraphFlag(_positionalLeaderParagraphs, paragraph))
+                        return (0.0523, 0, 3.24);
                     if (leader != MigraDoc.DocumentObjectModel.TabLeader.Dots) return null;
-                    if (_tocLeaderParagraphs.Contains(paragraph)) return (0.0523, 0.2, 0.6);
-                    if (_positionalLeaderParagraphs.Contains(paragraph)) return (0.0523, 0, 3.24);
-                    return (0.0523, 0, _footerLeaderParagraphs.Contains(paragraph) ? 0.8 : 2.3);
+                    if (HasInheritedParagraphFlag(_tocLeaderParagraphs, paragraph))
+                        return (0.0523, 0.2, 0.6);
+                    if (HasInheritedParagraphFlag(_positionalLeaderParagraphs, paragraph))
+                        return (0.0523, 0, 3.24);
+                    return (0.0523, 0,
+                        HasInheritedParagraphFlag(_footerLeaderParagraphs, paragraph) ? 0.8 : 2.3);
                 }));
         typeof(DocumentRenderer).GetProperty("AllowClosingPunctuationOverhang")?
             .SetValue(renderer.DocumentRenderer, true);
-        typeof(DocumentRenderer).GetProperty("EnableTopBottomExclusion")?
-            .SetValue(renderer.DocumentRenderer, true);
+        typeof(DocumentRenderer).GetProperty("TopBottomExclusion")?
+            .SetValue(renderer.DocumentRenderer,
+                new Func<MigraDoc.DocumentObjectModel.Shapes.Shape, bool>(
+                    shape => shape is MigraDoc.DocumentObjectModel.Shapes.Image));
         if (typeof(DocumentRenderer).GetProperty("LineEndOverhang") is { } overhangProperty &&
             overhangProperty.PropertyType ==
                 typeof(Func<MigraDoc.DocumentObjectModel.Paragraph, string, XFont, double?>))
@@ -625,12 +662,12 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 new Func<MigraDoc.DocumentObjectModel.Paragraph, string, XFont, double?>(
                      (paragraph, word, font) =>
                      {
-                         if (_narrowJustifiedBodyParagraphs.Contains(paragraph) &&
+                         if (HasInheritedParagraphFlag(_narrowJustifiedBodyParagraphs, paragraph) &&
                              font.FontFamily.Name == "Aptos" && font.Size == 12 &&
                              GetPairedClosingMarkOverhang(word, font) is { } paired)
                              return paired;
                          return GetLineEndOverhang(paragraph, word, font,
-                             _twoWordOverhangParagraphs.Contains(paragraph)) ??
+                             HasInheritedParagraphFlag(_twoWordOverhangParagraphs, paragraph)) ??
                              (_stylelessBodyParagraphSpacing && _sourceBodyParagraphs.Contains(paragraph)
                                  ? GetStylelessFullStopOverhang(word, font) : null);
                      }));
@@ -641,14 +678,16 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             hangingSpaceOption.SetValue(renderer.DocumentRenderer,
                 new Func<MigraDoc.DocumentObjectModel.Paragraph, string, XFont, double?>(
                      (paragraph, word, font) => GetHangingTerminalLineSpaceThreshold(
-                         paragraph.Format.Alignment, _twoWordOverhangParagraphs.Contains(paragraph),
+                         paragraph.Format.Alignment,
+                         HasInheritedParagraphFlag(_twoWordOverhangParagraphs, paragraph),
                          word, font.FontFamily.Name)));
         if (Environment.GetEnvironmentVariable("DOCXPORT_DIAG_HANGING_MARK_PAIR_SPACES") == "1" &&
             typeof(DocumentRenderer).GetProperty("HangingTerminalLineNearEdgeThreshold") is { } nearEdgeOption)
             nearEdgeOption.SetValue(renderer.DocumentRenderer,
                 new Func<MigraDoc.DocumentObjectModel.Paragraph, string, XFont, double?>(
                     (paragraph, word, font) => GetHangingTerminalLineNearEdgeThreshold(
-                        paragraph.Format.Alignment, _twoWordOverhangParagraphs.Contains(paragraph),
+                        paragraph.Format.Alignment,
+                        HasInheritedParagraphFlag(_twoWordOverhangParagraphs, paragraph),
                         word, font.FontFamily.Name)));
         if (Environment.GetEnvironmentVariable("DOCXPORT_DIAG_NONTERMINAL_CJK_HANG_SPACE") == "1" &&
             typeof(DocumentRenderer).GetProperty("HangingNonterminalLineSpaceLimit") is { } nonterminalOption)
@@ -698,7 +737,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     new Func<MigraDoc.DocumentObjectModel.Paragraph, string, XFont, double?>(
                         (paragraph, word, font) =>
                         {
-                            if (implicitTableWidths && _implicitTableParagraphs.Contains(paragraph) &&
+                            if (implicitTableWidths &&
+                                HasInheritedParagraphFlag(_implicitTableParagraphs, paragraph) &&
                                 string.Equals(font.FontFamily.Name, "Aptos", StringComparison.OrdinalIgnoreCase) &&
                                 metrics.TryMeasure(word, font.Size, out var advance))
                             {
@@ -716,8 +756,9 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                                     kernedAdvance = Math.Min(kernedAdvance, plainAdvance);
                                 return kernedAdvance - measure.MeasureString(word, font).Width;
                             }
-                            return trackedWidths && _trackedLayoutParagraphs.Contains(paragraph) ||
-                                frameWidths && _frameWidthParagraphs.Contains(paragraph)
+                            return trackedWidths &&
+                                HasInheritedParagraphFlag(_trackedLayoutParagraphs, paragraph) ||
+                                frameWidths && HasInheritedParagraphFlag(_frameWidthParagraphs, paragraph)
                                 ? Adjustment(word, font.FontFamily.Name, font.Size) : null;
                         }));
                 _positionedLayoutApplied = trackedWidths;
@@ -730,23 +771,10 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 _positionedLayoutApplied = true;
             }
         }
-        if (Environment.GetEnvironmentVariable("DOCXPORT_PAGINATE_FLOATING_TABLES") != "0" &&
-            typeof(DocumentRenderer).GetProperty("PaginateTextFrame") is { } paginateOption)
-            paginateOption.SetValue(renderer.DocumentRenderer,
-                new Func<MigraDoc.DocumentObjectModel.Shapes.TextFrame, bool>(
-                    frame => _floatingTableFrames.Contains(frame)));
-        if (typeof(DocumentRenderer).GetProperty("TextFrameRotation") is { } rotationOption)
-            rotationOption.SetValue(renderer.DocumentRenderer,
-                new Func<MigraDoc.DocumentObjectModel.Shapes.TextFrame, double?>(
-                    frame => _textBoxRotations.TryGetValue(frame, out var angle) ? angle : null));
         if (typeof(DocumentRenderer).GetProperty("CenterTextFrameContentVertically") is { } centerOption)
             centerOption.SetValue(renderer.DocumentRenderer,
                 new Func<MigraDoc.DocumentObjectModel.Shapes.TextFrame, bool>(
                     frame => _verticallyCenteredTextBoxes.Contains(frame)));
-        if (typeof(DocumentRenderer).GetProperty("ClipTextFrameContent") is { } clipOption)
-            clipOption.SetValue(renderer.DocumentRenderer,
-                new Func<MigraDoc.DocumentObjectModel.Shapes.TextFrame, bool>(
-                    frame => _clippedTextBoxes.Contains(frame)));
         if (typeof(DocumentRenderer).GetProperty("BreakOversizedNoBreakGroup") is { } emergencyOption)
             emergencyOption.SetValue(renderer.DocumentRenderer,
                 new Func<MigraDoc.DocumentObjectModel.Paragraph, bool>(
@@ -763,7 +791,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             paragraphShrinkOption.SetValue(renderer.DocumentRenderer,
                 new Func<MigraDoc.DocumentObjectModel.Paragraph, double?>(
                     paragraph => shrinkSetting is null &&
-                        _justifiedShrinkFactors.TryGetValue(paragraph, out var factor)
+                        TryGetInheritedParagraphValue(_justifiedShrinkFactors, paragraph, out var factor)
                         ? factor : shrinkFactor));
         else if (shrinkSetting != "0" &&
             typeof(DocumentRenderer).GetProperty("JustifiedSpaceShrinkFactor") is { } shrinkOption)
@@ -777,7 +805,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                         if (!_sourceBodyParagraphs.Contains(paragraph) ||
                             !string.Equals(font.FontFamily.Name, "Aptos", StringComparison.OrdinalIgnoreCase))
                             return null;
-                        if (_narrowJustifiedBodyParagraphs.Contains(paragraph))
+                        if (HasInheritedParagraphFlag(_narrowJustifiedBodyParagraphs, paragraph))
                             return Environment.GetEnvironmentVariable("DOCXPORT_DIAG_APTOS_COMMA_QUOTE_KERN") == "1" &&
                                 word.EndsWith(",\u201D", StringComparison.Ordinal)
                                 ? aptosAdvances.LegacyKerningAdjustment(',', '\u201D', font.Size) : null;
@@ -843,7 +871,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             renderOnlyKerningOption.SetValue(renderer.DocumentRenderer,
                 new Func<MigraDoc.DocumentObjectModel.Paragraph, string, XFont, double?>(
                      (paragraph, word, font) => paragraph.Format.Alignment == ParagraphAlignment.Left &&
-                         _twoWordOverhangParagraphs.Contains(paragraph) &&
+                         HasInheritedParagraphFlag(_twoWordOverhangParagraphs, paragraph) &&
                          word.Length >= 2 && word[^2] == '.' && word[^1] is ('\u2019' or '\u201d')
                         ? font.FontFamily.Name switch
                         {
@@ -879,7 +907,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 new Func<MigraDoc.DocumentObjectModel.Paragraph, IReadOnlyList<XFont>, double?>(
                     (paragraph, fonts) =>
                         _rubyGuides.ContainsKey(paragraph) ? 1 :
-                        _exactCjkLineParagraphs.Contains(paragraph) &&
+                        HasInheritedParagraphFlag(_exactCjkLineParagraphs, paragraph) &&
                         !fonts.Any(font => font.FontFamily.Name.StartsWith("Yu Mincho",
                             StringComparison.OrdinalIgnoreCase)) ? -3.16 :
                         exactImageBaselineOffset is double imageBaseline &&
@@ -887,8 +915,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                         exactImageBaselineAuto && _exactLineImages.FirstOrDefault(item =>
                             ReferenceEquals(item.Paragraph, paragraph)).LineHeight is > 0 and var imageLineHeight
                             ? imageLineHeight * 0.0119 :
-                        _exactStylelessImplicitAptosParagraphs.Contains(paragraph) ? -2.11 :
-                        _exactStylelessPlainParagraphs.Contains(paragraph) ? -0.89 : null));
+                        HasInheritedParagraphFlag(_exactStylelessImplicitAptosParagraphs, paragraph) ? -2.11 :
+                        HasInheritedParagraphFlag(_exactStylelessPlainParagraphs, paragraph) ? -0.89 : null));
         var useRubyOverflowBaseline =
             Environment.GetEnvironmentVariable("DOCXPORT_DIAG_RUBY_OVERFLOW_BASELINE") == "1";
         var rubyBaselineOffset = 0.0;
@@ -922,7 +950,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         if (typeof(DocumentRenderer).GetProperty("ExactFontBaselineOffset") is { } fontBaselineOption)
             fontBaselineOption.SetValue(renderer.DocumentRenderer,
                 new Func<MigraDoc.DocumentObjectModel.Paragraph, XFont, double?>(
-                    (paragraph, font) => _exactCjkLineParagraphs.Contains(paragraph) &&
+                    (paragraph, font) => HasInheritedParagraphFlag(_exactCjkLineParagraphs, paragraph) &&
                         font.FontFamily.Name.StartsWith("Yu Mincho", StringComparison.OrdinalIgnoreCase)
                         ? 1.34 : Environment.GetEnvironmentVariable("DOCXPORT_DIAG_ARIAL_EXACT_BASELINE") == "1" &&
                             !_documentHasPositionalTabs &&
@@ -933,7 +961,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             typeof(DocumentRenderer).GetProperty("ExactFinalLineHeight") is { } finalHeightOption)
             finalHeightOption.SetValue(renderer.DocumentRenderer,
                 new Func<MigraDoc.DocumentObjectModel.Paragraph, IReadOnlyList<XFont>, double?>(
-                    (paragraph, fonts) => _exactCjkLineParagraphs.Contains(paragraph) &&
+                    (paragraph, fonts) => HasInheritedParagraphFlag(_exactCjkLineParagraphs, paragraph) &&
                         !fonts.Any(font => font.FontFamily.Name.StartsWith("Yu Mincho",
                             StringComparison.OrdinalIgnoreCase)) ? 16.94 : null));
         if (Environment.GetEnvironmentVariable("DOCXPORT_DIAG_CJK_MIXED_LINE_METRICS") == "1" &&
@@ -941,7 +969,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             mixedMetricsOption.SetValue(renderer.DocumentRenderer,
                 new Func<MigraDoc.DocumentObjectModel.Paragraph, XFont,
                     (double LineHeight, double InherentLineSpace)?>(
-                    (paragraph, font) => _mixedFullWidthPunctuationParagraphs.Contains(paragraph) &&
+                    (paragraph, font) =>
+                        HasInheritedParagraphFlag(_mixedFullWidthPunctuationParagraphs, paragraph) &&
                         font.FontFamily.Name.Equals("MS Mincho", StringComparison.OrdinalIgnoreCase) &&
                         font.Size == 12 && paragraph.Format.LineSpacingRule != LineSpacingRule.Exactly
                         ? (18.0878, 15.4484) : null));
@@ -950,7 +979,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             topBorderOption.SetValue(renderer.DocumentRenderer,
                 new Func<MigraDoc.DocumentObjectModel.Paragraph, int, double, double?>(
                     (paragraph, pageNumber, areaY) => pageNumber > 1 &&
-                        _directBorderParagraphs.TryGetValue(paragraph,
+                        TryGetInheritedParagraphValue(_directBorderParagraphs, paragraph,
                             out var source) &&
                         source.ParagraphProperties?.ParagraphBorders is { } currentBorders &&
                         source.PreviousSibling<DocumentFormat.OpenXml.Wordprocessing.Paragraph>()?
@@ -1165,6 +1194,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _activeEndnoteIndex = null;
         _endnoteOrdinals.Clear();
         _endnoteLabels.Clear();
+        _customEndnoteMarks.Clear();
+        _endnoteSectionStarts.Clear();
         _endnoteSections.Clear();
         _endnoteSeparatorSections.Clear();
         _endnoteDestinationOrdinals.Clear();
@@ -1195,6 +1226,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _insideMoveToRun = false;
         _insideMoveFromRun = false;
         _textBoxRotations.Clear();
+        _notBesideFrameFollowers.Clear();
         _verticallyCenteredTextBoxes.Clear();
         _clippedTextBoxes.Clear();
         _foregroundTextBoxes.Clear();
@@ -1210,7 +1242,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _footerLeaderParagraphs.Clear();
         _clearedTabLeaderParagraphs.Clear();
         _narrowJustifiedBodyParagraphs.Clear();
-        _styleRefBodyParagraphs.Clear();
+        _paragraphFragments.Clear();
+        _tableOpeningSpacingTransferred.Clear();
         _styleRefHeaders.Clear();
         _suppressedLineNumberParagraphs.Clear();
         _footerTableDistanceApplied.Clear();
@@ -1227,6 +1260,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _htmlBevelTables.Clear();
         _tableFragmentBorders.Clear();
         _splitOverpageTables.Clear();
+        _noAutoSpacingTables.Clear();
+        _emergencyBreakParagraphs.Clear();
         _nestedFragmentBorderGroups.Clear();
         _diagonalCells.Clear();
         _rotatedCells.Clear();
@@ -1244,6 +1279,28 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _revisionUnderlineRanges.Clear();
         _revisionParagraphs.Clear();
         _formattingBalloons.Clear();
+        _changedFieldUrls.Clear();
+        if (_includeRevisionMarkup && doc.MainDocumentPart is { } mainPart)
+        {
+            var roots = new List<OpenXmlElement>();
+            if (mainPart.Document != null) roots.Add(mainPart.Document);
+            roots.AddRange(mainPart.HeaderParts.Select(part => part.Header).OfType<OpenXmlElement>());
+            roots.AddRange(mainPart.FooterParts.Select(part => part.Footer).OfType<OpenXmlElement>());
+            if (mainPart.FootnotesPart?.Footnotes is { } footnotes) roots.Add(footnotes);
+            if (mainPart.EndnotesPart?.Endnotes is { } endnotes) roots.Add(endnotes);
+            foreach (var run in roots.SelectMany(root => root.Descendants<Run>()))
+            {
+                if (run.RunProperties?.GetFirstChild<RunPropertiesChange>() == null ||
+                    run.GetFirstChild<FieldCode>() is not { } fieldCode) continue;
+                var fieldText = fieldCode.Text ?? fieldCode.InnerText;
+                var parsed = new DxpFieldParser().Parse(fieldText).Ast;
+                if (string.Equals(parsed.FieldType, "HYPERLINK", StringComparison.OrdinalIgnoreCase) &&
+                    DxpFieldTokenization.TryGetFirstToken(parsed.ArgumentsText, out var target) &&
+                    Uri.TryCreate(target, UriKind.Absolute, out var uri) &&
+                    uri.Scheme is "http" or "https" or "mailto")
+                    _changedFieldUrls[target] = _changedFieldUrls.GetValueOrDefault(target) + 1;
+            }
+        }
         _strikeTabBoundaries.Clear();
         _textEffectRanges.Clear();
         _joinedClosingMarkColors.Clear();
@@ -1320,6 +1377,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _headersWithStyledEmptyLine.Clear();
         _headersWithMarginAnchoredWrap.Clear();
         _headerRunBorderClearances.Clear();
+        _verticallyAlignedSections.Clear();
         _sectionsWithLinkedHeaders.Clear();
         _bodyParagraphsUnderHeaderWrap.Clear();
         _headersWithStyledTrailingLine.Clear();
@@ -1327,6 +1385,9 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _footersWithStyledTrailingLine.Clear();
         _footerImages.Clear();
         _paragraphImages.Clear();
+        _footnoteLabels.Clear();
+        _customFootnoteMarks.Clear();
+        _footnoteSectionStarts.Clear();
         _wrapContours.Clear();
         _wrapContourBandHeights.Clear();
         _mathFractions.Clear();
@@ -1346,6 +1407,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _activeFloatingTextWrap = null;
         _mirroredParagraphs.Clear();
         _highlights.Clear();
+        _highlightParagraphTexts.Clear();
         _noBreakWords.Clear();
         _noBreakParagraphs.Clear();
         _superscriptHeaderParagraphs.Clear();
@@ -1494,6 +1556,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             RepeatFloatingTableTopBorders();
             SplitOverpageTableCells();
             RestoreNestedFragmentPageBorders();
+            AlignSectionContentVertically();
             MigraDoc.DocumentObjectModel.Document? evenDocument = null;
             if (_mirroredParagraphs.Count > 0)
             {
@@ -1519,8 +1582,9 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 ReserveHeaderClearance(preflightRenderer, preflight, evenDocument);
             }
             PdfDocumentRenderer? footnoteRenderer = null;
-            List<(int Page, int Index, MigraDoc.DocumentObjectModel.Paragraph Note, double Y)> footnoteOverlays = new();
-            if (_footnoteParagraphs.Count > 0 && _mirroredParagraphs.Count == 0)
+            List<(int Page, int Index, MigraDoc.DocumentObjectModel.Paragraph Note, double Y,
+                int PageOffset)> footnoteOverlays = new();
+            if (_footnoteParagraphs.Count > 0)
             {
                 var hasBodyTables = _document!.Sections.Cast<Section>().Any(section =>
                     section.Elements.OfType<MigraDoc.DocumentObjectModel.Tables.Table>().Any());
@@ -1549,8 +1613,25 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 footnoteRenderer.RenderDocument();
                 footnoteOverlays = PlaceFittingFootnotes(footnoteRenderer, preflight);
             }
+            if (evenDocument != null && footnoteRenderer != null)
+            {
+                foreach (var paragraph in _mirroredParagraphs)
+                {
+                    var leftIndent = paragraph.Format.LeftIndent;
+                    paragraph.Format.LeftIndent = paragraph.Format.RightIndent;
+                    paragraph.Format.RightIndent = leftIndent;
+                }
+                evenDocument = (MigraDoc.DocumentObjectModel.Document)_document!.Clone();
+                foreach (var paragraph in _mirroredParagraphs)
+                {
+                    var leftIndent = paragraph.Format.LeftIndent;
+                    paragraph.Format.LeftIndent = paragraph.Format.RightIndent;
+                    paragraph.Format.RightIndent = leftIndent;
+                }
+            }
             var styleRefTemplate = _styleRefHeaders.Count > 0
                 ? (MigraDoc.DocumentObjectModel.Document)_document!.Clone() : null;
+            AlignNotBesideFrameFollowers();
             PositionCellAnchoredTextBoxes();
             var renderer = CreatePdfRenderer(_document);
             if (_noBreakWords.Count > 0)
@@ -1564,7 +1645,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                         if (info.DocumentObject is MigraDoc.DocumentObjectModel.Paragraph paragraph)
                             RestoreNoBreakWords(paragraph.Elements, _noBreakWords, restored);
                 if (!_noBreakWords.IsSubsetOf(restored))
-                    throw new InvalidOperationException("A no-break hyphen was not present after PDF layout.");
+                    throw new InvalidOperationException("A no-break hyphen was not present after PDF layout: " +
+                        string.Join(", ", _noBreakWords.Except(restored)));
             }
             if (_layoutWidthParagraphs.Count > 0 || _paintOnlyMinchoSpans.Count > 0 ||
                 _paintOnlyRubyBaseMinchoSpans.Count > 0)
@@ -1603,7 +1685,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 RenderParagraphAnchoredImages(renderer, pageAware);
                 RenderMathFractions(renderer, pageAware);
                 RenderMathRadicals(renderer, pageAware);
-                using var emphasized = RenderEmphasisMarks(renderer, pageAware);
+                using var emphasized = RenderEmphasisMarks(renderer, pageAware,
+                    footnoteRenderer, footnoteOverlays);
                 ApplyRightLegendShift(emphasized);
                 ApplyLargeSuperscriptRise(emphasized);
                 PadDoubleBorderText(emphasized);
@@ -1637,6 +1720,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             }
             var evenRenderer = CreatePdfRenderer(evenDocument);
             evenRenderer.RenderDocument();
+            if (footnoteRenderer != null)
+                RenderFittingFootnotes(evenRenderer, footnoteRenderer, footnoteOverlays);
             DisableRasterInterpolation(evenRenderer.PdfDocument);
             if (evenRenderer.PageCount != renderer.PageCount)
             {
@@ -1681,6 +1766,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 ApplyLongJustifiedTrackedKerning(painted ?? finalDocument);
                 MatchElevenPointAptosPaint(painted ?? finalDocument);
                 DisableRasterInterpolation(painted ?? finalDocument);
+                ClipExactLineImages(renderer, painted ?? finalDocument);
                 using var annotatedFallback = RenderCommentAnnotations(renderer, painted ?? finalDocument);
                 using var formattedFallback = ApplyFormattingBalloons(renderer,
                     annotatedFallback ?? painted ?? finalDocument);
@@ -1699,6 +1785,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             using var combined = new PdfDocument();
             for (var index = 0; index < renderer.PageCount; index++)
                 combined.AddPage((index % 2 == 0 ? oddPages : evenPages).Pages[index]);
+            CopyNamedDestinations(oddPages, combined, pageIndex => pageIndex % 2 == 0);
+            CopyNamedDestinations(evenPages, combined, pageIndex => pageIndex % 2 == 1);
             RenderPageBorders(renderer, combined);
             RenderLineNumbers(renderer, combined);
             RenderTableFragmentBorders(renderer, combined);
@@ -1739,6 +1827,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             ApplyLongJustifiedTrackedKerning(finalCombined);
             MatchElevenPointAptosPaint(finalCombined);
             DisableRasterInterpolation(finalCombined);
+            ClipExactLineImages(renderer, finalCombined);
             using var annotatedFinal = RenderCommentAnnotations(renderer, finalCombined);
             using var formattedFinal = ApplyFormattingBalloons(renderer, annotatedFinal ?? finalCombined);
             DxpPdfHighlightOverlay.Save(formattedFinal ?? annotatedFinal ?? finalCombined,
@@ -2055,7 +2144,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 var continued = next?.Contains(paragraph) == true ||
                     _footnoteSplitContinuations.TryGetValue(paragraph, out var continuation) &&
                     rendered.Contains(continuation);
-                if (!continued && !_narrowJustifiedBodyParagraphs.Contains(paragraph)) continue;
+                if (!continued && !HasInheritedParagraphFlag(_narrowJustifiedBodyParagraphs, paragraph))
+                    continue;
                 continuations.Add((page, area.X.Point, area.Y.Point,
                     area.X.Point + area.Width.Point, area.Y.Point + area.Height.Point, continued));
             }
@@ -2435,7 +2525,12 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             properties.GetFirstChild<TitlePage>() != null &&
             !properties.Elements<FooterReference>().Any(reference =>
                 reference.Type?.Value == HeaderFooterValues.First);
-        _section = _document!.AddSection();
+        // Continuous sections with explicit layout changes need mid-page layout support (issue #145).
+        var continuesCurrentLayout = _section != null &&
+            properties.GetFirstChild<SectionType>() is { } sectionType &&
+            AttributeValue(sectionType, "val") == "continuous" &&
+            properties.ChildElements.All(element => element is SectionType);
+        _section = continuesCurrentLayout ? _section : _document!.AddSection();
         var mainPart = (context as DxpDocumentContext)?.MainDocumentPart;
         _sectionHasFooterTable = properties.Elements<FooterReference>()
             .Any(reference => reference.Id?.Value is string id &&
@@ -2470,12 +2565,15 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         page.MirrorMargins = _mirrorMargins && !_gutterAtTop;
         page.DifferentFirstPageHeaderFooter = properties.GetFirstChild<TitlePage>() != null;
         page.OddAndEvenPagesHeaderFooter = _evenAndOddHeaders;
-        if (properties.GetFirstChild<PageNumberType>()?.Start?.Value is int start)
+        page.SectionStart = (properties.GetFirstChild<SectionType>() is { } breakType
+            ? AttributeValue(breakType, "val") : null) switch
         {
+            "evenPage" => BreakType.BreakEvenPage,
+            "oddPage" => BreakType.BreakOddPage,
+            _ => BreakType.BreakNextPage
+        };
+        if (properties.GetFirstChild<PageNumberType>()?.Start?.Value is int start)
             page.StartingNumber = start;
-            if (_sectionCount > 1 && _evenAndOddHeaders && start % 2 != 0)
-                page.SectionStart = BreakType.BreakOddPage;
-        }
         page.PageWidth = Unit.FromPoint(layout.PageSize?.Width?.Value is uint width ? width / 20.0 : 612);
         page.PageHeight = Unit.FromPoint(layout.PageSize?.Height?.Value is uint height ? height / 20.0 : 792);
         page.LeftMargin = Unit.FromPoint(layout.PageMargin?.Left?.Value is uint left ? left / 20.0 : 72);
@@ -2487,21 +2585,16 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             else
                 page.LeftMargin = Unit.FromPoint(page.LeftMargin.Point + gutter / 20.0);
         }
-        page.TopMargin = Unit.FromPoint((layout.PageMargin?.Top?.Value is int top && top >= 0 ? top / 20.0 : 72) +
+        page.TopMargin = Unit.FromPoint((layout.PageMargin?.Top?.Value is int top ? top / 20.0 : 72) +
             (_gutterAtTop ? (layout.PageMargin?.Gutter?.Value ?? 0) / 20.0 : 0));
         _sectionBaseTopMarginPoints = page.TopMargin.Point;
         _sectionOtherHeaderTableRaisedTopMargin = false;
-        page.BottomMargin = Unit.FromPoint(layout.PageMargin?.Bottom?.Value is int bottom && bottom >= 0
+        page.BottomMargin = Unit.FromPoint(layout.PageMargin?.Bottom?.Value is int bottom
             ? bottom / 20.0 : 72);
         var verticalAlignment = properties.ChildElements.FirstOrDefault(child => child.LocalName == "vAlign");
         var sectionAlignment = verticalAlignment == null ? null : AttributeValue(verticalAlignment, "val");
-        if (sectionAlignment == "center")
-            page.TopMargin = Unit.FromPoint(page.TopMargin.Point +
-                (page.PageHeight.Point - page.TopMargin.Point - page.BottomMargin.Point -
-                    2 * _defaultParagraphLinePoints) / 2);
-        else if (sectionAlignment == "bottom")
-            page.TopMargin = Unit.FromPoint(page.PageHeight.Point - page.BottomMargin.Point -
-                _defaultParagraphLinePoints);
+        if (sectionAlignment is "center" or "bottom")
+            _verticallyAlignedSections[_section] = sectionAlignment;
         page.HeaderDistance = Unit.FromPoint(layout.PageMargin?.Header?.Value is uint header ? header / 20.0 : 36);
         if (_gridLinePitchPoints is > 0 && _gridCharSpacingPoints is > 0)
             page.HeaderDistance = Unit.FromPoint(Math.Max(0, page.HeaderDistance.Point - 5));
@@ -2523,16 +2616,17 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _columnWidths = null;
         _activeColumnCell = null;
         _columnCells = null;
-        if (layout.Columns?.ColumnCount?.Value == 2)
+        if (layout.Columns?.ColumnCount?.Value is short columnCount && columnCount > 1)
         {
             _columnGapPoints = int.TryParse(layout.Columns.Space?.Value, out var gapTwips)
                 ? gapTwips / 20.0 : 36;
             var available = page.PageWidth.Point - page.LeftMargin.Point - page.RightMargin.Point -
-                _columnGapPoints;
+                _columnGapPoints * (columnCount - 1);
             var widths = layout.Columns.Elements<DocumentFormat.OpenXml.Wordprocessing.Column>().Select(column =>
                 int.TryParse(column.Width?.Value, out var twips) ? twips / 20.0 : 0).ToArray();
-            _columnWidths = layout.Columns.EqualWidth?.Value == false && widths.Length == 2 &&
-                widths.All(width => width > 0) ? widths : [available / 2, available / 2];
+            _columnWidths = layout.Columns.EqualWidth?.Value == false && widths.Length == columnCount &&
+                widths.All(width => width > 0) ? widths :
+                Enumerable.Repeat(available / columnCount, columnCount).ToArray();
             _columnParagraphCapacity = Math.Max(1, (int)Math.Floor(
                 (page.PageHeight.Point - page.TopMargin.Point - page.BottomMargin.Point + 2) /
                 SimpleColumnParagraphPitchPoints));
@@ -2592,6 +2686,52 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             _runHighlight = previousHighlight;
             _runShading = previousShading;
         });
+    }
+
+    private void AlignNotBesideFrameFollowers()
+    {
+        if (_notBesideFrameFollowers.Count == 0 || _document == null) return;
+        var layout = (MigraDoc.DocumentObjectModel.Document)_document.Clone();
+        var followers = new List<(MigraDoc.DocumentObjectModel.Shapes.TextFrame Frame,
+            MigraDoc.DocumentObjectModel.Paragraph LayoutParagraph,
+            MigraDoc.DocumentObjectModel.Paragraph Paragraph)>();
+        for (var sectionIndex = 0; sectionIndex < _document.Sections.Count; sectionIndex++)
+        {
+            var section = (Section)_document.Sections[sectionIndex];
+            var layoutSection = (Section)layout.Sections[sectionIndex];
+            foreach (var (frame, paragraph) in _notBesideFrameFollowers)
+            {
+                var frameIndex = section.Elements.IndexOf(frame);
+                var paragraphIndex = section.Elements.IndexOf(paragraph);
+                if (frameIndex < 0 || paragraphIndex < 0) continue;
+                if (layoutSection.Elements[frameIndex] is MigraDoc.DocumentObjectModel.Shapes.TextFrame
+                        layoutFrame &&
+                    layoutSection.Elements[paragraphIndex] is MigraDoc.DocumentObjectModel.Paragraph
+                        layoutParagraph)
+                    followers.Add((layoutFrame, layoutParagraph, paragraph));
+            }
+        }
+        if (followers.Count == 0) return;
+
+        var renderer = CreatePdfRenderer(layout);
+        renderer.PrepareRenderPages();
+        for (var page = 1; page <= renderer.PageCount; page++)
+        {
+            var infos = renderer.DocumentRenderer.GetRenderInfoFromPage(page);
+            foreach (var (frame, layoutParagraph, paragraph) in followers)
+            {
+                var frameInfo = infos.FirstOrDefault(info => ReferenceEquals(info.DocumentObject, frame));
+                var paragraphInfo = infos.FirstOrDefault(info =>
+                    ReferenceEquals(info.DocumentObject, layoutParagraph));
+                if (frameInfo == null || paragraphInfo == null) continue;
+                var frameArea = frameInfo.LayoutInfo.ContentArea;
+                var paragraphTop = paragraphInfo.LayoutInfo.ContentArea.Y.Point;
+                var clearance = frameArea.Y.Point + frameArea.Height.Point - paragraphTop;
+                if (clearance > 0)
+                    paragraph.Format.SpaceBefore = Unit.FromPoint(paragraph.Format.SpaceBefore.Point +
+                        clearance);
+            }
+        }
     }
 
     private void PositionCellAnchoredTextBoxes()
@@ -2744,8 +2884,9 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     public override bool AcceptAlternateContentChoice(AlternateContentChoice choice,
         IReadOnlyList<string> required, DxpIDocumentContext context) =>
         required.Count > 0 && required.All(prefix => prefix == "wps") &&
-        choice.Descendants<TextBoxContent>().Any() &&
-        choice.Descendants().Any(element => element.LocalName == "wrapNone");
+        choice.Descendants<TextBoxContent>().Any(textBox => textBox.Ancestors<Drawing>().Any(drawing =>
+            drawing.Descendants().Any(element => element.LocalName is "anchor" or "inline" &&
+                element.ChildElements.Any(child => child.LocalName == "extent"))));
 
     public override IDisposable VisitTextBoxContentBegin(TextBoxContent textBox, DxpIDocumentContext context)
     {
@@ -2756,7 +2897,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
 
         var drawing = textBox.Ancestors<Drawing>().FirstOrDefault();
         var anchor = drawing?.Descendants().FirstOrDefault(element => element.LocalName == "anchor");
-        var extent = anchor?.ChildElements.FirstOrDefault(element => element.LocalName == "extent");
+        var inline = drawing?.Descendants().FirstOrDefault(element => element.LocalName == "inline");
+        var extent = (anchor ?? inline)?.ChildElements.FirstOrDefault(element => element.LocalName == "extent");
         var vmlShape = textBox.Ancestors().FirstOrDefault(element =>
             element.LocalName is "shape" or "rect" &&
             element.NamespaceUri == "urn:schemas-microsoft-com:vml");
@@ -2791,8 +2933,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 frame.Width = Unit.FromPoint(width / 12700.0);
             if (long.TryParse(extent.GetAttribute("cy", "").Value, out var height))
                 frame.Height = Unit.FromPoint(height / 12700.0);
-            var horizontal = anchor!.ChildElements.FirstOrDefault(element => element.LocalName == "positionH");
-            var vertical = anchor.ChildElements.FirstOrDefault(element => element.LocalName == "positionV");
+            var horizontal = anchor?.ChildElements.FirstOrDefault(element => element.LocalName == "positionH");
+            var vertical = anchor?.ChildElements.FirstOrDefault(element => element.LocalName == "positionV");
             if (horizontal?.GetAttribute("relativeFrom", "").Value == "page")
                 frame.RelativeHorizontal = MigraDoc.DocumentObjectModel.Shapes.RelativeHorizontal.Page;
             if (vertical?.GetAttribute("relativeFrom", "").Value == "page")
@@ -2811,7 +2953,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 {
                     frame.RelativeHorizontal = MigraDoc.DocumentObjectModel.Shapes.RelativeHorizontal.Page;
                     frame.Left = Unit.FromPoint(_section.PageSetup.LeftMargin.Point +
-                        (_columnIndex == 0 ? 0 : _columnWidths[0] + _columnGapPoints) +
+                        _columnWidths.Take(_columnIndex).Sum() + _columnIndex * _columnGapPoints +
                         frame.Left.Position.Point);
                 }
                 if (vertical?.GetAttribute("relativeFrom", "").Value == "paragraph")
@@ -2822,7 +2964,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                         frame.Top.Position.Point);
                 }
             }
-            if (anchor.ChildElements.Any(element => element.LocalName == "wrapSquare") &&
+            if (anchor?.ChildElements.Any(element => element.LocalName == "wrapSquare") == true &&
                 Enum.TryParse<MigraDoc.DocumentObjectModel.Shapes.WrapStyle>("BothSides", out var squareWrap))
                 frame.WrapFormat.Style = squareWrap;
             else
@@ -3066,7 +3208,9 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         for (var page = 1; page <= renderer.PageCount; page++)
             foreach (var info in renderer.DocumentRenderer.GetRenderInfoFromPage(page))
                 if (info.DocumentObject is MigraDoc.DocumentObjectModel.Paragraph paragraph &&
-                    _styleRefBodyParagraphs.TryGetValue(paragraph, out var source) &&
+                    _paragraphFragments.TryGet(paragraph, out var fragment) &&
+                    fragment.StyleRefCandidate &&
+                    fragment.Source is { } source &&
                     string.Equals(source.ParagraphProperties?.ParagraphStyleId?.Val?.Value,
                         styleId, StringComparison.OrdinalIgnoreCase) &&
                     !string.IsNullOrWhiteSpace(source.InnerText))
@@ -3151,6 +3295,51 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         return inserted;
     }
 
+    private void AlignSectionContentVertically()
+    {
+        if (_verticallyAlignedSections.Count == 0) return;
+        var layout = (MigraDoc.DocumentObjectModel.Document)_document!.Clone();
+        var renderer = CreatePdfRenderer(layout);
+        renderer.RenderDocument();
+        for (var sectionIndex = 0; sectionIndex < _document.Sections.Count; sectionIndex++)
+        {
+            var section = (Section)_document.Sections[sectionIndex];
+            if (!_verticallyAlignedSections.TryGetValue(section, out var alignment)) continue;
+            var layoutSection = (Section)layout.Sections[sectionIndex];
+            var noteIndexes = _footnoteParagraphs
+                .Where(note => ReferenceEquals(note.Paragraph.Section, section))
+                .Select(note => section.Elements.IndexOf(note.Paragraph))
+                .ToHashSet();
+            var pages = Enumerable.Range(1, renderer.PageCount)
+                .Select(pageNumber => renderer.DocumentRenderer.GetRenderInfoFromPage(pageNumber)
+                    .Where(info => ReferenceEquals(info.DocumentObject.Section, layoutSection) &&
+                        layoutSection.Elements.IndexOf(info.DocumentObject) is var elementIndex &&
+                        elementIndex >= 0 && !noteIndexes.Contains(elementIndex) &&
+                        info.DocumentObject is MigraDoc.DocumentObjectModel.Paragraph or
+                            MigraDoc.DocumentObjectModel.Tables.Table &&
+                        info.LayoutInfo.ContentArea != null)
+                    .Select(info => info.LayoutInfo.ContentArea!)
+                    .ToArray())
+                .Where(areas => areas.Length > 0).ToArray();
+            if (pages.Length != 1) continue;
+            var top = pages[0].Min(area => area.Y.Point);
+            var bottom = pages[0].Max(area => area.Y.Point + area.Height.Point);
+            var page = section.PageSetup;
+            var available = page.PageHeight.Point - page.TopMargin.Point - page.BottomMargin.Point;
+            var noteHeight = noteIndexes.Count == 0 ? 0 :
+                Enumerable.Range(1, renderer.PageCount)
+                    .SelectMany(pageNumber => renderer.DocumentRenderer.GetRenderInfoFromPage(pageNumber))
+                    .Where(info => ReferenceEquals(info.DocumentObject.Section, layoutSection) &&
+                        noteIndexes.Contains(layoutSection.Elements.IndexOf(info.DocumentObject)) &&
+                        info.LayoutInfo.ContentArea != null)
+                    .Sum(info => info.LayoutInfo.ContentArea!.Height.Point) + 20;
+            var freeSpace = available - (bottom - top) - noteHeight;
+            if (freeSpace <= 0) continue;
+            var desiredTop = page.TopMargin.Point + freeSpace * (alignment == "center" ? 0.5 : 1);
+            page.TopMargin = Unit.FromPoint(page.TopMargin.Point + desiredTop - top);
+        }
+    }
+
     private void RenderPageBorders(PdfDocumentRenderer renderer, PdfDocument? target = null)
     {
         if (_pageBorders.Count == 0) return;
@@ -3195,7 +3384,9 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             var section = infos.Select(info => info.DocumentObject.Section).FirstOrDefault(candidate =>
                 candidate != null && _sectionLineNumbers.ContainsKey(candidate));
             if (section == null || !_sectionLineNumbers.TryGetValue(section, out var settings)) continue;
-            if (!ReferenceEquals(section, previousSection) ||
+            if (previousSection == null ||
+                !ReferenceEquals(section, previousSection) &&
+                settings.Restart?.Value != LineNumberRestartValues.Continuous ||
                 settings.Restart?.Value != LineNumberRestartValues.Continuous &&
                 settings.Restart?.Value != LineNumberRestartValues.NewSection)
                 currentLine = Math.Max(1, (int)(settings.Start?.Value ?? 1));
@@ -3256,7 +3447,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     info.LayoutInfo.ContentArea is not { } area) continue;
                 pages.TryAdd(original, page);
                 if (noteSet.Contains(original))
-                    heights[original] = Math.Max(heights.GetValueOrDefault(original), area.Height.Point);
+                    heights[original] = heights.GetValueOrDefault(original) + area.Height.Point;
                 else if (_bodyParagraphs.Contains(original))
                     paragraphs.Add((original, area.X.Point, area.Y.Point,
                         area.X.Point + area.Width.Point, area.Y.Point + area.Height.Point));
@@ -3265,7 +3456,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         foreach (var group in _footnoteParagraphs.Where(entry =>
                 heights.ContainsKey(entry.Paragraph) &&
                 _footnoteReferences.TryGetValue(entry.Index, out var reference) &&
-                pages.ContainsKey(reference)).GroupBy(entry => pages[_footnoteReferences[entry.Index]]))
+                pages.ContainsKey(reference)).GroupBy(entry =>
+                pages[_footnoteReferences[entry.Index]] + entry.PageOffset))
         {
             var entries = group.ToList();
             var paragraphs = pageParagraphs[group.Key];
@@ -3274,6 +3466,23 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             var noteBottom = renderer.PdfDocument.Pages[group.Key - 1].Height.Point -
                 section.PageSetup.BottomMargin.Point;
             var noteHeight = 0.0;
+            var noteClearance = _includeRevisionMarkup && entries.Count >= 8
+                ? DenseFootnoteBodyClearancePoints : _includeRevisionMarkup && entries.Count is 2 or 3
+                    ? MarkupFootnoteSeparatorClearancePoints : 0;
+            if (_includeRevisionMarkup && entries is [{ PageOffset: 0 } firstEntry] &&
+                heights[firstEntry.Paragraph] > 50 &&
+                _footnoteReferences.TryGetValue(firstEntry.Index, out var firstReference))
+            {
+                var referenceBottom = paragraphs.Where(item =>
+                        ReferenceEquals(item.Paragraph, firstReference))
+                    .Select(item => item.Bottom).DefaultIfEmpty(0).Max();
+                var available = noteBottom - referenceBottom;
+                if (available > 45 &&
+                    available < heights[firstEntry.Paragraph] + ContinuedFootnoteClearancePoints &&
+                    TrySplitFootnoteAcrossPages(firstEntry,
+                        available - ContinuedFootnoteClearancePoints))
+                    return true;
+            }
             MigraDoc.DocumentObjectModel.Paragraph? candidate = null;
             for (var index = 0; index < entries.Count; index++)
             {
@@ -3282,13 +3491,14 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 var reference = _footnoteReferences[entry.Index];
                 var referenceBottom = paragraphs.Where(item => ReferenceEquals(item.Paragraph, reference))
                     .Select(item => item.Bottom).DefaultIfEmpty(0).Max();
-                if (referenceBottom + noteHeight <= noteBottom) continue;
+                if (referenceBottom + noteHeight + noteClearance <= noteBottom) continue;
                 candidate = reference;
                 break;
             }
-            if (candidate == null && paragraphs.Max(item => item.Bottom) > noteBottom - noteHeight)
+            if (candidate == null && paragraphs.Max(item => item.Bottom) >
+                    noteBottom - noteHeight - noteClearance)
                 candidate = paragraphs.FirstOrDefault(item => item.Bottom >
-                        noteBottom - noteHeight - 4)
+                        noteBottom - noteHeight - noteClearance - 4)
                     .Paragraph;
             if (candidate == null || ReferenceEquals(candidate, paragraphs[0].Paragraph) ||
                 candidate.Format.PageBreakBefore) continue;
@@ -3312,12 +3522,66 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 TrySplitFittingFootnoteParagraph(renderer, group.Key, candidate, candidateArea,
                     ref renderedPages, noteBottom - precedingNoteHeight - 20)) return true;
             if (TrySplitFittingFootnoteParagraph(renderer, group.Key, candidate, candidateArea, ref renderedPages,
-                    noteBottom - noteHeight - (_availableFontFamilies.Contains("Aptos") ? 16.5 : 19.5) -
+                    noteBottom - noteHeight - (noteClearance > 0
+                        ? noteClearance : _availableFontFamilies.Contains("Aptos") ? 16.5 : 19.5) -
                     (_availableFontFamilies.Contains("Aptos") && entries.Count == 3 ? 1 : 0))) return true;
             candidate.Format.PageBreakBefore = true;
             return true;
         }
         return false;
+    }
+
+    private bool TrySplitFootnoteAcrossPages(
+        (int Index, MigraDoc.DocumentObjectModel.Paragraph Paragraph, int PageOffset) entry,
+        double firstFragmentLimit)
+    {
+        if (!DxpFootnoteParagraphSplitter.TryGetText(entry.Paragraph, out var content)) return false;
+        var wordCount = Regex.Matches(content, @"\S+").Count;
+        if (wordCount < 8) return false;
+        var sectionIndex = Enumerable.Range(0, _document!.Sections.Count)
+            .FirstOrDefault(index => ReferenceEquals(_document.Sections[index], entry.Paragraph.Section), -1);
+        if (sectionIndex < 0) return false;
+        var elements = ((Section)_document.Sections[sectionIndex]).Elements;
+        var elementIndex = Enumerable.Range(0, elements.Count)
+            .FirstOrDefault(index => ReferenceEquals(elements[index], entry.Paragraph), -1);
+        if (elementIndex < 0) return false;
+
+        var low = 1;
+        var high = wordCount - 1;
+        var best = 0;
+        while (low <= high)
+        {
+            var splitWords = low + (high - low) / 2;
+            var trialDocument = (MigraDoc.DocumentObjectModel.Document)_document.Clone();
+            var trialElements = ((Section)trialDocument.Sections[sectionIndex]).Elements;
+            if (trialElements[elementIndex] is not MigraDoc.DocumentObjectModel.Paragraph trialNote ||
+                !DxpFootnoteParagraphSplitter.TrySplit(trialNote, splitWords,
+                    out var trialContinuation) || trialContinuation == null)
+                return false;
+            trialContinuation.Format.PageBreakBefore = false;
+            trialElements.InsertObject(elementIndex + 1, trialContinuation);
+            var trialRenderer = CreatePdfRenderer(trialDocument);
+            trialRenderer.RenderDocument();
+            var height = Enumerable.Range(1, trialRenderer.PageCount)
+                .SelectMany(trialRenderer.DocumentRenderer.GetRenderInfoFromPage)
+                .Where(info => ReferenceEquals(info.DocumentObject, trialNote))
+                .Select(info => info.LayoutInfo.ContentArea?.Height.Point ?? 0)
+                .DefaultIfEmpty(0).Max();
+            if (height > 0 && height <= firstFragmentLimit)
+            {
+                best = splitWords;
+                low = splitWords + 1;
+            }
+            else high = splitWords - 1;
+        }
+        if (best == 0 || !DxpFootnoteParagraphSplitter.TrySplit(entry.Paragraph, best,
+                out var continuation) || continuation == null)
+            return false;
+        continuation.Format.PageBreakBefore = false;
+        elements.InsertObject(elementIndex + 1, continuation);
+        var noteIndex = _footnoteParagraphs.FindIndex(item => ReferenceEquals(item.Paragraph, entry.Paragraph));
+        _footnoteParagraphs.Insert(noteIndex + 1, (entry.Index, continuation, 1));
+        return true;
     }
 
     private void SplitOverpageTableCells()
@@ -3588,6 +3852,10 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 }
                 if (original == null || original.Rows.Count != table.Rows.Count) continue;
 
+                if (_includeRevisionMarkup && TrySplitAlignedTableParagraphs(pageNumber,
+                        firstMovedRow, tableSectionIndex, tableElementIndex, original))
+                    return true;
+
                 if (TrySplitLaterTableParagraph(pageNumber, pdf, table, nextArea,
                         firstMovedRow, tableSectionIndex, tableElementIndex))
                     return true;
@@ -3665,6 +3933,37 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     return true;
                 return false;
             }
+        }
+        return false;
+    }
+
+    private bool TrySplitAlignedTableParagraphs(int pageNumber, int rowIndex,
+        int sectionIndex, int elementIndex, MigraDoc.DocumentObjectModel.Tables.Table originalTable)
+    {
+        var row = originalTable.Rows[rowIndex];
+        if (row.Cells.Count != 2) return false;
+        var paragraphCount = row.Cells.Cast<Cell>().Min(cell => cell.Elements.Count);
+        for (var count = paragraphCount - 1; count >= 1; count--)
+        {
+            var trialDocument = (MigraDoc.DocumentObjectModel.Document)_document!.Clone();
+            if (((Section)trialDocument.Sections[sectionIndex]).Elements[elementIndex] is not
+                MigraDoc.DocumentObjectModel.Tables.Table trialTable)
+                continue;
+            var trialRow = trialTable.Rows[rowIndex];
+            if (!DxpFootnoteTableRowSplitter.TrySplitAfterParagraphs(trialRow, count,
+                    out var trialFirst, out var trialContinuation) ||
+                trialFirst == null || trialContinuation == null ||
+                !DxpFootnoteTableRowSplitter.TryReplace(trialRow, trialFirst, trialContinuation))
+                continue;
+            var trialRenderer = CreatePdfRenderer(trialDocument);
+            trialRenderer.RenderDocument();
+            if (!trialRenderer.DocumentRenderer.GetRenderInfoFromPage(pageNumber)
+                    .Any(info => ReferenceEquals(info.DocumentObject, trialTable) &&
+                                 GetTableFragmentRow(info.FormatInfo, "EndRow") >= rowIndex))
+                continue;
+            return DxpFootnoteTableRowSplitter.TrySplitAfterParagraphs(row, count,
+                    out var first, out var continuation) && first != null && continuation != null &&
+                DxpFootnoteTableRowSplitter.TryReplace(row, first, continuation);
         }
         return false;
     }
@@ -3829,9 +4128,11 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         ref byte[]? renderedPages, double limit)
     {
         if (area.Top >= limit || area.Bottom <= limit ||
-            _emphasisRanges.ContainsKey(paragraph) || _strikeRanges.ContainsKey(paragraph) ||
+            _emphasisRanges.ContainsKey(paragraph) ||
+            _strikeRanges.ContainsKey(paragraph) && !_includeRevisionMarkup ||
             _textEffectRanges.ContainsKey(paragraph) || _textBorderRanges.ContainsKey(paragraph) ||
-            _characterScales.ContainsKey(paragraph) || _fitTextWidths.ContainsKey(paragraph) ||
+            _characterScales.ContainsKey(paragraph) ||
+            TryGetInheritedParagraphValue(_fitTextWidths, paragraph, out _) ||
             _partialFitGroups.ContainsKey(paragraph) || _characterSpacings.ContainsKey(paragraph) ||
             _paragraphImages.ContainsKey(paragraph) || _tabbedRunShadings.ContainsKey(paragraph) ||
             !DxpFootnoteParagraphSplitter.TryGetText(paragraph, out var content)) return false;
@@ -3869,9 +4170,27 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         }
         var markers = _footnoteReferences.Where(entry => ReferenceEquals(entry.Value, paragraph))
             .Select(entry => entry.Key.ToString(CultureInfo.InvariantCulture)).ToArray();
-        if (!DxpFootnoteParagraphSplitter.TryMapRenderedSplit(content,
-                words.Select(word => word.Text).ToArray(), fittingWords, out var fittingSourceWords,
-                markers)) return false;
+        var renderedWords = words.Select(word => word.Text).ToArray();
+        var mapped = DxpFootnoteParagraphSplitter.TryMapRenderedSplit(content,
+            renderedWords, fittingWords, out var fittingSourceWords, markers);
+        if (!mapped && fittingWords > 1 && fittingWords < renderedWords.Length &&
+            renderedWords[fittingWords - 1].EndsWith("-", StringComparison.Ordinal) &&
+            Math.Abs(words[fittingWords - 2].Baseline - words[fittingWords - 1].Baseline) < 8 &&
+            DxpFootnoteParagraphSplitter.TryMapRenderedSplit(content,
+                renderedWords, fittingWords - 1, out fittingSourceWords, markers))
+        {
+            fittingWords--;
+            mapped = true;
+        }
+        while (!mapped && fittingWords > 0)
+        {
+            var baseline = words[fittingWords - 1].Baseline;
+            do fittingWords--;
+            while (fittingWords > 0 && Math.Abs(words[fittingWords - 1].Baseline - baseline) < 8);
+            mapped = DxpFootnoteParagraphSplitter.TryMapRenderedSplit(content,
+                renderedWords, fittingWords, out fittingSourceWords, markers);
+        }
+        if (!mapped) return false;
         var elements = paragraph.Section.Elements;
         var elementIndex = Enumerable.Range(0, elements.Count)
             .FirstOrDefault(index => ReferenceEquals(elements[index], paragraph), -1);
@@ -3880,10 +4199,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             continuation == null) return false;
         if (continuation.Format.Borders.DistanceFromTop.Point > 0)
             continuation.Format.Borders.DistanceFromTop = Unit.Zero;
-        if (_compressedBodyParagraphs.Contains(paragraph) && !_layoutWidthParagraphs.Contains(paragraph) &&
-            ShouldWidenCompressedContinuation(fittingSourceWords,
-                Regex.Matches(content, @"\S+").Count - fittingSourceWords))
-            WidenShortContinuationSpaces(continuation);
+        CarryFootnoteSplitState(paragraph, continuation, fittingSourceWords,
+            Regex.Matches(content, @"\S+").Count - fittingSourceWords);
         if (_narrowJustifiedBodyParagraphs.Contains(paragraph))
             _narrowJustifiedBodyParagraphs.Add(continuation);
         if (_footnoteSplitContinuations.Remove(paragraph, out var nextFragment))
@@ -3907,6 +4224,19 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         return true;
     }
 
+    internal void CarryFootnoteSplitState(MigraDoc.DocumentObjectModel.Paragraph paragraph,
+        MigraDoc.DocumentObjectModel.Paragraph continuation, int fittingSourceWords,
+        int remainingSourceWords)
+    {
+        var compressedBody = HasInheritedParagraphFlag(_compressedBodyParagraphs, paragraph);
+        var layoutWidth = HasInheritedParagraphFlag(_layoutWidthParagraphs, paragraph);
+        if (compressedBody && !layoutWidth &&
+            ShouldWidenCompressedContinuation(fittingSourceWords, remainingSourceWords))
+            WidenShortContinuationSpaces(continuation);
+        if (compressedBody) _compressedBodyParagraphs.Add(continuation);
+        if (layoutWidth) _layoutWidthParagraphs.Add(continuation);
+    }
+
     internal static bool ShouldWidenCompressedContinuation(int fittingSourceWords,
         int remainingSourceWords) =>
         fittingSourceWords < ShortTrackedSplitWordLimit ||
@@ -3921,7 +4251,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 span.Size = Unit.FromPoint(9.5);
     }
 
-    private List<(int Page, int Index, MigraDoc.DocumentObjectModel.Paragraph Note, double Y)>
+    private List<(int Page, int Index, MigraDoc.DocumentObjectModel.Paragraph Note, double Y,
+        int PageOffset)>
         PlaceFittingFootnotes(PdfDocumentRenderer preflightRenderer,
             MigraDoc.DocumentObjectModel.Document preflight)
     {
@@ -3936,6 +4267,9 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     copy[elementIndex] is MigraDoc.DocumentObjectModel.Paragraph clonedParagraph)
                     cloned[paragraph] = clonedParagraph;
         }
+        foreach (var (original, copy) in cloned)
+            if (_strikeRanges.TryGetValue(original, out var ranges))
+                _strikeRanges[copy] = ranges;
         var noteObjects = _footnoteParagraphs.Select(entry => entry.Paragraph)
             .Where(cloned.ContainsKey).Select(entry => cloned[entry]).ToHashSet();
         var pageOf = new Dictionary<MigraDoc.DocumentObjectModel.Paragraph, int>();
@@ -3952,8 +4286,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     pageOf.TryAdd(paragraph, page);
                     if (noteObjects.Contains(paragraph))
                     {
-                        heights[paragraph] = Math.Max(heights.GetValueOrDefault(paragraph),
-                            area.Height.Point);
+                        heights[paragraph] = heights.GetValueOrDefault(paragraph) + area.Height.Point;
                         continue;
                     }
                 }
@@ -3964,9 +4297,9 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 cloned.TryGetValue(entry.Paragraph, out var note) && heights.ContainsKey(note) &&
                 _footnoteReferences.TryGetValue(entry.Index, out var reference) &&
                 cloned.TryGetValue(reference, out var clonedReference) && pageOf.ContainsKey(clonedReference))
-            .GroupBy(entry => pageOf[cloned[_footnoteReferences[entry.Index]]]);
+            .GroupBy(entry => pageOf[cloned[_footnoteReferences[entry.Index]]] + entry.PageOffset);
         var overlays = new List<(int Page, int Index, MigraDoc.DocumentObjectModel.Paragraph Note,
-            double Y)>();
+            double Y, int PageOffset)>();
         foreach (var group in groups)
         {
             var entries = group.ToList();
@@ -3980,7 +4313,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             {
                 var note = cloned[entry.Paragraph];
                 var height = heights[note];
-                overlays.Add((group.Key, entry.Index, note, noteTop));
+                overlays.Add((group.Key, entry.Index, note, noteTop, entry.PageOffset));
                 noteTop += height;
             }
         }
@@ -4002,7 +4335,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
 
     private static void RenderFittingFootnotes(PdfDocumentRenderer renderer,
         PdfDocumentRenderer preflightRenderer,
-        List<(int Page, int Index, MigraDoc.DocumentObjectModel.Paragraph Note, double Y)> overlays)
+        List<(int Page, int Index, MigraDoc.DocumentObjectModel.Paragraph Note, double Y,
+            int PageOffset)> overlays)
     {
         foreach (var group in overlays.GroupBy(overlay => overlay.Page))
         {
@@ -4020,7 +4354,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             {
                 preflightRenderer.DocumentRenderer.RenderObject(graphics, new XUnitPt(left),
                     new XUnitPt(overlay.Y), new XUnitPt(width), overlay.Note);
-                if (namedNotes.Add(overlay.Index))
+                if (overlay.PageOffset == 0 && namedNotes.Add(overlay.Index))
                     renderer.PdfDocument.AddNamedDestination($"dxp-note-{overlay.Index}", overlay.Page,
                         PdfSharp.Pdf.Advanced.PdfNamedDestinationParameters.CreateVerticalPosition(
                             overlay.Y, null));
@@ -4438,6 +4772,22 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     }
 
     private static IEnumerable<(RenderInfo Info, double XOffset, double YOffset)>
+        GetFootnoteEmphasisRenderInfos(PdfDocumentRenderer renderer,
+            List<(int Page, int Index, MigraDoc.DocumentObjectModel.Paragraph Note, double Y,
+                int PageOffset)> overlays, int pageNumber)
+    {
+        foreach (var overlay in overlays.Where(item => item.Page == pageNumber))
+        for (var sourcePage = 1; sourcePage <= renderer.PageCount; sourcePage++)
+        foreach (var info in renderer.DocumentRenderer.GetRenderInfoFromPage(sourcePage))
+            if (ReferenceEquals(info.DocumentObject, overlay.Note) &&
+                info.LayoutInfo.ContentArea is { } area)
+            {
+                yield return (info, 0, overlay.Y - area.Y.Point);
+                break;
+            }
+    }
+
+    private static IEnumerable<(RenderInfo Info, double XOffset, double YOffset)>
         GetEmphasisRenderInfoDescendants(RenderInfo info, double parentXOffset, double parentYOffset)
     {
         yield return (info, parentXOffset, parentYOffset);
@@ -4776,7 +5126,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     }
 
     internal static string RewriteMixedDisplayMathRunStream(string source,
-        IReadOnlySet<string> mathFonts, IReadOnlyCollection<(double Min, double Max)> ranges,
+        ISet<string> mathFonts, IReadOnlyCollection<(double Min, double Max)> ranges,
         double pageHeight)
     {
         var lines = source.Split('\n');
@@ -4964,8 +5314,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         }
     }
 
-    internal static string RaiseCjkListTextRuns(string source, IReadOnlySet<string> markerFonts,
-        IReadOnlySet<string> textFonts, IReadOnlyCollection<(double Min, double Max)> ranges,
+    internal static string RaiseCjkListTextRuns(string source, ISet<string> markerFonts,
+        ISet<string> textFonts, IReadOnlyCollection<(double Min, double Max)> ranges,
         double pageHeight)
     {
         var lines = source.Split('\n');
@@ -5668,7 +6018,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     }
 
     internal static bool IsPlainLatinAfterFitLine(string[] lines, int start,
-        IReadOnlySet<string> eligibleTexts)
+        ISet<string> eligibleTexts)
     {
         if (eligibleTexts.Count == 0) return false;
         var content = new StringBuilder();
@@ -6144,24 +6494,26 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             {
                 if (info.DocumentObject is not MigraDoc.DocumentObjectModel.Paragraph paragraph ||
                     info.LayoutInfo.ContentArea is not { } area ||
-                    !_characterScales.ContainsKey(paragraph) && !_fitTextWidths.ContainsKey(paragraph) &&
+                    !_characterScales.ContainsKey(paragraph) &&
+                    !TryGetInheritedParagraphValue(_fitTextWidths, paragraph, out _) &&
                     !_partialFitGroups.ContainsKey(paragraph) &&
                     !_characterSpacings.ContainsKey(paragraph) &&
                     !_textBorderRanges.ContainsKey(paragraph) &&
-                    !_topAlignedFontSizes.ContainsKey(paragraph) &&
-                    !_verticalAlignedFonts.ContainsKey(paragraph) &&
-                    !_hangulBaselineShiftParagraphs.Contains(paragraph) &&
+                    !TryGetInheritedParagraphValue(_topAlignedFontSizes, paragraph, out _) &&
+                    !TryGetInheritedParagraphValue(_verticalAlignedFonts, paragraph, out _) &&
+                    !HasInheritedParagraphFlag(_hangulBaselineShiftParagraphs, paragraph) &&
                     !_gridGlyphParagraphs.Contains(paragraph) &&
                     !_gridBoundaryParagraphs.Contains(paragraph) &&
                     !_oversizedStoryLatinParagraphs.Contains(paragraph)) continue;
                 var border = _textBorderRanges.GetValueOrDefault(paragraph)?.FirstOrDefault();
                 var verticalShift = border == null ? 0 : _bodyParagraphs.Contains(paragraph)
                     ? border.Inset + bodyBorderIndex++ * 8.2 : -border.Inset - 0.9;
-                if (_hangulBaselineShiftParagraphs.Contains(paragraph)) verticalShift += 0.28;
-                if (_fitTextTracking.Contains(paragraph) && _bodyParagraphs.Contains(paragraph) &&
+                if (HasInheritedParagraphFlag(_hangulBaselineShiftParagraphs, paragraph)) verticalShift += 0.28;
+                if (HasInheritedParagraphFlag(_fitTextTracking, paragraph) &&
+                    _bodyParagraphs.Contains(paragraph) &&
                     !_documentHasFitText)
                     verticalShift += 4;
-                if (_fittedBodyAfterSecondCjkHeader.Contains(paragraph))
+                if (HasInheritedParagraphFlag(_fittedBodyAfterSecondCjkHeader, paragraph))
                     verticalShift -= 1.05;
                 var top = area.Y.Point + offset;
                 var letter = page.Letters.FirstOrDefault(candidate =>
@@ -6171,47 +6523,54 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     page.Height - candidate.GlyphRectangle.Top <= top + area.Height.Point + 5);
                 if (letter != null)
                 {
-                    if (_latinCalibriFitParagraphs.Contains(paragraph) && _headerParagraphCount < 2)
+                    if (HasInheritedParagraphFlag(_latinCalibriFitParagraphs, paragraph) &&
+                        _headerParagraphCount < 2)
                         verticalShift += 0.95;
-                    var fittedCalibriTracking = _latinCalibriFitParagraphs.Contains(paragraph) &&
-                        _bodyParagraphs.Contains(paragraph) && !_fitTextTracking.Contains(paragraph) &&
+                    var fittedCalibriTracking = HasInheritedParagraphFlag(_latinCalibriFitParagraphs, paragraph) &&
+                        _bodyParagraphs.Contains(paragraph) &&
+                        !HasInheritedParagraphFlag(_fitTextTracking, paragraph) &&
                         letter.FontName.Contains("Calibri,BoldItalic", StringComparison.OrdinalIgnoreCase);
-                    var fittedMixedTracking = _mixedCalibriYuMinchoFitParagraphs.Contains(paragraph) &&
-                        _bodyParagraphs.Contains(paragraph) && !_fitTextTracking.Contains(paragraph) &&
+                    var fittedMixedTracking =
+                        HasInheritedParagraphFlag(_mixedCalibriYuMinchoFitParagraphs, paragraph) &&
+                        _bodyParagraphs.Contains(paragraph) &&
+                        !HasInheritedParagraphFlag(_fitTextTracking, paragraph) &&
                         letter.FontName.Contains("Calibri", StringComparison.OrdinalIgnoreCase);
-                    var fittedYuMinchoTracking = _latinYuMinchoFitParagraphs.Contains(paragraph) &&
-                        _bodyParagraphs.Contains(paragraph) && !_fitTextTracking.Contains(paragraph) &&
+                    var fittedYuMinchoTracking = HasInheritedParagraphFlag(_latinYuMinchoFitParagraphs, paragraph) &&
+                        _bodyParagraphs.Contains(paragraph) &&
+                        !HasInheritedParagraphFlag(_fitTextTracking, paragraph) &&
                         letter.FontName.Contains("Yu Mincho", StringComparison.OrdinalIgnoreCase);
                     var fittedTwelvePointTracking = fittedCalibriTracking || fittedMixedTracking ||
                         fittedYuMinchoTracking;
-                    var inheritedTimesTracking = _latinTimesFitParagraphs.Contains(paragraph) &&
-                        _bodyParagraphs.Contains(paragraph) && _fitTextTracking.Contains(paragraph) &&
+                    var inheritedTimesTracking = HasInheritedParagraphFlag(_latinTimesFitParagraphs, paragraph) &&
+                        _bodyParagraphs.Contains(paragraph) &&
+                        HasInheritedParagraphFlag(_fitTextTracking, paragraph) &&
                         letter.FontName.Contains("Times New Roman", StringComparison.OrdinalIgnoreCase);
-                    var fit = _fitTextWidths.TryGetValue(paragraph, out var targetWidth)
+                    var fit = TryGetInheritedParagraphValue(_fitTextWidths, paragraph, out var targetWidth)
                         ? FitTextMetrics(page, letter, area.X.Point, area.Width.Point, targetWidth,
-                            _fitTextTracking.Contains(paragraph) || fittedTwelvePointTracking,
+                            HasInheritedParagraphFlag(_fitTextTracking, paragraph) || fittedTwelvePointTracking,
                             !_bodyParagraphs.Contains(paragraph),
                             fittedTwelvePointTracking || inheritedTimesTracking
-                                ? _fitTextCharacterCounts.GetValueOrDefault(paragraph) : 0,
+                                ? GetInheritedParagraphValueOrDefault(_fitTextCharacterCounts, paragraph) : 0,
                             fittedTwelvePointTracking ? 12.0 / 11 : 1, inheritedTimesTracking) :
                         (Scale: 100.0, Spacing: 0.0);
                     var groups = _partialFitGroups.TryGetValue(paragraph, out var partial)
                         ? BuildPartialFitMetrics(page, letter, area.X.Point, area.Width.Point, partial) : null;
-                    var alignedFont = _verticalAlignedFonts.GetValueOrDefault(paragraph);
+                    var alignedFont = GetInheritedParagraphValueOrDefault(_verticalAlignedFonts, paragraph);
                     baselines.Add((letter.StartBaseLine.Y,
                         _characterScales.GetValueOrDefault(paragraph, fit.Scale),
                         _characterSpacings.GetValueOrDefault(paragraph, fit.Spacing),
                         (border?.Inset ?? 0) + _centeredSpacingOffsets.GetValueOrDefault(paragraph) +
                             _packedGridOffsets.GetValueOrDefault(paragraph), verticalShift,
                         alignedFont.Size > 0 ? alignedFont.Size :
-                        _topAlignedFontSizes.TryGetValue(paragraph, out var topSize) &&
+                        TryGetInheritedParagraphValue(_topAlignedFontSizes, paragraph, out var topSize) &&
                             page.Letters.Any(candidate =>
                                 Math.Abs(candidate.StartBaseLine.Y - letter.StartBaseLine.Y) < 0.5 &&
                                 candidate.FontSize >= topSize - 0.5) ? topSize : 0,
-                        _topAlignedHeaderParagraphs.Contains(paragraph) ? 0.98 : alignedFont.Factor, groups,
+                        HasInheritedParagraphFlag(_topAlignedHeaderParagraphs, paragraph)
+                            ? 0.98 : alignedFont.Factor, groups,
                         _gridGlyphParagraphs.Contains(paragraph),
                         _gridGlyphParagraphs.Contains(paragraph) &&
-                            !_unshiftedGridGlyphParagraphs.Contains(paragraph),
+                            !HasInheritedParagraphFlag(_unshiftedGridGlyphParagraphs, paragraph),
                         _packedGridParagraphs.Contains(paragraph),
                         _packedGridOffsets.ContainsKey(paragraph),
                         fittedTwelvePointTracking || inheritedTimesTracking ||
@@ -6224,8 +6583,9 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                         _oversizedGridLatinParagraphs.Contains(paragraph),
                         _oversizedStoryLatinParagraphs.Contains(paragraph),
                         _gridBoundaryParagraphs.Contains(paragraph), fittedTwelvePointTracking,
-                        inheritedTimesTracking, _mixedCjkFitBodyParagraphs.Contains(paragraph)));
-                    if (_topAlignedFontSizes.TryGetValue(paragraph, out var alignedSize))
+                        inheritedTimesTracking,
+                        HasInheritedParagraphFlag(_mixedCjkFitBodyParagraphs, paragraph)));
+                    if (TryGetInheritedParagraphValue(_topAlignedFontSizes, paragraph, out var alignedSize))
                         foreach (var line in page.Letters.Where(candidate =>
                                 candidate.StartBaseLine.Y < letter.StartBaseLine.Y - 0.5 &&
                                 candidate.GlyphRectangle.Left >= area.X.Point - 2 &&
@@ -7118,7 +7478,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     var first = line.OrderBy(letter => letter.StartBaseLine.X).First();
                     var last = line.OrderByDescending(letter => letter.EndBaseLine.X).First();
                     var body = _bodyParagraphs.Contains(paragraph);
-                    var compactBody = _compactArialBodyParagraphs.Contains(paragraph);
+                    var compactBody = HasInheritedParagraphFlag(_compactArialBodyParagraphs, paragraph);
                     var aptosStory = underline.InHeaderFooter &&
                         first.FontName.Contains("Aptos", StringComparison.OrdinalIgnoreCase);
                     var bodyExtension = _characterSpacings.ContainsKey(paragraph) ? 2 : 0;
@@ -7173,7 +7533,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
 
     private PdfDocument? ApplyFormattingBalloons(PdfDocumentRenderer renderer, PdfDocument document)
     {
-        if (_formattingBalloons.Count == 0) return null;
+        if (_formattingBalloons.Count == 0 && _changedFieldUrls.Count == 0) return null;
         using var stream = new MemoryStream();
         document.Save(stream, false);
         var bytes = stream.ToArray();
@@ -7205,12 +7565,40 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                         top + index * 14, connectorX, descriptions[index]));
             }
         }
-        if (pages.Any(page => page.Count > 0))
+        var emittedFieldBalloons = new Dictionary<string, int>(StringComparer.Ordinal);
+        for (var pageIndex = 0; pageIndex < mutable.PageCount; pageIndex++)
+        {
+            var page = mutable.Pages[pageIndex];
+            var lastTop = new Dictionary<string, double>(StringComparer.Ordinal);
+            foreach (var annotation in page.Annotations.Cast<PdfSharp.Pdf.Annotations.PdfAnnotation>()
+                         .OrderBy(item => page.Height.Point - item.Rectangle.Y2))
+            {
+                var uri = annotation.Elements.GetDictionary("/A")?.Elements.GetString("/URI");
+                if (uri == null || !_changedFieldUrls.TryGetValue(uri, out var fieldCount) ||
+                    emittedFieldBalloons.GetValueOrDefault(uri) >= fieldCount) continue;
+                var rectangle = annotation.Rectangle;
+                var top = page.Height.Point - rectangle.Y2;
+                if (lastTop.TryGetValue(uri, out var previousTop) && top - previousTop < 18)
+                {
+                    lastTop[uri] = top;
+                    continue;
+                }
+                lastTop[uri] = top;
+                emittedFieldBalloons[uri] = emittedFieldBalloons.GetValueOrDefault(uri) + 1;
+                pages[pageIndex].Add(new DxpPdfMarkupPrintLayout.Balloon(
+                    top, rectangle.X2, string.Empty,
+                    "Field Code Changed"));
+            }
+        }
+        if (_formattingBalloons.Count > 0 || _changedFieldUrls.Count > 0)
             DxpPdfMarkupPrintLayout.Apply(mutable, pages);
         return mutable;
     }
 
-    private PdfDocument RenderEmphasisMarks(PdfDocumentRenderer renderer, PdfDocument? target = null)
+    private PdfDocument RenderEmphasisMarks(PdfDocumentRenderer renderer, PdfDocument? target = null,
+        PdfDocumentRenderer? footnoteRenderer = null,
+        List<(int Page, int Index, MigraDoc.DocumentObjectModel.Paragraph Note, double Y,
+            int PageOffset)>? footnoteOverlays = null)
     {
         if (_emphasisRanges.Count == 0 && _rubyGuides.Count == 0 && _strikeRanges.Count == 0 &&
             _revisionUnderlineRanges.Count == 0 && _revisionParagraphs.Count == 0 &&
@@ -7236,7 +7624,11 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             var page = parsed.GetPage(index + 1);
             var bodyBorderIndex = 0;
             var cellRevisionBars = new HashSet<(double X, double Top)>();
-            foreach (var (info, xOffset, offset) in GetPageEmphasisRenderInfos(renderer, index, target))
+            var pageInfos = GetPageEmphasisRenderInfos(renderer, index, target);
+            if (footnoteRenderer != null && footnoteOverlays != null)
+                pageInfos = pageInfos.Concat(GetFootnoteEmphasisRenderInfos(
+                    footnoteRenderer, footnoteOverlays, index + 1));
+            foreach (var (info, xOffset, offset) in pageInfos)
             {
                 if (info.DocumentObject is not MigraDoc.DocumentObjectModel.Paragraph paragraph ||
                     info.LayoutInfo.ContentArea is not { } area) continue;
@@ -7451,7 +7843,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                             CultureInfo.InvariantCulture, out var rgb)) continue;
                     var first = bordered[0];
                     var last = bordered[^1];
-                    var compactArial = _compactArialBodyParagraphs.Contains(paragraph);
+                    var compactArial = HasInheritedParagraphFlag(_compactArialBodyParagraphs, paragraph);
                     var tabbedBodyBorder = _bodyParagraphs.Contains(paragraph) &&
                         bordered.Zip(bordered.Skip(1)).Any(pair =>
                             Math.Abs(pair.First.StartBaseLine.Y - pair.Second.StartBaseLine.Y) < 1 &&
@@ -7461,18 +7853,22 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                         (tabbedBodyBorder ? border.Inset : 0);
                     var borderOffset = borderShift - (border.Double
                         ? _firstBodyDoubleBorderInset.GetValueOrDefault(paragraph) +
-                            (_footerLeaderParagraphs.Contains(paragraph) ? 2 * border.Width : 0) : 0);
+                            (HasInheritedParagraphFlag(_footerLeaderParagraphs, paragraph)
+                                ? 2 * border.Width : 0) : 0);
                     var borderTop = page.Height - first.GlyphRectangle.Top + borderOffset - border.Inset - 4 +
-                        border.Width / 2 + (_compactArialBodyParagraphs.Contains(paragraph) ? 1.8 : 0);
+                        border.Width / 2 +
+                        (HasInheritedParagraphFlag(_compactArialBodyParagraphs, paragraph) ? 1.8 : 0);
                     var right = compactArial
                         ? last.EndBaseLine.X + border.VisibleLength *
                             _characterSpacings.GetValueOrDefault(paragraph)
                         : last.EndBaseLine.X + border.Inset * 2 - border.Width / 2 +
                             border.Length * _characterSpacings.GetValueOrDefault(paragraph);
                     if (tabbedBodyBorder)
-                        right += border.Inset + _borderedTabInsets.GetValueOrDefault(paragraph);
+                        right += border.Inset +
+                            GetInheritedParagraphValueOrDefault(_borderedTabInsets, paragraph);
                     var borderBottom = page.Height - first.GlyphRectangle.Bottom + borderOffset + border.Inset + 4 -
-                        border.Width / 2 - (_compactArialBodyParagraphs.Contains(paragraph) ? 1.3 : 0);
+                        border.Width / 2 -
+                        (HasInheritedParagraphFlag(_compactArialBodyParagraphs, paragraph) ? 1.3 : 0);
                     var borderPen = new XPen(XColor.FromArgb((rgb >> 16) & 255,
                         (rgb >> 8) & 255, rgb & 255), border.Width);
                     if (border.Double)
@@ -7636,7 +8032,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                             ? page.Height - strikeLine[0].StartBaseLine.Y - strikeLine[0].PointSize / 3
                             : page.Height - glyph.Top + (glyph.Top - glyph.Bottom) * 0.6 + 0.6;
                         var strikePen = strike.VisibleStart != null
-                            ? new XPen(_revisionMarkupColor, 0.6)
+                            ? new XPen(_revisionDeletionColor, 0.6)
                             : new XPen(XColors.Black, 0.55);
                         if (strike.Moved)
                         {
@@ -8046,7 +8442,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         return annotated;
     }
 
-    private static void CopyNamedDestinations(PdfDocument source, PdfDocument destination)
+    private static void CopyNamedDestinations(PdfDocument source, PdfDocument destination,
+        Func<int, bool>? includePage = null)
     {
         var names = source.Internals.Catalog.Names?.NameTree;
         if (names == null) return;
@@ -8062,7 +8459,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     pageIndex = index;
                     break;
                 }
-            if (pageIndex < 0) continue;
+            if (pageIndex < 0 || includePage?.Invoke(pageIndex) == false) continue;
             static double? Number(PdfItem item) => item switch
             {
                 PdfReal real => real.Value,
@@ -8104,7 +8501,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             foreach (var (storyInfo, offset) in GetPageStoryRenderInfos(renderer, index, target))
             {
                 if (storyInfo.DocumentObject is not MigraDoc.DocumentObjectModel.Paragraph footerParagraph ||
-                    !_footerParagraphShadeClearances.TryGetValue(footerParagraph, out var clearance) ||
+                    !TryGetInheritedParagraphValue(_footerParagraphShadeClearances,
+                        footerParagraph, out var clearance) ||
                     !_paragraphShades.TryGetValue(footerParagraph, out var footerCss) ||
                     storyInfo.LayoutInfo.ContentArea is not { } footerArea || footerCss.Length != 7 ||
                     !int.TryParse(footerCss.AsSpan(1), NumberStyles.HexNumber,
@@ -8196,8 +8594,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             {
                 if (infos[position].DocumentObject is not MigraDoc.DocumentObjectModel.Paragraph paragraph ||
                     infos[position + 1].DocumentObject is not MigraDoc.DocumentObjectModel.Paragraph next ||
-                    !_directBorderParagraphs.TryGetValue(paragraph, out var source) ||
-                    !_directBorderParagraphs.TryGetValue(next, out var nextSource) ||
+                    !TryGetInheritedParagraphValue(_directBorderParagraphs, paragraph, out var source) ||
+                    !TryGetInheritedParagraphValue(_directBorderParagraphs, next, out var nextSource) ||
                     _mirroredParagraphs.Contains(paragraph) ||
                     !ReferenceEquals(source.NextSibling(), nextSource) ||
                     source.ParagraphProperties?.ParagraphBorders is not { } borders ||
@@ -8236,10 +8634,12 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
 
     private sealed record FooterImageOverlay(HeaderFooterValues Kind, byte[] Bytes,
         double Left, double Top, double Width, double Height, bool Header = false,
-        MigraDoc.DocumentObjectModel.Paragraph? AnchorParagraph = null);
+        MigraDoc.DocumentObjectModel.Paragraph? AnchorParagraph = null, bool BehindDocument = false,
+        long ZOrder = 0, bool PageRelative = false, bool MirrorHorizontal = false);
 
     private sealed record ParagraphImageOverlay(byte[] Bytes, double Left, double Top,
-        double Width, double Height, bool PageRelative = false, long ZOrder = 0);
+        double Width, double Height, bool PageRelative = false, long ZOrder = 0,
+        bool BehindDocument = false, bool MirrorHorizontal = false);
     private sealed record FloatingTextWrap(double Left, double Right);
 
     private void ClipExactLineImages(PdfDocumentRenderer renderer, PdfDocument document)
@@ -8308,20 +8708,41 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     {
         if (_paragraphImages.Count == 0) return;
         var drawnParagraphs = new HashSet<MigraDoc.DocumentObjectModel.Paragraph>();
+        Section? previousSection = null;
+        var sectionPage = 0;
+        var displayedPage = 0;
         for (var index = 0; index < renderer.PageCount; index++)
         {
+            var section = renderer.DocumentRenderer.GetRenderInfoFromPage(index + 1)?
+                .Select(info => info.DocumentObject.Section)
+                .FirstOrDefault(candidate => candidate != null);
+            if (section != null)
+            {
+                sectionPage = ReferenceEquals(section, previousSection) ? sectionPage + 1 : 1;
+                displayedPage = sectionPage == 1 && section.PageSetup.StartingNumber > 0
+                    ? section.PageSetup.StartingNumber : displayedPage + 1;
+                previousSection = section;
+            }
             foreach (var info in renderer.DocumentRenderer.GetRenderInfoFromPage(index + 1))
             {
                 if (info.DocumentObject is not MigraDoc.DocumentObjectModel.Paragraph paragraph ||
                     !_paragraphImages.TryGetValue(paragraph, out var images) ||
                     info.LayoutInfo.ContentArea is not { } area ||
                     !drawnParagraphs.Add(paragraph)) continue;
-                using var graphics = XGraphics.FromPdfPage((target ?? renderer.PdfDocument).Pages[index]);
-                foreach (var overlay in images.OrderBy(image => image.ZOrder))
+                foreach (var overlay in images.Where(image => image.BehindDocument)
+                             .OrderByDescending(image => image.ZOrder)
+                             .Concat(images.Where(image => !image.BehindDocument)
+                                 .OrderBy(image => image.ZOrder)))
                 {
+                    using var graphics = XGraphics.FromPdfPage((target ?? renderer.PdfDocument).Pages[index],
+                        overlay.BehindDocument ? XGraphicsPdfPageOptions.Prepend : XGraphicsPdfPageOptions.Append);
                     using var stream = new MemoryStream(overlay.Bytes);
                     using var image = XImage.FromStream(stream);
-                    graphics.DrawImage(image, overlay.PageRelative ? overlay.Left : area.X.Point + overlay.Left,
+                    graphics.DrawImage(image, overlay.PageRelative
+                            ? MirroredPageImageLeft(overlay.Left, overlay.Width,
+                                renderer.PdfDocument.Pages[index].Width.Point, displayedPage,
+                                overlay.MirrorHorizontal)
+                            : area.X.Point + overlay.Left,
                         overlay.PageRelative ? overlay.Top : area.Y.Point + overlay.Top,
                         overlay.Width, overlay.Height);
                 }
@@ -8403,6 +8824,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         if (_footerImages.Count == 0) return;
         Section? previousSection = null;
         var sectionPage = 0;
+        var displayedPage = 0;
         for (var index = 0; index < renderer.PageCount; index++)
         {
             var section = renderer.DocumentRenderer.GetRenderInfoFromPage(index + 1)?
@@ -8410,17 +8832,23 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 .FirstOrDefault(candidate => candidate != null);
             if (section == null) continue;
             sectionPage = ReferenceEquals(section, previousSection) ? sectionPage + 1 : 1;
+            displayedPage = sectionPage == 1 && section.PageSetup.StartingNumber > 0
+                ? section.PageSetup.StartingNumber : displayedPage + 1;
             previousSection = section;
             if (!_footerImages.TryGetValue(section, out var images)) continue;
             var kind = sectionPage == 1 && section.PageSetup.DifferentFirstPageHeaderFooter
                 ? HeaderFooterValues.First
-                : section.PageSetup.OddAndEvenPagesHeaderFooter && (index + 1) % 2 == 0
+                : section.PageSetup.OddAndEvenPagesHeaderFooter && displayedPage % 2 == 0
                     ? HeaderFooterValues.Even : HeaderFooterValues.Default;
             var selected = images.Where(image => image.Kind == kind).ToArray();
             if (selected.Length == 0) continue;
-            using var graphics = XGraphics.FromPdfPage((target ?? renderer.PdfDocument).Pages[index]);
-            foreach (var overlay in selected)
+            foreach (var overlay in selected.Where(image => image.BehindDocument)
+                         .OrderByDescending(image => image.ZOrder)
+                         .Concat(selected.Where(image => !image.BehindDocument)
+                             .OrderBy(image => image.ZOrder)))
             {
+                using var graphics = XGraphics.FromPdfPage((target ?? renderer.PdfDocument).Pages[index],
+                    overlay.BehindDocument ? XGraphicsPdfPageOptions.Prepend : XGraphicsPdfPageOptions.Append);
                 using var stream = new MemoryStream(overlay.Bytes);
                 using var image = XImage.FromStream(stream);
                 var anchorTop = overlay.AnchorParagraph == null ? null :
@@ -8434,8 +8862,14 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                         section.PageSetup.FooterDistance.Point - 15
                     : overlay.Header ? section.PageSetup.HeaderDistance.Point :
                         section.PageSetup.TopMargin.Point);
-                graphics.DrawImage(image, section.PageSetup.LeftMargin.Point + overlay.Left,
-                    storyTop + overlay.Top, overlay.Width, overlay.Height);
+                graphics.DrawImage(image,
+                    overlay.PageRelative
+                        ? MirroredPageImageLeft(overlay.Left, overlay.Width,
+                            renderer.PdfDocument.Pages[index].Width.Point, displayedPage,
+                            overlay.MirrorHorizontal)
+                        : section.PageSetup.LeftMargin.Point + overlay.Left,
+                    overlay.PageRelative ? overlay.Top : storyTop + overlay.Top,
+                    overlay.Width, overlay.Height);
             }
         }
     }
@@ -8504,14 +8938,28 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         var previous = _container;
         _container = _section;
         var body = properties.Ancestors<Body>().FirstOrDefault();
+        var sectionEnd = properties.Parent is DocumentFormat.OpenXml.Wordprocessing.Paragraph boundary
+            ? (OpenXmlElement)boundary : properties;
+        var preceding = body?.ChildElements.TakeWhile(element => element != sectionEnd).ToArray() ?? [];
+        var previousSectionIndex = Array.FindLastIndex(preceding, element =>
+            element is DocumentFormat.OpenXml.Wordprocessing.Paragraph paragraph &&
+            paragraph.ParagraphProperties?.SectionProperties != null);
+        var sectionElements = body?.ChildElements.Skip(previousSectionIndex + 1)
+            .TakeWhile(element => element != sectionEnd)
+            .Concat(sectionEnd is DocumentFormat.OpenXml.Wordprocessing.Paragraph ? [sectionEnd] : [])
+            .ToArray() ?? [];
+        var sectionParagraphs = sectionElements.OfType<DocumentFormat.OpenXml.Wordprocessing.Paragraph>().ToArray();
         if (_columnWidths != null && body != null &&
-            body.ChildElements.All(element => element is DocumentFormat.OpenXml.Wordprocessing.Paragraph or SectionProperties) &&
-            body.Elements<DocumentFormat.OpenXml.Wordprocessing.Paragraph>().All(paragraph =>
-                paragraph.Descendants<DocumentFormat.OpenXml.Wordprocessing.Text>()
-                    .Where(text => !text.Ancestors<TextBoxContent>().Any())
-                    .Sum(text => text.Text.Length) < 45 &&
+            sectionElements.All(element => element is DocumentFormat.OpenXml.Wordprocessing.Paragraph or SectionProperties) &&
+            sectionParagraphs.All(paragraph =>
                 paragraph.Descendants<Drawing>().All(drawing =>
-                    drawing.Descendants<TextBoxContent>().Any())))
+                    drawing.Descendants<TextBoxContent>().Any())) &&
+            (sectionParagraphs.Any(paragraph => paragraph.Descendants<Break>()
+                 .Any(br => br.Type?.Value == BreakValues.Column)) ||
+             sectionParagraphs.All(paragraph =>
+                 paragraph.Descendants<DocumentFormat.OpenXml.Wordprocessing.Text>()
+                     .Where(text => !text.Ancestors<TextBoxContent>().Any())
+                     .Sum(text => text.Text.Length) < 45)))
         {
             _columnIndex = 0;
             _columnParagraphCount = 0;
@@ -8542,13 +8990,16 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         table.RightPadding = Unit.Zero;
         table.TopPadding = Unit.Zero;
         table.BottomPadding = Unit.Zero;
-        table.AddColumn(Unit.FromPoint(_columnWidths![0]));
-        table.AddColumn(Unit.FromPoint(_columnGapPoints));
-        table.AddColumn(Unit.FromPoint(_columnWidths[1]));
+        for (var index = 0; index < _columnWidths!.Length; index++)
+        {
+            if (index > 0) table.AddColumn(Unit.FromPoint(_columnGapPoints));
+            table.AddColumn(Unit.FromPoint(_columnWidths[index]));
+        }
         var row = table.AddRow();
         row.TopPadding = Unit.Zero;
         row.BottomPadding = Unit.Zero;
-        _columnCells = [row.Cells[0], row.Cells[2]];
+        _columnCells = Enumerable.Range(0, _columnWidths.Length)
+            .Select(index => row.Cells[index * 2]).ToArray();
         _activeColumnCell = _columnCells[0];
     }
 
@@ -8558,7 +9009,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         if (_lastParagraph != null)
             _lastParagraph.Format.SpaceAfter = Unit.Zero;
         _columnIndex++;
-        if (_columnIndex == 2)
+        if (_columnIndex == _columnWidths!.Length)
         {
             _section!.AddPageBreak();
             AddColumnPage();
@@ -9068,12 +9519,28 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             if (frameWrapSetting == "around")
                 positionedParagraphFrame.WrapFormat.DistanceRight = Unit.FromPoint(1);
         }
+        var precedingNotBesideFrame = positionedParagraphFrame == null &&
+            _container is Section followingFrameSection &&
+            paragraph.PreviousSibling() is DocumentFormat.OpenXml.Wordprocessing.Paragraph
+                { ParagraphProperties: { } precedingNotBesideProperties } &&
+            precedingNotBesideProperties.ChildElements.Any(element =>
+                element.LocalName == "framePr" && AttributeValue(element, "wrap") == "notBeside")
+            ? followingFrameSection.Elements.Cast<MigraDoc.DocumentObjectModel.DocumentObject>()
+                .LastOrDefault() as MigraDoc.DocumentObjectModel.Shapes.TextFrame
+            : null;
         _paragraph = positionedParagraphFrame?.AddParagraph() ?? AddParagraph();
+        if (_paragraph != null)
+            _paragraphFragments.RegisterSource(_paragraph, paragraph,
+                _container is Section && _activeColumnCell == null);
+        if (precedingNotBesideFrame != null && _paragraph != null)
+            _notBesideFrameFollowers[precedingNotBesideFrame] = _paragraph;
         var sourceText = paragraph.InnerText.TrimEnd();
         if (_paragraph != null && sourceText.Length > 0 && sourceText[^1] is (']' or ')'))
             _justifiedShrinkFactors[_paragraph] = 0.7;
-        if (_paragraph != null && sourceText.Length > 0 && sourceText[^1] is ('’' or '”'))
-            _justifiedShrinkFactors[_paragraph] = 0.75;
+        if (_paragraph != null && sourceText.EndsWith('’'))
+            _justifiedShrinkFactors[_paragraph] = 0.58;
+        if (_paragraph != null && sourceText.EndsWith('”'))
+            _justifiedShrinkFactors[_paragraph] = 0.5;
         if (_paragraph != null && Regex.IsMatch(sourceText, @"^\S+\s+\S+$"))
             _twoWordOverhangParagraphs.Add(_paragraph);
         if (_paragraph != null && _unfittedMixedScriptParagraph && _unfittedCalibriParagraph &&
@@ -9155,8 +9622,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             };
             if (rise > 0) _bulletBaselineParagraphs[_paragraph] = ("Aptos", rise);
         }
-        if (_container is Section && _activeColumnCell == null)
-            _styleRefBodyParagraphs[_paragraph] = paragraph;
         var underlinedRuns = paragraph.Descendants<Run>()
             .Where(run => run.Descendants<DocumentFormat.OpenXml.Wordprocessing.Text>().Any())
             .Select(run => ResolveRunUnderlineColor(paragraph, run, context)).Distinct().ToArray();
@@ -10058,6 +10523,12 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         if (computed.Borders is { } borders) ApplyBorders(format.Borders, borders);
         if (paragraph.ParagraphProperties?.GetFirstChild<ParagraphBorders>() is { } paragraphBorders)
         {
+            if (_container is Section &&
+                paragraph.NextSibling() is DocumentFormat.OpenXml.Wordprocessing.Paragraph nextInBorderGroup &&
+                nextInBorderGroup.ParagraphProperties?.ParagraphBorders?.OuterXml == paragraphBorders.OuterXml &&
+                paragraph.PreviousSibling<DocumentFormat.OpenXml.Wordprocessing.Paragraph>()?
+                    .ParagraphProperties?.ParagraphBorders?.OuterXml != paragraphBorders.OuterXml)
+                format.KeepWithNext = true;
             if (_container is Section && computed.MarginBottomPt == null &&
                 paragraph.NextSibling() is DocumentFormat.OpenXml.Wordprocessing.Paragraph nextBordered &&
                 nextBordered.ParagraphProperties?.ParagraphBorders?.OuterXml == paragraphBorders.OuterXml)
@@ -11345,9 +11816,11 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             {
                 Underline = _insideInsertedRun ? false : _runStyle.Underline,
                 Strike = _runStyle.Strike || _insideDeletedRun,
-                ColorCss = _insideInsertedRun || _insideDeletedRun
-                    ? $"#{_revisionMarkupColor.R:X2}{_revisionMarkupColor.G:X2}{_revisionMarkupColor.B:X2}"
-                    : _runStyle.ColorCss
+                ColorCss = _insideDeletedRun
+                    ? $"#{_revisionDeletionColor.R:X2}{_revisionDeletionColor.G:X2}{_revisionDeletionColor.B:X2}"
+                    : _insideInsertedRun
+                        ? $"#{_revisionMarkupColor.R:X2}{_revisionMarkupColor.G:X2}{_revisionMarkupColor.B:X2}"
+                        : _runStyle.ColorCss
             };
         _runHighAnsiFont = run.RunProperties?.RunFonts?.HighAnsi?.Value;
         _runEastAsiaFont = run.RunProperties?.RunFonts?.EastAsia?.Value;
@@ -11746,6 +12219,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             !Uri.TryCreate(target, UriKind.Absolute, out var uri) ||
             uri.Scheme is not ("http" or "https" or "mailto"))
             return;
+        // Cross-paragraph complex-field results are coalesced before this visitor (issue #146).
         _activeHyperlink = _paragraph.AddHyperlink(target, HyperlinkType.Url);
     }
 
@@ -12152,22 +12626,45 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private static void RestoreNoBreakWords(MigraDoc.DocumentObjectModel.DocumentObjectCollection elements,
         HashSet<string> tokens, HashSet<string> restored)
     {
+        var texts = GetNoBreakTexts(elements).Where(text => text.Content.Length > 0).ToArray();
+        foreach (var token in tokens)
+        {
+            for (var index = 0; index < texts.Length; index++)
+            {
+                var text = texts[index];
+                if (text.Content.Contains(token, StringComparison.Ordinal))
+                {
+                    text.Content = text.Content.Replace(token, token.Replace('\u2013', '-'),
+                        StringComparison.Ordinal);
+                    restored.Add(token);
+                }
+                var hyphenIndex = token.IndexOf('\u2013');
+                if (hyphenIndex < 0 || index == 0) continue;
+                var prefix = token[..hyphenIndex];
+                var suffix = token[hyphenIndex..];
+                if (texts[index - 1].Content.EndsWith(prefix, StringComparison.Ordinal) &&
+                    text.Content.StartsWith(suffix, StringComparison.Ordinal))
+                {
+                    text.Content = '-' + text.Content[1..];
+                    restored.Add(token);
+                }
+            }
+        }
+    }
+
+    private static IEnumerable<MigraDoc.DocumentObjectModel.Text> GetNoBreakTexts(
+        MigraDoc.DocumentObjectModel.DocumentObjectCollection elements)
+    {
         foreach (var element in elements)
         {
-            if (element is MigraDoc.DocumentObjectModel.Text { Content: var content } text)
-            {
-                foreach (var token in tokens)
-                    if (content.Contains(token, StringComparison.Ordinal))
-                    {
-                        text.Content = text.Content.Replace(token, token.Replace('\u2013', '-'),
-                            StringComparison.Ordinal);
-                        restored.Add(token);
-                    }
-            }
+            if (element is MigraDoc.DocumentObjectModel.Text text)
+                yield return text;
             else if (element is FormattedText span)
-                RestoreNoBreakWords(span.Elements, tokens, restored);
+                foreach (var nested in GetNoBreakTexts(span.Elements))
+                    yield return nested;
             else if (element is MigraDoc.DocumentObjectModel.Hyperlink hyperlink)
-                RestoreNoBreakWords(hyperlink.Elements, tokens, restored);
+                foreach (var nested in GetNoBreakTexts(hyperlink.Elements))
+                    yield return nested;
         }
     }
 
@@ -12287,9 +12784,17 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         if (_runRightToLeft && _availableFontFamilies.Contains("Tahoma"))
             content = ShapeExplicitArabicForPdf(content);
         content = OrderShapedArabicForPdf(content);
+        if (!_highlightParagraphTexts.TryGetValue(_paragraph, out var paragraphText))
+            paragraphText = (new StringBuilder(), 0);
+        var sourceOffset = paragraphText.NormalizedLength;
+        paragraphText.Text.Append(content);
+        paragraphText.NormalizedLength += content.Count(character => !char.IsWhiteSpace(character));
+        _highlightParagraphTexts[_paragraph] = paragraphText;
         if (_runHighlight is { } highlight && !string.IsNullOrWhiteSpace(content))
             _highlights.Add(new DxpPdfHighlight(content, highlight, null,
-                _paragraphLineSize, _container is HeaderFooter && !_inHeader));
+                _paragraphLineSize, _container is HeaderFooter && !_inHeader,
+                ParagraphText: paragraphText.Text, SourceOffset: sourceOffset,
+                RepeatedStory: _container is HeaderFooter));
         else if (_runShading is { } shading && !string.IsNullOrWhiteSpace(content))
         {
             var storySpacing = _container is HeaderFooter &&
@@ -12306,7 +12811,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             if (_container is HeaderFooter && _inHeader && _runTextBorder == null && storySpacing < 0)
                 rightPadding += storySpacing;
             _highlights.Add(new DxpPdfHighlight(content, null, shading,
-                _paragraphLineSize, _container is HeaderFooter && !_inHeader, rightPadding));
+                _paragraphLineSize, _container is HeaderFooter && !_inHeader, rightPadding,
+                paragraphText.Text, sourceOffset, _container is HeaderFooter));
         }
         if (!smallCaps)
         {
@@ -12779,7 +13285,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             !_runStyle.Superscript && !_runStyle.Subscript)
             span.Size = Unit.FromPoint(12);
         if (Environment.GetEnvironmentVariable("DOCXPORT_DIAG_HIGHANSI_FIT_PAINT_12") == "1" &&
-            _container is Section && _fitTextWidths.ContainsKey(_paragraph) &&
+            _container is Section && TryGetInheritedParagraphValue(_fitTextWidths, _paragraph, out _) &&
             _runHighAnsiFont != null && _runStyle.FontSizeHalfPoints == null)
             span.Size = Unit.FromPoint(12);
         if (_unfittedMixedScriptLatinParagraph && content == "\u2004")
@@ -12830,11 +13336,11 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             string.Equals(_runStyle.FontName, "Calibri", StringComparison.OrdinalIgnoreCase) &&
             content.Any(IsJapaneseFallbackCharacter))
         {
-            var useLayoutFont = _mixedHighAnsiFittedHeaders.Contains(_paragraph) &&
+            var useLayoutFont = HasInheritedParagraphFlag(_mixedHighAnsiFittedHeaders, _paragraph) &&
                 _availableFontFamilies.Contains("MS Mincho");
             span.Font.Name = useLayoutFont ? "MS Mincho" : "Yu Mincho";
             if ((_unfittedCalibriParagraph ||
-                 _fitTextWidths.ContainsKey(_paragraph) &&
+                 TryGetInheritedParagraphValue(_fitTextWidths, _paragraph, out _) &&
                  string.Equals(_runEastAsiaFont, "Calibri", StringComparison.OrdinalIgnoreCase)) &&
                 _container is HeaderFooter &&
                 _availableFontFamilies.Contains("MS Mincho") && !useLayoutFont)
@@ -13249,13 +13755,57 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 _pendingEmptyParagraphPageBreak = true;
                 return;
             }
+            var current = _paragraph;
             var next = AddParagraph();
             if (next != null)
             {
+                if (current != null)
+                {
+                    next.Style = current.Style;
+                    next.Format = (ParagraphFormat)current.Format.Clone();
+                    next.Format.FirstLineIndent = Unit.Zero;
+                    next.Format.SpaceBefore = Unit.Zero;
+                    current.Format.SpaceAfter = Unit.Zero;
+                    if (_paragraphShades.TryGetValue(current, out var shade))
+                        _paragraphShades[next] = shade;
+                    if (_manualParagraphShades.Contains(current))
+                        _manualParagraphShades.Add(next);
+                    if (_mirroredParagraphs.Contains(current))
+                        _mirroredParagraphs.Add(next);
+                    if (_sourceBodyParagraphs.Contains(current))
+                        _sourceBodyParagraphs.Add(next);
+                    if (_sourceCellParagraphs.Contains(current))
+                        _sourceCellParagraphs.Add(next);
+                    if (_suppressedLineNumberParagraphs.Contains(current))
+                        _suppressedLineNumberParagraphs.Add(next);
+                    if (_characterSpacings.TryGetValue(current, out var spacing))
+                        _characterSpacings[next] = spacing;
+                    if (_characterScales.TryGetValue(current, out var scale))
+                        _characterScales[next] = scale;
+                    if (_tabbedRunShadings.TryGetValue(current, out var tabShading))
+                        _tabbedRunShadings[next] = tabShading;
+                    if (_coloredUnderlineParagraphs.TryGetValue(current, out var underline))
+                        _coloredUnderlineParagraphs[next] = underline;
+                    if (_layoutWidthParagraphs.Contains(current))
+                        _layoutWidthParagraphs.Add(next);
+                    _paragraphFragments.RegisterContinuation(current, next, _paragraphTextLength);
+                }
                 next.Format.PageBreakBefore = true;
                 _paragraph = next;
+                _paragraphTextLength = 0;
+                _paragraphBorderLetterLength = 0;
+                _revisedListMarkerLength = 0;
+                if (_activeHyperlink != null)
+                    _activeHyperlink = next.AddHyperlink(_activeHyperlink.Name, _activeHyperlink.Type);
             }
         }
+        else if (_activeHyperlink != null) _activeHyperlink.Elements.AddLineBreak();
+        else _paragraph?.AddLineBreak();
+    }
+
+    public override void VisitCarriageReturn(CarriageReturn carriageReturn, DxpIDocumentContext context)
+    {
+        if (_activeHyperlink != null) _activeHyperlink.Elements.AddLineBreak();
         else _paragraph?.AddLineBreak();
     }
 
@@ -13273,7 +13823,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         if (_container is Section && _activeColumnCell == null && paragraph != null)
             _bodyParagraphs.Add(paragraph);
         if (paragraph != null && _activeFootnoteIndex is int index)
-            _footnoteParagraphs.Add((index, paragraph));
+            _footnoteParagraphs.Add((index, paragraph, 0));
         if (paragraph != null && _activeEndnoteIndex is int endnoteIndex &&
             _endnoteDestinationOrdinals.Add(endnoteIndex))
             paragraph.AddBookmark($"dxp-endnote-{endnoteIndex}", prepend: true);
@@ -13293,12 +13843,19 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     public override void VisitFootnoteReference(FootnoteReference reference,
         DxpIFootnoteContext footnote, DxpIDocumentContext context)
     {
-        if (reference.Ancestors<Deleted>().Any() || reference.Ancestors<DeletedRun>().Any()) return;
+        if (!_includeRevisionMarkup &&
+            (reference.Ancestors<Deleted>().Any() || reference.Ancestors<DeletedRun>().Any())) return;
         if (_paragraph == null || footnote.Index is not int index) return;
+        var customMark = reference.GetAttributes().FirstOrDefault(attribute =>
+            attribute.LocalName == "customMarkFollows").Value is "1" or "true";
         _footnoteReferences.TryAdd(index, _paragraph);
+        if (customMark) _customFootnoteMarks.Add(index);
+        var labelText = FormatFootnoteIndex(index, context);
+        _footnoteLabels[index] = labelText;
         _paragraph.AddBookmark($"dxp-footnote-{index}-{++_footnoteBookmarkCount}", prepend: false);
+        if (customMark) return;
         var markerLink = _activeHyperlink ?? _paragraph.AddHyperlink($"dxp-note-{index}");
-        var marker = markerLink.AddFormattedText(index.ToString(CultureInfo.InvariantCulture));
+        var marker = markerLink.AddFormattedText(labelText);
         marker.Superscript = true;
         marker.Size = Unit.FromPoint(11.3);
         if (_runStyle?.FontName is string referenceFont && _availableFontFamilies.Contains(referenceFont))
@@ -13309,7 +13866,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         DxpIFootnoteContext footnote, DxpIDocumentContext context)
     {
         if (_section == null) return DxpDisposable.Empty;
-        if (note.Descendants<Deleted>().Any() &&
+        if (!_includeRevisionMarkup && note.Descendants<Deleted>().Any() &&
             !note.Descendants<DocumentFormat.OpenXml.Wordprocessing.Text>().Any() &&
             !note.Descendants<Drawing>().Any() && !note.Descendants<Picture>().Any())
         {
@@ -13338,9 +13895,10 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     public override void VisitFootnoteReferenceMark(FootnoteReferenceMark mark,
         DxpIFootnoteContext footnote, DxpIDocumentContext context)
     {
-        if (_paragraph != null && footnote.Index is int index)
+        if (_paragraph != null && footnote.Index is int index && !_customFootnoteMarks.Contains(index))
         {
-            var label = _paragraph.AddFormattedText(index.ToString(CultureInfo.InvariantCulture));
+            var label = _paragraph.AddFormattedText(_footnoteLabels.GetValueOrDefault(index) ??
+                FormatFootnoteIndex(index, context));
             label.Superscript = true;
             label.Size = Unit.FromPoint(9);
             if (_runStyle?.FontName is string noteFont && _availableFontFamilies.Contains(noteFont))
@@ -13358,8 +13916,12 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             _endnoteOrdinals[id] = index = _endnoteOrdinals.Count + 1;
         if (!_endnoteLabels.TryGetValue(index, out var labelText))
             _endnoteLabels[index] = labelText = FormatEndnoteIndex(index, context);
+        var customMark = reference.GetAttributes().FirstOrDefault(attribute =>
+            attribute.LocalName == "customMarkFollows").Value is "1" or "true";
+        if (customMark) _customEndnoteMarks.Add(index);
         if (_section != null)
             _endnoteSections.TryAdd(id, _section);
+        if (customMark) return;
         var markerLink = _activeHyperlink ?? _paragraph.AddHyperlink($"dxp-endnote-{index}");
         var marker = markerLink.AddFormattedText(labelText);
         marker.Superscript = _runStyle?.Superscript == true;
@@ -13410,18 +13972,36 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
 
     public override void VisitEndnoteReferenceMark(EndnoteReferenceMark mark, DxpIDocumentContext context)
     {
-        if (_paragraph == null || _activeEndnoteIndex is not int index) return;
+        if (_paragraph == null || _activeEndnoteIndex is not int index ||
+            _customEndnoteMarks.Contains(index)) return;
         var label = _paragraph.AddFormattedText(_endnoteLabels.GetValueOrDefault(index) ??
             FormatEndnoteIndex(index, context));
         label.Superscript = _runStyle?.Superscript == true;
     }
 
-    private static string FormatEndnoteIndex(int index, DxpIDocumentContext context)
+    private string FormatEndnoteIndex(int index, DxpIDocumentContext context)
     {
         var sectionProperties = context.CurrentSection.SectionProperties?.GetFirstChild<EndnoteProperties>();
         var format = sectionProperties?.NumberingFormat?.Val?.Value ?? NumberFormatValues.LowerRoman;
         var start = sectionProperties?.NumberingStart?.Val?.Value ?? 1;
-        return DxpListMarkerFormatter.FormatNumber(index + start - 1, format);
+        var sectionIndex = sectionProperties?.NumberingRestart?.Val?.Value == RestartNumberValues.EachSection
+            ? _endnoteSectionStarts.GetValueOrDefault(_sectionCount, index) : 1;
+        if (sectionIndex == index &&
+            sectionProperties?.NumberingRestart?.Val?.Value == RestartNumberValues.EachSection)
+            _endnoteSectionStarts.TryAdd(_sectionCount, index);
+        return DxpListMarkerFormatter.FormatNumber(index - sectionIndex + start, format);
+    }
+
+    private string FormatFootnoteIndex(int index, DxpIDocumentContext context)
+    {
+        var properties = context.CurrentSection.SectionProperties?.GetFirstChild<FootnoteProperties>();
+        var format = properties?.NumberingFormat?.Val?.Value ?? NumberFormatValues.Decimal;
+        var start = properties?.NumberingStart?.Val?.Value ?? 1;
+        var sectionIndex = properties?.NumberingRestart?.Val?.Value == RestartNumberValues.EachSection
+            ? _footnoteSectionStarts.GetValueOrDefault(_sectionCount, index) : 1;
+        if (sectionIndex == index && properties?.NumberingRestart?.Val?.Value == RestartNumberValues.EachSection)
+            _footnoteSectionStarts.TryAdd(_sectionCount, index);
+        return DxpListMarkerFormatter.FormatNumber(index - sectionIndex + start, format);
     }
 
     public override void VisitComplexFieldCachedResultText(string text, DxpIDocumentContext context)
@@ -13678,6 +14258,11 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         return contour;
     }
 
+    internal static bool RequiresRasterTransform(bool anchored, DxpImagePresentation? presentation) =>
+        presentation != null && (anchored || Math.Abs(presentation.RotationDegrees) > 0.001 ||
+            presentation.Crop is { IsEmpty: false } || presentation.FlipHorizontal ||
+            presentation.FlipVertical);
+
     public override IDisposable VisitDrawingBegin(Drawing drawing, DxpDrawingInfo? info, DxpIDocumentContext context)
     {
         if (TryAddChart(drawing, info, context)) return DxpDisposable.Empty;
@@ -13720,10 +14305,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             bytes = DxpTiffConverter.ToBmpOrOriginal(bytes);
         else if (info.ContentType?.Equals("image/gif", StringComparison.OrdinalIgnoreCase) == true)
             bytes = DxpRasterImageTransform.ToPngOrOriginal(bytes);
-        var arbitraryRotation = info.Presentation is { } rotation &&
-            Math.Abs(rotation.RotationDegrees % 90) > 0.001;
-        var transformed = (anchored || arbitraryRotation ||
-            info.Presentation?.FlipHorizontal == true || info.Presentation?.FlipVertical == true) &&
+        var transformed = RequiresRasterTransform(anchored, info.Presentation) &&
             info.Presentation is { FrameWidthPoints: > 0, FrameHeightPoints: > 0 } imagePresentation
             ? DxpRasterImageTransform.Transform(bytes, imagePresentation.FrameWidthPoints.Value,
                 imagePresentation.FrameHeightPoints.Value, imagePresentation.RotationDegrees,
@@ -13748,6 +14330,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         var horizontalOffset = MarginImageOffset(horizontal) ?? PositionImageOffset(horizontal, "column");
         var verticalOffset = MarginImageOffset(vertical);
         var anchorElement = anchored ? drawing.Descendants().FirstOrDefault(element => element.LocalName == "anchor") : null;
+        var behindDocument = anchorElement?.GetAttribute("behindDoc", "").Value is "1" or "true";
         var zOrder = long.TryParse(anchorElement?.GetAttribute("relativeHeight", "").Value,
             out var heightOrder) ? heightOrder : 0;
         if (anchorElement?.GetAttribute("simplePos", "").Value is "1" or "true" &&
@@ -13767,7 +14350,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     (simpleFrame.FrameHeightPoints.Value - (transformed?.Height ?? simpleFrame.FrameHeightPoints.Value)) / 2,
                 transformed?.Width ?? simpleFrame.FrameWidthPoints.Value,
                 transformed?.Height ?? simpleFrame.FrameHeightPoints.Value,
-                PageRelative: true, ZOrder: zOrder));
+                PageRelative: true, ZOrder: zOrder, BehindDocument: behindDocument));
             return DxpDisposable.Empty;
         }
         if (anchored && _inHeader && _container is HeaderFooter && _section != null &&
@@ -13829,7 +14412,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     (marginImageFrame.FrameHeightPoints.Value - (transformed?.Height ?? marginImageFrame.FrameHeightPoints.Value)) / 2,
                 transformed?.Width ?? marginImageFrame.FrameWidthPoints.Value,
                 transformed?.Height ?? marginImageFrame.FrameHeightPoints.Value,
-                PageRelative: true, ZOrder: zOrder));
+                PageRelative: true, ZOrder: zOrder, BehindDocument: behindDocument));
             var marginSquareWrap = GetRectangularTextWrap(drawing, SupportsContourLayout);
             IReadOnlyList<XPoint>? contourPoints = null;
             if (marginSquareWrap == null &&
@@ -13906,14 +14489,42 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             horizontal?.GetAttribute("relativeFrom", "").Value == "page" &&
             vertical?.GetAttribute("relativeFrom", "").Value == "page" &&
             info.Presentation is { FrameWidthPoints: > 0, FrameHeightPoints: > 0 } pageFrame &&
-            PositionImageOffset(horizontal, "page") is double pageLeft &&
-            PositionImageOffset(vertical, "page") is double pageTop)
+            PageImageOffset(horizontal, true, _section!.PageSetup.PageWidth.Point,
+                pageFrame.FrameWidthPoints.Value) is double pageLeft &&
+            PageImageOffset(vertical, false, _section.PageSetup.PageHeight.Point,
+                pageFrame.FrameHeightPoints.Value) is double pageTop)
         {
             if (!_paragraphImages.TryGetValue(_paragraph, out var images))
                 _paragraphImages[_paragraph] = images = new List<ParagraphImageOverlay>();
-            images.Add(new ParagraphImageOverlay(bytes, pageLeft, pageTop,
+            images.Add(new ParagraphImageOverlay(bytes,
+                pageLeft + (pageFrame.FrameWidthPoints.Value -
+                    (transformed?.Width ?? pageFrame.FrameWidthPoints.Value)) / 2,
+                pageTop + (pageFrame.FrameHeightPoints.Value -
+                    (transformed?.Height ?? pageFrame.FrameHeightPoints.Value)) / 2,
                 transformed?.Width ?? pageFrame.FrameWidthPoints.Value,
-                transformed?.Height ?? pageFrame.FrameHeightPoints.Value, PageRelative: true));
+                transformed?.Height ?? pageFrame.FrameHeightPoints.Value, PageRelative: true,
+                ZOrder: zOrder, BehindDocument: behindDocument,
+                MirrorHorizontal: IsMirroredPageAlignment(horizontal)));
+            return DxpDisposable.Empty;
+        }
+        if (anchored && _container is HeaderFooter && _section != null &&
+            info.Presentation is { FrameWidthPoints: > 0, FrameHeightPoints: > 0 } headerPageFrame &&
+            PageImageOffset(horizontal, true, _section.PageSetup.PageWidth.Point,
+                headerPageFrame.FrameWidthPoints.Value) is double headerPageLeft &&
+            PageImageOffset(vertical, false, _section.PageSetup.PageHeight.Point,
+                headerPageFrame.FrameHeightPoints.Value) is double headerPageTop)
+        {
+            if (!_footerImages.TryGetValue(_section, out var images))
+                _footerImages[_section] = images = new List<FooterImageOverlay>();
+            images.Add(new FooterImageOverlay(_headerFooterKind, bytes,
+                headerPageLeft + (headerPageFrame.FrameWidthPoints.Value -
+                    (transformed?.Width ?? headerPageFrame.FrameWidthPoints.Value)) / 2,
+                headerPageTop + (headerPageFrame.FrameHeightPoints.Value -
+                    (transformed?.Height ?? headerPageFrame.FrameHeightPoints.Value)) / 2,
+                transformed?.Width ?? headerPageFrame.FrameWidthPoints.Value,
+                transformed?.Height ?? headerPageFrame.FrameHeightPoints.Value,
+                Header: _inHeader, BehindDocument: behindDocument, ZOrder: zOrder,
+                PageRelative: true, MirrorHorizontal: IsMirroredPageAlignment(horizontal)));
             return DxpDisposable.Empty;
         }
         var paragraphAnchor = anchored && _container is Section &&
@@ -13938,9 +14549,14 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 ? rightEmu / 12700.0 : 0;
             if (!_paragraphImages.TryGetValue(_paragraph, out var images))
                 _paragraphImages[_paragraph] = images = new List<ParagraphImageOverlay>();
-            images.Add(new ParagraphImageOverlay(bytes, marginLeft, paragraphTop,
+            images.Add(new ParagraphImageOverlay(bytes,
+                marginLeft + (marginFrame.FrameWidthPoints.Value -
+                    (transformed?.Width ?? marginFrame.FrameWidthPoints.Value)) / 2,
+                paragraphTop + (marginFrame.FrameHeightPoints.Value -
+                    (transformed?.Height ?? marginFrame.FrameHeightPoints.Value)) / 2,
                 transformed?.Width ?? marginFrame.FrameWidthPoints.Value,
-                transformed?.Height ?? marginFrame.FrameHeightPoints.Value));
+                transformed?.Height ?? marginFrame.FrameHeightPoints.Value,
+                ZOrder: zOrder, BehindDocument: behindDocument));
             if (drawing.Ancestors<DocumentFormat.OpenXml.Wordprocessing.Paragraph>().FirstOrDefault()?
                     .NextSibling() is DocumentFormat.OpenXml.Wordprocessing.Paragraph following)
                 _floatingTextWraps[following] = new FloatingTextWrap(marginLeft - leftDistance,
@@ -13961,9 +14577,14 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 ? verticalEmu / 12700.0 : 0;
             if (!_paragraphImages.TryGetValue(_paragraph, out var images))
                 _paragraphImages[_paragraph] = images = new List<ParagraphImageOverlay>();
-            images.Add(new ParagraphImageOverlay(bytes, left, top,
+            images.Add(new ParagraphImageOverlay(bytes,
+                left + (frame.FrameWidthPoints.Value -
+                    (transformed?.Width ?? frame.FrameWidthPoints.Value)) / 2,
+                top + (frame.FrameHeightPoints.Value -
+                    (transformed?.Height ?? frame.FrameHeightPoints.Value)) / 2,
                 transformed?.Width ?? frame.FrameWidthPoints.Value,
-                transformed?.Height ?? frame.FrameHeightPoints.Value));
+                transformed?.Height ?? frame.FrameHeightPoints.Value,
+                ZOrder: zOrder, BehindDocument: behindDocument));
             _paragraph.Format.LeftIndent = Unit.FromPoint(_paragraph.Format.LeftIndent.Point +
                 frame.FrameWidthPoints.Value + rightDistance);
             return DxpDisposable.Empty;
@@ -13988,7 +14609,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             images.Add(new ParagraphImageOverlay(bytes, 0,
                 fontSize + 0.35,
                 transformed?.Width ?? inlineAnchorFrame.FrameWidthPoints.Value,
-                transformed?.Height ?? inlineAnchorFrame.FrameHeightPoints.Value));
+                transformed?.Height ?? inlineAnchorFrame.FrameHeightPoints.Value,
+                ZOrder: zOrder, BehindDocument: behindDocument));
             imageData = "base64:iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4//8/AwAI/AL+p5qgoAAAAABJRU5ErkJggg==";
             reservesCenteredParagraphImageFlow = true;
         }
@@ -14004,7 +14626,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             images.Add(new FooterImageOverlay(_headerFooterKind, bytes, storyLeft, storyTop,
                 transformed?.Width ?? storyFrame.FrameWidthPoints.Value,
                 transformed?.Height ?? storyFrame.FrameHeightPoints.Value,
-                Header: _inHeader, AnchorParagraph: _paragraph));
+                Header: _inHeader, AnchorParagraph: _paragraph, BehindDocument: behindDocument,
+                ZOrder: zOrder));
             if (drawing.Descendants().Any(element => element.LocalName == "wrapSquare") &&
                 drawing.Ancestors<DocumentFormat.OpenXml.Wordprocessing.Paragraph>().FirstOrDefault()?
                     .Descendants<DocumentFormat.OpenXml.Wordprocessing.Text>().Any() == true)
@@ -14027,7 +14650,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             images.Add(new FooterImageOverlay(_headerFooterKind, bytes,
                 footerLeft + (footerWidth - (transformed?.Width ?? footerWidth)) / 2,
                 footerTop + (footerHeight - (transformed?.Height ?? footerHeight)) / 2,
-                transformed?.Width ?? footerWidth, transformed?.Height ?? footerHeight));
+                transformed?.Width ?? footerWidth, transformed?.Height ?? footerHeight,
+                BehindDocument: behindDocument, ZOrder: zOrder));
             return DxpDisposable.Empty;
         }
         if (!anchored && transformed is { } headerRaster && _inHeader &&
@@ -14070,6 +14694,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         {
             if (horizontalOffset is double left)
             {
+                // Unsupported: ordinary multi-column sections do not expose the active column origin here (#147).
                 image.RelativeHorizontal = MigraDoc.DocumentObjectModel.Shapes.RelativeHorizontal.Margin;
                 image.Left = Unit.FromPoint(left +
                     (info.Presentation?.FrameWidthPoints - transformed?.Width ?? 0) / 2);
@@ -14147,6 +14772,32 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 out var offset)) return null;
         return offset / 12700.0;
     }
+
+    internal static double? PageImageOffset(OpenXmlElement? position, bool horizontal,
+        double pageLength, double imageLength)
+    {
+        if (PositionImageOffset(position, "page") is double offset) return offset;
+        if (position?.GetAttribute("relativeFrom", "").Value != "page") return null;
+        return position.ChildElements.FirstOrDefault(element => element.LocalName == "align")?.InnerText switch
+        {
+            "center" => (pageLength - imageLength) / 2,
+            "right" when horizontal => pageLength - imageLength,
+            "bottom" when !horizontal => pageLength - imageLength,
+            "left" when horizontal => 0,
+            "inside" when horizontal => 0,
+            "outside" when horizontal => pageLength - imageLength,
+            "top" when !horizontal => 0,
+            _ => null
+        };
+    }
+
+    private static bool IsMirroredPageAlignment(OpenXmlElement? position)
+        => position?.ChildElements.FirstOrDefault(element => element.LocalName == "align")?.InnerText
+            is "inside" or "outside";
+
+    internal static double MirroredPageImageLeft(double left, double width, double pageWidth,
+        int displayedPage, bool mirrorHorizontal)
+        => mirrorHorizontal && displayedPage % 2 == 0 ? pageWidth - width - left : left;
 
     private bool TryAddChart(Drawing drawing, DxpDrawingInfo? info, DxpIDocumentContext context)
     {
@@ -14349,7 +15000,14 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
 
     public override void VisitAltChunk(AltChunk chunk, DxpIDocumentContext context)
     {
-        if (_container is not Section section || context.CurrentPart == null) return;
+        var elements = _container switch
+        {
+            Section section => section.Elements,
+            MigraDoc.DocumentObjectModel.Tables.Cell cell => cell.Elements,
+            MigraDoc.DocumentObjectModel.Shapes.TextFrame frame => frame.Elements,
+            _ => null
+        };
+        if (elements == null || context.CurrentPart == null) return;
         var id = chunk.GetAttribute("id",
             "http://schemas.openxmlformats.org/officeDocument/2006/relationships").Value;
         if (string.IsNullOrEmpty(id) ||
@@ -14357,25 +15015,26 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         using var stream = part.GetStream(FileMode.Open, FileAccess.Read);
         if (part.ContentType.StartsWith("text/html", StringComparison.OrdinalIgnoreCase))
         {
-            DxpHtmlChunkImporter.Append(section, stream,
+            DxpHtmlChunkImporter.Append(elements, stream,
                 _availableFontFamilies.Contains("Aptos") ? "Aptos" : _fontFamily,
                 (table, border, spacing, padding) =>
-                    _htmlBevelTables.Add(table, (border, spacing, padding)));
+                    _htmlBevelTables.Add(table, (border, spacing, padding)), part.ContentType);
             return;
         }
         if (!part.ContentType.StartsWith("text/plain", StringComparison.OrdinalIgnoreCase)) return;
-        using var reader = new StreamReader(stream, System.Text.Encoding.UTF8, true);
+        using var reader = new StreamReader(stream,
+            DxpHtmlChunkImporter.DeclaredEncoding(part.ContentType) ?? System.Text.Encoding.UTF8, true);
         var pages = reader.ReadToEnd().Replace("\r\n", "\n").Replace('\r', '\n')
             .Replace('\v', '\n').Split('\f');
         var firstParagraph = true;
         for (var pageIndex = 0; pageIndex < pages.Length; pageIndex++)
         {
-            if (pageIndex > 0) section.AddPageBreak();
+            if (pageIndex > 0) elements.AddPageBreak();
             var lines = pages[pageIndex].Split('\n');
             var count = lines.Length - (lines[^1].Length == 0 ? 1 : 0);
             for (var index = 0; index < count; index++)
             {
-                var paragraph = section.AddParagraph(lines[index]);
+                var paragraph = elements.AddParagraph(lines[index]);
                 paragraph.Format.Font.Name = "Courier New";
                 paragraph.Format.Font.Size = Unit.FromPoint(10.56);
                 paragraph.Format.LineSpacingRule = LineSpacingRule.Exactly;
@@ -14906,7 +15565,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             table.Elements<TableRow>().Any(row => row.TableRowProperties?.ChildElements
                 .Any(child => child.LocalName is "gridBefore" or "gridAfter") == true))
             _headerMinimumRowClearancePoints += 3.2;
-        _tableRightToLeft = tableContext.RightToLeft;
+        _tableRightToLeft = tableContext is DxpIRightToLeftTableContext { RightToLeft: true };
         if (_horizontalMergeTable && _container is HeaderFooter)
         {
             if (_inHeader)
@@ -15408,7 +16067,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private static double[]? ImplicitContentTableWidths(DocumentFormat.OpenXml.Wordprocessing.Table table,
         DxpTableModel model, double available, DxpIStyleResolver styles, string defaultFontFamily,
         double defaultFontSize,
-        IReadOnlySet<string> availableFonts)
+        ISet<string> availableFonts)
     {
         if (table.TableProperties?.TableWidth != null || table.TableGrid?.Elements<GridColumn>().Any() == true ||
             table.TableProperties?.TableBorders != null || model.ColumnCount < 1 ||
@@ -15442,7 +16101,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private static double[]? AutoFitHorizontalMergeWidths(DocumentFormat.OpenXml.Wordprocessing.Table table,
         DxpTableModel model, double available, DxpIStyleResolver styles, string fontFamily,
         double defaultFontSize,
-        IReadOnlySet<string> availableFonts)
+        ISet<string> availableFonts)
     {
         if (model.ColumnCount is < 2 or > 3) return null;
         var rows = table.Elements<TableRow>()
@@ -16023,4 +16682,3 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         return MigraDoc.DocumentObjectModel.Color.FromRgb(red, green, blue);
     }
 }
-

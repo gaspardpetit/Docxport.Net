@@ -8,7 +8,8 @@ namespace DocxportNet.Visitors.Pdf;
 
 internal static class DxpPdfMarkupPrintLayout
 {
-    internal sealed record Balloon(double Top, double ConnectorX, string Description);
+    internal sealed record Balloon(double Top, double ConnectorX, string Description,
+        string Label = "Formatted:");
 
     internal static void Apply(PdfDocument document, IReadOnlyList<IReadOnlyList<Balloon>> pages)
     {
@@ -54,11 +55,12 @@ internal static class DxpPdfMarkupPrintLayout
                     top + 6.1, left, top + 6.1);
                 graphics.DrawRoundedRectangle(pen, XBrushes.White,
                     new XRect(left, top, width - 3.9 - left, 12.3), new XSize(2, 2));
-                graphics.DrawString("Formatted:", labelFont, XBrushes.Black,
+                graphics.DrawString(balloon.Label, labelFont, XBrushes.Black,
                     new XPoint(left + 3.5, top + 8.7));
-                graphics.DrawString(" " + balloon.Description, bodyFont, XBrushes.Black,
-                    new XPoint(left + 3.5 + graphics.MeasureString("Formatted:", labelFont).Width,
-                        top + 8.7));
+                if (balloon.Description.Length > 0)
+                    graphics.DrawString(" " + balloon.Description, bodyFont, XBrushes.Black,
+                        new XPoint(left + 3.5 + graphics.MeasureString(balloon.Label, labelFont).Width,
+                            top + 8.7));
             }
         }
 

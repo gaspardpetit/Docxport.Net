@@ -20,6 +20,8 @@ internal static class DxpFootnoteParagraphSplitter
     {
         if (TryMapExactRenderedSplit(content, renderedWords, fittingRenderedWords,
                 out fittingSourceWords)) return true;
+        if (TryMapCharacterAlignedSplit(content, renderedWords, fittingRenderedWords,
+                out fittingSourceWords, footnoteMarkers)) return true;
         fittingSourceWords = 0;
         if (footnoteMarkers == null || footnoteMarkers.Count == 0 ||
             fittingRenderedWords <= 0 || fittingRenderedWords > renderedWords.Count) return false;
@@ -61,6 +63,48 @@ internal static class DxpFootnoteParagraphSplitter
             return fittingSourceWords < sourceWords.Length;
         }
         return false;
+    }
+
+    private static bool TryMapCharacterAlignedSplit(string content,
+        IReadOnlyList<string> renderedWords, int fittingRenderedWords,
+        out int fittingSourceWords, IReadOnlyCollection<string>? footnoteMarkers)
+    {
+        fittingSourceWords = 0;
+        if (footnoteMarkers == null || footnoteMarkers.Count == 0 ||
+            fittingRenderedWords <= 0 || fittingRenderedWords > renderedWords.Count) return false;
+        var markers = footnoteMarkers.Where(marker => marker.Length > 0).Distinct()
+            .OrderByDescending(marker => marker.Length).ToArray();
+        var sourceWords = Regex.Matches(content, @"\S+").Select(match => match.Value).ToArray();
+        if (renderedWords.Any(word => word.Length is > 0 and <= 2 &&
+                word.All(char.IsDigit) && !markers.Contains(word) &&
+                sourceWords.Any(source => source.Length > word.Length &&
+                    source.EndsWith(word, StringComparison.Ordinal))))
+            return false;
+        var renderedText = string.Concat(renderedWords.Where(word => !markers.Contains(word)));
+        var sourceEnds = new int[sourceWords.Length];
+        var sourceOffset = 0;
+        for (var index = 0; index < sourceWords.Length; index++)
+        {
+            var word = sourceWords[index];
+            if (sourceOffset == renderedText.Length) break;
+            if (sourceOffset > renderedText.Length) return false;
+            if (!renderedText.AsSpan(sourceOffset).StartsWith(word, StringComparison.Ordinal))
+            {
+                var marker = markers.FirstOrDefault(value => word.EndsWith(value, StringComparison.Ordinal));
+                if (marker == null ||
+                    !renderedText.AsSpan(sourceOffset).StartsWith(
+                        word.AsSpan(0, word.Length - marker.Length), StringComparison.Ordinal))
+                    return false;
+                word = word[..^marker.Length];
+            }
+            sourceOffset += word.Length;
+            sourceEnds[index] = sourceOffset;
+        }
+        if (sourceOffset != renderedText.Length) return false;
+        var fittingOffset = renderedWords.Take(fittingRenderedWords)
+            .Where(word => !markers.Contains(word)).Sum(word => word.Length);
+        fittingSourceWords = Array.IndexOf(sourceEnds, fittingOffset) + 1;
+        return fittingSourceWords > 0 && fittingSourceWords < sourceWords.Length;
     }
 
     private static bool TryMapExactRenderedSplit(string content, IReadOnlyList<string> renderedWords,
@@ -111,7 +155,6 @@ internal static class DxpFootnoteParagraphSplitter
                 out var characters, out var content)) return false;
         var words = Regex.Matches(content, @"\S+");
         if (firstFragmentWords <= 0 || firstFragmentWords >= words.Count) return false;
-
         var split = words[firstFragmentWords].Index;
         var clone = (Paragraph)paragraph.Clone();
         if (!TryGetTextElements(clone, out var clonedElements, out var clonedBookmarks,

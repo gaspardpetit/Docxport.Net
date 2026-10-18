@@ -11,7 +11,8 @@ using PdfPigDocument = UglyToad.PdfPig.PdfDocument;
 namespace DocxportNet.Visitors.Pdf;
 
 internal sealed record DxpPdfHighlight(string Text, HighlightColorValues? Color, string? Shading = null,
-    double LineSize = 0, bool Footer = false, double RightPadding = 0);
+    double LineSize = 0, bool Footer = false, double RightPadding = 0,
+    StringBuilder? ParagraphText = null, int SourceOffset = 0, bool RepeatedStory = false);
 
 internal static class DxpPdfHighlightOverlay
 {
@@ -29,18 +30,25 @@ internal static class DxpPdfHighlightOverlay
         var colors = new Dictionary<string, (XColor Color, bool Shading, double LineSize, bool Footer,
             double RightPadding)>(
             StringComparer.Ordinal);
+        var ambiguous = new HashSet<string>(StringComparer.Ordinal);
+        var anchored = new List<(DxpPdfHighlight Highlight, XColor Color)>();
         foreach (var highlight in highlights)
         {
             var text = Normalize(highlight.Text);
-            if (text.Length < 3 || !(highlight.Color is { } value && TryColor(value, out var color) ||
+            if (text.Length == 0 || highlight.ParagraphText == null && text.Length < 3 ||
+                !(highlight.Color is { } value && TryColor(value, out var color) ||
                 TryShadingColor(highlight.Shading, out color))) continue;
-            if (colors.TryGetValue(text, out var existing) && existing.Color != color)
-                colors.Remove(text);
-            else
-                colors[text] = (color, highlight.Shading != null, highlight.LineSize, highlight.Footer,
-                    highlight.RightPadding);
+            if (highlight.ParagraphText != null)
+            {
+                anchored.Add((highlight, color));
+                continue;
+            }
+            if (colors.ContainsKey(text)) ambiguous.Add(text);
+            colors[text] = (color, highlight.Shading != null, highlight.LineSize, highlight.Footer,
+                highlight.RightPadding);
         }
-        if (colors.Count == 0)
+        foreach (var text in ambiguous) colors.Remove(text);
+        if (colors.Count == 0 && anchored.Count == 0)
         {
             SaveWithoutHighlights(document, output, repairAfterSave);
             return;
@@ -50,6 +58,56 @@ internal static class DxpPdfHighlightOverlay
         stream.Position = 0;
         using var parsed = PdfPigDocument.Open(stream);
         using var modified = PdfReader.Open(new MemoryStream(stream.ToArray()), PdfDocumentOpenMode.Modify);
+        var pageTexts = parsed.GetPages()
+            .Select(page => Normalize(string.Concat(page.Letters.Select(letter => letter.Value))))
+            .ToArray();
+        foreach (var text in colors.Keys.ToArray())
+        {
+            var occurrences = 0;
+            foreach (var pageText in pageTexts)
+                for (var offset = 0; (offset = pageText.IndexOf(text, offset,
+                         StringComparison.Ordinal)) >= 0 && occurrences < 2; offset += text.Length)
+                    occurrences++;
+            if (occurrences != 1) colors.Remove(text);
+        }
+        var anchoredMatches = new Dictionary<int, List<(int Offset, int Length, XColor Color,
+            bool Shading, double LineSize, bool Footer, double RightPadding)>>();
+        foreach (var (highlight, color) in anchored)
+        {
+            var paragraphText = Normalize(highlight.ParagraphText!.ToString());
+            var text = Normalize(highlight.Text);
+            if (highlight.SourceOffset < 0 || highlight.SourceOffset + text.Length > paragraphText.Length ||
+                string.CompareOrdinal(paragraphText, highlight.SourceOffset, text, 0, text.Length) != 0)
+                continue;
+            var positions = new List<(int Page, int Offset)>();
+            foreach (var radius in new[] { paragraphText.Length, 64, 32, 16, 8, 0 }.Distinct())
+            {
+                var contextStart = Math.Max(0, highlight.SourceOffset - radius);
+                var contextEnd = Math.Min(paragraphText.Length,
+                    highlight.SourceOffset + text.Length + radius);
+                var context = paragraphText[contextStart..contextEnd];
+                positions.Clear();
+                for (var pageIndex = 0; pageIndex < pageTexts.Length; pageIndex++)
+                    for (var offset = 0; (offset = pageTexts[pageIndex].IndexOf(context, offset,
+                             StringComparison.Ordinal)) >= 0; offset += context.Length)
+                        positions.Add((pageIndex, offset + highlight.SourceOffset - contextStart));
+                if (positions.Count > 0) break;
+            }
+            if (positions.Count == 0 || positions.Count > 1 && !highlight.RepeatedStory) continue;
+            foreach (var (pageIndex, offset) in positions)
+            {
+                if (!anchoredMatches.TryGetValue(pageIndex, out var pageMatches))
+                    anchoredMatches[pageIndex] = pageMatches = new();
+                pageMatches.Add((offset, text.Length, color, highlight.Shading != null,
+                    highlight.LineSize, highlight.Footer, highlight.RightPadding));
+            }
+        }
+        if (colors.Count == 0 && anchoredMatches.Count == 0)
+        {
+            if (repairAfterSave) RepairFontUnicodeMaps(modified);
+            modified.Save(output, false);
+            return;
+        }
         for (var pageIndex = 0; pageIndex < modified.PageCount; pageIndex++)
         {
             var page = parsed.GetPage(pageIndex + 1);
@@ -84,6 +142,8 @@ internal static class DxpPdfHighlightOverlay
                     matches.Add((offset, text.Length, style.Color, style.Shading, style.LineSize, style.Footer,
                         style.RightPadding));
             }
+            if (anchoredMatches.TryGetValue(pageIndex, out var sourceMatches))
+                matches.AddRange(sourceMatches);
             var highlighted = new Dictionary<int, XColor>();
             foreach (var (offset, length, color, _, _, _, _) in matches)
                 for (var index = offset; index < offset + length; index++) highlighted[index] = color;
@@ -91,29 +151,38 @@ internal static class DxpPdfHighlightOverlay
                 double Right, double Top, double Bottom)>();
             foreach (var (offset, length, color, shading, lineSize, footer, rightPadding) in matches)
             {
-                var first = letters[offset];
-                var last = letters[offset + length - 1];
-                if (Math.Abs(first.StartBaseLine.Y - last.StartBaseLine.Y) > 2) continue;
-                var size = first.PointSize;
-                var left = first.StartBaseLine.X;
-                if (offset > 0 && !whitespaceBefore[offset] &&
-                    highlighted.TryGetValue(offset - 1, out var previousColor) &&
-                    (!shading || previousColor == color) &&
-                    Math.Abs(letters[offset - 1].StartBaseLine.Y - first.StartBaseLine.Y) < 2)
+                for (var segmentStart = offset; segmentStart < offset + length;)
                 {
-                    var previousRight = letters[offset - 1].StartBaseLine.X + letters[offset - 1].Width;
-                    if (left - previousRight is >= 0 and <= 4) left = previousRight;
+                    var segmentEnd = segmentStart + 1;
+                    var first = letters[segmentStart];
+                    while (segmentEnd < offset + length &&
+                           Math.Abs(first.StartBaseLine.Y - letters[segmentEnd].StartBaseLine.Y) <= 2)
+                        segmentEnd++;
+                    var last = letters[segmentEnd - 1];
+                    var size = first.PointSize;
+                    var left = first.StartBaseLine.X;
+                    if (segmentStart > 0 && !whitespaceBefore[segmentStart] &&
+                        highlighted.TryGetValue(segmentStart - 1, out var previousColor) &&
+                        (!shading || previousColor == color) &&
+                        Math.Abs(letters[segmentStart - 1].StartBaseLine.Y - first.StartBaseLine.Y) < 2)
+                    {
+                        var previousRight = letters[segmentStart - 1].StartBaseLine.X +
+                            letters[segmentStart - 1].Width;
+                        if (left - previousRight is >= 0 and <= 4) left = previousRight;
+                    }
+                    var right = last.StartBaseLine.X + last.Width +
+                        (segmentEnd == offset + length ? rightPadding : 0);
+                    var top = page.Height - first.StartBaseLine.Y - size * 0.93;
+                    var height = first.FontName?.Contains("Arial", StringComparison.OrdinalIgnoreCase) == true
+                        ? size * 1.15 : size * 1.22;
+                    if (size < 10 && lineSize > size && lineSize <= 14)
+                    {
+                        height = lineSize * 1.22;
+                        if (footer) top = page.Height - first.StartBaseLine.Y - lineSize * 1.02;
+                    }
+                    rectangles.Add((segmentStart, segmentEnd, color, left, right, top, top + height));
+                    segmentStart = segmentEnd;
                 }
-                var right = last.StartBaseLine.X + last.Width + rightPadding;
-                var top = page.Height - first.StartBaseLine.Y - size * 0.93;
-                var height = first.FontName?.Contains("Arial", StringComparison.OrdinalIgnoreCase) == true
-                    ? size * 1.15 : size * 1.22;
-                if (size < 10 && lineSize > size && lineSize <= 14)
-                {
-                    height = lineSize * 1.22;
-                    if (footer) top = page.Height - first.StartBaseLine.Y - lineSize * 1.02;
-                }
-                rectangles.Add((offset, offset + length, color, left, right, top, top + height));
             }
             rectangles.Sort((first, second) => first.Offset.CompareTo(second.Offset));
             for (var index = 0; index < rectangles.Count; index++)

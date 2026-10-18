@@ -80,6 +80,11 @@ public interface DxpITableContext
     DxpComputedTableStyle ComputedStyle { get; }
 }
 
+public interface DxpIRightToLeftTableContext
+{
+    bool RightToLeft { get; }
+}
+
 public interface DxpITableRowContext
 {
     DxpITableContext Table { get; }
