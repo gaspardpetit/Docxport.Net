@@ -19,7 +19,7 @@ internal static class DxpBmp24Converter
     public static byte[] Transform(byte[] bitmap, double rotationDegrees, bool flipHorizontal, bool flipVertical)
     {
         var sourceTurns = (int)Math.Round(rotationDegrees / 90.0) % 4;
-        var quarterTurns = (4 - sourceTurns) % 4;
+        var quarterTurns = (sourceTurns + 4) % 4;
         if (Math.Abs(rotationDegrees - sourceTurns * 90.0) > 0.001 ||
             quarterTurns == 0 && !flipHorizontal && !flipVertical)
             return bitmap;

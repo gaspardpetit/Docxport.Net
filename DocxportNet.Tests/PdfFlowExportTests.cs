@@ -1405,6 +1405,33 @@ public sealed class PdfFlowExportTests
     }
 
     [Fact]
+    public void RotatesBmpFallbackInDrawingMlDirection()
+    {
+        var bitmap = new byte[62];
+        bitmap[0] = (byte)'B';
+        bitmap[1] = (byte)'M';
+        BinaryPrimitives.WriteInt32LittleEndian(bitmap.AsSpan(2), bitmap.Length);
+        BinaryPrimitives.WriteInt32LittleEndian(bitmap.AsSpan(10), 54);
+        BinaryPrimitives.WriteInt32LittleEndian(bitmap.AsSpan(14), 40);
+        BinaryPrimitives.WriteInt32LittleEndian(bitmap.AsSpan(18), 2);
+        BinaryPrimitives.WriteInt32LittleEndian(bitmap.AsSpan(22), -1);
+        BinaryPrimitives.WriteUInt16LittleEndian(bitmap.AsSpan(26), 1);
+        BinaryPrimitives.WriteUInt16LittleEndian(bitmap.AsSpan(28), 24);
+        bitmap[54] = 1;
+        bitmap[57] = 2;
+
+        var clockwise = DxpBmp24Converter.Transform(bitmap, 90, false, false);
+        var counterclockwise = DxpBmp24Converter.Transform(bitmap, -90, false, false);
+
+        Assert.Equal(1, BinaryPrimitives.ReadInt32LittleEndian(clockwise.AsSpan(18)));
+        Assert.Equal(-2, BinaryPrimitives.ReadInt32LittleEndian(clockwise.AsSpan(22)));
+        Assert.Equal((byte)1, clockwise[54]);
+        Assert.Equal((byte)2, clockwise[58]);
+        Assert.Equal((byte)2, counterclockwise[54]);
+        Assert.Equal((byte)1, counterclockwise[58]);
+    }
+
+    [Fact]
     public void LetsImportedHtmlTableRowsGrowWithWrappedText()
     {
         var document = new MigraDoc.DocumentObjectModel.Document();
