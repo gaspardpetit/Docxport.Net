@@ -112,27 +112,27 @@ i. roman i.
 5th. Item 5th.
 
 <br/>
-one. Comic one.
+One. Comic one.
 
-two. Comic two.
+Two. Comic two.
 
-three. Comic three.
+Three. Comic three.
 
-four. Comic four.
+Four. Comic four.
 
-cinq. Comic cinq.
+Cinq. Comic cinq.
 
-kuusi. Comic kuusi.
+Kuusi. Comic kuusi.
 
-syv. Comic syv.
+Syv. Comic syv.
 
-otto. Comic otto.
+Otto. Comic otto.
 
-εννέα. Comic eννέα.
+Εννέα. Comic eννέα.
 
-εννέα χιλιάδες εννιακόσια ενενήντα εννέα. Comic Εννέα χιλιάδες εννιακόσια ενενήντα εννέα.
+Εννέα χιλιάδες εννιακόσια ενενήντα εννέα. Comic Εννέα χιλιάδες εννιακόσια ενενήντα εννέα.
 
-dix mille. Comic dix mille.
+Dix mille. Comic dix mille.
 
 001:  Item 001
 

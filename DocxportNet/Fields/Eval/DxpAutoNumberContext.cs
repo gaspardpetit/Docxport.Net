@@ -19,9 +19,7 @@ internal sealed class DxpAutoNumberContext
 
 internal sealed class DxpAutoNumberStoryState
 {
-    internal DxpAutoNumberFamilyState AutoNum { get; } = new();
-    internal DxpAutoNumberFamilyState Legal { get; } = new();
-    internal DxpAutoNumberFamilyState Outline { get; } = new();
+    internal DxpAutoNumberFamilyState Counters { get; } = new();
 }
 
 internal sealed class DxpAutoNumberFamilyState
