@@ -1654,16 +1654,30 @@ public sealed class PdfFlowExportTests
         Assert.Equal(1, table.Rows[2].Cells[0].MergeRight);
     }
 
-    [Fact]
-    public void OrdersEndnotesByReferenceRatherThanPartOrder()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void OrdersEndnotesByReferenceRatherThanPartOrder(bool alternateContent)
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
         using var source = new MemoryStream();
         using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
         {
             var main = document.AddMainDocumentPart();
-            main.Document = new Document(new Body(
-                new Paragraph(new Run(new Text("First reference"), new EndnoteReference { Id = 2 })),
+            var first = new Paragraph(new Run(new Text("First reference")));
+            if (alternateContent)
+            {
+                var choice = new AlternateContentChoice(new Run(new EndnoteReference { Id = 1 })) {
+                    Requires = "w14"
+                };
+                choice.AddNamespaceDeclaration("w14",
+                    "http://schemas.microsoft.com/office/word/2010/wordml");
+                first.Append(new AlternateContent(choice,
+                    new AlternateContentFallback(new Run(new EndnoteReference { Id = 2 }))));
+            }
+            else
+                first.Append(new Run(new EndnoteReference { Id = 2 }));
+            main.Document = new Document(new Body(first,
                 new Paragraph(new Run(new Text("Second reference"), new EndnoteReference { Id = 1 }))));
             main.Document.Save();
             var notes = main.AddNewPart<EndnotesPart>();

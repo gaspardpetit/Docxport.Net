@@ -568,16 +568,8 @@ public class DxpWalker
         foreach (var fn in d.Footnotes.GetFootnotes())
             WalkFootnote(fn.Item1, fn.Item2, fn.Item3, d, v);
 
-        var endnoteOrder = new Dictionary<long, int>();
-        foreach (var reference in d.MainDocumentPart?.Document?.Descendants<EndnoteReference>() ??
-                     Enumerable.Empty<EndnoteReference>())
-        {
-            if (reference.Id?.Value is long id && !endnoteOrder.ContainsKey(id))
-                endnoteOrder[id] = endnoteOrder.Count;
-        }
-
         foreach (var en in d.Endnotes.GetEndnotes()
-                     .OrderBy(en => endnoteOrder.TryGetValue(en.Item3, out var order)
+                     .OrderBy(en => d.EndnoteReferenceOrder.TryGetValue(en.Item3, out var order)
                          ? order : int.MaxValue))
             WalkEndnote(en.Item1, en.Item2, en.Item3, d, v);
     }
@@ -2879,6 +2871,9 @@ public class DxpWalker
                             v.VisitEndnoteReferenceMark(erm, d);
                             break;
                         case EndnoteReference enr:
+                            if (d.CurrentPart == d.MainDocumentPart &&
+                                enr.Id?.Value is long id && !d.EndnoteReferenceOrder.ContainsKey(id))
+                                d.EndnoteReferenceOrder[id] = d.EndnoteReferenceOrder.Count;
                             v.VisitEndnoteReference(enr, d);
                             break;
                         case SeparatorMark sep:
