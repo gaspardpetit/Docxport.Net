@@ -51,6 +51,7 @@ public class DxpDocumentContext : DxpIDocumentContext, IDxpMutableDocumentContex
     internal DxpTableStyleResolver TableStyleResolver { get; }
     public DxpFootnotes Footnotes { get; } = new DxpFootnotes();
     public DocxEndnotes Endnotes { get; } = new DocxEndnotes();
+    internal Dictionary<long, int> EndnoteReferenceOrder { get; } = new();
     public DxpLists AcceptLists { get; } = new DxpLists();
     public DxpLists RejectLists { get; } = new DxpLists();
     public HashSet<string> ReferencedBookmarkAnchors { get; } = new HashSet<string>(StringComparer.Ordinal);
