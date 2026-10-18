@@ -18,9 +18,14 @@ internal sealed class DxpCachedFieldFrameFactory
         if (evaluateDateTimeFields && DxpFieldInstructionClassifier.IsDateTimeInstruction(instruction))
             return new DxpDateTimeFieldEvalFrame(next, eval, logger, instruction);
 
-        if (next is DxpMiddleware { Next: IDxpCachedHyperlinkFieldVisitor } &&
-            DxpFieldInstructionClassifier.IsHyperlinkInstruction(instruction))
-            return new DxpHyperlinkFieldCachedFrame(next, instruction!);
+        if (DxpFieldInstructionClassifier.IsHyperlinkInstruction(instruction))
+        {
+            DxpIVisitor terminal = next;
+            while (terminal is DxpMiddleware middleware && middleware.Next != null)
+                terminal = middleware.Next;
+            if (terminal is IDxpLayoutAwareFieldVisitor)
+                return new DxpHyperlinkFieldCachedFrame(next, terminal, instruction!);
+        }
 
         if (DxpFieldInstructionClassifier.IsSetInstruction(instruction))
             return new DxpSetFieldCachedFrame(context, logger);

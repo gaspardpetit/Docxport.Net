@@ -1736,6 +1736,51 @@ public sealed class PdfFlowExportTests
         Assert.Contains("https://www.parl.ca/legisinfo/en/bill/44-1/c-244", links);
     }
 
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public void PreservesHyperlinksInCachedResults(bool nested, bool simple)
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            var paragraph = new Paragraph();
+            if (nested)
+            {
+                paragraph.Append(new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                    new Run(new FieldCode(" IF 1 = 1 \"yes\" \"no\" ")),
+                    new Run(new FieldChar { FieldCharType = FieldCharValues.Separate }));
+            }
+            if (simple)
+                paragraph.Append(new SimpleField(new Run(new Text("Open link"))) {
+                    Instruction = " HYPERLINK \"https://example.test/nested\" "
+                });
+            else
+                paragraph.Append(new Run(new FieldChar { FieldCharType = FieldCharValues.Begin }),
+                    new Run(new FieldCode(" HYPERLINK \"https://example.test/nested\" ")),
+                    new Run(new FieldChar { FieldCharType = FieldCharValues.Separate }),
+                    new Run(new Text("Open link")),
+                    new Run(new FieldChar { FieldCharType = FieldCharValues.End }));
+            if (nested)
+                paragraph.Append(new Run(new FieldChar { FieldCharType = FieldCharValues.End }));
+            main.Document = new Document(new Body(paragraph));
+            main.Document.Save();
+        }
+
+        var bytes = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor(),
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Cache });
+        using var pdf = PdfReader.Open(new MemoryStream(bytes), PdfDocumentOpenMode.Import);
+        var links = pdf.Pages.Cast<PdfPage>()
+            .SelectMany(page => page.Annotations.Cast<PdfSharp.Pdf.Annotations.PdfAnnotation>())
+            .Select(annotation => annotation.Elements.GetDictionary("/A")?.Elements.GetString("/URI"))
+            .Where(uri => !string.IsNullOrEmpty(uri)).ToArray();
+        Assert.Contains("https://example.test/nested", links);
+    }
+
     [Fact]
     public void CachedFieldsCanRefreshOnlyDateAndTime()
     {

@@ -535,7 +535,7 @@ public static class DxpExport
                             PreserveReferenceFields = preserveDocxFields,
                             EmitStructuredDatabaseResults = visitor is DxpIPreserveLayoutFields,
                             FieldEvaluationFilter = options?.FieldEvaluationFilter ??
-                                (visitor is DocxportNet.Visitors.Pdf.DxpFlowPdfVisitor
+                                (visitor is IDxpLayoutAwareFieldVisitor
                                     ? instruction => !DxpFieldInstructionClassifier.IsPageInstruction(instruction) &&
                                         !DxpFieldInstructionClassifier.IsStyleRefInstruction(instruction) &&
                                         !DxpFieldInstructionClassifier.IsHyperlinkInstruction(instruction)

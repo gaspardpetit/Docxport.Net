@@ -203,7 +203,7 @@ public interface DxpISectionContext
 
 public sealed record DxpFont(string? fontName, int? fontSizeHalfPoints);
 
-internal interface IDxpCachedHyperlinkFieldVisitor { }
+internal interface IDxpLayoutAwareFieldVisitor { }
 
 
 public interface DxpIFieldVisitor
