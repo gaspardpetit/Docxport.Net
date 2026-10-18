@@ -167,37 +167,37 @@
 
 
 <br/>
-<p style="margin-left:36pt;text-indent:-18pt;margin-bottom:0pt;">one. Comic one.</p>
+<p style="margin-left:36pt;text-indent:-18pt;margin-bottom:0pt;">One. Comic one.</p>
 
 
-<p style="margin-left:36pt;text-indent:-18pt;margin-top:0pt;margin-bottom:0pt;">two. Comic two.</p>
+<p style="margin-left:36pt;text-indent:-18pt;margin-top:0pt;margin-bottom:0pt;">Two. Comic two.</p>
 
 
-<p style="margin-left:36pt;text-indent:-18pt;margin-top:0pt;margin-bottom:0pt;">three. Comic three.</p>
+<p style="margin-left:36pt;text-indent:-18pt;margin-top:0pt;margin-bottom:0pt;">Three. Comic three.</p>
 
 
-<p style="margin-left:36pt;text-indent:-18pt;margin-top:0pt;margin-bottom:0pt;">four. Comic four.</p>
+<p style="margin-left:36pt;text-indent:-18pt;margin-top:0pt;margin-bottom:0pt;">Four. Comic four.</p>
 
 
-<p style="margin-left:36pt;text-indent:-18pt;margin-top:0pt;margin-bottom:0pt;">cinq. Comic cinq.</p>
+<p style="margin-left:36pt;text-indent:-18pt;margin-top:0pt;margin-bottom:0pt;">Cinq. Comic cinq.</p>
 
 
-<p style="margin-left:36pt;text-indent:-18pt;margin-top:0pt;margin-bottom:0pt;">kuusi. Comic kuusi.</p>
+<p style="margin-left:36pt;text-indent:-18pt;margin-top:0pt;margin-bottom:0pt;">Kuusi. Comic kuusi.</p>
 
 
-<p style="margin-left:36pt;text-indent:-18pt;margin-top:0pt;margin-bottom:0pt;">syv. Comic syv.</p>
+<p style="margin-left:36pt;text-indent:-18pt;margin-top:0pt;margin-bottom:0pt;">Syv. Comic syv.</p>
 
 
-<p style="margin-left:36pt;text-indent:-18pt;margin-top:0pt;margin-bottom:0pt;">otto. Comic otto.</p>
+<p style="margin-left:36pt;text-indent:-18pt;margin-top:0pt;margin-bottom:0pt;">Otto. Comic otto.</p>
 
 
-<p style="margin-left:36pt;text-indent:-18pt;margin-top:0pt;">εννέα. Comic eννέα.</p>
+<p style="margin-left:36pt;text-indent:-18pt;margin-top:0pt;">Εννέα. Comic eννέα.</p>
 
 
-<p style="margin-left:36pt;text-indent:-18pt;margin-bottom:0pt;">εννέα χιλιάδες εννιακόσια ενενήντα εννέα. Comic Εννέα χιλιάδες εννιακόσια ενενήντα εννέα.</p>
+<p style="margin-left:36pt;text-indent:-18pt;margin-bottom:0pt;">Εννέα χιλιάδες εννιακόσια ενενήντα εννέα. Comic Εννέα χιλιάδες εννιακόσια ενενήντα εννέα.</p>
 
 
-<p style="margin-left:36pt;text-indent:-18pt;margin-top:0pt;">dix mille. Comic dix mille.</p>
+<p style="margin-left:36pt;text-indent:-18pt;margin-top:0pt;">Dix mille. Comic dix mille.</p>
 
 
 <p style="margin-left:36pt;text-indent:-18pt;margin-bottom:0pt;">001:  Item 001</p>

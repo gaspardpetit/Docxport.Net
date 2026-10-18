@@ -145,7 +145,7 @@ public sealed class FieldEvalMiddlewareRegressionTests : TestBase<FieldEvalMiddl
 
     [Theory]
     [InlineData("AUTONUMLGL", "1.|1.1.|1.1.1.")]
-    [InlineData("AUTONUMOUT", "I.|I.A.|I.A.1.")]
+    [InlineData("AUTONUMOUT", "I.|A.|1.")]
     public void Factory_EvaluateMiddleware_AutoNumberHierarchy_FollowsHeadingLevels(string fieldType, string expected)
     {
         using var doc = CreateAutoNumberHierarchyDoc(fieldType);
@@ -199,8 +199,9 @@ public sealed class FieldEvalMiddlewareRegressionTests : TestBase<FieldEvalMiddl
 
         Assert.DoesNotContain("Error! Invalid field code.", text, StringComparison.Ordinal);
         Assert.Contains("1.AUTONUM level 1", text, StringComparison.Ordinal);
-        Assert.Contains("1.1.1.1.AUTONUMLGL level 0", text, StringComparison.Ordinal);
-        Assert.Contains("I.A.1.a.AUTONUMOUT level 0", text, StringComparison.Ordinal);
+        Assert.Contains("5.1.1.1.AUTONUMLGL level 0", text, StringComparison.Ordinal);
+        Assert.Contains("1.AUTONUMOUT level 0", text, StringComparison.Ordinal);
+        Assert.Contains("VIII.AUTONUMOUT level 1", text, StringComparison.Ordinal);
     }
 
     [Fact]

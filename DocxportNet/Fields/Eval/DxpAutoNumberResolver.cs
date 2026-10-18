@@ -39,11 +39,7 @@ internal sealed class DxpAutoNumberResolver
             ?? "main";
         int headingLevel = _context.CurrentBuiltInHeadingLevelProvider?.Invoke() ?? 0;
         var story = _context.AutoNumbers.GetStory(storyKey);
-        var family = fieldType switch {
-            "AUTONUMLGL" => story.Legal,
-            "AUTONUMOUT" => story.Outline,
-            _ => story.AutoNum
-        };
+        var family = story.Counters;
 
         int value;
         IReadOnlyList<int> components;
@@ -68,7 +64,7 @@ internal sealed class DxpAutoNumberResolver
             "AUTONUM" => _formatter.Format(new DxpFieldValue(value), parse.Ast.FormatSpecs, _context) + separator,
             "AUTONUMLGL" => string.Join(separator, components.Select(n => n.ToString(CultureInfo.InvariantCulture)))
                 + (HasSwitch(instruction, 'e') ? string.Empty : separator),
-            _ => FormatOutline(components, separator)
+            _ => FormatOutline(value, headingLevel, separator)
         };
 
         _context.SetNumberedItem(fieldType, text.TrimEnd(separator.ToCharArray()));
@@ -76,11 +72,12 @@ internal sealed class DxpAutoNumberResolver
         return new DxpAutoNumberResult(true, suppressed ? string.Empty : text, suppressed, value);
     }
 
-    private string FormatOutline(IReadOnlyList<int> components, string separator)
+    private string FormatOutline(int value, int headingLevel, string separator)
     {
-        var labels = components.Select((number, index) =>
-            DxpLists.FormatNumber(number, OutlineFormats[Math.Min(index, OutlineFormats.Length - 1)], _context.Culture));
-        return string.Join(separator, labels) + separator;
+        var format = headingLevel > 0
+            ? OutlineFormats[Math.Min(headingLevel - 1, OutlineFormats.Length - 1)]
+            : NumberFormatValues.Decimal;
+        return DxpLists.FormatNumber(value, format, _context.Culture) + separator;
     }
 
     internal static string ResolveSeparator(string instruction)
