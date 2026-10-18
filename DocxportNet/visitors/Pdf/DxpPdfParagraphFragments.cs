@@ -32,7 +32,7 @@ internal sealed class DxpPdfParagraphFragments
         => _fragments.TryGetValue(paragraph, out var fragment) ? fragment.Root : paragraph;
 
     internal bool HasInheritedFlag(HashSet<MigraDocParagraph> flags, MigraDocParagraph paragraph)
-        => flags.Contains(RootOf(paragraph));
+        => flags.Contains(paragraph) || flags.Contains(RootOf(paragraph));
 
     internal bool TryGetInheritedValue<T>(Dictionary<MigraDocParagraph, T> values,
         MigraDocParagraph paragraph, out T value)

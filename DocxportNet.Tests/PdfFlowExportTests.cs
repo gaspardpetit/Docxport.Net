@@ -36,6 +36,7 @@ public sealed class PdfFlowExportTests
         Assert.Equal(2, last.Index);
         Assert.True(last.StyleRefCandidate);
         Assert.True(fragments.HasInheritedFlag(new HashSet<MigraDoc.DocumentObjectModel.Paragraph> { first }, third));
+        Assert.True(fragments.HasInheritedFlag(new HashSet<MigraDoc.DocumentObjectModel.Paragraph> { third }, third));
         var widths = new Dictionary<MigraDoc.DocumentObjectModel.Paragraph, double> { [first] = 144 };
         Assert.True(fragments.TryGetInheritedValue(widths, third, out var inheritedWidth));
         Assert.Equal(144, inheritedWidth);
@@ -648,6 +649,113 @@ public sealed class PdfFlowExportTests
     }
 
     [Fact]
+    public void KeepsNarrowJustificationOnLastContinuationLine()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(new Paragraph(
+                new ParagraphProperties(new Justification { Val = JustificationValues.Both }),
+                new InsertedRun(new Run(new Text("Opening text"))),
+                new Run(new Break { Type = BreakValues.Page }, new Text("Alpha Beta Gamma")))));
+        }
+
+        var result = DxpExport.ExportToBytes(source.ToArray(),
+            new DxpFlowPdfVisitor(availableFontFamilies: ["Aptos"]));
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        Assert.Equal(2, pdf.NumberOfPages);
+        var words = pdf.GetPage(2).GetWords().ToArray();
+        Assert.Equal(["Alpha", "Beta", "Gamma"], words.Select(word => word.Text));
+        Assert.InRange(words[1].BoundingBox.Left - words[0].BoundingBox.Right, 2.9, 3.2);
+        Assert.InRange(words[2].BoundingBox.Left - words[1].BoundingBox.Right, 2.9, 3.2);
+    }
+
+    [Fact]
+    public void RestoresDenseTrackedPaintWidthForManualContinuation()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            var paragraph = new Paragraph(new ParagraphProperties(
+                new Justification { Val = JustificationValues.Both }));
+            for (var index = 0; index < 120; index++)
+            {
+                paragraph.Append(new Run(new Text("lorem ipsum ")
+                    { Space = SpaceProcessingModeValues.Preserve }));
+                if (index == 59)
+                    paragraph.Append(new Run(new Break { Type = BreakValues.Page }));
+            }
+            main.Document = new Document(new Body(paragraph,
+                new Paragraph(new InsertedRun(new Run(new Text("tracked"))))));
+        }
+
+        var visitor = new DxpFlowPdfVisitor(availableFontFamilies: ["Aptos"]);
+        var result = DxpExport.ExportToBytes(source.ToArray(), visitor);
+        var field = typeof(DxpFlowPdfVisitor).GetField("_document",
+            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!;
+        var rendered = (MigraDoc.DocumentObjectModel.Document)field.GetValue(visitor)!;
+        var paragraphs = rendered.Sections[0].Elements
+            .OfType<MigraDoc.DocumentObjectModel.Paragraph>().ToArray();
+        Assert.Equal(3, paragraphs.Length);
+        Assert.InRange(Math.Abs(paragraphs[0].Format.RightIndent.Point -
+            paragraphs[1].Format.RightIndent.Point), 0, 0.01);
+        Assert.Equal(0, paragraphs[1].Format.RightIndent.Point);
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        Assert.Equal(2, pdf.NumberOfPages);
+    }
+
+    [Fact]
+    public void CarriesBodySpacingStateAcrossRepeatedFootnoteSplits()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var source = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,
+            "../../../../fixtures/docx/samples/Right to Repair.docx"));
+        using var docx = new MemoryStream();
+        docx.Write(File.ReadAllBytes(source));
+        docx.Position = 0;
+        using (var word = WordprocessingDocument.Open(docx, true))
+        {
+            foreach (var section in word.MainDocumentPart!.Document.Descendants<SectionProperties>())
+            {
+                var size = section.GetFirstChild<PageSize>() ?? section.AppendChild(new PageSize());
+                size.Height = 14000;
+            }
+            word.MainDocumentPart.Document.Save();
+        }
+        var visitor = new DxpFlowPdfVisitor(availableFontFamilies: ["Aptos"]);
+        var result = DxpExport.ExportToBytes(docx.ToArray(), visitor);
+        var flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
+        var compressed = (HashSet<MigraDoc.DocumentObjectModel.Paragraph>)
+            typeof(DxpFlowPdfVisitor).GetField("_compressedBodyParagraphs", flags)!.GetValue(visitor)!;
+        var widths = (HashSet<MigraDoc.DocumentObjectModel.Paragraph>)
+            typeof(DxpFlowPdfVisitor).GetField("_layoutWidthParagraphs", flags)!.GetValue(visitor)!;
+        var splits = (Dictionary<MigraDoc.DocumentObjectModel.Paragraph,
+            MigraDoc.DocumentObjectModel.Paragraph>)
+            typeof(DxpFlowPdfVisitor).GetField("_footnoteSplitContinuations", flags)!.GetValue(visitor)!;
+        var repeated = Assert.Single(splits.Where(entry =>
+            DxpFootnoteParagraphSplitter.TryGetText(entry.Key, out var text) &&
+            text.StartsWith("a detailed report21", StringComparison.Ordinal)));
+        Assert.Contains(repeated.Key, compressed);
+        Assert.Contains(repeated.Value, compressed);
+        Assert.Contains(repeated.Value.Elements.OfType<MigraDoc.DocumentObjectModel.FormattedText>(),
+            span => Math.Abs(span.Size.Point - 9.5) < 0.01 &&
+                span.Elements.OfType<MigraDoc.DocumentObjectModel.Text>()
+                    .Any(text => text.Content.Length > 0 &&
+                        text.Content.All(character => character == ' ')));
+        var layoutSplit = Assert.Single(splits.Where(entry =>
+            DxpFootnoteParagraphSplitter.TryGetText(entry.Key, out var text) &&
+            text.StartsWith("The World Intellectual Property", StringComparison.Ordinal)));
+        Assert.Contains(layoutSplit.Value, widths);
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        Assert.True(pdf.NumberOfPages > 1);
+    }
+
+    [Fact]
     public void DoesNotRepeatFirstLineIndentAfterPageBreak()
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
@@ -761,6 +869,332 @@ public sealed class PdfFlowExportTests
         var second = secondPageWords[0];
         Assert.InRange(Math.Abs(first.BoundingBox.Width - second.BoundingBox.Width), 0, 0.5);
         Assert.True(second.BoundingBox.Width < secondPageWords[1].BoundingBox.Width);
+    }
+
+    [Fact]
+    public void KeepsHangulBaselineCorrectionAfterPageBreak()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(
+                new Paragraph(new Run(new RunProperties(new RunFonts
+                    { Ascii = "Calibri", EastAsia = "Calibri" }),
+                    new Text("ABC한"), new Break { Type = BreakValues.Page },
+                    new Text("ABC한"))),
+                new Paragraph(new Run(new RunProperties(new FitText { Val = 400 }), new Text("Fit")))));
+        }
+
+        var result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        Assert.Equal(2, pdf.NumberOfPages);
+        var first = pdf.GetPage(1).Letters.First(letter => letter.Value == "A");
+        var second = pdf.GetPage(2).Letters.First(letter => letter.Value == "A");
+        Assert.InRange(Math.Abs(first.StartBaseLine.Y - second.StartBaseLine.Y), 0, 0.1);
+    }
+
+    [Fact]
+    public void KeepsSourceBaselineWithoutLeakingStrikeAcrossMultiplePageBreaks()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(new Paragraph(
+                new Run(new RunProperties(new RunFonts { Ascii = "Calibri", EastAsia = "Calibri" }),
+                    new Text("ABC한"), new Break { Type = BreakValues.Page }),
+                new Run(new RunProperties(new RunFonts { Ascii = "Calibri", EastAsia = "Calibri" },
+                    new Strike()), new Text("ABC한"), new Break { Type = BreakValues.Page }),
+                new Run(new RunProperties(new RunFonts { Ascii = "Calibri", EastAsia = "Calibri" }),
+                    new Text("ABC한")))));
+        }
+
+        var visitor = new DxpFlowPdfVisitor();
+        var result = DxpExport.ExportToBytes(source.ToArray(), visitor);
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        Assert.Equal(3, pdf.NumberOfPages);
+        var baselines = Enumerable.Range(1, 3)
+            .Select(page => pdf.GetPage(page).Letters.First(letter => letter.Value == "A").StartBaseLine.Y)
+            .ToArray();
+        Assert.All(baselines.Skip(1), baseline =>
+            Assert.InRange(Math.Abs(baseline - baselines[0]), 0, 0.1));
+        var flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
+        var ranges = (System.Collections.IDictionary)
+            typeof(DxpFlowPdfVisitor).GetField("_strikeRanges", flags)!.GetValue(visitor)!;
+        Assert.Single(ranges.Keys.Cast<MigraDoc.DocumentObjectModel.Paragraph>());
+    }
+
+    [Fact]
+    public void KeepsAdjustedGridGlyphPositionAfterPageBreak()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            var grid = new DocGrid { Type = DocGridValues.LinesAndChars, LinePitch = 480 };
+            grid.SetAttribute(new OpenXmlAttribute("w", "charSpace",
+                "http://schemas.openxmlformats.org/wordprocessingml/2006/main", "40960"));
+            main.Document = new Document(new Body(
+                new Paragraph(new ParagraphProperties(new AdjustRightIndent { Val = true }),
+                    new Run(new RunProperties(new RunFonts
+                        { Ascii = "Yu Mincho", EastAsia = "Yu Mincho" }),
+                        new Text("日本語"), new Break { Type = BreakValues.Page },
+                        new Text("日本語"))),
+                new SectionProperties(grid)));
+        }
+
+        var result = DxpExport.ExportToBytes(source.ToArray(),
+            new DxpFlowPdfVisitor(availableFontFamilies: ["Yu Mincho"]));
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        Assert.Equal(2, pdf.NumberOfPages);
+        var first = pdf.GetPage(1).Letters.ToArray();
+        var second = pdf.GetPage(2).Letters.ToArray();
+        Assert.Equal(first.Length, second.Length);
+        Assert.NotEmpty(first);
+        for (var index = 0; index < first.Length; index++)
+        {
+            Assert.InRange(Math.Abs(first[index].StartBaseLine.X - second[index].StartBaseLine.X),
+                0, 0.1);
+            Assert.InRange(Math.Abs(first[index].StartBaseLine.Y - second[index].StartBaseLine.Y),
+                0, 0.1);
+        }
+    }
+
+    [Fact]
+    public void KeepsCompactArialUnderlineGeometryAfterPageBreak()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(new Paragraph(new Run(
+                new RunProperties(new RunFonts { Ascii = "Arial" }, new FontSize { Val = "18" },
+                    new Underline { Val = UnderlineValues.Single, Color = "FF0000" }),
+                new Text("Compact"), new Break { Type = BreakValues.Page },
+                new Text("Compact")))));
+        }
+
+        var result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = PdfReader.Open(new MemoryStream(result), PdfDocumentOpenMode.Import);
+        Assert.Equal(2, pdf.PageCount);
+        var rectangles = Enumerable.Range(0, pdf.PageCount).Select(index => pdf.Pages[index].Contents.Elements
+            .OfType<PdfSharp.Pdf.Advanced.PdfReference>()
+            .Where(reference => reference.Value is PdfSharp.Pdf.Advanced.PdfContent)
+            .Select(reference => (PdfSharp.Pdf.Advanced.PdfContent)reference.Value)
+            .Where(content => content.Stream != null)
+            .SelectMany(content => System.Text.RegularExpressions.Regex.Matches(
+                System.Text.Encoding.Latin1.GetString(content.Stream!.UnfilteredValue),
+                @"(-?[\d.]+) (-?[\d.]+) (-?[\d.]+) (-?[\d.]+) re")
+                .Select(match => match.Value)).ToArray()).ToArray();
+        var first = Assert.Single(rectangles[0]).Split(' ');
+        var second = Assert.Single(rectangles[1]).Split(' ');
+        Assert.Equal(first[3], second[3]);
+        Assert.Equal(first[1], second[1]);
+    }
+
+    [Fact]
+    public void KeepsDirectParagraphSideBordersAcrossPageBreak()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        ParagraphProperties Bordered() => new(new ParagraphBorders(
+            new LeftBorder { Val = BorderValues.Single, Color = "FF0000", Size = 8 },
+            new RightBorder { Val = BorderValues.Single, Color = "FF0000", Size = 8 }),
+            new SpacingBetweenLines { After = "120" });
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(
+                new Paragraph(Bordered(), new Run(new Text("Before"),
+                    new Break { Type = BreakValues.Page }, new Text("After"))),
+                new Paragraph(Bordered(), new Run(new Text("Next")))));
+        }
+
+        var result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = PdfReader.Open(new MemoryStream(result), PdfDocumentOpenMode.Import);
+        Assert.Equal(2, pdf.PageCount);
+        var streams = pdf.Pages[1].Contents.Elements
+            .OfType<PdfSharp.Pdf.Advanced.PdfReference>()
+            .Where(reference => reference.Value is PdfSharp.Pdf.Advanced.PdfContent)
+            .Select(reference => (PdfSharp.Pdf.Advanced.PdfContent)reference.Value)
+            .Where(content => content.Stream != null)
+            .Select(content => System.Text.Encoding.Latin1.GetString(content.Stream!.UnfilteredValue));
+        var strokes = streams.SelectMany(stream => System.Text.RegularExpressions.Regex.Matches(stream,
+            @"(?m)(-?[\d.]+) (-?[\d.]+) m\s+(-?[\d.]+) (-?[\d.]+) l\s+S")
+            .Select(match => match.Value)).ToArray();
+        var bridges = strokes.Select(stroke => stroke.Split([' ', '\r', '\n'],
+                StringSplitOptions.RemoveEmptyEntries))
+            .Where(parts => parts[0] == parts[3] &&
+                Math.Abs(double.Parse(parts[4], System.Globalization.CultureInfo.InvariantCulture) -
+                    double.Parse(parts[1], System.Globalization.CultureInfo.InvariantCulture)) is > 5.9 and < 6.1)
+            .ToArray();
+        Assert.Equal(2, bridges.Length);
+    }
+
+    [Fact]
+    public void KeepsFooterShadingClearanceAfterPageBreak()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            var styles = main.AddNewPart<StyleDefinitionsPart>();
+            styles.Styles = new Styles(new Style(new StyleRunProperties(new Border
+                { Val = BorderValues.Single, Color = "FF0000", Size = 8, Space = 4 }))
+            {
+                Type = StyleValues.Paragraph,
+                StyleId = "ShadedFooter"
+            });
+            var footer = main.AddNewPart<FooterPart>();
+            footer.Footer = new Footer(new Paragraph(
+                new ParagraphProperties(new ParagraphStyleId { Val = "ShadedFooter" },
+                    new Shading { Fill = "00FF00" }),
+                new Run(new Text("Footer A"), new Break { Type = BreakValues.Page },
+                    new Text("Footer B"))));
+            main.Document = new Document(new Body(new Paragraph(new Run(new Text("Body"))),
+                new SectionProperties(new FooterReference
+                    { Id = main.GetIdOfPart(footer), Type = HeaderFooterValues.Default })));
+        }
+
+        var result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = PdfReader.Open(new MemoryStream(result), PdfDocumentOpenMode.Import);
+        var rectangles = Enumerable.Range(0, pdf.PageCount).Select(index => pdf.Pages[index].Contents.Elements
+            .OfType<PdfSharp.Pdf.Advanced.PdfReference>()
+            .Where(reference => reference.Value is PdfSharp.Pdf.Advanced.PdfContent)
+            .Select(reference => (PdfSharp.Pdf.Advanced.PdfContent)reference.Value)
+            .Where(content => content.Stream != null)
+            .SelectMany(content => System.Text.RegularExpressions.Regex.Matches(
+                System.Text.Encoding.Latin1.GetString(content.Stream!.UnfilteredValue),
+                @"(-?[\d.]+) (-?[\d.]+) (-?[\d.]+) (-?[\d.]+) re")
+                .Select(match => match.Value)).ToArray()).ToArray();
+        var shaded = rectangles.SelectMany(page => page)
+            .Count(rectangle => double.Parse(rectangle.Split(' ')[2],
+                System.Globalization.CultureInfo.InvariantCulture) > 400);
+        Assert.Equal(2, shaded);
+    }
+
+    [Fact]
+    public void KeepsFooterDoubleRunBorderOffsetAfterPageBreak()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            var footer = main.AddNewPart<FooterPart>();
+            footer.Footer = new Footer(new Paragraph(new Run(
+                new RunProperties(new Border { Val = BorderValues.Double, Color = "FF0000",
+                    Size = 8, Space = 4 }),
+                new Text("Footer A"), new Break { Type = BreakValues.Page },
+                new Text("Footer B"))));
+            main.Document = new Document(new Body(new Paragraph(new Run(new Text("Body"))),
+                new SectionProperties(new FooterReference
+                    { Id = main.GetIdOfPart(footer), Type = HeaderFooterValues.Default })));
+        }
+
+        var result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = PdfReader.Open(new MemoryStream(result), PdfDocumentOpenMode.Import);
+        var rectangles = Enumerable.Range(0, pdf.PageCount).Select(index => pdf.Pages[index].Contents.Elements
+            .OfType<PdfSharp.Pdf.Advanced.PdfReference>()
+            .Where(reference => reference.Value is PdfSharp.Pdf.Advanced.PdfContent)
+            .Select(reference => (PdfSharp.Pdf.Advanced.PdfContent)reference.Value)
+            .Where(content => content.Stream != null)
+            .SelectMany(content => System.Text.RegularExpressions.Regex.Matches(
+                System.Text.Encoding.Latin1.GetString(content.Stream!.UnfilteredValue),
+                @"(-?[\d.]+) (-?[\d.]+) (-?[\d.]+) (-?[\d.]+) re")
+                .Select(match => match.Value)).ToArray()).ToArray();
+        var outerBorders = Assert.Single(rectangles).Where((_, index) => index % 2 == 0).ToArray();
+        Assert.Equal(2, outerBorders.Length);
+        Assert.Equal(outerBorders[0].Split(' ')[1], outerBorders[1].Split(' ')[1]);
+    }
+
+    [Fact]
+    public void KeepsBorderedTabInsetAfterPageBreak()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(new Paragraph(
+                new ParagraphProperties(new Tabs(new TabStop
+                    { Position = 3000, Val = TabStopValues.Left })),
+                new Run(new RunProperties(new Border { Val = BorderValues.Single, Color = "FF0000",
+                    Size = 8, Space = 4 }),
+                    new Text("Alpha"), new TabChar(), new Text("Beta"),
+                    new Break { Type = BreakValues.Page },
+                    new Text("Gamma"), new TabChar(), new Text("Delta")))));
+        }
+
+        var result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = PdfReader.Open(new MemoryStream(result), PdfDocumentOpenMode.Import);
+        var rectangles = Enumerable.Range(0, pdf.PageCount).Select(index => pdf.Pages[index].Contents.Elements
+            .OfType<PdfSharp.Pdf.Advanced.PdfReference>()
+            .Where(reference => reference.Value is PdfSharp.Pdf.Advanced.PdfContent)
+            .Select(reference => (PdfSharp.Pdf.Advanced.PdfContent)reference.Value)
+            .Where(content => content.Stream != null)
+            .SelectMany(content => System.Text.RegularExpressions.Regex.Matches(
+                System.Text.Encoding.Latin1.GetString(content.Stream!.UnfilteredValue),
+                @"(-?[\d.]+) (-?[\d.]+) (-?[\d.]+) (-?[\d.]+) re")
+                .Select(match => match.Value)).ToArray()).ToArray();
+        using var parsed = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        var gaps = rectangles.Select((page, index) =>
+        {
+            var rectangle = page.Single().Split(' ');
+            var right = double.Parse(rectangle[0], System.Globalization.CultureInfo.InvariantCulture) +
+                double.Parse(rectangle[2], System.Globalization.CultureInfo.InvariantCulture);
+            var last = parsed.GetPage(index + 1).Letters.Last();
+            return right - last.EndBaseLine.X;
+        }).ToArray();
+        Assert.Equal(2, gaps.Length);
+        Assert.InRange(gaps[0], 14, 15);
+        Assert.InRange(Math.Abs(gaps[0] - gaps[1]), 0, 0.1);
+    }
+
+    [Fact]
+    public void DoesNotRepeatFirstBodyDoubleBorderInsetAfterPageBreak()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(new Paragraph(new Run(
+                new RunProperties(new Border { Val = BorderValues.Double, Color = "FF0000",
+                    Size = 8, Space = 4 }),
+                new Text("Same text"), new Break { Type = BreakValues.Page },
+                new Text("Same text")))));
+        }
+
+        var result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = PdfReader.Open(new MemoryStream(result), PdfDocumentOpenMode.Import);
+        Assert.Equal(2, pdf.PageCount);
+        var rectangles = Enumerable.Range(0, pdf.PageCount).Select(index => pdf.Pages[index].Contents.Elements
+            .OfType<PdfSharp.Pdf.Advanced.PdfReference>()
+            .Where(reference => reference.Value is PdfSharp.Pdf.Advanced.PdfContent)
+            .Select(reference => (PdfSharp.Pdf.Advanced.PdfContent)reference.Value)
+            .Where(content => content.Stream != null)
+            .SelectMany(content => System.Text.RegularExpressions.Regex.Matches(
+                System.Text.Encoding.Latin1.GetString(content.Stream!.UnfilteredValue),
+                @"(-?[\d.]+) (-?[\d.]+) (-?[\d.]+) (-?[\d.]+) re")
+                .Select(match => match.Value)).ToArray()).ToArray();
+        Assert.Equal(2, rectangles[0].Length);
+        Assert.Equal(rectangles[0], rectangles[1]);
     }
 
     [Fact]

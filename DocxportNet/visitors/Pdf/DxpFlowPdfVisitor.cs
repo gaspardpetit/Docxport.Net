@@ -629,18 +629,25 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     if (leader is MigraDoc.DocumentObjectModel.TabLeader.Heavy or
                         MigraDoc.DocumentObjectModel.TabLeader.Lines)
                     {
-                        if (_positionalLeaderParagraphs.Contains(paragraph)) return (0.001, 4, 2.03);
-                        return (0.001, 0, _footerLeaderParagraphs.Contains(paragraph) ? 3.43 : 1);
+                        if (HasInheritedParagraphFlag(_positionalLeaderParagraphs, paragraph))
+                            return (0.001, 4, 2.03);
+                        return (0.001, 0,
+                            HasInheritedParagraphFlag(_footerLeaderParagraphs, paragraph) ? 3.43 : 1);
                     }
                     if (leader == MigraDoc.DocumentObjectModel.TabLeader.Dashes)
-                        return (0.001, 0, _positionalLeaderParagraphs.Contains(paragraph) ? 0 :
-                            _clearedTabLeaderParagraphs.Contains(paragraph) ? 3.69 : 2.3);
+                        return (0.001, 0,
+                            HasInheritedParagraphFlag(_positionalLeaderParagraphs, paragraph) ? 0 :
+                            HasInheritedParagraphFlag(_clearedTabLeaderParagraphs, paragraph) ? 3.69 : 2.3);
                     if (leader == MigraDoc.DocumentObjectModel.TabLeader.MiddleDot &&
-                        _positionalLeaderParagraphs.Contains(paragraph)) return (0.0523, 0, 3.24);
+                        HasInheritedParagraphFlag(_positionalLeaderParagraphs, paragraph))
+                        return (0.0523, 0, 3.24);
                     if (leader != MigraDoc.DocumentObjectModel.TabLeader.Dots) return null;
-                    if (_tocLeaderParagraphs.Contains(paragraph)) return (0.0523, 0.2, 0.6);
-                    if (_positionalLeaderParagraphs.Contains(paragraph)) return (0.0523, 0, 3.24);
-                    return (0.0523, 0, _footerLeaderParagraphs.Contains(paragraph) ? 0.8 : 2.3);
+                    if (HasInheritedParagraphFlag(_tocLeaderParagraphs, paragraph))
+                        return (0.0523, 0.2, 0.6);
+                    if (HasInheritedParagraphFlag(_positionalLeaderParagraphs, paragraph))
+                        return (0.0523, 0, 3.24);
+                    return (0.0523, 0,
+                        HasInheritedParagraphFlag(_footerLeaderParagraphs, paragraph) ? 0.8 : 2.3);
                 }));
         typeof(DocumentRenderer).GetProperty("AllowClosingPunctuationOverhang")?
             .SetValue(renderer.DocumentRenderer, true);
@@ -655,12 +662,12 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 new Func<MigraDoc.DocumentObjectModel.Paragraph, string, XFont, double?>(
                      (paragraph, word, font) =>
                      {
-                         if (_narrowJustifiedBodyParagraphs.Contains(paragraph) &&
+                         if (HasInheritedParagraphFlag(_narrowJustifiedBodyParagraphs, paragraph) &&
                              font.FontFamily.Name == "Aptos" && font.Size == 12 &&
                              GetPairedClosingMarkOverhang(word, font) is { } paired)
                              return paired;
                          return GetLineEndOverhang(paragraph, word, font,
-                             _twoWordOverhangParagraphs.Contains(paragraph)) ??
+                             HasInheritedParagraphFlag(_twoWordOverhangParagraphs, paragraph)) ??
                              (_stylelessBodyParagraphSpacing && _sourceBodyParagraphs.Contains(paragraph)
                                  ? GetStylelessFullStopOverhang(word, font) : null);
                      }));
@@ -671,14 +678,16 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             hangingSpaceOption.SetValue(renderer.DocumentRenderer,
                 new Func<MigraDoc.DocumentObjectModel.Paragraph, string, XFont, double?>(
                      (paragraph, word, font) => GetHangingTerminalLineSpaceThreshold(
-                         paragraph.Format.Alignment, _twoWordOverhangParagraphs.Contains(paragraph),
+                         paragraph.Format.Alignment,
+                         HasInheritedParagraphFlag(_twoWordOverhangParagraphs, paragraph),
                          word, font.FontFamily.Name)));
         if (Environment.GetEnvironmentVariable("DOCXPORT_DIAG_HANGING_MARK_PAIR_SPACES") == "1" &&
             typeof(DocumentRenderer).GetProperty("HangingTerminalLineNearEdgeThreshold") is { } nearEdgeOption)
             nearEdgeOption.SetValue(renderer.DocumentRenderer,
                 new Func<MigraDoc.DocumentObjectModel.Paragraph, string, XFont, double?>(
                     (paragraph, word, font) => GetHangingTerminalLineNearEdgeThreshold(
-                        paragraph.Format.Alignment, _twoWordOverhangParagraphs.Contains(paragraph),
+                        paragraph.Format.Alignment,
+                        HasInheritedParagraphFlag(_twoWordOverhangParagraphs, paragraph),
                         word, font.FontFamily.Name)));
         if (Environment.GetEnvironmentVariable("DOCXPORT_DIAG_NONTERMINAL_CJK_HANG_SPACE") == "1" &&
             typeof(DocumentRenderer).GetProperty("HangingNonterminalLineSpaceLimit") is { } nonterminalOption)
@@ -728,7 +737,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     new Func<MigraDoc.DocumentObjectModel.Paragraph, string, XFont, double?>(
                         (paragraph, word, font) =>
                         {
-                            if (implicitTableWidths && _implicitTableParagraphs.Contains(paragraph) &&
+                            if (implicitTableWidths &&
+                                HasInheritedParagraphFlag(_implicitTableParagraphs, paragraph) &&
                                 string.Equals(font.FontFamily.Name, "Aptos", StringComparison.OrdinalIgnoreCase) &&
                                 metrics.TryMeasure(word, font.Size, out var advance))
                             {
@@ -746,8 +756,9 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                                     kernedAdvance = Math.Min(kernedAdvance, plainAdvance);
                                 return kernedAdvance - measure.MeasureString(word, font).Width;
                             }
-                            return trackedWidths && _trackedLayoutParagraphs.Contains(paragraph) ||
-                                frameWidths && _frameWidthParagraphs.Contains(paragraph)
+                            return trackedWidths &&
+                                HasInheritedParagraphFlag(_trackedLayoutParagraphs, paragraph) ||
+                                frameWidths && HasInheritedParagraphFlag(_frameWidthParagraphs, paragraph)
                                 ? Adjustment(word, font.FontFamily.Name, font.Size) : null;
                         }));
                 _positionedLayoutApplied = trackedWidths;
@@ -780,7 +791,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             paragraphShrinkOption.SetValue(renderer.DocumentRenderer,
                 new Func<MigraDoc.DocumentObjectModel.Paragraph, double?>(
                     paragraph => shrinkSetting is null &&
-                        _justifiedShrinkFactors.TryGetValue(paragraph, out var factor)
+                        TryGetInheritedParagraphValue(_justifiedShrinkFactors, paragraph, out var factor)
                         ? factor : shrinkFactor));
         else if (shrinkSetting != "0" &&
             typeof(DocumentRenderer).GetProperty("JustifiedSpaceShrinkFactor") is { } shrinkOption)
@@ -794,7 +805,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                         if (!_sourceBodyParagraphs.Contains(paragraph) ||
                             !string.Equals(font.FontFamily.Name, "Aptos", StringComparison.OrdinalIgnoreCase))
                             return null;
-                        if (_narrowJustifiedBodyParagraphs.Contains(paragraph))
+                        if (HasInheritedParagraphFlag(_narrowJustifiedBodyParagraphs, paragraph))
                             return Environment.GetEnvironmentVariable("DOCXPORT_DIAG_APTOS_COMMA_QUOTE_KERN") == "1" &&
                                 word.EndsWith(",\u201D", StringComparison.Ordinal)
                                 ? aptosAdvances.LegacyKerningAdjustment(',', '\u201D', font.Size) : null;
@@ -860,7 +871,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             renderOnlyKerningOption.SetValue(renderer.DocumentRenderer,
                 new Func<MigraDoc.DocumentObjectModel.Paragraph, string, XFont, double?>(
                      (paragraph, word, font) => paragraph.Format.Alignment == ParagraphAlignment.Left &&
-                         _twoWordOverhangParagraphs.Contains(paragraph) &&
+                         HasInheritedParagraphFlag(_twoWordOverhangParagraphs, paragraph) &&
                          word.Length >= 2 && word[^2] == '.' && word[^1] is ('\u2019' or '\u201d')
                         ? font.FontFamily.Name switch
                         {
@@ -958,7 +969,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             mixedMetricsOption.SetValue(renderer.DocumentRenderer,
                 new Func<MigraDoc.DocumentObjectModel.Paragraph, XFont,
                     (double LineHeight, double InherentLineSpace)?>(
-                    (paragraph, font) => _mixedFullWidthPunctuationParagraphs.Contains(paragraph) &&
+                    (paragraph, font) =>
+                        HasInheritedParagraphFlag(_mixedFullWidthPunctuationParagraphs, paragraph) &&
                         font.FontFamily.Name.Equals("MS Mincho", StringComparison.OrdinalIgnoreCase) &&
                         font.Size == 12 && paragraph.Format.LineSpacingRule != LineSpacingRule.Exactly
                         ? (18.0878, 15.4484) : null));
@@ -967,7 +979,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             topBorderOption.SetValue(renderer.DocumentRenderer,
                 new Func<MigraDoc.DocumentObjectModel.Paragraph, int, double, double?>(
                     (paragraph, pageNumber, areaY) => pageNumber > 1 &&
-                        _directBorderParagraphs.TryGetValue(paragraph,
+                        TryGetInheritedParagraphValue(_directBorderParagraphs, paragraph,
                             out var source) &&
                         source.ParagraphProperties?.ParagraphBorders is { } currentBorders &&
                         source.PreviousSibling<DocumentFormat.OpenXml.Wordprocessing.Paragraph>()?
@@ -2128,7 +2140,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 var continued = next?.Contains(paragraph) == true ||
                     _footnoteSplitContinuations.TryGetValue(paragraph, out var continuation) &&
                     rendered.Contains(continuation);
-                if (!continued && !_narrowJustifiedBodyParagraphs.Contains(paragraph)) continue;
+                if (!continued && !HasInheritedParagraphFlag(_narrowJustifiedBodyParagraphs, paragraph))
+                    continue;
                 continuations.Add((page, area.X.Point, area.Y.Point,
                     area.X.Point + area.Width.Point, area.Y.Point + area.Height.Point, continued));
             }
@@ -4177,10 +4190,14 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             continuation == null) return false;
         if (continuation.Format.Borders.DistanceFromTop.Point > 0)
             continuation.Format.Borders.DistanceFromTop = Unit.Zero;
-        if (_compressedBodyParagraphs.Contains(paragraph) && !_layoutWidthParagraphs.Contains(paragraph) &&
+        var compressedBody = HasInheritedParagraphFlag(_compressedBodyParagraphs, paragraph);
+        var layoutWidth = HasInheritedParagraphFlag(_layoutWidthParagraphs, paragraph);
+        if (compressedBody && !layoutWidth &&
             ShouldWidenCompressedContinuation(fittingSourceWords,
                 Regex.Matches(content, @"\S+").Count - fittingSourceWords))
             WidenShortContinuationSpaces(continuation);
+        if (compressedBody) _compressedBodyParagraphs.Add(continuation);
+        if (layoutWidth) _layoutWidthParagraphs.Add(continuation);
         if (_narrowJustifiedBodyParagraphs.Contains(paragraph))
             _narrowJustifiedBodyParagraphs.Add(continuation);
         if (_footnoteSplitContinuations.Remove(paragraph, out var nextFragment))
@@ -6468,14 +6485,14 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     !_textBorderRanges.ContainsKey(paragraph) &&
                     !TryGetInheritedParagraphValue(_topAlignedFontSizes, paragraph, out _) &&
                     !TryGetInheritedParagraphValue(_verticalAlignedFonts, paragraph, out _) &&
-                    !_hangulBaselineShiftParagraphs.Contains(paragraph) &&
+                    !HasInheritedParagraphFlag(_hangulBaselineShiftParagraphs, paragraph) &&
                     !_gridGlyphParagraphs.Contains(paragraph) &&
                     !_gridBoundaryParagraphs.Contains(paragraph) &&
                     !_oversizedStoryLatinParagraphs.Contains(paragraph)) continue;
                 var border = _textBorderRanges.GetValueOrDefault(paragraph)?.FirstOrDefault();
                 var verticalShift = border == null ? 0 : _bodyParagraphs.Contains(paragraph)
                     ? border.Inset + bodyBorderIndex++ * 8.2 : -border.Inset - 0.9;
-                if (_hangulBaselineShiftParagraphs.Contains(paragraph)) verticalShift += 0.28;
+                if (HasInheritedParagraphFlag(_hangulBaselineShiftParagraphs, paragraph)) verticalShift += 0.28;
                 if (HasInheritedParagraphFlag(_fitTextTracking, paragraph) &&
                     _bodyParagraphs.Contains(paragraph) &&
                     !_documentHasFitText)
@@ -6537,7 +6554,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                             ? 0.98 : alignedFont.Factor, groups,
                         _gridGlyphParagraphs.Contains(paragraph),
                         _gridGlyphParagraphs.Contains(paragraph) &&
-                            !_unshiftedGridGlyphParagraphs.Contains(paragraph),
+                            !HasInheritedParagraphFlag(_unshiftedGridGlyphParagraphs, paragraph),
                         _packedGridParagraphs.Contains(paragraph),
                         _packedGridOffsets.ContainsKey(paragraph),
                         fittedTwelvePointTracking || inheritedTimesTracking ||
@@ -7445,7 +7462,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     var first = line.OrderBy(letter => letter.StartBaseLine.X).First();
                     var last = line.OrderByDescending(letter => letter.EndBaseLine.X).First();
                     var body = _bodyParagraphs.Contains(paragraph);
-                    var compactBody = _compactArialBodyParagraphs.Contains(paragraph);
+                    var compactBody = HasInheritedParagraphFlag(_compactArialBodyParagraphs, paragraph);
                     var aptosStory = underline.InHeaderFooter &&
                         first.FontName.Contains("Aptos", StringComparison.OrdinalIgnoreCase);
                     var bodyExtension = _characterSpacings.ContainsKey(paragraph) ? 2 : 0;
@@ -7810,7 +7827,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                             CultureInfo.InvariantCulture, out var rgb)) continue;
                     var first = bordered[0];
                     var last = bordered[^1];
-                    var compactArial = _compactArialBodyParagraphs.Contains(paragraph);
+                    var compactArial = HasInheritedParagraphFlag(_compactArialBodyParagraphs, paragraph);
                     var tabbedBodyBorder = _bodyParagraphs.Contains(paragraph) &&
                         bordered.Zip(bordered.Skip(1)).Any(pair =>
                             Math.Abs(pair.First.StartBaseLine.Y - pair.Second.StartBaseLine.Y) < 1 &&
@@ -7820,18 +7837,22 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                         (tabbedBodyBorder ? border.Inset : 0);
                     var borderOffset = borderShift - (border.Double
                         ? _firstBodyDoubleBorderInset.GetValueOrDefault(paragraph) +
-                            (_footerLeaderParagraphs.Contains(paragraph) ? 2 * border.Width : 0) : 0);
+                            (HasInheritedParagraphFlag(_footerLeaderParagraphs, paragraph)
+                                ? 2 * border.Width : 0) : 0);
                     var borderTop = page.Height - first.GlyphRectangle.Top + borderOffset - border.Inset - 4 +
-                        border.Width / 2 + (_compactArialBodyParagraphs.Contains(paragraph) ? 1.8 : 0);
+                        border.Width / 2 +
+                        (HasInheritedParagraphFlag(_compactArialBodyParagraphs, paragraph) ? 1.8 : 0);
                     var right = compactArial
                         ? last.EndBaseLine.X + border.VisibleLength *
                             _characterSpacings.GetValueOrDefault(paragraph)
                         : last.EndBaseLine.X + border.Inset * 2 - border.Width / 2 +
                             border.Length * _characterSpacings.GetValueOrDefault(paragraph);
                     if (tabbedBodyBorder)
-                        right += border.Inset + _borderedTabInsets.GetValueOrDefault(paragraph);
+                        right += border.Inset +
+                            GetInheritedParagraphValueOrDefault(_borderedTabInsets, paragraph);
                     var borderBottom = page.Height - first.GlyphRectangle.Bottom + borderOffset + border.Inset + 4 -
-                        border.Width / 2 - (_compactArialBodyParagraphs.Contains(paragraph) ? 1.3 : 0);
+                        border.Width / 2 -
+                        (HasInheritedParagraphFlag(_compactArialBodyParagraphs, paragraph) ? 1.3 : 0);
                     var borderPen = new XPen(XColor.FromArgb((rgb >> 16) & 255,
                         (rgb >> 8) & 255, rgb & 255), border.Width);
                     if (border.Double)
@@ -8463,7 +8484,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             foreach (var (storyInfo, offset) in GetPageStoryRenderInfos(renderer, index, target))
             {
                 if (storyInfo.DocumentObject is not MigraDoc.DocumentObjectModel.Paragraph footerParagraph ||
-                    !_footerParagraphShadeClearances.TryGetValue(footerParagraph, out var clearance) ||
+                    !TryGetInheritedParagraphValue(_footerParagraphShadeClearances,
+                        footerParagraph, out var clearance) ||
                     !_paragraphShades.TryGetValue(footerParagraph, out var footerCss) ||
                     storyInfo.LayoutInfo.ContentArea is not { } footerArea || footerCss.Length != 7 ||
                     !int.TryParse(footerCss.AsSpan(1), NumberStyles.HexNumber,
@@ -8555,8 +8577,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             {
                 if (infos[position].DocumentObject is not MigraDoc.DocumentObjectModel.Paragraph paragraph ||
                     infos[position + 1].DocumentObject is not MigraDoc.DocumentObjectModel.Paragraph next ||
-                    !_directBorderParagraphs.TryGetValue(paragraph, out var source) ||
-                    !_directBorderParagraphs.TryGetValue(next, out var nextSource) ||
+                    !TryGetInheritedParagraphValue(_directBorderParagraphs, paragraph, out var source) ||
+                    !TryGetInheritedParagraphValue(_directBorderParagraphs, next, out var nextSource) ||
                     _mirroredParagraphs.Contains(paragraph) ||
                     !ReferenceEquals(source.NextSibling(), nextSource) ||
                     source.ParagraphProperties?.ParagraphBorders is not { } borders ||
@@ -13746,6 +13768,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                         _tabbedRunShadings[next] = tabShading;
                     if (_coloredUnderlineParagraphs.TryGetValue(current, out var underline))
                         _coloredUnderlineParagraphs[next] = underline;
+                    if (_layoutWidthParagraphs.Contains(current))
+                        _layoutWidthParagraphs.Add(next);
                     _paragraphFragments.RegisterContinuation(current, next, _paragraphTextLength);
                 }
                 next.Format.PageBreakBefore = true;
