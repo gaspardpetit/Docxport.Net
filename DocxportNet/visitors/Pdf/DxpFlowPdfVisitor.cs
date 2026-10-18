@@ -14694,6 +14694,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         {
             if (horizontalOffset is double left)
             {
+                // Unsupported: ordinary multi-column sections do not expose the active column origin here (#147).
                 image.RelativeHorizontal = MigraDoc.DocumentObjectModel.Shapes.RelativeHorizontal.Margin;
                 image.Left = Unit.FromPoint(left +
                     (info.Presentation?.FrameWidthPoints - transformed?.Width ?? 0) / 2);
