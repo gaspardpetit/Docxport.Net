@@ -11,7 +11,7 @@ function Write-Probe($name, $documentXml, $extraParts) {
         $archive = [System.IO.Compression.ZipArchive]::new($stream, 'Create', $true)
         try {
             $parts = @{
-                '[Content_Types].xml' = '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="html" ContentType="text/html; charset=windows-1252"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/header1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.header+xml"/></Types>'
+                '[Content_Types].xml' = '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="html" ContentType="text/html; charset=windows-1252"/><Default Extension="txt" ContentType="text/plain"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/header1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.header+xml"/></Types>'
                 '_rels/.rels' = '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>'
                 'word/document.xml' = $documentXml
             }
@@ -42,3 +42,15 @@ Write-Probe 'shared-altchunk-charset.docx' ($prefix + '<w:p><w:r><w:t>Before chu
     'word/_rels/document.xml.rels' = '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/aFChunk" Target="chunk.html"/></Relationships>'
     'word/chunk.html' = '<html><head><meta charset="windows-1252"></head><body><p>Café from chunk</p><table><tr><td rowspan="2">Tall cell</td><td>First row</td></tr><tr><td>Second row</td></tr></table></body></html>'
 }
+
+Write-Probe 'shared-altchunk-table-cell-html.docx' ($prefix + '<w:tbl><w:tr><w:tc><w:p><w:r><w:t>Before</w:t></w:r></w:p><w:altChunk r:id="rId2"/><w:p><w:r><w:t>After</w:t></w:r></w:p></w:tc></w:tr></w:tbl>' + $suffix) @{
+    'word/_rels/document.xml.rels' = '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/aFChunk" Target="chunk.html"/></Relationships>'
+    'word/chunk.html' = '<html><body><p>Imported cell</p></body></html>'
+}
+
+Write-Probe 'shared-altchunk-table-cell-text.docx' ($prefix + '<w:tbl><w:tr><w:tc><w:p><w:r><w:t>Before</w:t></w:r></w:p><w:altChunk r:id="rId2"/><w:p><w:r><w:t>After</w:t></w:r></w:p></w:tc></w:tr></w:tbl>' + $suffix) @{
+    'word/_rels/document.xml.rels' = '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/aFChunk" Target="chunk.txt"/></Relationships>'
+    'word/chunk.txt' = 'Imported cell'
+}
+
+Write-Probe 'shared-line-number-continuous-sections.docx' ($prefix + '<w:p><w:pPr><w:sectPr><w:lnNumType w:countBy="1"/></w:sectPr></w:pPr><w:r><w:t>First section</w:t></w:r></w:p><w:p><w:r><w:t>Second section</w:t></w:r></w:p><w:sectPr><w:lnNumType w:countBy="1" w:restart="continuous"/></w:sectPr></w:body></w:document>') @{}

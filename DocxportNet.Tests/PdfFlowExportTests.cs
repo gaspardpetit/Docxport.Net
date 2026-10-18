@@ -1724,6 +1724,9 @@ public sealed class PdfFlowExportTests
     [InlineData("shared-hyperlink-carriage-return.docx")]
     [InlineData("shared-repeated-highlight-stories.docx")]
     [InlineData("shared-altchunk-charset.docx")]
+    [InlineData("shared-altchunk-table-cell-html.docx")]
+    [InlineData("shared-altchunk-table-cell-text.docx")]
+    [InlineData("shared-line-number-continuous-sections.docx")]
     public void RendersSharedExportProbes(string fileName)
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
