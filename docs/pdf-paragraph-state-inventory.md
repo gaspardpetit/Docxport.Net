@@ -6,7 +6,7 @@ The registry's flag lookup accepts membership on either the fragment itself or i
 
 ## Runtime capability gate
 
-The PR worktree pins `ext/PDFsharp` at `95e11d7`. Its `DocumentRenderer` source contains none of the 38 properties this visitor probes with `typeof(DocumentRenderer).GetProperty(...)`. Consequently, those callback assignments are inert in this build, including `TabLeaderLayout`, `TextWidthAdjustment`, `LineEndOverhang`, and the exact-baseline hooks. A patch that only changes one of these callbacks can pass the entire corpus without ever executing its changed branch. The callback-backed collections below are classified by intended ownership, **not** marked as validated rendering behavior. Before migrating one, either use a renderer exposing the hook or test an active consumer. This is separate from whether the callback design belongs in this PR or a later PDFxport integration slice.
+During PR #144, the worktree pinned `ext/PDFsharp` at `95e11d7`; that renderer exposed none of the visitor's reflection-probed callbacks. The default build now uses Pdfxport 7.0.1, and the optional submodule is pinned to the same release. Some callbacks, including `TextWidthAdjustment`, are now active, while others, including `TabLeaderLayout` and `LineEndOverhang`, remain absent. A patch to a reflection-probed callback still needs a test proving that the selected renderer executes it. The callback-backed collections below are classified by intended ownership, **not** automatically marked as validated rendering behavior.
 
 ## Ownership rules
 
