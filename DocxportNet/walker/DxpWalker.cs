@@ -568,7 +568,9 @@ public class DxpWalker
         foreach (var fn in d.Footnotes.GetFootnotes())
             WalkFootnote(fn.Item1, fn.Item2, fn.Item3, d, v);
 
-        foreach (var en in d.Endnotes.GetEndnotes())
+        foreach (var en in d.Endnotes.GetEndnotes()
+                     .OrderBy(en => d.EndnoteReferenceOrder.TryGetValue(en.Item3, out var order)
+                         ? order : int.MaxValue))
             WalkEndnote(en.Item1, en.Item2, en.Item3, d, v);
     }
 
@@ -2869,6 +2871,9 @@ public class DxpWalker
                             v.VisitEndnoteReferenceMark(erm, d);
                             break;
                         case EndnoteReference enr:
+                            if (d.CurrentPart == d.MainDocumentPart &&
+                                enr.Id?.Value is long id && !d.EndnoteReferenceOrder.ContainsKey(id))
+                                d.EndnoteReferenceOrder[id] = d.EndnoteReferenceOrder.Count;
                             v.VisitEndnoteReference(enr, d);
                             break;
                         case SeparatorMark sep:
@@ -3671,6 +3676,15 @@ public class DxpWalker
 
             case Run r:
                 WalkRun(r, d, v);
+                break;
+
+            case Ruby ruby:
+                WalkRuby(ruby, d, v);
+                break;
+
+            case OpenXmlUnknownElement unknownRuby when unknownRuby.LocalName == "ruby" &&
+                unknownRuby.NamespaceUri == "http://schemas.openxmlformats.org/wordprocessingml/2006/main":
+                WalkRuby(new Ruby { InnerXml = unknownRuby.InnerXml }, d, v);
                 break;
 
             case Hyperlink link:

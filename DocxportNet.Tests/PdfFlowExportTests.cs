@@ -1654,6 +1654,50 @@ public sealed class PdfFlowExportTests
         Assert.Equal(1, table.Rows[2].Cells[0].MergeRight);
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void OrdersEndnotesByReferenceRatherThanPartOrder(bool alternateContent)
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            var first = new Paragraph(new Run(new Text("First reference")));
+            if (alternateContent)
+            {
+                var choice = new AlternateContentChoice(new Run(new EndnoteReference { Id = 1 })) {
+                    Requires = "w14"
+                };
+                choice.AddNamespaceDeclaration("w14",
+                    "http://schemas.microsoft.com/office/word/2010/wordml");
+                first.Append(new AlternateContent(choice,
+                    new AlternateContentFallback(new Run(new EndnoteReference { Id = 2 }))));
+            }
+            else
+                first.Append(new Run(new EndnoteReference { Id = 2 }));
+            main.Document = new Document(new Body(first,
+                new Paragraph(new Run(new Text("Second reference"), new EndnoteReference { Id = 1 }))));
+            main.Document.Save();
+            var notes = main.AddNewPart<EndnotesPart>();
+            notes.Endnotes = new Endnotes(
+                new Endnote(new Paragraph(new Run(new EndnoteReferenceMark(),
+                    new Text("First note body")))) { Id = 1 },
+                new Endnote(new Paragraph(new Run(new EndnoteReferenceMark(),
+                    new Text("Second note body")))) { Id = 2 });
+            notes.Endnotes.Save();
+        }
+
+        var bytes = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(bytes));
+        var text = string.Concat(pdf.GetPages().SelectMany(page => page.Letters)
+            .Select(letter => letter.Value));
+        Assert.Contains("FirstreferenceiSecondreferenceii", text);
+        Assert.Contains("iSecondnotebodyiiFirstnotebody", text);
+    }
+
     [Fact]
     public void PreservesCachedMergeFieldResultsInMarginStories()
     {
