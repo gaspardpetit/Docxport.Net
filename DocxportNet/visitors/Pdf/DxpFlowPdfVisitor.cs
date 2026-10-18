@@ -2521,6 +2521,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             properties.GetFirstChild<TitlePage>() != null &&
             !properties.Elements<FooterReference>().Any(reference =>
                 reference.Type?.Value == HeaderFooterValues.First);
+        // Continuous sections with explicit layout changes need mid-page layout support (issue #145).
         var continuesCurrentLayout = _section != null &&
             properties.GetFirstChild<SectionType>() is { } sectionType &&
             AttributeValue(sectionType, "val") == "continuous" &&
@@ -12212,6 +12213,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             !Uri.TryCreate(target, UriKind.Absolute, out var uri) ||
             uri.Scheme is not ("http" or "https" or "mailto"))
             return;
+        // Cross-paragraph complex-field results are coalesced before this visitor (issue #146).
         _activeHyperlink = _paragraph.AddHyperlink(target, HyperlinkType.Url);
     }
 
