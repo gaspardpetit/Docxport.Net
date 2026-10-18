@@ -15,6 +15,10 @@ internal static class DxpHtmlChunkImporter
 
     internal static void Append(Section section, Stream stream, string bodyFont,
         Action<Table, double, double, double>? onBorderedTable = null, string? contentType = null)
+        => Append(section.Elements, stream, bodyFont, onBorderedTable, contentType);
+
+    internal static void Append(DocumentElements elements, Stream stream, string bodyFont,
+        Action<Table, double, double, double>? onBorderedTable = null, string? contentType = null)
     {
         var parser = new HtmlParser();
         AngleSharp.Html.Dom.IHtmlDocument document;
@@ -26,9 +30,9 @@ internal static class DxpHtmlChunkImporter
         }
         else document = parser.ParseDocument(stream);
         if (document.Body == null) return;
-        var initialCount = section.Elements.Count;
+        var initialCount = elements.Count;
         foreach (var child in document.Body.ChildNodes)
-            AppendBlock(section, child, bodyFont, initialCount, onBorderedTable);
+            AppendBlock(elements, child, bodyFont, initialCount, onBorderedTable);
     }
 
     internal static Encoding? DeclaredEncoding(string? contentType)
@@ -41,20 +45,20 @@ internal static class DxpHtmlChunkImporter
         catch (ArgumentException) { return null; }
     }
 
-    private static void AppendBlock(Section section, INode node, string bodyFont, int initialCount,
+    private static void AppendBlock(DocumentElements elements, INode node, string bodyFont, int initialCount,
         Action<Table, double, double, double>? onBorderedTable)
     {
         if (node is not IElement element)
         {
             if (!string.IsNullOrWhiteSpace(node.TextContent))
-                AppendParagraph(section, node, null, initialCount);
+                AppendParagraph(elements, node, null, initialCount);
             return;
         }
 
         var tag = element.LocalName.ToLowerInvariant();
         if (tag == "table")
         {
-            AppendTable(section, element, bodyFont, onBorderedTable);
+            AppendTable(elements, element, bodyFont, onBorderedTable);
             return;
         }
         if (tag is "ul" or "ol")
@@ -62,7 +66,7 @@ internal static class DxpHtmlChunkImporter
             var items = element.Children.Where(child => child.LocalName == "li").ToArray();
             for (var index = 0; index < items.Length; index++)
             {
-                var paragraph = section.AddParagraph();
+                var paragraph = elements.AddParagraph();
                 paragraph.Format.Font.Name = bodyFont;
                 paragraph.Format.Font.Size = Unit.FromPoint(12);
                 paragraph.Format.LeftIndent = Unit.FromPoint(18);
@@ -84,19 +88,19 @@ internal static class DxpHtmlChunkImporter
             element.Children.Any(child => IsBlock(child.LocalName)))
         {
             foreach (var child in element.ChildNodes)
-                AppendBlock(section, child, bodyFont, initialCount, onBorderedTable);
+                AppendBlock(elements, child, bodyFont, initialCount, onBorderedTable);
             return;
         }
         if (IsBlock(tag))
-            AppendParagraph(section, element, tag, initialCount);
+            AppendParagraph(elements, element, tag, initialCount);
         else if (!string.IsNullOrWhiteSpace(element.TextContent))
-            AppendParagraph(section, element, null, initialCount);
+            AppendParagraph(elements, element, null, initialCount);
     }
 
     private static bool IsBlock(string tag)
         => tag is "p" or "div" or "ul" or "ol" or "table" or "h1" or "h2" or "h3" or "h4" or "h5" or "h6";
 
-    private static void AppendTable(Section section, IElement element, string bodyFont,
+    private static void AppendTable(DocumentElements elements, IElement element, string bodyFont,
         Action<Table, double, double, double>? onBorderedTable)
     {
         var sourceRows = element.QuerySelectorAll("tr")
@@ -136,7 +140,7 @@ internal static class DxpHtmlChunkImporter
         var paddingAdjustment = separateCells ? padding - 3 : 0;
         var spacingAdjustment = separateCells ? spacing - 1.5 : 0;
         var borderAdjustment = separateCells ? border - 0.72 : 0;
-        var table = section.AddTable();
+        var table = elements.AddTable();
         table.Rows.LeftIndent = Unit.FromPoint(-6);
         table.LeftPadding = Unit.FromPoint(Math.Max(0, 5.3 - borderAdjustment -
             (separateCells && spacing == 0 ? border / 2 : 0)));
@@ -173,7 +177,7 @@ internal static class DxpHtmlChunkImporter
                 paragraph.Format.Font.Bold = sourceCell.LocalName == "th";
                 AppendInline(paragraph, sourceCell, false, false, false);
             }
-        var spacer = section.AddParagraph();
+        var spacer = elements.AddParagraph();
         spacer.Format.SpaceAfter = Unit.FromPoint((element.NextElementSibling == null ? 12.67 : 1.7) +
             spacingAdjustment + borderAdjustment);
     }
@@ -188,11 +192,11 @@ internal static class DxpHtmlChunkImporter
         int.TryParse(element.GetAttribute(attribute), out var span) && span > 0
             ? Math.Min(span, 64) : 1;
 
-    private static void AppendParagraph(Section section, INode node, string? tag,
+    private static void AppendParagraph(DocumentElements elements, INode node, string? tag,
         int initialCount)
     {
-        var firstImportedParagraph = section.Elements.Count == initialCount;
-        var paragraph = section.AddParagraph();
+        var firstImportedParagraph = elements.Count == initialCount;
+        var paragraph = elements.AddParagraph();
         paragraph.Format.Font.Name = "Times New Roman";
         paragraph.Format.Font.Size = Unit.FromPoint(tag switch
         {

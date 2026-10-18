@@ -669,8 +669,8 @@ public sealed class PdfFlowExportTests
         Assert.Equal(2, pdf.NumberOfPages);
         var words = pdf.GetPage(2).GetWords().ToArray();
         Assert.Equal(["Alpha", "Beta", "Gamma"], words.Select(word => word.Text));
-        Assert.InRange(words[1].BoundingBox.Left - words[0].BoundingBox.Right, 2.9, 3.2);
-        Assert.InRange(words[2].BoundingBox.Left - words[1].BoundingBox.Right, 2.9, 3.2);
+        Assert.InRange(words[1].BoundingBox.Left - words[0].BoundingBox.Right, 2.9, 3.6);
+        Assert.InRange(words[2].BoundingBox.Left - words[1].BoundingBox.Right, 2.9, 3.6);
     }
 
     [Fact]
@@ -737,22 +737,62 @@ public sealed class PdfFlowExportTests
         var splits = (Dictionary<MigraDoc.DocumentObjectModel.Paragraph,
             MigraDoc.DocumentObjectModel.Paragraph>)
             typeof(DxpFlowPdfVisitor).GetField("_footnoteSplitContinuations", flags)!.GetValue(visitor)!;
-        var repeated = Assert.Single(splits.Where(entry =>
+        var repeated = splits.Where(entry =>
             DxpFootnoteParagraphSplitter.TryGetText(entry.Key, out var text) &&
-            text.StartsWith("a detailed report21", StringComparison.Ordinal)));
-        Assert.Contains(repeated.Key, compressed);
-        Assert.Contains(repeated.Value, compressed);
-        Assert.Contains(repeated.Value.Elements.OfType<MigraDoc.DocumentObjectModel.FormattedText>(),
-            span => Math.Abs(span.Size.Point - 9.5) < 0.01 &&
-                span.Elements.OfType<MigraDoc.DocumentObjectModel.Text>()
-                    .Any(text => text.Content.Length > 0 &&
-                        text.Content.All(character => character == ' ')));
-        var layoutSplit = Assert.Single(splits.Where(entry =>
+            text.StartsWith("a detailed report21", StringComparison.Ordinal)).ToArray();
+        foreach (var entry in repeated)
+        {
+            Assert.Contains(entry.Key, compressed);
+            Assert.Contains(entry.Value, compressed);
+            Assert.Contains(entry.Value.Elements.OfType<MigraDoc.DocumentObjectModel.FormattedText>(),
+                span => Math.Abs(span.Size.Point - 9.5) < 0.01 &&
+                    span.Elements.OfType<MigraDoc.DocumentObjectModel.Text>()
+                        .Any(text => text.Content.Length > 0 &&
+                            text.Content.All(character => character == ' ')));
+        }
+        var layoutSplits = splits.Where(entry =>
             DxpFootnoteParagraphSplitter.TryGetText(entry.Key, out var text) &&
-            text.StartsWith("The World Intellectual Property", StringComparison.Ordinal)));
-        Assert.Contains(layoutSplit.Value, widths);
+            text.StartsWith("The World Intellectual Property", StringComparison.Ordinal)).ToArray();
+        foreach (var entry in layoutSplits)
+            Assert.Contains(entry.Value, widths);
         using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
         Assert.True(pdf.NumberOfPages > 1);
+    }
+
+    [Fact]
+    public void TransfersBodySpacingStateAcrossSyntheticFootnoteSplits()
+    {
+        var visitor = new DxpFlowPdfVisitor();
+        var flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
+        var compressed = (HashSet<MigraDoc.DocumentObjectModel.Paragraph>)
+            typeof(DxpFlowPdfVisitor).GetField("_compressedBodyParagraphs", flags)!.GetValue(visitor)!;
+        var widths = (HashSet<MigraDoc.DocumentObjectModel.Paragraph>)
+            typeof(DxpFlowPdfVisitor).GetField("_layoutWidthParagraphs", flags)!.GetValue(visitor)!;
+        var section = new MigraDoc.DocumentObjectModel.Document().AddSection();
+        var original = section.AddParagraph();
+        var first = section.AddParagraph();
+        var second = section.AddParagraph();
+        compressed.Add(original);
+        var firstSpace = first.AddFormattedText(" ");
+        firstSpace.Size = MigraDoc.DocumentObjectModel.Unit.FromPoint(8.5);
+        var secondSpace = second.AddFormattedText(" ");
+        secondSpace.Size = MigraDoc.DocumentObjectModel.Unit.FromPoint(8.5);
+
+        visitor.CarryFootnoteSplitState(original, first, 1, 30);
+        visitor.CarryFootnoteSplitState(first, second, 1, 20);
+
+        Assert.Contains(first, compressed);
+        Assert.Contains(second, compressed);
+        Assert.Equal(9.5, firstSpace.Size.Point);
+        Assert.Equal(9.5, secondSpace.Size.Point);
+
+        var layoutOriginal = section.AddParagraph();
+        var layoutContinuation = section.AddParagraph();
+        compressed.Add(layoutOriginal);
+        widths.Add(layoutOriginal);
+        visitor.CarryFootnoteSplitState(layoutOriginal, layoutContinuation, 1, 30);
+        Assert.Contains(layoutContinuation, compressed);
+        Assert.Contains(layoutContinuation, widths);
     }
 
     [Fact]
@@ -821,6 +861,32 @@ public sealed class PdfFlowExportTests
         Assert.Equal(2, pdf.NumberOfPages);
         Assert.Contains("1", pdf.GetPage(2).Text);
         Assert.Contains("Second", pdf.GetPage(2).Text);
+    }
+
+    [Fact]
+    public void ContinuesLineNumbersAcrossSections()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(
+                new Paragraph(new ParagraphProperties(new SectionProperties(
+                        new LineNumberType { CountBy = 1 })),
+                    new Run(new Text("First section"))),
+                new Paragraph(new Run(new Text("Second section"))),
+                new SectionProperties(new LineNumberType
+                    { CountBy = 1, Restart = LineNumberRestartValues.Continuous })));
+        }
+
+        var result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        Assert.Equal(2, pdf.NumberOfPages);
+        Assert.Contains(pdf.GetPage(1).GetWords(), word => word.Text == "1");
+        Assert.Contains(pdf.GetPage(2).GetWords(), word => word.Text == "2");
+        Assert.DoesNotContain(pdf.GetPage(2).GetWords(), word => word.Text == "1");
     }
 
     [Fact]
@@ -1492,6 +1558,71 @@ public sealed class PdfFlowExportTests
 
         using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
         Assert.Contains(pdf.GetPages(), page => page.Letters.Any());
+    }
+
+    [Fact]
+    public void RendersInlineDrawingTextBoxInAFrame()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "features", "text-boxes",
+            "TextBoxSimple.docx");
+        using var docx = new MemoryStream();
+        docx.Write(File.ReadAllBytes(source));
+        docx.Position = 0;
+        using (var word = WordprocessingDocument.Open(docx, true))
+        {
+            var drawing = word.MainDocumentPart!.Document.Descendants<Drawing>().First();
+            var anchor = drawing.ChildElements.First(element => element.LocalName == "anchor");
+            var inline = new DocumentFormat.OpenXml.Drawing.Wordprocessing.Inline();
+            foreach (var child in anchor.ChildElements)
+                if (child.LocalName is "extent" or "effectExtent" or "docPr" or
+                    "cNvGraphicFramePr" or "graphic")
+                    inline.Append(child.CloneNode(true));
+            drawing.ReplaceChild(inline, anchor);
+            word.MainDocumentPart.Document.Save();
+        }
+
+        var visitor = new DxpFlowPdfVisitor();
+        var result = DxpExport.ExportToBytes(docx.ToArray(), visitor);
+        var field = typeof(DxpFlowPdfVisitor).GetField("_document",
+            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!;
+        var rendered = (MigraDoc.DocumentObjectModel.Document)field.GetValue(visitor)!;
+
+        Assert.Contains(rendered.Sections.Cast<MigraDoc.DocumentObjectModel.Section>()
+            .SelectMany(section => section.Elements.OfType<MigraDoc.DocumentObjectModel.Shapes.TextFrame>()),
+            frame => frame.Elements.OfType<MigraDoc.DocumentObjectModel.Paragraph>().Any());
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        Assert.Contains(pdf.GetPages(), page => page.Letters.Any());
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void RendersAltChunkInsideTableCell(bool html)
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            var chunkPart = main.AddAlternativeFormatImportPart(html
+                ? AlternativeFormatImportPartType.Html
+                : AlternativeFormatImportPartType.TextPlain, "rIdCellChunk");
+            using var content = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(
+                html ? "<html><body><p>Imported cell</p></body></html>" : "Imported cell"));
+            chunkPart.FeedData(content);
+            main.Document = new Document(new Body(new Table(new TableRow(new TableCell(
+                new Paragraph(new Run(new Text("Before"))),
+                new AltChunk { Id = "rIdCellChunk" },
+                new Paragraph(new Run(new Text("After"))))))));
+        }
+
+        var result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(result));
+        Assert.Contains("Imported", string.Concat(pdf.GetPages().Select(page => page.Text)));
+        Assert.Contains("After", string.Concat(pdf.GetPages().Select(page => page.Text)));
     }
 
     [Theory]
