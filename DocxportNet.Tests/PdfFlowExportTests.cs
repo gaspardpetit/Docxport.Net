@@ -1737,11 +1737,13 @@ public sealed class PdfFlowExportTests
     }
 
     [Theory]
-    [InlineData(false, false)]
-    [InlineData(false, true)]
-    [InlineData(true, false)]
-    [InlineData(true, true)]
-    public void PreservesHyperlinksInCachedResults(bool nested, bool simple)
+    [InlineData(false, false, DxpFieldEvalExportMode.Cache)]
+    [InlineData(false, true, DxpFieldEvalExportMode.Cache)]
+    [InlineData(true, false, DxpFieldEvalExportMode.Cache)]
+    [InlineData(true, true, DxpFieldEvalExportMode.Cache)]
+    [InlineData(false, false, DxpFieldEvalExportMode.Evaluate)]
+    [InlineData(false, true, DxpFieldEvalExportMode.Evaluate)]
+    public void PreservesFieldHyperlinks(bool nested, bool simple, DxpFieldEvalExportMode mode)
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
         using var source = new MemoryStream();
@@ -1772,7 +1774,7 @@ public sealed class PdfFlowExportTests
         }
 
         var bytes = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor(),
-            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Cache });
+            new DxpExportOptions { FieldEvalMode = mode });
         using var pdf = PdfReader.Open(new MemoryStream(bytes), PdfDocumentOpenMode.Import);
         var links = pdf.Pages.Cast<PdfPage>()
             .SelectMany(page => page.Annotations.Cast<PdfSharp.Pdf.Annotations.PdfAnnotation>())

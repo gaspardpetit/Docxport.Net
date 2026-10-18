@@ -12198,6 +12198,19 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         return DxpDisposable.Create(() => _activeHyperlink = previous);
     }
 
+    public override IDisposable VisitSimpleFieldBegin(SimpleField field, DxpIDocumentContext context)
+    {
+        var instruction = field.Instruction?.Value;
+        if (!DxpFieldInstructionClassifier.IsHyperlinkInstruction(instruction))
+            return DxpDisposable.Empty;
+
+        VisitComplexFieldBegin(new FieldChar { FieldCharType = FieldCharValues.Begin }, context);
+        VisitComplexFieldInstruction(new FieldCode(instruction), instruction!, context);
+        VisitComplexFieldSeparate(new FieldChar { FieldCharType = FieldCharValues.Separate }, context);
+        return DxpDisposable.Create(() =>
+            VisitComplexFieldEnd(new FieldChar { FieldCharType = FieldCharValues.End }, context));
+    }
+
     public override void VisitComplexFieldBegin(FieldChar begin, DxpIDocumentContext context)
     {
         _complexFieldLinks.Push((new System.Text.StringBuilder(), _activeHyperlink));
