@@ -1458,6 +1458,32 @@ public sealed class PdfFlowExportTests
     }
 
     [Fact]
+    public void PreservesLargeImageCropInsteadOfDroppingTransform()
+    {
+        var pixels = new byte[4200 * 4];
+        for (var column = 0; column < 4200; column++)
+        {
+            pixels[column * 4] = column < 2100 ? (byte)255 : (byte)0;
+            pixels[column * 4 + 2] = column < 2100 ? (byte)0 : (byte)255;
+            pixels[column * 4 + 3] = 255;
+        }
+        using var stream = new MemoryStream();
+        new StbImageWriteSharp.ImageWriter().WritePng(pixels, 4200, 1,
+            StbImageWriteSharp.ColorComponents.RedGreenBlueAlpha, stream);
+
+        var transformed = DxpRasterImageTransform.Transform(stream.ToArray(), 420, 1, 0, false, false,
+            new DxpImageCrop(0.01, 0, 0, 0));
+
+        Assert.NotNull(transformed);
+        var image = StbImageSharp.ImageResult.FromMemory(transformed.Value.Image,
+            StbImageSharp.ColorComponents.RedGreenBlueAlpha);
+        Assert.Equal(4096, image.Width);
+        Assert.Equal(1, image.Height);
+        Assert.True(image.Data[0] > image.Data[2]);
+        Assert.True(image.Data[^2] > image.Data[^4]);
+    }
+
+    [Fact]
     public void ConvertsSkippedRle4PixelsThroughPaletteZero()
     {
         var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
