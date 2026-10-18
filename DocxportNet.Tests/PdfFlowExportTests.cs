@@ -1699,6 +1699,28 @@ public sealed class PdfFlowExportTests
     }
 
     [Fact]
+    public void ConfiguresFragmentBorderReservationForSplitTables()
+    {
+        var visitor = new DxpFlowPdfVisitor();
+        var table = new MigraDoc.DocumentObjectModel.Tables.Table();
+        var tablesField = typeof(DxpFlowPdfVisitor).GetField("_splitOverpageTables",
+            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!;
+        var tables = (HashSet<MigraDoc.DocumentObjectModel.Tables.Table>)tablesField.GetValue(visitor)!;
+        tables.Add(table);
+        var createRenderer = typeof(DxpFlowPdfVisitor).GetMethod("CreatePdfRenderer",
+            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!;
+        var renderer = (MigraDoc.Rendering.PdfDocumentRenderer)createRenderer.Invoke(visitor,
+            new object[] { new MigraDoc.DocumentObjectModel.Document() })!;
+
+        var reservation = Assert.IsType<Func<MigraDoc.DocumentObjectModel.Tables.Table, int, double?>>(
+            renderer.DocumentRenderer.TableFragmentTopBorderReservation);
+        Assert.Equal(0.5, reservation(table, 1));
+        Assert.NotNull(renderer.DocumentRenderer.WrapContour);
+        Assert.NotNull(renderer.DocumentRenderer.WrapContourLineFontBandHeight);
+        Assert.NotNull(renderer.DocumentRenderer.WrapLineFitHeight);
+    }
+
+    [Fact]
     public void PreservesCachedMergeFieldResultsInMarginStories()
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;

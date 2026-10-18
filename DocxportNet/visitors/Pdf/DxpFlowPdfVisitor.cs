@@ -51,10 +51,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private const double EmptyModernDefaultsBodyClearancePoints = 0.2;
     private const double StylelessAptosFloatingTableLineFactor = 1.1578;
     private const int ShortTrackedSplitWordLimit = 50;
-    private static bool SupportsContourLayout =>
-        typeof(DocumentRenderer).GetProperty("WrapContour") != null &&
-        (typeof(DocumentRenderer).GetProperty("WrapContourLineFontBandHeight") != null ||
-         Environment.GetEnvironmentVariable("DOCXPORT_DIAG_BASIC_CONTOUR") == "1");
     private readonly string _fontFamily;
     private readonly string? _cjkFontFamily;
     private readonly ISet<string> _availableFontFamilies;
@@ -594,32 +590,23 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         if (Environment.GetEnvironmentVariable("DOCXPORT_PAGINATE_FLOATING_TABLES") != "0")
             foreach (var frame in _floatingTableFrames)
                 frame.PaginateContent = true;
-        if ((_splitOverpageTables.Count > 0 || _tableFragmentBorders.Count > 0) &&
-            typeof(DocumentRenderer).GetProperty("TableFragmentTopBorderWidth") is { } fragmentBorderOption)
-            fragmentBorderOption.SetValue(renderer.DocumentRenderer,
-                new Func<MigraDoc.DocumentObjectModel.Tables.Table, int, double?>(
-                    (table, startRow) => startRow > 0 && _splitOverpageTables.Contains(table)
-                        ? Math.Max(0.5, FragmentTopBorderReservation(table, startRow) ?? 0)
-                        : FragmentTopBorderReservation(table, startRow)));
-        if (SupportsContourLayout)
-            typeof(DocumentRenderer).GetProperty("WrapContour")?.SetValue(renderer.DocumentRenderer,
-                new Func<MigraDoc.DocumentObjectModel.Shapes.Shape, IReadOnlyList<XPoint>?>(
-                    shape => _wrapContours.TryGetValue(shape, out var contour) ? contour : null));
+        if (_splitOverpageTables.Count > 0 || _tableFragmentBorders.Count > 0)
+            renderer.DocumentRenderer.TableFragmentTopBorderReservation =
+                (table, startRow) => startRow > 0 && _splitOverpageTables.Contains(table)
+                    ? Math.Max(0.5, FragmentTopBorderReservation(table, startRow) ?? 0)
+                    : FragmentTopBorderReservation(table, startRow);
+        renderer.DocumentRenderer.WrapContour =
+            shape => _wrapContours.TryGetValue(shape, out var contour) ? contour : null;
         if (Environment.GetEnvironmentVariable("DOCXPORT_DIAG_CONTOUR_FONT_BAND") == "1")
-            typeof(DocumentRenderer).GetProperty("WrapContourBandHeight")?.SetValue(renderer.DocumentRenderer,
-                new Func<MigraDoc.DocumentObjectModel.Shapes.Shape, double, double?>(
-                    (shape, height) => _wrapContourBandHeights.TryGetValue(shape, out var naturalHeight)
-                        ? Math.Min(height, naturalHeight) : null));
-        typeof(DocumentRenderer).GetProperty("WrapContourLineFontBandHeight")?.SetValue(
-            renderer.DocumentRenderer,
-            new Func<MigraDoc.DocumentObjectModel.Shapes.Shape, double, double, double?>(
-                (shape, height, fontHeight) => _wrapContours.ContainsKey(shape) && fontHeight > 0
-                    ? Math.Min(height, fontHeight + 0.25) : null));
-        typeof(DocumentRenderer).GetProperty("WrapLineFitHeight")?.SetValue(
-            renderer.DocumentRenderer,
-            new Func<MigraDoc.DocumentObjectModel.Shapes.Shape, double, double, double?>(
-                (shape, height, fontHeight) => _wrapContours.ContainsKey(shape) && fontHeight > 0
-                    ? Math.Min(height, fontHeight) : null));
+            renderer.DocumentRenderer.WrapContourBandHeight =
+                (shape, height) => _wrapContourBandHeights.TryGetValue(shape, out var naturalHeight)
+                    ? Math.Min(height, naturalHeight) : null;
+        renderer.DocumentRenderer.WrapContourLineFontBandHeight =
+            (shape, height, fontHeight) => _wrapContours.ContainsKey(shape) && fontHeight > 0
+                ? Math.Min(height, fontHeight + 0.25) : null;
+        renderer.DocumentRenderer.WrapLineFitHeight =
+            (shape, height, fontHeight) => _wrapContours.ContainsKey(shape) && fontHeight > 0
+                ? Math.Min(height, fontHeight) : null;
         typeof(DocumentRenderer).GetProperty("TabLeaderLayout")?.SetValue(renderer.DocumentRenderer,
             new Func<MigraDoc.DocumentObjectModel.Paragraph, MigraDoc.DocumentObjectModel.TabLeader, XFont,
                 (double CharacterSpacing, double LeftInset, double RightInset)?>(
@@ -732,45 +719,33 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     metrics.TryMeasure(word, size, out var positioned, useKerning: true)
                     ? positioned - plain
                         : null;
-            if (typeof(DocumentRenderer).GetProperty("TextWidthAdjustment") is { } scopedOption)
+            renderer.DocumentRenderer.TextWidthAdjustment = (paragraph, word, font) =>
             {
-                scopedOption.SetValue(renderer.DocumentRenderer,
-                    new Func<MigraDoc.DocumentObjectModel.Paragraph, string, XFont, double?>(
-                        (paragraph, word, font) =>
-                        {
-                            if (implicitTableWidths &&
-                                HasInheritedParagraphFlag(_implicitTableParagraphs, paragraph) &&
-                                string.Equals(font.FontFamily.Name, "Aptos", StringComparison.OrdinalIgnoreCase) &&
-                                metrics.TryMeasure(word, font.Size, out var advance))
-                            {
-                                using var measure = XGraphics.CreateMeasureContext(new XSize(100, 100),
-                                    XGraphicsUnit.Point, XPageDirection.Downwards);
-                                return advance - measure.MeasureString(word, font).Width;
-                            }
-                            if (stylelessWidths && _sourceBodyParagraphs.Contains(paragraph) &&
-                                string.Equals(font.FontFamily.Name, "Aptos", StringComparison.OrdinalIgnoreCase) &&
-                                metrics.TryMeasure(word, font.Size, out var kernedAdvance, useKerning: true))
-                            {
-                                using var measure = XGraphics.CreateMeasureContext(new XSize(100, 100),
-                                    XGraphicsUnit.Point, XPageDirection.Downwards);
-                                if (metrics.TryMeasure(word, font.Size, out var plainAdvance))
-                                    kernedAdvance = Math.Min(kernedAdvance, plainAdvance);
-                                return kernedAdvance - measure.MeasureString(word, font).Width;
-                            }
-                            return trackedWidths &&
-                                HasInheritedParagraphFlag(_trackedLayoutParagraphs, paragraph) ||
-                                frameWidths && HasInheritedParagraphFlag(_frameWidthParagraphs, paragraph)
-                                ? Adjustment(word, font.FontFamily.Name, font.Size) : null;
-                        }));
-                _positionedLayoutApplied = trackedWidths;
-            }
-            else if (trackedWidths && !frameWidths &&
-                typeof(DocumentRenderer).GetProperty("PositionedWordWidth") is { } widthOption)
-            {
-                widthOption.SetValue(renderer.DocumentRenderer,
-                    new Func<string, string, double, double?>(Adjustment));
-                _positionedLayoutApplied = true;
-            }
+                if (implicitTableWidths &&
+                    HasInheritedParagraphFlag(_implicitTableParagraphs, paragraph) &&
+                    string.Equals(font.FontFamily.Name, "Aptos", StringComparison.OrdinalIgnoreCase) &&
+                    metrics.TryMeasure(word, font.Size, out var advance))
+                {
+                    using var measure = XGraphics.CreateMeasureContext(new XSize(100, 100),
+                        XGraphicsUnit.Point, XPageDirection.Downwards);
+                    return advance - measure.MeasureString(word, font).Width;
+                }
+                if (stylelessWidths && _sourceBodyParagraphs.Contains(paragraph) &&
+                    string.Equals(font.FontFamily.Name, "Aptos", StringComparison.OrdinalIgnoreCase) &&
+                    metrics.TryMeasure(word, font.Size, out var kernedAdvance, useKerning: true))
+                {
+                    using var measure = XGraphics.CreateMeasureContext(new XSize(100, 100),
+                        XGraphicsUnit.Point, XPageDirection.Downwards);
+                    if (metrics.TryMeasure(word, font.Size, out var plainAdvance))
+                        kernedAdvance = Math.Min(kernedAdvance, plainAdvance);
+                    return kernedAdvance - measure.MeasureString(word, font).Width;
+                }
+                return trackedWidths &&
+                    HasInheritedParagraphFlag(_trackedLayoutParagraphs, paragraph) ||
+                    frameWidths && HasInheritedParagraphFlag(_frameWidthParagraphs, paragraph)
+                    ? Adjustment(word, font.FontFamily.Name, font.Size) : null;
+            };
+            _positionedLayoutApplied = trackedWidths;
         }
         if (typeof(DocumentRenderer).GetProperty("CenterTextFrameContentVertically") is { } centerOption)
             centerOption.SetValue(renderer.DocumentRenderer,
@@ -785,18 +760,11 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             CultureInfo.InvariantCulture, out var configuredShrinkFactor) &&
             configuredShrinkFactor is > 0 and < 1
             ? configuredShrinkFactor : 0.6;
-        if (shrinkSetting != "0" &&
-            typeof(DocumentRenderer).GetProperty("JustifiedSpaceShrinkFactorForParagraph") is { } paragraphShrinkOption &&
-            paragraphShrinkOption.PropertyType ==
-                typeof(Func<MigraDoc.DocumentObjectModel.Paragraph, double?>))
-            paragraphShrinkOption.SetValue(renderer.DocumentRenderer,
-                new Func<MigraDoc.DocumentObjectModel.Paragraph, double?>(
-                    paragraph => shrinkSetting is null &&
-                        TryGetInheritedParagraphValue(_justifiedShrinkFactors, paragraph, out var factor)
-                        ? factor : shrinkFactor));
-        else if (shrinkSetting != "0" &&
-            typeof(DocumentRenderer).GetProperty("JustifiedSpaceShrinkFactor") is { } shrinkOption)
-            shrinkOption.SetValue(renderer.DocumentRenderer, shrinkFactor);
+        if (shrinkSetting != "0")
+            renderer.DocumentRenderer.JustifiedSpaceShrinkFactorForParagraph =
+                paragraph => shrinkSetting is null &&
+                    TryGetInheritedParagraphValue(_justifiedShrinkFactors, paragraph, out var factor)
+                    ? factor : shrinkFactor;
         if (typeof(DocumentRenderer).GetProperty("JustifiedRenderWordWidthAdjustment") is { } renderWidthOption &&
             DocSystemFontAdvances.Find("Aptos", includeCloudFonts: true) is { } aptosAdvances)
             renderWidthOption.SetValue(renderer.DocumentRenderer,
@@ -14206,7 +14174,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         return points > 0;
     }
 
-    private static OpenXmlElement? GetRectangularTextWrap(Drawing drawing, bool useContourForInset)
+    private static OpenXmlElement? GetRectangularTextWrap(Drawing drawing)
     {
         var square = drawing.Descendants().FirstOrDefault(element =>
             element.LocalName == "wrapSquare");
@@ -14234,9 +14202,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         var maxX = points.Max(point => point.x);
         var minY = points.Min(point => point.y);
         var maxY = points.Max(point => point.y);
-        if (minX != 0 || minY != 0 ||
-            (useContourForInset ? maxX != 21600 || maxY != 21600 :
-                maxX < 21000 || maxX > 22000 || maxY < 21000 || maxY > 22000) ||
+        if (minX != 0 || minY != 0 || maxX != 21600 || maxY != 21600 ||
             points.Take(4).Any(point =>
                 (point.x != minX && point.x != maxX) ||
                 (point.y != minY && point.y != maxY)) ||
@@ -14427,14 +14393,11 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 transformed?.Width ?? marginImageFrame.FrameWidthPoints.Value,
                 transformed?.Height ?? marginImageFrame.FrameHeightPoints.Value,
                 PageRelative: true, ZOrder: zOrder, BehindDocument: behindDocument));
-            var marginSquareWrap = GetRectangularTextWrap(drawing, SupportsContourLayout);
+            var marginSquareWrap = GetRectangularTextWrap(drawing);
             IReadOnlyList<XPoint>? contourPoints = null;
-            if (marginSquareWrap == null &&
-                SupportsContourLayout)
+            if (marginSquareWrap == null)
                 marginSquareWrap = GetContourTextWrap(drawing, out contourPoints);
-            if (marginSquareWrap == null &&
-                (SupportsContourLayout ||
-                 typeof(DocumentRenderer).GetProperty("EnableTopBottomExclusion") != null))
+            if (marginSquareWrap == null)
                 marginSquareWrap = drawing.Descendants().FirstOrDefault(element =>
                     element.LocalName == "wrapTopAndBottom");
             if (marginSquareWrap != null)
