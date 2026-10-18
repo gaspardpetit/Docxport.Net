@@ -48,6 +48,65 @@ public sealed class PdfFlowExportTests
     }
 
     [Fact]
+    public void IgnoresContinuationsOfSkippedSourceParagraphs()
+    {
+        var fragments = new DxpPdfParagraphFragments();
+        var section = new MigraDoc.DocumentObjectModel.Document().AddSection();
+        var first = section.AddParagraph();
+        var second = section.AddParagraph();
+        var third = section.AddParagraph();
+
+        fragments.RegisterContinuation(first, second, 0);
+        fragments.RegisterContinuation(second, third, 0);
+
+        Assert.False(fragments.TryGet(second, out _));
+        Assert.False(fragments.TryGet(third, out _));
+    }
+
+    [Fact]
+    public void ExportsMultipleBreaksInSkippedParagraphWithoutThrowing()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(new Paragraph(
+                new ParagraphProperties(new ParagraphMarkRunProperties(new Deleted())),
+                new Run(new Break { Type = BreakValues.Page },
+                    new Break { Type = BreakValues.Page }))));
+        }
+
+        var result = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        Assert.NotEmpty(result);
+    }
+
+    [Fact]
+    public void InheritsVerticalAlignmentMetricsAcrossFragments()
+    {
+        var fragments = new DxpPdfParagraphFragments();
+        var section = new MigraDoc.DocumentObjectModel.Document().AddSection();
+        var first = section.AddParagraph();
+        var second = section.AddParagraph();
+        fragments.RegisterSource(first, new Paragraph(), styleRefCandidate: false);
+        fragments.RegisterContinuation(first, second, 5);
+
+        var topSizes = new Dictionary<MigraDoc.DocumentObjectModel.Paragraph, double> { [first] = 24 };
+        var alignedFonts = new Dictionary<MigraDoc.DocumentObjectModel.Paragraph, (double Size, double Factor)>
+        {
+            [first] = (24, 0.35)
+        };
+        var headerFlags = new HashSet<MigraDoc.DocumentObjectModel.Paragraph> { first };
+
+        Assert.True(fragments.TryGetInheritedValue(topSizes, second, out var topSize));
+        Assert.Equal(24, topSize);
+        Assert.True(fragments.TryGetInheritedValue(alignedFonts, second, out var alignedFont));
+        Assert.Equal((24, 0.35), alignedFont);
+        Assert.True(fragments.HasInheritedFlag(headerFlags, second));
+    }
+
+    [Fact]
     public void ResolvesPageRelativeImageAlignment()
     {
         var horizontal = new DocumentFormat.OpenXml.Drawing.Wordprocessing.HorizontalPosition(

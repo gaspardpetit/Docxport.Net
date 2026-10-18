@@ -6466,8 +6466,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     !_partialFitGroups.ContainsKey(paragraph) &&
                     !_characterSpacings.ContainsKey(paragraph) &&
                     !_textBorderRanges.ContainsKey(paragraph) &&
-                    !_topAlignedFontSizes.ContainsKey(paragraph) &&
-                    !_verticalAlignedFonts.ContainsKey(paragraph) &&
+                    !TryGetInheritedParagraphValue(_topAlignedFontSizes, paragraph, out _) &&
+                    !TryGetInheritedParagraphValue(_verticalAlignedFonts, paragraph, out _) &&
                     !_hangulBaselineShiftParagraphs.Contains(paragraph) &&
                     !_gridGlyphParagraphs.Contains(paragraph) &&
                     !_gridBoundaryParagraphs.Contains(paragraph) &&
@@ -6522,18 +6522,19 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                         (Scale: 100.0, Spacing: 0.0);
                     var groups = _partialFitGroups.TryGetValue(paragraph, out var partial)
                         ? BuildPartialFitMetrics(page, letter, area.X.Point, area.Width.Point, partial) : null;
-                    var alignedFont = _verticalAlignedFonts.GetValueOrDefault(paragraph);
+                    var alignedFont = GetInheritedParagraphValueOrDefault(_verticalAlignedFonts, paragraph);
                     baselines.Add((letter.StartBaseLine.Y,
                         _characterScales.GetValueOrDefault(paragraph, fit.Scale),
                         _characterSpacings.GetValueOrDefault(paragraph, fit.Spacing),
                         (border?.Inset ?? 0) + _centeredSpacingOffsets.GetValueOrDefault(paragraph) +
                             _packedGridOffsets.GetValueOrDefault(paragraph), verticalShift,
                         alignedFont.Size > 0 ? alignedFont.Size :
-                        _topAlignedFontSizes.TryGetValue(paragraph, out var topSize) &&
+                        TryGetInheritedParagraphValue(_topAlignedFontSizes, paragraph, out var topSize) &&
                             page.Letters.Any(candidate =>
                                 Math.Abs(candidate.StartBaseLine.Y - letter.StartBaseLine.Y) < 0.5 &&
                                 candidate.FontSize >= topSize - 0.5) ? topSize : 0,
-                        _topAlignedHeaderParagraphs.Contains(paragraph) ? 0.98 : alignedFont.Factor, groups,
+                        HasInheritedParagraphFlag(_topAlignedHeaderParagraphs, paragraph)
+                            ? 0.98 : alignedFont.Factor, groups,
                         _gridGlyphParagraphs.Contains(paragraph),
                         _gridGlyphParagraphs.Contains(paragraph) &&
                             !_unshiftedGridGlyphParagraphs.Contains(paragraph),
@@ -6551,7 +6552,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                         _gridBoundaryParagraphs.Contains(paragraph), fittedTwelvePointTracking,
                         inheritedTimesTracking,
                         HasInheritedParagraphFlag(_mixedCjkFitBodyParagraphs, paragraph)));
-                    if (_topAlignedFontSizes.TryGetValue(paragraph, out var alignedSize))
+                    if (TryGetInheritedParagraphValue(_topAlignedFontSizes, paragraph, out var alignedSize))
                         foreach (var line in page.Letters.Where(candidate =>
                                 candidate.StartBaseLine.Y < letter.StartBaseLine.Y - 0.5 &&
                                 candidate.GlyphRectangle.Left >= area.X.Point - 2 &&

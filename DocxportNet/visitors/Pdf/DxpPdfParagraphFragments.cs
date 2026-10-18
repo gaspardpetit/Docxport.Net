@@ -17,7 +17,7 @@ internal sealed class DxpPdfParagraphFragments
 
     internal void RegisterContinuation(MigraDocParagraph current, MigraDocParagraph next, int textLength)
     {
-        var previous = _fragments[current];
+        if (!_fragments.TryGetValue(current, out var previous)) return;
         _fragments.Add(next, previous with
         {
             RenderedTextStart = previous.RenderedTextStart + textLength,
