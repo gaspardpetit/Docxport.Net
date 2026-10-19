@@ -416,6 +416,8 @@ internal sealed class DxpTableStyleResolver
             line = DxpComputedBorderLineStyle.Double;
         else if (string.Equals(val, "triple", StringComparison.OrdinalIgnoreCase))
             line = DxpComputedBorderLineStyle.Triple;
+        else if (Enum.TryParse<DxpComputedBorderLineStyle>(val, true, out var compound))
+            line = compound;
 
         string? color = GetAttributeValue(b, "color");
         if (string.IsNullOrEmpty(color) || string.Equals(color, "auto", StringComparison.OrdinalIgnoreCase))
@@ -453,7 +455,7 @@ internal sealed class DxpTableStyleResolver
             return null;
 
         double pt = sizeEighthPoints / 8.0;
-        var line = MapLineStyle(val);
+        var line = MapLineStyle(val, b.Val?.InnerText);
         string? color = b.Color?.Value;
         if (string.IsNullOrEmpty(color) || string.Equals(color, "auto", StringComparison.OrdinalIgnoreCase))
             color = "#000000";
@@ -466,7 +468,7 @@ internal sealed class DxpTableStyleResolver
             ColorCss: color);
     }
 
-    private static DxpComputedBorderLineStyle MapLineStyle(BorderValues? val)
+    private static DxpComputedBorderLineStyle MapLineStyle(BorderValues? val, string? raw)
     {
         if (val == BorderValues.Dotted)
             return DxpComputedBorderLineStyle.Dotted;
@@ -480,6 +482,8 @@ internal sealed class DxpTableStyleResolver
             return DxpComputedBorderLineStyle.Double;
         if (val == BorderValues.Triple)
             return DxpComputedBorderLineStyle.Triple;
+        if (raw != null && Enum.TryParse<DxpComputedBorderLineStyle>(raw, true, out var compound))
+            return compound;
         return DxpComputedBorderLineStyle.Solid;
     }
 

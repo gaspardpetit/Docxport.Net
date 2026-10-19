@@ -66,7 +66,7 @@ internal static class DxpTableStyleComputer
             return null;
 
         double pt = sizeEighthPoints / 8.0;
-        var line = MapLineStyle(val);
+        var line = MapLineStyle(val, b.Val?.InnerText);
         string? color = b.Color?.Value;
         if (string.IsNullOrEmpty(color) || string.Equals(color, "auto", StringComparison.OrdinalIgnoreCase))
             color = "#000000";
@@ -79,7 +79,7 @@ internal static class DxpTableStyleComputer
             ColorCss: color);
     }
 
-    private static DxpComputedBorderLineStyle MapLineStyle(BorderValues? val)
+    private static DxpComputedBorderLineStyle MapLineStyle(BorderValues? val, string? raw)
     {
         if (val == BorderValues.Dotted)
             return DxpComputedBorderLineStyle.Dotted;
@@ -93,6 +93,8 @@ internal static class DxpTableStyleComputer
             return DxpComputedBorderLineStyle.Double;
         if (val == BorderValues.Triple)
             return DxpComputedBorderLineStyle.Triple;
+        if (raw != null && Enum.TryParse<DxpComputedBorderLineStyle>(raw, true, out var compound))
+            return compound;
         return DxpComputedBorderLineStyle.Solid;
     }
 

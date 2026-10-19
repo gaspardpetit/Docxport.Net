@@ -13,6 +13,147 @@ namespace DocxportNet.Tests;
 public class WordBorderPatternTests
 {
     [Theory]
+    [InlineData("thinThickSmallGap", 2, .75, .75)]
+    [InlineData("thickThinSmallGap", .75, 2, .75)]
+    [InlineData("thinThickMediumGap", 2, 1, 1)]
+    [InlineData("thickThinMediumGap", 1, 2, 1)]
+    [InlineData("thinThickLargeGap", 1.5, .75, 2)]
+    [InlineData("thickThinLargeGap", .75, 1.5, 2)]
+    public void TwoRailWordStylesKeepWidthGapAndContinuousJunctions(
+        string style, double firstWidth, double secondWidth, double gap)
+    {
+        var content = ExportRawBorderStyle(style);
+        var widthCommands = Regex.Matches(content, @"(?m)(?<width>[\d.]+) w").Cast<Match>().ToArray();
+        var strokes = Regex.Matches(content,
+                @"(?m)(?<x1>-?[\d.]+) (?<y1>-?[\d.]+) m\s+(?<x2>-?[\d.]+) (?<y2>-?[\d.]+) l\s+S$")
+            .Cast<Match>()
+            .Select(match => (
+                Width: double.Parse(widthCommands.Last(command => command.Index < match.Index)
+                    .Groups["width"].Value, CultureInfo.InvariantCulture),
+                X1: double.Parse(match.Groups["x1"].Value, CultureInfo.InvariantCulture),
+                Y1: double.Parse(match.Groups["y1"].Value, CultureInfo.InvariantCulture),
+                X2: double.Parse(match.Groups["x2"].Value, CultureInfo.InvariantCulture),
+                Y2: double.Parse(match.Groups["y2"].Value, CultureInfo.InvariantCulture)))
+            .ToArray();
+        var vertical = strokes.Where(line => Math.Abs(line.X1 - line.X2) < .01 &&
+            Math.Abs(line.Y1 - line.Y2) > 10).OrderBy(line => line.X1).ToArray();
+        var horizontal = strokes.Where(line => Math.Abs(line.Y1 - line.Y2) < .01 &&
+            Math.Abs(line.X1 - line.X2) > 10).OrderByDescending(line => line.Y1).ToArray();
+        Assert.Equal(8, vertical.Length);
+        Assert.Equal(8, horizontal.Length);
+        foreach (var rails in new[] { vertical, horizontal })
+        {
+            for (var boundary = 0; boundary < 4; boundary++)
+            {
+                var first = rails[boundary * 2];
+                var second = rails[boundary * 2 + 1];
+                var firstPosition = rails == vertical ? first.X1 : first.Y1;
+                var secondPosition = rails == vertical ? second.X1 : second.Y1;
+                Assert.Equal(firstWidth, first.Width, .02);
+                Assert.Equal(secondWidth, second.Width, .02);
+                Assert.Equal(gap, Math.Abs(secondPosition - firstPosition) -
+                    (first.Width + second.Width) / 2, .02);
+            }
+        }
+        Assert.All(vertical, line =>
+        {
+            Assert.Equal(horizontal[^1].Y1, Math.Min(line.Y1, line.Y2), .02);
+            Assert.Equal(horizontal[0].Y1, Math.Max(line.Y1, line.Y2), .02);
+        });
+        Assert.All(horizontal, line =>
+        {
+            Assert.Equal(vertical[0].X1, Math.Min(line.X1, line.X2), .02);
+            Assert.Equal(vertical[^1].X1, Math.Max(line.X1, line.X2), .02);
+        });
+    }
+
+    [Theory]
+    [InlineData("thinThickThinSmallGap", .75, 2, .75)]
+    [InlineData("thinThickThinMediumGap", 1, 2, 1)]
+    [InlineData("thinThickThinLargeGap", .75, 1.5, 2)]
+    public void ThreeRailWordStylesKeepClosedBoxesAndMeasuredGaps(
+        string style, double thinWidth, double middleWidth, double gap)
+    {
+        var content = ExportRawBorderStyle(style);
+        var widthCommands = Regex.Matches(content, @"(?m)(?<width>[\d.]+) w").Cast<Match>().ToArray();
+        var boxes = Regex.Matches(content,
+                @"(?m)(?<x>-?[\d.]+) (?<y>-?[\d.]+) (?<w>[\d.]+) (?<h>[\d.]+) re\s+S$")
+            .Cast<Match>()
+            .Select(match => (
+                Stroke: double.Parse(widthCommands.Last(command => command.Index < match.Index)
+                    .Groups["width"].Value, CultureInfo.InvariantCulture),
+                X: double.Parse(match.Groups["x"].Value, CultureInfo.InvariantCulture),
+                Y: double.Parse(match.Groups["y"].Value, CultureInfo.InvariantCulture),
+                W: double.Parse(match.Groups["w"].Value, CultureInfo.InvariantCulture),
+                H: double.Parse(match.Groups["h"].Value, CultureInfo.InvariantCulture)))
+            .ToArray();
+        Assert.Equal(19, boxes.Length);
+        var outer = boxes.OrderByDescending(box => box.W * box.H).First();
+        var inner = boxes.Where(box => box != outer).OrderBy(box => box.W * box.H).Take(9).ToArray();
+        var middle = boxes.Where(box => box != outer).Except(inner).ToArray();
+        Assert.Equal(9, middle.Length);
+        Assert.Equal(thinWidth, outer.Stroke, .02);
+        Assert.All(inner, box => Assert.Equal(thinWidth, box.Stroke, .02));
+        Assert.All(middle, box => Assert.Equal(middleWidth, box.Stroke, .02));
+        var expectedOffset = (thinWidth + middleWidth) / 2 + gap;
+        foreach (var box in inner)
+        {
+            var enclosing = middle.Where(mid => mid.X < box.X && mid.Y < box.Y &&
+                mid.X + mid.W > box.X + box.W && mid.Y + mid.H > box.Y + box.H).ToArray();
+            Assert.Single(enclosing);
+            Assert.Equal(expectedOffset, box.X - enclosing[0].X, .02);
+            Assert.Equal(expectedOffset, box.Y - enclosing[0].Y, .02);
+            Assert.True(outer.X < enclosing[0].X && outer.Y < enclosing[0].Y);
+            Assert.True(outer.X + outer.W > enclosing[0].X + enclosing[0].W &&
+                outer.Y + outer.H > enclosing[0].Y + enclosing[0].H);
+        }
+        Assert.Equal(3, inner.Select(box => Math.Round(box.X, 2)).Distinct().Count());
+        Assert.Equal(3, inner.Select(box => Math.Round(box.Y, 2)).Distinct().Count());
+    }
+
+    private static string ExportRawBorderStyle(string style)
+    {
+        GlobalFontSettings.UseWindowsFontsUnderWindows = true;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            var table = new Table(new TableProperties(
+                new TableWidth { Type = TableWidthUnitValues.Dxa, Width = "6000" }),
+                new TableGrid(Enumerable.Range(0, 3).Select(_ => new GridColumn { Width = "2000" })));
+            for (var row = 0; row < 3; row++)
+            {
+                var cells = new TableRow();
+                for (var column = 0; column < 3; column++)
+                {
+                    T Edge<T>(T border) where T : BorderType
+                    {
+                        border.Size = 16;
+                        border.SetAttribute(new OpenXmlAttribute("w", "val",
+                            "http://schemas.openxmlformats.org/wordprocessingml/2006/main", style));
+                        return border;
+                    }
+                    var borders = new TableCellBorders(Edge(new TopBorder()), Edge(new RightBorder()),
+                        Edge(new BottomBorder()), Edge(new LeftBorder()));
+                    cells.Append(new TableCell(new TableCellProperties(
+                            new TableCellWidth { Type = TableWidthUnitValues.Dxa, Width = "2000" }, borders),
+                        new Paragraph(new Run(new Text($"{row},{column}")))));
+                }
+                table.Append(cells);
+            }
+            main.Document = new Document(new Body(table));
+            main.Document.Save();
+        }
+        var bytes = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+        using var pdf = PdfReader.Open(new MemoryStream(bytes), PdfDocumentOpenMode.Import);
+        Assert.Single(pdf.Pages);
+        return string.Concat(pdf.Pages[0].Contents.Elements
+            .OfType<PdfSharp.Pdf.Advanced.PdfReference>()
+            .Select(reference => Encoding.Latin1.GetString(
+                ((PdfSharp.Pdf.Advanced.PdfContent)reference.Value!).Stream!.UnfilteredValue)));
+    }
+
+    [Theory]
     [InlineData(false)]
     [InlineData(true)]
     public void ExplicitCompoundCellBordersProduceClosedBoxesWithAlignedRailGaps(bool triple)

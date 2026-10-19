@@ -9,7 +9,16 @@ public enum DxpComputedBorderLineStyle
     DashDot,
     DashDotDot,
     Double,
-    Triple
+    Triple,
+    ThinThickSmallGap,
+    ThickThinSmallGap,
+    ThinThickThinSmallGap,
+    ThinThickMediumGap,
+    ThickThinMediumGap,
+    ThinThickThinMediumGap,
+    ThinThickLargeGap,
+    ThickThinLargeGap,
+    ThinThickThinLargeGap
 }
 
 public sealed record DxpComputedBorder(

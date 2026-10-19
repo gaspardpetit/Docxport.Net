@@ -14970,19 +14970,27 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     }
 
     private static bool HasUniformDoubleCellBorders(DocumentFormat.OpenXml.Wordprocessing.Table table)
-        => HasUniformCellBorders(table, BorderValues.Double);
+        => HasUniformCellBorders(table, "double");
+
+    private static bool HasUniformCompoundCellBorders(DocumentFormat.OpenXml.Wordprocessing.Table table) =>
+        new[]
+        {
+            "triple", "thinThickSmallGap", "thickThinSmallGap", "thinThickThinSmallGap",
+            "thinThickMediumGap", "thickThinMediumGap", "thinThickThinMediumGap",
+            "thinThickLargeGap", "thickThinLargeGap", "thinThickThinLargeGap"
+        }.Any(style => HasUniformCellBorders(table, style));
 
     private static bool HasUniformCellBorders(DocumentFormat.OpenXml.Wordprocessing.Table table,
-        BorderValues style)
+        string style)
     {
         var cells = table.Elements<TableRow>().SelectMany(row => row.Elements<TableCell>()).ToArray();
         return cells.Length > 0 && cells.All(cell =>
         {
             var borders = cell.TableCellProperties?.TableCellBorders;
-            return borders?.TopBorder?.Val?.Value == style &&
-                borders.RightBorder?.Val?.Value == style &&
-                borders.BottomBorder?.Val?.Value == style &&
-                borders.LeftBorder?.Val?.Value == style;
+            return borders?.TopBorder is { } top && AttributeValue(top, "val") == style &&
+                borders.RightBorder is { } right && AttributeValue(right, "val") == style &&
+                borders.BottomBorder is { } bottom && AttributeValue(bottom, "val") == style &&
+                borders.LeftBorder is { } left && AttributeValue(left, "val") == style;
         });
     }
 
@@ -15581,7 +15589,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _doubleRowBorderPoints = 0;
         _nativeDoubleTableBorders = Enum.TryParse<BorderStyle>("Double", out _) &&
             (HasSixDoubleBorders(table) || HasUniformDoubleCellBorders(table) ||
-                UsePartialNativeDoubleBorders(table) || HasUniformCellBorders(table, BorderValues.Triple));
+                UsePartialNativeDoubleBorders(table) || HasUniformCompoundCellBorders(table));
         _previousHeaderRowCompact = false;
         _previousHeaderRowSpacingReductionPoints = 0;
         if (_container is Section firstSection && table.Parent is Body && table.PreviousSibling() == null &&
@@ -16663,10 +16671,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             DxpComputedBorderLineStyle.Dashed => BorderStyle.DashSmallGap,
             DxpComputedBorderLineStyle.DashDot => BorderStyle.DashDot,
             DxpComputedBorderLineStyle.DashDotDot => BorderStyle.DashDotDot,
-            DxpComputedBorderLineStyle.Double when _nativeDoubleTableBorders &&
-                Enum.TryParse<BorderStyle>("Double", out var nativeDouble) => nativeDouble,
-            DxpComputedBorderLineStyle.Triple when _nativeDoubleTableBorders &&
-                Enum.TryParse<BorderStyle>("Triple", out var nativeTriple) => nativeTriple,
+            >= DxpComputedBorderLineStyle.Double when _nativeDoubleTableBorders &&
+                Enum.TryParse<BorderStyle>(source.LineStyle.ToString(), out var nativeCompound) => nativeCompound,
             _ => BorderStyle.Single
         };
         if (ParseColor(source.ColorCss) is { } color)
