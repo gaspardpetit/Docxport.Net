@@ -93,6 +93,10 @@ internal static class DxpTableStyleComputer
             return DxpComputedBorderLineStyle.Double;
         if (val == BorderValues.Triple)
             return DxpComputedBorderLineStyle.Triple;
+        if (string.Equals(raw, "threeDEmboss", StringComparison.OrdinalIgnoreCase))
+            return DxpComputedBorderLineStyle.Emboss3D;
+        if (string.Equals(raw, "threeDEngrave", StringComparison.OrdinalIgnoreCase))
+            return DxpComputedBorderLineStyle.Engrave3D;
         if (raw != null && Enum.TryParse<DxpComputedBorderLineStyle>(raw, true, out var compound))
             return compound;
         return DxpComputedBorderLineStyle.Solid;

@@ -416,6 +416,10 @@ internal sealed class DxpTableStyleResolver
             line = DxpComputedBorderLineStyle.Double;
         else if (string.Equals(val, "triple", StringComparison.OrdinalIgnoreCase))
             line = DxpComputedBorderLineStyle.Triple;
+        else if (string.Equals(val, "threeDEmboss", StringComparison.OrdinalIgnoreCase))
+            line = DxpComputedBorderLineStyle.Emboss3D;
+        else if (string.Equals(val, "threeDEngrave", StringComparison.OrdinalIgnoreCase))
+            line = DxpComputedBorderLineStyle.Engrave3D;
         else if (Enum.TryParse<DxpComputedBorderLineStyle>(val, true, out var compound))
             line = compound;
 
@@ -482,6 +486,10 @@ internal sealed class DxpTableStyleResolver
             return DxpComputedBorderLineStyle.Double;
         if (val == BorderValues.Triple)
             return DxpComputedBorderLineStyle.Triple;
+        if (string.Equals(raw, "threeDEmboss", StringComparison.OrdinalIgnoreCase))
+            return DxpComputedBorderLineStyle.Emboss3D;
+        if (string.Equals(raw, "threeDEngrave", StringComparison.OrdinalIgnoreCase))
+            return DxpComputedBorderLineStyle.Engrave3D;
         if (raw != null && Enum.TryParse<DxpComputedBorderLineStyle>(raw, true, out var compound))
             return compound;
         return DxpComputedBorderLineStyle.Solid;

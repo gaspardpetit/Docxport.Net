@@ -18,7 +18,12 @@ public enum DxpComputedBorderLineStyle
     ThinThickThinMediumGap,
     ThinThickLargeGap,
     ThickThinLargeGap,
-    ThinThickThinLargeGap
+    ThinThickThinLargeGap,
+    Wave,
+    DoubleWave,
+    DashDotStroked,
+    Emboss3D,
+    Engrave3D
 }
 
 public sealed record DxpComputedBorder(

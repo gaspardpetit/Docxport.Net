@@ -13,6 +13,78 @@ namespace DocxportNet.Tests;
 public class WordBorderPatternTests
 {
     [Theory]
+    [InlineData("threeDEmboss", true)]
+    [InlineData("threeDEngrave", false)]
+    public void ThreeDimensionalBordersReverseTheirThreeTouchingShades(string style, bool emboss)
+    {
+        var content = ExportRawBorderStyle(style);
+        var widths = Regex.Matches(content, @"(?m)(?<w>[\d.]+) w").Cast<Match>().ToArray();
+        var colors = Regex.Matches(content,
+            @"(?m)(?<r>[\d.]+) (?<g>[\d.]+) (?<b>[\d.]+) RG").Cast<Match>().ToArray();
+        var vertical = Regex.Matches(content,
+                @"(?m)(?<x1>-?[\d.]+) (?<y1>-?[\d.]+) m\s+(?<x2>-?[\d.]+) (?<y2>-?[\d.]+) l\s+S$")
+            .Cast<Match>()
+            .Where(match => Math.Abs(double.Parse(match.Groups["x1"].Value, CultureInfo.InvariantCulture) -
+                double.Parse(match.Groups["x2"].Value, CultureInfo.InvariantCulture)) < .01 &&
+                Math.Abs(double.Parse(match.Groups["y1"].Value, CultureInfo.InvariantCulture) -
+                    double.Parse(match.Groups["y2"].Value, CultureInfo.InvariantCulture)) > 10)
+            .Select(match => (
+                X: double.Parse(match.Groups["x1"].Value, CultureInfo.InvariantCulture),
+                Width: double.Parse(widths.Last(command => command.Index < match.Index)
+                    .Groups["w"].Value, CultureInfo.InvariantCulture),
+                Red: double.Parse(colors.Last(command => command.Index < match.Index)
+                    .Groups["r"].Value, CultureInfo.InvariantCulture)))
+            .ToArray();
+        Assert.Equal(36, vertical.Length);
+        Assert.Equal(12, vertical.Select(line => Math.Round(line.X, 2)).Distinct().Count());
+        Assert.All(vertical.GroupBy(line => Math.Round(line.X, 2)), group => Assert.Equal(3, group.Count()));
+        var firstBoundary = vertical.OrderBy(line => line.X).Take(9).DistinctBy(line => Math.Round(line.X, 2))
+            .OrderBy(line => line.X).ToArray();
+        Assert.Equal(3, firstBoundary.Length);
+        Assert.Equal(.75, firstBoundary[0].Width, .02);
+        Assert.Equal(2, firstBoundary[1].Width, .02);
+        Assert.Equal(.75, firstBoundary[2].Width, .02);
+        Assert.Equal(emboss, firstBoundary[0].Red > firstBoundary[2].Red);
+        Assert.InRange(Math.Abs(firstBoundary[0].Red - firstBoundary[2].Red), .2, .3);
+    }
+
+    [Fact]
+    public void DecorativeBordersUseRepeatedAngledStrokesOnTheWholeGrid()
+    {
+        static (double X1, double Y1, double X2, double Y2)[] Segments(string content) =>
+            Regex.Matches(content,
+                    @"(?m)(?<x1>-?[\d.]+) (?<y1>-?[\d.]+) m\s+(?<x2>-?[\d.]+) (?<y2>-?[\d.]+) l\s+S$")
+                .Cast<Match>()
+                .Select(match => (
+                    X1: double.Parse(match.Groups["x1"].Value, CultureInfo.InvariantCulture),
+                    Y1: double.Parse(match.Groups["y1"].Value, CultureInfo.InvariantCulture),
+                    X2: double.Parse(match.Groups["x2"].Value, CultureInfo.InvariantCulture),
+                    Y2: double.Parse(match.Groups["y2"].Value, CultureInfo.InvariantCulture)))
+                .ToArray();
+
+        var wave = Segments(ExportRawBorderStyle("wave"));
+        var doubleWave = Segments(ExportRawBorderStyle("doubleWave"));
+        var hatch = Segments(ExportRawBorderStyle("dashDotStroked"));
+        Assert.True(wave.Length > 500);
+        Assert.InRange((double)doubleWave.Length / wave.Length, 1.9, 2.1);
+        Assert.True(hatch.Length > wave.Length);
+        foreach (var segments in new[] { wave, doubleWave, hatch })
+        {
+            Assert.All(segments, line =>
+            {
+                Assert.InRange(Math.Abs(line.X2 - line.X1), .01, 4);
+                Assert.InRange(Math.Abs(line.Y2 - line.Y1), .01, 4);
+            });
+            Assert.True(segments.Count(line => Math.Abs(line.X2 - line.X1) > .3 &&
+                Math.Abs(line.Y2 - line.Y1) > .3) > segments.Length * .9);
+            Assert.True(segments.Max(line => Math.Max(line.X1, line.X2)) -
+                segments.Min(line => Math.Min(line.X1, line.X2)) > 200);
+            Assert.True(segments.Max(line => Math.Max(line.Y1, line.Y2)) -
+                segments.Min(line => Math.Min(line.Y1, line.Y2)) > 30);
+        }
+    }
+
+    [Theory]
     [InlineData("thinThickSmallGap", 2, .75, .75)]
     [InlineData("thickThinSmallGap", .75, 2, .75)]
     [InlineData("thinThickMediumGap", 2, 1, 1)]
@@ -129,6 +201,7 @@ public class WordBorderPatternTests
                     T Edge<T>(T border) where T : BorderType
                     {
                         border.Size = 16;
+                        border.Color = "1B2530";
                         border.SetAttribute(new OpenXmlAttribute("w", "val",
                             "http://schemas.openxmlformats.org/wordprocessingml/2006/main", style));
                         return border;
