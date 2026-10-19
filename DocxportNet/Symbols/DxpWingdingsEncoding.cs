@@ -220,7 +220,7 @@ public static class DxpWingdingsEncoding
         "⌫", // 0xD5
         "⌦", // 0xD6
         "⮘", // 0xD7
-        "⮚", // 0xD8
+        "➢", // 0xD8
         "⮙", // 0xD9
         "⮛", // 0xDA
         "⮈", // 0xDB
@@ -256,7 +256,7 @@ public static class DxpWingdingsEncoding
         "🢬", // 0xF9
         "🢭", // 0xFA
         "🗶", // 0xFB
-        "✔", // 0xFC
+        "✓", // 0xFC
         "🗷", // 0xFD
         "🗹", // 0xFE
         "ÿ" // 0xFF

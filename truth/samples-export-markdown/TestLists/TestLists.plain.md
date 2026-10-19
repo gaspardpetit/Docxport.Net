@@ -57,7 +57,7 @@ o default list level 2
 • default list level 1
 
 <br/>
-⮚ arrow bullet
+➢ arrow bullet
 
 — hyphen bullet
 
@@ -65,7 +65,7 @@ o default list level 2
 
 ❖ diamond bullet
 
-✔ checkmark bulet
+✓ checkmark bulet
 
 • fancy bullet
 
