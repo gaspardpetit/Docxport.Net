@@ -442,7 +442,9 @@ internal sealed class DxpTableStyleResolver
         if (b == null)
             return null;
 
-        var val = b.Val?.Value;
+        BorderValues? val;
+        try { val = b.Val?.Value; }
+        catch (FormatException) { val = null; }
         if (val == BorderValues.None || val == BorderValues.Nil)
             return new DxpComputedBorder(WidthPt: 0, LineStyle: DxpComputedBorderLineStyle.None, ColorCss: "#000000");
 

@@ -128,7 +128,9 @@ internal static class DxpParagraphStyleComputer
         if (b == null)
             return null;
 
-        var val = b.Val?.Value;
+        BorderValues? val;
+        try { val = b.Val?.Value; }
+        catch (FormatException) { val = null; }
         // For paragraphs, treat "none/nil" as absent to avoid emitting redundant `border-*:none`.
         if (val == BorderValues.None || val == BorderValues.Nil)
             return null;
