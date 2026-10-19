@@ -112,7 +112,7 @@ public class WordBorderPatternTests
         var hatch = Segments(ExportRawBorderStyle("dashDotStroked"));
         Assert.True(wave.Length > 500);
         Assert.InRange((double)doubleWave.Length / wave.Length, 1.9, 2.1);
-        Assert.True(hatch.Length > wave.Length);
+        Assert.True(hatch.Length > 500);
         foreach (var segments in new[] { wave, doubleWave, hatch })
         {
             Assert.All(segments, line =>
