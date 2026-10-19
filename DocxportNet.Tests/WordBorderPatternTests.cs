@@ -182,6 +182,18 @@ public class WordBorderPatternTests
                     Math.Min(cross.Y1, cross.Y2) - cross.Width / 2 <= line.Y1 &&
                     Math.Max(cross.Y1, cross.Y2) + cross.Width / 2 >= line.Y1);
         });
+        var filled = Regex.Matches(content,
+                @"(?m)(?<x>-?[\d.]+) (?<y>-?[\d.]+) (?<w>[\d.]+) (?<h>[\d.]+) re\s+f$")
+            .Cast<Match>()
+            .Select(match => (
+                Width: double.Parse(match.Groups["w"].Value, CultureInfo.InvariantCulture),
+                Height: double.Parse(match.Groups["h"].Value, CultureInfo.InvariantCulture)))
+            .ToArray();
+        var band = firstWidth + secondWidth + gap + .5;
+        Assert.Equal(8, filled.Count(rect => Math.Abs(rect.Width - band) < .02 &&
+            Math.Abs(rect.Height - gap) < .02));
+        Assert.Equal(8, filled.Count(rect => Math.Abs(rect.Width - gap) < .02 &&
+            Math.Abs(rect.Height - band) < .02));
     }
 
     [Theory]
