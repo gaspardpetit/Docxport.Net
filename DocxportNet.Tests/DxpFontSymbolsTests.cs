@@ -17,6 +17,18 @@ public class DxpFontSymbolsTests : TestBase<DxpFontSymbolsTests>
     }
 
     [Fact]
+    public void Wingdings_checkmark_matches_Word_glyph()
+    {
+        Assert.Equal("✓", DxpFontSymbols.TranslateWordSymbol("Wingdings", "F0FC"));
+    }
+
+    [Fact]
+    public void Wingdings_arrow_matches_Word_glyph()
+    {
+        Assert.Equal("➢", DxpFontSymbols.TranslateWordSymbol("Wingdings", "F0D8"));
+    }
+
+    [Fact]
     public void Symbol_bullet_maps_to_unicode_bullet()
     {
         var bullet = DxpFontSymbols.Substitute("Symbol", (char)0xB7);
