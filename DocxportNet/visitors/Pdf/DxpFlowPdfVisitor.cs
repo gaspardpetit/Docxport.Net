@@ -16671,7 +16671,9 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             DxpComputedBorderLineStyle.Dashed => BorderStyle.DashSmallGap,
             DxpComputedBorderLineStyle.DashDot => BorderStyle.DashDot,
             DxpComputedBorderLineStyle.DashDotDot => BorderStyle.DashDotDot,
-            >= DxpComputedBorderLineStyle.Double when _nativeDoubleTableBorders &&
+            DxpComputedBorderLineStyle.Double when _nativeDoubleTableBorders &&
+                Enum.TryParse<BorderStyle>("Double", out var nativeDouble) => nativeDouble,
+            >= DxpComputedBorderLineStyle.Triple when
                 Enum.TryParse<BorderStyle>(source.LineStyle.ToString(), out var nativeCompound) => nativeCompound,
             _ => BorderStyle.Single
         };
