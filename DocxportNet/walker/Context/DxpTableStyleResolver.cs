@@ -414,6 +414,8 @@ internal sealed class DxpTableStyleResolver
             line = DxpComputedBorderLineStyle.DashDotDot;
         else if (string.Equals(val, "double", StringComparison.OrdinalIgnoreCase))
             line = DxpComputedBorderLineStyle.Double;
+        else if (string.Equals(val, "triple", StringComparison.OrdinalIgnoreCase))
+            line = DxpComputedBorderLineStyle.Triple;
 
         string? color = GetAttributeValue(b, "color");
         if (string.IsNullOrEmpty(color) || string.Equals(color, "auto", StringComparison.OrdinalIgnoreCase))
@@ -474,6 +476,8 @@ internal sealed class DxpTableStyleResolver
             return DxpComputedBorderLineStyle.DashDotDot;
         if (val == BorderValues.Double)
             return DxpComputedBorderLineStyle.Double;
+        if (val == BorderValues.Triple)
+            return DxpComputedBorderLineStyle.Triple;
         return DxpComputedBorderLineStyle.Solid;
     }
 

@@ -14970,15 +14970,19 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     }
 
     private static bool HasUniformDoubleCellBorders(DocumentFormat.OpenXml.Wordprocessing.Table table)
+        => HasUniformCellBorders(table, BorderValues.Double);
+
+    private static bool HasUniformCellBorders(DocumentFormat.OpenXml.Wordprocessing.Table table,
+        BorderValues style)
     {
         var cells = table.Elements<TableRow>().SelectMany(row => row.Elements<TableCell>()).ToArray();
         return cells.Length > 0 && cells.All(cell =>
         {
             var borders = cell.TableCellProperties?.TableCellBorders;
-            return borders?.TopBorder?.Val?.Value == BorderValues.Double &&
-                borders.RightBorder?.Val?.Value == BorderValues.Double &&
-                borders.BottomBorder?.Val?.Value == BorderValues.Double &&
-                borders.LeftBorder?.Val?.Value == BorderValues.Double;
+            return borders?.TopBorder?.Val?.Value == style &&
+                borders.RightBorder?.Val?.Value == style &&
+                borders.BottomBorder?.Val?.Value == style &&
+                borders.LeftBorder?.Val?.Value == style;
         });
     }
 
@@ -15577,7 +15581,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _doubleRowBorderPoints = 0;
         _nativeDoubleTableBorders = Enum.TryParse<BorderStyle>("Double", out _) &&
             (HasSixDoubleBorders(table) || HasUniformDoubleCellBorders(table) ||
-                UsePartialNativeDoubleBorders(table));
+                UsePartialNativeDoubleBorders(table) || HasUniformCellBorders(table, BorderValues.Triple));
         _previousHeaderRowCompact = false;
         _previousHeaderRowSpacingReductionPoints = 0;
         if (_container is Section firstSection && table.Parent is Body && table.PreviousSibling() == null &&
@@ -16661,6 +16665,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             DxpComputedBorderLineStyle.DashDotDot => BorderStyle.DashDotDot,
             DxpComputedBorderLineStyle.Double when _nativeDoubleTableBorders &&
                 Enum.TryParse<BorderStyle>("Double", out var nativeDouble) => nativeDouble,
+            DxpComputedBorderLineStyle.Triple when _nativeDoubleTableBorders &&
+                Enum.TryParse<BorderStyle>("Triple", out var nativeTriple) => nativeTriple,
             _ => BorderStyle.Single
         };
         if (ParseColor(source.ColorCss) is { } color)

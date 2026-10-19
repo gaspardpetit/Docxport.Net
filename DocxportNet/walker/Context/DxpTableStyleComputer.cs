@@ -89,6 +89,8 @@ internal static class DxpTableStyleComputer
             return DxpComputedBorderLineStyle.DashDotDot;
         if (val == BorderValues.Double)
             return DxpComputedBorderLineStyle.Double;
+        if (val == BorderValues.Triple)
+            return DxpComputedBorderLineStyle.Triple;
         return DxpComputedBorderLineStyle.Solid;
     }
 

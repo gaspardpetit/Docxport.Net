@@ -12,8 +12,10 @@ namespace DocxportNet.Tests;
 
 public class WordBorderPatternTests
 {
-    [Fact]
-    public void ExplicitDoubleCellBordersProduceNineClosedBoxesWithAlignedRailGaps()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void ExplicitCompoundCellBordersProduceClosedBoxesWithAlignedRailGaps(bool triple)
     {
         GlobalFontSettings.UseWindowsFontsUnderWindows = true;
         using var source = new MemoryStream();
@@ -31,10 +33,10 @@ public class WordBorderPatternTests
                         new TableCellProperties(
                             new TableCellWidth { Type = TableWidthUnitValues.Dxa, Width = "2000" },
                             new TableCellBorders(
-                                new TopBorder { Val = BorderValues.Double, Size = 16 },
-                                new RightBorder { Val = BorderValues.Double, Size = 16 },
-                                new BottomBorder { Val = BorderValues.Double, Size = 16 },
-                                new LeftBorder { Val = BorderValues.Double, Size = 16 })),
+                                new TopBorder { Val = triple ? BorderValues.Triple : BorderValues.Double, Size = 16 },
+                                new RightBorder { Val = triple ? BorderValues.Triple : BorderValues.Double, Size = 16 },
+                                new BottomBorder { Val = triple ? BorderValues.Triple : BorderValues.Double, Size = 16 },
+                                new LeftBorder { Val = triple ? BorderValues.Triple : BorderValues.Double, Size = 16 })),
                         new Paragraph(new Run(new Text($"{row},{column}")))));
                 table.Append(cells);
             }
@@ -58,17 +60,33 @@ public class WordBorderPatternTests
                 W: double.Parse(match.Groups["w"].Value, CultureInfo.InvariantCulture),
                 H: double.Parse(match.Groups["h"].Value, CultureInfo.InvariantCulture)))
             .ToArray();
-        Assert.Equal(10, boxes.Length);
+        Assert.Equal(triple ? 19 : 10, boxes.Length);
         var outer = boxes.OrderByDescending(box => box.W * box.H).First();
-        var grid = boxes.Where(box => box != outer).OrderBy(box => box.Y).ThenBy(box => box.X).ToArray();
+        var cellBoxes = boxes.Where(box => box != outer).ToArray();
+        var grid = triple
+            ? cellBoxes.OrderBy(box => box.W * box.H).Take(9).OrderBy(box => box.Y).ThenBy(box => box.X).ToArray()
+            : cellBoxes.OrderBy(box => box.Y).ThenBy(box => box.X).ToArray();
         Assert.Equal(9, grid.Length);
         Assert.Equal(3, grid.Select(box => Math.Round(box.X, 2)).Distinct().Count());
         Assert.Equal(3, grid.Select(box => Math.Round(box.Y, 2)).Distinct().Count());
         var rail = grid[0].X - outer.X;
-        Assert.InRange(rail, 1, 6);
+        Assert.InRange(rail, 1, 10);
         Assert.Equal(rail, grid[0].Y - outer.Y, 0.02);
         Assert.Equal(rail, outer.X + outer.W - grid[2].X - grid[2].W, 0.02);
         Assert.Equal(rail, outer.Y + outer.H - grid[6].Y - grid[6].H, 0.02);
+        if (triple)
+        {
+            var middle = cellBoxes.Except(grid).ToArray();
+            Assert.Equal(9, middle.Length);
+            foreach (var inner in grid)
+            {
+                var enclosing = middle.Where(box => box.X < inner.X && box.Y < inner.Y &&
+                    box.X + box.W > inner.X + inner.W && box.Y + box.H > inner.Y + inner.H).ToArray();
+                Assert.Single(enclosing);
+                Assert.Equal((rail / 2), inner.X - enclosing[0].X, 0.02);
+                Assert.Equal((rail / 2), inner.Y - enclosing[0].Y, 0.02);
+            }
+        }
         for (var row = 0; row < 3; row++)
         {
             var cells = grid.Skip(row * 3).Take(3).ToArray();

@@ -8,7 +8,8 @@ public enum DxpComputedBorderLineStyle
     Dashed,
     DashDot,
     DashDotDot,
-    Double
+    Double,
+    Triple
 }
 
 public sealed record DxpComputedBorder(
