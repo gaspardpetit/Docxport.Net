@@ -81,10 +81,9 @@ public class WordBorderPatternTests
                 Red: double.Parse(colors.Last(command => command.Index < match.Index)
                     .Groups["r"].Value, CultureInfo.InvariantCulture)))
             .ToArray();
-        Assert.Equal(36, vertical.Length);
+        Assert.Equal(12, vertical.Length);
         Assert.Equal(12, vertical.Select(line => Math.Round(line.X, 2)).Distinct().Count());
-        Assert.All(vertical.GroupBy(line => Math.Round(line.X, 2)), group => Assert.Equal(3, group.Count()));
-        var firstBoundary = vertical.OrderBy(line => line.X).Take(9).DistinctBy(line => Math.Round(line.X, 2))
+        var firstBoundary = vertical.OrderBy(line => line.X).Take(3)
             .OrderBy(line => line.X).ToArray();
         Assert.Equal(3, firstBoundary.Length);
         Assert.Equal(.75, firstBoundary[0].Width, .02);
@@ -137,7 +136,7 @@ public class WordBorderPatternTests
     [InlineData("thickThinMediumGap", 1, 2, 1)]
     [InlineData("thinThickLargeGap", 1.5, .75, 2)]
     [InlineData("thickThinLargeGap", .75, 1.5, 2)]
-    public void TwoRailWordStylesKeepWidthGapAndContinuousJunctions(
+    public void TwoRailWordStylesTurnAtEveryCellCorner(
         string style, double firstWidth, double secondWidth, double gap)
     {
         var content = ExportRawBorderStyle(style);
@@ -157,31 +156,31 @@ public class WordBorderPatternTests
             Math.Abs(line.Y1 - line.Y2) > 10).OrderBy(line => line.X1).ToArray();
         var horizontal = strokes.Where(line => Math.Abs(line.Y1 - line.Y2) < .01 &&
             Math.Abs(line.X1 - line.X2) > 10).OrderByDescending(line => line.Y1).ToArray();
-        Assert.Equal(8, vertical.Length);
-        Assert.Equal(8, horizontal.Length);
-        foreach (var rails in new[] { vertical, horizontal })
-        {
-            for (var boundary = 0; boundary < 4; boundary++)
-            {
-                var first = rails[boundary * 2];
-                var second = rails[boundary * 2 + 1];
-                var firstPosition = rails == vertical ? first.X1 : first.Y1;
-                var secondPosition = rails == vertical ? second.X1 : second.Y1;
-                Assert.Equal(firstWidth, first.Width, .02);
-                Assert.Equal(secondWidth, second.Width, .02);
-                Assert.Equal(gap, Math.Abs(secondPosition - firstPosition) -
-                    (first.Width + second.Width) / 2, .02);
-            }
-        }
+        Assert.Equal(36, vertical.Length);
+        Assert.Equal(36, horizontal.Length);
+        Assert.Equal(18, vertical.Count(line => Math.Abs(line.Width - firstWidth) < .02));
+        Assert.Equal(18, vertical.Count(line => Math.Abs(line.Width - secondWidth) < .02));
+        Assert.Equal(18, horizontal.Count(line => Math.Abs(line.Width - firstWidth) < .02));
+        Assert.Equal(18, horizontal.Count(line => Math.Abs(line.Width - secondWidth) < .02));
+        Assert.All(vertical, line => Assert.InRange(Math.Abs(line.Y2 - line.Y1), 10, 30));
+        Assert.All(horizontal, line => Assert.InRange(Math.Abs(line.X2 - line.X1), 90, 110));
+        // Every stroke terminates at a perpendicular rail. Long strokes across
+        // the whole table would pass the width checks but fail these endpoints.
         Assert.All(vertical, line =>
         {
-            Assert.Equal(horizontal[^1].Y1, Math.Min(line.Y1, line.Y2), .02);
-            Assert.Equal(horizontal[0].Y1, Math.Max(line.Y1, line.Y2), .02);
+            foreach (var end in new[] { line.Y1, line.Y2 })
+                Assert.Contains(horizontal, cross =>
+                    Math.Abs(cross.Y1 - end) <= (line.Width + cross.Width) / 2 + .02 &&
+                    Math.Min(cross.X1, cross.X2) - cross.Width / 2 <= line.X1 &&
+                    Math.Max(cross.X1, cross.X2) + cross.Width / 2 >= line.X1);
         });
         Assert.All(horizontal, line =>
         {
-            Assert.Equal(vertical[0].X1, Math.Min(line.X1, line.X2), .02);
-            Assert.Equal(vertical[^1].X1, Math.Max(line.X1, line.X2), .02);
+            foreach (var end in new[] { line.X1, line.X2 })
+                Assert.Contains(vertical, cross =>
+                    Math.Abs(cross.X1 - end) <= (line.Width + cross.Width) / 2 + .02 &&
+                    Math.Min(cross.Y1, cross.Y2) - cross.Width / 2 <= line.Y1 &&
+                    Math.Max(cross.Y1, cross.Y2) + cross.Width / 2 >= line.Y1);
         });
     }
 
