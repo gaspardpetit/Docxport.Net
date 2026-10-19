@@ -81,8 +81,12 @@ internal static class DxpTableStyleComputer
     {
         if (val == BorderValues.Dotted)
             return DxpComputedBorderLineStyle.Dotted;
-        if (val == BorderValues.DashSmallGap || val == BorderValues.Dashed || val == BorderValues.DotDash || val == BorderValues.DotDotDash)
+        if (val == BorderValues.DashSmallGap || val == BorderValues.Dashed)
             return DxpComputedBorderLineStyle.Dashed;
+        if (val == BorderValues.DotDash)
+            return DxpComputedBorderLineStyle.DashDot;
+        if (val == BorderValues.DotDotDash)
+            return DxpComputedBorderLineStyle.DashDotDot;
         if (val == BorderValues.Double)
             return DxpComputedBorderLineStyle.Double;
         return DxpComputedBorderLineStyle.Solid;

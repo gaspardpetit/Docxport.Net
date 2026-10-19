@@ -6,6 +6,8 @@ public enum DxpComputedBorderLineStyle
     Solid,
     Dotted,
     Dashed,
+    DashDot,
+    DashDotDot,
     Double
 }
 

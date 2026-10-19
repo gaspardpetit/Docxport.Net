@@ -406,10 +406,12 @@ internal sealed class DxpTableStyleResolver
         if (string.Equals(val, "dotted", StringComparison.OrdinalIgnoreCase))
             line = DxpComputedBorderLineStyle.Dotted;
         else if (string.Equals(val, "dashed", StringComparison.OrdinalIgnoreCase) ||
-                 string.Equals(val, "dashSmallGap", StringComparison.OrdinalIgnoreCase) ||
-                 string.Equals(val, "dotDash", StringComparison.OrdinalIgnoreCase) ||
-                 string.Equals(val, "dotDotDash", StringComparison.OrdinalIgnoreCase))
+                 string.Equals(val, "dashSmallGap", StringComparison.OrdinalIgnoreCase))
             line = DxpComputedBorderLineStyle.Dashed;
+        else if (string.Equals(val, "dotDash", StringComparison.OrdinalIgnoreCase))
+            line = DxpComputedBorderLineStyle.DashDot;
+        else if (string.Equals(val, "dotDotDash", StringComparison.OrdinalIgnoreCase))
+            line = DxpComputedBorderLineStyle.DashDotDot;
         else if (string.Equals(val, "double", StringComparison.OrdinalIgnoreCase))
             line = DxpComputedBorderLineStyle.Double;
 
@@ -464,8 +466,12 @@ internal sealed class DxpTableStyleResolver
     {
         if (val == BorderValues.Dotted)
             return DxpComputedBorderLineStyle.Dotted;
-        if (val == BorderValues.DashSmallGap || val == BorderValues.Dashed || val == BorderValues.DotDash || val == BorderValues.DotDotDash)
+        if (val == BorderValues.DashSmallGap || val == BorderValues.Dashed)
             return DxpComputedBorderLineStyle.Dashed;
+        if (val == BorderValues.DotDash)
+            return DxpComputedBorderLineStyle.DashDot;
+        if (val == BorderValues.DotDotDash)
+            return DxpComputedBorderLineStyle.DashDotDot;
         if (val == BorderValues.Double)
             return DxpComputedBorderLineStyle.Double;
         return DxpComputedBorderLineStyle.Solid;

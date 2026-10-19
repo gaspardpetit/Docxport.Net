@@ -4482,6 +4482,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         pen.DashStyle = border.LineStyle switch
         {
             DxpComputedBorderLineStyle.Dashed => XDashStyle.Dash,
+            DxpComputedBorderLineStyle.DashDot => XDashStyle.DashDot,
+            DxpComputedBorderLineStyle.DashDotDot => XDashStyle.DashDotDot,
             DxpComputedBorderLineStyle.Dotted => XDashStyle.Dot,
             _ => XDashStyle.Solid
         };
@@ -14967,6 +14969,19 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             borders.InsideVerticalBorder?.Val?.Value == BorderValues.Double;
     }
 
+    private static bool HasUniformDoubleCellBorders(DocumentFormat.OpenXml.Wordprocessing.Table table)
+    {
+        var cells = table.Elements<TableRow>().SelectMany(row => row.Elements<TableCell>()).ToArray();
+        return cells.Length > 0 && cells.All(cell =>
+        {
+            var borders = cell.TableCellProperties?.TableCellBorders;
+            return borders?.TopBorder?.Val?.Value == BorderValues.Double &&
+                borders.RightBorder?.Val?.Value == BorderValues.Double &&
+                borders.BottomBorder?.Val?.Value == BorderValues.Double &&
+                borders.LeftBorder?.Val?.Value == BorderValues.Double;
+        });
+    }
+
     private bool UsePartialNativeDoubleBorders(DocumentFormat.OpenXml.Wordprocessing.Table table)
     {
         var borders = table.TableProperties?.TableBorders;
@@ -15561,7 +15576,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _tableParagraphSpacing = null;
         _doubleRowBorderPoints = 0;
         _nativeDoubleTableBorders = Enum.TryParse<BorderStyle>("Double", out _) &&
-            (HasSixDoubleBorders(table) || UsePartialNativeDoubleBorders(table));
+            (HasSixDoubleBorders(table) || HasUniformDoubleCellBorders(table) ||
+                UsePartialNativeDoubleBorders(table));
         _previousHeaderRowCompact = false;
         _previousHeaderRowSpacingReductionPoints = 0;
         if (_container is Section firstSection && table.Parent is Body && table.PreviousSibling() == null &&
@@ -16641,6 +16657,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         {
             DxpComputedBorderLineStyle.Dotted => BorderStyle.Dot,
             DxpComputedBorderLineStyle.Dashed => BorderStyle.DashSmallGap,
+            DxpComputedBorderLineStyle.DashDot => BorderStyle.DashDot,
+            DxpComputedBorderLineStyle.DashDotDot => BorderStyle.DashDotDot,
             DxpComputedBorderLineStyle.Double when _nativeDoubleTableBorders &&
                 Enum.TryParse<BorderStyle>("Double", out var nativeDouble) => nativeDouble,
             _ => BorderStyle.Single
