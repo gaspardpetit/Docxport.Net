@@ -12,6 +12,52 @@ namespace DocxportNet.Tests;
 
 public class WordBorderPatternTests
 {
+    [Fact]
+    public void MixedWidthAndColorCellsKeepEachDoubleAndTripleBoxClosed()
+    {
+        var styles = new[] { "single", "double", "triple" };
+        var sizes = new uint[] { 8, 16, 24 };
+        var colors = new[] { "174D8A", "B33229", "26734D" };
+        var content = ExportRawBorderStyles((row, column) =>
+        {
+            var index = (row + column) % 3;
+            return (styles[index], sizes[index], colors[index]);
+        });
+        var widthCommands = Regex.Matches(content, @"(?m)(?<width>[\d.]+) w").Cast<Match>().ToArray();
+        var boxes = Regex.Matches(content,
+                @"(?m)(?<x>-?[\d.]+) (?<y>-?[\d.]+) (?<w>[\d.]+) (?<h>[\d.]+) re\s+S$")
+            .Cast<Match>()
+            .Select(match => (
+                X: double.Parse(match.Groups["x"].Value, CultureInfo.InvariantCulture),
+                Y: double.Parse(match.Groups["y"].Value, CultureInfo.InvariantCulture),
+                W: double.Parse(match.Groups["w"].Value, CultureInfo.InvariantCulture),
+                H: double.Parse(match.Groups["h"].Value, CultureInfo.InvariantCulture),
+                Stroke: double.Parse(widthCommands.Last(command => command.Index < match.Index)
+                    .Groups["width"].Value, CultureInfo.InvariantCulture)))
+            .ToArray();
+        Assert.Equal(15, boxes.Length);
+        Assert.Equal(6, boxes.Count(box => Math.Abs(box.Stroke - 2) < .02));
+        Assert.Equal(9, boxes.Count(box => Math.Abs(box.Stroke - 3) < .02));
+        var cells = boxes.GroupBy(box => (
+            X: Math.Round(box.X + box.W / 2, 2), Y: Math.Round(box.Y + box.H / 2, 2))).ToArray();
+        Assert.Equal(6, cells.Length);
+        Assert.Equal(3, cells.Count(group => group.Count() == 2));
+        Assert.Equal(3, cells.Count(group => group.Count() == 3));
+        foreach (var group in cells)
+        {
+            var rails = group.OrderBy(box => box.W).ToArray();
+            for (var index = 1; index < rails.Length; index++)
+            {
+                Assert.True(rails[index].X < rails[index - 1].X);
+                Assert.True(rails[index].Y < rails[index - 1].Y);
+                Assert.True(rails[index].X + rails[index].W > rails[index - 1].X + rails[index - 1].W);
+                Assert.True(rails[index].Y + rails[index].H > rails[index - 1].Y + rails[index - 1].H);
+                Assert.Equal(2 * rails[index].Stroke,
+                    rails[index - 1].X - rails[index].X, .02);
+            }
+        }
+    }
+
     [Theory]
     [InlineData("threeDEmboss", true)]
     [InlineData("threeDEngrave", false)]
@@ -183,7 +229,10 @@ public class WordBorderPatternTests
         Assert.Equal(3, inner.Select(box => Math.Round(box.Y, 2)).Distinct().Count());
     }
 
-    private static string ExportRawBorderStyle(string style)
+    private static string ExportRawBorderStyle(string style) =>
+        ExportRawBorderStyles((_, _) => (style, 16, "1B2530"));
+
+    private static string ExportRawBorderStyles(Func<int, int, (string Style, uint Size, string Color)> borderAt)
     {
         GlobalFontSettings.UseWindowsFontsUnderWindows = true;
         using var source = new MemoryStream();
@@ -198,10 +247,11 @@ public class WordBorderPatternTests
                 var cells = new TableRow();
                 for (var column = 0; column < 3; column++)
                 {
+                    var (style, size, color) = borderAt(row, column);
                     T Edge<T>(T border) where T : BorderType
                     {
-                        border.Size = 16;
-                        border.Color = "1B2530";
+                        border.Size = size;
+                        border.Color = color;
                         border.SetAttribute(new OpenXmlAttribute("w", "val",
                             "http://schemas.openxmlformats.org/wordprocessingml/2006/main", style));
                         return border;

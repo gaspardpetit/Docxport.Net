@@ -14972,6 +14972,10 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private static bool HasUniformDoubleCellBorders(DocumentFormat.OpenXml.Wordprocessing.Table table)
         => HasUniformCellBorders(table, "double");
 
+    private static bool HasAnyClosedDoubleCellBorders(DocumentFormat.OpenXml.Wordprocessing.Table table) =>
+        table.Elements<TableRow>().SelectMany(row => row.Elements<TableCell>())
+            .Any(cell => HasFourCellBorders(cell, "double"));
+
     private static bool HasUniformCompoundCellBorders(DocumentFormat.OpenXml.Wordprocessing.Table table) =>
         new[]
         {
@@ -14984,14 +14988,16 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         string style)
     {
         var cells = table.Elements<TableRow>().SelectMany(row => row.Elements<TableCell>()).ToArray();
-        return cells.Length > 0 && cells.All(cell =>
-        {
-            var borders = cell.TableCellProperties?.TableCellBorders;
-            return borders?.TopBorder is { } top && AttributeValue(top, "val") == style &&
-                borders.RightBorder is { } right && AttributeValue(right, "val") == style &&
-                borders.BottomBorder is { } bottom && AttributeValue(bottom, "val") == style &&
-                borders.LeftBorder is { } left && AttributeValue(left, "val") == style;
-        });
+        return cells.Length > 0 && cells.All(cell => HasFourCellBorders(cell, style));
+    }
+
+    private static bool HasFourCellBorders(TableCell cell, string style)
+    {
+        var borders = cell.TableCellProperties?.TableCellBorders;
+        return borders?.TopBorder is { } top && AttributeValue(top, "val") == style &&
+            borders.RightBorder is { } right && AttributeValue(right, "val") == style &&
+            borders.BottomBorder is { } bottom && AttributeValue(bottom, "val") == style &&
+            borders.LeftBorder is { } left && AttributeValue(left, "val") == style;
     }
 
     private bool UsePartialNativeDoubleBorders(DocumentFormat.OpenXml.Wordprocessing.Table table)
@@ -15589,6 +15595,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _doubleRowBorderPoints = 0;
         _nativeDoubleTableBorders = Enum.TryParse<BorderStyle>("Double", out _) &&
             (HasSixDoubleBorders(table) || HasUniformDoubleCellBorders(table) ||
+                HasAnyClosedDoubleCellBorders(table) ||
                 UsePartialNativeDoubleBorders(table) || HasUniformCompoundCellBorders(table));
         _previousHeaderRowCompact = false;
         _previousHeaderRowSpacingReductionPoints = 0;
