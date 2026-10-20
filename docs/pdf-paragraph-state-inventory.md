@@ -6,7 +6,7 @@ The registry's flag lookup accepts membership on either the fragment itself or i
 
 ## Runtime capability gate
 
-During PR #144, the worktree pinned `ext/PDFsharp` at `95e11d7`; that renderer exposed none of the visitor's reflection-probed callbacks. The default build now uses Pdfxport 7.0.1, and the optional submodule is pinned to the same release. Some callbacks, including `TextWidthAdjustment`, are now active, while others, including `TabLeaderLayout` and `LineEndOverhang`, remain absent. A patch to a reflection-probed callback still needs a test proving that the selected renderer executes it. The callback-backed collections below are classified by intended ownership, **not** automatically marked as validated rendering behavior.
+During PR #144, the worktree pinned `ext/PDFsharp` at `95e11d7`; that renderer exposed none of the visitor's reflection-probed callbacks. This is a historical inventory from the Pdfxport 7.0.1 integration. The tracked submodule has since been removed; a separate source checkout can still be selected with `PdfSharpSourceRoot`. Some callbacks, including `TextWidthAdjustment`, were active at that point, while others, including `TabLeaderLayout` and `LineEndOverhang`, were absent. A patch to a callback still needs a test proving that the selected renderer executes it. The callback-backed collections below are classified by intended ownership, **not** automatically marked as validated rendering behavior.
 
 ## Ownership rules
 
