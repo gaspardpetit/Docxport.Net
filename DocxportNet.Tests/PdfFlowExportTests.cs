@@ -30,6 +30,27 @@ public sealed class PdfFlowExportTests
     }
 
     [Fact]
+    public void UnsupportedBehindTextGradientIsNotRendered()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "features", "mixed-shaded-behind.docx");
+        using var docx = new MemoryStream();
+        using (var input = File.OpenRead(source)) input.CopyTo(docx);
+        docx.Position = 0;
+        using (var document = WordprocessingDocument.Open(docx, true))
+        {
+            var choice = document.MainDocumentPart!.Document.Descendants<AlternateContentChoice>().Single();
+            var anchor = choice.Descendants().First(element => element.LocalName == "anchor");
+            anchor.SetAttribute(new OpenXmlAttribute("behindDoc", "", "0"));
+            document.MainDocumentPart.Document.Save();
+        }
+        var bytes = DxpExport.ExportToBytes(docx.ToArray(), new DxpFlowPdfVisitor());
+        using var pdf = PdfReader.Open(new MemoryStream(bytes), PdfDocumentOpenMode.Import);
+        Assert.Null(pdf.Pages[0].Resources.Elements.GetDictionary("/Pattern"));
+    }
+
+    [Fact]
     public void EvaluatedMergeFieldsUseWordPlaceholdersInMarginStories()
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;

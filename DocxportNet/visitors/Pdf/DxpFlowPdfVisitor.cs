@@ -1622,7 +1622,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 RenderContinuousParagraphSideBorders(renderer, pageAware);
                 RenderFooterImages(renderer, pageAware);
                 RenderParagraphAnchoredImages(renderer, pageAware);
-                RenderPageGradientRectangles(renderer, pageAware);
                 RenderMathFractions(renderer, pageAware);
                 RenderMathRadicals(renderer, pageAware);
                 using var emphasized = RenderEmphasisMarks(renderer, pageAware,
@@ -1679,7 +1678,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 RenderContinuousParagraphSideBorders(renderer);
                 RenderFooterImages(renderer);
                 RenderParagraphAnchoredImages(renderer);
-                RenderPageGradientRectangles(renderer);
                 RenderMathFractions(renderer);
                 RenderMathRadicals(renderer);
                 using var emphasized = RenderEmphasisMarks(renderer);
@@ -1741,7 +1739,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             RenderContinuousParagraphSideBorders(renderer, combined);
             RenderFooterImages(renderer, combined);
             RenderParagraphAnchoredImages(renderer, combined);
-            RenderPageGradientRectangles(renderer, combined);
             RenderMathFractions(renderer, combined);
             RenderMathRadicals(renderer, combined);
             using var emphasizedCombined = RenderEmphasisMarks(renderer, combined);
@@ -2831,9 +2828,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         (choice.Descendants<TextBoxContent>().Any(textBox => textBox.Ancestors<Drawing>().Any(drawing =>
             drawing.Descendants().Any(element => element.LocalName is "anchor" or "inline" &&
                 element.ChildElements.Any(child => child.LocalName == "extent")))) ||
-         choice.Descendants<Drawing>().Any(drawing => drawing.Descendants().Any(element =>
-             element.LocalName == "gradFill" && element.Parent?.LocalName == "spPr" &&
-             element.Parent.Parent?.LocalName == "wsp")));
+         choice.Descendants<Drawing>().Any(drawing => ParsePageGradientRectangle(drawing) != null));
 
     public override IDisposable VisitTextBoxContentBegin(TextBoxContent textBox, DxpIDocumentContext context)
     {
@@ -8557,39 +8552,22 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private sealed record FloatingTextWrap(double Left, double Right);
 
     private sealed record PageGradientRectangle(double Left, double Top, double Width, double Height,
-        XColor FirstColor, XColor LastColor, double AngleDegrees);
+        XColor FirstColor, XColor LastColor, double AngleDegrees, long ZOrder);
 
-    private void RenderPageGradientRectangles(PdfDocumentRenderer renderer, PdfDocument? target = null)
+    private static void DrawPageGradientRectangle(XGraphics graphics, PageGradientRectangle rectangle)
     {
-        if (_pageGradientRectangles.Count == 0) return;
-        for (var index = 0; index < renderer.PageCount; index++)
-        {
-            var paragraphs = renderer.DocumentRenderer.GetRenderInfoFromPage(index + 1)
-                .Select(info => info.DocumentObject)
-                .OfType<MigraDoc.DocumentObjectModel.Paragraph>()
-                .Distinct();
-            foreach (var paragraph in paragraphs)
-            {
-                if (!_pageGradientRectangles.TryGetValue(paragraph, out var rectangles)) continue;
-                foreach (var rectangle in rectangles)
-                {
-                    using var graphics = XGraphics.FromPdfPage((target ?? renderer.PdfDocument).Pages[index],
-                        XGraphicsPdfPageOptions.Prepend);
-                    var radians = rectangle.AngleDegrees * Math.PI / 180;
-                    var centerX = rectangle.Left + rectangle.Width / 2;
-                    var centerY = rectangle.Top + rectangle.Height / 2;
-                    var radius = (Math.Abs(rectangle.Width * Math.Cos(radians)) +
-                        Math.Abs(rectangle.Height * Math.Sin(radians))) / 2;
-                    var dx = Math.Cos(radians) * radius;
-                    var dy = Math.Sin(radians) * radius;
-                    var brush = new XLinearGradientBrush(new XPoint(centerX - dx, centerY - dy),
-                        new XPoint(centerX + dx, centerY + dy), rectangle.FirstColor,
-                        rectangle.LastColor);
-                    graphics.DrawRectangle(brush, rectangle.Left, rectangle.Top,
-                        rectangle.Width, rectangle.Height);
-                }
-            }
-        }
+        var radians = rectangle.AngleDegrees * Math.PI / 180;
+        var centerX = rectangle.Left + rectangle.Width / 2;
+        var centerY = rectangle.Top + rectangle.Height / 2;
+        var radius = (Math.Abs(rectangle.Width * Math.Cos(radians)) +
+            Math.Abs(rectangle.Height * Math.Sin(radians))) / 2;
+        var dx = Math.Cos(radians) * radius;
+        var dy = Math.Sin(radians) * radius;
+        var brush = new XLinearGradientBrush(new XPoint(centerX - dx, centerY - dy),
+            new XPoint(centerX + dx, centerY + dy), rectangle.FirstColor,
+            rectangle.LastColor);
+        graphics.DrawRectangle(brush, rectangle.Left, rectangle.Top,
+            rectangle.Width, rectangle.Height);
     }
 
     private void ClipExactLineImages(PdfDocumentRenderer renderer, PdfDocument document)
@@ -8656,7 +8634,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
 
     private void RenderParagraphAnchoredImages(PdfDocumentRenderer renderer, PdfDocument? target = null)
     {
-        if (_paragraphImages.Count == 0 && _flowReservedParagraphImages.Count == 0) return;
+        if (_paragraphImages.Count == 0 && _flowReservedParagraphImages.Count == 0 &&
+            _pageGradientRectangles.Count == 0) return;
         var drawnParagraphs = new HashSet<MigraDoc.DocumentObjectModel.Paragraph>();
         Section? previousSection = null;
         var sectionPage = 0;
@@ -8687,25 +8666,38 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                         imageArea.Y.Point + reservedOverlay.Top, reservedOverlay.Width, reservedOverlay.Height);
                 }
                 if (info.DocumentObject is not MigraDoc.DocumentObjectModel.Paragraph paragraph ||
-                    !_paragraphImages.TryGetValue(paragraph, out var images) ||
                     info.LayoutInfo.ContentArea is not { } area ||
                     !drawnParagraphs.Add(paragraph)) continue;
-                foreach (var overlay in images.Where(image => image.BehindDocument)
-                             .OrderByDescending(image => image.ZOrder)
-                             .Concat(images.Where(image => !image.BehindDocument)
-                                 .OrderBy(image => image.ZOrder)))
+                _paragraphImages.TryGetValue(paragraph, out var images);
+                _pageGradientRectangles.TryGetValue(paragraph, out var rectangles);
+                var overlays = (images ?? Enumerable.Empty<ParagraphImageOverlay>())
+                    .Select(image => (Image: image, Gradient: (PageGradientRectangle?)null,
+                        image.ZOrder, image.BehindDocument))
+                    .Concat((rectangles ?? Enumerable.Empty<PageGradientRectangle>())
+                        .Select(gradient => (Image: (ParagraphImageOverlay?)null,
+                            Gradient: gradient, gradient.ZOrder, BehindDocument: true)));
+                foreach (var overlay in overlays.Where(item => item.BehindDocument)
+                             .OrderByDescending(item => item.ZOrder)
+                             .Concat(overlays.Where(item => !item.BehindDocument)
+                                 .OrderBy(item => item.ZOrder)))
                 {
                     using var graphics = XGraphics.FromPdfPage((target ?? renderer.PdfDocument).Pages[index],
                         overlay.BehindDocument ? XGraphicsPdfPageOptions.Prepend : XGraphicsPdfPageOptions.Append);
-                    using var stream = new MemoryStream(overlay.Bytes);
+                    if (overlay.Gradient is { } gradient)
+                    {
+                        DrawPageGradientRectangle(graphics, gradient);
+                        continue;
+                    }
+                    var imageOverlay = overlay.Image!;
+                    using var stream = new MemoryStream(imageOverlay.Bytes);
                     using var image = XImage.FromStream(stream);
-                    graphics.DrawImage(image, overlay.PageRelative
-                            ? MirroredPageImageLeft(overlay.Left, overlay.Width,
+                    graphics.DrawImage(image, imageOverlay.PageRelative
+                            ? MirroredPageImageLeft(imageOverlay.Left, imageOverlay.Width,
                                 renderer.PdfDocument.Pages[index].Width.Point, displayedPage,
-                                overlay.MirrorHorizontal)
-                            : area.X.Point + overlay.Left,
-                        overlay.PageRelative ? overlay.Top : area.Y.Point + overlay.Top,
-                        overlay.Width, overlay.Height);
+                                imageOverlay.MirrorHorizontal)
+                            : area.X.Point + imageOverlay.Left,
+                        imageOverlay.PageRelative ? imageOverlay.Top : area.Y.Point + imageOverlay.Top,
+                        imageOverlay.Width, imageOverlay.Height);
                 }
             }
         }
@@ -14753,16 +14745,26 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private bool TryAddPageGradientRectangle(Drawing drawing)
     {
         if (_paragraph == null) return false;
+        var rectangle = ParsePageGradientRectangle(drawing);
+        if (rectangle == null) return false;
+        if (!_pageGradientRectangles.TryGetValue(_paragraph, out var rectangles))
+            _pageGradientRectangles[_paragraph] = rectangles = new List<PageGradientRectangle>();
+        rectangles.Add(rectangle);
+        return true;
+    }
+
+    private PageGradientRectangle? ParsePageGradientRectangle(Drawing drawing)
+    {
         var anchor = drawing.Descendants().FirstOrDefault(element => element.LocalName == "anchor");
         if (anchor?.GetAttribute("behindDoc", "").Value != "1" ||
             anchor.ChildElements.FirstOrDefault(element => element.LocalName == "positionH") is not { } horizontal ||
             anchor.ChildElements.FirstOrDefault(element => element.LocalName == "positionV") is not { } vertical ||
             horizontal.GetAttribute("relativeFrom", "").Value != "page" ||
-            vertical.GetAttribute("relativeFrom", "").Value != "page") return false;
+            vertical.GetAttribute("relativeFrom", "").Value != "page") return null;
         var shape = anchor.Descendants().FirstOrDefault(element => element.LocalName == "wsp");
         var properties = shape?.ChildElements.FirstOrDefault(element => element.LocalName == "spPr");
         if (properties?.Descendants().FirstOrDefault(element => element.LocalName == "prstGeom")?
-                .GetAttribute("prst", "").Value != "rect") return false;
+                .GetAttribute("prst", "").Value != "rect") return null;
         var gradient = properties.ChildElements.FirstOrDefault(element => element.LocalName == "gradFill");
         var stops = gradient?.Descendants().Where(element => element.LocalName == "gs").ToArray();
         var extent = anchor.ChildElements.FirstOrDefault(element => element.LocalName == "extent");
@@ -14772,16 +14774,15 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             !TryDrawingGradientColor(stops[1], out var last) ||
             !long.TryParse(leftOffset, out var left) || !long.TryParse(topOffset, out var top) ||
             !long.TryParse(extent?.GetAttribute("cx", "").Value, out var width) ||
-            !long.TryParse(extent?.GetAttribute("cy", "").Value, out var height)) return false;
+            !long.TryParse(extent?.GetAttribute("cy", "").Value, out var height)) return null;
         var angleValue = gradient?.Descendants().FirstOrDefault(element => element.LocalName == "lin")?
             .GetAttribute("ang", "").Value;
         var angle = double.TryParse(angleValue, NumberStyles.Float, CultureInfo.InvariantCulture,
             out var drawingAngle) ? drawingAngle / 60000 : 0;
-        if (!_pageGradientRectangles.TryGetValue(_paragraph, out var rectangles))
-            _pageGradientRectangles[_paragraph] = rectangles = new List<PageGradientRectangle>();
-        rectangles.Add(new PageGradientRectangle(left / 12700.0, top / 12700.0,
-            width / 12700.0, height / 12700.0, first, last, angle));
-        return true;
+        long.TryParse(anchor.GetAttribute("relativeHeight", "").Value,
+            NumberStyles.Integer, CultureInfo.InvariantCulture, out var zOrder);
+        return new PageGradientRectangle(left / 12700.0, top / 12700.0,
+            width / 12700.0, height / 12700.0, first, last, angle, zOrder);
     }
 
     private bool TryDrawingGradientColor(OpenXmlElement stop, out XColor result)
