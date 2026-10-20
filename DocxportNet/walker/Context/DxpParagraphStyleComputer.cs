@@ -50,7 +50,13 @@ internal static class DxpParagraphStyleComputer
             spacing = r.GetEffectiveParagraphSpacing(p);
         }
         var background = ComputeBackground(shd);
-        var (marginTopPt, marginBottomPt, lineHeightCss) = ComputeSpacing(spacing);
+        var (marginTopPt, marginBottomPt, _) = ComputeSpacing(spacing);
+        // Contextual spacing affects paragraph margins. Preserve the existing HTML/Markdown
+        // behavior for line height: emit it only when the paragraph/style explicitly supplies it.
+        var lineSpacing = d.Styles is DxpStyleResolver lineResolver
+            ? lineResolver.GetParagraphSpacing(p)
+            : p.ParagraphProperties?.SpacingBetweenLines;
+        var (_, _, lineHeightCss) = ComputeSpacing(lineSpacing);
 
         return new DxpComputedParagraphStyle(
             MarginLeftPt: marginLeftPt,
