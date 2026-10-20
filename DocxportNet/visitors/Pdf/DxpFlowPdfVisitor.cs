@@ -4482,6 +4482,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         pen.DashStyle = border.LineStyle switch
         {
             DxpComputedBorderLineStyle.Dashed => XDashStyle.Dash,
+            DxpComputedBorderLineStyle.DashDot => XDashStyle.DashDot,
+            DxpComputedBorderLineStyle.DashDotDot => XDashStyle.DashDotDot,
             DxpComputedBorderLineStyle.Dotted => XDashStyle.Dot,
             _ => XDashStyle.Solid
         };
@@ -14970,6 +14972,37 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             borders.InsideVerticalBorder?.Val?.Value == BorderValues.Double;
     }
 
+    private static bool HasUniformDoubleCellBorders(DocumentFormat.OpenXml.Wordprocessing.Table table)
+        => HasUniformCellBorders(table, "double");
+
+    private static bool HasAnyClosedDoubleCellBorders(DocumentFormat.OpenXml.Wordprocessing.Table table) =>
+        table.Elements<TableRow>().SelectMany(row => row.Elements<TableCell>())
+            .Any(cell => HasFourCellBorders(cell, "double"));
+
+    private static bool HasUniformCompoundCellBorders(DocumentFormat.OpenXml.Wordprocessing.Table table) =>
+        new[]
+        {
+            "triple", "thinThickSmallGap", "thickThinSmallGap", "thinThickThinSmallGap",
+            "thinThickMediumGap", "thickThinMediumGap", "thinThickThinMediumGap",
+            "thinThickLargeGap", "thickThinLargeGap", "thinThickThinLargeGap"
+        }.Any(style => HasUniformCellBorders(table, style));
+
+    private static bool HasUniformCellBorders(DocumentFormat.OpenXml.Wordprocessing.Table table,
+        string style)
+    {
+        var cells = table.Elements<TableRow>().SelectMany(row => row.Elements<TableCell>()).ToArray();
+        return cells.Length > 0 && cells.All(cell => HasFourCellBorders(cell, style));
+    }
+
+    private static bool HasFourCellBorders(TableCell cell, string style)
+    {
+        var borders = cell.TableCellProperties?.TableCellBorders;
+        return borders?.TopBorder is { } top && AttributeValue(top, "val") == style &&
+            borders.RightBorder is { } right && AttributeValue(right, "val") == style &&
+            borders.BottomBorder is { } bottom && AttributeValue(bottom, "val") == style &&
+            borders.LeftBorder is { } left && AttributeValue(left, "val") == style;
+    }
+
     private bool UsePartialNativeDoubleBorders(DocumentFormat.OpenXml.Wordprocessing.Table table)
     {
         var borders = table.TableProperties?.TableBorders;
@@ -15564,7 +15597,9 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _tableParagraphSpacing = null;
         _doubleRowBorderPoints = 0;
         _nativeDoubleTableBorders = Enum.TryParse<BorderStyle>("Double", out _) &&
-            (HasSixDoubleBorders(table) || UsePartialNativeDoubleBorders(table));
+            (HasSixDoubleBorders(table) || HasUniformDoubleCellBorders(table) ||
+                HasAnyClosedDoubleCellBorders(table) ||
+                UsePartialNativeDoubleBorders(table) || HasUniformCompoundCellBorders(table));
         _previousHeaderRowCompact = false;
         _previousHeaderRowSpacingReductionPoints = 0;
         if (_container is Section firstSection && table.Parent is Body && table.PreviousSibling() == null &&
@@ -16644,8 +16679,12 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         {
             DxpComputedBorderLineStyle.Dotted => BorderStyle.Dot,
             DxpComputedBorderLineStyle.Dashed => BorderStyle.DashSmallGap,
+            DxpComputedBorderLineStyle.DashDot => BorderStyle.DashDot,
+            DxpComputedBorderLineStyle.DashDotDot => BorderStyle.DashDotDot,
             DxpComputedBorderLineStyle.Double when _nativeDoubleTableBorders &&
                 Enum.TryParse<BorderStyle>("Double", out var nativeDouble) => nativeDouble,
+            >= DxpComputedBorderLineStyle.Triple when
+                Enum.TryParse<BorderStyle>(source.LineStyle.ToString(), out var nativeCompound) => nativeCompound,
             _ => BorderStyle.Single
         };
         if (ParseColor(source.ColorCss) is { } color)

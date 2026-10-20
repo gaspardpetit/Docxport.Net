@@ -88,6 +88,8 @@ public static class DxpComputedTableStyleCssExtensions
             DxpComputedBorderLineStyle.Solid => "solid",
             DxpComputedBorderLineStyle.Dotted => "dotted",
             DxpComputedBorderLineStyle.Dashed => "dashed",
+            DxpComputedBorderLineStyle.DashDot => "dashed",
+            DxpComputedBorderLineStyle.DashDotDot => "dashed",
             DxpComputedBorderLineStyle.Double => "double",
             _ => "solid"
         };

@@ -406,12 +406,22 @@ internal sealed class DxpTableStyleResolver
         if (string.Equals(val, "dotted", StringComparison.OrdinalIgnoreCase))
             line = DxpComputedBorderLineStyle.Dotted;
         else if (string.Equals(val, "dashed", StringComparison.OrdinalIgnoreCase) ||
-                 string.Equals(val, "dashSmallGap", StringComparison.OrdinalIgnoreCase) ||
-                 string.Equals(val, "dotDash", StringComparison.OrdinalIgnoreCase) ||
-                 string.Equals(val, "dotDotDash", StringComparison.OrdinalIgnoreCase))
+                 string.Equals(val, "dashSmallGap", StringComparison.OrdinalIgnoreCase))
             line = DxpComputedBorderLineStyle.Dashed;
+        else if (string.Equals(val, "dotDash", StringComparison.OrdinalIgnoreCase))
+            line = DxpComputedBorderLineStyle.DashDot;
+        else if (string.Equals(val, "dotDotDash", StringComparison.OrdinalIgnoreCase))
+            line = DxpComputedBorderLineStyle.DashDotDot;
         else if (string.Equals(val, "double", StringComparison.OrdinalIgnoreCase))
             line = DxpComputedBorderLineStyle.Double;
+        else if (string.Equals(val, "triple", StringComparison.OrdinalIgnoreCase))
+            line = DxpComputedBorderLineStyle.Triple;
+        else if (string.Equals(val, "threeDEmboss", StringComparison.OrdinalIgnoreCase))
+            line = DxpComputedBorderLineStyle.Emboss3D;
+        else if (string.Equals(val, "threeDEngrave", StringComparison.OrdinalIgnoreCase))
+            line = DxpComputedBorderLineStyle.Engrave3D;
+        else if (Enum.TryParse<DxpComputedBorderLineStyle>(val, true, out var compound))
+            line = compound;
 
         string? color = GetAttributeValue(b, "color");
         if (string.IsNullOrEmpty(color) || string.Equals(color, "auto", StringComparison.OrdinalIgnoreCase))
@@ -438,7 +448,9 @@ internal sealed class DxpTableStyleResolver
         if (b == null)
             return null;
 
-        var val = b.Val?.Value;
+        BorderValues? val;
+        try { val = b.Val?.Value; }
+        catch (FormatException) { val = null; }
         if (val == BorderValues.None || val == BorderValues.Nil)
             return new DxpComputedBorder(WidthPt: 0, LineStyle: DxpComputedBorderLineStyle.None, ColorCss: "#000000");
 
@@ -447,7 +459,7 @@ internal sealed class DxpTableStyleResolver
             return null;
 
         double pt = sizeEighthPoints / 8.0;
-        var line = MapLineStyle(val);
+        var line = MapLineStyle(val, b.Val?.InnerText);
         string? color = b.Color?.Value;
         if (string.IsNullOrEmpty(color) || string.Equals(color, "auto", StringComparison.OrdinalIgnoreCase))
             color = "#000000";
@@ -460,14 +472,26 @@ internal sealed class DxpTableStyleResolver
             ColorCss: color);
     }
 
-    private static DxpComputedBorderLineStyle MapLineStyle(BorderValues? val)
+    private static DxpComputedBorderLineStyle MapLineStyle(BorderValues? val, string? raw)
     {
         if (val == BorderValues.Dotted)
             return DxpComputedBorderLineStyle.Dotted;
-        if (val == BorderValues.DashSmallGap || val == BorderValues.Dashed || val == BorderValues.DotDash || val == BorderValues.DotDotDash)
+        if (val == BorderValues.DashSmallGap || val == BorderValues.Dashed)
             return DxpComputedBorderLineStyle.Dashed;
+        if (val == BorderValues.DotDash)
+            return DxpComputedBorderLineStyle.DashDot;
+        if (val == BorderValues.DotDotDash)
+            return DxpComputedBorderLineStyle.DashDotDot;
         if (val == BorderValues.Double)
             return DxpComputedBorderLineStyle.Double;
+        if (val == BorderValues.Triple)
+            return DxpComputedBorderLineStyle.Triple;
+        if (string.Equals(raw, "threeDEmboss", StringComparison.OrdinalIgnoreCase))
+            return DxpComputedBorderLineStyle.Emboss3D;
+        if (string.Equals(raw, "threeDEngrave", StringComparison.OrdinalIgnoreCase))
+            return DxpComputedBorderLineStyle.Engrave3D;
+        if (raw != null && Enum.TryParse<DxpComputedBorderLineStyle>(raw, true, out var compound))
+            return compound;
         return DxpComputedBorderLineStyle.Solid;
     }
 

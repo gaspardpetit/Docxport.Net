@@ -128,7 +128,9 @@ internal static class DxpParagraphStyleComputer
         if (b == null)
             return null;
 
-        var val = b.Val?.Value;
+        BorderValues? val;
+        try { val = b.Val?.Value; }
+        catch (FormatException) { val = null; }
         // For paragraphs, treat "none/nil" as absent to avoid emitting redundant `border-*:none`.
         if (val == BorderValues.None || val == BorderValues.Nil)
             return null;
@@ -152,8 +154,12 @@ internal static class DxpParagraphStyleComputer
     {
         if (val == BorderValues.Dotted)
             return DxpComputedBorderLineStyle.Dotted;
-        if (val == BorderValues.DashSmallGap || val == BorderValues.Dashed || val == BorderValues.DotDash || val == BorderValues.DotDotDash)
+        if (val == BorderValues.DashSmallGap || val == BorderValues.Dashed)
             return DxpComputedBorderLineStyle.Dashed;
+        if (val == BorderValues.DotDash)
+            return DxpComputedBorderLineStyle.DashDot;
+        if (val == BorderValues.DotDotDash)
+            return DxpComputedBorderLineStyle.DashDotDot;
         if (val == BorderValues.Double)
             return DxpComputedBorderLineStyle.Double;
         return DxpComputedBorderLineStyle.Solid;

@@ -11,6 +11,7 @@
 		<RootNamespace>DocxportNet</RootNamespace>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+		<UsePdfSharpSource Condition="'$(UsePdfSharpSource)' == ''">true</UsePdfSharpSource>
 		<PdfSharpSourceRoot Condition="'$(UsePdfSharpSource)' == 'true' and '$(PdfSharpSourceRoot)' == ''">$(MSBuildThisFileDirectory)../ext/PDFsharp</PdfSharpSourceRoot>
 	</PropertyGroup>
 

@@ -6,7 +6,24 @@ public enum DxpComputedBorderLineStyle
     Solid,
     Dotted,
     Dashed,
-    Double
+    DashDot,
+    DashDotDot,
+    Double,
+    Triple,
+    ThinThickSmallGap,
+    ThickThinSmallGap,
+    ThinThickThinSmallGap,
+    ThinThickMediumGap,
+    ThickThinMediumGap,
+    ThinThickThinMediumGap,
+    ThinThickLargeGap,
+    ThickThinLargeGap,
+    ThinThickThinLargeGap,
+    Wave,
+    DoubleWave,
+    DashDotStroked,
+    Emboss3D,
+    Engrave3D
 }
 
 public sealed record DxpComputedBorder(
