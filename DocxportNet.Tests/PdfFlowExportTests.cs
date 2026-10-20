@@ -535,6 +535,23 @@ public sealed class PdfFlowExportTests
     }
 
     [Fact]
+    public void ExplicitNextPageOddRestartInsertsBlankPageForOddEvenHeaders()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "legacy", "WordMixedGeometrySectionStories.docx");
+
+        var bytes = DxpExport.ExportToBytes(source, new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(bytes));
+        Assert.Equal(4, pdf.NumberOfPages);
+        Assert.Contains("Landscapebody", pdf.GetPage(1).Text);
+        Assert.Empty(pdf.GetPage(2).Text);
+        Assert.Contains("Portraitbody", pdf.GetPage(3).Text);
+        Assert.Contains("Portraitlaterbody", pdf.GetPage(4).Text);
+    }
+
+    [Fact]
     public void PreservesSignedTopMargin()
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;

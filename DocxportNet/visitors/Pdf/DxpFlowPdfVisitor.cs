@@ -2512,6 +2512,11 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             page.SectionStart = BreakType.BreakNextPage;
         // Word keeps an odd restarted page number on an odd physical page when
         // distinct odd/even headers are enabled, inserting a blank page if needed.
+        if (properties.GetFirstChild<SectionType>()?.Val?.Value == SectionMarkValues.NextPage &&
+            _evenAndOddHeaders &&
+            properties.GetFirstChild<PageNumberType>()?.Start?.Value is int numberedStart &&
+            numberedStart % 2 == 1 && _document.Sections.Count > 1)
+            page.SectionStart = BreakType.BreakOddPage;
         if (properties.GetFirstChild<PageNumberType>()?.Start?.Value is int start)
             page.StartingNumber = start;
         page.PageWidth = Unit.FromPoint(layout.PageSize?.Width?.Value is uint width ? width / 20.0 : 612);
