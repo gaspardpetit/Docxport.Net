@@ -130,25 +130,30 @@ public class StyleResolverDuplicateStylesTests : TestBase<StyleResolverDuplicate
         Assert.False(toggled.Bold);
         Assert.False(toggled.Italic);
         Assert.False(toggled.Strike);
-        Assert.False(toggled.DoubleStrike);
+        Assert.True(toggled.DoubleStrike); // Double strike is an ordinary on/off property, not a toggle.
         Assert.True(resolver.ResolveRunStyle(paragraph, runs[2]).Bold);
         Assert.True(resolver.ResolveRunStyle(paragraph, runs[3]).Bold);
     }
 
     [Fact]
-    public void CharacterStyleToggle_UsesEachBaseStyleResult()
+    public void CharacterStyleToggle_UsesNearestValueWithinBasedOnChain()
     {
         using var doc = CreateDocument((body, styles) => {
             styles.Append(new Style {
+                StyleId = "ParagraphStyle", Type = StyleValues.Paragraph,
+                StyleRunProperties = new StyleRunProperties(new Strike())
+            });
+            styles.Append(new Style {
                 StyleId = "Base", Type = StyleValues.Character,
-                StyleRunProperties = new StyleRunProperties(new Bold())
+                StyleRunProperties = new StyleRunProperties(new Bold(), new Strike())
             });
             styles.Append(new Style {
                 StyleId = "Derived", Type = StyleValues.Character,
                 BasedOn = new BasedOn { Val = "Base" },
-                StyleRunProperties = new StyleRunProperties(new Bold())
+                StyleRunProperties = new StyleRunProperties(new Bold(), new Strike())
             });
             body.Append(new Paragraph(
+                new ParagraphProperties(new ParagraphStyleId { Val = "ParagraphStyle" }),
                 new Run(new RunProperties(new RunStyle { Val = "Base" }), new Text("base")),
                 new Run(new RunProperties(new RunStyle { Val = "Derived" }), new Text("derived"))));
         });
@@ -158,7 +163,9 @@ public class StyleResolverDuplicateStylesTests : TestBase<StyleResolverDuplicate
         var runs = paragraph.Elements<Run>().ToArray();
 
         Assert.True(resolver.ResolveRunStyle(paragraph, runs[0]).Bold);
-        Assert.False(resolver.ResolveRunStyle(paragraph, runs[1]).Bold);
+        Assert.True(resolver.ResolveRunStyle(paragraph, runs[1]).Bold);
+        Assert.False(resolver.ResolveRunStyle(paragraph, runs[0]).Strike);
+        Assert.False(resolver.ResolveRunStyle(paragraph, runs[1]).Strike);
     }
 
     [Fact]
