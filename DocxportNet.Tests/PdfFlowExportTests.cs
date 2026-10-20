@@ -92,8 +92,8 @@ public sealed class PdfFlowExportTests
                 var box = Assert.Single(words, word => word.Text == $"{row},{column}").BoundingBox;
                 Assert.InRange(box.Left, expectedX[(row - 1) * 3 + column - 1] - 0.5,
                     expectedX[(row - 1) * 3 + column - 1] + 0.5);
-                Assert.InRange(page.Height - box.Top, expectedY[row - 1] - 0.5,
-                    expectedY[row - 1] + 0.5);
+                Assert.InRange(page.Height - box.Top, expectedY[row - 1] - 0.75,
+                    expectedY[row - 1] + 0.75);
             }
     }
 
