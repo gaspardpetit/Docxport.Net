@@ -1,3 +1,4 @@
+using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
@@ -421,7 +422,9 @@ public static class DxpListMarkerFormatter
 public class DxpLists
 {
     private DxpNumberingResolver? _num;
-    private readonly DxpListTracker _lists = new();
+    private readonly Dictionary<OpenXmlElement, DxpListTracker> _listsByStory =
+        new(ReferenceEqualityComparer.Instance);
+    private readonly DxpListTracker _marginLists = new();
 
     public DxpLists()
     {
@@ -435,6 +438,8 @@ public class DxpLists
     internal void Init(WordprocessingDocument doc)
     {
         _num = new DxpNumberingResolver(doc);
+        _listsByStory.Clear();
+        _marginLists.ClearAll();
     }
 
     internal DxpMarker MaterializeMarker(Paragraph p, DxpIStyleResolver s)
@@ -449,7 +454,15 @@ public class DxpLists
             if (numPr != null)
             {
                 var culture = ResolveListCulture(p, s);
-                marker = DxpListMarkerFormatter.TryBuildMarkerText(numPr, _num, _lists, culture);
+                var ancestors = p.Ancestors().ToArray();
+                var lists = _marginLists;
+                if (!ancestors.Any(element => element is Header or Footer))
+                {
+                    var story = ancestors.LastOrDefault() ?? p;
+                    if (!_listsByStory.TryGetValue(story, out lists))
+                        _listsByStory[story] = lists = new DxpListTracker();
+                }
+                marker = DxpListMarkerFormatter.TryBuildMarkerText(numPr, _num, lists, culture);
                 numId = numPr.NumId;
                 iLvl = numPr.Ilvl;
             }

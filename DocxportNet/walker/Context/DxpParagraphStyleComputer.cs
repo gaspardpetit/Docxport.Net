@@ -47,7 +47,7 @@ internal static class DxpParagraphStyleComputer
         {
             borders = ComputeBorders(r.GetParagraphBorders(p));
             shd = r.GetParagraphShading(p);
-            spacing = r.GetParagraphSpacing(p);
+            spacing = r.GetEffectiveParagraphSpacing(p);
         }
         var background = ComputeBackground(shd);
         var (marginTopPt, marginBottomPt, lineHeightCss) = ComputeSpacing(spacing);
