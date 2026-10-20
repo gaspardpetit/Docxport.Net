@@ -13989,6 +13989,9 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     public override void VisitComplexFieldCachedResultText(string text, DxpIDocumentContext context)
     {
         if (_hiddenRun) return;
+        if (context.CurrentFields.Current is { InstructionText: string askInstruction } &&
+            DxpFieldInstructionClassifier.IsAskInstruction(askInstruction))
+            return;
         if (UseCachedMarginMergePlaceholders &&
             (_container is HeaderFooter || _container is Cell && _tableInHeaderFooter) &&
             context.CurrentFields.Current is { InstructionText: string mergeInstruction } mergeFrame &&
