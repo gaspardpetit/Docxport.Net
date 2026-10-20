@@ -29,8 +29,11 @@ public sealed class PdfFlowExportTests
         Assert.Contains("Mixedrails", text.GetPage(1).Text);
     }
 
-    [Fact]
-    public void UnsupportedBehindTextGradientIsNotRendered()
+    [Theory]
+    [InlineData("foreground")]
+    [InlineData("interiorStop")]
+    [InlineData("shade")]
+    public void UnsupportedBehindTextGradientIsNotRendered(string variation)
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
         var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
@@ -41,8 +44,19 @@ public sealed class PdfFlowExportTests
         using (var document = WordprocessingDocument.Open(docx, true))
         {
             var choice = document.MainDocumentPart!.Document.Descendants<AlternateContentChoice>().Single();
-            var anchor = choice.Descendants().First(element => element.LocalName == "anchor");
-            anchor.SetAttribute(new OpenXmlAttribute("behindDoc", "", "0"));
+            var element = variation switch
+            {
+                "foreground" => choice.Descendants().First(child => child.LocalName == "anchor"),
+                "interiorStop" => choice.Descendants().First(child => child.LocalName == "gs"),
+                _ => choice.Descendants().First(child => child.LocalName == "shade")
+            };
+            var attribute = variation switch
+            {
+                "foreground" => "behindDoc",
+                "interiorStop" => "pos",
+                _ => "val"
+            };
+            element.SetAttribute(new OpenXmlAttribute(attribute, "", variation == "foreground" ? "0" : "25000"));
             document.MainDocumentPart.Document.Save();
         }
         var bytes = DxpExport.ExportToBytes(docx.ToArray(), new DxpFlowPdfVisitor());

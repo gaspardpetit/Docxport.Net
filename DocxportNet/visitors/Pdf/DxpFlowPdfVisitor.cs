@@ -14755,6 +14755,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
 
     private PageGradientRectangle? ParsePageGradientRectangle(Drawing drawing)
     {
+        // Header/footer stories repeat across pages; body paragraph overlays do not.
+        if (_container is HeaderFooter) return null;
         var anchor = drawing.Descendants().FirstOrDefault(element => element.LocalName == "anchor");
         if (anchor?.GetAttribute("behindDoc", "").Value != "1" ||
             anchor.ChildElements.FirstOrDefault(element => element.LocalName == "positionH") is not { } horizontal ||
@@ -14770,7 +14772,10 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         var extent = anchor.ChildElements.FirstOrDefault(element => element.LocalName == "extent");
         var leftOffset = horizontal.ChildElements.FirstOrDefault(element => element.LocalName == "posOffset")?.InnerText;
         var topOffset = vertical.ChildElements.FirstOrDefault(element => element.LocalName == "posOffset")?.InnerText;
-        if (stops is not [_, _] || !TryDrawingGradientColor(stops[0], out var first) ||
+        if (stops is not [_, _] ||
+            stops[0].GetAttribute("pos", "").Value != "0" ||
+            stops[1].GetAttribute("pos", "").Value != "100000" ||
+            !TryDrawingGradientColor(stops[0], out var first) ||
             !TryDrawingGradientColor(stops[1], out var last) ||
             !long.TryParse(leftOffset, out var left) || !long.TryParse(topOffset, out var top) ||
             !long.TryParse(extent?.GetAttribute("cx", "").Value, out var width) ||
@@ -14790,6 +14795,19 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         result = XColors.Transparent;
         var element = stop.ChildElements.FirstOrDefault();
         if (element == null) return false;
+        foreach (var transform in element.ChildElements)
+        {
+            var neutral = transform.LocalName switch
+            {
+                "tint" => true,
+                "satMod" => true,
+                "shade" or "lumMod" or "alpha" =>
+                    transform.GetAttribute("val", "").Value == "100000",
+                "lumOff" => transform.GetAttribute("val", "").Value == "0",
+                _ => false
+            };
+            if (!neutral) return false;
+        }
         var color = element.LocalName == "srgbClr"
             ? ParseColor("#" + element.GetAttribute("val", "").Value)
             : element.LocalName == "schemeClr"
