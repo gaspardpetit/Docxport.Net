@@ -67,25 +67,6 @@ public struct DxpEffectiveRunStyleBuilder
         );
     }
 
-    public static void ApplyCharacterStyleRunProperties(StyleRunProperties? properties,
-        Func<string, string?>? themeFontResolver, ref DxpEffectiveRunStyleBuilder acc)
-    {
-        if (properties == null)
-            return;
-
-        var previous = acc;
-        ApplyStyleRunProperties(properties, themeFontResolver, ref acc);
-
-        if (properties.Bold != null)
-            acc.Bold = properties.Bold.Val?.Value == false ? previous.Bold : !(previous.Bold ?? false);
-        if (properties.Italic != null)
-            acc.Italic = properties.Italic.Val?.Value == false ? previous.Italic : !(previous.Italic ?? false);
-        if (properties.Strike != null)
-            acc.Strike = properties.Strike.Val?.Value == false ? previous.Strike : !(previous.Strike ?? false);
-        if (properties.DoubleStrike != null)
-            acc.DoubleStrike = properties.DoubleStrike.Val?.Value == false ? previous.DoubleStrike : !(previous.DoubleStrike ?? false);
-    }
-
     public static void ApplyRunPropertiesBaseStyle(RunPropertiesBaseStyle? rp, Func<string, string?>? themeFontResolver, ref DxpEffectiveRunStyleBuilder acc)
     {
         if (rp == null)
@@ -720,8 +701,30 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
 
     private void ApplyCharacterStyleChainRunProps(string? styleId, ref DxpEffectiveRunStyleBuilder acc)
     {
+        var inherited = acc;
+        bool? bold = null;
+        bool? italic = null;
+        bool? strike = null;
         foreach (var style in EnumerateStyleChain(styleId, StyleValues.Character).Reverse())
-            DxpEffectiveRunStyleBuilder.ApplyCharacterStyleRunProperties(style.StyleRunProperties, ResolveThemeFont, ref acc);
+        {
+            var properties = style.StyleRunProperties;
+            DxpEffectiveRunStyleBuilder.ApplyStyleRunProperties(properties, ResolveThemeFont, ref acc);
+            if (properties?.Bold is { } boldProperty)
+                bold = boldProperty.Val?.Value != false;
+            if (properties?.Italic is { } italicProperty)
+                italic = italicProperty.Val?.Value != false;
+            if (properties?.Strike is { } strikeProperty)
+                strike = strikeProperty.Val?.Value != false;
+        }
+
+        // A basedOn chain resolves to one value at the character-style level.
+        // A true toggle then reverses the paragraph-level value once; false leaves it unchanged.
+        if (bold == true) acc.Bold = !(inherited.Bold ?? false);
+        else if (bold == false) acc.Bold = inherited.Bold;
+        if (italic == true) acc.Italic = !(inherited.Italic ?? false);
+        else if (italic == false) acc.Italic = inherited.Italic;
+        if (strike == true) acc.Strike = !(inherited.Strike ?? false);
+        else if (strike == false) acc.Strike = inherited.Strike;
     }
 
     private IEnumerable<Style> EnumerateStyleChain(string? styleId, StyleValues preferredType)
