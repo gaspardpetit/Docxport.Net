@@ -1,6 +1,5 @@
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
-using System.Reflection;
 
 namespace DocxportNet.Visitors.Pdf;
 
@@ -108,32 +107,10 @@ internal static class DxpFootnoteTableRowSplitter
         var table = source.Table;
         if (table == null || source.Index < 0 || source.Index >= table.Rows.Count ||
             !ReferenceEquals(table.Rows[source.Index], source)) return false;
-        const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
-        var rowIndex = typeof(Row).GetField("_idx", flags);
-        var rowTable = typeof(Row).GetField("_table", flags);
-        var cellRow = typeof(Cell).GetField("_row", flags);
-        var cellTable = typeof(Cell).GetField("_table", flags);
-        var cellColumn = typeof(Cell).GetField("_clm", flags);
-        if (rowIndex == null || rowTable == null || cellRow == null ||
-            cellTable == null || cellColumn == null) return false;
-
         var position = source.Index;
         table.Rows.RemoveObjectAt(position);
         table.Rows.InsertObject(position, firstFragment);
         table.Rows.InsertObject(position + 1, continuation);
-        for (var index = position; index < table.Rows.Count; index++)
-        {
-            var row = table.Rows[index];
-            rowIndex.SetValue(row, index);
-            rowTable.SetValue(row, table);
-            for (var column = 0; column < row.Cells.Count; column++)
-            {
-                var cell = row.Cells[column];
-                cellRow.SetValue(cell, row);
-                cellTable.SetValue(cell, table);
-                cellColumn.SetValue(cell, table.Columns[column]);
-            }
-        }
         return true;
     }
 }
