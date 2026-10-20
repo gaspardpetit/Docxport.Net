@@ -61,14 +61,31 @@ public class WordBorderPatternTests
                 lower[^1].Y + lower[^1].H) / 2;
             Assert.Equal(upperBottomCenter, lowerTopCenter, .02);
         }
-        var topOutlines = cells.OrderByDescending(group => group.Key.Y).Take(2)
-            .Select(group => group.OrderByDescending(box => box.W).First())
-            .Select(box => box.Y + box.H + box.Stroke / 2).ToArray();
-        var bottomOutlines = cells.OrderBy(group => group.Key.Y).Take(2)
-            .Select(group => group.OrderByDescending(box => box.W).First())
-            .Select(box => box.Y - box.Stroke / 2).ToArray();
-        Assert.Equal(topOutlines[0], topOutlines[1], .02);
-        Assert.Equal(bottomOutlines[0], bottomOutlines[1], .02);
+        var singleHorizontalLines = Regex.Matches(content,
+                @"(?m)(?<x1>-?[\d.]+) (?<y1>-?[\d.]+) m\s+(?<x2>-?[\d.]+) (?<y2>-?[\d.]+) l\s+S$")
+            .Cast<Match>()
+            .Where(match => Math.Abs(double.Parse(match.Groups["y1"].Value, CultureInfo.InvariantCulture) -
+                double.Parse(match.Groups["y2"].Value, CultureInfo.InvariantCulture)) < .01 &&
+                Math.Abs(double.Parse(match.Groups["x1"].Value, CultureInfo.InvariantCulture) -
+                    double.Parse(match.Groups["x2"].Value, CultureInfo.InvariantCulture)) > 100 &&
+                Math.Abs(double.Parse(widthCommands.Last(command => command.Index < match.Index)
+                    .Groups["width"].Value, CultureInfo.InvariantCulture) - 1) < .02)
+            .Select(match => double.Parse(match.Groups["y1"].Value, CultureInfo.InvariantCulture))
+            .ToArray();
+        Assert.NotEmpty(singleHorizontalLines);
+        var topSingleCenter = singleHorizontalLines.Max();
+        var bottomSingleCenter = singleHorizontalLines.Min();
+        foreach (var group in cells.OrderByDescending(group => group.Key.Y).Take(2))
+        {
+            var rails = group.OrderBy(box => box.W).ToArray();
+            Assert.Equal(topSingleCenter,
+                (rails[0].Y + rails[0].H + rails[^1].Y + rails[^1].H) / 2, .02);
+        }
+        foreach (var group in cells.OrderBy(group => group.Key.Y).Take(2))
+        {
+            var rails = group.OrderBy(box => box.W).ToArray();
+            Assert.Equal(bottomSingleCenter, (rails[0].Y + rails[^1].Y) / 2, .02);
+        }
         foreach (var group in cells)
         {
             var rails = group.OrderBy(box => box.W).ToArray();
