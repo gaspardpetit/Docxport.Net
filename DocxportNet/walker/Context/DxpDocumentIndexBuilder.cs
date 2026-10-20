@@ -37,7 +37,9 @@ internal static class DxpDocumentIndexBuilder
             foreach (var paragraph in body.Descendants<Paragraph>())
             {
                 paragraphOrder++;
-                var marker = lists.MaterializeMarker(paragraph, styles).marker;
+                var marker = DxpSectionBreakListRule.ShouldAdvance(paragraph, acceptRevisions: true)
+                    ? lists.MaterializeMarker(paragraph, styles).marker
+                    : null;
                 var fullNumber = NormalizeMarker(marker);
                 var currentLevel = fullNumber != null ? ExtractCurrentLevel(fullNumber) : null;
                 var numericOnly = fullNumber != null ? StripNonNumeric(fullNumber) : null;

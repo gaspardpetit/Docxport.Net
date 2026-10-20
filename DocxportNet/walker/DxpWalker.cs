@@ -1145,7 +1145,10 @@ public class DxpWalker
         bool isDeletedParagraph = deletedParagraph != null;
         bool isInsertedParagraph = insertedParagraph != null;
 
-        var paragraphContext = d.CreateParagraphContext(p, advanceAccept: !isDeletedParagraph, advanceReject: !isInsertedParagraph);
+        // A section break on an empty numbered paragraph has no visible list item in Word.
+        var paragraphContext = d.CreateParagraphContext(p,
+            advanceAccept: !isDeletedParagraph && DxpSectionBreakListRule.ShouldAdvance(p, acceptRevisions: true),
+            advanceReject: !isInsertedParagraph && DxpSectionBreakListRule.ShouldAdvance(p, acceptRevisions: false));
         using (v.VisitParagraphBegin(p, d, paragraphContext))
         {
             foreach (var child in p.ChildElements)

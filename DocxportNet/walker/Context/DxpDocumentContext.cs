@@ -219,9 +219,6 @@ public class DxpDocumentContext : DxpIDocumentContext, IDxpMutableDocumentContex
             }
         }
 
-        // Word contextualSpacing: don't add space between paragraphs of the same style.
-        // Approximation: when contextualSpacing is enabled on either paragraph, suppress the shared boundary by
-        // removing the bottom margin on the first and top margin on the second.
         if (Styles is DxpStyleResolver styleResolver)
         {
             var prev = p.PreviousSibling<Paragraph>();
@@ -232,24 +229,26 @@ public class DxpDocumentContext : DxpIDocumentContext, IDxpMutableDocumentContex
             {
                 var contextual = styleResolver.GetContextualSpacing(p);
 
-                if (prev != null)
+                if (prev != null && prev.ParagraphProperties?.SectionProperties == null)
                 {
                     var prevStyleId = prev.ParagraphProperties?.ParagraphStyleId?.Val?.Value;
                     if (string.Equals(styleId, prevStyleId, StringComparison.Ordinal))
                     {
                         var prevCtx = styleResolver.GetContextualSpacing(prev);
-                        if (contextual || prevCtx)
+                        var zeroSpacedEmptyMark = prev.InnerText.Length == 0 &&
+                            prev.ParagraphProperties?.SpacingBetweenLines?.After?.Value == "0";
+                        if ((contextual || prevCtx) &&
+                            !(zeroSpacedEmptyMark && !contextual))
                             computed = computed with { MarginTopPt = 0.0 };
                     }
                 }
 
-                if (next != null)
+                if (next != null && p.ParagraphProperties?.SectionProperties == null)
                 {
                     var nextStyleId = next.ParagraphProperties?.ParagraphStyleId?.Val?.Value;
                     if (string.Equals(styleId, nextStyleId, StringComparison.Ordinal))
                     {
-                        var nextCtx = styleResolver.GetContextualSpacing(next);
-                        if (contextual || nextCtx)
+                        if (contextual)
                             computed = computed with { MarginBottomPt = 0.0 };
                     }
                 }
