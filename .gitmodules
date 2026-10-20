@@ -1,3 +1,0 @@
-[submodule "ext/PDFsharp"]
-	path = ext/PDFsharp
-	url = https://github.com/gaspardpetit/Pdfxport.Net.git

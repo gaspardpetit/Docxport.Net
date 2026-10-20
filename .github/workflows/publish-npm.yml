@@ -21,7 +21,6 @@ jobs:
         uses: actions/checkout@v6
         with:
           ref: ${{ github.event.release.tag_name }}
-          submodules: true
 
       - name: Determine package version
         id: version

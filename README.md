@@ -66,14 +66,11 @@ Most DOCX “save as text” pipelines lose important fidelity: strikethroughs a
 
 ## Pdfxport dependency
 
-Normal builds use `Pdfxport.Net` and `Pdfxport.Net.MigraDoc` 7.0.1 from NuGet.
-The `ext/PDFsharp` submodule remains available for
-developing Pdfxport patches; it is not required for normal builds. To build
-against the submodule instead:
+Normal builds use `Pdfxport.Net` and `Pdfxport.Net.MigraDoc` 7.0.2 from NuGet.
+To test against a separate Pdfxport source checkout, provide its path:
 
 ```powershell
-git submodule update --init ext/PDFsharp
-dotnet build DocxportNet/DocxportNet.csproj -p:UsePdfSharpSource=true
+dotnet build DocxportNet/DocxportNet.csproj -p:PdfSharpSourceRoot=D:\git\Pdfxport.Net
 ```
 
 `DxpPdfVisitor` provides a text-focused PDF slice through the standard
