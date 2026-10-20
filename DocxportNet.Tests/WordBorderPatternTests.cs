@@ -219,6 +219,29 @@ public class WordBorderPatternTests
     private static string ExportRawBorderStyle(string style) =>
         ExportRawBorderStyles((_, _) => (style, 16, "1B2530"));
 
+    [Theory]
+    [InlineData("triple", 10)]
+    [InlineData("thinThickSmallGap", 3.5)]
+    [InlineData("thickThinSmallGap", 3.5)]
+    [InlineData("thinThickThinSmallGap", 5)]
+    [InlineData("thinThickMediumGap", 4)]
+    [InlineData("thickThinMediumGap", 4)]
+    [InlineData("thinThickThinMediumGap", 6)]
+    [InlineData("thinThickLargeGap", 4.25)]
+    [InlineData("thickThinLargeGap", 4.25)]
+    [InlineData("thinThickThinLargeGap", 7)]
+    [InlineData("double", 6)]
+    public void UniformMultiRailGridIsCenteredOnColumnBoundaries(string style, double band)
+    {
+        var content = ExportRawBorderStyle(style);
+        var transforms = Regex.Matches(content,
+                @"(?m)^1 0 0 1 (?<offset>-[\d.]+) 0 cm$")
+            .Cast<Match>().Select(match => double.Parse(match.Groups["offset"].Value,
+                CultureInfo.InvariantCulture)).ToArray();
+        Assert.Single(transforms);
+        Assert.Equal(-band / 2, transforms[0], .02);
+    }
+
     private static string ExportRawBorderStyles(Func<int, int, (string Style, uint Size, string Color)> borderAt)
     {
         GlobalFontSettings.UseWindowsFontsUnderWindows = true;
