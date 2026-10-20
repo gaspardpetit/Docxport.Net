@@ -1146,12 +1146,9 @@ public class DxpWalker
         bool isInsertedParagraph = insertedParagraph != null;
 
         // A section break on an empty numbered paragraph has no visible list item in Word.
-        var emptySectionBreak = p.ParagraphProperties?.SectionProperties != null &&
-            !p.Descendants<Text>().Any() && !p.Descendants<Drawing>().Any() &&
-            !p.Descendants<Picture>().Any();
         var paragraphContext = d.CreateParagraphContext(p,
-            advanceAccept: !isDeletedParagraph && !emptySectionBreak,
-            advanceReject: !isInsertedParagraph && !emptySectionBreak);
+            advanceAccept: !isDeletedParagraph && DxpSectionBreakListRule.ShouldAdvance(p, acceptRevisions: true),
+            advanceReject: !isInsertedParagraph && DxpSectionBreakListRule.ShouldAdvance(p, acceptRevisions: false));
         using (v.VisitParagraphBegin(p, d, paragraphContext))
         {
             foreach (var child in p.ChildElements)

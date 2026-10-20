@@ -1,11 +1,59 @@
 using DocxportNet.API;
 using DocxportNet.Visitors.Pdf;
 using PdfSharp.Fonts;
+using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
+using DocxportNet.Walker.Context;
+using DocxportNet.Walker.State;
 
 namespace DocxportNet.Tests;
 
 public sealed class ParagraphListStoryBoundaryTests
 {
+    [Fact]
+    public void DocumentIndexSkipsEmptyNumberedSectionBreak()
+    {
+        using var stream = new MemoryStream();
+        using (var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document, true))
+        {
+            var main = doc.AddMainDocumentPart();
+            var numbering = main.AddNewPart<NumberingDefinitionsPart>();
+            numbering.Numbering = new Numbering(
+                new AbstractNum(new Level(
+                    new StartNumberingValue { Val = 1 },
+                    new NumberingFormat { Val = NumberFormatValues.Decimal },
+                    new LevelText { Val = "%1." }) { LevelIndex = 0 }) { AbstractNumberId = 1 },
+                new NumberingInstance(new AbstractNumId { Val = 1 }) { NumberID = 1 });
+
+            ParagraphProperties Numbered() => new(
+                new NumberingProperties(new NumberingLevelReference { Val = 0 }, new NumberingId { Val = 1 }));
+            var sectionBreak = Numbered();
+            sectionBreak.Append(new SectionProperties());
+            main.Document = new Document(new Body(
+                new Paragraph(Numbered(), new Run(new Text("First"))),
+                new Paragraph(sectionBreak),
+                new Paragraph(Numbered(), new BookmarkStart { Name = "Target", Id = "1" },
+                    new Run(new Text("Second")), new BookmarkEnd { Id = "1" })));
+            main.Document.Save();
+        }
+
+        stream.Position = 0;
+        using var readDoc = WordprocessingDocument.Open(stream, false);
+        var index = DxpDocumentIndexBuilder.Build(readDoc, new DxpStyleResolver(readDoc));
+        Assert.Equal("2.", index.RefIndex.ParagraphNumbers["Target"].FullNumber);
+    }
+
+    [Fact]
+    public void VisibleSymbolOnSectionBreakAdvancesListInBothViews()
+    {
+        var paragraph = new Paragraph(
+            new ParagraphProperties(new SectionProperties()),
+            new Run(new SymbolChar { Font = "Symbol", Char = "F0B7" }));
+        Assert.True(DxpSectionBreakListRule.ShouldAdvance(paragraph, acceptRevisions: true));
+        Assert.True(DxpSectionBreakListRule.ShouldAdvance(paragraph, acceptRevisions: false));
+    }
+
     [Theory]
     [InlineData("WordMixedSectionStories.docx")]
     [InlineData("WordMixedSectionStoryContent.docx")]
