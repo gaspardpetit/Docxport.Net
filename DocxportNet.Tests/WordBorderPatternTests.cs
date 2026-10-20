@@ -140,65 +140,33 @@ public class WordBorderPatternTests
         string style, double firstWidth, double secondWidth, double gap)
     {
         var content = ExportRawBorderStyle(style);
-        var widthCommands = Regex.Matches(content, @"(?m)(?<width>[\d.]+) w").Cast<Match>().ToArray();
-        var strokes = Regex.Matches(content,
-                @"(?m)(?<x1>-?[\d.]+) (?<y1>-?[\d.]+) m\s+(?<x2>-?[\d.]+) (?<y2>-?[\d.]+) l\s+S$")
-            .Cast<Match>()
-            .Select(match => (
-                Width: double.Parse(widthCommands.Last(command => command.Index < match.Index)
-                    .Groups["width"].Value, CultureInfo.InvariantCulture),
-                X1: double.Parse(match.Groups["x1"].Value, CultureInfo.InvariantCulture),
-                Y1: double.Parse(match.Groups["y1"].Value, CultureInfo.InvariantCulture),
-                X2: double.Parse(match.Groups["x2"].Value, CultureInfo.InvariantCulture),
-                Y2: double.Parse(match.Groups["y2"].Value, CultureInfo.InvariantCulture)))
-            .ToArray();
-        var vertical = strokes.Where(line => Math.Abs(line.X1 - line.X2) < .01 &&
-            Math.Abs(line.Y1 - line.Y2) > 10).OrderBy(line => line.X1).ToArray();
-        var horizontal = strokes.Where(line => Math.Abs(line.Y1 - line.Y2) < .01 &&
-            Math.Abs(line.X1 - line.X2) > 10).OrderByDescending(line => line.Y1).ToArray();
-        Assert.Equal(36, vertical.Length);
-        Assert.Equal(36, horizontal.Length);
-        Assert.Equal(18, vertical.Count(line => Math.Abs(line.Width - firstWidth) < .02));
-        Assert.Equal(18, vertical.Count(line => Math.Abs(line.Width - secondWidth) < .02));
-        Assert.Equal(18, horizontal.Count(line => Math.Abs(line.Width - firstWidth) < .02));
-        Assert.Equal(18, horizontal.Count(line => Math.Abs(line.Width - secondWidth) < .02));
-        Assert.All(vertical, line => Assert.InRange(Math.Abs(line.Y2 - line.Y1), 10, 30));
-        Assert.All(horizontal, line => Assert.InRange(Math.Abs(line.X2 - line.X1), 90, 110));
-        // Every stroke terminates at a perpendicular rail. Long strokes across
-        // the whole table would pass the width checks but fail these endpoints.
-        Assert.All(vertical, line =>
-        {
-            foreach (var end in new[] { line.Y1, line.Y2 })
-                Assert.Contains(horizontal, cross =>
-                    Math.Abs(cross.Y1 - end) <= (line.Width + cross.Width) / 2 + .02 &&
-                    Math.Min(cross.X1, cross.X2) - cross.Width / 2 <= line.X1 &&
-                    Math.Max(cross.X1, cross.X2) + cross.Width / 2 >= line.X1);
-        });
-        Assert.All(horizontal, line =>
-        {
-            foreach (var end in new[] { line.X1, line.X2 })
-                Assert.Contains(vertical, cross =>
-                    Math.Abs(cross.X1 - end) <= (line.Width + cross.Width) / 2 + .02 &&
-                    Math.Min(cross.Y1, cross.Y2) - cross.Width / 2 <= line.Y1 &&
-                    Math.Max(cross.Y1, cross.Y2) + cross.Width / 2 >= line.Y1);
-        });
         var filled = Regex.Matches(content,
                 @"(?m)(?<x>-?[\d.]+) (?<y>-?[\d.]+) (?<w>[\d.]+) (?<h>[\d.]+) re\s+f$")
             .Cast<Match>()
             .Select(match => (
+                X: double.Parse(match.Groups["x"].Value, CultureInfo.InvariantCulture),
+                Y: double.Parse(match.Groups["y"].Value, CultureInfo.InvariantCulture),
                 Width: double.Parse(match.Groups["w"].Value, CultureInfo.InvariantCulture),
                 Height: double.Parse(match.Groups["h"].Value, CultureInfo.InvariantCulture)))
             .ToArray();
-        var band = firstWidth + secondWidth + gap + .5;
-        var junctionGap = gap - .05;
-        Assert.Equal(4, filled.Count(rect => Math.Abs(rect.Width - band) < .02 &&
-            Math.Abs(rect.Height - gap) < .02));
-        Assert.Equal(4, filled.Count(rect => Math.Abs(rect.Width - gap) < .02 &&
-            Math.Abs(rect.Height - band) < .02));
-        Assert.Equal(4, filled.Count(rect => Math.Abs(rect.Width - band) < .02 &&
-            Math.Abs(rect.Height - junctionGap) < .02));
-        Assert.Equal(4, filled.Count(rect => Math.Abs(rect.Width - junctionGap) < .02 &&
-            Math.Abs(rect.Height - band) < .02));
+        var junction = filled.Where(rect => rect.Width <= 2.01 && rect.Height <= 2.01 &&
+            (Math.Abs(rect.Width - firstWidth) < .02 || Math.Abs(rect.Width - secondWidth) < .02) &&
+            (Math.Abs(rect.Height - firstWidth) < .02 || Math.Abs(rect.Height - secondWidth) < .02)).ToArray();
+        Assert.Equal(64, junction.Length); // Four independent rail blocks at 16 vertices.
+        var vertical = filled.Where(rect => rect.Height > 10 && rect.Height < 30 &&
+            (Math.Abs(rect.Width - firstWidth) < .02 || Math.Abs(rect.Width - secondWidth) < .02)).ToArray();
+        var horizontal = filled.Where(rect => rect.Width > 90 && rect.Width < 110 &&
+            (Math.Abs(rect.Height - firstWidth) < .02 || Math.Abs(rect.Height - secondWidth) < .02)).ToArray();
+        Assert.Equal(24, vertical.Length);
+        Assert.Equal(24, horizontal.Length);
+        Assert.Equal(8, filled.Length - junction.Length - vertical.Length - horizontal.Length);
+        Assert.All(vertical, line => Assert.Contains(junction, tile =>
+            Math.Abs(tile.X - line.X) < .02 &&
+            Math.Abs(tile.Y + tile.Height - line.Y) < .22));
+        Assert.All(horizontal, line => Assert.Contains(junction, tile =>
+            Math.Abs(tile.Y - line.Y) < .02 &&
+            Math.Abs(tile.X + tile.Width - line.X) < .22));
+        Assert.DoesNotContain("1 1 1 rg", content); // No white repaint at a junction.
     }
 
     [Theory]
