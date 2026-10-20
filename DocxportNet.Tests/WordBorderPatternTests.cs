@@ -46,6 +46,21 @@ public class WordBorderPatternTests
         Assert.All(columns, column => Assert.Equal(2, column.Count()));
         Assert.Equal(3, cells.Count(group => group.Count() == 2));
         Assert.Equal(3, cells.Count(group => group.Count() == 3));
+        var adjacentClosedCells = columns
+            .Select(column => column.OrderByDescending(group => group.Key.Y).ToArray())
+            .OrderBy(column => column[0].Key.Y - column[1].Key.Y)
+            .Take(2)
+            .ToArray();
+        Assert.Equal(2, adjacentClosedCells.Length);
+        foreach (var column in adjacentClosedCells)
+        {
+            var upper = column[0].OrderBy(box => box.W).ToArray();
+            var lower = column[1].OrderBy(box => box.W).ToArray();
+            var upperBottomCenter = (upper[0].Y + upper[^1].Y) / 2;
+            var lowerTopCenter = (lower[0].Y + lower[0].H +
+                lower[^1].Y + lower[^1].H) / 2;
+            Assert.Equal(upperBottomCenter, lowerTopCenter, .02);
+        }
         foreach (var group in cells)
         {
             var rails = group.OrderBy(box => box.W).ToArray();
