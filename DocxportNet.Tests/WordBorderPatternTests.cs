@@ -61,6 +61,14 @@ public class WordBorderPatternTests
                 lower[^1].Y + lower[^1].H) / 2;
             Assert.Equal(upperBottomCenter, lowerTopCenter, .02);
         }
+        var topOutlines = cells.OrderByDescending(group => group.Key.Y).Take(2)
+            .Select(group => group.OrderByDescending(box => box.W).First())
+            .Select(box => box.Y + box.H + box.Stroke / 2).ToArray();
+        var bottomOutlines = cells.OrderBy(group => group.Key.Y).Take(2)
+            .Select(group => group.OrderByDescending(box => box.W).First())
+            .Select(box => box.Y - box.Stroke / 2).ToArray();
+        Assert.Equal(topOutlines[0], topOutlines[1], .02);
+        Assert.Equal(bottomOutlines[0], bottomOutlines[1], .02);
         foreach (var group in cells)
         {
             var rails = group.OrderBy(box => box.W).ToArray();
