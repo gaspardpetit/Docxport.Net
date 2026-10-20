@@ -5,6 +5,7 @@ using DocxportNet.API;
 using DocxportNet.Formatting;
 using DocxportNet.Walker.Context;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 
 namespace DocxportNet.Walker;
 
@@ -421,9 +422,15 @@ public static class DxpListMarkerFormatter
 
 public class DxpLists
 {
+    private sealed class OpenXmlElementReferenceComparer : IEqualityComparer<OpenXmlElement>
+    {
+        public bool Equals(OpenXmlElement? x, OpenXmlElement? y) => ReferenceEquals(x, y);
+        public int GetHashCode(OpenXmlElement obj) => RuntimeHelpers.GetHashCode(obj);
+    }
+
     private DxpNumberingResolver? _num;
     private readonly Dictionary<OpenXmlElement, DxpListTracker> _listsByStory =
-        new(ReferenceEqualityComparer.Instance);
+        new(new OpenXmlElementReferenceComparer());
     private readonly DxpListTracker _marginLists = new();
 
     public DxpLists()
