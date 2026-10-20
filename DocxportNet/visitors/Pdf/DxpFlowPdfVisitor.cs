@@ -1105,8 +1105,9 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             .Any(table => table.Elements<TableRow>()
                 .Any(row => row.GetFirstChild<TablePropertyExceptions>()?
                     .GetFirstChild<TableBorders>() != null)) == true;
-        _evenAndOddHeaders = doc.MainDocumentPart?.DocumentSettingsPart?.Settings?
-            .Elements<EvenAndOddHeaders>().Any() == true;
+        var oddEvenHeaderSetting = doc.MainDocumentPart?.DocumentSettingsPart?.Settings?
+            .GetFirstChild<EvenAndOddHeaders>();
+        _evenAndOddHeaders = oddEvenHeaderSetting != null && oddEvenHeaderSetting.Val?.Value != false;
         _balanceSingleByteDoubleByteWidth = doc.MainDocumentPart?.DocumentSettingsPart?.Settings?
             .Descendants<BalanceSingleByteDoubleByteWidth>()
             .Any(setting => setting.Val?.Value != false) == true;

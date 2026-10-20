@@ -552,6 +552,31 @@ public sealed class PdfFlowExportTests
     }
 
     [Fact]
+    public void DisabledOddEvenHeadersDoNotInsertBlankPageForOddRestart()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.AddNewPart<DocumentSettingsPart>().Settings = new Settings(
+                new EvenAndOddHeaders { Val = false });
+            main.Document = new Document(new Body(
+                new Paragraph(new Run(new Text("First section")),
+                    new ParagraphProperties(new SectionProperties())),
+                new Paragraph(new Run(new Text("Second section"))),
+                new SectionProperties(new SectionType { Val = SectionMarkValues.NextPage },
+                    new PageNumberType { Start = 7 })));
+        }
+
+        var bytes = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(bytes));
+        Assert.Equal(2, pdf.NumberOfPages);
+        Assert.Contains("Secondsection", pdf.GetPage(2).Text);
+    }
+
+    [Fact]
     public void PreservesSignedTopMargin()
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
