@@ -190,9 +190,14 @@ public class WordBorderPatternTests
                 Height: double.Parse(match.Groups["h"].Value, CultureInfo.InvariantCulture)))
             .ToArray();
         var band = firstWidth + secondWidth + gap + .5;
-        Assert.Equal(8, filled.Count(rect => Math.Abs(rect.Width - band) < .02 &&
+        var junctionGap = gap - .05;
+        Assert.Equal(4, filled.Count(rect => Math.Abs(rect.Width - band) < .02 &&
             Math.Abs(rect.Height - gap) < .02));
-        Assert.Equal(8, filled.Count(rect => Math.Abs(rect.Width - gap) < .02 &&
+        Assert.Equal(4, filled.Count(rect => Math.Abs(rect.Width - gap) < .02 &&
+            Math.Abs(rect.Height - band) < .02));
+        Assert.Equal(4, filled.Count(rect => Math.Abs(rect.Width - band) < .02 &&
+            Math.Abs(rect.Height - junctionGap) < .02));
+        Assert.Equal(4, filled.Count(rect => Math.Abs(rect.Width - junctionGap) < .02 &&
             Math.Abs(rect.Height - band) < .02));
     }
 
