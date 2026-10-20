@@ -2531,12 +2531,13 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             else
                 page.LeftMargin = Unit.FromPoint(page.LeftMargin.Point + gutter / 20.0);
         }
-        page.TopMargin = Unit.FromPoint((layout.PageMargin?.Top?.Value is int top ? top / 20.0 : 72) +
+        // Word uses the magnitude of signed top and bottom page margins.
+        page.TopMargin = Unit.FromPoint((layout.PageMargin?.Top?.Value is int top ? Math.Abs(top / 20.0) : 72) +
             (_gutterAtTop ? (layout.PageMargin?.Gutter?.Value ?? 0) / 20.0 : 0));
         _sectionBaseTopMarginPoints = page.TopMargin.Point;
         _sectionOtherHeaderTableRaisedTopMargin = false;
         page.BottomMargin = Unit.FromPoint(layout.PageMargin?.Bottom?.Value is int bottom
-            ? bottom / 20.0 : 72);
+            ? Math.Abs(bottom / 20.0) : 72);
         var verticalAlignment = properties.ChildElements.FirstOrDefault(child => child.LocalName == "vAlign");
         var sectionAlignment = verticalAlignment == null ? null : AttributeValue(verticalAlignment, "val");
         if (sectionAlignment is "center" or "bottom")
