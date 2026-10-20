@@ -59,6 +59,18 @@ public class WordBorderPatternTests
                     rails[index - 1].X - rails[index].X, .02);
             }
         }
+        // The triple boxes own their shared edges. Drawing the same effective
+        // green border again from an adjacent single cell creates a fourth rail.
+        var longTripleSegments = Regex.Matches(content,
+                @"(?m)(?<x1>-?[\d.]+) (?<y1>-?[\d.]+) m\s+(?<x2>-?[\d.]+) (?<y2>-?[\d.]+) l\s+S$")
+            .Cast<Match>().Where(match =>
+                Math.Abs(double.Parse(match.Groups["x1"].Value, CultureInfo.InvariantCulture) -
+                    double.Parse(match.Groups["x2"].Value, CultureInfo.InvariantCulture)) < .01 &&
+                Math.Abs(double.Parse(match.Groups["y1"].Value, CultureInfo.InvariantCulture) -
+                    double.Parse(match.Groups["y2"].Value, CultureInfo.InvariantCulture)) > 30 &&
+                Math.Abs(double.Parse(widthCommands.Last(command => command.Index < match.Index)
+                    .Groups["width"].Value, CultureInfo.InvariantCulture) - 3) < .02);
+        Assert.Empty(longTripleSegments);
     }
 
     [Theory]
