@@ -1317,6 +1317,8 @@ public sealed class DocToDocxProjector
             byte? tableJustification = null;
             short? firstRowOriginTwips = null;
             DocTableBorders? firstRowBorders = null;
+            var rowTableBorders = new List<DocTableBorders?>();
+            var cellBorderSources = new List<(TableCell Cell, DocCellBorders? Direct)>();
             DocCellShading? tableBackgroundShading = null;
             DocCellMargins? tableDefaultMargins = null;
             while (position < sources.Count)
@@ -1383,6 +1385,7 @@ public sealed class DocToDocxProjector
                     throw new InvalidDataException("A DOC table row has no terminating row mark.");
                 var rowMark = sources[position];
                 var rowFormatting = RowFormattingAt(rowMark.CpEnd);
+                rowTableBorders.Add(rowFormatting?.TableBorders);
                 rowCellSpacings.Add(rowFormatting?.TableCellSpacingTwips);
                 rowDefaultMargins.Add(rowFormatting?.TableDefaultCellMargins);
                 if (rowEdges.Count == 0)
@@ -1590,6 +1593,7 @@ public sealed class DocToDocxProjector
                         });
                     var explicitBorders = rowFormatting?.TableCellBorders is { } borders &&
                         cellIndex < borders.Count ? borders[cellIndex] : null;
+                    cellBorderSources.Add((cells[cellIndex], explicitBorders));
                     var tableBorders = rowFormatting?.TableBorders;
                     var cellBorders = new DocCellBorders(
                         explicitBorders?.Top ?? (rowIndex == 0 ? tableBorders?.Top :
@@ -1839,6 +1843,30 @@ public sealed class DocToDocxProjector
                     Width = (gridEdges[i + 1] - gridEdges[i]).ToString(
                         System.Globalization.CultureInfo.InvariantCulture)
                 });
+            // A uniform DOC table border is shared by the table. Flattening its
+            // inside edges onto both adjacent cells makes Word draw two borders.
+            var sharedBorders = rowTableBorders.Count > 0 &&
+                tableStyleIndex == null &&
+                firstRowBorders is { } candidate &&
+                (candidate.Top?.Type > 0 || candidate.Left?.Type > 0 ||
+                 candidate.Bottom?.Type > 0 || candidate.Right?.Type > 0 ||
+                 candidate.InsideHorizontal?.Type > 0 ||
+                 candidate.InsideVertical?.Type > 0) &&
+                rowTableBorders.All(borders => borders == firstRowBorders)
+                ? firstRowBorders : null;
+            if (sharedBorders != null)
+            {
+                foreach (var (cell, direct) in cellBorderSources)
+                {
+                    var borders = cell.TableCellProperties?.TableCellBorders;
+                    if (borders == null) continue;
+                    if (direct?.Top == null) borders.TopBorder?.Remove();
+                    if (direct?.Left == null) borders.LeftBorder?.Remove();
+                    if (direct?.Bottom == null) borders.BottomBorder?.Remove();
+                    if (direct?.Right == null) borders.RightBorder?.Remove();
+                    if (!borders.HasChildren) borders.Remove();
+                }
+            }
             var tableProperties = new TableProperties();
             if (tableStyleIndex is ushort appliedStyle &&
                 styles.TryGetValue(appliedStyle, out var tableStyle) &&
@@ -1942,6 +1970,47 @@ public sealed class DocToDocxProjector
                     Width = indentTwips,
                     Type = TableWidthUnitValues.Dxa
                 });
+            if (sharedBorders != null)
+            {
+                var borders = new TableBorders();
+                if (sharedBorders.Top is { Type: > 0 } top)
+                {
+                    var edge = new TopBorder();
+                    top.ApplyTo(edge);
+                    borders.AppendChild(edge);
+                }
+                if (sharedBorders.Left is { Type: > 0 } left)
+                {
+                    var edge = new LeftBorder();
+                    left.ApplyTo(edge);
+                    borders.AppendChild(edge);
+                }
+                if (sharedBorders.Bottom is { Type: > 0 } bottom)
+                {
+                    var edge = new BottomBorder();
+                    bottom.ApplyTo(edge);
+                    borders.AppendChild(edge);
+                }
+                if (sharedBorders.Right is { Type: > 0 } right)
+                {
+                    var edge = new RightBorder();
+                    right.ApplyTo(edge);
+                    borders.AppendChild(edge);
+                }
+                if (sharedBorders.InsideHorizontal is { Type: > 0 } insideH)
+                {
+                    var edge = new InsideHorizontalBorder();
+                    insideH.ApplyTo(edge);
+                    borders.AppendChild(edge);
+                }
+                if (sharedBorders.InsideVertical is { Type: > 0 } insideV)
+                {
+                    var edge = new InsideVerticalBorder();
+                    insideV.ApplyTo(edge);
+                    borders.AppendChild(edge);
+                }
+                if (borders.HasChildren) tableProperties.AddChild(borders, true);
+            }
             if (tableBackgroundShading is { } shade &&
                 DocShadingPatterns.ToOpenXml(shade.Pattern) is { } tablePattern)
             {
