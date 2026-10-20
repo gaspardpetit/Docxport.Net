@@ -136,10 +136,11 @@ public class WordBorderPatternTests
                 Red: double.Parse(colors.Last(command => command.Index < match.Index)
                     .Groups["r"].Value, CultureInfo.InvariantCulture)))
             .ToArray();
-        Assert.Equal(12, vertical.Length);
-        Assert.Equal(12, vertical.Select(line => Math.Round(line.X, 2)).Distinct().Count());
-        var firstBoundary = vertical.OrderBy(line => line.X).Take(3)
-            .OrderBy(line => line.X).ToArray();
+        Assert.Equal(36, vertical.Length);
+        var rails = vertical.GroupBy(line => Math.Round(line.X, 2)).OrderBy(group => group.Key).ToArray();
+        Assert.Equal(12, rails.Length);
+        Assert.All(rails, rail => Assert.Equal(3, rail.Count()));
+        var firstBoundary = rails.Take(3).Select(rail => rail.First()).ToArray();
         Assert.Equal(3, firstBoundary.Length);
         Assert.Equal(.75, firstBoundary[0].Width, .02);
         Assert.Equal(2, firstBoundary[1].Width, .02);
