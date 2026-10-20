@@ -74,7 +74,10 @@ internal static class DxpTableStyleComputer
         return new DxpComputedBorder(
             WidthPt: pt,
             LineStyle: line,
-            ColorCss: color);
+            ColorCss: color)
+        {
+            WordBorderStyle = b.Val?.InnerText
+        };
     }
 
     private static DxpComputedBorderLineStyle MapLineStyle(BorderValues? val)
