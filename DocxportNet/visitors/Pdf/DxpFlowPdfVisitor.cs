@@ -15695,7 +15695,9 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             var tableStyleId = table.TableProperties?.TableStyle?.Val?.Value ??
                 _paragraphStyles.Values.FirstOrDefault(style =>
                     style.Type?.Value == StyleValues.Table && style.Default?.Value == true)?.StyleId?.Value;
-            string? inheritedCellSpacing = null;
+            TableCellSpacing? inheritedCellSpacing = null;
+            var backgroundFill = table.TableProperties?
+                .GetFirstChild<DocumentFormat.OpenXml.Wordprocessing.Shading>()?.Fill?.Value;
             if (tableStyleId != null &&
                 _paragraphStyles.TryGetValue(tableStyleId, out var definition))
             {
@@ -15705,27 +15707,25 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     _paragraphStyles.TryGetValue(baseId, out var baseStyle) ? baseStyle : null)
                 {
                     _tableParagraphSpacing ??= current.StyleParagraphProperties?.SpacingBetweenLines;
-                    inheritedCellSpacing ??= current.GetFirstChild<StyleTableProperties>()?
-                        .GetFirstChild<TableCellSpacing>()?.Width?.Value;
-                    var styleMargins = current.GetFirstChild<StyleTableProperties>()?
-                        .GetFirstChild<TableCellMarginDefault>();
+                    var styleProperties = current.GetFirstChild<StyleTableProperties>();
+                    inheritedCellSpacing ??= styleProperties?.GetFirstChild<TableCellSpacing>();
+                    backgroundFill ??= styleProperties?
+                        .GetFirstChild<DocumentFormat.OpenXml.Wordprocessing.Shading>()?.Fill?.Value;
+                    var styleMargins = styleProperties?.GetFirstChild<TableCellMarginDefault>();
                     leftMargin ??= ReadCellMargin(styleMargins?.GetFirstChild<TableCellLeftMargin>());
                     rightMargin ??= ReadCellMargin(styleMargins?.GetFirstChild<TableCellRightMargin>());
                     topMargin ??= ReadCellMargin(styleMargins?.TopMargin);
                     bottomMargin ??= ReadCellMargin(styleMargins?.BottomMargin);
                 }
             }
-            var backgroundFill = table.TableProperties?
-                .GetFirstChild<DocumentFormat.OpenXml.Wordprocessing.Shading>()?.Fill?.Value;
-            if (backgroundFill == null && tableStyleId != null &&
-                _paragraphStyles.TryGetValue(tableStyleId, out var backgroundStyle))
-                backgroundFill = backgroundStyle.GetFirstChild<StyleTableProperties>()?
-                    .GetFirstChild<DocumentFormat.OpenXml.Wordprocessing.Shading>()?.Fill?.Value;
-            var spacing = table.TableProperties?.GetFirstChild<TableCellSpacing>()?.Width?.Value ??
-                inheritedCellSpacing;
-            if (int.TryParse(spacing, out var spacingTwips))
+            var spacing = table.TableProperties?.GetFirstChild<TableCellSpacing>() ?? inheritedCellSpacing;
+            if (spacing != null)
             {
-                var points = spacingTwips / 20.0;
+                // Word ignores percentage and auto tblCellSpacing values.
+                var points = (spacing.Type?.Value == null ||
+                    spacing.Type.Value == TableWidthUnitValues.Dxa) &&
+                    int.TryParse(spacing.Width?.Value, out var spacingTwips)
+                    ? spacingTwips / 20.0 : 0;
                 _tableCellSpacingPoints = points;
                 if (points > 0) _tableBackground = ParseColor("#" + backgroundFill);
                 if (_inHeader)

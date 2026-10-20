@@ -163,11 +163,13 @@ public sealed class PdfFlowExportTests
     }
 
     [Theory]
-    [InlineData(false, false, 148.5, 151.0)]
-    [InlineData(true, false, 160.5, 162.5)]
-    [InlineData(true, true, 148.5, 151.0)]
+    [InlineData(null, null, 148.5, 151.0)]
+    [InlineData("dxa", null, 160.5, 162.5)]
+    [InlineData("dxa", "dxa", 148.5, 151.0)]
+    [InlineData("pct", null, 148.5, 151.0)]
+    [InlineData("dxa", "pct", 148.5, 151.0)]
     public void CenteredTableWidthsRespectInheritedCellSpacingAndDirectOverride(
-        bool inheritedSpacing, bool directZeroSpacing, double minimumColumnDistance,
+        string? inheritedSpacingType, string? directSpacingType, double minimumColumnDistance,
         double maximumColumnDistance)
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
@@ -181,10 +183,11 @@ public sealed class PdfFlowExportTests
             {
                 var styles = document.MainDocumentPart!.StyleDefinitionsPart!.Styles!;
                 var baseStyle = new Style { Type = StyleValues.Table, StyleId = "WidthBase" };
-                if (inheritedSpacing)
+                if (inheritedSpacingType != null)
                     baseStyle.AppendChild(new StyleTableProperties(new TableCellSpacing
                     {
-                        Width = "120", Type = TableWidthUnitValues.Dxa
+                        Width = "120", Type = inheritedSpacingType == "pct"
+                            ? TableWidthUnitValues.Pct : TableWidthUnitValues.Dxa
                     }));
                 styles.AppendChild(baseStyle);
                 styles.AppendChild(new Style(new BasedOn { Val = "WidthBase" })
@@ -193,10 +196,12 @@ public sealed class PdfFlowExportTests
                 });
                 var table = document.MainDocumentPart.Document.Body!.Descendants<Table>().First();
                 table.TableProperties!.PrependChild(new TableStyle { Val = "WidthDerived" });
-                if (directZeroSpacing)
+                if (directSpacingType != null)
                     table.TableProperties.AppendChild(new TableCellSpacing
                     {
-                        Width = "0", Type = TableWidthUnitValues.Dxa
+                        Width = directSpacingType == "pct" ? "120" : "0",
+                        Type = directSpacingType == "pct"
+                            ? TableWidthUnitValues.Pct : TableWidthUnitValues.Dxa
                     });
             }
 
@@ -210,6 +215,49 @@ public sealed class PdfFlowExportTests
             }
             Assert.InRange(Center("1,2") - Center("1,1"), minimumColumnDistance,
                 maximumColumnDistance);
+        }
+        finally
+        {
+            File.Delete(copy);
+        }
+    }
+
+    [Fact]
+    public void DerivedTableStyleUsesInheritedFillForSpacedCellBorders()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "features", "WordBorderStyles3x3.docx");
+        var copy = Path.Combine(Path.GetTempPath(), $"styled-table-fill-{Guid.NewGuid():N}.docx");
+        File.Copy(source, copy);
+        try
+        {
+            using (var document = WordprocessingDocument.Open(copy, true))
+            {
+                var styles = document.MainDocumentPart!.StyleDefinitionsPart!.Styles!;
+                styles.AppendChild(new Style(new StyleTableProperties(
+                    new DocumentFormat.OpenXml.Wordprocessing.Shading { Fill = "21C57D" },
+                    new TableCellSpacing { Width = "120", Type = TableWidthUnitValues.Dxa }))
+                {
+                    Type = StyleValues.Table, StyleId = "FillBase"
+                });
+                styles.AppendChild(new Style(new BasedOn { Val = "FillBase" })
+                {
+                    Type = StyleValues.Table, StyleId = "FillDerived"
+                });
+                var table = document.MainDocumentPart.Document.Body!.Descendants<Table>().First();
+                table.TableProperties!.PrependChild(new TableStyle { Val = "FillDerived" });
+            }
+
+            var bytes = DxpExport.ExportToBytes(copy, new DxpFlowPdfVisitor());
+            using var pdf = PdfReader.Open(new MemoryStream(bytes), PdfDocumentOpenMode.Import);
+            var content = string.Concat(pdf.Pages[0].Contents.Elements
+                .OfType<PdfSharp.Pdf.Advanced.PdfReference>()
+                .Select(reference => reference.Value)
+                .OfType<PdfSharp.Pdf.Advanced.PdfContent>()
+                .Where(stream => stream.Stream != null)
+                .Select(stream => Encoding.Latin1.GetString(stream.Stream!.UnfilteredValue)));
+            Assert.Contains(".129 .773 .49 RG", content);
         }
         finally
         {
