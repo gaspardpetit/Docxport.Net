@@ -15,6 +15,20 @@ namespace DocxportNet.Tests;
 public sealed class PdfFlowExportTests
 {
     [Fact]
+    public void EvaluatedMergeFieldsUseWordPlaceholdersInMarginStories()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "legacy", "WordMergeFieldsAllStories.docx");
+        var bytes = DxpExport.ExportToBytes(source, new DxpFlowPdfVisitor(),
+            new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Evaluate });
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(bytes));
+        Assert.Contains("«CustomerName»", pdf.GetPage(1).Text);
+        Assert.DoesNotContain("Alice", pdf.GetPage(2).Text);
+    }
+
+    [Fact]
     public void ParagraphAnchoredTiffStaysBesideBodyText()
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
@@ -1683,7 +1697,7 @@ public sealed class PdfFlowExportTests
     }
 
     [Fact]
-    public void ConvertsSkippedRle4PixelsThroughPaletteZero()
+    public void ConvertsSkippedRle4PixelsToBlackBackground()
     {
         var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
         var source = Path.Combine(root, "fixtures", "docx", "legacy", "WordBmpRle4DeltaAllStories.docx");
@@ -1694,7 +1708,18 @@ public sealed class PdfFlowExportTests
 
         var bitmap = DxpBmp24Converter.Normalize(data.ToArray());
 
-        Assert.Equal(new byte[] { 0, 200, 0 }, bitmap.AsSpan(54 + 4 * 3, 3).ToArray());
+        Assert.Equal(new byte[] { 0, 0, 0 }, bitmap.AsSpan(54 + 4 * 3, 3).ToArray());
+        var black = 0;
+        var cyan = 0;
+        for (var offset = 54; offset < bitmap.Length; offset += 3)
+        {
+            var pixel = bitmap.AsSpan(offset, 3);
+            if (pixel.SequenceEqual(new byte[] { 0, 0, 0 })) black++;
+            else if (pixel.SequenceEqual(new byte[] { 255, 200, 0 })) cyan++;
+            else Assert.Fail($"Unexpected RLE4 pixel at byte {offset}.");
+        }
+        Assert.Equal(192, black);
+        Assert.Equal(64, cyan);
     }
 
     [Fact]
@@ -1901,7 +1926,7 @@ public sealed class PdfFlowExportTests
     }
 
     [Fact]
-    public void PreservesCachedMergeFieldResultsInMarginStories()
+    public void PreservesCachedMergeFieldResultsInBodyAndUsesPlaceholdersInMarginStories()
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
         var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
@@ -1910,9 +1935,8 @@ public sealed class PdfFlowExportTests
             new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Cache });
 
         using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(bytes));
-        Assert.Contains("Alice", pdf.GetPage(1).Text);
+        Assert.Contains("«CustomerName»", pdf.GetPage(1).Text);
         Assert.Contains("Alice", pdf.GetPage(2).Text);
-        Assert.DoesNotContain("«CustomerName»", pdf.GetPage(1).Text);
     }
 
     [Fact]

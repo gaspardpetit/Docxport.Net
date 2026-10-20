@@ -55,7 +55,10 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private readonly string? _cjkFontFamily;
     private readonly ISet<string> _availableFontFamilies;
     private readonly Func<char, string?>? _chineseFallbackFont;
-    private readonly DxpFieldEval _fieldEval = new();
+    private readonly DxpFieldEval _fieldEval = new(options: new DxpFieldEvalOptions
+    {
+        UseMarginStoryMergeFieldPlaceholders = true
+    });
     private readonly DxpPdfParagraphFragments _paragraphFragments = new();
     private readonly Dictionary<Section, PageBorders> _pageBorders = new();
     private readonly Dictionary<Section, LineNumberType> _sectionLineNumbers = new();
@@ -331,7 +334,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private IReadOnlyDictionary<string, WordStyle> _paragraphStyles = new Dictionary<string, WordStyle>();
     private DxpNumberingResolver? _numberingResolver;
     public DxpFieldEval FieldEval => _fieldEval;
-    internal bool UseCachedMarginMergePlaceholders { get; set; }
+    internal bool UseCachedMarginMergePlaceholders { get; set; } = true;
     private Stream? _output;
     private MigraDoc.DocumentObjectModel.Document? _document;
     private Section? _section;

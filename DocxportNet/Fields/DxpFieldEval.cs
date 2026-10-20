@@ -1,4 +1,5 @@
 using DocxportNet.API;
+using DocumentFormat.OpenXml.Packaging;
 using DocxportNet.Fields.Eval;
 using DocxportNet.Fields.Resolution;
 using Microsoft.Extensions.Logging;
@@ -416,9 +417,11 @@ public sealed class DxpFieldEval
                         }
                         var resolver = Context.ValueResolver ?? _resolver;
                         var resolved = await resolver.ResolveAsync(name, DxpFieldValueKindHint.MergeField, Context);
-                        value = resolved ?? new DxpFieldValue(string.Empty);
+                        value = resolved ?? (_options.UseMarginStoryMergeFieldPlaceholders &&
+                            documentContext?.CurrentPart is HeaderPart or FooterPart
+                            ? new DxpFieldValue($"«{name}»") : new DxpFieldValue(string.Empty));
                         if (resolved == null && _logger?.IsEnabled(LogLevel.Debug) == true)
-                            _logger.LogDebug("MERGEFIELD '{Name}' not resolved; using empty string.", name);
+                            _logger.LogDebug("MERGEFIELD '{Name}' not resolved; using fallback value.", name);
                         return (true, value);
                     }
                 }
