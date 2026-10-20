@@ -2634,6 +2634,30 @@ public class FieldEvalTests : TestBase<FieldEvalTests>
     }
 
     [Fact]
+    public void Walker_CacheMode_AskReplaysCachedResultAndKeepsRef()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:r><w:t xml:space="preserve">Expect: </w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="begin"/></w:r>
+    <w:r><w:instrText xml:space="preserve"> ASK Name "Name?" </w:instrText></w:r>
+    <w:r><w:fldChar w:fldCharType="separate"/></w:r>
+    <w:r><w:t>hidden-Bob</w:t></w:r>
+    <w:r><w:fldChar w:fldCharType="end"/></w:r>
+    <w:fldSimple w:instr=" REF Name "><w:r><w:t>Bob</w:t></w:r></w:fldSimple>
+    <w:fldSimple w:instr=" ASK City &quot;City?&quot; "><w:r><w:t>hidden-Montreal</w:t></w:r></w:fldSimple>
+    <w:r><w:t xml:space="preserve"> </w:t></w:r>
+    <w:fldSimple w:instr=" REF City "><w:r><w:t>Montreal</w:t></w:r></w:fldSimple>
+  </w:p>
+</w:body>
+""";
+
+        var actual = TestCompare.Normalize(ExportPlainTextCachedFromBodyXml(bodyXml));
+        Assert.Equal(TestCompare.Normalize("Expect: hidden-BobBobhidden-Montreal Montreal\n\n"), actual);
+    }
+
+    [Fact]
     public void Walker_CacheMode_ReplaysCachedResults_ForMergeRecMergeSeqGreetingAddressAndDatabase()
     {
         const string bodyXml = """

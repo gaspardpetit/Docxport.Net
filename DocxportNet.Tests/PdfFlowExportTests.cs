@@ -15,6 +15,21 @@ namespace DocxportNet.Tests;
 public sealed class PdfFlowExportTests
 {
     [Fact]
+    public void CachedAskResultsAreNotDisplayedInPdf()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "samples", "TestDocVariables.docx");
+        var bytes = DxpExport.ExportToBytes(source, new DxpFlowPdfVisitor(),
+            options: new DxpExportOptions { FieldEvalMode = DxpFieldEvalExportMode.Cache });
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(bytes));
+        var text = pdf.GetPage(2).Text;
+        Assert.Equal(2, System.Text.RegularExpressions.Regex.Matches(text, "Bob").Count);
+        Assert.Equal(1, System.Text.RegularExpressions.Regex.Matches(text, "Montreal").Count);
+    }
+
+    [Fact]
     public void OmitsCommentStoriesAndAnnotationsByDefault()
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
