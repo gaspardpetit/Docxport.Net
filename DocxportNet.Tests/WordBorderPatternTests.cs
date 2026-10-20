@@ -41,6 +41,9 @@ public class WordBorderPatternTests
         var cells = boxes.GroupBy(box => (
             X: Math.Round(box.X + box.W / 2, 2), Y: Math.Round(box.Y + box.H / 2, 2))).ToArray();
         Assert.Equal(6, cells.Length);
+        var columns = cells.GroupBy(group => group.Key.X).ToArray();
+        Assert.Equal(3, columns.Length);
+        Assert.All(columns, column => Assert.Equal(2, column.Count()));
         Assert.Equal(3, cells.Count(group => group.Count() == 2));
         Assert.Equal(3, cells.Count(group => group.Count() == 3));
         foreach (var group in cells)
@@ -241,6 +244,7 @@ public class WordBorderPatternTests
         Assert.Single(transforms);
         Assert.Equal(-band / 2, transforms[0], .02);
     }
+
 
     private static string ExportRawBorderStyles(Func<int, int, (string Style, uint Size, string Color)> borderAt)
     {
