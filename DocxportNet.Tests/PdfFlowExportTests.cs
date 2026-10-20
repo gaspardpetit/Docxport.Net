@@ -596,6 +596,52 @@ public sealed class PdfFlowExportTests
         Assert.True(pdf.GetPage(1).Letters.Min(letter => letter.GlyphRectangle.Bottom) > 720);
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void NegativeSectionMarginsMatchTheirPositiveDistances(bool bottomAligned)
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var negative = FirstLetterTop(-1100, -1200);
+        var positive = FirstLetterTop(1100, 1200);
+
+        Assert.InRange(Math.Abs(negative - positive), 0, 0.1);
+        if (!bottomAligned) Assert.InRange(negative, 52, 60);
+
+        double FirstLetterTop(int top, int bottom)
+        {
+            using var source = new MemoryStream();
+            using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+            {
+                var main = document.AddMainDocumentPart();
+                var section = new SectionProperties(new PageMargin { Top = top, Bottom = bottom });
+                if (bottomAligned)
+                    section.Append(new VerticalTextAlignmentOnPage { Val = VerticalJustificationValues.Bottom });
+                main.Document = new Document(new Body(
+                    new Paragraph(new Run(new Text("Signed margin"))), section));
+            }
+
+            var bytes = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+            using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(bytes));
+            var page = Assert.Single(pdf.GetPages());
+            return page.Height - page.Letters.First().GlyphRectangle.Top;
+        }
+    }
+
+    [Fact]
+    public void BottomAlignedNegativeMarginSectionKeepsItsBodyText()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "legacy", "WordPageBorderSectionSetup.docx");
+
+        var bytes = DxpExport.ExportToBytes(source, new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(bytes));
+        Assert.Equal(2, pdf.NumberOfPages);
+        Assert.Contains("Second", pdf.GetPage(2).Text);
+    }
+
     [Fact]
     public void FormatsFootnoteReferenceAndNoteFromSectionProperties()
     {
