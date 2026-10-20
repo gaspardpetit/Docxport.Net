@@ -13,7 +13,10 @@ public sealed record DxpComputedBorder(
     double WidthPt,
     DxpComputedBorderLineStyle LineStyle,
     string ColorCss
-);
+)
+{
+    public string? WordBorderStyle { get; init; }
+}
 
 public sealed record DxpComputedBoxBorders(
     DxpComputedBorder? Top,

@@ -144,14 +144,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _rotatedCells = new();
     private bool _activeRotatedCell;
     private bool _rotatedCellPlaceholderAdded;
-    private readonly Dictionary<MigraDoc.DocumentObjectModel.Tables.Table, RowTopStroke>
-        _doubleFirstRowTopBorders = new();
-    private readonly Dictionary<MigraDoc.DocumentObjectModel.Tables.Table, DxpComputedBorder>
-        _rtlDoubleTableLeftBorders = new();
-    private readonly Dictionary<MigraDoc.DocumentObjectModel.Tables.Table, DxpComputedBorder>
-        _doubleTableRightBorders = new();
-    private readonly Dictionary<MigraDoc.DocumentObjectModel.Tables.Table, List<DoubleCellSideBorder>>
-        _doubleCellSideBorders = new();
     private readonly Dictionary<MigraDoc.DocumentObjectModel.Paragraph, string> _paragraphShades = new();
     private readonly Dictionary<MigraDoc.DocumentObjectModel.Shapes.Shape, IReadOnlyList<XPoint>>
         _wrapContours = new();
@@ -315,9 +307,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private readonly List<MigraDoc.DocumentObjectModel.Paragraph> _noBreakParagraphs = new();
     private readonly HashSet<MigraDoc.DocumentObjectModel.Paragraph> _superscriptHeaderParagraphs = new();
     private sealed record DiagonalStroke(string Color, double Width);
-    private sealed record RowTopStroke(string Color, double Width, bool InHeaderFooter);
-    private sealed record DoubleCellSideBorder(int Row, int Column, bool Right,
-        DxpComputedBorder Border);
     private sealed record DiagonalCell(int Row, int Column, int RowSpan, int ColumnSpan,
         DiagonalStroke? Falling, DiagonalStroke? Rising, bool HasStraightBorders,
         bool ColoredTableBorders);
@@ -442,8 +431,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private bool _footerHorizontalMergeClearanceApplied;
     private double _rowCellSpacingPoints;
     private bool _implicitContentTable;
-    private double _doubleRowBorderPoints;
-    private bool _nativeDoubleTableBorders;
     private SpacingBetweenLines? _tableParagraphSpacing;
     private double _defaultParagraphLinePoints;
     private double _defaultParagraphAfterPoints;
@@ -618,6 +605,9 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private PdfDocumentRenderer CreatePdfRenderer(MigraDoc.DocumentObjectModel.Document document)
     {
         var renderer = new PdfDocumentRenderer { Document = document };
+        var mixedBasicBorders = new Dictionary<MigraDoc.DocumentObjectModel.Tables.Table, bool>();
+        renderer.DocumentRenderer.TableCellPlacement = (cell, geometry) =>
+            WordTableCellPlacement(cell, geometry, mixedBasicBorders);
         foreach (var frame in _behindTextBoxes)
             frame.Layer = MigraDoc.DocumentObjectModel.Shapes.TextFrameLayer.BehindContent;
         foreach (var frame in _aboveContentTextBoxes)
@@ -973,6 +963,50 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         return renderer;
     }
 
+    private static TableCellPlacement WordTableCellPlacement(
+        MigraDoc.DocumentObjectModel.Tables.Cell cell, TableCellPlacementContext geometry,
+        Dictionary<MigraDoc.DocumentObjectModel.Tables.Table, bool> mixedBasicBorders)
+    {
+        XRect? paintRect = null;
+        if (cell.MergeDown == 0 && cell.MergeRight == 0 && geometry.RowPitch > 0 &&
+            geometry.LeftBand > 0 && geometry.RightBand > 0 &&
+            geometry.TopBand > 0 && geometry.BottomBand > 0 &&
+            HasMixedBasicBorderBands(cell.Table, mixedBasicBorders))
+        {
+            var grid = geometry.GridRect;
+            paintRect = new XRect(
+                grid.X + geometry.LeftBand / 2,
+                grid.Y - geometry.RowTopBand + geometry.TopBand,
+                geometry.ColumnWidth - (geometry.LeftBand + geometry.RightBand) / 2,
+                geometry.RowPitch + geometry.RowTopBand - geometry.TopBand - geometry.RowBottomBand);
+        }
+        return new TableCellPlacement(paintRect, geometry.GridRect,
+            Math.Max(geometry.LeftPadding, geometry.LeftBand / 2));
+    }
+
+    private static bool HasMixedBasicBorderBands(
+        MigraDoc.DocumentObjectModel.Tables.Table table,
+        Dictionary<MigraDoc.DocumentObjectModel.Tables.Table, bool> cache)
+    {
+        if (cache.TryGetValue(table, out var eligible))
+            return eligible;
+        var bands = new HashSet<(BorderStyle Style, double Width)>();
+        foreach (var row in table.Rows.Cast<MigraDoc.DocumentObjectModel.Tables.Row>())
+            foreach (var cell in row.Cells.Cast<MigraDoc.DocumentObjectModel.Tables.Cell>())
+                foreach (var side in new[] { MigraDoc.DocumentObjectModel.BorderType.Left,
+                             MigraDoc.DocumentObjectModel.BorderType.Right,
+                             MigraDoc.DocumentObjectModel.BorderType.Top,
+                             MigraDoc.DocumentObjectModel.BorderType.Bottom })
+                {
+                    var border = cell.Borders.GetBorder(side);
+                    var style = border?.Style ?? cell.Borders.Style;
+                    if (style is not (BorderStyle.Single or BorderStyle.Double or BorderStyle.Triple))
+                        return cache[table] = false;
+                    bands.Add((style, border?.Width.Point ?? cell.Borders.Width.Point));
+                }
+        return cache[table] = bands.Count > 1;
+    }
+
     internal static bool ShouldUseTallerMathRadical(DocOpenTypeAdvances metrics,
         int radicandCodepoint) =>
         metrics.TryGetGlyphVerticalBounds(radicandCodepoint, out var minimum, out _) &&
@@ -1201,11 +1235,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _nestedFragmentBorderGroups.Clear();
         _diagonalCells.Clear();
         _rotatedCells.Clear();
-        _doubleFirstRowTopBorders.Clear();
-        _rtlDoubleTableLeftBorders.Clear();
-        _doubleTableRightBorders.Clear();
-        _doubleCellSideBorders.Clear();
-        _nativeDoubleTableBorders = false;
         _paragraphShades.Clear();
         _directBorderParagraphs.Clear();
         _manualParagraphShades.Clear();
@@ -1614,10 +1643,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 RenderHtmlBeveledTableBorders(renderer, pageAware);
                 RenderDiagonalCellBorders(renderer, pageAware);
                 RenderRotatedCells(renderer, pageAware);
-                RenderDoubleFirstRowTopBorders(renderer, pageAware);
-                RenderRtlDoubleTableLeftBorders(renderer, pageAware);
-                RenderDoubleTableRightBorders(renderer, pageAware);
-                RenderDoubleCellSideBorders(renderer, pageAware);
                 RenderParagraphShadingGaps(renderer, pageAware);
                 RenderContinuousParagraphSideBorders(renderer, pageAware);
                 RenderFooterImages(renderer, pageAware);
@@ -1670,10 +1695,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 RenderHtmlBeveledTableBorders(renderer);
                 RenderDiagonalCellBorders(renderer);
                 RenderRotatedCells(renderer);
-                RenderDoubleFirstRowTopBorders(renderer);
-                RenderRtlDoubleTableLeftBorders(renderer);
-                RenderDoubleTableRightBorders(renderer);
-                RenderDoubleCellSideBorders(renderer);
                 RenderParagraphShadingGaps(renderer);
                 RenderContinuousParagraphSideBorders(renderer);
                 RenderFooterImages(renderer);
@@ -1731,10 +1752,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             RenderHtmlBeveledTableBorders(renderer, combined);
             RenderDiagonalCellBorders(renderer, combined);
             RenderRotatedCells(renderer, combined);
-            RenderDoubleFirstRowTopBorders(renderer, combined);
-            RenderRtlDoubleTableLeftBorders(renderer, combined);
-            RenderDoubleTableRightBorders(renderer, combined);
-            RenderDoubleCellSideBorders(renderer, combined);
             RenderParagraphShadingGaps(renderer, combined);
             RenderContinuousParagraphSideBorders(renderer, combined);
             RenderFooterImages(renderer, combined);
@@ -4561,106 +4578,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                             new XRect(0, 0, rowHeight, 15), XStringFormats.TopLeft);
                         graphics.Restore(state);
                     }
-                }
-            }
-        }
-    }
-
-    private void RenderDoubleFirstRowTopBorders(PdfDocumentRenderer renderer, PdfDocument? target = null)
-    {
-        if (_doubleFirstRowTopBorders.Count == 0) return;
-        var renderedBodyTables = new HashSet<MigraDoc.DocumentObjectModel.Tables.Table>();
-        for (var index = 0; index < renderer.PageCount; index++)
-        {
-            foreach (var (info, offset) in GetPageStoryRenderInfos(renderer, index, target))
-            {
-                if (info.DocumentObject is not MigraDoc.DocumentObjectModel.Tables.Table table ||
-                    !_doubleFirstRowTopBorders.TryGetValue(table, out var stroke) ||
-                    info.LayoutInfo.ContentArea is not { } area ||
-                    ParseColor(stroke.Color) is not { } color) continue;
-                if (!stroke.InHeaderFooter && !renderedBodyTables.Add(table)) continue;
-                using var graphics = XGraphics.FromPdfPage((target ?? renderer.PdfDocument).Pages[index]);
-                var pen = new XPen(XColor.FromArgb((int)color.R, (int)color.G, (int)color.B), stroke.Width);
-                var left = area.X.Point;
-                var top = area.Y.Point + offset + 2.5;
-                var right = left + table.Columns.Cast<MigraDoc.DocumentObjectModel.Tables.Column>()
-                    .Sum(column => column.Width.Point);
-                graphics.DrawLine(pen, left + 1, top, right - 1, top);
-            }
-        }
-    }
-
-    private void RenderRtlDoubleTableLeftBorders(PdfDocumentRenderer renderer, PdfDocument? target = null)
-    {
-        if (_rtlDoubleTableLeftBorders.Count == 0) return;
-        for (var index = 0; index < renderer.PageCount; index++)
-        {
-            foreach (var (info, offset) in GetPageStoryRenderInfos(renderer, index, target))
-            {
-                if (info.DocumentObject is not MigraDoc.DocumentObjectModel.Tables.Table table ||
-                    !_rtlDoubleTableLeftBorders.TryGetValue(table, out var border) ||
-                    info.LayoutInfo.ContentArea is not { } area ||
-                    ParseColor(border.ColorCss) is not { } color) continue;
-                using var graphics = XGraphics.FromPdfPage((target ?? renderer.PdfDocument).Pages[index]);
-                var pen = new XPen(XColor.FromArgb((int)color.R, (int)color.G, (int)color.B),
-                    Math.Max(0.5, border.WidthPt));
-                var top = area.Y.Point + offset;
-                var bottom = top + area.Height.Point;
-                graphics.DrawLine(pen, area.X.Point - pen.Width, top, area.X.Point - pen.Width, bottom);
-                graphics.DrawLine(pen, area.X.Point + pen.Width, top, area.X.Point + pen.Width, bottom);
-            }
-        }
-    }
-
-    private void RenderDoubleTableRightBorders(PdfDocumentRenderer renderer, PdfDocument? target = null)
-    {
-        if (_doubleTableRightBorders.Count == 0) return;
-        for (var index = 0; index < renderer.PageCount; index++)
-        {
-            foreach (var (info, offset) in GetPageStoryRenderInfos(renderer, index, target))
-            {
-                if (info.DocumentObject is not MigraDoc.DocumentObjectModel.Tables.Table table ||
-                    !_doubleTableRightBorders.TryGetValue(table, out var border) ||
-                    info.LayoutInfo.ContentArea is not { } area ||
-                    ParseColor(border.ColorCss) is not { } color) continue;
-                using var graphics = XGraphics.FromPdfPage((target ?? renderer.PdfDocument).Pages[index]);
-                var width = Math.Max(0.5, border.WidthPt);
-                var pen = new XPen(XColor.FromArgb((int)color.R, (int)color.G, (int)color.B), width);
-                var right = area.X.Point + table.Columns.Cast<MigraDoc.DocumentObjectModel.Tables.Column>()
-                    .Sum(column => column.Width.Point);
-                var top = area.Y.Point + offset;
-                var bottom = top + area.Height.Point;
-                graphics.DrawLine(pen, right - width, top, right - width, bottom);
-                graphics.DrawLine(pen, right + width, top, right + width, bottom);
-            }
-        }
-    }
-
-    private void RenderDoubleCellSideBorders(PdfDocumentRenderer renderer, PdfDocument? target = null)
-    {
-        if (_doubleCellSideBorders.Count == 0) return;
-        for (var index = 0; index < renderer.PageCount; index++)
-        {
-            foreach (var (info, offset) in GetPageStoryRenderInfos(renderer, index, target))
-            {
-                if (info.DocumentObject is not MigraDoc.DocumentObjectModel.Tables.Table table ||
-                    !_doubleCellSideBorders.TryGetValue(table, out var sides) ||
-                    info.LayoutInfo.ContentArea is not { } area || table.Rows.Count == 0) continue;
-                using var graphics = XGraphics.FromPdfPage((target ?? renderer.PdfDocument).Pages[index]);
-                var rowHeight = area.Height.Point / table.Rows.Count;
-                foreach (var side in sides)
-                {
-                    if (side.Column >= table.Columns.Count ||
-                        ParseColor(side.Border.ColorCss) is not { } color) continue;
-                    var width = Math.Max(0.5, side.Border.WidthPt);
-                    var pen = new XPen(XColor.FromArgb((int)color.R, (int)color.G, (int)color.B), width);
-                    var x = area.X.Point + Enumerable.Range(0, side.Column)
-                        .Sum(column => table.Columns[column].Width.Point) +
-                        (side.Right ? table.Columns[side.Column].Width.Point : 0);
-                    var top = area.Y.Point + offset + side.Row * rowHeight;
-                    var bottom = top + rowHeight;
-                    graphics.DrawLine(pen, x - width, top, x - width, bottom);
-                    graphics.DrawLine(pen, x + width, top, x + width, bottom);
                 }
             }
         }
@@ -10027,10 +9944,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             if ((_cellRightMarginPoints ?? _rowRightMarginPoints) is double cellRight)
                 format.RightIndent = Unit.FromPoint(format.RightIndent.Point +
                     cellRight - _table.RightPadding.Point);
-            if (!_nativeDoubleTableBorders &&
-                paragraph.Ancestors<DocumentFormat.OpenXml.Wordprocessing.Table>().FirstOrDefault() is
-                    { } doubleBorderTable && HasSixDoubleBorders(doubleBorderTable))
-                format.LeftIndent = Unit.FromPoint(format.LeftIndent.Point + 0.5);
             if (_cellNoWrap && _cellNoWrapWidthPoints is > 100 &&
                 !string.Equals(_minorThemeLatinFont, "Arial", StringComparison.OrdinalIgnoreCase))
                 format.RightIndent = Unit.FromPoint(format.RightIndent.Point - 3);
@@ -10531,6 +10444,31 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             format.Borders.DistanceFromRight = distance;
             if (_container is Section)
                 format.SpaceBefore = Unit.FromPoint(format.SpaceBefore.Point - inheritedSpace);
+        }
+        if (paragraph.ParagraphProperties?.ParagraphBorders == null && computed.Borders != null)
+        {
+            var styleBorders = context.Styles.GetParagraphStyleChain(paragraph)
+                .Select(entry => _paragraphStyles.TryGetValue(entry.StyleId, out var definition)
+                    ? definition.StyleParagraphProperties?.ParagraphBorders : null)
+                .Where(borders => borders != null).ToArray();
+            foreach (var side in new[] { "top", "bottom", "left", "right" })
+            {
+                var inherited = styleBorders.Select(borders => borders!.ChildElements
+                        .FirstOrDefault(border => border.LocalName == side))
+                    .FirstOrDefault(border => border != null);
+                if (inherited == null || AttributeValue(inherited, "val") is "none" or "nil" ||
+                    !double.TryParse(AttributeValue(inherited, "space"), NumberStyles.Float,
+                        CultureInfo.InvariantCulture, out var borderSpacePoints) || borderSpacePoints <= 0)
+                    continue;
+                var distance = Unit.FromPoint(borderSpacePoints);
+                switch (side)
+                {
+                    case "top": format.Borders.DistanceFromTop = distance; break;
+                    case "bottom": format.Borders.DistanceFromBottom = distance; break;
+                    case "left": format.Borders.DistanceFromLeft = distance; break;
+                    case "right": format.Borders.DistanceFromRight = distance; break;
+                }
+            }
         }
         if (ParseColor(computed.BackgroundColorCss) is { } background &&
             !(_container is Cell && background == MigraDoc.DocumentObjectModel.Colors.White &&
@@ -15089,14 +15027,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             borders.InsideVerticalBorder?.Val?.Value == BorderValues.Double;
     }
 
-    private bool UsePartialNativeDoubleBorders(DocumentFormat.OpenXml.Wordprocessing.Table table)
-    {
-        var borders = table.TableProperties?.TableBorders;
-        return _minorThemeLatinFont != null && _availableFontFamilies.Contains(_minorThemeLatinFont) &&
-            borders?.TopBorder?.Val?.Value == BorderValues.Double &&
-            borders.BottomBorder?.Val?.Value == BorderValues.Double;
-    }
-
     public override void VisitAltChunk(AltChunk chunk, DxpIDocumentContext context)
     {
         var elements = _container switch
@@ -15650,8 +15580,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         var previousRowSpacing = _rowCellSpacingPoints;
         var previousImplicitContentTable = _implicitContentTable;
         var previousParagraphSpacing = _tableParagraphSpacing;
-        var previousDoubleBorder = _doubleRowBorderPoints;
-        var previousNativeDoubleBorders = _nativeDoubleTableBorders;
         var previousCompactRow = _previousHeaderRowCompact;
         var previousRowSpacingReduction = _previousHeaderRowSpacingReductionPoints;
         _tableCellSpacingPoints = 0;
@@ -15681,9 +15609,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _rowCellSpacingPoints = 0;
         _implicitContentTable = false;
         _tableParagraphSpacing = null;
-        _doubleRowBorderPoints = 0;
-        _nativeDoubleTableBorders = Enum.TryParse<BorderStyle>("Double", out _) &&
-            (HasSixDoubleBorders(table) || UsePartialNativeDoubleBorders(table));
         _previousHeaderRowCompact = false;
         _previousHeaderRowSpacingReductionPoints = 0;
         if (_container is Section firstSection && table.Parent is Body && table.PreviousSibling() == null &&
@@ -15762,16 +15687,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     _paragraphStyles.TryGetValue(entry.StyleId, out var definition) &&
                     definition.StyleParagraphProperties?.SpacingBetweenLines?.BeforeAutoSpacing?.Value == false))
                 _noAutoSpacingTables.Add(_table);
-            if (!_nativeDoubleTableBorders && _tableRightToLeft && tableContext.ComputedStyle.TableBorders?.Left is
-                { LineStyle: DxpComputedBorderLineStyle.Double } doubleLeftBorder)
-                _rtlDoubleTableLeftBorders[_table] = doubleLeftBorder;
-            if (!_nativeDoubleTableBorders && !_tableRightToLeft && tableContext.ComputedStyle.TableBorders?.Right is
-                { LineStyle: DxpComputedBorderLineStyle.Double } doubleRightBorder)
-                _doubleTableRightBorders[_table] = doubleRightBorder;
-            var insideHorizontal = table.TableProperties?.TableBorders?.InsideHorizontalBorder;
-            if (!_nativeDoubleTableBorders && insideHorizontal?.Val?.Value == BorderValues.Double &&
-                insideHorizontal.Size?.Value is uint eighths)
-                _doubleRowBorderPoints = eighths / 4.0;
             var directMargins = table.TableProperties?.GetFirstChild<TableCellMarginDefault>();
             int? leftMargin = ReadCellMargin(directMargins?.GetFirstChild<TableCellLeftMargin>());
             int? rightMargin = ReadCellMargin(directMargins?.GetFirstChild<TableCellRightMargin>());
@@ -15780,6 +15695,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             var tableStyleId = table.TableProperties?.TableStyle?.Val?.Value ??
                 _paragraphStyles.Values.FirstOrDefault(style =>
                     style.Type?.Value == StyleValues.Table && style.Default?.Value == true)?.StyleId?.Value;
+            string? inheritedCellSpacing = null;
             if (tableStyleId != null &&
                 _paragraphStyles.TryGetValue(tableStyleId, out var definition))
             {
@@ -15789,6 +15705,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     _paragraphStyles.TryGetValue(baseId, out var baseStyle) ? baseStyle : null)
                 {
                     _tableParagraphSpacing ??= current.StyleParagraphProperties?.SpacingBetweenLines;
+                    inheritedCellSpacing ??= current.GetFirstChild<StyleTableProperties>()?
+                        .GetFirstChild<TableCellSpacing>()?.Width?.Value;
                     var styleMargins = current.GetFirstChild<StyleTableProperties>()?
                         .GetFirstChild<TableCellMarginDefault>();
                     leftMargin ??= ReadCellMargin(styleMargins?.GetFirstChild<TableCellLeftMargin>());
@@ -15804,9 +15722,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 backgroundFill = backgroundStyle.GetFirstChild<StyleTableProperties>()?
                     .GetFirstChild<DocumentFormat.OpenXml.Wordprocessing.Shading>()?.Fill?.Value;
             var spacing = table.TableProperties?.GetFirstChild<TableCellSpacing>()?.Width?.Value ??
-                (tableStyleId != null && _paragraphStyles.TryGetValue(tableStyleId, out var style)
-                    ? style.GetFirstChild<StyleTableProperties>()?.GetFirstChild<TableCellSpacing>()?.Width?.Value
-                    : null);
+                inheritedCellSpacing;
             if (int.TryParse(spacing, out var spacingTwips))
             {
                 var points = spacingTwips / 20.0;
@@ -15876,8 +15792,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     Math.Max(_lastParagraph.Format.SpaceAfter.Point, 10.31));
             _lastParagraph = null;
             _lastParagraphContainer = null;
-            _table.Rows.LeftIndent = Unit.FromPoint(styledSpacingBorder > 0
-                ? styledSpacingBorder + 0.5 : 0);
+            if (styledSpacingBorder > 0)
+                _table.Rows.LeftIndent = Unit.FromPoint(styledSpacingBorder + 0.5);
             if (leftMargin is int leftTwips)
                 _table.LeftPadding = Unit.FromPoint(Math.Max(0, leftTwips / 20.0 -
                     Math.Max(0, tableContext.ComputedStyle.TableBorders?.Left?.WidthPt ?? 0) / 2));
@@ -15893,7 +15809,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     _table.LeftPadding = Unit.FromPoint(_horizontalMergeTable ? 0.5 : 0);
                 if (rightMargin == null) _table.RightPadding = Unit.Zero;
             }
-            if (_nativeDoubleTableBorders && HasSixDoubleBorders(table))
+            if (HasSixDoubleBorders(table))
                 _table.LeftPadding = Unit.FromPoint(Math.Max(0, _table.LeftPadding.Point - 0.5));
             if (!firstPageIntroTableFooter && table.TableProperties?.TableBorders != null &&
                 table.Descendants<TopLeftToBottomRightCellBorder>().Any())
@@ -15944,6 +15860,9 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     _fontFamily,
                     cellFont?.FontSizeHalfPoints is int halfPoints ? halfPoints / 2.0 : 11,
                     ((leftMargin ?? 108) + (rightMargin ?? 108)) / 20.0);
+            var fixedCellWidths = autoFitWidths == null
+                ? FixedCellWidths(table, columns, _tableCellSpacingPoints) : null;
+            autoFitWidths ??= fixedCellWidths;
             if (autoFitWidths == null)
             {
                 autoFitWidths = ImplicitContentTableWidths(table, model, available, context.Styles,
@@ -15958,7 +15877,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                         _table.Rows.LeftIndent = Unit.FromPoint(_table.Rows.LeftIndent.Point + 0.5);
                 }
             }
-            if (autoFitWidths != null && table.Elements<TableRow>().Skip(1).Any() &&
+            if (autoFitWidths != null && fixedCellWidths == null &&
+                table.Elements<TableRow>().Skip(1).Any() &&
                 table.Descendants<NoWrap>().All(noWrap => noWrap.Val?.Value == OnOffOnlyValues.Off) &&
                 !string.Equals(_minorThemeLatinFont, "Arial", StringComparison.OrdinalIgnoreCase))
                 _table.RightPadding = Unit.FromPoint(Math.Max(0, _table.RightPadding.Point - 2));
@@ -15982,7 +15902,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                         ? -0.7 : 1.25;
                     width += index == 0 ? adjustment : -adjustment;
                 }
-                if (_tableCellSpacingPoints > 0)
+                if (_tableCellSpacingPoints > 0 && fixedCellWidths == null)
                     width = Math.Max(1, width - _tableCellSpacingPoints);
                 if (index == 0 && StyledFixedTableFirstColumnInset(table, tableContext) is > 0
                     and var styledInset)
@@ -15993,6 +15913,12 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     width = Math.Max(1, width - 0.5);
                 _table.AddColumn(Unit.FromPoint(width));
             }
+            if (fixedCellWidths != null && _container is Section &&
+                table.TableProperties?.TableJustification?.Val?.Value == TableRowAlignmentValues.Center)
+                _table.Rows.LeftIndent = Unit.FromPoint(_table.Rows.LeftIndent.Point +
+                    Math.Max(0, (available - _table.Columns.Cast<MigraDoc.DocumentObjectModel.Tables.Column>()
+                        .Sum(column => column.Width.Point)) / 2) -
+                    CenteredSingleStrokeBorderInset(table));
             if (floatingFrame != null)
             {
                 var frameWidth = table.TableProperties?.TableWidth?.Type?.Value == TableWidthUnitValues.Dxa &&
@@ -16045,11 +15971,63 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             _rowCellSpacingPoints = previousRowSpacing;
             _implicitContentTable = previousImplicitContentTable;
             _tableParagraphSpacing = previousParagraphSpacing;
-            _doubleRowBorderPoints = previousDoubleBorder;
-            _nativeDoubleTableBorders = previousNativeDoubleBorders;
             _previousHeaderRowCompact = previousCompactRow;
             _previousHeaderRowSpacingReductionPoints = previousRowSpacingReduction;
         });
+    }
+
+    private static double[]? FixedCellWidths(DocumentFormat.OpenXml.Wordprocessing.Table table,
+        int columns, double cellSpacingPoints)
+    {
+        if (table.TableProperties?.TableLayout?.Type?.Value != TableLayoutValues.Fixed ||
+            table.TableProperties.TableWidth?.Type?.Value != TableWidthUnitValues.Auto ||
+            table.TableProperties.TableJustification?.Val?.Value != TableRowAlignmentValues.Center)
+            return null;
+
+        double[]? widths = null;
+        foreach (var row in table.Elements<TableRow>())
+        {
+            var cells = row.Elements<TableCell>().ToArray();
+            if (cells.Length != columns) return null;
+            widths ??= new double[columns];
+            for (var index = 0; index < columns; index++)
+            {
+                var properties = cells[index].TableCellProperties;
+                if (properties?.GridSpan?.Val?.Value is > 1 ||
+                    properties?.TableCellWidth?.Type?.Value != TableWidthUnitValues.Dxa ||
+                    !int.TryParse(properties.TableCellWidth.Width?.Value, out var twips) || twips <= 0)
+                    return null;
+                var points = twips / 20.0 + 2 * cellSpacingPoints;
+                if (widths[index] != 0 && Math.Abs(widths[index] - points) > 0.01)
+                    return null;
+                widths[index] = points;
+            }
+        }
+        return widths;
+    }
+
+    private static double CenteredSingleStrokeBorderInset(DocumentFormat.OpenXml.Wordprocessing.Table table)
+    {
+        var cells = table.Elements<TableRow>().FirstOrDefault()?.Elements<TableCell>().ToArray();
+        if (cells is not { Length: > 0 }) return 0;
+
+        static double HalfPaintedWidth(DocumentFormat.OpenXml.Wordprocessing.BorderType? border)
+        {
+            if (border?.Val?.Value is not { } style ||
+                (style != BorderValues.Single && style != BorderValues.Thick &&
+                 style != BorderValues.Dotted && style != BorderValues.Dashed &&
+                 style != BorderValues.DotDash && style != BorderValues.DotDotDash &&
+                 style != BorderValues.DashSmallGap && style != BorderValues.DashDotStroked &&
+                 style != BorderValues.ThreeDEmboss && style != BorderValues.ThreeDEngrave &&
+                 style != BorderValues.Outset && style != BorderValues.Inset) ||
+                border.Size?.Value is not { } size)
+                return 0;
+            // Engrave occupies 1.75 times the nominal width in Pdfxport's border layout.
+            return size / 32.0 * (style == BorderValues.ThreeDEngrave ? 1.75 : 1.0);
+        }
+
+        return HalfPaintedWidth(cells[0].TableCellProperties?.TableCellBorders?.LeftBorder) +
+            HalfPaintedWidth(cells[^1].TableCellProperties?.TableCellBorders?.RightBorder);
     }
 
     private static double[]? AutoFitSimpleNestedTableWidths(
@@ -16268,17 +16246,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     }
                 }
             }
-            var topException = row.Elements<TablePropertyExceptions>()
-                .Select(exception => exception.GetFirstChild<TableBorders>()?.TopBorder)
-                .FirstOrDefault(top => top != null);
-            if (rowContext.Index == 0 && topException?.Val?.Value == BorderValues.Double &&
-                topException.Size?.Value is uint eighths && eighths > 0 && _table != null)
-            {
-                _doubleFirstRowTopBorders[_table] = new RowTopStroke(
-                    "#" + (topException.Color?.Value ?? "000000"), eighths / 8.0,
-                    _container is HeaderFooter);
-                _row.TopPadding = Unit.FromPoint(_row.TopPadding.Point + eighths / 4.0);
-            }
             var spacingOverride = row.GetFirstChild<TablePropertyExceptions>()?
                 .GetFirstChild<TableCellSpacing>()?.Width?.Value ??
                 row.TableRowProperties?.GetFirstChild<TableCellSpacing>()?.Width?.Value;
@@ -16348,12 +16315,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                         _spacedTableLeftBorders[_table] = (overlay.Border, overlay.Spacing,
                             overlay.InHeaderFooter, overlay.ResetAllowance + allowance);
                 }
-            }
-            if (_doubleRowBorderPoints > 0)
-            {
-                _row.BottomPadding = Unit.FromPoint(_row.BottomPadding.Point + _doubleRowBorderPoints);
-                if (rowContext.Index == 0)
-                    _row.TopPadding = Unit.FromPoint(_row.TopPadding.Point + _doubleRowBorderPoints);
             }
             if (_container is Section && _table?.TopPadding.Point == 0 &&
                 _paragraphStyles.GetValueOrDefault("Normal")?.StyleRunProperties?.FontSize?.Val?.Value == "28")
@@ -16597,32 +16558,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 ApplyBorders(target.Borders, borders);
             else if (cellContext.ComputedStyle.Border is { } border)
                 ApplyBorder(target.Borders, border);
-            if (_doubleTableRightBorders.ContainsKey(_table) &&
-                targetColumn + target.MergeRight == _table.Columns.Count - 1 &&
-                cellBorders?.RightBorder == null && cellBorders?.EndBorder == null)
-                target.Borders.Right.Visible = false;
-            if (!_nativeDoubleTableBorders && cellBorders?.ChildElements.Any(element =>
-                    element.LocalName is "left" or "right" or "start" or "end" &&
-                    AttributeValue(element, "val") == "double") == true &&
-                cellContext.ComputedStyle.Borders is { } cellBoxBorders)
-            {
-                if (cellBoxBorders.Left is { LineStyle: DxpComputedBorderLineStyle.Double } left)
-                {
-                    target.Borders.Left.Visible = false;
-                    if (!_doubleCellSideBorders.TryGetValue(_table, out var sides))
-                        _doubleCellSideBorders[_table] = sides = new List<DoubleCellSideBorder>();
-                    sides.Add(new DoubleCellSideBorder(cellContext.RowIndex, targetColumn, false, left));
-                }
-                if (cellBoxBorders.Right is { LineStyle: DxpComputedBorderLineStyle.Double } right)
-                {
-                    target.Borders.Right.Visible = false;
-                    if (!_doubleCellSideBorders.TryGetValue(_table, out var sides))
-                        _doubleCellSideBorders[_table] = sides = new List<DoubleCellSideBorder>();
-                    sides.Add(new DoubleCellSideBorder(cellContext.RowIndex, targetColumn, true, right));
-                }
-            }
-            if (targetColumn == 0 && _rtlDoubleTableLeftBorders.ContainsKey(_table))
-                target.Borders.Left.Visible = false;
             var rowTopBorder = cell.Ancestors<TableRow>().FirstOrDefault()?
                 .Elements<TablePropertyExceptions>()
                 .Select(exception => exception.GetFirstChild<TableBorders>()?.TopBorder)
@@ -16635,6 +16570,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 else if (rowTopBorder.Size?.Value is uint size && size > 0)
                 {
                     target.Borders.Top.Visible = true;
+                    if (rowTopBorder.Val?.Value == BorderValues.Double)
+                        target.Borders.Top.Style = BorderStyle.Double;
                     target.Borders.Top.Width = Unit.FromPoint(size / 8.0);
                     if (ParseColor("#" + rowTopBorder.Color?.Value) is { } rowColor)
                         target.Borders.Top.Color = rowColor;
@@ -16760,13 +16697,34 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         target.Style = source.LineStyle switch
         {
             DxpComputedBorderLineStyle.Dotted => BorderStyle.Dot,
-            DxpComputedBorderLineStyle.Dashed => BorderStyle.DashSmallGap,
-            DxpComputedBorderLineStyle.Double when _nativeDoubleTableBorders &&
-                Enum.TryParse<BorderStyle>("Double", out var nativeDouble) => nativeDouble,
+            DxpComputedBorderLineStyle.Dashed => source.WordBorderStyle?.ToLowerInvariant() switch
+            {
+                "dotdash" => BorderStyle.DashDot,
+                "dotdotdash" => BorderStyle.DashDotDot,
+                "dashlargegap" => BorderStyle.DashLargeGap,
+                "dashdotstroked" => BorderStyle.DashDotStroked,
+                _ => BorderStyle.DashSmallGap
+            },
+            DxpComputedBorderLineStyle.Double => BorderStyle.Double,
+            DxpComputedBorderLineStyle.Solid when
+                TryGetNativeWordBorderStyle(source.WordBorderStyle, out var nativeStyle) => nativeStyle,
             _ => BorderStyle.Single
         };
         if (ParseColor(source.ColorCss) is { } color)
             target.Color = color;
+    }
+
+    private static bool TryGetNativeWordBorderStyle(string? wordStyle, out BorderStyle nativeStyle)
+    {
+        var normalized = wordStyle?.ToLowerInvariant();
+        nativeStyle = normalized switch
+        {
+            "threedeemboss" => BorderStyle.Emboss3D,
+            "threedengrave" => BorderStyle.Engrave3D,
+            _ => BorderStyle.Single
+        };
+        if (normalized is "threedeemboss" or "threedengrave") return true;
+        return wordStyle != null && Enum.TryParse(wordStyle, true, out nativeStyle);
     }
 
     private static MigraDoc.DocumentObjectModel.Color? ParseColor(string? css)

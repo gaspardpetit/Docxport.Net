@@ -419,7 +419,10 @@ internal sealed class DxpTableStyleResolver
         else
             color = ToCssColor(color!);
 
-        return new DxpComputedBorder(WidthPt: pt, LineStyle: line, ColorCss: color);
+        return new DxpComputedBorder(WidthPt: pt, LineStyle: line, ColorCss: color)
+        {
+            WordBorderStyle = val
+        };
     }
 
     private static (bool BorderSet, DxpComputedBorder? Border) PickComputedBorder(MergedTableBorders merged)
@@ -457,7 +460,10 @@ internal sealed class DxpTableStyleResolver
         return new DxpComputedBorder(
             WidthPt: pt,
             LineStyle: line,
-            ColorCss: color);
+            ColorCss: color)
+        {
+            WordBorderStyle = b.Val?.InnerText
+        };
     }
 
     private static DxpComputedBorderLineStyle MapLineStyle(BorderValues? val)

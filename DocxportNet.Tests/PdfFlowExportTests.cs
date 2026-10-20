@@ -1,10 +1,19 @@
 using System.Buffers.Binary;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Text;
+using System.Text.RegularExpressions;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
 using DocxportNet.Fields;
 using DocxportNet.Visitors.Pdf;
+using DocxportNet.Walker.Context;
+using DocxportNet.Walker.Context;
+using DocxportNet.Walker.Context;
 using PdfSharp.Drawing;
 using PdfSharp.Fonts;
 using PdfSharp.Pdf;
@@ -62,6 +71,150 @@ public sealed class PdfFlowExportTests
         var bytes = DxpExport.ExportToBytes(docx.ToArray(), new DxpFlowPdfVisitor());
         using var pdf = PdfReader.Open(new MemoryStream(bytes), PdfDocumentOpenMode.Import);
         Assert.Null(pdf.Pages[0].Resources.Elements.GetDictionary("/Pattern"));
+    }
+
+    [Fact]
+    public void MixedBorderBandsKeepCellTextOnTheWordGrid()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "features", "mixed-shaded-behind.docx");
+        var bytes = DxpExport.ExportToBytes(source, new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(bytes));
+        var page = pdf.GetPage(1);
+        var words = page.GetWords().ToArray();
+        var expectedX = new[] { 57.6, 208.85, 362.23, 57.6, 211.01, 360.07, 59.76, 208.85, 360.07 };
+        var expectedY = new[] { 149.25, 254.28, 359.28 };
+        for (var row = 1; row <= 3; row++)
+            for (var column = 1; column <= 3; column++)
+            {
+                var box = Assert.Single(words, word => word.Text == $"{row},{column}").BoundingBox;
+                Assert.InRange(box.Left, expectedX[(row - 1) * 3 + column - 1] - 0.5,
+                    expectedX[(row - 1) * 3 + column - 1] + 0.5);
+                Assert.InRange(page.Height - box.Top, expectedY[row - 1] - 0.5,
+                    expectedY[row - 1] + 0.5);
+            }
+    }
+
+    [Theory]
+    [InlineData(6, "dotDash")]
+    [InlineData(8, "triple")]
+    [InlineData(19, "doubleWave")]
+    [InlineData(26, "double")]
+    public void TableBorderStyleRetainsWordValueForPdfRendering(int tableIndex, string expected)
+    {
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "features", "WordBorderStyles3x3.docx");
+        using var document = WordprocessingDocument.Open(source, false);
+        var table = document.MainDocumentPart!.Document.Body!.Elements<Table>().ElementAt(tableIndex);
+        var resolved = new DxpTableStyleResolver(document).ResolveTableStyle(table.TableProperties, 3, 3);
+        var firstCell = table.Elements<TableRow>().First().Elements<TableCell>().First();
+        var computed = DxpTableStyleResolver.ComputeCellStyle(resolved, firstCell.TableCellProperties,
+            0, 0, 3, 3);
+        Assert.Equal(expected, computed.Borders?.Top?.WordBorderStyle);
+    }
+
+    [Fact]
+    public void CenteredFixedTablesUseCellWidthsAndOuterBorderExtent()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "features", "WordBorderStyles3x3.docx");
+        var bytes = DxpExport.ExportToBytes(source, new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(bytes));
+        double? referenceMiddle = null;
+        foreach (var pageNumber in Enumerable.Range(1, 8).Concat(Enumerable.Range(21, 6)))
+        {
+            var words = pdf.GetPage(pageNumber).GetWords().ToArray();
+            double Center(string label)
+            {
+                var box = Assert.Single(words, word => word.Text == label).BoundingBox;
+                return (box.Left + box.Right) / 2;
+            }
+
+            var first = Center("1,1");
+            var middle = Center("1,2");
+            var last = Center("1,3");
+            Assert.InRange(middle - first, 148.5, 151.0);
+            Assert.InRange(last - middle, 148.5, 151.0);
+            Assert.InRange(middle, 305.5, 306.5);
+            referenceMiddle ??= middle;
+            Assert.InRange(middle - referenceMiddle.Value, -0.1, 0.1);
+        }
+    }
+
+    [Fact]
+    public void CellLevelDoubleBordersDrawBothHorizontalRails()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "features", "WordBorderStyles3x3.docx");
+        var bytes = DxpExport.ExportToBytes(source, new DxpFlowPdfVisitor());
+        using var pdf = PdfReader.Open(new MemoryStream(bytes), PdfDocumentOpenMode.Import);
+        var content = string.Concat(pdf.Pages[26].Contents.Elements
+            .OfType<PdfSharp.Pdf.Advanced.PdfReference>()
+            .Select(reference => reference.Value)
+            .OfType<PdfSharp.Pdf.Advanced.PdfContent>()
+            .Where(stream => stream.Stream != null)
+            .Select(stream => Encoding.Latin1.GetString(stream.Stream!.UnfilteredValue)));
+        Assert.True(Regex.Matches(content, @"(?m)[\d.]+ [\d.]+ [\d.]+ [\d.]+ re\s+S$").Count >= 10);
+    }
+
+    [Theory]
+    [InlineData(false, false, 148.5, 151.0)]
+    [InlineData(true, false, 160.5, 162.5)]
+    [InlineData(true, true, 148.5, 151.0)]
+    public void CenteredTableWidthsRespectInheritedCellSpacingAndDirectOverride(
+        bool inheritedSpacing, bool directZeroSpacing, double minimumColumnDistance,
+        double maximumColumnDistance)
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "features", "WordBorderStyles3x3.docx");
+        var copy = Path.Combine(Path.GetTempPath(), $"styled-table-width-{Guid.NewGuid():N}.docx");
+        File.Copy(source, copy);
+        try
+        {
+            using (var document = WordprocessingDocument.Open(copy, true))
+            {
+                var styles = document.MainDocumentPart!.StyleDefinitionsPart!.Styles!;
+                var baseStyle = new Style { Type = StyleValues.Table, StyleId = "WidthBase" };
+                if (inheritedSpacing)
+                    baseStyle.AppendChild(new StyleTableProperties(new TableCellSpacing
+                    {
+                        Width = "120", Type = TableWidthUnitValues.Dxa
+                    }));
+                styles.AppendChild(baseStyle);
+                styles.AppendChild(new Style(new BasedOn { Val = "WidthBase" })
+                {
+                    Type = StyleValues.Table, StyleId = "WidthDerived"
+                });
+                var table = document.MainDocumentPart.Document.Body!.Descendants<Table>().First();
+                table.TableProperties!.PrependChild(new TableStyle { Val = "WidthDerived" });
+                if (directZeroSpacing)
+                    table.TableProperties.AppendChild(new TableCellSpacing
+                    {
+                        Width = "0", Type = TableWidthUnitValues.Dxa
+                    });
+            }
+
+            var bytes = DxpExport.ExportToBytes(copy, new DxpFlowPdfVisitor());
+            using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(bytes));
+            var words = pdf.GetPage(1).GetWords().ToArray();
+            double Center(string label)
+            {
+                var box = Assert.Single(words, word => word.Text == label).BoundingBox;
+                return (box.Left + box.Right) / 2;
+            }
+            Assert.InRange(Center("1,2") - Center("1,1"), minimumColumnDistance,
+                maximumColumnDistance);
+        }
+        finally
+        {
+            File.Delete(copy);
+        }
     }
 
     [Fact]

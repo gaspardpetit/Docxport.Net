@@ -31,3 +31,7 @@ existing baselines with their corresponding generated files.
 a page-anchored DrawingML gradient rectangle behind a table. The focused PDF
 test checks that the gradient pattern and table text are both present.
 DrawingML `outerShdw` on the rectangle is not yet rendered.
+
+`docx/features/WordBorderStyles3x3.docx` places a 3×3 table on each page,
+covering Word's border styles and shared cell edges. The PDF flow tests use it
+to check style preservation, fixed cell widths, spacing inheritance, and double borders.
