@@ -15,6 +15,21 @@ namespace DocxportNet.Tests;
 public sealed class PdfFlowExportTests
 {
     [Fact]
+    public void BehindTextGradientRectangleIsRenderedUnderShadedTable()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "features", "mixed-shaded-behind.docx");
+        var bytes = DxpExport.ExportToBytes(source, new DxpFlowPdfVisitor());
+
+        using var pdf = PdfReader.Open(new MemoryStream(bytes), PdfDocumentOpenMode.Import);
+        Assert.Single(pdf.Pages);
+        Assert.NotNull(pdf.Pages[0].Resources.Elements.GetDictionary("/Pattern"));
+        using var text = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(bytes));
+        Assert.Contains("Mixedrails", text.GetPage(1).Text);
+    }
+
+    [Fact]
     public void EvaluatedMergeFieldsUseWordPlaceholdersInMarginStories()
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
