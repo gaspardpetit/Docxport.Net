@@ -6195,16 +6195,37 @@ public class DocVisibleCorpusTests
             var footer = Assert.Single(document.MainDocumentPart!.FooterParts,
                 x => x.Footer!.InnerText.Contains("Footer A", StringComparison.Ordinal));
             var table = Assert.Single(footer.Footer!.Elements<Table>());
+            var sharedBorders = table.TableProperties?.GetFirstChild<TableBorders>();
+            if (route == "native")
+            {
+                Assert.Equal(BorderValues.Single, sharedBorders?.TopBorder?.Val?.Value);
+                Assert.Equal(BorderValues.Single, sharedBorders?.LeftBorder?.Val?.Value);
+                Assert.Equal(BorderValues.Single, sharedBorders?.BottomBorder?.Val?.Value);
+                Assert.Equal(BorderValues.Single, sharedBorders?.RightBorder?.Val?.Value);
+                Assert.Equal(BorderValues.Single, sharedBorders?.InsideHorizontalBorder?.Val?.Value);
+                Assert.Equal(BorderValues.Single, sharedBorders?.InsideVerticalBorder?.Val?.Value);
+            }
             var cells = table.Descendants<TableCell>().ToArray();
             for (var i = 0; i < cells.Length; i++)
             {
                 var borders = cells[i].TableCellProperties?.TableCellBorders;
-                Assert.True(borders?.TopBorder?.Val?.Value ==
-                    (suppressFirstTop && i == 0 ? BorderValues.Nil :
-                        BorderValues.Single), $"{route} cell {i} top border");
-                Assert.Equal(BorderValues.Single, borders?.LeftBorder?.Val?.Value);
-                Assert.Equal(BorderValues.Single, borders?.BottomBorder?.Val?.Value);
-                Assert.Equal(BorderValues.Single, borders?.RightBorder?.Val?.Value);
+                if (route == "native")
+                {
+                    Assert.Equal(suppressFirstTop && i == 0 ? BorderValues.Nil : null,
+                        borders?.TopBorder?.Val?.Value);
+                    Assert.Null(borders?.LeftBorder);
+                    Assert.Null(borders?.BottomBorder);
+                    Assert.Null(borders?.RightBorder);
+                }
+                else
+                {
+                    Assert.True(borders?.TopBorder?.Val?.Value ==
+                        (suppressFirstTop && i == 0 ? BorderValues.Nil :
+                            BorderValues.Single), $"{route} cell {i} top border");
+                    Assert.Equal(BorderValues.Single, borders?.LeftBorder?.Val?.Value);
+                    Assert.Equal(BorderValues.Single, borders?.BottomBorder?.Val?.Value);
+                    Assert.Equal(BorderValues.Single, borders?.RightBorder?.Val?.Value);
+                }
                 if (name == "WordSixSlotDiagonalCellBorders" && i == 0)
                     Assert.Equal(BorderValues.Single, borders?
                         .TopLeftToBottomRightCellBorder?.Val?.Value);
