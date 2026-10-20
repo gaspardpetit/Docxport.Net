@@ -15,6 +15,56 @@ namespace DocxportNet.Tests;
 public sealed class PdfFlowExportTests
 {
     [Fact]
+    public void BehindTextGradientRectangleIsRenderedUnderShadedTable()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "features", "mixed-shaded-behind.docx");
+        var bytes = DxpExport.ExportToBytes(source, new DxpFlowPdfVisitor());
+
+        using var pdf = PdfReader.Open(new MemoryStream(bytes), PdfDocumentOpenMode.Import);
+        Assert.Single(pdf.Pages);
+        Assert.NotNull(pdf.Pages[0].Resources.Elements.GetDictionary("/Pattern"));
+        using var text = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(bytes));
+        Assert.Contains("Mixedrails", text.GetPage(1).Text);
+    }
+
+    [Theory]
+    [InlineData("foreground")]
+    [InlineData("interiorStop")]
+    [InlineData("shade")]
+    public void UnsupportedBehindTextGradientIsNotRendered(string variation)
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "features", "mixed-shaded-behind.docx");
+        using var docx = new MemoryStream();
+        using (var input = File.OpenRead(source)) input.CopyTo(docx);
+        docx.Position = 0;
+        using (var document = WordprocessingDocument.Open(docx, true))
+        {
+            var choice = document.MainDocumentPart!.Document.Descendants<AlternateContentChoice>().Single();
+            var element = variation switch
+            {
+                "foreground" => choice.Descendants().First(child => child.LocalName == "anchor"),
+                "interiorStop" => choice.Descendants().First(child => child.LocalName == "gs"),
+                _ => choice.Descendants().First(child => child.LocalName == "shade")
+            };
+            var attribute = variation switch
+            {
+                "foreground" => "behindDoc",
+                "interiorStop" => "pos",
+                _ => "val"
+            };
+            element.SetAttribute(new OpenXmlAttribute(attribute, "", variation == "foreground" ? "0" : "25000"));
+            document.MainDocumentPart.Document.Save();
+        }
+        var bytes = DxpExport.ExportToBytes(docx.ToArray(), new DxpFlowPdfVisitor());
+        using var pdf = PdfReader.Open(new MemoryStream(bytes), PdfDocumentOpenMode.Import);
+        Assert.Null(pdf.Pages[0].Resources.Elements.GetDictionary("/Pattern"));
+    }
+
+    [Fact]
     public void EvaluatedMergeFieldsUseWordPlaceholdersInMarginStories()
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;

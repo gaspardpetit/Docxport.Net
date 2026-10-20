@@ -85,6 +85,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private readonly List<(Section Section, MigraDoc.DocumentObjectModel.Shapes.TextFrame Frame,
         long RelativeHeight)> _foregroundTextBoxes = new();
     private readonly HashSet<MigraDoc.DocumentObjectModel.Shapes.TextFrame> _behindTextBoxes = new();
+    private readonly Dictionary<MigraDoc.DocumentObjectModel.Paragraph, List<PageGradientRectangle>>
+        _pageGradientRectangles = new();
     private readonly HashSet<MigraDoc.DocumentObjectModel.Shapes.TextFrame> _aboveContentTextBoxes = new();
     private readonly Dictionary<MigraDoc.DocumentObjectModel.Shapes.TextFrame,
         (Cell Cell, MigraDoc.DocumentObjectModel.Paragraph Paragraph, double Left, double Top)>
@@ -1320,6 +1322,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _footersWithStyledTrailingLine.Clear();
         _footerImages.Clear();
         _paragraphImages.Clear();
+        _pageGradientRectangles.Clear();
         _flowReservedParagraphImages.Clear();
         _footnoteLabels.Clear();
         _customFootnoteMarks.Clear();
@@ -2822,9 +2825,10 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     public override bool AcceptAlternateContentChoice(AlternateContentChoice choice,
         IReadOnlyList<string> required, DxpIDocumentContext context) =>
         required.Count > 0 && required.All(prefix => prefix == "wps") &&
-        choice.Descendants<TextBoxContent>().Any(textBox => textBox.Ancestors<Drawing>().Any(drawing =>
+        (choice.Descendants<TextBoxContent>().Any(textBox => textBox.Ancestors<Drawing>().Any(drawing =>
             drawing.Descendants().Any(element => element.LocalName is "anchor" or "inline" &&
-                element.ChildElements.Any(child => child.LocalName == "extent"))));
+                element.ChildElements.Any(child => child.LocalName == "extent")))) ||
+         choice.Descendants<Drawing>().Any(drawing => ParsePageGradientRectangle(drawing) != null));
 
     public override IDisposable VisitTextBoxContentBegin(TextBoxContent textBox, DxpIDocumentContext context)
     {
@@ -8547,6 +8551,25 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         bool BehindDocument = false, bool MirrorHorizontal = false);
     private sealed record FloatingTextWrap(double Left, double Right);
 
+    private sealed record PageGradientRectangle(double Left, double Top, double Width, double Height,
+        XColor FirstColor, XColor LastColor, double AngleDegrees, long ZOrder);
+
+    private static void DrawPageGradientRectangle(XGraphics graphics, PageGradientRectangle rectangle)
+    {
+        var radians = rectangle.AngleDegrees * Math.PI / 180;
+        var centerX = rectangle.Left + rectangle.Width / 2;
+        var centerY = rectangle.Top + rectangle.Height / 2;
+        var radius = (Math.Abs(rectangle.Width * Math.Cos(radians)) +
+            Math.Abs(rectangle.Height * Math.Sin(radians))) / 2;
+        var dx = Math.Cos(radians) * radius;
+        var dy = Math.Sin(radians) * radius;
+        var brush = new XLinearGradientBrush(new XPoint(centerX - dx, centerY - dy),
+            new XPoint(centerX + dx, centerY + dy), rectangle.FirstColor,
+            rectangle.LastColor);
+        graphics.DrawRectangle(brush, rectangle.Left, rectangle.Top,
+            rectangle.Width, rectangle.Height);
+    }
+
     private void ClipExactLineImages(PdfDocumentRenderer renderer, PdfDocument document)
     {
         if (_exactLineImages.Count == 0) return;
@@ -8611,7 +8634,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
 
     private void RenderParagraphAnchoredImages(PdfDocumentRenderer renderer, PdfDocument? target = null)
     {
-        if (_paragraphImages.Count == 0 && _flowReservedParagraphImages.Count == 0) return;
+        if (_paragraphImages.Count == 0 && _flowReservedParagraphImages.Count == 0 &&
+            _pageGradientRectangles.Count == 0) return;
         var drawnParagraphs = new HashSet<MigraDoc.DocumentObjectModel.Paragraph>();
         Section? previousSection = null;
         var sectionPage = 0;
@@ -8642,25 +8666,38 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                         imageArea.Y.Point + reservedOverlay.Top, reservedOverlay.Width, reservedOverlay.Height);
                 }
                 if (info.DocumentObject is not MigraDoc.DocumentObjectModel.Paragraph paragraph ||
-                    !_paragraphImages.TryGetValue(paragraph, out var images) ||
                     info.LayoutInfo.ContentArea is not { } area ||
                     !drawnParagraphs.Add(paragraph)) continue;
-                foreach (var overlay in images.Where(image => image.BehindDocument)
-                             .OrderByDescending(image => image.ZOrder)
-                             .Concat(images.Where(image => !image.BehindDocument)
-                                 .OrderBy(image => image.ZOrder)))
+                _paragraphImages.TryGetValue(paragraph, out var images);
+                _pageGradientRectangles.TryGetValue(paragraph, out var rectangles);
+                var overlays = (images ?? Enumerable.Empty<ParagraphImageOverlay>())
+                    .Select(image => (Image: image, Gradient: (PageGradientRectangle?)null,
+                        image.ZOrder, image.BehindDocument))
+                    .Concat((rectangles ?? Enumerable.Empty<PageGradientRectangle>())
+                        .Select(gradient => (Image: (ParagraphImageOverlay?)null,
+                            Gradient: gradient, gradient.ZOrder, BehindDocument: true)));
+                foreach (var overlay in overlays.Where(item => item.BehindDocument)
+                             .OrderByDescending(item => item.ZOrder)
+                             .Concat(overlays.Where(item => !item.BehindDocument)
+                                 .OrderBy(item => item.ZOrder)))
                 {
                     using var graphics = XGraphics.FromPdfPage((target ?? renderer.PdfDocument).Pages[index],
                         overlay.BehindDocument ? XGraphicsPdfPageOptions.Prepend : XGraphicsPdfPageOptions.Append);
-                    using var stream = new MemoryStream(overlay.Bytes);
+                    if (overlay.Gradient is { } gradient)
+                    {
+                        DrawPageGradientRectangle(graphics, gradient);
+                        continue;
+                    }
+                    var imageOverlay = overlay.Image!;
+                    using var stream = new MemoryStream(imageOverlay.Bytes);
                     using var image = XImage.FromStream(stream);
-                    graphics.DrawImage(image, overlay.PageRelative
-                            ? MirroredPageImageLeft(overlay.Left, overlay.Width,
+                    graphics.DrawImage(image, imageOverlay.PageRelative
+                            ? MirroredPageImageLeft(imageOverlay.Left, imageOverlay.Width,
                                 renderer.PdfDocument.Pages[index].Width.Point, displayedPage,
-                                overlay.MirrorHorizontal)
-                            : area.X.Point + overlay.Left,
-                        overlay.PageRelative ? overlay.Top : area.Y.Point + overlay.Top,
-                        overlay.Width, overlay.Height);
+                                imageOverlay.MirrorHorizontal)
+                            : area.X.Point + imageOverlay.Left,
+                        imageOverlay.PageRelative ? imageOverlay.Top : area.Y.Point + imageOverlay.Top,
+                        imageOverlay.Width, imageOverlay.Height);
                 }
             }
         }
@@ -14207,6 +14244,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     public override IDisposable VisitDrawingBegin(Drawing drawing, DxpDrawingInfo? info, DxpIDocumentContext context)
     {
         if (TryAddChart(drawing, info, context)) return DxpDisposable.Empty;
+        if (TryAddPageGradientRectangle(drawing)) return DxpDisposable.Empty;
         if (_paragraph == null || info?.DataUri is not string uri ||
             !(info.ContentType?.Equals("image/png", StringComparison.OrdinalIgnoreCase) == true ||
               info.ContentType?.Equals("image/jpeg", StringComparison.OrdinalIgnoreCase) == true ||
@@ -14702,6 +14740,122 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 _paragraph.Elements.OfType<MigraDoc.DocumentObjectModel.Shapes.Image>()
                     .Max(item => item.Height.Point));
         return DxpDisposable.Empty;
+    }
+
+    private bool TryAddPageGradientRectangle(Drawing drawing)
+    {
+        if (_paragraph == null) return false;
+        var rectangle = ParsePageGradientRectangle(drawing);
+        if (rectangle == null) return false;
+        if (!_pageGradientRectangles.TryGetValue(_paragraph, out var rectangles))
+            _pageGradientRectangles[_paragraph] = rectangles = new List<PageGradientRectangle>();
+        rectangles.Add(rectangle);
+        return true;
+    }
+
+    private PageGradientRectangle? ParsePageGradientRectangle(Drawing drawing)
+    {
+        // Header/footer stories repeat across pages; body paragraph overlays do not.
+        if (_container is HeaderFooter) return null;
+        var anchor = drawing.Descendants().FirstOrDefault(element => element.LocalName == "anchor");
+        if (anchor?.GetAttribute("behindDoc", "").Value != "1" ||
+            anchor.ChildElements.FirstOrDefault(element => element.LocalName == "positionH") is not { } horizontal ||
+            anchor.ChildElements.FirstOrDefault(element => element.LocalName == "positionV") is not { } vertical ||
+            horizontal.GetAttribute("relativeFrom", "").Value != "page" ||
+            vertical.GetAttribute("relativeFrom", "").Value != "page") return null;
+        var shape = anchor.Descendants().FirstOrDefault(element => element.LocalName == "wsp");
+        var properties = shape?.ChildElements.FirstOrDefault(element => element.LocalName == "spPr");
+        if (properties?.Descendants().FirstOrDefault(element => element.LocalName == "prstGeom")?
+                .GetAttribute("prst", "").Value != "rect") return null;
+        var gradient = properties.ChildElements.FirstOrDefault(element => element.LocalName == "gradFill");
+        var stops = gradient?.Descendants().Where(element => element.LocalName == "gs").ToArray();
+        var extent = anchor.ChildElements.FirstOrDefault(element => element.LocalName == "extent");
+        var leftOffset = horizontal.ChildElements.FirstOrDefault(element => element.LocalName == "posOffset")?.InnerText;
+        var topOffset = vertical.ChildElements.FirstOrDefault(element => element.LocalName == "posOffset")?.InnerText;
+        if (stops is not [_, _] ||
+            stops[0].GetAttribute("pos", "").Value != "0" ||
+            stops[1].GetAttribute("pos", "").Value != "100000" ||
+            !TryDrawingGradientColor(stops[0], out var first) ||
+            !TryDrawingGradientColor(stops[1], out var last) ||
+            !long.TryParse(leftOffset, out var left) || !long.TryParse(topOffset, out var top) ||
+            !long.TryParse(extent?.GetAttribute("cx", "").Value, out var width) ||
+            !long.TryParse(extent?.GetAttribute("cy", "").Value, out var height)) return null;
+        var angleValue = gradient?.Descendants().FirstOrDefault(element => element.LocalName == "lin")?
+            .GetAttribute("ang", "").Value;
+        var angle = double.TryParse(angleValue, NumberStyles.Float, CultureInfo.InvariantCulture,
+            out var drawingAngle) ? drawingAngle / 60000 : 0;
+        long.TryParse(anchor.GetAttribute("relativeHeight", "").Value,
+            NumberStyles.Integer, CultureInfo.InvariantCulture, out var zOrder);
+        return new PageGradientRectangle(left / 12700.0, top / 12700.0,
+            width / 12700.0, height / 12700.0, first, last, angle, zOrder);
+    }
+
+    private bool TryDrawingGradientColor(OpenXmlElement stop, out XColor result)
+    {
+        result = XColors.Transparent;
+        var element = stop.ChildElements.FirstOrDefault();
+        if (element == null) return false;
+        foreach (var transform in element.ChildElements)
+        {
+            var neutral = transform.LocalName switch
+            {
+                "tint" => true,
+                "satMod" => true,
+                "shade" or "lumMod" or "alpha" =>
+                    transform.GetAttribute("val", "").Value == "100000",
+                "lumOff" => transform.GetAttribute("val", "").Value == "0",
+                _ => false
+            };
+            if (!neutral) return false;
+        }
+        var color = element.LocalName == "srgbClr"
+            ? ParseColor("#" + element.GetAttribute("val", "").Value)
+            : element.LocalName == "schemeClr"
+                ? ResolveDrawingThemeColor(element.GetAttribute("val", "").Value) : null;
+        if (color == null) return false;
+        var rgb = color.Value;
+        var tint = element.ChildElements.FirstOrDefault(child => child.LocalName == "tint")?
+            .GetAttribute("val", "").Value;
+        var saturation = element.ChildElements.FirstOrDefault(child => child.LocalName == "satMod")?
+            .GetAttribute("val", "").Value;
+        if (int.TryParse(tint, out var tintValue) || int.TryParse(saturation, out _))
+            rgb = TransformGradientColor(rgb, int.TryParse(tint, out tintValue)
+                ? tintValue / 100000.0 : 0, int.TryParse(saturation, out var saturationValue)
+                ? saturationValue / 100000.0 : 1);
+        result = XColor.FromArgb((int)rgb.R, (int)rgb.G, (int)rgb.B);
+        return true;
+    }
+
+    private static MigraDoc.DocumentObjectModel.Color TransformGradientColor(
+        MigraDoc.DocumentObjectModel.Color color, double tint, double saturationFactor)
+    {
+        var r = color.R / 255.0;
+        var g = color.G / 255.0;
+        var b = color.B / 255.0;
+        var max = Math.Max(r, Math.Max(g, b));
+        var min = Math.Min(r, Math.Min(g, b));
+        var chroma = max - min;
+        var lightness = (max + min) / 2;
+        var saturation = chroma == 0 ? 0 : chroma / (1 - Math.Abs(2 * lightness - 1));
+        var hue = chroma == 0 ? 0 : max == r ? ((g - b) / chroma + 6) % 6 :
+            max == g ? (b - r) / chroma + 2 : (r - g) / chroma + 4;
+        lightness = lightness * (1 - tint) + tint;
+        saturation = Math.Clamp(saturation * saturationFactor, 0, 1);
+        chroma = (1 - Math.Abs(2 * lightness - 1)) * saturation;
+        var secondary = chroma * (1 - Math.Abs(hue % 2 - 1));
+        var (red, green, blue) = hue switch
+        {
+            < 1 => (chroma, secondary, 0.0),
+            < 2 => (secondary, chroma, 0.0),
+            < 3 => (0.0, chroma, secondary),
+            < 4 => (0.0, secondary, chroma),
+            < 5 => (secondary, 0.0, chroma),
+            _ => (chroma, 0.0, secondary)
+        };
+        var offset = lightness - chroma / 2;
+        return MigraDoc.DocumentObjectModel.Color.FromRgb(
+            (byte)Math.Round((red + offset) * 255), (byte)Math.Round((green + offset) * 255),
+            (byte)Math.Round((blue + offset) * 255));
     }
 
     private static double? MarginImageOffset(OpenXmlElement? position)

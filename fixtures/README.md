@@ -26,3 +26,8 @@ Sample baselines are grouped by test suite under `../truth/samples-export-html/`
 the same suite and sample names under ignored `../output/`. After reviewing a
 generated result, run `scripts/update-expected-from-tests.sh` to replace only
 existing baselines with their corresponding generated files.
+
+`docx/features/mixed-shaded-behind.docx` exercises mixed cell shading and
+a page-anchored DrawingML gradient rectangle behind a table. The focused PDF
+test checks that the gradient pattern and table text are both present.
+DrawingML `outerShdw` on the rectangle is not yet rendered.
