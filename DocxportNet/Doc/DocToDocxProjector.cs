@@ -480,7 +480,7 @@ public sealed class DocToDocxProjector
         part.FeedData(stream);
     }
 
-    private static void WriteStyles(MainDocumentPart main,
+    internal static void WriteStyles(MainDocumentPart main,
         IReadOnlyList<DocStyleDefinition> definitions,
         DocCharacterFormatting defaults)
     {
@@ -524,6 +524,11 @@ public sealed class DocToDocxProjector
             var paragraphProperties = new ParagraphPropertiesBaseStyle();
             AppendParagraphFormatting(paragraphProperties, normalParagraph);
             documentDefaults.AppendChild(new ParagraphPropertiesDefault(paragraphProperties));
+        }
+        else if (documentDefaults.HasChildren)
+        {
+            // Word lays out some DOC projections differently when pPrDefault is absent.
+            documentDefaults.AppendChild(new ParagraphPropertiesDefault());
         }
         if (documentDefaults.HasChildren) root.AppendChild(documentDefaults);
         var byIndex = definitions.ToDictionary(x => x.Index);
@@ -2027,8 +2032,21 @@ public sealed class DocToDocxProjector
             if (zeroInsetRow)
                 tableProperties.AppendChild(CreateDefaultCellMargins(
                     new DocCellMargins(Left: 0, Right: 0)));
-            else if (tableDefaultMargins is { } defaultMargins)
-                tableProperties.AppendChild(CreateDefaultCellMargins(defaultMargins));
+            else if (tableDefaultMargins is { } defaultMargins &&
+                tableStyleIndex == null && !tableAutoFit &&
+                defaultMargins.Top is null or 0 &&
+                defaultMargins.Bottom is null or 0 &&
+                defaultMargins.Left == 108 && defaultMargins.Right == 108 &&
+                rowDefaultMargins.All(margins => margins == defaultMargins))
+            {
+                // DOC stores the ordinary 108-twip side margins explicitly.
+                // Repeating the left value in DOCX shifts this table right;
+                // retaining the right value preserves its line wraps.
+                tableProperties.AppendChild(CreateDefaultCellMargins(
+                    new DocCellMargins(Right: 108)));
+            }
+            else if (tableDefaultMargins is { } margins)
+                tableProperties.AppendChild(CreateDefaultCellMargins(margins));
             if (tableLookMask is ushort mask)
                 tableProperties.AppendChild(new TableLook
                 {

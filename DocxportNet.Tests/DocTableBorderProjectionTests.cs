@@ -18,6 +18,9 @@ public sealed class DocTableBorderProjectionTests
         var borders = table.TableProperties!.GetFirstChild<TableBorders>();
         Assert.NotNull(borders?.InsideHorizontalBorder);
         Assert.NotNull(borders.InsideVerticalBorder);
+        var margins = table.TableProperties.GetFirstChild<TableCellMarginDefault>();
+        Assert.Null(margins?.GetFirstChild<TableCellLeftMargin>());
+        Assert.Equal((short)108, margins?.GetFirstChild<TableCellRightMargin>()?.Width?.Value);
         Assert.All(table.Descendants<TableCell>(), cell =>
         {
             var direct = cell.TableCellProperties?.TableCellBorders;
