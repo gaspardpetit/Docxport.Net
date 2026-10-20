@@ -15,6 +15,24 @@ namespace DocxportNet.Tests;
 public sealed class PdfFlowExportTests
 {
     [Fact]
+    public void ParagraphAnchoredTiffStaysBesideBodyText()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "legacy", "WordFloatingTiffAllStories.docx");
+        var bytes = DxpExport.ExportToBytes(source, new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(bytes));
+        var page = pdf.GetPage(1);
+        Assert.Contains(page.GetImages(), image =>
+            image.Bounds.Left is > 71 and < 73 &&
+            page.Height - image.Bounds.Top is > 71 and < 73);
+        Assert.Contains(page.Letters, letter => letter.Value == "B" &&
+            letter.GlyphRectangle.Left is > 128 and < 131 &&
+            page.Height - letter.GlyphRectangle.Top is > 71 and < 76);
+    }
+
+    [Fact]
     public void CachedAskResultsAreNotDisplayedInPdf()
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
