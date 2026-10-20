@@ -159,7 +159,10 @@ public class WordBorderPatternTests
             (Math.Abs(rect.Height - firstWidth) < .02 || Math.Abs(rect.Height - secondWidth) < .02)).ToArray();
         Assert.Equal(24, vertical.Length);
         Assert.Equal(24, horizontal.Length);
-        Assert.Equal(8, filled.Length - junction.Length - vertical.Length - horizontal.Length);
+        var bridges = filled.Except(junction).Except(vertical).Except(horizontal).ToArray();
+        Assert.Equal(16, bridges.Length);
+        Assert.Equal(8, bridges.Count(rect => Math.Abs(rect.Width - gap - .4) < .02));
+        Assert.Equal(8, bridges.Count(rect => Math.Abs(rect.Height - gap - .4) < .02));
         Assert.All(vertical, line => Assert.Contains(junction, tile =>
             Math.Abs(tile.X - line.X) < .02 &&
             Math.Abs(tile.Y + tile.Height - line.Y) < .22));
