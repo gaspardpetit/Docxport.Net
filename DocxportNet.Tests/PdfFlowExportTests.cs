@@ -61,6 +61,26 @@ public sealed class PdfFlowExportTests
     }
 
     [Fact]
+    public void PreservesRepeatedSpacesInPageSpecificStyleRefReplacement()
+    {
+        var paragraph = new MigraDoc.DocumentObjectModel.Document().AddSection().AddParagraph();
+        var span = paragraph.AddFormattedText("Heading:First title suffix");
+        var method = typeof(DxpFlowPdfVisitor).GetMethod("ReplaceStyleRefText",
+            System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)!;
+
+        Assert.True((bool)method.Invoke(null, [paragraph, "First title", "Second   heading"])!);
+        Assert.Equal("Heading:Second   heading suffix", string.Concat(span.Elements.Select(element => element switch
+        {
+            MigraDoc.DocumentObjectModel.Text text => text.Content,
+            MigraDoc.DocumentObjectModel.Character { SymbolName: MigraDoc.DocumentObjectModel.SymbolName.Blank } spaces =>
+                new string(' ', spaces.Count),
+            _ => ""
+        })));
+        Assert.Contains(span.Elements, element => element is MigraDoc.DocumentObjectModel.Character
+            { SymbolName: MigraDoc.DocumentObjectModel.SymbolName.Blank, Count: 2, Tag: not null });
+    }
+
+    [Fact]
     public void CollapsesStyledRepeatedSpacesOnMirroredPageClone()
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;

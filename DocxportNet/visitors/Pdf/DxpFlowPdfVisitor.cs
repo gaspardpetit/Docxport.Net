@@ -3238,6 +3238,19 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 _ => string.Empty
             }));
 
+    private static void AppendTextPreservingRepeatedSpaces(FormattedText span, string text)
+    {
+        foreach (Match part in Regex.Matches(text, @" {2,}|[^ ]+| "))
+            if (part.Value.Length > 1 && part.Value[0] == ' ')
+            {
+                span.AddText(" ");
+                var extraSpaces = span.AddSpace(part.Value.Length - 1);
+                extraSpaces.Tag = CollapsibleSpaceMarker;
+            }
+            else
+                span.AddText(part.Value);
+    }
+
     private static bool ReplaceStyleRefText(MigraDoc.DocumentObjectModel.Paragraph paragraph,
         string cached, string replacement)
     {
@@ -3261,7 +3274,16 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 var prefix = value[..Math.Max(0, offset - position)];
                 var suffix = value[Math.Min(value.Length, end - position)..];
                 var updated = prefix + (inserted ? "" : replacement) + suffix;
-                if (element is MigraDoc.DocumentObjectModel.Text existing)
+                if (updated.Contains("  ", StringComparison.Ordinal))
+                {
+                    var parts = new FormattedText();
+                    AppendTextPreservingRepeatedSpaces(parts, updated);
+                    var index = span.Elements.IndexOf(element);
+                    span.Elements.RemoveObjectAt(index);
+                    foreach (var part in parts.Elements.Cast<DocumentObject>())
+                        span.Elements.InsertObject(index++, (DocumentObject)part.Clone());
+                }
+                else if (element is MigraDoc.DocumentObjectModel.Text existing)
                     existing.Content = updated;
                 else
                 {
@@ -13111,15 +13133,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             if (preserveLeadingTabSpace)
                 span.AddSpace(1);
             var spaceText = preserveLeadingTabSpace ? emittedText[1..] : emittedText;
-            foreach (Match part in Regex.Matches(spaceText, @" {2,}|[^ ]+| "))
-                if (part.Value.Length > 1 && part.Value[0] == ' ')
-                {
-                    span.AddText(" ");
-                    var extraSpaces = span.AddSpace(part.Value.Length - 1);
-                    extraSpaces.Tag = CollapsibleSpaceMarker;
-                }
-                else
-                    span.AddText(part.Value);
+            AppendTextPreservingRepeatedSpaces(span, spaceText);
         }
         _previousTextStyle = _runStyle;
         _previousTextParagraph = _paragraph;
