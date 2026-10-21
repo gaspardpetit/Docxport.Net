@@ -13110,7 +13110,13 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             onlyText.Text == emittedText)
         {
             var fontName = _runStyle?.FontName is string family && _availableFontFamilies.Contains(family)
-                ? family : _fontFamily;
+                ? family
+                : string.Equals(_runStyle?.FontName, "Open Sans;Arial", StringComparison.OrdinalIgnoreCase) &&
+                    _availableFontFamilies.Contains("Segoe UI")
+                    ? "Segoe UI"
+                : _runStyle?.FontName is { Length: > 0 } unavailableFamily &&
+                    !unavailableFamily.Contains(';') && _availableFontFamilies.Contains("Cambria")
+                    ? "Cambria" : _fontFamily;
             var fontSize = _runStyle?.FontSizeHalfPoints is int halfPoints && halfPoints > 0
                 ? halfPoints / 2.0 : currentParagraph.Format.Font.Size.Point;
             var availableWidth = _section.PageSetup.PageWidth.Point -
