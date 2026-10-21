@@ -13085,7 +13085,12 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         if (!preserveRepeatedSpaces && emittedText.Contains("  ", StringComparison.Ordinal) &&
             !emittedText.EndsWith(' ') &&
             _container is Section && _activeColumnCell == null && _section != null &&
-            _paragraph is { } currentParagraph && currentParagraph.Elements.Count == 0 &&
+            _paragraph is { } currentParagraph &&
+            currentParagraph.Elements.Cast<DocumentObject>().All(element =>
+                element is MigraDoc.DocumentObjectModel.Fields.BookmarkField) &&
+            !_section.Elements.OfType<MigraDoc.DocumentObjectModel.Shapes.Shape>().Any(shape =>
+                shape.WrapFormat.Style is not (MigraDoc.DocumentObjectModel.Shapes.WrapStyle.None or
+                    MigraDoc.DocumentObjectModel.Shapes.WrapStyle.TopBottom)) &&
             _paragraphFragments.TryGet(currentParagraph, out var sourceFragment) &&
             sourceFragment.Source.Descendants<Run>().Take(2).ToArray() is [{ } onlyRun] &&
             onlyRun.Descendants<DocumentFormat.OpenXml.Wordprocessing.Text>().Take(2).ToArray()
