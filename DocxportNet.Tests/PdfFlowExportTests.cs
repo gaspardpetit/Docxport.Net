@@ -52,6 +52,33 @@ public sealed class PdfFlowExportTests
         Assert.InRange(flow[2] - flow[0], wordExtraAfter - 1.0, wordExtraAfter + 1.0);
     }
 
+    [Theory]
+    [InlineData("Delta")]
+    [InlineData("Omega")]
+    public void RepeatedSpacesBeforeWrappedWordsDoNotIndentTheNextLine(string word)
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "features", "StyledRepeatedSpaces.docx");
+        var reference = Path.Combine(root, "truth", "pdf-word", "features", "StyledRepeatedSpaces.pdf");
+        var flow = DxpExport.ExportToBytes(source, new DxpFlowPdfVisitor());
+
+        static double[] Origins(byte[] pdfBytes, string text)
+        {
+            using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(pdfBytes));
+            return pdf.GetPage(1).GetWords().Where(candidate => candidate.Text == text)
+                .OrderByDescending(candidate => candidate.BoundingBox.Top)
+                .Select(candidate => candidate.BoundingBox.Left).ToArray();
+        }
+
+        var wordOrigins = Origins(File.ReadAllBytes(reference), word);
+        var flowOrigins = Origins(flow, word);
+        Assert.Equal(2, wordOrigins.Length);
+        Assert.Equal(2, flowOrigins.Length);
+        Assert.InRange(Math.Abs(wordOrigins[1] - wordOrigins[0]), 0, 0.5);
+        Assert.InRange(Math.Abs(flowOrigins[1] - flowOrigins[0]), 0, 0.5);
+    }
+
     [Fact]
     public void BehindTextGradientRectangleIsRenderedUnderShadedTable()
     {

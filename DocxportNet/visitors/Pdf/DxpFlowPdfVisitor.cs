@@ -13077,8 +13077,31 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 });
         }
         emittedText = Regex.Replace(emittedText, @"(?<=\u2014)(?=\S)", "\u200B");
-        // MigraDoc collapses ordinary repeated blanks, including those in styled runs.
-        var preserveRepeatedSpaces = emittedText.Contains("  ", StringComparison.Ordinal);
+        var preserveRepeatedSpaces = _stylelessBodyParagraphSpacing && _container is Section &&
+            emittedText.Contains("  ", StringComparison.Ordinal);
+        // MigraDoc also collapses blanks in styled runs. Keep them when the whole
+        // first run fits on one body line; other containers and preceding runs need
+        // their actual remaining line width before fixed spaces can be emitted.
+        if (!preserveRepeatedSpaces && emittedText.Contains("  ", StringComparison.Ordinal) &&
+            _container is Section && _activeColumnCell == null && _section != null &&
+            _paragraph is { } currentParagraph && currentParagraph.Elements.Count == 0)
+        {
+            var fontName = _runStyle?.FontName is string family && _availableFontFamilies.Contains(family)
+                ? family : _fontFamily;
+            var fontSize = _runStyle?.FontSizeHalfPoints is int halfPoints && halfPoints > 0
+                ? halfPoints / 2.0 : currentParagraph.Format.Font.Size.Point;
+            var availableWidth = _section.PageSetup.PageWidth.Point -
+                _section.PageSetup.LeftMargin.Point - _section.PageSetup.RightMargin.Point -
+                currentParagraph.Format.LeftIndent.Point - currentParagraph.Format.RightIndent.Point -
+                Math.Max(0, currentParagraph.Format.FirstLineIndent.Point);
+            if (availableWidth > 0)
+            {
+                using var measure = XGraphics.CreateMeasureContext(new XSize(100, 100),
+                    XGraphicsUnit.Point, XPageDirection.Downwards);
+                var font = new XFont(fontName, fontSize > 0 ? fontSize : 11);
+                preserveRepeatedSpaces = measure.MeasureString(emittedText, font).Width <= availableWidth;
+            }
+        }
         var preserveLeadingTabSpace = _stylelessBodyParagraphSpacing && _container is Section &&
             emittedText.StartsWith(' ') &&
             _paragraph?.Elements.LastOrDefault() is Character { SymbolName: SymbolName.Tab };
