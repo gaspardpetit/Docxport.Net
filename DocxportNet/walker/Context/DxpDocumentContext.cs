@@ -58,7 +58,20 @@ public class DxpDocumentContext : DxpIDocumentContext, IDxpMutableDocumentContex
     public DxpIStyleResolver Styles { get; }
     public DocumentBackground? Background { get; }
     public DxpStyleEffectiveRunStyle DefaultRunStyle { get; }
-    public Settings? DocumentSettings { get; internal set; }
+    private Settings? _documentSettings;
+    public Settings? DocumentSettings
+    {
+        get => _documentSettings;
+        internal set
+        {
+            _documentSettings = value;
+            var setting = value?.Descendants<CompatibilitySetting>().FirstOrDefault(candidate =>
+                candidate.Name?.Value == CompatSettingNameValues.CompatibilityMode &&
+                candidate.Uri?.Value == "http://schemas.microsoft.com/office/word");
+            CompatibilityMode = int.TryParse(setting?.Val?.Value, out var mode) && mode > 0 ? mode : 12;
+        }
+    }
+    public int CompatibilityMode { get; private set; } = 12;
     public IPackageProperties? CoreProperties { get; internal set; }
     public IReadOnlyList<CustomFileProperty>? CustomProperties { get; internal set; }
     public Properties? ExtendedProperties { get; internal set; }
