@@ -38,7 +38,8 @@ to check style preservation, fixed cell widths, spacing inheritance, and double 
 
 `docx/features/StyledRepeatedSpaces.docx` isolates the subtitle spacing issue
 first noticed in that table fixture. Three styled lines add one space before or
-after `·`; narrow table cells and split-run paragraphs check that a wrapped
-word is not indented by the extra blank. The Word reference is
+after `·`; narrow table cells, split-run paragraphs, and a space group at a
+run boundary check that a wrapped word is not indented by the extra blank.
+The Word reference is
 `../truth/pdf-word/features/StyledRepeatedSpaces.pdf`. Regenerate the DOCX
 with `tools/doc-docx/Generate-StyledRepeatedSpaceProbe.py`.

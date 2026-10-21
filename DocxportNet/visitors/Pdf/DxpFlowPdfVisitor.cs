@@ -13083,8 +13083,14 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         // first run fits on one body line; other containers and preceding runs need
         // their actual remaining line width before fixed spaces can be emitted.
         if (!preserveRepeatedSpaces && emittedText.Contains("  ", StringComparison.Ordinal) &&
+            !emittedText.EndsWith(' ') &&
             _container is Section && _activeColumnCell == null && _section != null &&
-            _paragraph is { } currentParagraph && currentParagraph.Elements.Count == 0)
+            _paragraph is { } currentParagraph && currentParagraph.Elements.Count == 0 &&
+            _paragraphFragments.TryGet(currentParagraph, out var sourceFragment) &&
+            sourceFragment.Source.Descendants<Run>().Take(2).ToArray() is [{ } onlyRun] &&
+            onlyRun.Descendants<DocumentFormat.OpenXml.Wordprocessing.Text>().Take(2).ToArray()
+                is [{ } onlyText] &&
+            onlyText.Text == emittedText)
         {
             var fontName = _runStyle?.FontName is string family && _availableFontFamilies.Contains(family)
                 ? family : _fontFamily;
@@ -13098,8 +13104,13 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             {
                 using var measure = XGraphics.CreateMeasureContext(new XSize(100, 100),
                     XGraphicsUnit.Point, XPageDirection.Downwards);
-                var font = new XFont(fontName, fontSize > 0 ? fontSize : 11);
-                preserveRepeatedSpaces = measure.MeasureString(emittedText, font).Width <= availableWidth;
+                var fontStyle = (_runStyle?.Bold == true ? XFontStyleEx.Bold : XFontStyleEx.Regular) |
+                    (_runStyle?.Italic == true ? XFontStyleEx.Italic : XFontStyleEx.Regular);
+                var font = new XFont(fontName, fontSize > 0 ? fontSize : 11, fontStyle);
+                var measuredWidth = measure.MeasureString(emittedText, font).Width *
+                    Math.Max(1.0, _runScalePercent / 100.0) +
+                    Math.Max(0, _runCharacterSpacing) * emittedText.Length;
+                preserveRepeatedSpaces = measuredWidth <= availableWidth - font.Size;
             }
         }
         var preserveLeadingTabSpace = _stylelessBodyParagraphSpacing && _container is Section &&

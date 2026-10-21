@@ -55,6 +55,7 @@ public sealed class PdfFlowExportTests
     [Theory]
     [InlineData("Delta")]
     [InlineData("Omega")]
+    [InlineData("Theta")]
     public void RepeatedSpacesBeforeWrappedWordsDoNotIndentTheNextLine(string word)
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;

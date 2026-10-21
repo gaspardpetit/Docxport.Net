@@ -39,6 +39,12 @@ for spaces in (" ", "  "):
     paragraph.add_run("AAAA BBBB ")
     paragraph.add_run("CCCC" + spaces + "Omega")
 
+for spaces in (" ", "  "):
+    paragraph = document.add_paragraph(style="Subtitle")
+    paragraph.paragraph_format.right_indent = Inches(5.7)
+    paragraph.add_run("AAAA BBBB CCCC" + spaces)
+    paragraph.add_run("Theta")
+
 destination.parent.mkdir(parents=True, exist_ok=True)
 document.save(destination)
 print(destination)
