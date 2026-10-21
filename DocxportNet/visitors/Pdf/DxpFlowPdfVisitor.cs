@@ -13077,8 +13077,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 });
         }
         emittedText = Regex.Replace(emittedText, @"(?<=\u2014)(?=\S)", "\u200B");
-        var preserveRepeatedSpaces = _stylelessBodyParagraphSpacing && _container is Section &&
-            emittedText.Contains("  ", StringComparison.Ordinal);
+        // MigraDoc collapses ordinary repeated blanks, including those in styled runs.
+        var preserveRepeatedSpaces = emittedText.Contains("  ", StringComparison.Ordinal);
         var preserveLeadingTabSpace = _stylelessBodyParagraphSpacing && _container is Section &&
             emittedText.StartsWith(' ') &&
             _paragraph?.Elements.LastOrDefault() is Character { SymbolName: SymbolName.Tab };

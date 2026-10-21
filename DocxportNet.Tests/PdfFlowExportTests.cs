@@ -24,6 +24,35 @@ namespace DocxportNet.Tests;
 public sealed class PdfFlowExportTests
 {
     [Fact]
+    public void StyledParagraphKeepsEachRepeatedSpaceAdvance()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "features", "StyledRepeatedSpaces.docx");
+        var reference = Path.Combine(root, "truth", "pdf-word", "features", "StyledRepeatedSpaces.pdf");
+        var bytes = DxpExport.ExportToBytes(source, new DxpFlowPdfVisitor());
+
+        static double[] BetaOrigins(byte[] pdfBytes)
+        {
+            using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(pdfBytes));
+            return pdf.GetPage(1).GetWords().Where(word => word.Text == "Beta")
+                .OrderByDescending(word => word.BoundingBox.Top)
+                .Select(word => word.BoundingBox.Left).ToArray();
+        }
+
+        var word = BetaOrigins(File.ReadAllBytes(reference));
+        var flow = BetaOrigins(bytes);
+        Assert.Equal(3, word.Length);
+        Assert.Equal(3, flow.Length);
+        var wordExtraBefore = word[1] - word[0];
+        var wordExtraAfter = word[2] - word[0];
+        Assert.InRange(wordExtraBefore, 3.0, 4.0);
+        Assert.InRange(wordExtraAfter, 3.0, 4.0);
+        Assert.InRange(flow[1] - flow[0], wordExtraBefore - 1.0, wordExtraBefore + 1.0);
+        Assert.InRange(flow[2] - flow[0], wordExtraAfter - 1.0, wordExtraAfter + 1.0);
+    }
+
+    [Fact]
     public void BehindTextGradientRectangleIsRenderedUnderShadedTable()
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;

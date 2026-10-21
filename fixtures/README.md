@@ -35,3 +35,8 @@ DrawingML `outerShdw` on the rectangle is not yet rendered.
 `docx/features/WordBorderStyles3x3.docx` places a 3×3 table on each page,
 covering Word's border styles and shared cell edges. The PDF flow tests use it
 to check style preservation, fixed cell widths, spacing inheritance, and double borders.
+
+`docx/features/StyledRepeatedSpaces.docx` isolates the subtitle spacing issue
+first noticed in that table fixture. Three styled lines add one space before or
+after `·`; `../truth/pdf-word/features/StyledRepeatedSpaces.pdf` is the Word
+reference. Regenerate the DOCX with `tools/doc-docx/Generate-StyledRepeatedSpaceProbe.py`.
