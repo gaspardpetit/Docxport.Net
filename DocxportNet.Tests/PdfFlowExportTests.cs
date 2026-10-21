@@ -52,6 +52,31 @@ public sealed class PdfFlowExportTests
         Assert.InRange(flow[2] - flow[0], wordExtraAfter - 1.0, wordExtraAfter + 1.0);
     }
 
+    [Fact]
+    public void AllCapsStyledParagraphKeepsRepeatedSpaceAdvance()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "features", "StyledRepeatedSpaces.docx");
+        var reference = Path.Combine(root, "truth", "pdf-word", "features", "StyledRepeatedSpaces.pdf");
+        var flow = DxpExport.ExportToBytes(source, new DxpFlowPdfVisitor());
+
+        static double[] Origins(byte[] bytes)
+        {
+            using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(bytes));
+            return pdf.GetPage(1).GetWords().Where(word => word.Text == "SIGMA")
+                .OrderByDescending(word => word.BoundingBox.Top)
+                .Select(word => word.BoundingBox.Left).ToArray();
+        }
+
+        var word = Origins(File.ReadAllBytes(reference));
+        var actual = Origins(flow);
+        Assert.Equal(2, word.Length);
+        Assert.Equal(2, actual.Length);
+        Assert.InRange(word[1] - word[0], 2, 6);
+        Assert.InRange(actual[1] - actual[0], word[1] - word[0] - 1, word[1] - word[0] + 1);
+    }
+
     [Theory]
     [InlineData("Delta")]
     [InlineData("Omega")]

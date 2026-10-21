@@ -40,6 +40,7 @@ to check style preservation, fixed cell widths, spacing inheritance, and double 
 first noticed in that table fixture. Three styled lines add one space before or
 after `·`; narrow table cells, split-run paragraphs, and a space group at a
 run boundary check that a wrapped word is not indented by the extra blank.
+All-caps styled runs check that source text transformations preserve the same spacing.
 The Word reference is
 `../truth/pdf-word/features/StyledRepeatedSpaces.pdf`. Regenerate the DOCX
 with `tools/doc-docx/Generate-StyledRepeatedSpaceProbe.py`.

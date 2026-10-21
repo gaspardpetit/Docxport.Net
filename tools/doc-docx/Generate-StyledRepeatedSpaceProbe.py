@@ -45,6 +45,11 @@ for spaces in (" ", "  "):
     paragraph.add_run("AAAA BBBB CCCC" + spaces)
     paragraph.add_run("Theta")
 
+for spaces in (" ", "  "):
+    paragraph = document.add_paragraph(style="Subtitle")
+    run = paragraph.add_run("Alpha" + spaces + "Sigma")
+    run.font.all_caps = True
+
 destination.parent.mkdir(parents=True, exist_ok=True)
 document.save(destination)
 print(destination)
