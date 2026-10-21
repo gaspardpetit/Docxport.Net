@@ -174,6 +174,12 @@ public interface DxpIDocumentContext
     DxpStyleEffectiveRunStyle DefaultRunStyle { get; }
     DxpFieldFrameContext CurrentFields { get; }
     Settings? DocumentSettings { get; }
+    /// <summary>
+    /// Word compatibility mode from document settings, or 12 when the setting is absent.
+    /// See https://learn.microsoft.com/en-us/openspecs/office_standards/ms-docx/90138c4d-eb18-4edc-aa6c-dfb799cb1d0d
+    /// and https://learn.microsoft.com/en-us/office/vba/api/word.wdcompatibilitymode.
+    /// </summary>
+    int CompatibilityMode { get; }
     IPackageProperties? CoreProperties { get; }
     IReadOnlyList<CustomFileProperty>? CustomProperties { get; }
     Properties? ExtendedProperties { get; }
