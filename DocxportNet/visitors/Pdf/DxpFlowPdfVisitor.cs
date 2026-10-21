@@ -13109,7 +13109,9 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 is [{ } onlyText] &&
             onlyText.Text == emittedText)
         {
-            var fontName = _runStyle?.FontName is string family && _availableFontFamilies.Contains(family)
+            var fontName = string.Equals(_runStyle?.FontName, "Times New Roman", StringComparison.OrdinalIgnoreCase)
+                ? "Times New Roman"
+                : _runStyle?.FontName is string family && _availableFontFamilies.Contains(family)
                 ? family
                 : string.Equals(_runStyle?.FontName, "Open Sans;Arial", StringComparison.OrdinalIgnoreCase) &&
                     _availableFontFamilies.Contains("Segoe UI")
