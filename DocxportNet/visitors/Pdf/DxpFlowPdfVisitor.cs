@@ -224,7 +224,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private readonly Dictionary<MigraDoc.DocumentObjectModel.Paragraph, double> _centeredSpacingOffsets = new();
     private readonly HashSet<MigraDoc.DocumentObjectModel.Paragraph> _gridGlyphParagraphs = new();
     private readonly HashSet<MigraDoc.DocumentObjectModel.Paragraph> _gridBoundaryParagraphs = new();
-    private readonly HashSet<Character> _collapsibleSpaces = new();
+    private static readonly object CollapsibleSpaceMarker = new();
     private readonly HashSet<MigraDoc.DocumentObjectModel.Paragraph> _unshiftedGridGlyphParagraphs = new();
     private readonly HashSet<MigraDoc.DocumentObjectModel.Paragraph> _packedGridParagraphs = new();
     private readonly List<FormattedText> _paintOnlyMinchoSpans = new();
@@ -607,7 +607,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     {
         var renderer = new PdfDocumentRenderer { Document = document };
         renderer.DocumentRenderer.CollapsibleSpaceBeforeWrap = (_, space) =>
-            _collapsibleSpaces.Contains(space);
+            ReferenceEquals(space.Tag, CollapsibleSpaceMarker);
         var mixedBasicBorders = new Dictionary<MigraDoc.DocumentObjectModel.Tables.Table, bool>();
         renderer.DocumentRenderer.TableCellPlacement = (cell, geometry) =>
             WordTableCellPlacement(cell, geometry, mixedBasicBorders);
@@ -1185,7 +1185,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _pageBorders.Clear();
         _sectionLineNumbers.Clear();
         _sourceBodyParagraphs.Clear();
-        _collapsibleSpaces.Clear();
         _sourceCellParagraphs.Clear();
         _crossRunLeadingWords.Clear();
         _exactCjkLineParagraphs.Clear();
@@ -3194,9 +3193,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 .SelectMany(section => new[] { section.Headers.Primary, section.Headers.FirstPage,
                     section.Headers.EvenPage })
                 .SelectMany(header => header.Elements.OfType<MigraDoc.DocumentObjectModel.Paragraph>())
-                .Where(paragraph => string.Concat(paragraph.Elements.OfType<FormattedText>()
-                    .SelectMany(span => span.Elements.OfType<MigraDoc.DocumentObjectModel.Text>())
-                    .Select(text => text.Content)).Contains(field.CachedText, StringComparison.Ordinal))
+                .Where(paragraph => GetStyleRefText(paragraph).Contains(field.CachedText, StringComparison.Ordinal))
                 .ToArray();
             if (candidates.Length != 1) return null;
             if (!ReplaceStyleRefText(candidates[0], field.CachedText, value)) return null;
@@ -3231,26 +3228,47 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         }
     }
 
+    private static string GetStyleRefText(MigraDoc.DocumentObjectModel.Paragraph paragraph) =>
+        string.Concat(paragraph.Elements.OfType<FormattedText>()
+            .SelectMany(span => span.Elements.Cast<DocumentObject>())
+            .Select(element => element switch
+            {
+                MigraDoc.DocumentObjectModel.Text text => text.Content,
+                Character { SymbolName: SymbolName.Blank } spaces => new string(' ', Math.Max(1, spaces.Count)),
+                _ => string.Empty
+            }));
+
     private static bool ReplaceStyleRefText(MigraDoc.DocumentObjectModel.Paragraph paragraph,
         string cached, string replacement)
     {
-        var texts = paragraph.Elements.OfType<FormattedText>()
-            .SelectMany(span => span.Elements.OfType<MigraDoc.DocumentObjectModel.Text>()).ToArray();
-        var offset = string.Concat(texts.Select(text => text.Content))
-            .IndexOf(cached, StringComparison.Ordinal);
+        var segments = paragraph.Elements.OfType<FormattedText>()
+            .SelectMany(span => span.Elements.Cast<DocumentObject>().Select(element => (span, element)))
+            .Where(item => item.element is MigraDoc.DocumentObjectModel.Text or
+                Character { SymbolName: SymbolName.Blank }).ToArray();
+        var content = GetStyleRefText(paragraph);
+        var offset = content.IndexOf(cached, StringComparison.Ordinal);
         if (offset < 0) return false;
         var end = offset + cached.Length;
         var position = 0;
         var inserted = false;
-        foreach (var text in texts)
+        foreach (var (span, element) in segments)
         {
-            var content = text.Content;
-            var next = position + content.Length;
+            var value = element is MigraDoc.DocumentObjectModel.Text text ? text.Content :
+                new string(' ', Math.Max(1, ((Character)element).Count));
+            var next = position + value.Length;
             if (next > offset && position < end)
             {
-                var prefix = content[..Math.Max(0, offset - position)];
-                var suffix = content[Math.Min(content.Length, end - position)..];
-                text.Content = prefix + (inserted ? "" : replacement) + suffix;
+                var prefix = value[..Math.Max(0, offset - position)];
+                var suffix = value[Math.Min(value.Length, end - position)..];
+                var updated = prefix + (inserted ? "" : replacement) + suffix;
+                if (element is MigraDoc.DocumentObjectModel.Text existing)
+                    existing.Content = updated;
+                else
+                {
+                    var index = span.Elements.IndexOf(element);
+                    span.Elements.RemoveObjectAt(index);
+                    span.Elements.InsertObject(index, new MigraDoc.DocumentObjectModel.Text(updated));
+                }
                 inserted = true;
             }
             position = next;
@@ -13098,7 +13116,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 {
                     span.AddText(" ");
                     var extraSpaces = span.AddSpace(part.Value.Length - 1);
-                    _collapsibleSpaces.Add(extraSpaces);
+                    extraSpaces.Tag = CollapsibleSpaceMarker;
                 }
                 else
                     span.AddText(part.Value);
