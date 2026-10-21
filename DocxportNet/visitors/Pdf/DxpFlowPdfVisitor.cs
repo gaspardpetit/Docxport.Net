@@ -13084,7 +13084,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         // their actual remaining line width before fixed spaces can be emitted.
         if (!preserveRepeatedSpaces && emittedText.Contains("  ", StringComparison.Ordinal) &&
             !emittedText.EndsWith(' ') &&
-            !_runRightToLeft &&
+            !_runRightToLeft && !_unfittedCalibriParagraph && !_paragraphInheritsFitText &&
             _container is Section && _activeColumnCell == null && _section != null &&
             _paragraph is { } currentParagraph &&
             currentParagraph.Elements.Cast<DocumentObject>().All(element =>
@@ -13096,6 +13096,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     MigraDoc.DocumentObjectModel.Shapes.WrapStyle.TopBottom)) &&
             _paragraphFragments.TryGet(currentParagraph, out var sourceFragment) &&
             sourceFragment.Source.Descendants<Run>().Take(2).ToArray() is [{ } onlyRun] &&
+            onlyRun.ChildElements.All(element => element is RunProperties or
+                DocumentFormat.OpenXml.Wordprocessing.Text) &&
             onlyRun.Descendants<DocumentFormat.OpenXml.Wordprocessing.Text>().Take(2).ToArray()
                 is [{ } onlyText] &&
             onlyText.Text == emittedText)
