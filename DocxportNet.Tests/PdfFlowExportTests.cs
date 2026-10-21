@@ -97,6 +97,29 @@ public sealed class PdfFlowExportTests
             }
     }
 
+    [Fact]
+    public void ModernCompatibilityModeAlignsTableBorderWithTextMargin()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "features", "mixed-shaded-behind.docx");
+        using var stream = new MemoryStream();
+        using (var input = File.OpenRead(source)) input.CopyTo(stream);
+        stream.Position = 0;
+        using (var document = WordprocessingDocument.Open(stream, true))
+        {
+            var setting = Assert.Single(document.MainDocumentPart!.DocumentSettingsPart!.Settings!
+                .Descendants<CompatibilitySetting>(), candidate =>
+                    candidate.Name?.Value == CompatSettingNameValues.CompatibilityMode);
+            setting.Val = "15";
+        }
+
+        var bytes = DxpExport.ExportToBytes(stream.ToArray(), new DxpFlowPdfVisitor());
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(bytes));
+        var cellText = Assert.Single(pdf.GetPage(1).GetWords(), word => word.Text == "1,1");
+        Assert.InRange(cellText.BoundingBox.Left, 63.5, 64.25);
+    }
+
     [Theory]
     [InlineData(6, "dotDash")]
     [InlineData(8, "triple")]
