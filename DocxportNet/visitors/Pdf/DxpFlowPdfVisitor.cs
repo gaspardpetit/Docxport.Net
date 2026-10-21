@@ -15794,6 +15794,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             _lastParagraphContainer = null;
             if (styledSpacingBorder > 0)
                 _table.Rows.LeftIndent = Unit.FromPoint(styledSpacingBorder + 0.5);
+            else if (context.CompatibilityMode >= 15)
+                _table.Rows.LeftIndent = Unit.Zero;
             if (leftMargin is int leftTwips)
                 _table.LeftPadding = Unit.FromPoint(Math.Max(0, leftTwips / 20.0 -
                     Math.Max(0, tableContext.ComputedStyle.TableBorders?.Left?.WidthPt ?? 0) / 2));
