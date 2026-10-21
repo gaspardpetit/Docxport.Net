@@ -13079,12 +13079,16 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         emittedText = Regex.Replace(emittedText, @"(?<=\u2014)(?=\S)", "\u200B");
         var preserveRepeatedSpaces = _stylelessBodyParagraphSpacing && _container is Section &&
             emittedText.Contains("  ", StringComparison.Ordinal);
-        // MigraDoc also collapses blanks in styled runs. Keep them when the whole
-        // first run fits on one body line; other containers and preceding runs need
-        // their actual remaining line width before fixed spaces can be emitted.
+        // MigraDoc also collapses blanks in styled runs. Keep them only for a
+        // complete first Latin run with stable font metrics that fits on one body
+        // line; other layouts need their actual remaining line width.
         if (!preserveRepeatedSpaces && emittedText.Contains("  ", StringComparison.Ordinal) &&
             !emittedText.EndsWith(' ') &&
+            emittedText.All(character => character <= '\u00ff') &&
             !_runRightToLeft && !_unfittedCalibriParagraph && !_paragraphInheritsFitText &&
+            !_cjkStyleParagraph && !_unfittedMixedScriptParagraph &&
+            _runStyle?.Superscript != true && _runStyle?.Subscript != true &&
+            _runHighAnsiFont == null &&
             !(_gridLinePitchPoints is > 0 && _gridCharSpacingPoints == null) &&
             _container is Section && _activeColumnCell == null && _section != null &&
             _paragraph is { } currentParagraph &&
