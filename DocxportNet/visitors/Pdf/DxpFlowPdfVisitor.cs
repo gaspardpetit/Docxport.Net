@@ -13087,7 +13087,9 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             _container is Section && _activeColumnCell == null && _section != null &&
             _paragraph is { } currentParagraph &&
             currentParagraph.Elements.Cast<DocumentObject>().All(element =>
-                element is MigraDoc.DocumentObjectModel.Fields.BookmarkField) &&
+                element is MigraDoc.DocumentObjectModel.Fields.BookmarkField ||
+                element is MigraDoc.DocumentObjectModel.Hyperlink link &&
+                    ReferenceEquals(link, _activeHyperlink) && link.Elements.Count == 0) &&
             !_section.Elements.OfType<MigraDoc.DocumentObjectModel.Shapes.Shape>().Any(shape =>
                 shape.WrapFormat.Style is not (MigraDoc.DocumentObjectModel.Shapes.WrapStyle.None or
                     MigraDoc.DocumentObjectModel.Shapes.WrapStyle.TopBottom)) &&
