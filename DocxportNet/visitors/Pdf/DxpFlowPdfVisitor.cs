@@ -13084,6 +13084,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         // their actual remaining line width before fixed spaces can be emitted.
         if (!preserveRepeatedSpaces && emittedText.Contains("  ", StringComparison.Ordinal) &&
             !emittedText.EndsWith(' ') &&
+            !_runRightToLeft &&
             _container is Section && _activeColumnCell == null && _section != null &&
             _paragraph is { } currentParagraph &&
             currentParagraph.Elements.Cast<DocumentObject>().All(element =>
