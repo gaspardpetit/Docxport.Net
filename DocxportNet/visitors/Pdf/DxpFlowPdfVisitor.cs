@@ -13085,6 +13085,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         if (!preserveRepeatedSpaces && emittedText.Contains("  ", StringComparison.Ordinal) &&
             !emittedText.EndsWith(' ') &&
             !_runRightToLeft && !_unfittedCalibriParagraph && !_paragraphInheritsFitText &&
+            !(_gridLinePitchPoints is > 0 && _gridCharSpacingPoints == null) &&
             _container is Section && _activeColumnCell == null && _section != null &&
             _paragraph is { } currentParagraph &&
             currentParagraph.Elements.Cast<DocumentObject>().All(element =>
@@ -13095,6 +13096,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 shape.WrapFormat.Style is not (MigraDoc.DocumentObjectModel.Shapes.WrapStyle.None or
                     MigraDoc.DocumentObjectModel.Shapes.WrapStyle.TopBottom)) &&
             _paragraphFragments.TryGet(currentParagraph, out var sourceFragment) &&
+            sourceFragment.Source.ParagraphProperties?.ChildElements.Any(element =>
+                element.LocalName == "framePr") != true &&
             sourceFragment.Source.Descendants<Run>().Take(2).ToArray() is [{ } onlyRun] &&
             onlyRun.ChildElements.All(element => element is RunProperties or
                 DocumentFormat.OpenXml.Wordprocessing.Text) &&
