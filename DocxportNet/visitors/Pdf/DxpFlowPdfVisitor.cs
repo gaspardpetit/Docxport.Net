@@ -3245,7 +3245,10 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             {
                 span.AddText(" ");
                 var extraSpaces = span.AddSpace(part.Value.Length - 1);
-                extraSpaces.Tag = CollapsibleSpaceMarker;
+                var nextIndex = part.Index + part.Length;
+                // Word preserves the gap before leading punctuation such as an opening parenthesis.
+                if (nextIndex == text.Length || char.IsLetterOrDigit(text[nextIndex]))
+                    extraSpaces.Tag = CollapsibleSpaceMarker;
             }
             else
                 span.AddText(part.Value);
