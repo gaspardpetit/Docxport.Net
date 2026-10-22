@@ -11,7 +11,9 @@ public static class DxpPdfFonts
     /// Set <paramref name="fallbackToSystem"/> to try installed fonts when a custom
     /// provider has no face for a request.</summary>
     /// <remarks>Pdfxport owns global font state. Call this once during application startup;
-    /// do not change providers between concurrent exports.</remarks>
+    /// do not change providers between concurrent exports. For default layout, pass the same
+    /// <see cref="DxpSystemPdfFontProvider"/> and its <c>Families</c> to
+    /// <see cref="DxpFlowPdfVisitor"/> as shown by the CLI.</remarks>
     public static void Configure(IDxpPdfFontProvider? provider = null, bool fallbackToSystem = false)
     {
         if (OperatingSystem.IsWindows())
@@ -27,10 +29,7 @@ public static class DxpPdfFonts
 
         public FontResolverInfo? ResolveTypeface(string familyName, bool isBold, bool isItalic)
         {
-            // Pdfxport's Windows resolver handles the installed-font inventory and TTC faces.
-            // A caller-supplied provider takes precedence, including on Windows.
-            DxpPdfFontFace? face = provider is DxpSystemPdfFontProvider && OperatingSystem.IsWindows()
-                ? null : provider.Resolve(familyName, isBold, isItalic);
+            DxpPdfFontFace? face = provider.Resolve(familyName, isBold, isItalic);
             if (face is null && fallbackToSystem)
             {
                 if (OperatingSystem.IsWindows())

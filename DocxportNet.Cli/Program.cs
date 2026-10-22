@@ -357,24 +357,32 @@ static void ExportPdf(
     LogLevel logLevel, bool showProgress)
 {
     string output = outputPath ?? Path.ChangeExtension(inputPath, ".pdf");
-    DxpDirectoryPdfFontProvider? directoryProvider = null;
+    IDxpPdfFontProvider provider;
+    IReadOnlyCollection<string> availableFamilies;
     if (fontDirectories.Count == 0)
-        DxpPdfFonts.Configure();
+    {
+        var systemProvider = new DxpSystemPdfFontProvider();
+        provider = systemProvider;
+        availableFamilies = systemProvider.Families;
+        DxpPdfFonts.Configure(provider, fallbackToSystem: true);
+    }
     else
     {
-        directoryProvider = new DxpDirectoryPdfFontProvider(fontDirectories);
+        var directoryProvider = new DxpDirectoryPdfFontProvider(fontDirectories);
         if (directoryProvider.FaceCount == 0)
         {
             Console.Error.WriteLine("No supported OpenType font faces found in --font-dir.");
             Environment.ExitCode = 1;
             return;
         }
-        DxpPdfFonts.Configure(directoryProvider, fallbackToSystem: true);
+        provider = directoryProvider;
+        availableFamilies = directoryProvider.Families;
+        DxpPdfFonts.Configure(provider, fallbackToSystem: true);
     }
     using var loggerFactory = CreateLoggerFactory(logLevel);
     var logger = loggerFactory.CreateLogger("docxport");
-    var visitor = new DxpFlowPdfVisitor(availableFontFamilies: directoryProvider?.Families,
-        fontProvider: directoryProvider);
+    var visitor = new DxpFlowPdfVisitor(availableFontFamilies: availableFamilies,
+        fontProvider: provider);
     ApplyFieldContext(visitor, varsPath, cliVariables, includePaths, databaseConnections);
     DxpExport.ExportToFile(inputPath, visitor, output,
         CreateExportOptions(fieldMode, showProgress), logger);
