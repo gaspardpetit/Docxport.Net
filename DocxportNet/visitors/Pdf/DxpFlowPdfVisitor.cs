@@ -3360,14 +3360,14 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             if (freeSpace <= 0) continue;
             var desiredTop = page.TopMargin.Point + freeSpace * (alignment == "center" ? 0.5 : 1);
             if (alignment == "bottom" && section.Elements.Cast<DocumentObject>()
-                .OfType<MigraDoc.DocumentObjectModel.Paragraph>()
-                .LastOrDefault(paragraph =>
-                    !noteIndexes.Contains(section.Elements.IndexOf(paragraph)) &&
-                    _paragraphFragments.TryGet(paragraph, out _)) is { } lastParagraph)
+                .Where(element => !noteIndexes.Contains(section.Elements.IndexOf(element)) &&
+                    element is MigraDoc.DocumentObjectModel.Paragraph or
+                        MigraDoc.DocumentObjectModel.Tables.Table)
+                .LastOrDefault() is MigraDoc.DocumentObjectModel.Paragraph lastParagraph &&
+                _paragraphFragments.TryGet(lastParagraph, out var fragment))
             {
                 var after = lastParagraph.Format.SpaceAfter.Point;
-                if (_paragraphFragments.TryGet(lastParagraph, out var fragment) &&
-                    int.TryParse(fragment.Source.ParagraphProperties?.SpacingBetweenLines?.After?.Value,
+                if (int.TryParse(fragment.Source.ParagraphProperties?.SpacingBetweenLines?.After?.Value,
                         out var explicitAfter))
                     after = explicitAfter / 20.0;
                 else if (_sourceWordDocument?.MainDocumentPart?.StyleDefinitionsPart == null)
@@ -3388,6 +3388,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     desiredTop += fontHeight * (lastParagraph.Format.LineSpacing.Point - 1);
                 desiredTop -= after + fontHeight * 0.15;
             }
+            if (alignment == "bottom")
+                desiredTop = Math.Max(page.TopMargin.Point, desiredTop);
             page.TopMargin = Unit.FromPoint(page.TopMargin.Point + desiredTop - top);
         }
     }
