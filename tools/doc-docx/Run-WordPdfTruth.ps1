@@ -37,7 +37,13 @@ try {
             }
             $targetDirectory = Split-Path -Parent $target
             New-Item -ItemType Directory -Path $targetDirectory -Force | Out-Null
-            $document = $word.Documents.Open($source.FullName, $false, $true)
+            try {
+                $document = $word.Documents.Open($source.FullName, $false, $true)
+            }
+            catch {
+                Write-Warning "Normal Word open failed for $relativePath; retrying with Open and Repair."
+                $document = $word.Documents.Open($source.FullName, $false, $true, $false, '', '', $false, '', '', 0, 0, $false, $true)
+            }
             $document.PrintRevisions = $false
             $document.ExportAsFixedFormat($target, 17)
             $exported++

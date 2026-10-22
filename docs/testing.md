@@ -17,3 +17,4 @@ make truth-missing TRUTH_FILTER='StyledRepeatedSpaces' TRUTH_DIR=output/pdf/trut
 
 Exports use Word's clean view, without revision balloons. Review generated references
 before committing them; they are the comparison truth for PDF fidelity checks.
+If Word rejects a fixture on normal open, the script retries with Word's Open and Repair.
