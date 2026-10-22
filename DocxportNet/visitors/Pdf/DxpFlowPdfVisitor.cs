@@ -3372,7 +3372,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     after = explicitAfter / 20.0;
                 else if (_sourceWordDocument?.MainDocumentPart?.StyleDefinitionsPart == null)
                     after = Math.Max(after, 8.04);
-                else
+                else if (fragment.Source.ParagraphProperties?.ParagraphStyleId == null)
                     after = Math.Max(after, _defaultParagraphAfterPoints);
 
                 var paragraphFont = lastParagraph.Elements.OfType<FormattedText>().LastOrDefault()?.Font ??
