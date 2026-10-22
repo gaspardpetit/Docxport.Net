@@ -1,23 +1,21 @@
 using System.Collections.Concurrent;
 using System.Diagnostics;
-using PdfSharp.Fonts;
 
-internal sealed class DxpCliSystemFontResolver : IFontResolver
+namespace DocxportNet.Visitors.Pdf;
+
+/// <summary>Discovers installed fonts through fontconfig on Linux and macOS.
+/// On Windows, <see cref="DxpPdfFonts"/> delegates to Pdfxport's platform resolver.</summary>
+public sealed class DxpSystemPdfFontProvider : IDxpPdfFontProvider
 {
     private readonly ConcurrentDictionary<(string Family, bool Bold, bool Italic), string> _resolved = new();
-    private readonly ConcurrentDictionary<string, string> _paths = new(StringComparer.Ordinal);
 
-    public FontResolverInfo ResolveTypeface(string familyName, bool isBold, bool isItalic)
+    public DxpPdfFontFace? Resolve(string familyName, bool bold, bool italic)
     {
-        string style = isBold && isItalic ? "Bold Italic" : isBold ? "Bold" : isItalic ? "Italic" : "Regular";
-        string path = _resolved.GetOrAdd((familyName, isBold, isItalic), _ =>
-            FindWithFontconfig(familyName, style) ?? FindFallbackFont() ??
-            throw new InvalidOperationException("No usable system font found. Install fontconfig and a TrueType font."));
-        _paths.TryAdd(path, path);
-        return new FontResolverInfo(path, false, false);
+        string style = bold && italic ? "Bold Italic" : bold ? "Bold" : italic ? "Italic" : "Regular";
+        string path = _resolved.GetOrAdd((familyName, bold, italic), _ =>
+            FindWithFontconfig(familyName, style) ?? FindFallbackFont() ?? string.Empty);
+        return path.Length == 0 ? null : new DxpPdfFontFace(path, File.ReadAllBytes(path));
     }
-
-    public byte[] GetFont(string faceName) => File.ReadAllBytes(_paths[faceName]);
 
     private static string? FindWithFontconfig(string familyName, string style)
     {

@@ -77,15 +77,19 @@ dotnet build DocxportNet/DocxportNet.csproj -p:PdfSharpSourceRoot=D:\git\Pdfxpor
 `DxpExport.ExportToBytes` and `ExportToFile` APIs. It handles paragraphs, list
 markers, explicit page breaks, line wrapping, page overflow, and effective run
 font family, size, bold, and italic. It does not yet reproduce Word's full run
-effects, tables, images, or page geometry. Configure a
-PDFsharp font resolver before exporting; on Windows, set
-`PdfSharp.Fonts.GlobalFontSettings.UseWindowsFontsUnderWindows = true`.
+effects, tables, images, or page geometry. On `net8.0`, call
+`DxpPdfFonts.Configure()` before PDF export to select installed fonts.
 
 On `net8.0`, `DxpFlowPdfVisitor` provides the layout-oriented exporter through
 the same APIs, including page geometry, tables, images, headers and footers,
 notes, and drawing content. It is not included in the `netstandard2.0` target;
 that target retains `DxpPdfVisitor` until the flow implementation's newer .NET
-API usage is ported. Configure a PDFsharp font resolver before either export.
+API usage is ported. Applications can pass an `IDxpPdfFontProvider` to
+`DxpPdfFonts.Configure(provider)` before PDF export. The provider maps a
+requested family and style to font bytes. Browser hosts can download or bundle
+fonts and register them before export; the callback must return synchronously.
+Pdfxport's font settings are process-wide, so configure the provider once at
+startup and do not change it during concurrent exports.
 
 ## Quick start: DOCX → Markdown
 
@@ -209,7 +213,9 @@ docxport modern.docx -o modern.json   # JSON metadata in a file
 Metadata includes core properties, available statistics and languages, and flags for tracked changes and comments. Conversion fidelity depends on the structures in the source. Without `-o`, `--format=docx` writes `<name>.resolved.docx`, `--format=doc` writes `<name>.plain.doc`, `--format=pdf` writes `<name>.pdf`, and `--format=metadata` writes JSON to stdout. Other formats write beside the input with the selected output extension.
 
 Self-contained binaries for Windows/Linux/macOS are also published on GitHub Releases.
-PDF export uses installed system fonts; on Linux and macOS it uses fontconfig when available.
+PDF export uses Pdfxport's Windows font discovery on Windows. On Linux and macOS
+it uses fontconfig when available, with a small set of file-path fallbacks.
+For reproducible output across machines, provide a fixed `IDxpPdfFontProvider`.
 
 ```bash
 dotnet run --project DocxportNet.Cli -- my.docx -o my.md --tracked=accept

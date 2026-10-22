@@ -12,7 +12,6 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using System.Data.Common;
 using System.Text.Json;
-using PdfSharp.Fonts;
 
 if (args.Length == 0 || args.Contains("--help") || args.Contains("-h"))
 {
@@ -330,10 +329,7 @@ static void ExportPdf(
     LogLevel logLevel, bool showProgress)
 {
     string output = outputPath ?? Path.ChangeExtension(inputPath, ".pdf");
-    if (OperatingSystem.IsWindows())
-        GlobalFontSettings.UseWindowsFontsUnderWindows = true;
-    else
-        GlobalFontSettings.FontResolver = new DxpCliSystemFontResolver();
+    DxpPdfFonts.Configure();
     using var loggerFactory = CreateLoggerFactory(logLevel);
     var logger = loggerFactory.CreateLogger("docxport");
     var visitor = new DxpFlowPdfVisitor();
