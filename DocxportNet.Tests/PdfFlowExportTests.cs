@@ -1130,7 +1130,51 @@ public sealed class PdfFlowExportTests
 
         using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(bytes));
         Assert.Equal(2, pdf.NumberOfPages);
-        Assert.Contains("Second", pdf.GetPage(2).Text);
+        var secondPage = pdf.GetPage(2);
+        var second = Assert.Single(secondPage.GetWords().Where(word => word.Text == "Second"));
+        Assert.InRange(secondPage.Height - second.BoundingBox.Top, 710, 714);
+    }
+
+    [Fact]
+    public void BottomAlignedSectionHonorsNamedStyleAfterSpacing()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+
+        double TextTop(string styleAfter)
+        {
+            using var source = new MemoryStream();
+            using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+            {
+                var main = document.AddMainDocumentPart();
+                main.AddNewPart<StyleDefinitionsPart>().Styles = new Styles(
+                    new Style(new StyleParagraphProperties(
+                        new SpacingBetweenLines { After = "240" }))
+                    {
+                        Type = StyleValues.Paragraph,
+                        StyleId = "Normal",
+                        Default = true
+                    },
+                    new Style(new StyleParagraphProperties(
+                        new SpacingBetweenLines { After = styleAfter }))
+                    {
+                        Type = StyleValues.Paragraph,
+                        StyleId = "EndStyle"
+                    });
+                main.Document = new Document(new Body(
+                    new Paragraph(new ParagraphProperties(new ParagraphStyleId { Val = "EndStyle" }),
+                        new Run(new Text("Styled ending"))),
+                    new SectionProperties(new VerticalTextAlignmentOnPage
+                        { Val = VerticalJustificationValues.Bottom })));
+            }
+
+            var bytes = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+            using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(bytes));
+            var page = Assert.Single(pdf.GetPages());
+            var word = Assert.Single(page.GetWords().Where(candidate => candidate.Text == "Styled"));
+            return page.Height - word.BoundingBox.Top;
+        }
+
+        Assert.InRange(TextTop("0") - TextTop("240"), 11, 13);
     }
 
     [Fact]

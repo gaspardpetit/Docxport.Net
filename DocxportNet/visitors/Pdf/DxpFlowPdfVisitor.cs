@@ -3359,6 +3359,37 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             var freeSpace = available - contentHeight - noteHeight;
             if (freeSpace <= 0) continue;
             var desiredTop = page.TopMargin.Point + freeSpace * (alignment == "center" ? 0.5 : 1);
+            if (alignment == "bottom" && section.Elements.Cast<DocumentObject>()
+                .Where(element => !noteIndexes.Contains(section.Elements.IndexOf(element)) &&
+                    element is MigraDoc.DocumentObjectModel.Paragraph or
+                        MigraDoc.DocumentObjectModel.Tables.Table)
+                .LastOrDefault() is MigraDoc.DocumentObjectModel.Paragraph lastParagraph &&
+                _paragraphFragments.TryGet(lastParagraph, out var fragment))
+            {
+                var after = lastParagraph.Format.SpaceAfter.Point;
+                if (int.TryParse(fragment.Source.ParagraphProperties?.SpacingBetweenLines?.After?.Value,
+                        out var explicitAfter))
+                    after = explicitAfter / 20.0;
+                else if (_sourceWordDocument?.MainDocumentPart?.StyleDefinitionsPart == null)
+                    after = Math.Max(after, 8.04);
+                else if (fragment.Source.ParagraphProperties?.ParagraphStyleId == null)
+                    after = Math.Max(after, _defaultParagraphAfterPoints);
+
+                var paragraphFont = lastParagraph.Elements.OfType<FormattedText>().LastOrDefault()?.Font ??
+                    lastParagraph.Format.Font;
+                var font = new XFont(paragraphFont.Name ?? _document.Styles["Normal"].Font.Name ?? "Arial",
+                    paragraphFont.Size.Point > 0 ? paragraphFont.Size.Point : 11);
+                var fontHeight = (font.Metrics.Ascent + font.Metrics.Descent) * font.Size /
+                    font.Metrics.UnitsPerEm;
+                // MigraDoc includes the last line's extra leading below its content box.
+                // Word places that leading above the text when the section is bottom aligned.
+                if (lastParagraph.Format.LineSpacingRule == LineSpacingRule.Multiple &&
+                    lastParagraph.Format.LineSpacing.Point > 1)
+                    desiredTop += fontHeight * (lastParagraph.Format.LineSpacing.Point - 1);
+                desiredTop -= after + fontHeight * 0.15;
+            }
+            if (alignment == "bottom")
+                desiredTop = Math.Max(page.TopMargin.Point, desiredTop);
             page.TopMargin = Unit.FromPoint(page.TopMargin.Point + desiredTop - top);
         }
     }
