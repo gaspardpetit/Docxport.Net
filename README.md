@@ -201,13 +201,15 @@ The CLI accepts `.doc` and `.docx` inputs. The output extension selects the form
 ```bash
 docxport old.doc -o old.docx          # DOC → DOCX
 docxport modern.docx -o modern.doc    # DOCX → DOC
+docxport modern.docx -o modern.pdf    # DOCX → PDF
 docxport old.doc --format=metadata    # JSON metadata on stdout
 docxport modern.docx -o modern.json   # JSON metadata in a file
 ```
 
-Metadata includes core properties, available statistics and languages, and flags for tracked changes and comments. Conversion fidelity depends on the structures in the source. Without `-o`, `--format=docx` writes `<name>.resolved.docx`, `--format=doc` writes `<name>.plain.doc`, and `--format=metadata` writes JSON to stdout. Other formats write beside the input with the selected output extension.
+Metadata includes core properties, available statistics and languages, and flags for tracked changes and comments. Conversion fidelity depends on the structures in the source. Without `-o`, `--format=docx` writes `<name>.resolved.docx`, `--format=doc` writes `<name>.plain.doc`, `--format=pdf` writes `<name>.pdf`, and `--format=metadata` writes JSON to stdout. Other formats write beside the input with the selected output extension.
 
 Self-contained binaries for Windows/Linux/macOS are also published on GitHub Releases.
+PDF export uses installed system fonts; on Linux and macOS it uses fontconfig when available.
 
 ```bash
 dotnet run --project DocxportNet.Cli -- my.docx -o my.md --tracked=accept
@@ -236,7 +238,7 @@ npx docxport-copy-assets public/docxport
 
 Then initialize with `createDocxport({ assetBaseUrl: "/docxport/" })`. The package README includes React, Vue, Vite, and generic static-hosting guidance.
 
-Options: `--format=markdown|html|text|docx|doc|metadata`, `--tracked=accept|reject|inline|split` (text uses accept/reject), `--plain` (plain markdown/HTML), `-o, --output=path` (infers format from extension when `--format` is omitted), `--vars=path` (JSON/INI DOCVARIABLEs), `-D name=value` (repeatable overrides), and `--include-path=directory` (repeatable allowed/search roots for evaluated DOCX and HTML `INCLUDETEXT` fields).
+Options: `--format=markdown|html|text|docx|doc|pdf|metadata`, `--tracked=accept|reject|inline|split` (text uses accept/reject), `--plain` (plain markdown/HTML), `-o, --output=path` (infers format from extension when `--format` is omitted), `--vars=path` (JSON/INI DOCVARIABLEs), `-D name=value` (repeatable overrides), and `--include-path=directory` (repeatable allowed/search roots for evaluated DOCX and HTML `INCLUDETEXT` fields).
 
 ```bash
 docxport my.docx --fields=evaluate --include-path="C:\templates\Word Templates" -o my.md
