@@ -1130,7 +1130,9 @@ public sealed class PdfFlowExportTests
 
         using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(bytes));
         Assert.Equal(2, pdf.NumberOfPages);
-        Assert.Contains("Second", pdf.GetPage(2).Text);
+        var secondPage = pdf.GetPage(2);
+        var second = Assert.Single(secondPage.GetWords().Where(word => word.Text == "Second"));
+        Assert.InRange(secondPage.Height - second.BoundingBox.Top, 710, 714);
     }
 
     [Fact]

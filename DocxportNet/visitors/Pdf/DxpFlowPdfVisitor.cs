@@ -3359,6 +3359,35 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             var freeSpace = available - contentHeight - noteHeight;
             if (freeSpace <= 0) continue;
             var desiredTop = page.TopMargin.Point + freeSpace * (alignment == "center" ? 0.5 : 1);
+            if (alignment == "bottom" && section.Elements.Cast<DocumentObject>()
+                .OfType<MigraDoc.DocumentObjectModel.Paragraph>()
+                .LastOrDefault(paragraph =>
+                    !noteIndexes.Contains(section.Elements.IndexOf(paragraph)) &&
+                    _paragraphFragments.TryGet(paragraph, out _)) is { } lastParagraph)
+            {
+                var after = lastParagraph.Format.SpaceAfter.Point;
+                if (_paragraphFragments.TryGet(lastParagraph, out var fragment) &&
+                    int.TryParse(fragment.Source.ParagraphProperties?.SpacingBetweenLines?.After?.Value,
+                        out var explicitAfter))
+                    after = explicitAfter / 20.0;
+                else if (_sourceWordDocument?.MainDocumentPart?.StyleDefinitionsPart == null)
+                    after = Math.Max(after, 8.04);
+                else
+                    after = Math.Max(after, _defaultParagraphAfterPoints);
+
+                var paragraphFont = lastParagraph.Elements.OfType<FormattedText>().LastOrDefault()?.Font ??
+                    lastParagraph.Format.Font;
+                var font = new XFont(paragraphFont.Name ?? _document.Styles["Normal"].Font.Name ?? "Arial",
+                    paragraphFont.Size.Point > 0 ? paragraphFont.Size.Point : 11);
+                var fontHeight = (font.Metrics.Ascent + font.Metrics.Descent) * font.Size /
+                    font.Metrics.UnitsPerEm;
+                // MigraDoc includes the last line's extra leading below its content box.
+                // Word places that leading above the text when the section is bottom aligned.
+                if (lastParagraph.Format.LineSpacingRule == LineSpacingRule.Multiple &&
+                    lastParagraph.Format.LineSpacing.Point > 1)
+                    desiredTop += fontHeight * (lastParagraph.Format.LineSpacing.Point - 1);
+                desiredTop -= after + fontHeight * 0.15;
+            }
             page.TopMargin = Unit.FromPoint(page.TopMargin.Point + desiredTop - top);
         }
     }
