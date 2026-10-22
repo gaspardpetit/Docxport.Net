@@ -35,3 +35,11 @@ DrawingML `outerShdw` on the rectangle is not yet rendered.
 `docx/features/WordBorderStyles3x3.docx` places a 3×3 table on each page,
 covering Word's border styles and shared cell edges. The PDF flow tests use it
 to check style preservation, fixed cell widths, spacing inheritance, and double borders.
+
+`docx/probes/MathSizeVariants.docx` is a one-page reference for inline radicals,
+parentheses, integrals, and overbars at several sizes or widths. Each expression
+has a following paragraph to expose line-height differences. Its Word PDF is
+`../truth/pdf-word/probes/MathSizeVariants.pdf`; regenerate the DOCX with
+`tools/doc-docx/Generate-MathVariantsProbe.py`. PDF flow currently omits the
+delimiter, integral, and accent constructions and does not select the correct
+radical variants. This is a known failing fidelity probe, not a passing baseline.
