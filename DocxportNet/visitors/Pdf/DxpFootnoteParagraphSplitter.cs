@@ -242,6 +242,14 @@ internal static class DxpFootnoteParagraphSplitter
             offset++;
             return true;
         }
+        if (element is Character { SymbolName: SymbolName.Blank } spaces)
+        {
+            characters.Add((spaces, offset, owner));
+            var count = Math.Max(1, spaces.Count);
+            builder.Append(' ', count);
+            offset += count;
+            return true;
+        }
         if (element is BookmarkField bookmark)
         {
             bookmarks.Add((bookmark, offset, owner));

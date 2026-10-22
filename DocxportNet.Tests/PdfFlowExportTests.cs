@@ -24,6 +24,172 @@ namespace DocxportNet.Tests;
 public sealed class PdfFlowExportTests
 {
     [Fact]
+    public void SplitsFootnoteParagraphWithStyledRepeatedSpaces()
+    {
+        var paragraph = new MigraDoc.DocumentObjectModel.Document().AddSection().AddParagraph();
+        var span = paragraph.AddFormattedText("First ");
+        span.AddSpace(2);
+        span.AddText("second third");
+
+        Assert.True(DxpFootnoteParagraphSplitter.TryGetText(paragraph, out var original));
+        Assert.Equal("First   second third", original);
+        Assert.True(DxpFootnoteParagraphSplitter.TrySplit(paragraph, 2, out var continuation));
+        Assert.True(DxpFootnoteParagraphSplitter.TryGetText(paragraph, out var first));
+        Assert.True(DxpFootnoteParagraphSplitter.TryGetText(continuation!, out var second));
+        Assert.Equal("First   second ", first);
+        Assert.Equal("third", second);
+    }
+
+    [Fact]
+    public void ReplacesStyleRefCacheContainingStyledRepeatedSpaces()
+    {
+        var paragraph = new MigraDoc.DocumentObjectModel.Document().AddSection().AddParagraph();
+        var span = paragraph.AddFormattedText("Heading:First ");
+        span.AddSpace(2);
+        span.AddText("title suffix");
+        var method = typeof(DxpFlowPdfVisitor).GetMethod("ReplaceStyleRefText",
+            System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)!;
+
+        Assert.True((bool)method.Invoke(null, [paragraph, "First   title", "Second heading"])!);
+        Assert.Equal("Heading:Second heading suffix", string.Concat(span.Elements.Select(element => element switch
+        {
+            MigraDoc.DocumentObjectModel.Text text => text.Content,
+            MigraDoc.DocumentObjectModel.Character { SymbolName: MigraDoc.DocumentObjectModel.SymbolName.Blank } spaces =>
+                new string(' ', spaces.Count),
+            _ => ""
+        })));
+    }
+
+    [Fact]
+    public void PreservesRepeatedSpacesInPageSpecificStyleRefReplacement()
+    {
+        var paragraph = new MigraDoc.DocumentObjectModel.Document().AddSection().AddParagraph();
+        var span = paragraph.AddFormattedText("Heading:First title suffix");
+        var method = typeof(DxpFlowPdfVisitor).GetMethod("ReplaceStyleRefText",
+            System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)!;
+
+        Assert.True((bool)method.Invoke(null, [paragraph, "First title", "Second   heading"])!);
+        Assert.Equal("Heading:Second   heading suffix", string.Concat(span.Elements.Select(element => element switch
+        {
+            MigraDoc.DocumentObjectModel.Text text => text.Content,
+            MigraDoc.DocumentObjectModel.Character { SymbolName: MigraDoc.DocumentObjectModel.SymbolName.Blank } spaces =>
+                new string(' ', spaces.Count),
+            _ => ""
+        })));
+        Assert.Contains(span.Elements, element => element is MigraDoc.DocumentObjectModel.Character
+            { SymbolName: MigraDoc.DocumentObjectModel.SymbolName.Blank, Count: 2, Tag: not null });
+    }
+
+    [Fact]
+    public void CollapsesStyledRepeatedSpacesOnMirroredPageClone()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source, WordprocessingDocumentType.Document, true))
+        {
+            static Paragraph Paragraph(bool nextPage) => new(
+                new ParagraphProperties(new MirrorIndents(), new Justification { Val = JustificationValues.Center },
+                    nextPage ? new PageBreakBefore() : new KeepNext()),
+                new Run(new RunProperties(new Bold()), new Text("Alpha   beta gamma delta") { Space = SpaceProcessingModeValues.Preserve }));
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(Paragraph(false), Paragraph(true),
+                new SectionProperties(new PageSize { Width = 2100, Height = 5000 },
+                    new PageMargin { Left = 600, Right = 600, Top = 600, Bottom = 600 })));
+        }
+
+        var bytes = DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(bytes));
+        Assert.Equal(2, pdf.NumberOfPages);
+        var first = pdf.GetPage(1).Letters.First(letter => letter.Value == "A");
+        var second = pdf.GetPage(2).Letters.First(letter => letter.Value == "A");
+        var wrapped = pdf.GetPage(1).Letters.First(letter => letter.Value == "b");
+        Assert.True(wrapped.GlyphRectangle.Bottom < first.GlyphRectangle.Bottom);
+        Assert.InRange(Math.Abs(first.GlyphRectangle.Left - second.GlyphRectangle.Left), 0, 0.2);
+    }
+
+    [Fact]
+    public void StyledParagraphKeepsEachRepeatedSpaceAdvance()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "features", "StyledRepeatedSpaces.docx");
+        var reference = Path.Combine(root, "truth", "pdf-word", "features", "StyledRepeatedSpaces.pdf");
+        var bytes = DxpExport.ExportToBytes(source, new DxpFlowPdfVisitor());
+
+        static double[] BetaOrigins(byte[] pdfBytes)
+        {
+            using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(pdfBytes));
+            return pdf.GetPage(1).GetWords().Where(word => word.Text == "Beta")
+                .OrderByDescending(word => word.BoundingBox.Top)
+                .Select(word => word.BoundingBox.Left).ToArray();
+        }
+
+        var word = BetaOrigins(File.ReadAllBytes(reference));
+        var flow = BetaOrigins(bytes);
+        Assert.Equal(3, word.Length);
+        Assert.Equal(3, flow.Length);
+        var wordExtraBefore = word[1] - word[0];
+        var wordExtraAfter = word[2] - word[0];
+        Assert.InRange(wordExtraBefore, 3.0, 4.0);
+        Assert.InRange(wordExtraAfter, 3.0, 4.0);
+        Assert.InRange(flow[1] - flow[0], wordExtraBefore - 1.0, wordExtraBefore + 1.0);
+        Assert.InRange(flow[2] - flow[0], wordExtraAfter - 1.0, wordExtraAfter + 1.0);
+    }
+
+    [Fact]
+    public void AllCapsStyledParagraphKeepsRepeatedSpaceAdvance()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "features", "StyledRepeatedSpaces.docx");
+        var reference = Path.Combine(root, "truth", "pdf-word", "features", "StyledRepeatedSpaces.pdf");
+        var flow = DxpExport.ExportToBytes(source, new DxpFlowPdfVisitor());
+
+        static double[] Origins(byte[] bytes)
+        {
+            using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(bytes));
+            return pdf.GetPage(1).GetWords().Where(word => word.Text == "SIGMA")
+                .OrderByDescending(word => word.BoundingBox.Top)
+                .Select(word => word.BoundingBox.Left).ToArray();
+        }
+
+        var word = Origins(File.ReadAllBytes(reference));
+        var actual = Origins(flow);
+        Assert.Equal(2, word.Length);
+        Assert.Equal(2, actual.Length);
+        Assert.InRange(word[1] - word[0], 2, 6);
+        Assert.InRange(actual[1] - actual[0], word[1] - word[0] - 1, word[1] - word[0] + 1);
+    }
+
+    [Theory]
+    [InlineData("Delta")]
+    [InlineData("Omega")]
+    [InlineData("Theta")]
+    public void RepeatedSpacesBeforeWrappedWordsDoNotIndentTheNextLine(string word)
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "features", "StyledRepeatedSpaces.docx");
+        var reference = Path.Combine(root, "truth", "pdf-word", "features", "StyledRepeatedSpaces.pdf");
+        var flow = DxpExport.ExportToBytes(source, new DxpFlowPdfVisitor());
+
+        static double[] Origins(byte[] pdfBytes, string text)
+        {
+            using var pdf = UglyToad.PdfPig.PdfDocument.Open(new MemoryStream(pdfBytes));
+            return pdf.GetPage(1).GetWords().Where(candidate => candidate.Text == text)
+                .OrderByDescending(candidate => candidate.BoundingBox.Top)
+                .Select(candidate => candidate.BoundingBox.Left).ToArray();
+        }
+
+        var wordOrigins = Origins(File.ReadAllBytes(reference), word);
+        var flowOrigins = Origins(flow, word);
+        Assert.Equal(2, wordOrigins.Length);
+        Assert.Equal(2, flowOrigins.Length);
+        Assert.InRange(Math.Abs(wordOrigins[1] - wordOrigins[0]), 0, 0.5);
+        Assert.InRange(Math.Abs(flowOrigins[1] - flowOrigins[0]), 0, 0.5);
+    }
+
+    [Fact]
     public void BehindTextGradientRectangleIsRenderedUnderShadedTable()
     {
         GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;

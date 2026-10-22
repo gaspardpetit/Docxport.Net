@@ -224,6 +224,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private readonly Dictionary<MigraDoc.DocumentObjectModel.Paragraph, double> _centeredSpacingOffsets = new();
     private readonly HashSet<MigraDoc.DocumentObjectModel.Paragraph> _gridGlyphParagraphs = new();
     private readonly HashSet<MigraDoc.DocumentObjectModel.Paragraph> _gridBoundaryParagraphs = new();
+    private static readonly object CollapsibleSpaceMarker = new();
     private readonly HashSet<MigraDoc.DocumentObjectModel.Paragraph> _unshiftedGridGlyphParagraphs = new();
     private readonly HashSet<MigraDoc.DocumentObjectModel.Paragraph> _packedGridParagraphs = new();
     private readonly List<FormattedText> _paintOnlyMinchoSpans = new();
@@ -605,6 +606,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private PdfDocumentRenderer CreatePdfRenderer(MigraDoc.DocumentObjectModel.Document document)
     {
         var renderer = new PdfDocumentRenderer { Document = document };
+        renderer.DocumentRenderer.CollapsibleSpaceBeforeWrap = (_, space) =>
+            ReferenceEquals(space.Tag, CollapsibleSpaceMarker);
         var mixedBasicBorders = new Dictionary<MigraDoc.DocumentObjectModel.Tables.Table, bool>();
         renderer.DocumentRenderer.TableCellPlacement = (cell, geometry) =>
             WordTableCellPlacement(cell, geometry, mixedBasicBorders);
@@ -3190,9 +3193,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 .SelectMany(section => new[] { section.Headers.Primary, section.Headers.FirstPage,
                     section.Headers.EvenPage })
                 .SelectMany(header => header.Elements.OfType<MigraDoc.DocumentObjectModel.Paragraph>())
-                .Where(paragraph => string.Concat(paragraph.Elements.OfType<FormattedText>()
-                    .SelectMany(span => span.Elements.OfType<MigraDoc.DocumentObjectModel.Text>())
-                    .Select(text => text.Content)).Contains(field.CachedText, StringComparison.Ordinal))
+                .Where(paragraph => GetStyleRefText(paragraph).Contains(field.CachedText, StringComparison.Ordinal))
                 .ToArray();
             if (candidates.Length != 1) return null;
             if (!ReplaceStyleRefText(candidates[0], field.CachedText, value)) return null;
@@ -3227,26 +3228,72 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         }
     }
 
+    private static string GetStyleRefText(MigraDoc.DocumentObjectModel.Paragraph paragraph) =>
+        string.Concat(paragraph.Elements.OfType<FormattedText>()
+            .SelectMany(span => span.Elements.Cast<DocumentObject>())
+            .Select(element => element switch
+            {
+                MigraDoc.DocumentObjectModel.Text text => text.Content,
+                Character { SymbolName: SymbolName.Blank } spaces => new string(' ', Math.Max(1, spaces.Count)),
+                _ => string.Empty
+            }));
+
+    private static void AppendTextPreservingRepeatedSpaces(FormattedText span, string text)
+    {
+        foreach (Match part in Regex.Matches(text, @" {2,}|[^ ]+| "))
+            if (part.Value.Length > 1 && part.Value[0] == ' ')
+            {
+                span.AddText(" ");
+                var extraSpaces = span.AddSpace(part.Value.Length - 1);
+                var nextIndex = part.Index + part.Length;
+                // Word preserves the gap before leading punctuation such as an opening parenthesis.
+                if (nextIndex == text.Length || char.IsLetterOrDigit(text[nextIndex]))
+                    extraSpaces.Tag = CollapsibleSpaceMarker;
+            }
+            else
+                span.AddText(part.Value);
+    }
+
     private static bool ReplaceStyleRefText(MigraDoc.DocumentObjectModel.Paragraph paragraph,
         string cached, string replacement)
     {
-        var texts = paragraph.Elements.OfType<FormattedText>()
-            .SelectMany(span => span.Elements.OfType<MigraDoc.DocumentObjectModel.Text>()).ToArray();
-        var offset = string.Concat(texts.Select(text => text.Content))
-            .IndexOf(cached, StringComparison.Ordinal);
+        var segments = paragraph.Elements.OfType<FormattedText>()
+            .SelectMany(span => span.Elements.Cast<DocumentObject>().Select(element => (span, element)))
+            .Where(item => item.element is MigraDoc.DocumentObjectModel.Text or
+                Character { SymbolName: SymbolName.Blank }).ToArray();
+        var content = GetStyleRefText(paragraph);
+        var offset = content.IndexOf(cached, StringComparison.Ordinal);
         if (offset < 0) return false;
         var end = offset + cached.Length;
         var position = 0;
         var inserted = false;
-        foreach (var text in texts)
+        foreach (var (span, element) in segments)
         {
-            var content = text.Content;
-            var next = position + content.Length;
+            var value = element is MigraDoc.DocumentObjectModel.Text text ? text.Content :
+                new string(' ', Math.Max(1, ((Character)element).Count));
+            var next = position + value.Length;
             if (next > offset && position < end)
             {
-                var prefix = content[..Math.Max(0, offset - position)];
-                var suffix = content[Math.Min(content.Length, end - position)..];
-                text.Content = prefix + (inserted ? "" : replacement) + suffix;
+                var prefix = value[..Math.Max(0, offset - position)];
+                var suffix = value[Math.Min(value.Length, end - position)..];
+                var updated = prefix + (inserted ? "" : replacement) + suffix;
+                if (updated.Contains("  ", StringComparison.Ordinal))
+                {
+                    var parts = new FormattedText();
+                    AppendTextPreservingRepeatedSpaces(parts, updated);
+                    var index = span.Elements.IndexOf(element);
+                    span.Elements.RemoveObjectAt(index);
+                    foreach (var part in parts.Elements.Cast<DocumentObject>())
+                        span.Elements.InsertObject(index++, (DocumentObject)part.Clone());
+                }
+                else if (element is MigraDoc.DocumentObjectModel.Text existing)
+                    existing.Content = updated;
+                else
+                {
+                    var index = span.Elements.IndexOf(element);
+                    span.Elements.RemoveObjectAt(index);
+                    span.Elements.InsertObject(index, new MigraDoc.DocumentObjectModel.Text(updated));
+                }
                 inserted = true;
             }
             position = next;
@@ -13077,8 +13124,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 });
         }
         emittedText = Regex.Replace(emittedText, @"(?<=\u2014)(?=\S)", "\u200B");
-        var preserveRepeatedSpaces = _stylelessBodyParagraphSpacing && _container is Section &&
-            emittedText.Contains("  ", StringComparison.Ordinal);
+        var preserveRepeatedSpaces = emittedText.Contains("  ", StringComparison.Ordinal);
         var preserveLeadingTabSpace = _stylelessBodyParagraphSpacing && _container is Section &&
             emittedText.StartsWith(' ') &&
             _paragraph?.Elements.LastOrDefault() is Character { SymbolName: SymbolName.Tab };
@@ -13090,33 +13136,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             if (preserveLeadingTabSpace)
                 span.AddSpace(1);
             var spaceText = preserveLeadingTabSpace ? emittedText[1..] : emittedText;
-            foreach (Match part in Regex.Matches(spaceText, @" {2,}|[^ ]+| "))
-                if (part.Value.Length > 1 && part.Value[0] == ' ')
-                {
-                    span.AddText(" ");
-                    var nextWord = Regex.Match(spaceText[(part.Index + part.Length)..], @"\S+").Value;
-                    var wrapBeforeWord = false;
-                    if (preserveRepeatedSpaces && nextWord.Length > 0 &&
-                        char.IsLetterOrDigit(nextWord[0]) && _section != null)
-                    {
-                        var fontName = _runStyle?.FontName is string family &&
-                            _availableFontFamilies.Contains(family) ? family : _fontFamily;
-                        var fontSize = _runStyle?.FontSizeHalfPoints is int halfPoints && halfPoints > 0
-                            ? halfPoints / 2.0 : _paragraph!.Format.Font.Size.Point;
-                        using var measure = XGraphics.CreateMeasureContext(new XSize(100, 100),
-                            XGraphicsUnit.Point, XPageDirection.Downwards);
-                        var font = new XFont(fontName, fontSize > 0 ? fontSize : 11);
-                        var availableWidth = _section.PageSetup.PageWidth.Point -
-                            _section.PageSetup.LeftMargin.Point - _section.PageSetup.RightMargin.Point -
-                            _paragraph!.Format.LeftIndent.Point - _paragraph.Format.RightIndent.Point;
-                        wrapBeforeWord = measure.MeasureString(
-                            spaceText[..part.Index] + part.Value + nextWord, font).Width > availableWidth;
-                    }
-                    if (wrapBeforeWord) span.AddText(part.Value[1..]);
-                    else span.AddSpace(part.Value.Length - 1);
-                }
-                else
-                    span.AddText(part.Value);
+            AppendTextPreservingRepeatedSpaces(span, spaceText);
         }
         _previousTextStyle = _runStyle;
         _previousTextParagraph = _paragraph;
