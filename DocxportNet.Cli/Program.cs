@@ -7,6 +7,7 @@ using DocxportNet.Visitors.Markdown;
 using DocxportNet.Visitors.PlainText;
 using DocxportNet.Visitors.Docx;
 using DocxportNet.Visitors.Doc;
+using DocxportNet.Visitors.Pdf;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using System.Data.Common;
@@ -222,6 +223,8 @@ if (!formatExplicit && !string.IsNullOrWhiteSpace(outputPath))
         format = "docx";
     else if (ext is ".doc")
         format = "doc";
+    else if (ext is ".pdf")
+        format = "pdf";
     else if (ext is ".json")
         format = "metadata";
 }
@@ -252,8 +255,13 @@ switch (format.ToLowerInvariant())
     case "doc":
         ExportDoc(inputPath, outputPath, fieldMode, varsPath, cliVariables, includePaths, databaseConnections, logLevel, showProgress);
         break;
+    case "pdf":
+        if (plainOutput)
+            Console.Error.WriteLine("Warning: --plain is only supported for markdown/html; ignoring.");
+        ExportPdf(inputPath, outputPath, fieldMode, varsPath, cliVariables, includePaths, databaseConnections, logLevel, showProgress);
+        break;
     default:
-        Console.Error.WriteLine($"Unknown format '{format}'. Expected markdown|html|text|docx|doc|metadata.");
+        Console.Error.WriteLine($"Unknown format '{format}'. Expected markdown|html|text|docx|doc|pdf|metadata.");
         PrintHelp();
         break;
 }
@@ -308,6 +316,27 @@ static void ExportDocx(
     var exportOptions = CreateExportOptions(fieldMode, showProgress);
     DxpExport.ExportToFile(inputPath, visitor, output, exportOptions, logger);
     Console.WriteLine($"Wrote DOCX to {output}");
+}
+
+static void ExportPdf(
+    string inputPath,
+    string? outputPath,
+    DxpFieldEvalExportMode fieldMode,
+    string? varsPath,
+    IReadOnlyDictionary<string, string> cliVariables,
+    IReadOnlyList<string> includePaths,
+    IReadOnlyDictionary<string, string> databaseConnections,
+    LogLevel logLevel, bool showProgress)
+{
+    string output = outputPath ?? Path.ChangeExtension(inputPath, ".pdf");
+    DxpPdfFonts.Configure();
+    using var loggerFactory = CreateLoggerFactory(logLevel);
+    var logger = loggerFactory.CreateLogger("docxport");
+    var visitor = new DxpFlowPdfVisitor();
+    ApplyFieldContext(visitor, varsPath, cliVariables, includePaths, databaseConnections);
+    DxpExport.ExportToFile(inputPath, visitor, output,
+        CreateExportOptions(fieldMode, showProgress), logger);
+    Console.WriteLine($"Wrote PDF to {output}");
 }
 
 static void ExportMarkdown(
@@ -450,17 +479,17 @@ static void PrintHelp()
 {
     Console.WriteLine($"""
 docxport ({GetVersion()})
-Usage: docxport <input.doc|input.docx> [--format=markdown|html|text|docx|doc|metadata] [--tracked=accept|reject|inline|split] [--plain] [--fields=evaluate|cache|none] [--no-progress] [-o|--output=path] [--vars=path] [-D name=value] [--include-path=directory] [--database=[LABEL=]CONNECTION_STRING]
+Usage: docxport <input.doc|input.docx> [--format=markdown|html|text|docx|doc|pdf|metadata] [--tracked=accept|reject|inline|split] [--plain] [--fields=evaluate|cache|none] [--no-progress] [-o|--output=path] [--vars=path] [-D name=value] [--include-path=directory] [--database=[LABEL=]CONNECTION_STRING]
 
 Options:
   --format=...   Output format (default: markdown); metadata emits JSON to stdout unless -o is supplied.
                 DOC to DOCX and DOCX to DOC are supported; binary DOC fidelity varies by feature.
-                If --format is omitted, the format is inferred from -o/--output extension (.md/.html/.txt/.docx/.doc/.json).
+                If --format is omitted, the format is inferred from -o/--output extension (.md/.html/.txt/.docx/.doc/.pdf/.json).
   --tracked=...  Tracked change mode (accept, reject, inline, split). Plain text supports accept/reject.
     --plain        Plain output for markdown/html (minimal styling/features)
     --fields=...   Field result mode (evaluate, cache, none). Default: cache.
   -o, --output=...  Output path; without it DOCX writes <name>.resolved.docx, DOC writes
-                  <name>.plain.doc, metadata writes JSON to stdout, and text formats
+                  <name>.plain.doc, PDF writes <name>.pdf, metadata writes JSON to stdout, and text formats
                   write beside the input with their selected extension.
   --vars=...     Load DOCVARIABLE values from a JSON or INI file.
   -D name=value  Define a DOCVARIABLE (repeatable). CLI values override --vars.
