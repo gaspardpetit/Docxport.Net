@@ -7,28 +7,37 @@ namespace DocxportNet.Visitors.Pdf;
 /// Configure once, before creating any PDF fonts or rendering a PDF.</summary>
 public static class DxpPdfFonts
 {
-    /// <summary>Installs a provider for PDF export. A null provider uses system fonts.</summary>
+    /// <summary>Installs a provider for PDF export. A null provider uses system fonts.
+    /// Set <paramref name="fallbackToSystem"/> to try installed fonts when a custom
+    /// provider has no face for a request.</summary>
     /// <remarks>Pdfxport owns global font state. Call this once during application startup;
     /// do not change providers between concurrent exports.</remarks>
-    public static void Configure(IDxpPdfFontProvider? provider = null)
+    public static void Configure(IDxpPdfFontProvider? provider = null, bool fallbackToSystem = false)
     {
         if (OperatingSystem.IsWindows())
             GlobalFontSettings.UseWindowsFontsUnderWindows = true;
-        GlobalFontSettings.FontResolver = new Resolver(provider ?? new DxpSystemPdfFontProvider());
+        GlobalFontSettings.FontResolver = new Resolver(provider ?? new DxpSystemPdfFontProvider(),
+            provider is null || fallbackToSystem);
     }
 
-    private sealed class Resolver(IDxpPdfFontProvider provider) : IFontResolver
+    private sealed class Resolver(IDxpPdfFontProvider provider, bool fallbackToSystem) : IFontResolver
     {
         private readonly ConcurrentDictionary<string, byte[]> _faces = new(StringComparer.Ordinal);
+        private readonly DxpSystemPdfFontProvider _system = new();
 
         public FontResolverInfo? ResolveTypeface(string familyName, bool isBold, bool isItalic)
         {
             // Pdfxport's Windows resolver handles the installed-font inventory and TTC faces.
             // A caller-supplied provider takes precedence, including on Windows.
-            if (OperatingSystem.IsWindows() && provider is DxpSystemPdfFontProvider)
-                return PlatformFontResolver.ResolveTypeface(familyName, isBold, isItalic);
-
-            var face = provider.Resolve(familyName, isBold, isItalic);
+            DxpPdfFontFace? face = provider is DxpSystemPdfFontProvider && OperatingSystem.IsWindows()
+                ? null : provider.Resolve(familyName, isBold, isItalic);
+            if (face is null && fallbackToSystem)
+            {
+                if (OperatingSystem.IsWindows())
+                    return PlatformFontResolver.ResolveTypeface(familyName, isBold, isItalic);
+                if (provider is not DxpSystemPdfFontProvider)
+                    face = _system.Resolve(familyName, isBold, isItalic);
+            }
             if (face is null)
                 return null;
             _faces.TryAdd(face.Key, face.Data);

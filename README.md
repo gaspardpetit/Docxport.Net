@@ -206,6 +206,7 @@ The CLI accepts `.doc` and `.docx` inputs. The output extension selects the form
 docxport old.doc -o old.docx          # DOC → DOCX
 docxport modern.docx -o modern.doc    # DOCX → DOC
 docxport modern.docx -o modern.pdf    # DOCX → PDF
+docxport modern.docx -o modern.pdf --font-dir=./fonts
 docxport old.doc --format=metadata    # JSON metadata on stdout
 docxport modern.docx -o modern.json   # JSON metadata in a file
 ```
@@ -216,6 +217,9 @@ Self-contained binaries for Windows/Linux/macOS are also published on GitHub Rel
 PDF export uses Pdfxport's Windows font discovery on Windows. On Linux and macOS
 it uses fontconfig when available, with a small set of file-path fallbacks.
 For reproducible output across machines, provide a fixed `IDxpPdfFontProvider`.
+The CLI's repeatable `--font-dir=directory` option searches `.ttf` and `.otf`
+files recursively by their embedded family and style names before installed
+fonts. TrueType collections (`.ttc`) are not indexed by this option.
 
 ```bash
 dotnet run --project DocxportNet.Cli -- my.docx -o my.md --tracked=accept
@@ -244,7 +248,7 @@ npx docxport-copy-assets public/docxport
 
 Then initialize with `createDocxport({ assetBaseUrl: "/docxport/" })`. The package README includes React, Vue, Vite, and generic static-hosting guidance.
 
-Options: `--format=markdown|html|text|docx|doc|pdf|metadata`, `--tracked=accept|reject|inline|split` (text uses accept/reject), `--plain` (plain markdown/HTML), `-o, --output=path` (infers format from extension when `--format` is omitted), `--vars=path` (JSON/INI DOCVARIABLEs), `-D name=value` (repeatable overrides), and `--include-path=directory` (repeatable allowed/search roots for evaluated DOCX and HTML `INCLUDETEXT` fields).
+Options: `--format=markdown|html|text|docx|doc|pdf|metadata`, `--tracked=accept|reject|inline|split` (text uses accept/reject), `--plain` (plain markdown/HTML), `-o, --output=path` (infers format from extension when `--format` is omitted), `--vars=path` (JSON/INI DOCVARIABLEs), `-D name=value` (repeatable overrides), `--include-path=directory` (repeatable allowed/search roots for evaluated DOCX and HTML `INCLUDETEXT` fields), and `--font-dir=directory` (repeatable additional PDF font roots).
 
 ```bash
 docxport my.docx --fields=evaluate --include-path="C:\templates\Word Templates" -o my.md
