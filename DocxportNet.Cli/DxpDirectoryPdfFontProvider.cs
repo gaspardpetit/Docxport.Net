@@ -1,18 +1,23 @@
 using System.Buffers.Binary;
+using System.Collections.Concurrent;
 using System.Text;
 using DocxportNet.Visitors.Pdf;
+using PdfSharp.Internal.OpenType;
 
 /// <summary>Indexes the OpenType names of font files in CLI-supplied directories.</summary>
 internal sealed class DxpDirectoryPdfFontProvider : IDxpPdfFontProvider
 {
     private readonly Dictionary<string, List<Face>> _families = new(StringComparer.OrdinalIgnoreCase);
+    private readonly ConcurrentDictionary<string, Lazy<OpenTypeFontDescriptor?>> _descriptors = new();
+    private readonly ConcurrentDictionary<string, byte[]> _fontBytes = new();
 
     public DxpDirectoryPdfFontProvider(IEnumerable<string> directories)
     {
         foreach (string directory in directories)
         {
             foreach (string path in Directory.EnumerateFiles(directory, "*", new EnumerationOptions
-                     { RecurseSubdirectories = true, IgnoreInaccessible = true }))
+                     { RecurseSubdirectories = true, IgnoreInaccessible = true })
+                     .OrderBy(path => path, StringComparer.OrdinalIgnoreCase))
             {
                 if (!IsSupportedExtension(path))
                     continue;
@@ -26,7 +31,7 @@ internal sealed class DxpDirectoryPdfFontProvider : IDxpPdfFontProvider
                                   style.Contains("Oblique", StringComparison.OrdinalIgnoreCase);
                     if (!_families.TryGetValue(family, out var faces))
                         _families[family] = faces = [];
-                    faces.Add(new Face(path, bold, italic));
+                    faces.Add(new Face(family, path, bold, italic));
                 }
                 catch (IOException) { }
                 catch (UnauthorizedAccessException) { }
@@ -37,19 +42,57 @@ internal sealed class DxpDirectoryPdfFontProvider : IDxpPdfFontProvider
     public int FaceCount => _families.Values.Sum(faces => faces.Count);
     public IReadOnlyCollection<string> Families => _families.Keys;
 
+    public bool IsAvailable(string familyName, bool bold, bool italic) =>
+        _families.TryGetValue(familyName, out var faces) && BestFace(faces, bold, italic) != null;
+
     public DxpPdfFontFace? Resolve(string familyName, bool bold, bool italic)
     {
-        if (!_families.TryGetValue(familyName, out var faces))
-            return null;
+        if (!_families.TryGetValue(familyName, out var faces)) return null;
+        Face? face = BestFace(faces, bold, italic);
+        return face == null ? null : Materialize(face, bold, italic);
+    }
+
+    public DxpPdfFontMatch? ResolveForCharacter(string familyName, bool bold, bool italic, Rune character)
+    {
+        // Do not replace unrelated system fonts just because an extra directory is present.
+        if (!_families.TryGetValue(familyName, out var requested)) return null;
+        Face? face = BestFace(requested.Where(f => HasGlyph(f, character)), bold, italic);
+        if (face == null)
+        {
+            face = _families.Where(pair => !pair.Key.Equals(familyName, StringComparison.OrdinalIgnoreCase))
+                .Select(pair => BestFace(pair.Value.Where(f => HasGlyph(f, character)), bold, italic))
+                .FirstOrDefault(candidate => candidate != null);
+        }
+        return face == null ? null : new DxpPdfFontMatch(face.Family, Materialize(face, bold, italic));
+    }
+
+    private DxpPdfFontFace Materialize(Face face, bool bold, bool italic) =>
+        new(face.Path, _fontBytes.GetOrAdd(face.Path, File.ReadAllBytes),
+            bold && !face.Bold, italic && !face.Italic);
+
+    private bool HasGlyph(Face face, Rune character)
+    {
+        var descriptor = _descriptors.GetOrAdd(face.Path, path => new Lazy<OpenTypeFontDescriptor?>(() =>
+        {
+            try
+            {
+                var source = OpenTypeFontSource.GetOrCreateFrom(_fontBytes.GetOrAdd(path, File.ReadAllBytes));
+                return OpenTypeFontFace.GetOrCreateFrom(source).OTDescriptor;
+            }
+            catch (InvalidOperationException) { return null; }
+            catch (InvalidDataException) { return null; }
+            catch (IOException) { return null; }
+        })).Value;
+        return descriptor?.CodepointToGlyphIndex(character.Value) > 0;
+    }
+
+    private static Face? BestFace(IEnumerable<Face> faces, bool bold, bool italic)
+    {
         // A bold-only face must not satisfy a regular request. Missing requested
         // styles may be synthesized when the directory has no exact face.
-        Face? face = faces.Where(f => (!f.Bold || bold) && (!f.Italic || italic))
+        return faces.Where(f => (!f.Bold || bold) && (!f.Italic || italic))
             .OrderByDescending(f => (f.Bold == bold ? 1 : 0) + (f.Italic == italic ? 1 : 0))
             .FirstOrDefault();
-        if (face is null)
-            return null;
-        return new DxpPdfFontFace(face.Path, File.ReadAllBytes(face.Path),
-            bold && !face.Bold, italic && !face.Italic);
     }
 
     private static bool IsSupportedExtension(string path) =>
@@ -130,5 +173,5 @@ internal sealed class DxpDirectoryPdfFontProvider : IDxpPdfFontProvider
     private static uint U32(byte[] bytes, int offset) =>
         BinaryPrimitives.ReadUInt32BigEndian(bytes.AsSpan(offset, 4));
 
-    private sealed record Face(string Path, bool Bold, bool Italic);
+    private sealed record Face(string Family, string Path, bool Bold, bool Italic);
 }

@@ -88,6 +88,11 @@ API usage is ported. Applications can pass an `IDxpPdfFontProvider` to
 `DxpPdfFonts.Configure(provider)` before PDF export. The provider maps a
 requested family and style to font bytes. Browser hosts can download or bundle
 fonts and register them before export; the callback must return synchronously.
+Pass the same provider to `DxpFlowPdfVisitor(fontProvider: provider)` to let
+layout check `IsAvailable` and `ResolveForCharacter` before measuring text.
+`ResolveForCharacter` may choose a substitute family for an individual Unicode
+character; Docxport splits the text at each font change. Providers that do not
+implement character lookup retain the existing font selection behavior.
 Pdfxport's font settings are process-wide, so configure the provider once at
 startup and do not change it during concurrent exports.
 
@@ -220,6 +225,9 @@ For reproducible output across machines, provide a fixed `IDxpPdfFontProvider`.
 The CLI's repeatable `--font-dir=directory` option searches `.ttf` and `.otf`
 files recursively by their embedded family and style names before installed
 fonts. TrueType collections (`.ttc`) are not indexed by this option.
+For fonts in those directories, the CLI checks glyph coverage and uses another
+indexed face when the requested face lacks a character. Its installed-system
+fallback does not yet perform this character-level check.
 
 ```bash
 dotnet run --project DocxportNet.Cli -- my.docx -o my.md --tracked=accept

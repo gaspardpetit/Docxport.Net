@@ -54,6 +54,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private readonly string? _cjkFontFamily;
     private readonly ISet<string> _availableFontFamilies;
     private readonly Func<char, string?>? _chineseFallbackFont;
+    private readonly IDxpPdfFontProvider? _fontProvider;
+    private bool _splittingProviderFontRuns;
     private readonly DxpFieldEval _fieldEval = new(options: new DxpFieldEvalOptions
     {
         UseMarginStoryMergeFieldPlaceholders = true
@@ -519,12 +521,13 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         IEnumerable<string>? availableFontFamilies = null,
         Func<char, string?>? chineseFallbackFont = null, bool includePdfComments = false,
         bool includeRevisionMarkup = false, XColor? revisionMarkupColor = null,
-        XColor? revisionDeletionColor = null) : base(null)
+        XColor? revisionDeletionColor = null, IDxpPdfFontProvider? fontProvider = null) : base(null)
     {
         _fontFamily = fontFamily;
         _cjkFontFamily = cjkFontFamily;
         _availableFontFamilies = new HashSet<string>(availableFontFamilies ?? [], StringComparer.OrdinalIgnoreCase);
         _chineseFallbackFont = chineseFallbackFont;
+        _fontProvider = fontProvider;
         _includePdfComments = includePdfComments;
         _includeRevisionMarkup = includeRevisionMarkup;
         _revisionMarkupColor = revisionMarkupColor ?? XColor.FromArgb(209, 52, 56);
@@ -11480,7 +11483,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         if (_section == null || paragraph.Descendants<Run>().FirstOrDefault() is not Run firstRun)
             return false;
         var style = context.Styles.ResolveRunStyle(paragraph, firstRun);
-        var family = style.FontName != null && _availableFontFamilies.Contains(style.FontName)
+        var family = style.FontName != null && HasAvailableFont(style.FontName, style.Bold, style.Italic)
             ? style.FontName : _fontFamily;
         var size = style.FontSizeHalfPoints is > 0 ? style.FontSizeHalfPoints.Value / 2.0 : 11;
         using var graphics = XGraphics.CreateMeasureContext(new XSize(100, 100),
@@ -12455,7 +12458,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 { } sourceBody && _bodyParagraphsUnderHeaderWrap.Contains(sourceBody))
         {
             var bodyWords = content.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            var family = _runStyle?.FontName is string bodyFamily && _availableFontFamilies.Contains(bodyFamily)
+            var family = _runStyle?.FontName is string bodyFamily && HasAvailableFont(bodyFamily)
                 ? bodyFamily : _fontFamily;
             var size = _runStyle?.FontSizeHalfPoints is int bodyHalfPoints && bodyHalfPoints > 0
                 ? bodyHalfPoints / 2.0 : _paragraph.Format.Font.Size.Point;
@@ -12483,7 +12486,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             sourceHeader.Descendants<DocumentFormat.OpenXml.Wordprocessing.Text>().Count() == 1 &&
             content.Split(' ', StringSplitOptions.RemoveEmptyEntries) is { Length: > 2 } headerWords)
         {
-            var family = _runStyle?.FontName is string headerFamily && _availableFontFamilies.Contains(headerFamily)
+            var family = _runStyle?.FontName is string headerFamily && HasAvailableFont(headerFamily)
                 ? headerFamily : _fontFamily;
             var size = _runStyle?.FontSizeHalfPoints is int headerHalfPoints && headerHalfPoints > 0
                 ? headerHalfPoints / 2.0 : _paragraph.Format.Font.Size.Point;
@@ -12525,7 +12528,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             Regex.Matches(content, @"\S+") is { Count: >= 2 } wrapMatches)
         {
             var wrapWords = wrapMatches.Select(match => match.Value).ToArray();
-            var wrapFontName = _runStyle?.FontName is string family && _availableFontFamilies.Contains(family)
+            var wrapFontName = _runStyle?.FontName is string family && HasAvailableFont(family)
                 ? family : _fontFamily;
             var wrapFontSize = _runStyle?.FontSizeHalfPoints is int wrapHalfPoints && wrapHalfPoints > 0
                 ? wrapHalfPoints / 2.0 : _paragraph.Format.Font.Size.Point;
@@ -12578,7 +12581,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         var format = _paragraph.Format;
         var width = _section.PageSetup.PageWidth.Point - _section.PageSetup.LeftMargin.Point -
             _section.PageSetup.RightMargin.Point - format.LeftIndent.Point - format.RightIndent.Point;
-        var fontName = _runStyle?.FontName is string name && _availableFontFamilies.Contains(name)
+        var fontName = _runStyle?.FontName is string name && HasAvailableFont(name)
             ? name : _fontFamily;
         var fontSize = _runStyle?.FontSizeHalfPoints is int halfPoints && halfPoints > 0
             ? halfPoints / 2.0 : format.Font.Size.Point;
@@ -12881,6 +12884,9 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             boundarySpan.Elements.LastOrDefault() is MigraDoc.DocumentObjectModel.Text boundaryText &&
             NeedsAutoSpaceAcrossRuns(boundaryText.Content, content, _autoSpaceDE))
             AddStyledTextSegment(" ", smallCap);
+        if (_fontProvider != null && !_splittingProviderFontRuns && content.Length > 1 &&
+            TrySplitProviderFontRuns(content, smallCap, narrowSpace, hangulBoundary))
+            return;
         if (!smallCap && !narrowSpace && content.Length > 0 &&
             IsClosingLinePunctuation(content[0]) &&
             !IsFullWidthCjkPunctuation(content[0]) && _paragraph != null &&
@@ -13115,7 +13121,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         {
             var lastSpace = emittedText.LastIndexOf(' ');
             var token = emittedText[(lastSpace + 1)..];
-            var fontName = _runStyle?.FontName is string family && _availableFontFamilies.Contains(family)
+            var fontName = _runStyle?.FontName is string family && HasAvailableFont(family)
                 ? family : _fontFamily;
             var fontSize = _runStyle?.FontSizeHalfPoints is int halfPoints && halfPoints > 0
                 ? halfPoints / 2.0 : _paragraph.Format.Font.Size.Point;
@@ -13141,7 +13147,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             var availableWidth = _section.PageSetup.PageWidth.Point -
                 _section.PageSetup.LeftMargin.Point - _section.PageSetup.RightMargin.Point -
                 _paragraph.Format.LeftIndent.Point - _paragraph.Format.RightIndent.Point;
-            var fontName = _runStyle?.FontName is string family && _availableFontFamilies.Contains(family)
+            var fontName = _runStyle?.FontName is string family && HasAvailableFont(family)
                 ? family : _fontFamily;
             var fontSize = _runStyle?.FontSizeHalfPoints is int halfPoints && halfPoints > 0
                 ? halfPoints / 2.0 : _paragraph.Format.Font.Size.Point;
@@ -13277,7 +13283,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 _paragraph.Format.Font.Size.Point) * 0.58 / 0.615);
         if (string.Equals(_runStyle.FontName, "Times New Roman", StringComparison.OrdinalIgnoreCase))
             span.Font.Name = "Times New Roman";
-        else if (_runStyle.FontName != null && _availableFontFamilies.Contains(_runStyle.FontName))
+        else if (_runStyle.FontName != null &&
+                 HasAvailableFont(_runStyle.FontName, _runStyle.Bold, _runStyle.Italic))
             span.Font.Name = _runStyle.FontName;
         if (_implicitFittedStoryFont)
         {
@@ -13358,6 +13365,10 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         if (_renderRubyBaseText && _runStyle.FontName == null && content.Any(IsCjk) &&
             _availableFontFamilies.Contains("Yu Mincho"))
             _paintOnlyRubyBaseMinchoSpans.Add(span);
+        if (_fontProvider != null && content.EnumerateRunes().FirstOrDefault() is { Value: > 0 } firstRune &&
+            _fontProvider.ResolveForCharacter(_runStyle.FontName ?? _fontFamily,
+                _runStyle.Bold, _runStyle.Italic, firstRune) is { } fontMatch)
+            span.Font.Name = fontMatch.FamilyName;
         if (narrowSpace)
             span.Size = Unit.FromPoint(_container is Section ?
                 (_compressedBodyLayoutSpaces ? 8.5 : 9) : 8);
@@ -13371,6 +13382,27 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 _ambiguousInlineSuperscripts.Add(content);
             }
         }
+    }
+
+    private bool HasAvailableFont(string? family, bool bold = false, bool italic = false) =>
+        !string.IsNullOrWhiteSpace(family) &&
+        (_availableFontFamilies.Contains(family) || _fontProvider?.IsAvailable(family, bold, italic) == true);
+
+    private bool TrySplitProviderFontRuns(string content, bool smallCap, bool narrowSpace,
+        bool hangulBoundary)
+    {
+        if (_fontProvider == null || _runStyle == null) return false;
+        var parts = DxpPdfFontRunSelector.Split(content, _runStyle.FontName ?? _fontFamily,
+            _runStyle.Bold, _runStyle.Italic, _fontProvider);
+        if (parts.Count < 2) return false;
+        _splittingProviderFontRuns = true;
+        try
+        {
+            foreach (var part in parts)
+                AddStyledTextSegment(part.Text, smallCap, narrowSpace, hangulBoundary);
+        }
+        finally { _splittingProviderFontRuns = false; }
+        return true;
     }
 
     private bool TryAddPictureBullet(Level? level, DxpIDocumentContext context,
@@ -13587,7 +13619,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     {
         if (!_cellNoWrap || _cellNoWrapWidthPoints is not double width || !content.Contains(' '))
             return false;
-        var family = _runStyle?.FontName is string name && _availableFontFamilies.Contains(name)
+        var family = _runStyle?.FontName is string name && HasAvailableFont(name)
             ? name : _fontFamily;
         var size = _runStyle?.FontSizeHalfPoints is int halfPoints && halfPoints > 0
             ? halfPoints / 2.0 : _paragraph!.Format.Font.Size.Point;
@@ -13600,7 +13632,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     {
         if (_cellNoWrap || _cellWrapWidthPoints is not double width || width <= 0)
             return content;
-        var family = _runStyle?.FontName is string name && _availableFontFamilies.Contains(name)
+        var family = _runStyle?.FontName is string name && HasAvailableFont(name)
             ? name : _fontFamily;
         var size = _runStyle?.FontSizeHalfPoints is int halfPoints && halfPoints > 0
             ? halfPoints / 2.0 : _paragraph!.Format.Font.Size.Point;
@@ -14129,7 +14161,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             ? format.LineSpacing.Point : normalFormat.LineSpacing.Point;
         var size = runStyle?.FontSizeHalfPoints is > 0 ? runStyle.FontSizeHalfPoints.Value / 2.0 :
             normalFormat.Font.Size.Point;
-        var family = runStyle?.FontName is string fontName && _availableFontFamilies.Contains(fontName)
+        var family = runStyle?.FontName is string fontName && HasAvailableFont(fontName)
             ? fontName : _fontFamily;
         var textFont = new XFont(family, size);
         if (imageOffsetMode == "2")
