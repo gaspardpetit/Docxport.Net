@@ -524,9 +524,13 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         XColor? revisionDeletionColor = null, IDxpPdfFontProvider? fontProvider = null) : base(null)
     {
         _fontFamily = fontFamily;
-        _cjkFontFamily = cjkFontFamily;
+        _cjkFontFamily = cjkFontFamily ?? (fontProvider as DxpSystemPdfFontProvider)?.PreferredCjkFamily;
         _availableFontFamilies = new HashSet<string>(availableFontFamilies ?? [], StringComparer.OrdinalIgnoreCase);
-        _chineseFallbackFont = chineseFallbackFont;
+        _chineseFallbackFont = chineseFallbackFont ?? (fontProvider is DxpSystemPdfFontProvider system &&
+            system.IsAvailable("MS Mincho", false, false)
+                ? character => system.ResolveForCharacter("MS Mincho", false, false,
+                    new Rune(character))?.FamilyName
+                : null);
         _fontProvider = fontProvider;
         _includePdfComments = includePdfComments;
         _includeRevisionMarkup = includeRevisionMarkup;
@@ -12884,7 +12888,10 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             boundarySpan.Elements.LastOrDefault() is MigraDoc.DocumentObjectModel.Text boundaryText &&
             NeedsAutoSpaceAcrossRuns(boundaryText.Content, content, _autoSpaceDE))
             AddStyledTextSegment(" ", smallCap);
-        if (_fontProvider != null && !_splittingProviderFontRuns && content.Length > 1 &&
+        // The system provider supplies faces after DOCX font selection. Splitting here
+        // would preempt the document's East Asian font and fit-text decisions.
+        if (_fontProvider != null && _fontProvider is not DxpSystemPdfFontProvider &&
+            !_splittingProviderFontRuns && content.Length > 1 &&
             TrySplitProviderFontRuns(content, smallCap, narrowSpace, hangulBoundary))
             return;
         if (!smallCap && !narrowSpace && content.Length > 0 &&
@@ -13365,8 +13372,11 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         if (_renderRubyBaseText && _runStyle.FontName == null && content.Any(IsCjk) &&
             _availableFontFamilies.Contains("Yu Mincho"))
             _paintOnlyRubyBaseMinchoSpans.Add(span);
-        if (_fontProvider != null && content.EnumerateRunes().FirstOrDefault() is { Value: > 0 } firstRune &&
-            _fontProvider.ResolveForCharacter(_runStyle.FontName ?? _fontFamily,
+        // A custom provider may override the selected face; the system provider
+        // leaves the document-aware choice intact.
+        if (_fontProvider != null && _fontProvider is not DxpSystemPdfFontProvider &&
+            content.EnumerateRunes().FirstOrDefault() is { Value: > 0 } firstRune &&
+            _fontProvider.ResolveForCharacter(span.Font.Name,
                 _runStyle.Bold, _runStyle.Italic, firstRune) is { } fontMatch)
             span.Font.Name = fontMatch.FamilyName;
         if (narrowSpace)
@@ -15639,8 +15649,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private void AddMixedMathOperatorSpace(double fontSize)
     {
         var spacer = _paragraph!.AddFormattedText("\u00A0");
-        spacer.Font.Name = _availableFontFamilies.Contains("Cambria Math")
-            ? "Cambria Math" : _fontFamily;
+        spacer.Font.Name = _fontFamily;
         spacer.Size = Unit.FromPoint(fontSize);
     }
 
