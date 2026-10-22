@@ -9892,7 +9892,6 @@ public class DocStructureWalkerTests
         }
     }
 
-    [Trait("Category", "LocalOnly")]
     [Fact]
     public void WordListParagraphsExposeOverrideAndLevelInSemanticIndex()
     {
@@ -9916,7 +9915,6 @@ public class DocStructureWalkerTests
             x.ParagraphFormatting?.ListOverrideIndex > 0);
     }
 
-    [Trait("Category", "LocalOnly")]
     [Fact]
     public void WordListParagraphsProjectAsEditableDocxNumbering()
     {
@@ -9931,7 +9929,6 @@ public class DocStructureWalkerTests
         Assert.Empty(new OpenXmlValidator().Validate(document));
     }
 
-    [Trait("Category", "LocalOnly")]
     [Fact]
     public void WordTrackedListEditsProjectAsEditableRevisions()
     {
@@ -10196,7 +10193,6 @@ public class DocStructureWalkerTests
         }
     }
 
-    [Trait("Category", "LocalOnly")]
     [Fact]
     public void DocListRoundTripWritesEditableBinaryNumbering()
     {
