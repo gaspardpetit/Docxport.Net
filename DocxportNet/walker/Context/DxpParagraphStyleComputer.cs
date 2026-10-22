@@ -83,6 +83,14 @@ internal static class DxpParagraphStyleComputer
         if (DxpMeasurement.TryParse(spacing.After?.Value, out var after))
             mb = after.Points;
 
+        return (mt, mb, ComputeLineHeightCss(spacing));
+    }
+
+    internal static string? ComputeLineHeightCss(SpacingBetweenLines? spacing)
+    {
+        if (spacing == null)
+            return null;
+
         string? lineHeightCss = null;
         if (spacing.Line?.Value != null)
         {
@@ -102,7 +110,7 @@ internal static class DxpParagraphStyleComputer
             }
         }
 
-        return (mt, mb, lineHeightCss);
+        return lineHeightCss;
     }
 
     internal static DxpComputedBoxBorders? ComputeBorders(ParagraphBorders? bdr)

@@ -23,6 +23,57 @@ namespace DocxportNet.Tests;
 
 public sealed class PdfFlowExportTests
 {
+    [Theory]
+    [InlineData("samples", "file-sample_1MB", 2, "Lorem", 95.3)]
+    [InlineData("legacy", "WordConditionalColumnBorders", 1, "A1", 77.4)]
+    [InlineData("regressions", "WordPositionalTabCellMarginsAllStories", 1, "Body", 77.06)]
+    public void TableCellTextAlignsWithWord(
+        string folder, string fixture, int pageNumber, string text, double expectedLeft)
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", folder, fixture + ".docx"));
+        var bytes = DxpExport.ExportToBytes(File.ReadAllBytes(path), new DxpFlowPdfVisitor());
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(bytes);
+        var left = pdf.GetPage(pageNumber).GetWords()
+            .Where(word => word.Text == text)
+            .Min(word => word.BoundingBox.Left);
+        Assert.InRange(left, expectedLeft - 0.25, expectedLeft + 0.25);
+    }
+
+    [Fact]
+    public void StyledCellSpacingDoesNotBecomeTextPadding()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "legacy",
+            "WordStyledCellSpacingResetAllStories.docx"));
+        var bytes = DxpExport.ExportToBytes(File.ReadAllBytes(path), new DxpFlowPdfVisitor());
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(bytes);
+        var page = pdf.GetPage(1);
+        var firstRowBody = Assert.Single(page.GetWords(), word => word.Text == "Body" &&
+            word.BoundingBox.Left < 200 && page.Height - word.BoundingBox.Top is > 150 and < 170);
+        Assert.InRange(firstRowBody.BoundingBox.Left, 90.65, 91.15);
+    }
+
+    [Theory]
+    [InlineData("WordTableBackgroundAutoDirectAllStories")]
+    [InlineData("WordTableBackgroundAutoStyleAllStories")]
+    public void FilledSpacedTableContentAlignsWithWord(string fixture)
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var path = Path.GetFullPath(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "docx", "native-oracle", fixture + ".docx"));
+        var bytes = DxpExport.ExportToBytes(File.ReadAllBytes(path), new DxpFlowPdfVisitor());
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(bytes);
+        var words = pdf.GetPage(1).GetWords().ToArray();
+        foreach (var label in new[] { "Header", "Body", "Footer" })
+        {
+            var left = words.Where(word => word.Text == label).Min(word => word.BoundingBox.Left);
+            Assert.InRange(left, 83.8, 84.2);
+        }
+    }
+
     [Fact]
     public void BehindTextGradientRectangleIsRenderedUnderShadedTable()
     {

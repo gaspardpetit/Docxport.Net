@@ -35,7 +35,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private const double ColoredSpacedTableCellWidthPaddingPoints = 19.5;
     private const double NarrowHorizontalMergeCellWidthPoints = 50;
     private const double NarrowHorizontalMergeCellPaddingPoints = 10.8;
-    private const double CompoundFontLineHeightRatio = 1.328;
     private const double VerticalTextLineSpacingFactor = 1.036;
     private const double SuperscriptHeaderLineCompensationPoints = 8.2;
     private const double BorderedParagraphExitClearancePoints = 8;
@@ -75,6 +74,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _terminalCurlyMarkWords = new();
     private readonly HashSet<MigraDoc.DocumentObjectModel.Paragraph> _twoWordOverhangParagraphs = new();
     private readonly HashSet<MigraDoc.DocumentObjectModel.Shapes.TextFrame> _floatingTableFrames = new();
+    private readonly HashSet<MigraDoc.DocumentObjectModel.Tables.Table> _floatingTables = new();
     private readonly Dictionary<MigraDoc.DocumentObjectModel.Shapes.TextFrame,
         (MigraDoc.DocumentObjectModel.Tables.Table Table, DxpComputedBorder Border)>
         _floatingContinuationTopBorders = new();
@@ -131,6 +131,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
     private readonly Dictionary<MigraDoc.DocumentObjectModel.Tables.Table,
         (DxpComputedBorder Border, double Spacing, bool InHeaderFooter, double ResetAllowance)>
         _spacedTableLeftBorders = new();
+    private readonly HashSet<MigraDoc.DocumentObjectModel.Tables.Table> _filledSpacedTables = new();
     private readonly Dictionary<MigraDoc.DocumentObjectModel.Tables.Table,
         (double Border, double Spacing, double Padding)> _htmlBevelTables = new();
     private readonly Dictionary<MigraDoc.DocumentObjectModel.Tables.Table, DxpComputedBoxBorders>
@@ -607,7 +608,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         var renderer = new PdfDocumentRenderer { Document = document };
         var mixedBasicBorders = new Dictionary<MigraDoc.DocumentObjectModel.Tables.Table, bool>();
         renderer.DocumentRenderer.TableCellPlacement = (cell, geometry) =>
-            WordTableCellPlacement(cell, geometry, mixedBasicBorders);
+            WordTableCellPlacement(cell, geometry, mixedBasicBorders, _filledSpacedTables,
+                _floatingTables, _spacedTableLeftBorders);
         foreach (var frame in _behindTextBoxes)
             frame.Layer = MigraDoc.DocumentObjectModel.Shapes.TextFrameLayer.BehindContent;
         foreach (var frame in _aboveContentTextBoxes)
@@ -965,7 +967,12 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
 
     private static TableCellPlacement WordTableCellPlacement(
         MigraDoc.DocumentObjectModel.Tables.Cell cell, TableCellPlacementContext geometry,
-        Dictionary<MigraDoc.DocumentObjectModel.Tables.Table, bool> mixedBasicBorders)
+        Dictionary<MigraDoc.DocumentObjectModel.Tables.Table, bool> mixedBasicBorders,
+        HashSet<MigraDoc.DocumentObjectModel.Tables.Table> filledSpacedTables,
+        HashSet<MigraDoc.DocumentObjectModel.Tables.Table> floatingTables,
+        Dictionary<MigraDoc.DocumentObjectModel.Tables.Table,
+            (DxpComputedBorder Border, double Spacing, bool InHeaderFooter, double ResetAllowance)>
+            spacedTableLeftBorders)
     {
         XRect? paintRect = null;
         if (cell.MergeDown == 0 && cell.MergeRight == 0 && geometry.RowPitch > 0 &&
@@ -980,8 +987,13 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 geometry.ColumnWidth - (geometry.LeftBand + geometry.RightBand) / 2,
                 geometry.RowPitch + geometry.RowTopBand - geometry.TopBand - geometry.RowBottomBand);
         }
+        // Cell spacing widens the boundary band between cells, not the text inset.
+        // Keep the explicit cell padding when the table uses a spaced left border.
         return new TableCellPlacement(paintRect, geometry.GridRect,
-            Math.Max(geometry.LeftPadding, geometry.LeftBand / 2));
+            filledSpacedTables.Contains(cell.Table) ? 0 :
+                floatingTables.Contains(cell.Table) || spacedTableLeftBorders.ContainsKey(cell.Table)
+                    ? geometry.LeftPadding
+                    : Math.Max(geometry.LeftPadding, geometry.LeftBand / 2));
     }
 
     private static bool HasMixedBasicBorderBands(
@@ -1192,6 +1204,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _terminalCurlyMarkWords.Clear();
         _twoWordOverhangParagraphs.Clear();
         _floatingTableFrames.Clear();
+        _floatingTables.Clear();
         _floatingContinuationTopBorders.Clear();
         _insideInsertedRun = false;
         _insideDeletedRun = false;
@@ -1228,6 +1241,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _repeatingTableFooterClearanceApplied.Clear();
         _cjkDefaultMarginsAdjusted.Clear();
         _spacedTableLeftBorders.Clear();
+        _filledSpacedTables.Clear();
         _htmlBevelTables.Clear();
         _tableFragmentBorders.Clear();
         _splitOverpageTables.Clear();
@@ -9807,7 +9821,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 br.Type?.Value == null || br.Type?.Value == BreakValues.TextWrapping) is > 0 and <= 2)
             format.KeepTogether = true;
         var markFont = paragraph.ParagraphProperties?.ParagraphMarkRunProperties;
-        if (paragraph.InnerText.Length == 0 && markFont?.ChildElements.Any(element =>
+        if (!paragraph.Descendants<DocumentFormat.OpenXml.Wordprocessing.Text>().Any() &&
+            markFont?.ChildElements.Any(element =>
                 element is not Languages) == true && (_container is Section ||
                 _container is HeaderFooter && (markFont.GetFirstChild<RunFonts>() != null ||
                     markFont.GetFirstChild<FontSize>() != null)))
@@ -9822,6 +9837,9 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         var markFamily = markFont?.GetFirstChild<RunFonts>()?.Ascii?.Value;
         if (markFamily != null && _availableFontFamilies.Contains(markFamily))
             format.Font.Name = markFamily;
+        else if (string.Equals(markFamily, "Open Sans;Arial", StringComparison.OrdinalIgnoreCase) &&
+            _availableFontFamilies.Contains("Segoe UI"))
+            format.Font.Name = "Segoe UI";
         if (int.TryParse(markFont?.GetFirstChild<FontSize>()?.Val?.Value, out var markHalfPoints) &&
             markHalfPoints > 0)
             format.Font.Size = Unit.FromPoint(markHalfPoints / 2.0);
@@ -9931,13 +9949,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 StyledFixedTableFirstColumnInset(styledTable, context.CurrentTable) is > 0
                     and var styledInset)
                 format.LeftIndent = Unit.FromPoint(format.LeftIndent.Point + styledInset);
-            if (paragraph.Ancestors<DocumentFormat.OpenXml.Wordprocessing.Table>().FirstOrDefault() is
-                { } sourceTable && sourceTable.TableProperties?.TableStyle == null &&
-                sourceTable.TableProperties?.TableWidth?.Type?.Value == TableWidthUnitValues.Auto &&
-                sourceTable.TableProperties?.TableLayout == null &&
-                sourceTable.Descendants<NoWrap>().Any() &&
-                _cellLeftMarginPoints == null && _rowLeftMarginPoints == null)
-                format.LeftIndent = Unit.FromPoint(format.LeftIndent.Point - 5.4);
             if ((_cellLeftMarginPoints ?? _rowLeftMarginPoints) is double cellLeft)
                 format.LeftIndent = Unit.FromPoint(format.LeftIndent.Point +
                     cellLeft - _table.LeftPadding.Point);
@@ -10278,11 +10289,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             paragraph.PreviousSibling() is DocumentFormat.OpenXml.Wordprocessing.Table)
             format.SpaceAfter = Unit.FromPoint(_defaultParagraphAfterPoints + EmptyParagraphAfterTableExtraPoints);
         if (_container is Section && paragraph.InnerText.Length == 0 &&
-            paragraph.PreviousSibling() is DocumentFormat.OpenXml.Wordprocessing.Table &&
-            paragraph.ParagraphProperties?.SpacingBetweenLines?.After != null &&
-            string.Equals(format.Font.Name, "DejaVu Sans", StringComparison.OrdinalIgnoreCase))
-            format.SpaceAfter = Unit.FromPoint(Math.Max(0, format.SpaceAfter.Point - 1.5));
-        if (_container is Section && paragraph.InnerText.Length == 0 &&
             paragraph.ParagraphProperties?.NumberingProperties?.NumberingId?.Val?.Value == 0 &&
             paragraph.NextSibling() is DocumentFormat.OpenXml.Wordprocessing.Paragraph)
             format.SpaceAfter = Unit.FromPoint(format.SpaceAfter.Point + 1.5);
@@ -10350,12 +10356,14 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             DocumentFormat.OpenXml.Wordprocessing.Paragraph nextImageParagraph &&
             nextImageParagraph.Descendants<Drawing>().Any(drawing => drawing.Descendants()
                 .Any(element => element.LocalName is "anchor" or "chart")) &&
-            !nextImageParagraph.Descendants<DocumentFormat.OpenXml.Wordprocessing.Text>().Any())
+            !nextImageParagraph.Descendants<DocumentFormat.OpenXml.Wordprocessing.Text>().Any() &&
+            !nextImageParagraph.Descendants<Drawing>().Any(IsCenteredTopSquareAnchor))
             format.SpaceAfter = Unit.Zero;
         if (_container is Section && !paragraph.Descendants<DocumentFormat.OpenXml.Wordprocessing.Text>().Any() &&
             paragraph.PreviousSibling() is DocumentFormat.OpenXml.Wordprocessing.Paragraph imageParagraph &&
             imageParagraph.Descendants<Drawing>().Any(drawing => drawing.Descendants().Any(element =>
                 element.LocalName == "wrapSquare")) &&
+            !imageParagraph.Descendants<Drawing>().Any(IsCenteredTopSquareAnchor) &&
             paragraph.NextSibling() is DocumentFormat.OpenXml.Wordprocessing.Paragraph followingText &&
             followingText.Descendants<DocumentFormat.OpenXml.Wordprocessing.Text>().Any())
             format.SpaceAfter = Unit.FromPoint(format.SpaceAfter.Point + 3.65 * _defaultParagraphLinePoints);
@@ -10573,32 +10581,29 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             format.SpaceAfter = Unit.FromPoint(firstFooterSpacing == null
                 ? Math.Max(format.SpaceAfter.Point, _defaultParagraphAfterPoints) + 2.45
                 : format.SpaceAfter.Point + 2.32);
-        if (computed.LineHeightCss is string lineHeight && lineHeight.EndsWith("pt", StringComparison.Ordinal) &&
+        // PDF layout needs the fully inherited line value even when direct formatting
+        // only overrides before/after spacing. HTML/Markdown retain the explicit value.
+        var resolvedLineHeight = context.Styles is DocxportNet.Walker.Context.DxpStyleResolver effectiveSpacingResolver
+            ? DxpParagraphStyleComputer.ComputeLineHeightCss(
+                effectiveSpacingResolver.GetEffectiveParagraphSpacing(paragraph))
+            : computed.LineHeightCss;
+        if (resolvedLineHeight is string lineHeight && lineHeight.EndsWith("pt", StringComparison.Ordinal) &&
             double.TryParse(lineHeight.AsSpan(0, lineHeight.Length - 2),
                 System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var points))
         {
             format.LineSpacing = Unit.FromPoint(points);
             var effectiveSpacing = (context.Styles as DocxportNet.Walker.Context.DxpStyleResolver)?
-                .GetParagraphSpacing(paragraph) ?? paragraph.ParagraphProperties?.SpacingBetweenLines;
+                .GetEffectiveParagraphSpacing(paragraph) ?? paragraph.ParagraphProperties?.SpacingBetweenLines;
             format.LineSpacingRule = effectiveSpacing?.LineRule?.Value == LineSpacingRuleValues.AtLeast
                 ? LineSpacingRule.AtLeast : LineSpacingRule.Exactly;
         }
-        else if (computed.LineHeightCss is string multipleText &&
+        else if (resolvedLineHeight is string multipleText &&
             double.TryParse(multipleText, System.Globalization.NumberStyles.Float,
                 System.Globalization.CultureInfo.InvariantCulture, out var multiple) && multiple > 0)
         {
-            if (markFamily?.Contains(';') == true && markHalfPoints > 0 &&
-                paragraph.Descendants<Run>().All(run =>
-                    (run.RunProperties?.RunFonts?.Ascii?.Value is not string family || family == markFamily) &&
-                    (run.RunProperties?.FontSize?.Val?.Value is not string size ||
-                        !int.TryParse(size, out var halfPoints) || halfPoints == markHalfPoints)))
-            {
-                format.LineSpacingRule = LineSpacingRule.Exactly;
-                format.LineSpacing = Unit.FromPoint(markHalfPoints / 2.0 * multiple * CompoundFontLineHeightRatio);
-            }
             // These faces already get Word's automatic line pitch from MigraDoc's multiple rule.
             // Converting that rule to an exact font-metric height shifts every baseline down.
-            else if (!(paragraph.ParagraphProperties?.SpacingBetweenLines?.Line?.Value == "240" &&
+            if (!(paragraph.ParagraphProperties?.SpacingBetweenLines?.Line?.Value == "240" &&
                     paragraph.ParagraphProperties.SpacingBetweenLines.LineRule?.Value == LineSpacingRuleValues.Auto) &&
                 markFamily != null && markFamily is not ("DejaVu Sans" or "Segoe UI") &&
                 _availableFontFamilies.Contains(markFamily) &&
@@ -10652,6 +10657,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         if ((markFamily is "DejaVu Sans" or "Segoe UI" ||
              markFamily == "Open Sans;Arial" && _availableFontFamilies.Contains("Segoe UI")) &&
             computed.LineHeightCss == null &&
+            paragraph.Descendants<DocumentFormat.OpenXml.Wordprocessing.Text>().Any() &&
             format.LineSpacingRule == LineSpacingRule.Single)
         {
             format.LineSpacingRule = LineSpacingRule.Multiple;
@@ -14179,6 +14185,16 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             presentation.Crop is { IsEmpty: false } || presentation.FlipHorizontal ||
             presentation.FlipVertical);
 
+    private static bool IsCenteredTopSquareAnchor(Drawing drawing) =>
+        drawing.Descendants().Any(element => element.LocalName == "anchor") &&
+        drawing.Descendants().Any(element => element.LocalName == "wrapSquare") &&
+        drawing.Descendants().Any(element => element.LocalName == "positionH" &&
+            element.GetAttribute("relativeFrom", "").Value == "column" &&
+            element.ChildElements.Any(child => child.LocalName == "align" && child.InnerText == "center")) &&
+        drawing.Descendants().Any(element => element.LocalName == "positionV" &&
+            element.GetAttribute("relativeFrom", "").Value == "paragraph" &&
+            element.ChildElements.Any(child => child.LocalName == "align" && child.InnerText == "top"));
+
     public override IDisposable VisitDrawingBegin(Drawing drawing, DxpDrawingInfo? info, DxpIDocumentContext context)
     {
         if (TryAddChart(drawing, info, context)) return DxpDisposable.Empty;
@@ -14320,6 +14336,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             info.Presentation is { FrameWidthPoints: > 0, FrameHeightPoints: > 0 } marginImageFrame &&
             horizontalOffset is double marginImageLeft && verticalOffset is double marginImageTop)
         {
+            var paintBehindText = behindDocument &&
+                !drawing.Descendants().Any(element => element.LocalName == "wrapTight");
             if (!_paragraphImages.TryGetValue(_paragraph, out var images))
                 _paragraphImages[_paragraph] = images = new List<ParagraphImageOverlay>();
             images.Add(new ParagraphImageOverlay(bytes,
@@ -14329,7 +14347,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     (marginImageFrame.FrameHeightPoints.Value - (transformed?.Height ?? marginImageFrame.FrameHeightPoints.Value)) / 2,
                 transformed?.Width ?? marginImageFrame.FrameWidthPoints.Value,
                 transformed?.Height ?? marginImageFrame.FrameHeightPoints.Value,
-                PageRelative: true, ZOrder: zOrder, BehindDocument: behindDocument));
+                PageRelative: true, ZOrder: zOrder, BehindDocument: paintBehindText));
             var marginSquareWrap = GetRectangularTextWrap(drawing);
             IReadOnlyList<XPoint>? contourPoints = null;
             if (marginSquareWrap == null)
@@ -14508,19 +14526,13 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         var reservesCenteredParagraphImageFlow = false;
         ParagraphImageOverlay? reservedParagraphOverlay = null;
         if (anchored && _container is Section && _paragraph != null &&
-            horizontal?.GetAttribute("relativeFrom", "").Value == "column" &&
-            horizontal.ChildElements.Any(element => element.LocalName == "align" &&
-                element.InnerText == "center") &&
-            vertical?.GetAttribute("relativeFrom", "").Value == "paragraph" &&
-            vertical.ChildElements.Any(element => element.LocalName == "align" &&
-                element.InnerText == "top") &&
-            drawing.Descendants().Any(element => element.LocalName == "wrapSquare") &&
+            IsCenteredTopSquareAnchor(drawing) &&
             !drawing.Ancestors<DocumentFormat.OpenXml.Wordprocessing.Paragraph>().First()
                 .Descendants<DocumentFormat.OpenXml.Wordprocessing.Text>().Any() &&
             info.Presentation is { FrameWidthPoints: > 0, FrameHeightPoints: > 0 } inlineAnchorFrame)
         {
             // The transparent image reserves flow space; paint the anchored image beside its rendered position.
-            reservedParagraphOverlay = new ParagraphImageOverlay(bytes, 0, 1.45,
+            reservedParagraphOverlay = new ParagraphImageOverlay(bytes, 0, 0,
                 transformed?.Width ?? inlineAnchorFrame.FrameWidthPoints.Value,
                 transformed?.Height ?? inlineAnchorFrame.FrameHeightPoints.Value,
                 ZOrder: zOrder, BehindDocument: behindDocument);
@@ -14579,11 +14591,39 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     headerRaster.Width, headerRaster.Height, Header: true));
             imageData = "base64:iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4//8/AwAI/AL+p5qgoAAAAABJRU5ErkJggg==";
         }
+        MigraDoc.DocumentObjectModel.Paragraph? movedAnchorParagraph = null;
+        MigraDoc.DocumentObjectModel.Paragraph? precedingFlowParagraph = null;
+        if (reservesCenteredParagraphImageFlow && _container is Section anchorSection &&
+            _paragraph is { Elements.Count: 0 } anchorParagraph)
+        {
+            var anchorIndex = anchorSection.Elements.IndexOf(anchorParagraph);
+            if (anchorIndex >= 0)
+            {
+                precedingFlowParagraph = anchorIndex > 0
+                    ? anchorSection.Elements[anchorIndex - 1] as MigraDoc.DocumentObjectModel.Paragraph
+                    : null;
+                anchorSection.Elements.RemoveObjectAt(anchorIndex);
+                movedAnchorParagraph = anchorParagraph;
+            }
+        }
         var image = anchored && _container is Section section
             ? section.AddImage(imageData)
             : anchored && _container is HeaderFooter headerFooter
                 ? headerFooter.AddImage(imageData)
             : _paragraph.AddImage(imageData);
+        if (movedAnchorParagraph != null && _container is Section postImageSection)
+        {
+            if (precedingFlowParagraph != null)
+            {
+                // Word retains the preceding paragraph's line and after-spacing
+                // on the far side of a square-wrapped, paragraph-top image.
+                var continuation = postImageSection.AddParagraph();
+                continuation.Format = (ParagraphFormat)precedingFlowParagraph.Format.Clone();
+            }
+            var continuationAnchor = (MigraDoc.DocumentObjectModel.Paragraph)movedAnchorParagraph.Clone();
+            postImageSection.Elements.Add(continuationAnchor);
+            _lastParagraph = continuationAnchor;
+        }
         if (reservedParagraphOverlay != null)
             _flowReservedParagraphImages[image] = reservedParagraphOverlay;
         if (anchored && _container is Section &&
@@ -15621,7 +15661,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             clearance.Format.SpaceAfter = Unit.Zero;
         }
         MigraDoc.DocumentObjectModel.Shapes.TextFrame? floatingFrame = null;
-        var floatingLeftBorderWidth = 0.0;
         var position = table.TableProperties?.ChildElements.FirstOrDefault(element => element.LocalName == "tblpPr");
         if (_container is Section floatingSection && table.Parent is Body && position != null &&
             AttributeValue(position, "horzAnchor") is "margin" or "page" &&
@@ -15639,12 +15678,6 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                 ? MigraDoc.DocumentObjectModel.Shapes.RelativeVertical.Page
                 : MigraDoc.DocumentObjectModel.Shapes.RelativeVertical.Margin;
             floatingFrame.Left = Unit.FromPoint(tableX / 20.0);
-            if (tableContext.ComputedStyle.TableBorders?.Left is
-                    { LineStyle: not DxpComputedBorderLineStyle.None, WidthPt: > 0 } floatingLeftBorder)
-            {
-                floatingLeftBorderWidth = floatingLeftBorder.WidthPt;
-                floatingFrame.Left = Unit.FromPoint(floatingFrame.Left.Position.Point - floatingLeftBorderWidth);
-            }
             floatingFrame.Top = Unit.FromPoint(tableY / 20.0);
             floatingFrame.MarginLeft = Unit.Zero;
             floatingFrame.MarginRight = Unit.Zero;
@@ -15669,6 +15702,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             Cell => null,
             _ => null
         };
+        if (floatingFrame != null && _table != null) _floatingTables.Add(_table);
         if (_table != null)
         {
             if (_container is Section && table.TableProperties?.TableBorders is not null &&
@@ -15688,7 +15722,8 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     definition.StyleParagraphProperties?.SpacingBetweenLines?.BeforeAutoSpacing?.Value == false))
                 _noAutoSpacingTables.Add(_table);
             var directMargins = table.TableProperties?.GetFirstChild<TableCellMarginDefault>();
-            int? leftMargin = ReadCellMargin(directMargins?.GetFirstChild<TableCellLeftMargin>());
+            int? directLeftMargin = ReadCellMargin(directMargins?.GetFirstChild<TableCellLeftMargin>());
+            int? leftMargin = directLeftMargin;
             int? rightMargin = ReadCellMargin(directMargins?.GetFirstChild<TableCellRightMargin>());
             int? topMargin = ReadCellMargin(directMargins?.TopMargin);
             int? bottomMargin = ReadCellMargin(directMargins?.BottomMargin);
@@ -15794,7 +15829,15 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
             _lastParagraphContainer = null;
             if (styledSpacingBorder > 0)
                 _table.Rows.LeftIndent = Unit.FromPoint(styledSpacingBorder + 0.5);
-            else if (context.CompatibilityMode >= 15)
+            else if (_tableBackground != null && _tableCellSpacingPoints > 0)
+            {
+                // A filled cell-spacing band already supplies Word's leading inset.
+                // Pdfxport's default negative row indent and content-band inset would
+                // count it again, shifting the painted table and its text separately.
+                _table.Rows.LeftIndent = Unit.Zero;
+                _filledSpacedTables.Add(_table);
+            }
+            else if (context.CompatibilityMode >= 15 || directLeftMargin is > 0)
                 _table.Rows.LeftIndent = Unit.Zero;
             if (leftMargin is int leftTwips)
                 _table.LeftPadding = Unit.FromPoint(Math.Max(0, leftTwips / 20.0 -
@@ -15811,6 +15854,13 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     _table.LeftPadding = Unit.FromPoint(_horizontalMergeTable ? 0.5 : 0);
                 if (rightMargin == null) _table.RightPadding = Unit.Zero;
             }
+            if (context.CompatibilityMode < 15 &&
+                table.TableProperties?.GetFirstChild<TableIndentation>() is { } tableIndent &&
+                tableIndent.Type?.Value == TableWidthUnitValues.Dxa &&
+                tableIndent.Width?.Value is > 0 and var tableIndentTwips)
+                _table.Rows.LeftIndent = Unit.FromPoint(tableIndentTwips / 20.0 -
+                    _table.LeftPadding.Point -
+                    Math.Max(0, tableContext.ComputedStyle.TableBorders?.Left?.WidthPt ?? 0));
             if (HasSixDoubleBorders(table))
                 _table.LeftPadding = Unit.FromPoint(Math.Max(0, _table.LeftPadding.Point - 0.5));
             if (!firstPageIntroTableFooter && table.TableProperties?.TableBorders != null &&
@@ -15929,7 +15979,7 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     ? widthTwips / 20.0
                     : _table.Columns.Cast<MigraDoc.DocumentObjectModel.Tables.Column>()
                         .Sum(column => column.Width.Point);
-                floatingFrame.Width = Unit.FromPoint(frameWidth + floatingLeftBorderWidth);
+                floatingFrame.Width = Unit.FromPoint(frameWidth);
             }
         }
         return DxpDisposable.Create(() =>

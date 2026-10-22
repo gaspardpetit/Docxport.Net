@@ -34,6 +34,8 @@ public class ParagraphSpacingTests
         Assert.Equal("120", spacing?.After?.Value);
         Assert.Null(spacing?.BeforeAutoSpacing);
         Assert.Null(spacing?.AfterAutoSpacing);
+        Assert.Equal("240", spacing?.Line?.Value);
+        Assert.Equal("1", DxpParagraphStyleComputer.ComputeLineHeightCss(spacing));
 
         var heading = paragraphs.First(candidate => candidate.InnerText == "What it means");
         var headingSpacing = resolver.GetEffectiveParagraphSpacing(heading);
