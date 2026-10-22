@@ -34,6 +34,7 @@ bool showProgress = true;
 bool formatExplicit = false;
 var cliVariables = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 var includePaths = new List<string>();
+var fontDirectories = new List<string>();
 var databaseConnections = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 string? varsPath = null;
 LogLevel logLevel = LogLevel.Warning;
@@ -88,6 +89,17 @@ for (int i = 0; i < args.Length; i++)
         varsPath = arg[(arg.IndexOf('=') + 1)..];
     else if (arg.StartsWith("--include-path=", StringComparison.OrdinalIgnoreCase))
         includePaths.Add(arg[(arg.IndexOf('=') + 1)..]);
+    else if (arg.StartsWith("--font-dir=", StringComparison.OrdinalIgnoreCase))
+        fontDirectories.Add(arg[(arg.IndexOf('=') + 1)..]);
+    else if (arg.Equals("--font-dir", StringComparison.OrdinalIgnoreCase))
+    {
+        if (i + 1 >= args.Length)
+        {
+            Console.Error.WriteLine("--font-dir requires a directory path.");
+            return;
+        }
+        fontDirectories.Add(args[++i]);
+    }
     else if (arg.Equals("--include-path", StringComparison.OrdinalIgnoreCase))
     {
         if (i + 1 >= args.Length)
@@ -208,6 +220,15 @@ if (!File.Exists(inputPath))
     return;
 }
 
+foreach (string directory in fontDirectories)
+{
+    if (string.IsNullOrWhiteSpace(directory) || !Directory.Exists(directory))
+    {
+        Console.Error.WriteLine($"Font directory not found: {directory}");
+        return;
+    }
+}
+
 DxpTrackedChangeMode trackedMode = ParseTrackedChangeMode(tracked);
 
 if (!formatExplicit && !string.IsNullOrWhiteSpace(outputPath))
@@ -227,6 +248,12 @@ if (!formatExplicit && !string.IsNullOrWhiteSpace(outputPath))
         format = "pdf";
     else if (ext is ".json")
         format = "metadata";
+}
+
+if (fontDirectories.Count > 0 && !format.Equals("pdf", StringComparison.OrdinalIgnoreCase))
+{
+    Console.Error.WriteLine("--font-dir is only supported for PDF export.");
+    return;
 }
 
 switch (format.ToLowerInvariant())
@@ -258,7 +285,7 @@ switch (format.ToLowerInvariant())
     case "pdf":
         if (plainOutput)
             Console.Error.WriteLine("Warning: --plain is only supported for markdown/html; ignoring.");
-        ExportPdf(inputPath, outputPath, fieldMode, varsPath, cliVariables, includePaths, databaseConnections, logLevel, showProgress);
+        ExportPdf(inputPath, outputPath, fieldMode, varsPath, cliVariables, includePaths, databaseConnections, fontDirectories, logLevel, showProgress);
         break;
     default:
         Console.Error.WriteLine($"Unknown format '{format}'. Expected markdown|html|text|docx|doc|pdf|metadata.");
@@ -326,13 +353,27 @@ static void ExportPdf(
     IReadOnlyDictionary<string, string> cliVariables,
     IReadOnlyList<string> includePaths,
     IReadOnlyDictionary<string, string> databaseConnections,
+    IReadOnlyList<string> fontDirectories,
     LogLevel logLevel, bool showProgress)
 {
     string output = outputPath ?? Path.ChangeExtension(inputPath, ".pdf");
-    DxpPdfFonts.Configure();
+    DxpDirectoryPdfFontProvider? directoryProvider = null;
+    if (fontDirectories.Count == 0)
+        DxpPdfFonts.Configure();
+    else
+    {
+        directoryProvider = new DxpDirectoryPdfFontProvider(fontDirectories);
+        if (directoryProvider.FaceCount == 0)
+        {
+            Console.Error.WriteLine("No supported OpenType font faces found in --font-dir.");
+            Environment.ExitCode = 1;
+            return;
+        }
+        DxpPdfFonts.Configure(directoryProvider, fallbackToSystem: true);
+    }
     using var loggerFactory = CreateLoggerFactory(logLevel);
     var logger = loggerFactory.CreateLogger("docxport");
-    var visitor = new DxpFlowPdfVisitor();
+    var visitor = new DxpFlowPdfVisitor(availableFontFamilies: directoryProvider?.Families);
     ApplyFieldContext(visitor, varsPath, cliVariables, includePaths, databaseConnections);
     DxpExport.ExportToFile(inputPath, visitor, output,
         CreateExportOptions(fieldMode, showProgress), logger);
@@ -479,7 +520,7 @@ static void PrintHelp()
 {
     Console.WriteLine($"""
 docxport ({GetVersion()})
-Usage: docxport <input.doc|input.docx> [--format=markdown|html|text|docx|doc|pdf|metadata] [--tracked=accept|reject|inline|split] [--plain] [--fields=evaluate|cache|none] [--no-progress] [-o|--output=path] [--vars=path] [-D name=value] [--include-path=directory] [--database=[LABEL=]CONNECTION_STRING]
+Usage: docxport <input.doc|input.docx> [--format=markdown|html|text|docx|doc|pdf|metadata] [--tracked=accept|reject|inline|split] [--plain] [--fields=evaluate|cache|none] [--no-progress] [-o|--output=path] [--vars=path] [-D name=value] [--include-path=directory] [--font-dir=directory] [--database=[LABEL=]CONNECTION_STRING]
 
 Options:
   --format=...   Output format (default: markdown); metadata emits JSON to stdout unless -o is supplied.
@@ -494,6 +535,7 @@ Options:
   --vars=...     Load DOCVARIABLE values from a JSON or INI file.
   -D name=value  Define a DOCVARIABLE (repeatable). CLI values override --vars.
   --include-path=...  Allow and search this directory for INCLUDETEXT DOCX/HTML files (repeatable).
+  --font-dir=...      Search this directory for PDF fonts before installed fonts (repeatable).
   --database=...  Configure a default SQL Server connection string, or LABEL=CONNECTION_STRING
                   to map a DATABASE field's \d source (repeatable). LABEL matches the full source,
                   filename, or filename without extension; * explicitly denotes the fallback.
