@@ -373,7 +373,8 @@ static void ExportPdf(
     }
     using var loggerFactory = CreateLoggerFactory(logLevel);
     var logger = loggerFactory.CreateLogger("docxport");
-    var visitor = new DxpFlowPdfVisitor(availableFontFamilies: directoryProvider?.Families);
+    var visitor = new DxpFlowPdfVisitor(availableFontFamilies: directoryProvider?.Families,
+        fontProvider: directoryProvider);
     ApplyFieldContext(visitor, varsPath, cliVariables, includePaths, databaseConnections);
     DxpExport.ExportToFile(inputPath, visitor, output,
         CreateExportOptions(fieldMode, showProgress), logger);
