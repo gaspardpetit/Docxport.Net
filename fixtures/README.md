@@ -14,6 +14,9 @@ DOC and DOCX inputs are grouped by source format and purpose:
 - `docx/regressions/` and `doc/regressions/`: focused regression cases.
 - `docx/native-oracle/` and `doc/native-oracle/`: native Word comparison cases.
 - `docx/samples/`: larger real-world DOCX inputs shared by exporter tests.
+- `doc/samples/`: the 14 DOC counterparts of `docx/samples/`, used to test
+  native DOC import and DOC-to-DOCX projection. `TestLists.doc` also exercises
+  list records, tracked revisions, and editable DOC round trips.
 - `omml/`: equation inputs and paired expected-expression assets.
 
 The `regressions/` name describes the fixture collection, not its current
