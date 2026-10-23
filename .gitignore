@@ -2,6 +2,7 @@
 **/bin/**
 **/obj/**
 **/node_modules/**
+__pycache__/
 .vscode
 artifacts
 /output/
