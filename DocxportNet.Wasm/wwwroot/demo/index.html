@@ -45,10 +45,11 @@
       </div>
 
       <div id="pdfFontField" class="pdf-font-field" hidden>
-        <label class="field-label" for="pdfFontSelect">PDF font</label>
-        <select id="pdfFontSelect"><option value="">Bundled Noto Sans</option></select>
-        <button id="localFontsButton" type="button">Choose installed font</button>
-        <p id="localFontsMessage">Uses browser permission to read the chosen font on this device.</p>
+        <span class="field-label">PDF fonts</span>
+        <button id="localFontsButton" type="button">Use installed fonts</button>
+        <p id="localFontsMessage">Uses bundled Noto Sans until you grant access to installed fonts.</p>
+        <ul id="pdfFontMappings" aria-label="Document font mapping"></ul>
+        <p>Lists font references from the document and its styles. Individual glyphs may use fallback faces.</p>
       </div>
 
       <details class="advanced">

@@ -61,6 +61,13 @@ export async function createDocxport(options = {}) {
       if (typeof family !== "string" || !family.trim()) throw new TypeError("PDF font family is required.");
       api.RegisterPdfFont(family, requireBytes(fontBytes));
     },
+    registerPdfFontFace(family, bold, italic, fontBytes) {
+      if (typeof family !== "string" || !family.trim()) throw new TypeError("PDF font family is required.");
+      api.RegisterPdfFontFace(family, !!bold, !!italic, requireBytes(fontBytes));
+    },
+    async inspectPdfFontFamilies(input) {
+      return JSON.parse(api.InspectPdfFontFamilies(requireBytes(input)));
+    },
     async exportPdf(input, request = {}) {
       const { onProgress, ...options } = request;
       if (onProgress !== undefined && typeof onProgress !== "function") {

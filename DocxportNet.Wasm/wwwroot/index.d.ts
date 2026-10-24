@@ -165,8 +165,12 @@ export interface Docxport {
   inspect(input: Uint8Array | ArrayBuffer): Promise<DocumentInfo>;
   /** Export DOCX or binary DOC bytes. Binary DOC is projected to basic DOCX first. */
   export(input: Uint8Array | ArrayBuffer, request: ExportRequest): Promise<string>;
-  /** Register OpenType font bytes before exporting PDF. Browser fonts are not readable by WebAssembly. */
+  /** Register OpenType font bytes before exporting PDF. */
   registerPdfFont(family: string, fontBytes: Uint8Array | ArrayBuffer): void;
+  /** Register a specific bold/italic face for a family. */
+  registerPdfFontFace(family: string, bold: boolean, italic: boolean, fontBytes: Uint8Array | ArrayBuffer): void;
+  /** List font families referenced by DOCX runs, styles, and theme, including binary DOC projections. */
+  inspectPdfFontFamilies(input: Uint8Array | ArrayBuffer): Promise<string[]>;
   /** Render a DOC or DOCX into PDF bytes using registered fonts. */
   exportPdf(input: Uint8Array | ArrayBuffer, request?: PdfExportRequest): Promise<Uint8Array>;
   /** Directly project binary DOC bytes into a basic DOCX, without a DOCX visitor pass. */

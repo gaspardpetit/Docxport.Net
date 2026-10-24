@@ -179,6 +179,7 @@ public sealed class BrowserDocEmailEnvelope
 [JsonSerializable(typeof(BrowserDocumentInfo))]
 [JsonSerializable(typeof(BrowserExportProgress))]
 [JsonSerializable(typeof(BrowserDocEnvelopeEdit[]))]
+[JsonSerializable(typeof(string[]))]
 internal partial class BrowserJsonContext : JsonSerializerContext
 {
 }

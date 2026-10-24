@@ -6,13 +6,20 @@ import path from "node:path";
 const root = path.resolve("../bin/Release/net10.0/publish/wwwroot");
 const prefix = "/Docxport.Net/";
 const sample = path.resolve("../../fixtures/docx/samples/sample-no-sectPr.docx");
+const fontSample = path.resolve("../../fixtures/docx/samples/TestFields.docx");
 const docSample = path.resolve("../../fixtures/doc/samples/TestLists.doc");
+const localFont = path.resolve("node_modules/katex/dist/fonts/KaTeX_Main-Regular.ttf");
 const mime = new Map([[".html", "text/html"], [".js", "text/javascript"], [".css", "text/css"], [".wasm", "application/wasm"], [".json", "application/json"], [".dat", "application/octet-stream"]]);
 const server = createServer(async (request, response) => {
   try {
     const url = new URL(request.url ?? "/", "http://127.0.0.1");
     if (!url.pathname.startsWith(prefix)) throw new Error("Invalid prefix");
     const relative = decodeURIComponent(url.pathname.slice(prefix.length));
+    if (relative === "test-local-font.ttf") {
+      response.setHeader("Content-Type", "font/ttf");
+      response.end(await readFile(localFont));
+      return;
+    }
     let target = path.resolve(root, relative || ".");
     if (!target.startsWith(root)) throw new Error("Invalid path");
     if ((await stat(target)).isDirectory()) target = path.join(target, "index.html");
@@ -30,8 +37,8 @@ try {
   const page = await browser.newPage();
   await page.addInitScript(() => {
     window.queryLocalFonts = async () => [{
-      family: "Local Test", style: "Regular",
-      blob: async () => (await fetch("./fonts/NotoSans-Regular.ttf")).blob()
+      family: document.querySelector("#pdfFontMappings li")?.textContent.split(" → ")[0] ?? "Aptos",
+      style: "Regular", blob: async () => (await fetch("../test-local-font.ttf")).blob()
     }];
   });
   const failed = [];
@@ -67,16 +74,30 @@ try {
   const pdf = await page.locator("#pdfOutput").evaluate(async frame => {
     const bytes = new Uint8Array(await (await fetch(frame.src)).arrayBuffer());
     return { length: bytes.length, header: new TextDecoder().decode(bytes.slice(0, 8)),
-      trailer: new TextDecoder().decode(bytes.slice(-32)) };
+      trailer: new TextDecoder().decode(bytes.slice(-32)),
+      fonts: [...new TextDecoder("latin1").decode(bytes).matchAll(/\/BaseFont\s*\/([^\s/]+)/g)].map(match => match[1]) };
   });
   if (pdf.length < 100 || !pdf.header.startsWith("%PDF-") || !pdf.trailer.includes("%%EOF")) {
     throw new Error(`PDF demo produced invalid bytes: ${JSON.stringify(pdf)}`);
   }
+  await page.locator("#fileInput").setInputFiles(fontSample);
+  await page.waitForFunction(() => document.querySelector("#fileName")?.textContent === "TestFields.docx" &&
+    document.querySelector("#downloadButton")?.disabled === false, null, { timeout: 60_000 });
+  const beforeLocalFonts = await page.locator("#pdfOutput").evaluate(async frame => {
+    const bytes = new Uint8Array(await (await fetch(frame.src)).arrayBuffer());
+    return [...new TextDecoder("latin1").decode(bytes).matchAll(/\/BaseFont\s*\/([^\s/]+)/g)].map(match => match[1]);
+  });
   await page.locator("#localFontsButton").click();
-  await page.locator('#pdfFontSelect option[value="Local Test"]').waitFor({ state: "attached" });
-  await page.locator("#pdfFontSelect").selectOption("Local Test");
   await page.waitForFunction(() => document.querySelector("#downloadButton")?.disabled === false &&
     document.querySelector("#status")?.textContent === "Converted locally", null, { timeout: 60_000 });
+  if (!(await page.locator("#pdfFontMappings li").first().textContent())?.includes("(installed)"))
+    throw new Error("Local font was not mapped to a referenced document family");
+  const localFonts = await page.locator("#pdfOutput").evaluate(async frame => {
+    const bytes = new Uint8Array(await (await fetch(frame.src)).arrayBuffer());
+    return [...new TextDecoder("latin1").decode(bytes).matchAll(/\/BaseFont\s*\/([^\s/]+)/g)].map(match => match[1]);
+  });
+  if (!localFonts.some(name => name.includes("KaTeX")) || beforeLocalFonts.some(name => name.includes("KaTeX")))
+    throw new Error(`Local font did not replace the rendered face: ${JSON.stringify({ mappings: await page.locator("#pdfFontMappings li").allTextContents(), bundled: beforeLocalFonts, local: localFonts })}`);
   const download = page.waitForEvent("download");
   await page.locator("#downloadButton").click();
   if (!(await download).suggestedFilename().endsWith(".pdf")) throw new Error("PDF download has the wrong filename");

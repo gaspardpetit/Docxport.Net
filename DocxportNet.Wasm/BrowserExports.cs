@@ -25,6 +25,20 @@ public static partial class BrowserExports
 
     [JSExport]
     [SupportedOSPlatform("browser")]
+    public static void RegisterPdfFontFace(string family, bool bold, bool italic, byte[] fontBytes) =>
+        PdfFonts.Register(family, bold, italic, fontBytes);
+
+    [JSExport]
+    [SupportedOSPlatform("browser")]
+    public static string InspectPdfFontFamilies(byte[] documentBytes)
+    {
+        ValidateBytes(documentBytes);
+        return JsonSerializer.Serialize(BrowserPdfFontPreflight.Families(documentBytes),
+            BrowserJsonContext.Default.StringArray);
+    }
+
+    [JSExport]
+    [SupportedOSPlatform("browser")]
     public static byte[] ExportPdf(byte[] docxBytes, string requestJson,
         [JSMarshalAs<JSType.Function<JSType.String>>] Action<string>? onProgress)
     {
