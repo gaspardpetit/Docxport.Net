@@ -237,7 +237,7 @@ dotnet run --project DocxportNet.Cli -- my.docx -o my.md --tracked=accept
 
 ### Browser WebAssembly
 
-`DocxportNet.Wasm` publishes the exporters as the browser-only `docxport` ESM package. It accepts DOC or DOCX data as a `Uint8Array` and returns HTML, Markdown, plain text, or a resolved DOCX without uploading the document.
+`DocxportNet.Wasm` publishes the exporters as the browser-only `docxport` ESM package. It accepts DOC or DOCX data as a `Uint8Array` and returns HTML, Markdown, plain text, PDF bytes, or a resolved DOCX without uploading the document. PDF export requires OpenType font bytes supplied by the host through `registerPdfFont`.
 
 ```powershell
 dotnet workload install wasm-tools

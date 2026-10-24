@@ -57,6 +57,21 @@ export async function createDocxport(options = {}) {
         : null;
       return api.Export(requireBytes(input), JSON.stringify(serializableRequest), progressCallback);
     },
+    registerPdfFont(family, fontBytes) {
+      if (typeof family !== "string" || !family.trim()) throw new TypeError("PDF font family is required.");
+      api.RegisterPdfFont(family, requireBytes(fontBytes));
+    },
+    async exportPdf(input, request = {}) {
+      const { onProgress, ...options } = request;
+      if (onProgress !== undefined && typeof onProgress !== "function") {
+        throw new TypeError("onProgress must be a function.");
+      }
+      const progressCallback = onProgress
+        ? value => onProgress(JSON.parse(value))
+        : null;
+      const result = api.ExportPdf(requireBytes(input), JSON.stringify({ ...options, format: "pdf" }), progressCallback);
+      return result instanceof Uint8Array ? result : new Uint8Array(result);
+    },
     async projectDocx(input) {
       const result = api.ProjectDocx(requireBytes(input));
       return result instanceof Uint8Array ? result : new Uint8Array(result);

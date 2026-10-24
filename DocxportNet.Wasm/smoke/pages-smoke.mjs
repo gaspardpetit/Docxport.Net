@@ -6,6 +6,7 @@ import path from "node:path";
 const root = path.resolve("../bin/Release/net10.0/publish/wwwroot");
 const prefix = "/Docxport.Net/";
 const sample = path.resolve("../../fixtures/docx/samples/sample-no-sectPr.docx");
+const docSample = path.resolve("../../fixtures/doc/samples/TestLists.doc");
 const mime = new Map([[".html", "text/html"], [".js", "text/javascript"], [".css", "text/css"], [".wasm", "application/wasm"], [".json", "application/json"], [".dat", "application/octet-stream"]]);
 const server = createServer(async (request, response) => {
   try {
@@ -48,6 +49,35 @@ try {
   await page.waitForFunction(previous => document.querySelector("#rawOutput code")?.textContent !== previous, html, { timeout: 60_000 });
   const markdown = await page.locator("#rawOutput code").textContent();
   if (!html?.trim() || !markdown?.trim()) throw new Error("Demo produced empty output");
+  await page.locator('input[name="format"][value="pdf"]').check();
+  await page.waitForFunction(() => {
+    const status = document.querySelector("#status")?.textContent;
+    return status === "Conversion failed" ||
+      document.querySelector("#downloadButton")?.disabled === false;
+  }, null, { timeout: 60_000 });
+  if (await page.locator("#status").textContent() !== "Converted locally") {
+    throw new Error(`PDF demo failed: ${await page.locator("#errorMessage").textContent()}\n${failed.join("\n")}`);
+  }
+  const pdf = await page.locator("#pdfOutput").evaluate(async frame => {
+    const bytes = new Uint8Array(await (await fetch(frame.src)).arrayBuffer());
+    return { length: bytes.length, header: new TextDecoder().decode(bytes.slice(0, 8)),
+      trailer: new TextDecoder().decode(bytes.slice(-32)) };
+  });
+  if (pdf.length < 100 || !pdf.header.startsWith("%PDF-") || !pdf.trailer.includes("%%EOF")) {
+    throw new Error(`PDF demo produced invalid bytes: ${JSON.stringify(pdf)}`);
+  }
+  const download = page.waitForEvent("download");
+  await page.locator("#downloadButton").click();
+  if (!(await download).suggestedFilename().endsWith(".pdf")) throw new Error("PDF download has the wrong filename");
+  await page.locator("#fileInput").setInputFiles(docSample);
+  await page.waitForFunction(() =>
+    document.querySelector("#fileName")?.textContent === "TestLists.doc" &&
+    (document.querySelector("#downloadButton")?.disabled === false ||
+     document.querySelector("#status")?.textContent === "Conversion failed"),
+    null, { timeout: 60_000 });
+  if (await page.locator("#status").textContent() !== "Converted locally") {
+    throw new Error(`DOC-to-PDF demo failed: ${await page.locator("#errorMessage").textContent()}\n${failed.join("\n")}`);
+  }
   if (failed.length) throw new Error(`Pages asset failures:\n${failed.join("\n")}`);
 } finally {
   await browser.close();

@@ -5,7 +5,7 @@ using DocxportNet;
 namespace DocxportNet.Wasm;
 
 [JsonConverter(typeof(JsonStringEnumConverter<BrowserExportFormat>))]
-public enum BrowserExportFormat { Html, Markdown, Text }
+public enum BrowserExportFormat { Html, Markdown, Text, Pdf }
 
 [JsonConverter(typeof(JsonStringEnumConverter<BrowserPreset>))]
 public enum BrowserPreset { Rich, Plain }
@@ -33,6 +33,7 @@ public sealed class BrowserExportRequest
     public BrowserHtmlOptions? Html { get; set; }
     public BrowserMarkdownOptions? Markdown { get; set; }
     public BrowserTextOptions? Text { get; set; }
+    public string? PdfFontFamily { get; set; }
 }
 
 public sealed class BrowserResolveRequest

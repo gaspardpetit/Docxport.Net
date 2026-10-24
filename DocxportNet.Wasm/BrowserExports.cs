@@ -9,11 +9,51 @@ using DocxportNet.Omml;
 using DocxportNet.Visitors.Html;
 using DocxportNet.Visitors.Markdown;
 using DocxportNet.Visitors.PlainText;
+using DocxportNet.Visitors.Pdf;
 
 namespace DocxportNet.Wasm;
 
 public static partial class BrowserExports
 {
+    private static readonly BrowserPdfFonts PdfFonts = new();
+    private static bool _pdfFontsConfigured;
+
+    [JSExport]
+    [SupportedOSPlatform("browser")]
+    public static void RegisterPdfFont(string family, byte[] fontBytes) =>
+        PdfFonts.Register(family, fontBytes);
+
+    [JSExport]
+    [SupportedOSPlatform("browser")]
+    public static byte[] ExportPdf(byte[] docxBytes, string requestJson,
+        [JSMarshalAs<JSType.Function<JSType.String>>] Action<string>? onProgress)
+    {
+        var request = DeserializeExportRequest(requestJson);
+        if (request.Format != BrowserExportFormat.Pdf)
+            throw new ArgumentException("PDF export requires format 'pdf'.", nameof(requestJson));
+        ValidateBytes(docxBytes);
+        if (PdfFonts.Families.Count == 0)
+            throw new InvalidOperationException("Register a PDF font before exporting PDF in the browser.");
+        if (!_pdfFontsConfigured)
+        {
+            DxpPdfFonts.Configure(PdfFonts);
+            _pdfFontsConfigured = true;
+        }
+
+        var options = CreateExportOptionsOrDefault(request.Fields);
+        if (onProgress != null)
+            options.Progress = new BrowserProgress(onProgress);
+        string family = request.PdfFontFamily ?? PdfFonts.Families.First();
+        if (!PdfFonts.IsAvailable(family, false, false))
+            throw new ArgumentException($"PDF font family '{family}' is not registered.", nameof(requestJson));
+        var visitor = new DxpFlowPdfVisitor(fontFamily: family,
+            availableFontFamilies: PdfFonts.Families, fontProvider: PdfFonts);
+        if (request.Fields?.Variables != null)
+            foreach (var item in request.Fields.Variables)
+                visitor.FieldEval.Context.SetDocVariable(item.Key, item.Value);
+        return DxpExport.ExportToBytes(docxBytes, visitor, options);
+    }
+
     private sealed class BrowserProgress(Action<string> callback) : IProgress<DxpExportProgress>
     {
         public void Report(DxpExportProgress value) => callback(
