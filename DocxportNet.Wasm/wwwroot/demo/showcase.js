@@ -10,7 +10,9 @@ const elements = {
   copy: $("#copyButton"), download: $("#downloadButton"), viewToggle: $("#viewToggle"),
   empty: $("#emptyState"), error: $("#errorState"),
   errorMessage: $("#errorMessage"), rendered: $("#renderedOutput"),
-  raw: $("#rawOutput"), pdf: $("#pdfOutput")
+  raw: $("#rawOutput"), pdf: $("#pdfOutput"),
+  pdfFontField: $("#pdfFontField"), pdfFontSelect: $("#pdfFontSelect"),
+  localFontsButton: $("#localFontsButton"), localFontsMessage: $("#localFontsMessage")
 };
 
 const common = [
@@ -49,6 +51,8 @@ let documentBytes;
 let rawOutput = "";
 let pdfUrl;
 let pdfFontReady;
+const localFontFaces = new Map();
+const registeredLocalFonts = new Set();
 let currentView = "rendered";
 let generation = 0;
 let renderedSource = "";
@@ -66,6 +70,7 @@ function renderSettings() {
   elements.viewToggle.hidden = format === "pdf";
   elements.copy.hidden = format === "pdf";
   elements.download.hidden = format !== "pdf";
+  elements.pdfFontField.hidden = format !== "pdf";
   elements.presetLabel.textContent = textTrackedChanges ? "Tracked changes" : "Preset";
   elements.preset.replaceChildren();
   const presets = format === "text"
@@ -166,9 +171,16 @@ async function convert() {
           return response.arrayBuffer();
         }).then(bytes => api.registerPdfFont("Noto Sans", bytes));
       await pdfFontReady;
+      const selectedFamily = elements.pdfFontSelect.value;
+      if (selectedFamily && !registeredLocalFonts.has(selectedFamily)) {
+        const face = localFontFaces.get(selectedFamily);
+        if (!face) throw new Error(`Local font '${selectedFamily}' is no longer available.`);
+        api.registerPdfFont(selectedFamily, await (await face.blob()).arrayBuffer());
+        registeredLocalFonts.add(selectedFamily);
+      }
       if (token !== generation) return;
       const bytes = await api.exportPdf(documentBytes,
-        { fields: { mode: "cache" }, pdfFontFamily: "Noto Sans" });
+        { fields: { mode: "cache" }, pdfFontFamily: selectedFamily || "Noto Sans" });
       if (token !== generation) return;
       if (pdfUrl) URL.revokeObjectURL(pdfUrl);
       pdfUrl = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }));
@@ -239,6 +251,35 @@ $("#formatControl").addEventListener("change", () => { renderSettings(); convert
 elements.preset.addEventListener("change", convert);
 elements.settings.addEventListener("change", convert);
 elements.settings.addEventListener("input", e => { if (e.target.type === "text") { clearTimeout(e.target.timer); e.target.timer = setTimeout(convert, 250); } });
+elements.localFontsButton.disabled = typeof window.queryLocalFonts !== "function";
+if (elements.localFontsButton.disabled)
+  elements.localFontsMessage.textContent = "This browser does not offer local font access. The bundled font remains available.";
+elements.localFontsButton.addEventListener("click", async () => {
+  elements.localFontsButton.disabled = true;
+  try {
+    const faces = await window.queryLocalFonts();
+    localFontFaces.clear();
+    for (const face of faces) {
+      if (!face.family || !face.blob) continue;
+      const previous = localFontFaces.get(face.family);
+      if (!previous || (face.style === "Regular" && previous.style !== "Regular"))
+        localFontFaces.set(face.family, face);
+    }
+    elements.pdfFontSelect.replaceChildren(new Option("Bundled Noto Sans", ""));
+    for (const family of [...localFontFaces.keys()].sort((a, b) => a.localeCompare(b)))
+      elements.pdfFontSelect.add(new Option(family, family));
+    elements.localFontsMessage.textContent = localFontFaces.size
+      ? `Choose one of ${localFontFaces.size} available font families. The PDF may embed the selected font.`
+      : "No installed fonts were made available. The bundled font remains available.";
+  } catch (error) {
+    elements.localFontsMessage.textContent = error?.name === "NotAllowedError"
+      ? "Local font permission was declined. The bundled font remains available."
+      : `Local fonts could not be listed: ${error?.message ?? String(error)}`;
+  } finally {
+    elements.localFontsButton.disabled = false;
+  }
+});
+elements.pdfFontSelect.addEventListener("change", convert);
 document.querySelectorAll("[data-view]").forEach(button => button.addEventListener("click", () => {
   currentView = button.dataset.view;
   document.querySelectorAll("[data-view]").forEach(item => item.classList.toggle("active", item === button));

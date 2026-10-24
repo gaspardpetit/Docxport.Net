@@ -28,6 +28,12 @@ const { port } = server.address();
 const browser = await chromium.launch({ headless: true });
 try {
   const page = await browser.newPage();
+  await page.addInitScript(() => {
+    window.queryLocalFonts = async () => [{
+      family: "Local Test", style: "Regular",
+      blob: async () => (await fetch("./fonts/NotoSans-Regular.ttf")).blob()
+    }];
+  });
   const failed = [];
   page.on("response", response => { if (response.status() >= 400) failed.push(`${response.status()} ${response.url()}`); });
   page.on("pageerror", error => failed.push(`page error: ${error.message}`));
@@ -66,6 +72,11 @@ try {
   if (pdf.length < 100 || !pdf.header.startsWith("%PDF-") || !pdf.trailer.includes("%%EOF")) {
     throw new Error(`PDF demo produced invalid bytes: ${JSON.stringify(pdf)}`);
   }
+  await page.locator("#localFontsButton").click();
+  await page.locator('#pdfFontSelect option[value="Local Test"]').waitFor({ state: "attached" });
+  await page.locator("#pdfFontSelect").selectOption("Local Test");
+  await page.waitForFunction(() => document.querySelector("#downloadButton")?.disabled === false &&
+    document.querySelector("#status")?.textContent === "Converted locally", null, { timeout: 60_000 });
   const download = page.waitForEvent("download");
   await page.locator("#downloadButton").click();
   if (!(await download).suggestedFilename().endsWith(".pdf")) throw new Error("PDF download has the wrong filename");

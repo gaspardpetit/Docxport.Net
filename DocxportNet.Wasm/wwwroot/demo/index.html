@@ -44,6 +44,13 @@
         <select id="presetSelect"><option value="rich">Rich</option><option value="plain">Plain</option></select>
       </div>
 
+      <div id="pdfFontField" class="pdf-font-field" hidden>
+        <label class="field-label" for="pdfFontSelect">PDF font</label>
+        <select id="pdfFontSelect"><option value="">Bundled Noto Sans</option></select>
+        <button id="localFontsButton" type="button">Choose installed font</button>
+        <p id="localFontsMessage">Uses browser permission to read the chosen font on this device.</p>
+      </div>
+
       <details class="advanced">
         <summary>Advanced settings <span>⌄</span></summary>
         <div id="advancedSettings" class="settings-grid"></div>
