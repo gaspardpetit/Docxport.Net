@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>DocxportNet · Browser DOC and DOCX exporter</title>
-  <meta name="description" content="Convert DOC and DOCX files to HTML, Markdown, or plain text entirely in your browser.">
+  <meta name="description" content="Convert DOC and DOCX files to HTML, Markdown, text, or PDF entirely in your browser.">
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
@@ -35,12 +35,21 @@
           <label><input type="radio" name="format" value="html" checked><span>HTML</span></label>
           <label><input type="radio" name="format" value="markdown"><span>Markdown</span></label>
           <label><input type="radio" name="format" value="text"><span>Text</span></label>
+          <label><input type="radio" name="format" value="pdf"><span>PDF</span></label>
         </div>
       </fieldset>
 
       <div id="presetField">
         <label id="presetLabel" class="field-label" for="presetSelect">Preset</label>
         <select id="presetSelect"><option value="rich">Rich</option><option value="plain">Plain</option></select>
+      </div>
+
+      <div id="pdfFontField" class="pdf-font-field" hidden>
+        <span class="field-label">PDF fonts</span>
+        <button id="localFontsButton" type="button">Use installed fonts</button>
+        <p id="localFontsMessage">Uses bundled Noto Sans until you grant access to installed fonts.</p>
+        <ul id="pdfFontMappings" aria-label="Document font mapping"></ul>
+        <p>Lists font references from the document and its styles. Individual glyphs may use fallback faces.</p>
       </div>
 
       <details class="advanced">
@@ -53,22 +62,24 @@
 
     <section class="workspace">
       <div class="workspace-toolbar">
-        <div class="view-toggle" role="group" aria-label="Output view">
+        <div class="view-toggle" id="viewToggle" role="group" aria-label="Output view">
           <button type="button" data-view="rendered" class="active">Rendered</button>
           <button type="button" data-view="raw">Raw</button>
         </div>
         <div class="toolbar-actions">
           <span id="status" class="status">Loading WebAssembly…</span>
           <button id="copyButton" type="button" disabled>Copy raw output</button>
+          <button id="downloadButton" type="button" hidden disabled>Download PDF</button>
         </div>
       </div>
       <div id="emptyState" class="empty-state">
         <div class="document-stack"><span></span><span></span><span>+</span></div>
         <h1>Your converted document will appear here</h1>
-        <p>Choose a DOC or DOCX file, then explore HTML, Markdown, and plain-text exports.</p>
+        <p>Choose a DOC or DOCX file, then explore HTML, Markdown, text, and PDF exports.</p>
       </div>
       <div id="errorState" class="error-state" hidden><strong>Conversion failed</strong><p id="errorMessage"></p></div>
       <iframe id="renderedOutput" title="Rendered document output" sandbox hidden></iframe>
+      <iframe id="pdfOutput" title="PDF preview" hidden></iframe>
       <pre id="rawOutput" tabindex="0" hidden><code></code></pre>
     </section>
   </main>

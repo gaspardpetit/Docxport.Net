@@ -7,8 +7,12 @@ const elements = {
   fileName: $("#fileName"), fileSize: $("#fileSize"), clear: $("#clearButton"),
   presetField: $("#presetField"), presetLabel: $("#presetLabel"), preset: $("#presetSelect"),
   settings: $("#advancedSettings"), status: $("#status"),
-  copy: $("#copyButton"), empty: $("#emptyState"), error: $("#errorState"),
-  errorMessage: $("#errorMessage"), rendered: $("#renderedOutput"), raw: $("#rawOutput")
+  copy: $("#copyButton"), download: $("#downloadButton"), viewToggle: $("#viewToggle"),
+  empty: $("#emptyState"), error: $("#errorState"),
+  errorMessage: $("#errorMessage"), rendered: $("#renderedOutput"),
+  raw: $("#rawOutput"), pdf: $("#pdfOutput"),
+  pdfFontField: $("#pdfFontField"), pdfFontMappings: $("#pdfFontMappings"),
+  localFontsButton: $("#localFontsButton"), localFontsMessage: $("#localFontsMessage")
 };
 
 const common = [
@@ -38,12 +42,19 @@ const settingSchemas = {
   text: [
     ["emitDocumentProperties", "Document properties"], ["emitCustomProperties", "Custom properties"],
     ["imagePlaceholder", "Image placeholder", "text"]
-  ]
+  ],
+  pdf: []
 };
 
 let api;
 let documentBytes;
 let rawOutput = "";
+let pdfUrl;
+let pdfFontReady;
+const localFontFaces = new Map();
+const registeredLocalFonts = new Set();
+let localFontsEnabled = false;
+let pdfRequestedFamilies;
 let currentView = "rendered";
 let generation = 0;
 let renderedSource = "";
@@ -56,7 +67,12 @@ function titleCase(value) { return value.replace(/([A-Z])/g, " $1").replace(/^./
 function renderSettings() {
   const format = currentFormat();
   const textTrackedChanges = format === "text";
-  elements.presetField.hidden = textTrackedChanges && !hasTrackedChanges;
+  elements.presetField.hidden = format === "pdf" || textTrackedChanges && !hasTrackedChanges;
+  elements.settings.parentElement.hidden = format === "pdf";
+  elements.viewToggle.hidden = format === "pdf";
+  elements.copy.hidden = format === "pdf";
+  elements.download.hidden = format !== "pdf";
+  elements.pdfFontField.hidden = format !== "pdf";
   elements.presetLabel.textContent = textTrackedChanges ? "Tracked changes" : "Preset";
   elements.preset.replaceChildren();
   const presets = format === "text"
@@ -121,6 +137,13 @@ function renderedDocument() {
 function escapeHtml(value) { const div = document.createElement("div"); div.textContent = value; return div.innerHTML; }
 
 function showOutput() {
+  if (currentFormat() === "pdf") {
+    elements.raw.hidden = elements.rendered.hidden = true;
+    elements.pdf.hidden = !pdfUrl;
+    if (pdfUrl) elements.pdf.src = pdfUrl;
+    return;
+  }
+  elements.pdf.hidden = true;
   const raw = currentView === "raw";
   elements.raw.hidden = !raw;
   elements.rendered.hidden = raw;
@@ -134,16 +157,84 @@ function showOutput() {
   }
 }
 
+function fontFaceStyle(face) {
+  const name = `${face.style ?? ""} ${face.fullName ?? ""}`.toLowerCase();
+  return { bold: /bold|semibold|demibold|black/.test(name), italic: /italic|oblique/.test(name) };
+}
+
+function showFontMappings() {
+  elements.pdfFontMappings.replaceChildren();
+  for (const family of pdfRequestedFamilies ?? []) {
+    const item = document.createElement("li");
+    const available = localFontsEnabled && family.toLowerCase() !== "noto sans" &&
+      localFontFaces.has(family.toLowerCase());
+    item.textContent = `${family} → ${available ? family + " (installed)" : "Noto Sans (substitute)"}`;
+    elements.pdfFontMappings.append(item);
+  }
+}
+
+async function preparePdfFonts(token) {
+  if (!pdfRequestedFamilies) {
+    const families = await api.inspectPdfFontFamilies(documentBytes);
+    if (token !== generation) return false;
+    pdfRequestedFamilies = families;
+  }
+  if (token !== generation) return false;
+  if (localFontsEnabled) {
+    for (const family of pdfRequestedFamilies) {
+      if (family.toLowerCase() === "noto sans") continue;
+      const faces = localFontFaces.get(family.toLowerCase()) ?? [];
+      for (const face of faces) {
+        const { bold, italic } = fontFaceStyle(face);
+        const key = `${family.toLowerCase()}:${bold}:${italic}`;
+        if (registeredLocalFonts.has(key)) continue;
+        api.registerPdfFontFace(family, bold, italic, await (await face.blob()).arrayBuffer());
+        registeredLocalFonts.add(key);
+        if (token !== generation) return false;
+      }
+    }
+  }
+  showFontMappings();
+  return true;
+}
+
 async function convert() {
   if (!documentBytes || !api) return;
   const token = ++generation;
   elements.status.textContent = "Converting…";
   elements.status.className = "status busy";
   elements.copy.disabled = true;
+  elements.download.disabled = true;
   elements.error.hidden = true;
   try {
+    if (currentFormat() === "pdf") {
+      pdfFontReady ??= fetch(new URL("./fonts/NotoSans-Regular.ttf", import.meta.url))
+        .then(response => {
+          if (!response.ok) throw new Error(`Demo font could not be loaded (${response.status}).`);
+          return response.arrayBuffer();
+        }).then(bytes => api.registerPdfFont("Noto Sans", bytes));
+      await pdfFontReady;
+      if (!await preparePdfFonts(token)) return;
+      if (token !== generation) return;
+      const defaultFamily = pdfRequestedFamilies.length === 1 &&
+        localFontsEnabled && pdfRequestedFamilies[0].toLowerCase() !== "noto sans" &&
+        localFontFaces.has(pdfRequestedFamilies[0].toLowerCase())
+        ? pdfRequestedFamilies[0] : "Noto Sans";
+      const bytes = await api.exportPdf(documentBytes,
+        { fields: { mode: "cache" }, pdfFontFamily: defaultFamily });
+      if (token !== generation) return;
+      if (pdfUrl) URL.revokeObjectURL(pdfUrl);
+      pdfUrl = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }));
+      showOutput();
+      elements.empty.hidden = true;
+      elements.download.disabled = false;
+      elements.status.textContent = "Converted locally";
+      elements.status.className = "status ready";
+      return;
+    }
     const output = await api.export(documentBytes, request());
     if (token !== generation) return;
+    if (pdfUrl) { URL.revokeObjectURL(pdfUrl); pdfUrl = undefined; elements.pdf.removeAttribute("src"); }
     rawOutput = output;
     showOutput();
     elements.empty.hidden = true;
@@ -152,7 +243,7 @@ async function convert() {
     elements.status.className = "status ready";
   } catch (error) {
     if (token !== generation) return;
-    elements.rendered.hidden = elements.raw.hidden = true;
+    elements.rendered.hidden = elements.raw.hidden = elements.pdf.hidden = true;
     elements.empty.hidden = true;
     elements.error.hidden = false;
     elements.errorMessage.textContent = error?.message ?? String(error);
@@ -167,6 +258,8 @@ async function loadFile(file) {
     elements.errorMessage.textContent = "Choose a .doc or .docx file."; return;
   }
   documentBytes = new Uint8Array(await file.arrayBuffer());
+  pdfRequestedFamilies = undefined;
+  elements.pdfFontMappings.replaceChildren();
   elements.fileName.textContent = file.name; elements.fileSize.textContent = formatSize(file.size);
   elements.drop.hidden = true; elements.fileCard.hidden = false;
   try {
@@ -181,10 +274,13 @@ async function loadFile(file) {
 
 function clearDocument() {
   generation++; documentBytes = undefined; rawOutput = ""; renderedSource = ""; hasTrackedChanges = false; elements.input.value = "";
+  pdfRequestedFamilies = undefined; elements.pdfFontMappings.replaceChildren();
+  if (pdfUrl) { URL.revokeObjectURL(pdfUrl); pdfUrl = undefined; elements.pdf.removeAttribute("src"); }
   elements.rendered.removeAttribute("srcdoc");
   elements.fileCard.hidden = true; elements.drop.hidden = false; elements.empty.hidden = false;
-  elements.error.hidden = elements.rendered.hidden = elements.raw.hidden = true;
+  elements.error.hidden = elements.rendered.hidden = elements.raw.hidden = elements.pdf.hidden = true;
   elements.copy.disabled = true; elements.status.textContent = api ? "Ready" : "Loading WebAssembly…";
+  elements.download.disabled = true;
   renderSettings();
 }
 
@@ -199,6 +295,39 @@ $("#formatControl").addEventListener("change", () => { renderSettings(); convert
 elements.preset.addEventListener("change", convert);
 elements.settings.addEventListener("change", convert);
 elements.settings.addEventListener("input", e => { if (e.target.type === "text") { clearTimeout(e.target.timer); e.target.timer = setTimeout(convert, 250); } });
+elements.localFontsButton.disabled = typeof window.queryLocalFonts !== "function";
+if (elements.localFontsButton.disabled)
+  elements.localFontsMessage.textContent = "This browser does not offer local font access. The bundled font remains available.";
+elements.localFontsButton.addEventListener("click", async () => {
+  elements.localFontsButton.disabled = true;
+  try {
+    const faces = await window.queryLocalFonts();
+    localFontFaces.clear();
+    for (const face of faces) {
+      if (!face.family || !face.blob) continue;
+      const key = face.family.toLowerCase();
+      const group = localFontFaces.get(key) ?? [];
+      const style = fontFaceStyle(face);
+      if (!group.some(previous => {
+        const other = fontFaceStyle(previous);
+        return other.bold === style.bold && other.italic === style.italic;
+      })) group.push(face);
+      localFontFaces.set(key, group);
+    }
+    localFontsEnabled = true;
+    elements.localFontsButton.textContent = "Refresh installed fonts";
+    elements.localFontsMessage.textContent = localFontFaces.size
+      ? `${localFontFaces.size} families available. Matching faces are read when exporting; the PDF may embed them.`
+      : "No installed fonts were made available. The bundled font remains available.";
+    if (documentBytes && currentFormat() === "pdf") await convert();
+  } catch (error) {
+    elements.localFontsMessage.textContent = error?.name === "NotAllowedError"
+      ? "Local font permission was declined. The bundled font remains available."
+      : `Local fonts could not be listed: ${error?.message ?? String(error)}`;
+  } finally {
+    elements.localFontsButton.disabled = false;
+  }
+});
 document.querySelectorAll("[data-view]").forEach(button => button.addEventListener("click", () => {
   currentView = button.dataset.view;
   document.querySelectorAll("[data-view]").forEach(item => item.classList.toggle("active", item === button));
@@ -208,6 +337,13 @@ elements.copy.addEventListener("click", async () => {
   await navigator.clipboard.writeText(rawOutput);
   const original = elements.copy.textContent; elements.copy.textContent = "Copied";
   setTimeout(() => elements.copy.textContent = original, 1200);
+});
+elements.download.addEventListener("click", () => {
+  if (!pdfUrl) return;
+  const link = document.createElement("a");
+  link.href = pdfUrl;
+  link.download = elements.fileName.textContent.replace(/\.docx?$/i, "") + ".pdf";
+  link.click();
 });
 
 renderSettings();

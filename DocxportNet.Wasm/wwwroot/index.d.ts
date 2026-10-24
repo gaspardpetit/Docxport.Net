@@ -96,6 +96,12 @@ export type ExportRequest = (
   | { format: "text"; fields?: FieldOptions; text?: TextOptions }
 ) & ExportProgressOptions;
 
+export interface PdfExportRequest extends ExportProgressOptions {
+  fields?: FieldOptions;
+  /** Family name previously supplied to registerPdfFont; defaults to the first registered family. */
+  pdfFontFamily?: string;
+}
+
 export interface ResolveRequest { fields?: FieldOptions; }
 export interface CoreProperties {
   title: string | null;
@@ -159,6 +165,14 @@ export interface Docxport {
   inspect(input: Uint8Array | ArrayBuffer): Promise<DocumentInfo>;
   /** Export DOCX or binary DOC bytes. Binary DOC is projected to basic DOCX first. */
   export(input: Uint8Array | ArrayBuffer, request: ExportRequest): Promise<string>;
+  /** Register OpenType font bytes before exporting PDF. */
+  registerPdfFont(family: string, fontBytes: Uint8Array | ArrayBuffer): void;
+  /** Register a specific bold/italic face for a family. */
+  registerPdfFontFace(family: string, bold: boolean, italic: boolean, fontBytes: Uint8Array | ArrayBuffer): void;
+  /** List font families referenced by DOCX runs, styles, and theme, including binary DOC projections. */
+  inspectPdfFontFamilies(input: Uint8Array | ArrayBuffer): Promise<string[]>;
+  /** Render a DOC or DOCX into PDF bytes using registered fonts. */
+  exportPdf(input: Uint8Array | ArrayBuffer, request?: PdfExportRequest): Promise<Uint8Array>;
   /** Directly project binary DOC bytes into a basic DOCX, without a DOCX visitor pass. */
   projectDocx(input: Uint8Array | ArrayBuffer): Promise<Uint8Array>;
   /** Walk DOCX or binary DOC input and write a plain text binary DOC. */

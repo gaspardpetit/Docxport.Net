@@ -1,6 +1,6 @@
 # docxport
 
-Convert DOC and DOCX files to HTML, Markdown, plain text, or a resolved DOCX entirely in the browser. Binary DOC inputs are projected to DOCX before export; fidelity varies by structure. `exportDoc` writes a binary DOC with feature-dependent structure and formatting support. The package also exposes document inspection and field resolution through a .NET WebAssembly runtime.
+Convert DOC and DOCX files to HTML, Markdown, plain text, PDF, or a resolved DOCX entirely in the browser. Binary DOC inputs are projected to DOCX before export; fidelity varies by structure. `exportDoc` writes a binary DOC with feature-dependent structure and formatting support. The package also exposes document inspection and field resolution through a .NET WebAssembly runtime.
 
 ## Install
 
@@ -74,6 +74,9 @@ const resolvedBytes = await docxport.resolveDocx(docxBytes, {
 });
 const projectedBytes = await docxport.projectDocx(docBytes);
 const plainDocBytes = await docxport.exportDoc(docxBytes);
+// Supply OpenType bytes because the browser does not expose installed font files.
+docxport.registerPdfFont("Noto Sans", await (await fetch("/fonts/NotoSans-Regular.ttf")).arrayBuffer());
+const pdfBytes = await docxport.exportPdf(docxBytes, { pdfFontFamily: "Noto Sans" });
 const editedDocBytes = await docxport.editDocEnvelope(plainDocBytes, [{
   operation: "set",
   envelope: {
@@ -98,6 +101,12 @@ See `index.d.ts` for format-specific options.
 The optional `onProgress` callback receives the current phase, completed and
 total paragraph units, and a nullable percentage. Supplying it enables the
 lightweight paragraph-counting pre-pass.
+PDF export returns a `Uint8Array`. Register fonts before the first PDF export; the
+registered family names are used for document font selection, and unregistered
+families fall back to a registered face. Register one face per family; bold and italic
+are synthesized when requested. Add font files to your own static assets
+or load them from another source. The bundled demo uses Noto Sans under the SIL Open
+Font License; its font and license are in `demo/fonts`.
 
 ## Build locally
 
