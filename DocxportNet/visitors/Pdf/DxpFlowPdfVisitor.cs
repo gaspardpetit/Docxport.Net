@@ -2892,14 +2892,17 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         _clippedTextBoxes.Add(frame);
         var bodyProperties = textBox.Ancestors().FirstOrDefault(element => element.LocalName == "wsp")?
             .Descendants().FirstOrDefault(element => element.LocalName == "bodyPr");
-        frame.Orientation = bodyProperties?.GetAttribute("vert", "").Value switch
+        static string? OptionalAttribute(OpenXmlElement? element, string localName) =>
+            element?.GetAttributes().FirstOrDefault(attribute =>
+                attribute.LocalName == localName && attribute.NamespaceUri.Length == 0).Value;
+        frame.Orientation = OptionalAttribute(bodyProperties, "vert") switch
         {
             "vert" => MigraDoc.DocumentObjectModel.Shapes.TextOrientation.Vertical,
             "vert270" => MigraDoc.DocumentObjectModel.Shapes.TextOrientation.Upward,
             _ => MigraDoc.DocumentObjectModel.Shapes.TextOrientation.Horizontal
         };
         if (vmlStyle?.Contains("v-text-anchor:middle", StringComparison.OrdinalIgnoreCase) == true ||
-            bodyProperties?.GetAttribute("anchor", "").Value == "ctr")
+            OptionalAttribute(bodyProperties, "anchor") == "ctr")
             frame.CenterContentVertically = true;
         frame.RelativeHorizontal = MigraDoc.DocumentObjectModel.Shapes.RelativeHorizontal.Margin;
         frame.RelativeVertical = MigraDoc.DocumentObjectModel.Shapes.RelativeVertical.Paragraph;
@@ -3100,13 +3103,13 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
         frame.MarginBottom = Unit.FromPoint(3.6);
         if (bodyProperties != null)
         {
-            if (long.TryParse(bodyProperties.GetAttribute("lIns", "").Value, out var leftInset))
+            if (long.TryParse(OptionalAttribute(bodyProperties, "lIns"), out var leftInset))
                 frame.MarginLeft = Unit.FromPoint(leftInset / 12700.0);
-            if (long.TryParse(bodyProperties.GetAttribute("rIns", "").Value, out var rightInset))
+            if (long.TryParse(OptionalAttribute(bodyProperties, "rIns"), out var rightInset))
                 frame.MarginRight = Unit.FromPoint(rightInset / 12700.0);
-            if (long.TryParse(bodyProperties.GetAttribute("tIns", "").Value, out var topInset))
+            if (long.TryParse(OptionalAttribute(bodyProperties, "tIns"), out var topInset))
                 frame.MarginTop = Unit.FromPoint(topInset / 12700.0);
-            if (long.TryParse(bodyProperties.GetAttribute("bIns", "").Value, out var bottomInset))
+            if (long.TryParse(OptionalAttribute(bodyProperties, "bIns"), out var bottomInset))
                 frame.MarginBottom = Unit.FromPoint(bottomInset / 12700.0);
         }
         if (_container is Cell anchorCell && _paragraph != null &&

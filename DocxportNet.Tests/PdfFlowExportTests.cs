@@ -2818,6 +2818,32 @@ public sealed class PdfFlowExportTests
         Assert.Contains(pdf.GetPages(), page => page.Letters.Any());
     }
 
+    [Fact]
+    public void RendersDrawingTextBoxWithMissingOptionalBodyProperties()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+        var root = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../.."));
+        var source = Path.Combine(root, "fixtures", "docx", "features", "text-boxes", "TextBoxSimple.docx");
+        using var docx = new MemoryStream();
+        docx.Write(File.ReadAllBytes(source));
+        docx.Position = 0;
+        using (var word = WordprocessingDocument.Open(docx, true))
+        {
+            var bodyProperties = word.MainDocumentPart!.Document.Descendants()
+                .First(element => element.LocalName == "bodyPr" &&
+                    element.NamespaceUri.Contains("wordprocessingShape", StringComparison.OrdinalIgnoreCase));
+            foreach (var attribute in bodyProperties.GetAttributes().Where(attribute =>
+                         attribute.LocalName is "vert" or "anchor" or "lIns" or "rIns" or "tIns" or "bIns").ToArray())
+                bodyProperties.RemoveAttribute(attribute.LocalName, attribute.NamespaceUri);
+            word.MainDocumentPart.Document.Save();
+        }
+
+        byte[] result = DxpExport.ExportToBytes(docx.ToArray(), new DxpFlowPdfVisitor());
+
+        using var pdf = UglyToad.PdfPig.PdfDocument.Open(result);
+        Assert.Contains("Visible", pdf.GetPages().SelectMany(page => page.GetWords()).Select(word => word.Text));
+    }
+
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
