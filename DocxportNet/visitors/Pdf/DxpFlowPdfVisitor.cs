@@ -15949,13 +15949,15 @@ public sealed class DxpFlowPdfVisitor : DxpVisitor, DxpIFieldEvalProvider, IDxpA
                     _table.LeftPadding = Unit.FromPoint(_horizontalMergeTable ? 0.5 : 0);
                 if (rightMargin == null) _table.RightPadding = Unit.Zero;
             }
-            if (context.CompatibilityMode < 15 &&
-                table.TableProperties?.GetFirstChild<TableIndentation>() is { } tableIndent &&
+            if (table.TableProperties?.GetFirstChild<TableIndentation>() is { } tableIndent &&
                 tableIndent.Type?.Value == TableWidthUnitValues.Dxa &&
-                tableIndent.Width?.Value is > 0 and var tableIndentTwips)
-                _table.Rows.LeftIndent = Unit.FromPoint(tableIndentTwips / 20.0 -
-                    _table.LeftPadding.Point -
-                    Math.Max(0, tableContext.ComputedStyle.TableBorders?.Left?.WidthPt ?? 0));
+                tableIndent.Width?.Value is int tableIndentTwips &&
+                (tableIndentTwips < 0 ||
+                 context.CompatibilityMode < 15 && tableIndentTwips > 0))
+                _table.Rows.LeftIndent = Unit.FromPoint(tableIndentTwips < 0
+                    ? tableIndentTwips / 20.0
+                    : tableIndentTwips / 20.0 - _table.LeftPadding.Point -
+                      Math.Max(0, tableContext.ComputedStyle.TableBorders?.Left?.WidthPt ?? 0));
             if (HasSixDoubleBorders(table))
                 _table.LeftPadding = Unit.FromPoint(Math.Max(0, _table.LeftPadding.Point - 0.5));
             if (!firstPageIntroTableFooter && table.TableProperties?.TableBorders != null &&
