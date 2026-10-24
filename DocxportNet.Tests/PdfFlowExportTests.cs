@@ -23,6 +23,40 @@ namespace DocxportNet.Tests;
 
 public sealed class PdfFlowExportTests
 {
+    [Fact]
+    public void NegativeTableIndentMovesTableLeft()
+    {
+        GlobalFontSettings.FontResolver = PdfTextExportTests.FontResolver;
+
+        byte[] Render(int indentTwips)
+        {
+            using var source = new MemoryStream();
+            using (var document = WordprocessingDocument.Create(source,
+                       WordprocessingDocumentType.Document, true))
+            {
+                var main = document.AddMainDocumentPart();
+                main.Document = new Document(new Body(
+                    new Table(
+                        new TableProperties(
+                            new TableWidth { Width = "4000", Type = TableWidthUnitValues.Dxa },
+                            new TableIndentation { Width = indentTwips, Type = TableWidthUnitValues.Dxa }),
+                        new TableGrid(new GridColumn { Width = "4000" }),
+                        new TableRow(new TableCell(new Paragraph(new Run(new Text("Probe"))))))));
+                main.Document.Save();
+            }
+            return DxpExport.ExportToBytes(source.ToArray(), new DxpFlowPdfVisitor());
+        }
+
+        double Left(byte[] bytes)
+        {
+            using var pdf = UglyToad.PdfPig.PdfDocument.Open(bytes);
+            return Assert.Single(pdf.GetPage(1).GetWords(), word => word.Text == "Probe")
+                .BoundingBox.Left;
+        }
+
+        Assert.InRange(Left(Render(-400)) - Left(Render(-851)), 22.53, 22.57);
+    }
+
     [Theory]
     [InlineData("samples", "file-sample_1MB", 2, "Lorem", 95.3)]
     [InlineData("legacy", "WordConditionalColumnBorders", 1, "A1", 77.4)]
