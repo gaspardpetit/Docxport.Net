@@ -74,6 +74,13 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
         VerifyAgainstFixture(sample, DxpHtmlVisitorConfig.CreateRichConfig(), ".reject.html", ".reject.test.html", DxpTrackedChangeMode.RejectChanges, DxpFieldEvalExportMode.None);
     }
 
+    [Fact]
+    public void TestDocxToHtml_Tracked_Inline()
+    {
+        var sample = new Sample(Path.Combine(SamplesDirectory, "Tracked.docx"));
+        VerifyAgainstFixture(sample, DxpHtmlVisitorConfig.CreateRichConfig(), ".inline.html", ".inline.test.html", DxpTrackedChangeMode.InlineChanges, DxpFieldEvalExportMode.None);
+    }
+
     [Theory]
     [MemberData(nameof(SampleDocs))]
     public void TestDocxToHtml_Cached(Sample sample)
