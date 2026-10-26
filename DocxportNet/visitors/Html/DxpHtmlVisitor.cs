@@ -14,6 +14,7 @@ using DocxportNet.Fields;
 using DocxportNet.Omml;
 using DocxportNet.Walker.Context;
 using DocxportNet.Walker;
+using DocxportNet.Middleware;
 
 namespace DocxportNet.Visitors.Html;
 
@@ -108,8 +109,10 @@ public sealed record DxpHtmlVisitorConfig
     public static DxpHtmlVisitorConfig CreateConfig() => CreateRichConfig();
 }
 
-public sealed class DxpHtmlVisitor : DxpVisitor, DxpITextVisitor, IDxpHeaderFooterSelectionProvider, IDisposable, DxpIFieldEvalProvider, DxpIMarkupChangeClassifierProvider
+public sealed class DxpHtmlVisitor : DxpVisitor, DxpITextVisitor, IDxpHeaderFooterSelectionProvider, IDisposable, DxpIFieldEvalProvider, DxpIMarkupChangeClassifierProvider, IDxpInlineRevisionStyleBoundary
 {
+    bool IDxpInlineRevisionStyleBoundary.ResetStyleAtRevisionBoundary =>
+        _config.TrackedChangeMode == DxpTrackedChangeMode.InlineChanges;
     private TextWriter _sinkWriter;
     private StreamWriter? _ownedStreamWriter;
     private DxpBufferedTextWriter _rejectBufferedWriter;

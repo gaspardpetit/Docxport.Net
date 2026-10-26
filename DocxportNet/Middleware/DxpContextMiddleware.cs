@@ -10,6 +10,11 @@ using System.Globalization;
 
 namespace DocxportNet.Middleware;
 
+internal interface IDxpInlineRevisionStyleBoundary
+{
+    bool ResetStyleAtRevisionBoundary { get; }
+}
+
 /// <summary>
 /// Placeholder state layer for the walker pipeline.
 /// Currently forwards all events unchanged.
@@ -399,9 +404,14 @@ public sealed class DxpContextMiddleware : DxpLoggingMiddleware
         if (d is not IDxpMutableDocumentContext doc)
             return Next.VisitDeletedRunBegin(dr, d);
 
+        bool resetStyle = Next is IDxpInlineRevisionStyleBoundary { ResetStyleAtRevisionBoundary: true };
+        if (resetStyle)
+            ResetStyle(d);
         var scope = doc.PushChangeScope(keepAccept: false, keepReject: true, changeInfo: ResolveChangeInfo(dr, d));
         var inner = Next.VisitDeletedRunBegin(dr, d);
-        return new DxpAfterScope(inner, scope.Dispose);
+        return resetStyle
+            ? new DxpAroundScope(inner, () => ResetStyle(d), scope.Dispose)
+            : new DxpAfterScope(inner, scope.Dispose);
     }
 
     public override IDisposable VisitInsertedRunBegin(InsertedRun ir, DxpIDocumentContext d)
@@ -409,9 +419,14 @@ public sealed class DxpContextMiddleware : DxpLoggingMiddleware
         if (d is not IDxpMutableDocumentContext doc)
             return Next.VisitInsertedRunBegin(ir, d);
 
+        bool resetStyle = Next is IDxpInlineRevisionStyleBoundary { ResetStyleAtRevisionBoundary: true };
+        if (resetStyle)
+            ResetStyle(d);
         var scope = doc.PushChangeScope(keepAccept: true, keepReject: false, changeInfo: ResolveChangeInfo(ir, d));
         var inner = Next.VisitInsertedRunBegin(ir, d);
-        return new DxpAfterScope(inner, scope.Dispose);
+        return resetStyle
+            ? new DxpAroundScope(inner, () => ResetStyle(d), scope.Dispose)
+            : new DxpAfterScope(inner, scope.Dispose);
     }
 
     public override IDisposable VisitDeletedBegin(Deleted del, DxpIDocumentContext d)
