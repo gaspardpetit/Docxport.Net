@@ -72,6 +72,11 @@ const markdown = await docxport.export(docxBytes, {
 const resolvedBytes = await docxport.resolveDocx(docxBytes, {
   fields: { mode: "evaluate", variables: { Customer: "Ada" } }
 });
+// Inline HTML spans expose data-dxp-review-id values such as word/document.xml#35.
+const reviewedBytes = await docxport.reviewDocx(docxBytes, {
+  accept: ["word/document.xml#35", "word/document.xml#36"],
+  reject: []
+});
 const projectedBytes = await docxport.projectDocx(docBytes);
 const plainDocBytes = await docxport.exportDoc(docxBytes);
 // Supply OpenType bytes because the browser does not expose installed font files.

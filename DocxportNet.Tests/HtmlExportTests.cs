@@ -923,7 +923,7 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
 
         string html = ExportHtmlFromBodyXml(bodyXml, config);
 
-        Assert.Contains("Old title</span></span><span class=\"dxp-inserted\">", html, StringComparison.Ordinal);
+        Assert.Contains("Old title</span></span><span class=\"dxp-inserted\" data-dxp-review-id=\"word/document.xml#2\">", html, StringComparison.Ordinal);
         Assert.Contains("New title</span></span>", html, StringComparison.Ordinal);
     }
 

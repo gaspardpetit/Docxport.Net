@@ -161,6 +161,23 @@ Visitors can emit different views of tracked changes:
 - Inline markup (insert/delete): `DxpTrackedChangeMode.InlineChanges`
 - Split accept/reject panes: `DxpTrackedChangeMode.SplitChanges`
 
+Inline HTML adds `data-dxp-review-id` to tracked insertion and deletion spans. The
+value combines the DOCX part path and Word revision ID, for example
+`word/document.xml#36`. Use those values to review selected changes in a DOCX:
+
+```csharp
+byte[] reviewed = DxpReview.Apply(docxBytes,
+    accept: ["word/document.xml#35", "word/document.xml#36"],
+    reject: []);
+```
+
+An empty collection selects no changes. A null `accept` collection accepts every
+change except those listed in `reject`; a null `reject` collection rejects every
+change except those listed in `accept`. Two null collections leave the DOCX unchanged.
+Listing the same ID in both collections, or an ID absent from the DOCX, throws an
+`ArgumentException`. A replacement such as the title above has separate deletion
+and insertion IDs.
+
 Pick the mode on the visitor config, e.g.:
 
 ```csharp

@@ -410,7 +410,7 @@ public sealed class DxpContextMiddleware : DxpLoggingMiddleware
         var scope = doc.PushChangeScope(keepAccept: false, keepReject: true, changeInfo: ResolveChangeInfo(dr, d));
         var inner = Next.VisitDeletedRunBegin(dr, d);
         return resetStyle
-            ? new DxpAroundScope(inner, () => ResetStyle(d), scope.Dispose)
+            ? new DxpAfterScope(new DxpBeforeScope(inner, () => ResetStyle(d)), scope.Dispose)
             : new DxpAfterScope(inner, scope.Dispose);
     }
 
@@ -425,7 +425,7 @@ public sealed class DxpContextMiddleware : DxpLoggingMiddleware
         var scope = doc.PushChangeScope(keepAccept: true, keepReject: false, changeInfo: ResolveChangeInfo(ir, d));
         var inner = Next.VisitInsertedRunBegin(ir, d);
         return resetStyle
-            ? new DxpAroundScope(inner, () => ResetStyle(d), scope.Dispose)
+            ? new DxpAfterScope(new DxpBeforeScope(inner, () => ResetStyle(d)), scope.Dispose)
             : new DxpAfterScope(inner, scope.Dispose);
     }
 
