@@ -151,6 +151,29 @@ public class DxpReviewTests
     }
 
     [Fact]
+    public void Review_PreservesUnselectedParagraphBreakAfterMerge()
+    {
+        byte[] source = CreateReviewDocument("""
+<w:p><w:pPr><w:rPr><w:del w:id="50" w:author="Test"/></w:rPr></w:pPr><w:r><w:t>First</w:t></w:r></w:p>
+<w:p><w:pPr><w:rPr><w:del w:id="51" w:author="Test"/></w:rPr></w:pPr><w:r><w:t>Second</w:t></w:r></w:p>
+<w:p><w:r><w:t>Third</w:t></w:r></w:p>
+""");
+        byte[] firstAccepted = DxpReview.Apply(source, ["word/document.xml#50"], []);
+        using (var doc = WordprocessingDocument.Open(new MemoryStream(firstAccepted), false))
+        {
+            var paragraphs = doc.MainDocumentPart!.Document.Body!.Elements<Paragraph>().ToArray();
+            Assert.Equal(2, paragraphs.Length);
+            Assert.Equal("FirstSecond", paragraphs[0].InnerText);
+            Assert.Equal("51", paragraphs[0].ParagraphProperties?.ParagraphMarkRunProperties?
+                .GetFirstChild<Deleted>()?.Id?.Value);
+        }
+        using var bothAccepted = WordprocessingDocument.Open(new MemoryStream(DxpReview.Apply(firstAccepted,
+            ["word/document.xml#51"], [])), false);
+        var merged = Assert.Single(bothAccepted.MainDocumentPart!.Document.Body!.Elements<Paragraph>());
+        Assert.Equal("FirstSecondThird", merged.InnerText);
+    }
+
+    [Fact]
     public void Review_HandlesTableCellInsertionsDeletionsAndMerges()
     {
         byte[] source = CreateReviewDocument("""
@@ -171,13 +194,31 @@ public class DxpReviewTests
         var rejectedCells = rejected.MainDocumentPart!.Document.Descendants<TableCell>().ToArray();
         Assert.Equal(2, rejectedCells.Length);
         Assert.Equal("Deleted", rejectedCells[0].InnerText);
-        Assert.Null(rejectedCells[1].TableCellProperties!.GetFirstChild<VerticalMerge>());
+        Assert.Equal(MergedCellValues.Restart,
+            rejectedCells[1].TableCellProperties!.GetFirstChild<VerticalMerge>()?.Val?.Value);
         Assert.Empty(rejected.MainDocumentPart.Document.Descendants<CellMerge>());
 
         using var selected = WordprocessingDocument.Open(new MemoryStream(DxpReview.Apply(source,
             ["word/document.xml#60", "word/document.xml#62"], ["word/document.xml#61"])), false);
         Assert.Equal(3, selected.MainDocumentPart!.Document.Descendants<TableCell>().Count());
         Assert.Empty(selected.MainDocumentPart.Document.Descendants<CellMerge>());
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void Review_RestoresVerticalMergeRestart(bool accept)
+    {
+        byte[] source = CreateReviewDocument("""
+<w:tbl><w:tr><w:tc><w:tcPr><w:cellMerge w:id="63" w:author="Test" w:vMerge="rest" w:vMergeOrig="cont"/></w:tcPr><w:p/></w:tc></w:tr></w:tbl>
+""");
+        byte[] result = accept ? DxpReview.Apply(source, ["word/document.xml#63"], [])
+            : DxpReview.Apply(source, [], ["word/document.xml#63"]);
+        using var doc = WordprocessingDocument.Open(new MemoryStream(result), false);
+        var properties = Assert.Single(doc.MainDocumentPart!.Document.Descendants<TableCellProperties>());
+        Assert.Equal(accept ? MergedCellValues.Restart : MergedCellValues.Continue,
+            properties.GetFirstChild<VerticalMerge>()?.Val?.Value);
+        Assert.Empty(properties.Elements<CellMerge>());
     }
 
     [Fact]

@@ -124,6 +124,8 @@ public static class DxpReview
                 cellProperties.RemoveAllChildren<VerticalMerge>();
                 if (state == VerticalMergeRevisionValues.Continue)
                     cellProperties.InsertBefore(new VerticalMerge { Val = MergedCellValues.Continue }, change);
+                else if (state == VerticalMergeRevisionValues.Restart)
+                    cellProperties.InsertBefore(new VerticalMerge { Val = MergedCellValues.Restart }, change);
                 change.Remove();
                 return;
             }
@@ -146,6 +148,10 @@ public static class DxpReview
         {
             if (!keepContent && paragraph.NextSibling<Paragraph>() is Paragraph next)
             {
+                // The remaining paragraph break belongs to the second paragraph.
+                paragraph.ParagraphProperties?.Remove();
+                if (next.ParagraphProperties is ParagraphProperties nextProperties)
+                    paragraph.PrependChild((ParagraphProperties)nextProperties.CloneNode(true));
                 foreach (var child in next.ChildElements.Where(child => child is not ParagraphProperties).ToArray())
                     paragraph.Append(child.CloneNode(true));
                 next.Remove();
