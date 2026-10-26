@@ -2032,6 +2032,9 @@ public class DxpWalker
 
     private void WalkDeletedRun(DeletedRun dr, DxpDocumentContext d, DxpIVisitor v)
     {
+        // Formatting must not remain open across a revision boundary: HTML revision
+        // spans would otherwise cross a font/style span opened by an adjacent run.
+        d.StyleTracker.ResetStyle(d, v);
         using (v.VisitDeletedRunBegin(dr, d))
         {
             foreach (var child in dr.ChildElements)
@@ -2162,6 +2165,7 @@ public class DxpWalker
                         break;
                 }
             }
+            d.StyleTracker.ResetStyle(d, v);
         }
     }
 
@@ -2186,6 +2190,7 @@ public class DxpWalker
 
     private void WalkInsertedRun(InsertedRun ir, DxpDocumentContext d, DxpIVisitor v)
     {
+        d.StyleTracker.ResetStyle(d, v);
         using (v.VisitInsertedRunBegin(ir, d))
         {
             foreach (var child in ir.ChildElements)
@@ -2314,6 +2319,7 @@ public class DxpWalker
                         break;
                 }
             }
+            d.StyleTracker.ResetStyle(d, v);
         }
     }
 

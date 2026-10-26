@@ -906,6 +906,28 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
     }
 
     [Fact]
+    public void HtmlExport_AdjacentTrackedChanges_CloseFormattingBeforeNextRevision()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:pPr><w:pStyle w:val="Title"/></w:pPr>
+    <w:del w:id="1" w:author="Test"><w:r><w:rPr><w:sz w:val="44"/></w:rPr><w:delText>Old title</w:delText></w:r></w:del>
+    <w:ins w:id="2" w:author="Test"><w:r><w:rPr><w:sz w:val="44"/></w:rPr><w:t>New title</w:t></w:r></w:ins>
+  </w:p>
+</w:body>
+""";
+
+        var config = DxpHtmlVisitorConfig.CreateRichConfig();
+        config.TrackedChangeMode = DxpTrackedChangeMode.InlineChanges;
+
+        string html = ExportHtmlFromBodyXml(bodyXml, config);
+
+        Assert.Contains("Old title</span></span><span class=\"dxp-inserted\">", html, StringComparison.Ordinal);
+        Assert.Contains("New title</span></span>", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void HtmlExport_MarkupClassifier_DoubleStrikeRejectsAsDeleted()
     {
         const string bodyXml = """
