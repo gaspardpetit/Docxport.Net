@@ -83,7 +83,7 @@ public static class DxpReview
     {
         string name = element.LocalName;
         return name is "ins" or "del" or "moveFrom" or "moveTo" or
-            "cellIns" or "cellDel" or "cellMerge" or "tblGridChange" or
+            "cellIns" or "cellDel" or "cellMerge" or "tblGridChange" or "tblPrExChange" or
             "moveFromRangeStart" or "moveFromRangeEnd" or "moveToRangeStart" or "moveToRangeEnd"
             || name.EndsWith("PrChange", StringComparison.Ordinal);
     }
@@ -103,7 +103,7 @@ public static class DxpReview
             gridChange.Remove();
             return;
         }
-        if (name.EndsWith("PrChange", StringComparison.Ordinal))
+        if (name.EndsWith("PrChange", StringComparison.Ordinal) || name == "tblPrExChange")
         {
             if (!accept && change.Parent is OpenXmlCompositeElement properties)
             {
@@ -186,17 +186,26 @@ public static class DxpReview
         foreach (var child in change.ChildElements.ToArray())
         {
             var copy = child.CloneNode(true);
-            foreach (var deletedText in copy.Descendants<DeletedText>().ToArray())
-                deletedText.InsertAfterSelf(new Text(deletedText.Text) { Space = deletedText.Space });
-            foreach (var deletedText in copy.Descendants<DeletedText>().ToArray())
-                deletedText.Remove();
-            foreach (var deletedField in copy.Descendants<DeletedFieldCode>().ToArray())
+            if (name is "del" or "moveFrom")
             {
-                deletedField.InsertAfterSelf(new FieldCode(deletedField.Text) { Space = deletedField.Space });
-                deletedField.Remove();
+                foreach (var deletedText in copy.Descendants<DeletedText>()
+                    .Where(IsOutsideNestedDeletedRevision).ToArray())
+                {
+                    deletedText.InsertAfterSelf(new Text(deletedText.Text) { Space = deletedText.Space });
+                    deletedText.Remove();
+                }
+                foreach (var deletedField in copy.Descendants<DeletedFieldCode>()
+                    .Where(IsOutsideNestedDeletedRevision).ToArray())
+                {
+                    deletedField.InsertAfterSelf(new FieldCode(deletedField.Text) { Space = deletedField.Space });
+                    deletedField.Remove();
+                }
             }
             parent.InsertBefore(copy, change);
         }
         change.Remove();
     }
+
+    private static bool IsOutsideNestedDeletedRevision(OpenXmlElement element) =>
+        !element.Ancestors().Any(ancestor => ancestor is DeletedRun or MoveFromRun);
 }

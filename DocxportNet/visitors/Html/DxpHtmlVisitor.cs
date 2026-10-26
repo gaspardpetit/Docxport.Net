@@ -629,8 +629,10 @@ body.dxp-root {
     {
         if (_config.TrackedChangeMode != DxpTrackedChangeMode.InlineChanges || id == null || d.CurrentPart == null)
             return DxpDisposable.Empty;
+        var previousMode = _state.CurrentInlineMode;
+        var previousId = _state.CurrentInlineReviewId;
         SetInlineChangeMode(mode, DxpReviewId.Create(d.CurrentPart, id));
-        return DxpDisposable.Create(() => SetInlineChangeMode(DxpHtmlVisitorState.InlineChangeMode.Unchanged));
+        return DxpDisposable.Create(() => SetInlineChangeMode(previousMode, previousId));
     }
 
     public override void VisitDeletedText(DeletedText dt, DxpIDocumentContext d)

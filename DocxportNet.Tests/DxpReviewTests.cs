@@ -4,6 +4,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.Visitors.Html;
 using DocxportNet.Visitors.Markdown;
 using DocxportNet.Wasm;
+using System.Text.RegularExpressions;
 using Xunit;
 
 namespace DocxportNet.Tests;
@@ -49,6 +50,41 @@ public class DxpReviewTests
         Assert.Contains("class=\"dxp-deleted\" data-dxp-review-id=\"word/document.xml#35\"", html);
         Assert.Contains("class=\"dxp-inserted\" data-dxp-review-id=\"word/document.xml#36\"", html);
         Assert.Contains("class=\"dxp-inserted\" data-dxp-review-id=\"word/document.xml#37\"", html);
+    }
+
+    [Fact]
+    public void Html_RestoresEnclosingReviewIdAfterNestedRun()
+    {
+        byte[] source = CreateReviewDocument("""
+<w:p><w:ins w:id="142" w:author="Test"><w:r><w:t>Before </w:t></w:r><w:del w:id="143" w:author="Test"><w:r><w:delText>old</w:delText></w:r></w:del><w:r><w:t>or after</w:t></w:r></w:ins></w:p>
+""");
+        var config = DxpHtmlVisitorConfig.CreateRichConfig();
+        config.TrackedChangeMode = DxpTrackedChangeMode.InlineChanges;
+        string html = DxpExport.ExportToString(source, new DxpHtmlVisitor(config));
+        Assert.Equal(2, Regex.Matches(html, "data-dxp-review-id=\"word/document.xml#142\"").Count);
+        Assert.Contains("data-dxp-review-id=\"word/document.xml#143\"", html);
+        Assert.Matches("data-dxp-review-id=\"word/document.xml#142\"[^>]*>or after", html);
+    }
+
+    [Fact]
+    public void Review_PreservesUnselectedNestedDeletionMarkup()
+    {
+        byte[] source = CreateReviewDocument("""
+<w:p><w:ins w:id="1" w:author="Test"><w:r><w:t>new </w:t></w:r><w:del w:id="2" w:author="Test"><w:r><w:delText>old</w:delText></w:r></w:del><w:r><w:t>after</w:t></w:r></w:ins></w:p>
+""");
+        byte[] result = DxpReview.Apply(source, ["word/document.xml#1"], []);
+        using (var doc = WordprocessingDocument.Open(new MemoryStream(result), false))
+        {
+            var deletion = Assert.Single(doc.MainDocumentPart!.Document.Descendants<DeletedRun>());
+            Assert.Equal("2", deletion.Id?.Value);
+            Assert.Single(deletion.Descendants<DeletedText>());
+            Assert.Empty(deletion.Descendants<Text>());
+        }
+        using var resolved = WordprocessingDocument.Open(new MemoryStream(DxpReview.Apply(result,
+            [], ["word/document.xml#2"])), false);
+        Assert.Empty(resolved.MainDocumentPart!.Document.Descendants<DeletedRun>());
+        Assert.Empty(resolved.MainDocumentPart.Document.Descendants<DeletedText>());
+        Assert.Equal("new oldafter", resolved.MainDocumentPart.Document.Body!.InnerText);
     }
 
     [Fact]
@@ -215,6 +251,27 @@ public class DxpReviewTests
         var rejectedGrid = Assert.Single(rejected.MainDocumentPart!.Document.Descendants<TableGrid>());
         Assert.Equal(new[] { "2000", "2000" }, rejectedGrid.Elements<GridColumn>().Select(c => c.Width!.Value));
         Assert.Empty(rejectedGrid.Elements<TableGridChange>());
+    }
+
+    [Fact]
+    public void Review_AcceptsOrRestoresTablePropertyExceptions()
+    {
+        byte[] source = CreateReviewDocument("""
+<w:tbl><w:tblGrid><w:gridCol w:w="1000"/></w:tblGrid><w:tr>
+<w:tblPrEx><w:tblW w:w="1000" w:type="dxa"/>
+<w:tblPrExChange w:id="81" w:author="Test"><w:tblPrEx><w:tblW w:w="2000" w:type="dxa"/></w:tblPrEx></w:tblPrExChange>
+</w:tblPrEx><w:tc><w:p/></w:tc></w:tr></w:tbl>
+""");
+        using var accepted = WordprocessingDocument.Open(new MemoryStream(DxpReview.Apply(source, null, [])), false);
+        var acceptedException = Assert.Single(accepted.MainDocumentPart!.Document.Descendants<TablePropertyExceptions>());
+        Assert.Equal("1000", acceptedException.GetFirstChild<TableWidth>()?.Width?.Value);
+        Assert.Empty(acceptedException.Elements<TablePropertyExceptionsChange>());
+
+        using var rejected = WordprocessingDocument.Open(new MemoryStream(DxpReview.Apply(source,
+            [], ["word/document.xml#81"])), false);
+        var rejectedException = Assert.Single(rejected.MainDocumentPart!.Document.Descendants<TablePropertyExceptions>());
+        Assert.Equal("2000", rejectedException.GetFirstChild<TableWidth>()?.Width?.Value);
+        Assert.Empty(rejectedException.Elements<TablePropertyExceptionsChange>());
     }
 
     [Fact]
