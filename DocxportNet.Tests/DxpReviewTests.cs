@@ -116,4 +116,81 @@ public class DxpReviewTests
         Assert.Empty(rejected.MainDocumentPart.Document.Descendants<Bold>());
         Assert.Single(rejected.MainDocumentPart.Document.Descendants<TableRow>());
     }
+
+    private static byte[] CreateReviewDocument(string bodyXml)
+    {
+        using var stream = new MemoryStream();
+        using (var doc = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document, true))
+        {
+            var main = doc.AddMainDocumentPart();
+            var body = new Body();
+            body.AddNamespaceDeclaration("w", "http://schemas.openxmlformats.org/wordprocessingml/2006/main");
+            body.InnerXml = bodyXml;
+            main.Document = new Document(body);
+            main.Document.Save();
+        }
+        return stream.ToArray();
+    }
+
+    [Theory]
+    [InlineData("del", true)]
+    [InlineData("ins", false)]
+    public void Review_RemovesSelectedParagraphBreak(string mark, bool accept)
+    {
+        byte[] source = CreateReviewDocument($"""
+<w:p><w:pPr><w:rPr><w:{mark} w:id="50" w:author="Test"/></w:rPr></w:pPr><w:r><w:t>First</w:t></w:r></w:p>
+<w:p><w:r><w:t>Second</w:t></w:r></w:p>
+""");
+        byte[] result = accept
+            ? DxpReview.Apply(source, ["word/document.xml#50"], [])
+            : DxpReview.Apply(source, [], ["word/document.xml#50"]);
+        using var doc = WordprocessingDocument.Open(new MemoryStream(result), false);
+        var paragraphs = doc.MainDocumentPart!.Document.Body!.Elements<Paragraph>().ToArray();
+        Assert.Single(paragraphs);
+        Assert.Equal("FirstSecond", paragraphs[0].InnerText);
+    }
+
+    [Fact]
+    public void Review_HandlesTableCellInsertionsDeletionsAndMerges()
+    {
+        byte[] source = CreateReviewDocument("""
+<w:tbl><w:tr>
+<w:tc><w:tcPr><w:cellIns w:id="60" w:author="Test"/></w:tcPr><w:p><w:r><w:t>Inserted</w:t></w:r></w:p></w:tc>
+<w:tc><w:tcPr><w:cellDel w:id="61" w:author="Test"/></w:tcPr><w:p><w:r><w:t>Deleted</w:t></w:r></w:p></w:tc>
+<w:tc><w:tcPr><w:vMerge w:val="continue"/><w:cellMerge w:id="62" w:author="Test" w:vMerge="cont" w:vMergeOrig="rest"/></w:tcPr><w:p/></w:tc>
+</w:tr></w:tbl>
+""");
+        using var accepted = WordprocessingDocument.Open(new MemoryStream(DxpReview.Apply(source, null, [])), false);
+        var acceptedCells = accepted.MainDocumentPart!.Document.Descendants<TableCell>().ToArray();
+        Assert.Equal(2, acceptedCells.Length);
+        Assert.Equal("Inserted", acceptedCells[0].InnerText);
+        Assert.NotNull(acceptedCells[1].TableCellProperties!.GetFirstChild<VerticalMerge>());
+        Assert.Empty(accepted.MainDocumentPart.Document.Descendants<CellMerge>());
+
+        using var rejected = WordprocessingDocument.Open(new MemoryStream(DxpReview.Apply(source, [], null)), false);
+        var rejectedCells = rejected.MainDocumentPart!.Document.Descendants<TableCell>().ToArray();
+        Assert.Equal(2, rejectedCells.Length);
+        Assert.Equal("Deleted", rejectedCells[0].InnerText);
+        Assert.Null(rejectedCells[1].TableCellProperties!.GetFirstChild<VerticalMerge>());
+        Assert.Empty(rejected.MainDocumentPart.Document.Descendants<CellMerge>());
+
+        using var selected = WordprocessingDocument.Open(new MemoryStream(DxpReview.Apply(source,
+            ["word/document.xml#60", "word/document.xml#62"], ["word/document.xml#61"])), false);
+        Assert.Equal(3, selected.MainDocumentPart!.Document.Descendants<TableCell>().Count());
+        Assert.Empty(selected.MainDocumentPart.Document.Descendants<CellMerge>());
+    }
+
+    [Fact]
+    public void Review_RestoresDeletedFieldInstructions()
+    {
+        byte[] source = CreateReviewDocument("""
+<w:p><w:del w:id="70" w:author="Test"><w:r><w:delInstrText xml:space="preserve"> PAGE </w:delInstrText></w:r></w:del></w:p>
+""");
+        using var doc = WordprocessingDocument.Open(new MemoryStream(DxpReview.Apply(source,
+            [], ["word/document.xml#70"])), false);
+        var field = Assert.Single(doc.MainDocumentPart!.Document.Descendants<FieldCode>());
+        Assert.Equal(" PAGE ", field.Text);
+        Assert.Equal(SpaceProcessingModeValues.Preserve, field.Space!.Value);
+        Assert.Empty(doc.MainDocumentPart.Document.Descendants<DeletedFieldCode>());
+    }
 }

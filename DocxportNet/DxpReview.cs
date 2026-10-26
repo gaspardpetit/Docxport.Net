@@ -83,6 +83,7 @@ public static class DxpReview
     {
         string name = element.LocalName;
         return name is "ins" or "del" or "moveFrom" or "moveTo" or
+            "cellIns" or "cellDel" or "cellMerge" or
             "moveFromRangeStart" or "moveFromRangeEnd" or "moveToRangeStart" or "moveToRangeEnd"
             || name.EndsWith("PrChange", StringComparison.Ordinal);
     }
@@ -108,6 +109,25 @@ public static class DxpReview
         }
 
         bool keepContent = name is "ins" or "moveTo" ? accept : !accept;
+        if (change.Parent is TableCellProperties cellProperties &&
+            cellProperties.Parent is TableCell cell)
+        {
+            if (name is "cellIns" or "cellDel")
+            {
+                if ((name == "cellIns") != accept) cell.Remove();
+                else change.Remove();
+                return;
+            }
+            if (change is CellMerge merge)
+            {
+                var state = accept ? merge.VerticalMerge?.Value : merge.VerticalMergeOriginal?.Value;
+                cellProperties.RemoveAllChildren<VerticalMerge>();
+                if (state == VerticalMergeRevisionValues.Continue)
+                    cellProperties.InsertBefore(new VerticalMerge { Val = MergedCellValues.Continue }, change);
+                change.Remove();
+                return;
+            }
+        }
         if (change.Parent is TableRowProperties && change.Parent.Parent is TableRow row)
         {
             if (!keepContent) row.Remove();
@@ -121,7 +141,7 @@ public static class DxpReview
             return;
         }
         var paragraphProperties = change.Parent as ParagraphProperties
-            ?? (change.Parent as RunProperties)?.Parent as ParagraphProperties;
+            ?? (change.Parent as ParagraphMarkRunProperties)?.Parent as ParagraphProperties;
         if (paragraphProperties?.Parent is Paragraph paragraph)
         {
             if (!keepContent && paragraph.NextSibling<Paragraph>() is Paragraph next)
@@ -152,6 +172,11 @@ public static class DxpReview
                 deletedText.InsertAfterSelf(new Text(deletedText.Text) { Space = deletedText.Space });
             foreach (var deletedText in copy.Descendants<DeletedText>().ToArray())
                 deletedText.Remove();
+            foreach (var deletedField in copy.Descendants<DeletedFieldCode>().ToArray())
+            {
+                deletedField.InsertAfterSelf(new FieldCode(deletedField.Text) { Space = deletedField.Space });
+                deletedField.Remove();
+            }
             parent.InsertBefore(copy, change);
         }
         change.Remove();
