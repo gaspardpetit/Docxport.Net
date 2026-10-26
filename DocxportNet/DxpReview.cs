@@ -83,7 +83,7 @@ public static class DxpReview
     {
         string name = element.LocalName;
         return name is "ins" or "del" or "moveFrom" or "moveTo" or
-            "cellIns" or "cellDel" or "cellMerge" or
+            "cellIns" or "cellDel" or "cellMerge" or "tblGridChange" or
             "moveFromRangeStart" or "moveFromRangeEnd" or "moveToRangeStart" or "moveToRangeEnd"
             || name.EndsWith("PrChange", StringComparison.Ordinal);
     }
@@ -91,6 +91,18 @@ public static class DxpReview
     private static void ApplyChange(OpenXmlElement change, bool accept)
     {
         string name = change.LocalName;
+        if (change is TableGridChange gridChange && gridChange.Parent is TableGrid grid)
+        {
+            if (!accept && gridChange.PreviousTableGrid is PreviousTableGrid previous)
+            {
+                foreach (var column in grid.Elements<GridColumn>().ToArray())
+                    column.Remove();
+                foreach (var column in previous.Elements<GridColumn>())
+                    grid.InsertBefore(column.CloneNode(true), gridChange);
+            }
+            gridChange.Remove();
+            return;
+        }
         if (name.EndsWith("PrChange", StringComparison.Ordinal))
         {
             if (!accept && change.Parent is OpenXmlCompositeElement properties)
@@ -146,7 +158,7 @@ public static class DxpReview
             ?? (change.Parent as ParagraphMarkRunProperties)?.Parent as ParagraphProperties;
         if (paragraphProperties?.Parent is Paragraph paragraph)
         {
-            if (!keepContent && paragraph.NextSibling<Paragraph>() is Paragraph next)
+            if (!keepContent && paragraph.NextSibling() is Paragraph next)
             {
                 // The remaining paragraph break belongs to the second paragraph.
                 paragraph.ParagraphProperties?.Remove();

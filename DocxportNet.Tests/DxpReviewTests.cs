@@ -173,6 +173,50 @@ public class DxpReviewTests
         Assert.Equal("FirstSecondThird", merged.InnerText);
     }
 
+    [Theory]
+    [InlineData("del", true)]
+    [InlineData("ins", false)]
+    public void Review_DoesNotMergeParagraphsAcrossTable(string mark, bool accept)
+    {
+        byte[] source = CreateReviewDocument($"""
+<w:p><w:pPr><w:rPr><w:{mark} w:id="52" w:author="Test"/></w:rPr></w:pPr><w:r><w:t>Before</w:t></w:r></w:p>
+<w:tbl><w:tr><w:tc><w:p><w:r><w:t>Table</w:t></w:r></w:p></w:tc></w:tr></w:tbl>
+<w:p><w:r><w:t>After</w:t></w:r></w:p>
+""");
+        byte[] result = accept ? DxpReview.Apply(source, ["word/document.xml#52"], [])
+            : DxpReview.Apply(source, [], ["word/document.xml#52"]);
+        using var doc = WordprocessingDocument.Open(new MemoryStream(result), false);
+        var children = doc.MainDocumentPart!.Document.Body!.ChildElements.ToArray();
+        Assert.Equal(3, children.Length);
+        Assert.IsType<Paragraph>(children[0]);
+        Assert.Equal("Before", children[0].InnerText);
+        Assert.IsType<Table>(children[1]);
+        Assert.Equal("Table", children[1].InnerText);
+        Assert.IsType<Paragraph>(children[2]);
+        Assert.Equal("After", children[2].InnerText);
+    }
+
+    [Fact]
+    public void Review_AcceptsOrRestoresTableGridChanges()
+    {
+        byte[] source = CreateReviewDocument("""
+<w:tbl><w:tblGrid>
+<w:gridCol w:w="1000"/><w:gridCol w:w="3000"/>
+<w:tblGridChange w:id="80"><w:tblGrid><w:gridCol w:w="2000"/><w:gridCol w:w="2000"/></w:tblGrid></w:tblGridChange>
+</w:tblGrid><w:tr><w:tc><w:p/></w:tc><w:tc><w:p/></w:tc></w:tr></w:tbl>
+""");
+        using var accepted = WordprocessingDocument.Open(new MemoryStream(DxpReview.Apply(source,
+            ["word/document.xml#80"], [])), false);
+        var acceptedGrid = Assert.Single(accepted.MainDocumentPart!.Document.Descendants<TableGrid>());
+        Assert.Equal(new[] { "1000", "3000" }, acceptedGrid.Elements<GridColumn>().Select(c => c.Width!.Value));
+        Assert.Empty(acceptedGrid.Elements<TableGridChange>());
+
+        using var rejected = WordprocessingDocument.Open(new MemoryStream(DxpReview.Apply(source, [], null)), false);
+        var rejectedGrid = Assert.Single(rejected.MainDocumentPart!.Document.Descendants<TableGrid>());
+        Assert.Equal(new[] { "2000", "2000" }, rejectedGrid.Elements<GridColumn>().Select(c => c.Width!.Value));
+        Assert.Empty(rejectedGrid.Elements<TableGridChange>());
+    }
+
     [Fact]
     public void Review_HandlesTableCellInsertionsDeletionsAndMerges()
     {
