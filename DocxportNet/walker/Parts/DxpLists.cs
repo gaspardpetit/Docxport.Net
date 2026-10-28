@@ -145,6 +145,7 @@ public sealed class DxpListTracker
 {
     private readonly Dictionary<int, int?[]> _counters = new();
     private readonly HashSet<int> _visitedInstances = new();
+    private readonly Dictionary<(int NumId, int Level), int?> _restartedCounters = new();
 
     private int?[] GetArr(int abstractId)
     {
@@ -164,20 +165,41 @@ public sealed class DxpListTracker
         var firstInInstance = _visitedInstances.Add(numId);
 
         for (int d = ilvl + 1; d < arr.Length; d++)
+        {
             arr[d] = null;
+            if (_restartedCounters.ContainsKey((numId, d)))
+                _restartedCounters[(numId, d)] = null;
+        }
 
-        arr[ilvl] = arr[ilvl] == null || firstInInstance && hasStartOverride
-            ? startAt : arr[ilvl]!.Value + 1;
+        var key = (numId, ilvl);
+        if (firstInInstance && hasStartOverride)
+        {
+            // An explicit restart belongs to this instance; it must not
+            // overwrite another instance's progress at the same level.
+            _restartedCounters[key] = startAt;
+            return startAt;
+        }
+
+        if (_restartedCounters.TryGetValue(key, out var restarted))
+        {
+            var next = restarted == null ? startAt : restarted.Value + 1;
+            _restartedCounters[key] = next;
+            return next;
+        }
+
+        arr[ilvl] = arr[ilvl] == null ? startAt : arr[ilvl]!.Value + 1;
         return arr[ilvl]!.Value;
     }
 
-    public int? GetCurrent(int abstractId, int ilvl)
-        => GetArr(abstractId)[ilvl];
+    public int? GetCurrent(int numId, int abstractId, int ilvl)
+        => _restartedCounters.TryGetValue((numId, ilvl), out var restarted)
+            ? restarted : GetArr(abstractId)[ilvl];
 
     public void ClearAll()
     {
         _counters.Clear();
         _visitedInstances.Clear();
+        _restartedCounters.Clear();
     }
 }
 
@@ -279,7 +301,7 @@ public static class DxpListMarkerFormatter
             if (result.IndexOf(placeholder, StringComparison.Ordinal) < 0)
                 continue;
 
-            var cur = tracker.GetCurrent(abstractId, i);
+            var cur = tracker.GetCurrent(numPr.NumId, abstractId, i);
             if (cur == null)
             {
                 // If a placeholder references a level that hasn't been started yet,

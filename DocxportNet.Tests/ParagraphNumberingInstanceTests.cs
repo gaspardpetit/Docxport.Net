@@ -10,12 +10,17 @@ namespace DocxportNet.Tests;
 public sealed class ParagraphNumberingInstanceTests
 {
     [Fact]
-    public void StartOverrideStillAppliesWhenInstanceBeginsAtNumberedLevel()
+    public void ExplicitRestartDoesNotOverwriteAnotherInstancesProgress()
     {
         var tracker = new DxpListTracker();
 
         Assert.Equal(1, tracker.NextIndex(1, 7, 0, 1, false));
-        Assert.Equal(5, tracker.NextIndex(8, 7, 0, 5, true));
+        Assert.Equal(2, tracker.NextIndex(1, 7, 0, 1, false));
+        Assert.Equal(10, tracker.NextIndex(8, 7, 0, 10, true));
+        Assert.Equal(11, tracker.NextIndex(8, 7, 0, 10, true));
+        Assert.Equal(3, tracker.NextIndex(1, 7, 0, 1, false));
+        Assert.Equal(3, tracker.GetCurrent(1, 7, 0));
+        Assert.Equal(11, tracker.GetCurrent(8, 7, 0));
     }
 
     [Fact]
