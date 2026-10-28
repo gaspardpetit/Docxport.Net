@@ -190,9 +190,12 @@ public sealed class DxpListTracker
     }
 
     public int? GetCurrent(int numId, int abstractId, int ilvl)
-        => IsIndependent(numId, ilvl)
-            ? _restartedCounters.GetValueOrDefault((numId, ilvl))
-            : GetArr(abstractId)[ilvl];
+    {
+        if (!IsIndependent(numId, ilvl))
+            return GetArr(abstractId)[ilvl];
+        return _restartedCounters.TryGetValue((numId, ilvl), out var restarted)
+            ? restarted : null;
+    }
 
     private bool IsIndependent(int numId, int ilvl)
     {
