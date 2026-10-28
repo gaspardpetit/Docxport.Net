@@ -83,6 +83,11 @@ public sealed class DxpNumberingResolver
         return (abs, lvl, startAt);
     }
 
+    public bool HasStartOverride(int numId, int ilvl) =>
+        _numById.TryGetValue(numId, out var num) &&
+        num.Elements<LevelOverride>().Any(level => level.LevelIndex?.Value == ilvl &&
+            level.StartOverrideNumberingValue?.Val?.Value != null);
+
     private AbstractNum? FollowAbstractNumLinks(AbstractNum abs)
     {
         // If it already has levels, nothing to do.
@@ -139,32 +144,41 @@ public sealed class DxpNumberingResolver
 public sealed class DxpListTracker
 {
     private readonly Dictionary<int, int?[]> _counters = new();
+    private readonly HashSet<int> _visitedInstances = new();
 
-    private int?[] GetArr(int numId)
+    private int?[] GetArr(int abstractId)
     {
-        if (!_counters.TryGetValue(numId, out var arr))
+        if (!_counters.TryGetValue(abstractId, out var arr))
         {
             arr = Enumerable.Repeat<int?>(null, 9).ToArray();
-            _counters[numId] = arr;
+            _counters[abstractId] = arr;
         }
         return arr;
     }
 
-    public int NextIndex(int numId, int ilvl, int startAt)
+    public int NextIndex(int numId, int abstractId, int ilvl, int startAt, bool hasStartOverride)
     {
-        var arr = GetArr(numId);
+        var arr = GetArr(abstractId);
+        // A heading can establish an instance before its first body paragraph.
+        // The override applies when the instance first appears, not per level.
+        var firstInInstance = _visitedInstances.Add(numId);
 
         for (int d = ilvl + 1; d < arr.Length; d++)
             arr[d] = null;
 
-        arr[ilvl] = arr[ilvl] == null ? startAt : arr[ilvl]!.Value + 1;
+        arr[ilvl] = arr[ilvl] == null || firstInInstance && hasStartOverride
+            ? startAt : arr[ilvl]!.Value + 1;
         return arr[ilvl]!.Value;
     }
 
-    public int? GetCurrent(int numId, int ilvl)
-        => GetArr(numId)[ilvl];
+    public int? GetCurrent(int abstractId, int ilvl)
+        => GetArr(abstractId)[ilvl];
 
-    public void ClearAll() => _counters.Clear();
+    public void ClearAll()
+    {
+        _counters.Clear();
+        _visitedInstances.Clear();
+    }
 }
 
 public static class DxpListMarkerFormatter
@@ -244,7 +258,9 @@ public static class DxpListMarkerFormatter
             return null;
 
         // Increment current level (normal list item / bullet / numbered)
-        tracker.NextIndex(numPr.NumId, numPr.Ilvl, startAt);
+        var abstractId = abs.AbstractNumberId?.Value ?? numPr.NumId;
+        tracker.NextIndex(numPr.NumId, abstractId, numPr.Ilvl, startAt,
+            nr.HasStartOverride(numPr.NumId, numPr.Ilvl));
 
         // If bullet, Word stores the glyph directly in lvlText (and font is in lvl.rPr).
         if (fmt == NumberFormatValues.Bullet)
@@ -263,7 +279,7 @@ public static class DxpListMarkerFormatter
             if (result.IndexOf(placeholder, StringComparison.Ordinal) < 0)
                 continue;
 
-            var cur = tracker.GetCurrent(numPr.NumId, i);
+            var cur = tracker.GetCurrent(abstractId, i);
             if (cur == null)
             {
                 // If a placeholder references a level that hasn't been started yet,
