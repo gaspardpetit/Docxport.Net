@@ -24,6 +24,25 @@ public sealed class ParagraphNumberingInstanceTests
     }
 
     [Fact]
+    public void ExplicitRestartDoesNotResetAnotherInstancesDescendants()
+    {
+        var tracker = new DxpListTracker();
+
+        Assert.Equal(1, tracker.NextIndex(1, 7, 0, 1, false));
+        Assert.Equal(1, tracker.NextIndex(1, 7, 1, 1, false));
+        Assert.Equal(2, tracker.NextIndex(1, 7, 1, 1, false));
+        Assert.Equal(10, tracker.NextIndex(8, 7, 0, 10, true));
+        Assert.Equal(1, tracker.NextIndex(8, 7, 1, 1, false));
+        Assert.Equal(3, tracker.NextIndex(1, 7, 1, 1, false));
+        Assert.Equal(2, tracker.NextIndex(8, 7, 1, 1, false));
+        Assert.Equal(11, tracker.NextIndex(8, 7, 0, 10, true));
+        Assert.Equal(1, tracker.NextIndex(8, 7, 1, 1, false));
+        Assert.Equal(4, tracker.NextIndex(1, 7, 1, 1, false));
+        Assert.Equal(11, tracker.GetCurrent(8, 7, 0));
+        Assert.Equal(4, tracker.GetCurrent(1, 7, 1));
+    }
+
+    [Fact]
     public void PlainMarkdownContinuesParagraphNumberAfterHeadingUsesSameInstance()
     {
         var path = Path.Combine(Path.GetTempPath(), $"numbering-{Guid.NewGuid():N}.docx");

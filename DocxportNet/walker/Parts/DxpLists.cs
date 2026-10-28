@@ -145,6 +145,7 @@ public sealed class DxpListTracker
 {
     private readonly Dictionary<int, int?[]> _counters = new();
     private readonly HashSet<int> _visitedInstances = new();
+    private readonly HashSet<(int NumId, int Level)> _restartedLevels = new();
     private readonly Dictionary<(int NumId, int Level), int?> _restartedCounters = new();
 
     private int?[] GetArr(int abstractId)
@@ -163,25 +164,22 @@ public sealed class DxpListTracker
         // A heading can establish an instance before its first body paragraph.
         // The override applies when the instance first appears, not per level.
         var firstInInstance = _visitedInstances.Add(numId);
+        var key = (numId, ilvl);
+        if (firstInInstance && hasStartOverride)
+            _restartedLevels.Add(key);
+        var independent = IsIndependent(numId, ilvl);
 
         for (int d = ilvl + 1; d < arr.Length; d++)
         {
-            arr[d] = null;
+            if (!independent)
+                arr[d] = null;
             if (_restartedCounters.ContainsKey((numId, d)))
                 _restartedCounters[(numId, d)] = null;
         }
 
-        var key = (numId, ilvl);
-        if (firstInInstance && hasStartOverride)
+        if (independent)
         {
-            // An explicit restart belongs to this instance; it must not
-            // overwrite another instance's progress at the same level.
-            _restartedCounters[key] = startAt;
-            return startAt;
-        }
-
-        if (_restartedCounters.TryGetValue(key, out var restarted))
-        {
+            _restartedCounters.TryGetValue(key, out var restarted);
             var next = restarted == null ? startAt : restarted.Value + 1;
             _restartedCounters[key] = next;
             return next;
@@ -192,13 +190,23 @@ public sealed class DxpListTracker
     }
 
     public int? GetCurrent(int numId, int abstractId, int ilvl)
-        => _restartedCounters.TryGetValue((numId, ilvl), out var restarted)
-            ? restarted : GetArr(abstractId)[ilvl];
+        => IsIndependent(numId, ilvl)
+            ? _restartedCounters.GetValueOrDefault((numId, ilvl))
+            : GetArr(abstractId)[ilvl];
+
+    private bool IsIndependent(int numId, int ilvl)
+    {
+        for (int level = 0; level <= ilvl; level++)
+            if (_restartedLevels.Contains((numId, level)))
+                return true;
+        return false;
+    }
 
     public void ClearAll()
     {
         _counters.Clear();
         _visitedInstances.Clear();
+        _restartedLevels.Clear();
         _restartedCounters.Clear();
     }
 }
