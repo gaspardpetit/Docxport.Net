@@ -50,8 +50,10 @@ public sealed class InvalidCommentDateTests
         {
             Id = "0", Author = "Editor"
         };
-        comment.SetAttribute(new OpenXmlAttribute("w15", "dateUtc",
-            "http://schemas.microsoft.com/office/word/2012/wordml", "0-00-00T00:00:00Z"));
+        comment.SetAttribute(new OpenXmlAttribute("w16du", "dateUtc",
+            "http://schemas.microsoft.com/office/word/2023/wordml/word16du", "0-00-00T00:00:00Z"));
+        Assert.NotNull(comment.DateUtc);
+        Assert.Throws<FormatException>(() => comment.DateUtc!.Value);
         if (validFallbackDate)
             comment.Date = new DateTime(2020, 1, 2, 3, 4, 5, DateTimeKind.Utc);
         var part = main.AddNewPart<WordprocessingCommentsPart>();
