@@ -44,6 +44,25 @@ public class DxpComments
             .ToList();
     }
 
+    private static DateTime? ReadDateUtc(Comment comment)
+    {
+        // The SDK defers parsing date attributes until Value is read. Some
+        // otherwise usable documents contain malformed comment dates.
+        if (comment.DateUtc != null)
+        {
+            try { return comment.DateUtc.Value; }
+            catch (FormatException) { /* Fall back to w:date when available. */ }
+        }
+
+        if (comment.Date != null)
+        {
+            try { return comment.Date.Value.ToUniversalTime(); }
+            catch (FormatException) { /* Keep the comment without a date. */ }
+        }
+
+        return null;
+    }
+
     internal void Init(MainDocumentPart? mainDocumentPart)
     {
         _commentsById.Clear();
@@ -74,15 +93,7 @@ public class DxpComments
             string? author = c.Author?.Value;
             string? initials = c.Initials?.Value;
 
-            DateTime? dateUtc = null;
-            if (c.DateUtc != null)
-            {
-                dateUtc = c.DateUtc.Value;
-            }
-            else if (c.Date != null)
-            {
-                dateUtc = c.Date.Value.ToUniversalTime();
-            }
+            DateTime? dateUtc = ReadDateUtc(c);
 
             // Per spec, CommentEx links to the paraId of the last paragraph in the comment.
             string? paraId = c.Descendants<Paragraph>().LastOrDefault()?.ParagraphId?.Value;

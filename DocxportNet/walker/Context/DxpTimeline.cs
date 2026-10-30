@@ -24,7 +24,7 @@ public static class DxpTimeline
         if (comments != null)
         {
             foreach (var c in comments.Elements<Comment>())
-                events.Add(new DxpTimelineEvent("comment", c.Author?.Value ?? c.Initials?.Value, ToUtc(c.Date?.Value), null));
+                events.Add(new DxpTimelineEvent("comment", c.Author?.Value ?? c.Initials?.Value, ToUtc(c.Date?.InnerText), null));
         }
 
         // Tracked changes: ins/del/move/conflicts
