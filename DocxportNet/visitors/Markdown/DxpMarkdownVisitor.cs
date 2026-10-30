@@ -48,6 +48,8 @@ internal sealed class DxpMarkdownVisitorState
     public InlineChangeMode CurrentInlineMode { get; set; } = InlineChangeMode.Unchanged;
     public int SuppressFieldDepth { get; set; }
     public int SuppressParagraphDepth { get; set; }
+    public string? PendingEmptyNumberedMarker { get; set; }
+    public OpenXmlElement? PendingEmptyNumberedParent { get; set; }
 
     // the writer used to print deleted content
     public TextWriter DeletedTextWriter = TextWriter.Null;
@@ -716,6 +718,24 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
     public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
     {
+        var marker = d.KeepAccept ? paragraph.MarkerAccept : paragraph.MarkerReject;
+        // Some converted documents put the list marker on an empty paragraph
+        // and the associated text in the next, unnumbered paragraph.
+        bool markerOnly = marker?.marker != null && string.IsNullOrWhiteSpace(p.InnerText) &&
+            p.Descendants<Run>().All(run => run.ChildElements.All(child =>
+                child is RunProperties or TabChar));
+        if (markerOnly)
+        {
+            if (_state.PendingEmptyNumberedMarker != null)
+            {
+                WriteLine(d, _state.PendingEmptyNumberedMarker);
+                WriteLine(d);
+            }
+            _state.PendingEmptyNumberedMarker = NormalizeMarker(marker!.marker!);
+            _state.PendingEmptyNumberedParent = p.Parent;
+            _state.SuppressParagraphDepth++;
+            return DxpDisposable.Create(() => _state.SuppressParagraphDepth--);
+        }
         if (!DxpParagraphs.HasRenderableParagraphContent(p))
         {
             _state.SuppressParagraphDepth++;
@@ -737,16 +757,18 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
             _acceptBufferedWriter.Clear();
         }
 
-        var marker =
-            d.KeepAccept
-            ? paragraph.MarkerAccept
-            : paragraph.MarkerReject;
         var indent = paragraph.Indent;
 
         string innerText = p.InnerText;
 
         if (string.IsNullOrEmpty(innerText))
         {
+            if (_state.PendingEmptyNumberedMarker != null)
+            {
+                WriteLine(d, _state.PendingEmptyNumberedMarker);
+                _state.PendingEmptyNumberedMarker = null;
+                _state.PendingEmptyNumberedParent = null;
+            }
             return DxpDisposable.Create(() => {
                 WriteLine(d);
             });
@@ -795,6 +817,18 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
             string.Equals(sc.StyleId, DxpWordBuiltInStyleId.wdStyleHtmlCode, StringComparison.OrdinalIgnoreCase) ||
             string.Equals(sc.StyleId, "Code", StringComparison.OrdinalIgnoreCase));
 
+        string? carriedMarker = _state.PendingEmptyNumberedMarker;
+        bool sameParent = ReferenceEquals(p.Parent, _state.PendingEmptyNumberedParent);
+        _state.PendingEmptyNumberedMarker = null;
+        _state.PendingEmptyNumberedParent = null;
+        bool attachCarriedMarker = carriedMarker != null && marker?.marker == null &&
+            sameParent && !isHeading && !isBlockQuote && !isCode;
+        if (carriedMarker != null && !attachCarriedMarker)
+        {
+            WriteLine(d, carriedMarker);
+            WriteLine(d);
+        }
+
         string? headingStyle = null;
         if (isHeading && justify != null && _config.EmitParagraphAlignment && _config.EmitStyleFont)
             headingStyle = $" style=\"text-align:{justify};\"";
@@ -837,6 +871,10 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
             if (!needsParagraphWrapper && LooksLikeOrderedListMarker(normalizedMarker))
                 normalizedMarker = EscapeOrderedListMarker(normalizedMarker);
             Write(d, $"""{normalizedMarker} """);
+        }
+        else if (attachCarriedMarker)
+        {
+            Write(d, $"{carriedMarker} ");
         }
 
         bool previousHeading = _state.InHeading;
@@ -1470,7 +1508,14 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
     public override IDisposable VisitDocumentBodyBegin(Body body, DxpIDocumentContext d)
     {
-        return DxpDisposable.Empty;
+        return DxpDisposable.Create(() => {
+            if (_state.PendingEmptyNumberedMarker != null)
+            {
+                WriteLine(d, _state.PendingEmptyNumberedMarker);
+                _state.PendingEmptyNumberedMarker = null;
+                _state.PendingEmptyNumberedParent = null;
+            }
+        });
     }
 
     private bool IsPageNumberField(string? instr)
