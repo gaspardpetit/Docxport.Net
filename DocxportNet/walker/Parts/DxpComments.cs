@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentFormat.OpenXml.Office2013.Word;
 using DocxportNet.API;
+using DocxportNet.Walker.Context;
 
 namespace DocxportNet.Walker.Parts;
 
@@ -44,23 +45,12 @@ public class DxpComments
             .ToList();
     }
 
-    private static DateTime? ReadDateUtc(Comment comment)
+    internal static DateTime? ReadDateUtc(Comment comment)
     {
         // The SDK defers parsing date attributes until Value is read. Some
         // otherwise usable documents contain malformed comment dates.
-        if (comment.DateUtc != null)
-        {
-            try { return comment.DateUtc.Value; }
-            catch (FormatException) { /* Fall back to w:date when available. */ }
-        }
-
-        if (comment.Date != null)
-        {
-            try { return comment.Date.Value.ToUniversalTime(); }
-            catch (FormatException) { /* Keep the comment without a date. */ }
-        }
-
-        return null;
+        return DxpOpenXmlDate.Read(comment.DateUtc)
+            ?? DxpOpenXmlDate.Read(comment.Date)?.ToUniversalTime();
     }
 
     internal void Init(MainDocumentPart? mainDocumentPart)

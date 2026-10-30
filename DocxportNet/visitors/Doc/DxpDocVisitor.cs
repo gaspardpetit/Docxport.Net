@@ -1065,8 +1065,8 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
             InsertedRevision = markProperties?.GetFirstChild<Inserted>() != null ? true : null,
             DeletedRevisionAuthor = markProperties?.GetFirstChild<Deleted>()?.Author?.Value,
             InsertedRevisionAuthor = markProperties?.GetFirstChild<Inserted>()?.Author?.Value,
-            DeletedRevisionAt = markProperties?.GetFirstChild<Deleted>()?.Date?.Value,
-            InsertedRevisionAt = markProperties?.GetFirstChild<Inserted>()?.Date?.Value
+            DeletedRevisionAt = DxpOpenXmlDate.Read(markProperties?.GetFirstChild<Deleted>()?.Date),
+            InsertedRevisionAt = DxpOpenXmlDate.Read(markProperties?.GetFirstChild<Inserted>()?.Date)
         };
         _paragraphText = target;
         return DxpDisposable.Create(() =>
@@ -3022,7 +3022,7 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
         var previousAt = _deletedRevisionAt;
         _deletedRevisionRun = true;
         _deletedRevisionAuthor = run.Author?.Value;
-        _deletedRevisionAt = run.Date?.Value;
+        _deletedRevisionAt = DxpOpenXmlDate.Read(run.Date);
         return DxpDisposable.Create(() =>
         {
             _deletedRevisionRun = previous;
@@ -3039,7 +3039,7 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
         var previousAt = _insertedRevisionAt;
         _insertedRevisionRun = true;
         _insertedRevisionAuthor = run.Author?.Value;
-        _insertedRevisionAt = run.Date?.Value;
+        _insertedRevisionAt = DxpOpenXmlDate.Read(run.Date);
         return DxpDisposable.Create(() =>
         {
             _insertedRevisionRun = previous;

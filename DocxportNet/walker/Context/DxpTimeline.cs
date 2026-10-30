@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.Globalization;
 using DocxportNet.API;
+using DocxportNet.Walker.Parts;
 
 namespace DocxportNet.Walker.Context;
 
@@ -24,7 +25,7 @@ public static class DxpTimeline
         if (comments != null)
         {
             foreach (var c in comments.Elements<Comment>())
-                events.Add(new DxpTimelineEvent("comment", c.Author?.Value ?? c.Initials?.Value, ToUtc(c.Date?.InnerText), null));
+                events.Add(new DxpTimelineEvent("comment", c.Author?.Value ?? c.Initials?.Value, DxpComments.ReadDateUtc(c), null));
         }
 
         // Tracked changes: ins/del/move/conflicts
