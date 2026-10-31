@@ -14,6 +14,7 @@ using DocxportNet.Fields;
 using DocxportNet.Omml;
 using DocxportNet.Walker.Context;
 using DocxportNet.Walker;
+using DocxportNet.Middleware;
 
 namespace DocxportNet.Visitors.Html;
 
@@ -34,6 +35,7 @@ internal sealed class DxpHtmlVisitorState
     public bool InHeader { get; set; }
     public bool InFooter { get; set; }
     public InlineChangeMode CurrentInlineMode { get; set; } = InlineChangeMode.Unchanged;
+    public string? CurrentInlineReviewId { get; set; }
     public int TabIndex { get; set; }
     public int UnderlineDepth { get; set; }
     public bool InParagraph { get; set; }
@@ -108,8 +110,10 @@ public sealed record DxpHtmlVisitorConfig
     public static DxpHtmlVisitorConfig CreateConfig() => CreateRichConfig();
 }
 
-public sealed class DxpHtmlVisitor : DxpVisitor, DxpITextVisitor, IDxpHeaderFooterSelectionProvider, IDisposable, DxpIFieldEvalProvider, DxpIMarkupChangeClassifierProvider
+public sealed class DxpHtmlVisitor : DxpVisitor, DxpITextVisitor, IDxpHeaderFooterSelectionProvider, IDisposable, DxpIFieldEvalProvider, DxpIMarkupChangeClassifierProvider, IDxpInlineRevisionStyleBoundary
 {
+    bool IDxpInlineRevisionStyleBoundary.ResetStyleAtRevisionBoundary =>
+        _config.TrackedChangeMode == DxpTrackedChangeMode.InlineChanges;
     private TextWriter _sinkWriter;
     private StreamWriter? _ownedStreamWriter;
     private DxpBufferedTextWriter _rejectBufferedWriter;
@@ -582,7 +586,8 @@ body.dxp-root {
 
     public override IDisposable VisitInsertedBegin(Inserted ins, DxpIDocumentContext d) => DxpDisposable.Empty;
     public override IDisposable VisitDeletedBegin(Deleted del, DxpIDocumentContext d) => DxpDisposable.Empty;
-    public override IDisposable VisitDeletedRunBegin(DeletedRun dr, DxpIDocumentContext d) => DxpDisposable.Empty;
+    public override IDisposable VisitDeletedRunBegin(DeletedRun dr, DxpIDocumentContext d)
+        => BeginReviewRun(d, DxpHtmlVisitorState.InlineChangeMode.Deleted, dr.Id?.Value);
     public override void VisitDeletedParagraphMark(Deleted del, ParagraphProperties pPr, Paragraph? p, DxpIDocumentContext d) { }
 
     public override void VisitOMath(DocumentFormat.OpenXml.Math.OfficeMath oMath, DxpIDocumentContext d)
@@ -617,7 +622,20 @@ body.dxp-root {
     private void WriteMath(DxpIDocumentContext d, string output, DxpOmmlOutputFormat format) =>
         Write(d, EncodeMath(output, format));
 
-    public override IDisposable VisitInsertedRunBegin(InsertedRun ir, DxpIDocumentContext d) => DxpDisposable.Empty;
+    public override IDisposable VisitInsertedRunBegin(InsertedRun ir, DxpIDocumentContext d)
+        => BeginReviewRun(d, DxpHtmlVisitorState.InlineChangeMode.Inserted, ir.Id?.Value);
+
+    private IDisposable BeginReviewRun(DxpIDocumentContext d, DxpHtmlVisitorState.InlineChangeMode mode, string? id)
+    {
+        if (_config.TrackedChangeMode != DxpTrackedChangeMode.InlineChanges || id == null || d.CurrentPart == null)
+            return DxpDisposable.Empty;
+        var previousMode = _state.CurrentInlineMode;
+        var previousId = _state.CurrentInlineReviewId;
+        SetInlineChangeMode(mode, DxpReviewId.Create(d.CurrentPart, id));
+        return DxpDisposable.Create(() => SetInlineChangeMode(
+            previousId == null ? DxpHtmlVisitorState.InlineChangeMode.Unchanged : previousMode,
+            previousId));
+    }
 
     public override void VisitDeletedText(DeletedText dt, DxpIDocumentContext d)
     {
@@ -2072,7 +2090,8 @@ body.dxp-root {
         if (_config.TrackedChangeMode == DxpTrackedChangeMode.InlineChanges)
         {
             var targetMode = DetermineChangeMode(d);
-            SetInlineChangeMode(targetMode);
+            SetInlineChangeMode(targetMode,
+                targetMode == _state.CurrentInlineMode ? _state.CurrentInlineReviewId : null);
             WriteRouted(targetMode, str);
             return;
         }
@@ -2107,9 +2126,9 @@ body.dxp-root {
         return DxpHtmlVisitorState.InlineChangeMode.Unchanged;
     }
 
-    private void SetInlineChangeMode(DxpHtmlVisitorState.InlineChangeMode mode)
+    private void SetInlineChangeMode(DxpHtmlVisitorState.InlineChangeMode mode, string? reviewId = null)
     {
-        if (mode == _state.CurrentInlineMode)
+        if (mode == _state.CurrentInlineMode && reviewId == _state.CurrentInlineReviewId)
             return;
 
         if (_state.CurrentInlineMode == DxpHtmlVisitorState.InlineChangeMode.Inserted)
@@ -2118,11 +2137,12 @@ body.dxp-root {
             WriteRouted(DxpHtmlVisitorState.InlineChangeMode.Unchanged, "</span>");
 
         if (mode == DxpHtmlVisitorState.InlineChangeMode.Inserted)
-            WriteRouted(DxpHtmlVisitorState.InlineChangeMode.Unchanged, InlineInsertedTag());
+            WriteRouted(DxpHtmlVisitorState.InlineChangeMode.Unchanged, InlineInsertedTag(reviewId));
         else if (mode == DxpHtmlVisitorState.InlineChangeMode.Deleted)
-            WriteRouted(DxpHtmlVisitorState.InlineChangeMode.Unchanged, InlineDeletedTag());
+            WriteRouted(DxpHtmlVisitorState.InlineChangeMode.Unchanged, InlineDeletedTag(reviewId));
 
         _state.CurrentInlineMode = mode;
+        _state.CurrentInlineReviewId = reviewId;
     }
 
     private void EmitSplitBuffersIfNeeded()
@@ -2150,18 +2170,20 @@ body.dxp-root {
         }
     }
 
-    private string InlineInsertedTag()
+    private string InlineInsertedTag(string? reviewId)
     {
+        string id = reviewId == null ? "" : $" data-dxp-review-id=\"{HtmlAttr(reviewId)}\"";
         if (_config.EmitRunColor)
-            return "<span class=\"dxp-inserted\">";
-        return "<span>";
+            return $"<span class=\"dxp-inserted\"{id}>";
+        return $"<span{id}>";
     }
 
-    private string InlineDeletedTag()
+    private string InlineDeletedTag(string? reviewId)
     {
+        string id = reviewId == null ? "" : $" data-dxp-review-id=\"{HtmlAttr(reviewId)}\"";
         if (_config.EmitRunColor)
-            return "<span class=\"dxp-deleted\">";
-        return "<span>";
+            return $"<span class=\"dxp-deleted\"{id}>";
+        return $"<span{id}>";
     }
 
     private bool IsPageNumberField(string? instr)

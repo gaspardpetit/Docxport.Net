@@ -74,6 +74,13 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
         VerifyAgainstFixture(sample, DxpHtmlVisitorConfig.CreateRichConfig(), ".reject.html", ".reject.test.html", DxpTrackedChangeMode.RejectChanges, DxpFieldEvalExportMode.None);
     }
 
+    [Fact]
+    public void TestDocxToHtml_Tracked_Inline()
+    {
+        var sample = new Sample(Path.Combine(SamplesDirectory, "Tracked.docx"));
+        VerifyAgainstFixture(sample, DxpHtmlVisitorConfig.CreateRichConfig(), ".inline.html", ".inline.test.html", DxpTrackedChangeMode.InlineChanges, DxpFieldEvalExportMode.None);
+    }
+
     [Theory]
     [MemberData(nameof(SampleDocs))]
     public void TestDocxToHtml_Cached(Sample sample)
@@ -903,6 +910,28 @@ public class HtmlExportTests : TestBase<HtmlExportTests>
         Assert.Contains("Deleted", split, StringComparison.Ordinal);
         Assert.DoesNotContain("class=\"dxp-underline\"", split, StringComparison.Ordinal);
         Assert.DoesNotContain("class=\"dxp-strike\"", split, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void HtmlExport_AdjacentTrackedChanges_CloseFormattingBeforeNextRevision()
+    {
+        const string bodyXml = """
+<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:p>
+    <w:pPr><w:pStyle w:val="Title"/></w:pPr>
+    <w:del w:id="1" w:author="Test"><w:r><w:rPr><w:sz w:val="44"/></w:rPr><w:delText>Old title</w:delText></w:r></w:del>
+    <w:ins w:id="2" w:author="Test"><w:r><w:rPr><w:sz w:val="44"/></w:rPr><w:t>New title</w:t></w:r></w:ins>
+  </w:p>
+</w:body>
+""";
+
+        var config = DxpHtmlVisitorConfig.CreateRichConfig();
+        config.TrackedChangeMode = DxpTrackedChangeMode.InlineChanges;
+
+        string html = ExportHtmlFromBodyXml(bodyXml, config);
+
+        Assert.Contains("Old title</span></span><span class=\"dxp-inserted\" data-dxp-review-id=\"word/document.xml#2\">", html, StringComparison.Ordinal);
+        Assert.Contains("New title</span></span>", html, StringComparison.Ordinal);
     }
 
     [Fact]
