@@ -5,11 +5,55 @@ using DocxportNet.API;
 using DocxportNet.Visitors.Markdown;
 using DocxportNet.Visitors.Html;
 using DocxportNet.Visitors.PlainText;
+using AngleSharp.Html.Parser;
+using DW = DocumentFormat.OpenXml.Drawing.Wordprocessing;
 
 namespace DocxportNet.Tests;
 
 public sealed class EmptyNumberedParagraphMarkdownTests
 {
+    [Fact]
+    public void HtmlKeepsInlineDrawingInsideItsNumberedParagraph()
+    {
+        var path = Path.Combine(Path.GetTempPath(), $"numbered-drawing-{Guid.NewGuid():N}.docx");
+        try
+        {
+            using (var document = WordprocessingDocument.Create(path, WordprocessingDocumentType.Document))
+            {
+                var main = document.AddMainDocumentPart();
+                var numbering = main.AddNewPart<NumberingDefinitionsPart>();
+                numbering.Numbering = new Numbering(
+                    new AbstractNum(new Level(
+                        new StartNumberingValue { Val = 1 },
+                        new NumberingFormat { Val = NumberFormatValues.Decimal },
+                        new LevelText { Val = "%1." }) { LevelIndex = 0 }) { AbstractNumberId = 1 },
+                    new NumberingInstance(new AbstractNumId { Val = 1 }) { NumberID = 1 });
+                numbering.Numbering.Save();
+                main.Document = new Document(new Body(new Paragraph(
+                    new ParagraphProperties(new NumberingProperties(
+                        new NumberingLevelReference { Val = 0 }, new NumberingId { Val = 1 })),
+                    new Run(new Drawing(new DW.Inline(new DW.DocProperties { Id = 1U, Name = "probe" }))))));
+                main.Document.Save();
+            }
+
+            var config = DxpHtmlVisitorConfig.CreateRichConfig();
+            config.EmitImages = false;
+            var html = DxpExport.ExportToString(path, new DxpHtmlVisitor(config));
+            var parsed = new HtmlParser().ParseDocument(html);
+            var numbered = Assert.Single(parsed.QuerySelectorAll("p").Where(p =>
+                p.QuerySelector(".dxp-marker")?.TextContent.Trim() == "1."));
+            Assert.NotNull(numbered.QuerySelector(".dxp-image"));
+
+            var markdown = DxpExport.ExportToString(path,
+                new DxpMarkdownVisitor(DxpMarkdownVisitorConfig.CreatePlainConfig()));
+            Assert.Contains(@"1\. [IMAGE]", markdown);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
     [Fact]
     public void StandaloneOrderedMarkersAreEscapedAcrossListRestarts()
     {
@@ -40,7 +84,7 @@ public sealed class EmptyNumberedParagraphMarkdownTests
 
             var markdown = DxpExport.ExportToString(path,
                 new DxpMarkdownVisitor(DxpMarkdownVisitorConfig.CreatePlainConfig()));
-            Assert.Equal(2, System.Text.RegularExpressions.Regex.Matches(markdown, @"(?m)^1\\\.$").Count);
+            Assert.Equal(2, System.Text.RegularExpressions.Regex.Matches(markdown, @"(?m)^1\\\.(?:$| <br/>)").Count);
             Assert.DoesNotContain("1.\n", markdown);
         }
         finally
@@ -153,7 +197,7 @@ public sealed class EmptyNumberedParagraphMarkdownTests
             Assert.Contains("6 Sixth paragraph", markdown);
             Assert.Contains("7\n", markdown);
             Assert.DoesNotContain("7 Separated paragraph", markdown);
-            Assert.Contains("8\n", markdown);
+            Assert.Contains("8 <br/>", markdown);
             Assert.DoesNotContain("8 After line break", markdown);
             Assert.Contains("9", markdown);
             Assert.Contains("Text after break", markdown);
@@ -161,12 +205,15 @@ public sealed class EmptyNumberedParagraphMarkdownTests
             var html = DxpExport.ExportToString(path,
                 new DxpHtmlVisitor(DxpHtmlVisitorConfig.CreateRichConfig()));
             Assert.Contains(">2</span> </p>", html);
-            Assert.Contains(">3</span> </p>", html);
+            Assert.Contains(">3</span>", html);
             Assert.DoesNotContain(">2</span> Second paragraph", html);
             Assert.Contains(">5</span>", html);
             Assert.Contains(">7</span>", html);
             Assert.DoesNotContain(">7</span> Separated paragraph", html);
-            Assert.Contains(">8</span> </p>", html);
+            var parsedHtml = new HtmlParser().ParseDocument(html);
+            var breakParagraph = Assert.Single(parsedHtml.QuerySelectorAll("p").Where(p =>
+                p.QuerySelector(".dxp-marker")?.TextContent.Trim() == "8"));
+            Assert.NotNull(breakParagraph.QuerySelector("br"));
             Assert.DoesNotContain(">8</span> After line break", html);
 
             var plainText = DxpExport.ExportToString(path,

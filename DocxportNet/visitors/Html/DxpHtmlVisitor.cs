@@ -930,10 +930,8 @@ body.dxp-root {
         var indent = paragraph.Indent;
 
         string innerText = p.InnerText;
-        if (string.IsNullOrEmpty(innerText))
+        if (string.IsNullOrEmpty(innerText) && marker?.marker == null)
         {
-            if (marker?.marker != null)
-                WriteLine(d, $"<p class=\"dxp-paragraph\">{BuildMarkerHtml(NormalizeMarker(marker.marker), TryBuildMarkerCss(marker, d))}</p>");
             return DxpDisposable.Create(() => WriteLine(d));
         }
 

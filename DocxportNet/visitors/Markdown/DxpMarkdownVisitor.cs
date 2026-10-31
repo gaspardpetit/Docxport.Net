@@ -747,10 +747,8 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
         string innerText = p.InnerText;
 
-        if (string.IsNullOrEmpty(innerText))
+        if (string.IsNullOrEmpty(innerText) && marker?.marker == null)
         {
-            if (marker?.marker != null)
-                WriteLine(d, NormalizeStandaloneMarker(marker.marker));
             return DxpDisposable.Create(() => {
                 WriteLine(d);
             });
