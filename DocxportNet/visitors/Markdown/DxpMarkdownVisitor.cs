@@ -716,10 +716,22 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
     public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
     {
+        var marker = d.KeepAccept ? paragraph.MarkerAccept : paragraph.MarkerReject;
         if (!DxpParagraphs.HasRenderableParagraphContent(p))
         {
+            if (marker?.marker != null)
+            {
+                WriteLine(d, NormalizeStandaloneMarker(marker.marker));
+                WriteLine(d);
+            }
             _state.SuppressParagraphDepth++;
-            return DxpDisposable.Create(() => _state.SuppressParagraphDepth--);
+            return DxpDisposable.Create(() => {
+                _state.SuppressParagraphDepth--;
+                if (_config.TrackedChangeMode == DxpTrackedChangeMode.InlineChanges)
+                    SetInlineChangeMode(DxpMarkdownVisitorState.InlineChangeMode.Unchanged);
+                if (marker?.marker != null && _config.TrackedChangeMode == DxpTrackedChangeMode.SplitChanges)
+                    EmitSplitBuffersIfNeeded();
+            });
         }
 
         _state.TabIndex = 0;
@@ -737,15 +749,11 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
             _acceptBufferedWriter.Clear();
         }
 
-        var marker =
-            d.KeepAccept
-            ? paragraph.MarkerAccept
-            : paragraph.MarkerReject;
         var indent = paragraph.Indent;
 
         string innerText = p.InnerText;
 
-        if (string.IsNullOrEmpty(innerText))
+        if (string.IsNullOrEmpty(innerText) && marker?.marker == null)
         {
             return DxpDisposable.Create(() => {
                 WriteLine(d);
@@ -1417,6 +1425,14 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
         }
 
         return trimmed;
+    }
+
+    private string NormalizeStandaloneMarker(string marker)
+    {
+        var normalized = NormalizeMarker(marker);
+        return LooksLikeOrderedListMarker(normalized)
+            ? EscapeOrderedListMarker(normalized)
+            : normalized;
     }
 
     private static bool LooksLikeOrderedListMarker(string marker)

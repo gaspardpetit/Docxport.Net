@@ -267,7 +267,10 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
     public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
     {
-        if (!DxpParagraphs.HasRenderableParagraphContent(p))
+        var marker = _config.TrackedChangeMode == DxpPlainTextTrackedChangeMode.AcceptChanges
+            ? paragraph.MarkerAccept
+            : paragraph.MarkerReject;
+        if (!DxpParagraphs.HasRenderableParagraphContent(p) && marker?.marker == null)
         {
             _state.SuppressDepth++;
             return DxpDisposable.Create(() => _state.SuppressDepth--);
@@ -275,10 +278,6 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
         bool emit = ShouldEmit(d);
         var indent = paragraph.Indent;
-
-        var marker = _config.TrackedChangeMode == DxpPlainTextTrackedChangeMode.AcceptChanges
-            ? paragraph.MarkerAccept
-            : paragraph.MarkerReject;
 
         string markerText = marker?.marker != null
             ? NormalizeMarker(marker.marker)
@@ -347,6 +346,8 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
         if (string.IsNullOrEmpty(content))
         {
+            if (!string.IsNullOrWhiteSpace(paragraph.Prefix))
+                WriteDirect(paragraph.Prefix.TrimEnd());
             WriteDirect(paragraph.Separator);
             return;
         }

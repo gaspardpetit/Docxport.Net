@@ -883,7 +883,9 @@ body.dxp-root {
 
     public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
     {
-        if (!DxpParagraphs.HasRenderableParagraphContent(p))
+        var marker = d.KeepAccept ? paragraph.MarkerAccept : paragraph.MarkerReject;
+        bool hasRenderableContent = DxpParagraphs.HasRenderableParagraphContent(p);
+        if (!hasRenderableContent && marker?.marker == null)
         {
             if (_config.RichTables && p.Ancestors<TableCell>().Any())
             {
@@ -920,14 +922,10 @@ body.dxp-root {
             _acceptBufferedWriter.Clear();
         }
 
-        var marker =
-            d.KeepAccept
-            ? paragraph.MarkerAccept
-            : paragraph.MarkerReject;
         var indent = paragraph.Indent;
 
         string innerText = p.InnerText;
-        if (string.IsNullOrEmpty(innerText))
+        if (string.IsNullOrEmpty(innerText) && marker?.marker == null)
         {
             return DxpDisposable.Create(() => WriteLine(d));
         }
@@ -1018,7 +1016,13 @@ body.dxp-root {
                 && !d.Styles.ResolveRunStyle(p, run).Bold);
         var style = new StringBuilder();
         var inRichTable = _config.RichTables && p.Ancestors<TableCell>().Any();
-        if (_config.EmitStyleFont && inRichTable)
+        if (inRichTable && !hasRenderableContent)
+        {
+            var markSize = p.ParagraphProperties?.ParagraphMarkRunProperties?.GetFirstChild<FontSize>()?.Val?.Value;
+            if (int.TryParse(markSize, NumberStyles.Integer, CultureInfo.InvariantCulture, out var halfPoints))
+                style.Append("font-size:").Append((halfPoints / 2.0).ToString("0.###", CultureInfo.InvariantCulture)).Append("pt;");
+        }
+        else if (_config.EmitStyleFont && inRichTable)
         {
             var sizes = p.Descendants<Run>()
                 .Where(run => run.Descendants<Text>().Any(text => !string.IsNullOrEmpty(text.Text)))
