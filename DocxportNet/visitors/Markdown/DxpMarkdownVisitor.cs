@@ -727,6 +727,8 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
             _state.SuppressParagraphDepth++;
             return DxpDisposable.Create(() => {
                 _state.SuppressParagraphDepth--;
+                if (_config.TrackedChangeMode == DxpTrackedChangeMode.InlineChanges)
+                    SetInlineChangeMode(DxpMarkdownVisitorState.InlineChangeMode.Unchanged);
                 if (marker?.marker != null && _config.TrackedChangeMode == DxpTrackedChangeMode.SplitChanges)
                     EmitSplitBuffersIfNeeded();
             });

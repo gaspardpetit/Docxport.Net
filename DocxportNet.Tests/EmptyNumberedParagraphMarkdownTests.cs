@@ -12,6 +12,50 @@ namespace DocxportNet.Tests;
 
 public sealed class EmptyNumberedParagraphMarkdownTests
 {
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void InlineChangesClosesRevisionTagsAfterTrailingEmptyNumberedMarker(bool inserted)
+    {
+        var path = Path.Combine(Path.GetTempPath(), $"numbered-inline-{Guid.NewGuid():N}.docx");
+        try
+        {
+            using (var document = WordprocessingDocument.Create(path, WordprocessingDocumentType.Document))
+            {
+                var main = document.AddMainDocumentPart();
+                var numbering = main.AddNewPart<NumberingDefinitionsPart>();
+                numbering.Numbering = new Numbering(
+                    new AbstractNum(new Level(
+                        new StartNumberingValue { Val = 1 },
+                        new NumberingFormat { Val = NumberFormatValues.Decimal },
+                        new LevelText { Val = "%1." }) { LevelIndex = 0 }) { AbstractNumberId = 1 },
+                    new NumberingInstance(new AbstractNumId { Val = 1 }) { NumberID = 1 });
+                numbering.Numbering.Save();
+                var revision = inserted ? (OpenXmlElement)new Inserted { Id = "1", Author = "Test" }
+                    : new Deleted { Id = "1", Author = "Test" };
+                main.Document = new Document(new Body(new Paragraph(
+                    new ParagraphProperties(
+                        new NumberingProperties(new NumberingLevelReference { Val = 0 }, new NumberingId { Val = 1 }),
+                        new ParagraphMarkRunProperties(revision)))));
+                main.Document.Save();
+            }
+
+            var config = DxpMarkdownVisitorConfig.CreatePlainConfig();
+            config.TrackedChangeMode = DxpTrackedChangeMode.InlineChanges;
+            var markdown = DxpExport.ExportToString(path, new DxpMarkdownVisitor(config));
+            Assert.Contains(inserted ? "<u>" : "<del>", markdown);
+            Assert.Equal(Count(markdown, "<u>"), Count(markdown, "</u>"));
+            Assert.Equal(Count(markdown, "<del>"), Count(markdown, "</del>"));
+            Assert.Contains(@"1\.", markdown);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+
+        static int Count(string text, string pattern) => text.Split(pattern).Length - 1;
+    }
+
     [Fact]
     public void SplitChangesKeepsTrailingEmptyNumberedMarker()
     {
