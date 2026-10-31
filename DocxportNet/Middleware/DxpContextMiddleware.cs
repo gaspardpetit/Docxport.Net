@@ -507,11 +507,11 @@ public sealed class DxpContextMiddleware : DxpLoggingMiddleware
         {
             case TrackChangeType track:
                 author = track.Author?.Value;
-                date = track.Date?.Value;
+                date = DxpOpenXmlDate.Read(track.Date);
                 break;
             case RunTrackChangeType runTrack:
                 author = runTrack.Author?.Value;
-                date = runTrack.Date?.Value;
+                date = DxpOpenXmlDate.Read(runTrack.Date);
                 break;
         }
 

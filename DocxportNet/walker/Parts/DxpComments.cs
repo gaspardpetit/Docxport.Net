@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentFormat.OpenXml.Office2013.Word;
 using DocxportNet.API;
+using DocxportNet.Walker.Context;
 
 namespace DocxportNet.Walker.Parts;
 
@@ -44,6 +45,14 @@ public class DxpComments
             .ToList();
     }
 
+    internal static DateTime? ReadDateUtc(Comment comment)
+    {
+        // The SDK defers parsing date attributes until Value is read. Some
+        // otherwise usable documents contain malformed comment dates.
+        return DxpOpenXmlDate.Read(comment.DateUtc)
+            ?? DxpOpenXmlDate.Read(comment.Date)?.ToUniversalTime();
+    }
+
     internal void Init(MainDocumentPart? mainDocumentPart)
     {
         _commentsById.Clear();
@@ -74,15 +83,7 @@ public class DxpComments
             string? author = c.Author?.Value;
             string? initials = c.Initials?.Value;
 
-            DateTime? dateUtc = null;
-            if (c.DateUtc != null)
-            {
-                dateUtc = c.DateUtc.Value;
-            }
-            else if (c.Date != null)
-            {
-                dateUtc = c.Date.Value.ToUniversalTime();
-            }
+            DateTime? dateUtc = ReadDateUtc(c);
 
             // Per spec, CommentEx links to the paraId of the last paragraph in the comment.
             string? paraId = c.Descendants<Paragraph>().LastOrDefault()?.ParagraphId?.Value;
