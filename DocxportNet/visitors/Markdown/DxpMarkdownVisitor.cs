@@ -725,7 +725,11 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
                 WriteLine(d);
             }
             _state.SuppressParagraphDepth++;
-            return DxpDisposable.Create(() => _state.SuppressParagraphDepth--);
+            return DxpDisposable.Create(() => {
+                _state.SuppressParagraphDepth--;
+                if (marker?.marker != null && _config.TrackedChangeMode == DxpTrackedChangeMode.SplitChanges)
+                    EmitSplitBuffersIfNeeded();
+            });
         }
 
         _state.TabIndex = 0;

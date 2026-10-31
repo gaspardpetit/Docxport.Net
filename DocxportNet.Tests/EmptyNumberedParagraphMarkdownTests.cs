@@ -13,6 +13,40 @@ namespace DocxportNet.Tests;
 public sealed class EmptyNumberedParagraphMarkdownTests
 {
     [Fact]
+    public void SplitChangesKeepsTrailingEmptyNumberedMarker()
+    {
+        var path = Path.Combine(Path.GetTempPath(), $"numbered-split-{Guid.NewGuid():N}.docx");
+        try
+        {
+            using (var document = WordprocessingDocument.Create(path, WordprocessingDocumentType.Document))
+            {
+                var main = document.AddMainDocumentPart();
+                var numbering = main.AddNewPart<NumberingDefinitionsPart>();
+                numbering.Numbering = new Numbering(
+                    new AbstractNum(new Level(
+                        new StartNumberingValue { Val = 1 },
+                        new NumberingFormat { Val = NumberFormatValues.Decimal },
+                        new LevelText { Val = "%1." }) { LevelIndex = 0 }) { AbstractNumberId = 1 },
+                    new NumberingInstance(new AbstractNumId { Val = 1 }) { NumberID = 1 });
+                numbering.Numbering.Save();
+                main.Document = new Document(new Body(new Paragraph(
+                    new ParagraphProperties(new NumberingProperties(
+                        new NumberingLevelReference { Val = 0 }, new NumberingId { Val = 1 })))));
+                main.Document.Save();
+            }
+
+            var config = DxpMarkdownVisitorConfig.CreatePlainConfig();
+            config.TrackedChangeMode = DxpTrackedChangeMode.SplitChanges;
+            var markdown = DxpExport.ExportToString(path, new DxpMarkdownVisitor(config));
+            Assert.Contains(@"1\.", markdown);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    [Fact]
     public void HtmlKeepsInlineDrawingInsideItsNumberedParagraph()
     {
         var path = Path.Combine(Path.GetTempPath(), $"numbered-drawing-{Guid.NewGuid():N}.docx");
