@@ -721,7 +721,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
         {
             if (marker?.marker != null)
             {
-                WriteLine(d, NormalizeMarker(marker.marker));
+                WriteLine(d, NormalizeStandaloneMarker(marker.marker));
                 WriteLine(d);
             }
             _state.SuppressParagraphDepth++;
@@ -750,7 +750,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
         if (string.IsNullOrEmpty(innerText))
         {
             if (marker?.marker != null)
-                WriteLine(d, NormalizeMarker(marker.marker));
+                WriteLine(d, NormalizeStandaloneMarker(marker.marker));
             return DxpDisposable.Create(() => {
                 WriteLine(d);
             });
@@ -1421,6 +1421,14 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
         }
 
         return trimmed;
+    }
+
+    private string NormalizeStandaloneMarker(string marker)
+    {
+        var normalized = NormalizeMarker(marker);
+        return LooksLikeOrderedListMarker(normalized)
+            ? EscapeOrderedListMarker(normalized)
+            : normalized;
     }
 
     private static bool LooksLikeOrderedListMarker(string marker)

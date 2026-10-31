@@ -11,6 +11,45 @@ namespace DocxportNet.Tests;
 public sealed class EmptyNumberedParagraphMarkdownTests
 {
     [Fact]
+    public void StandaloneOrderedMarkersAreEscapedAcrossListRestarts()
+    {
+        var path = Path.Combine(Path.GetTempPath(), $"numbered-restart-{Guid.NewGuid():N}.docx");
+        try
+        {
+            using (var document = WordprocessingDocument.Create(path, WordprocessingDocumentType.Document))
+            {
+                var main = document.AddMainDocumentPart();
+                var numbering = main.AddNewPart<NumberingDefinitionsPart>();
+                numbering.Numbering = new Numbering(
+                    new AbstractNum(new Level(
+                        new StartNumberingValue { Val = 1 },
+                        new NumberingFormat { Val = NumberFormatValues.Decimal },
+                        new LevelText { Val = "%1." }) { LevelIndex = 0 }) { AbstractNumberId = 1 },
+                    new NumberingInstance(new AbstractNumId { Val = 1 }) { NumberID = 1 },
+                    new NumberingInstance(new AbstractNumId { Val = 1 },
+                        new LevelOverride(new StartOverrideNumberingValue { Val = 1 }) { LevelIndex = 0 })
+                    { NumberID = 2 });
+                numbering.Numbering.Save();
+                Paragraph Item(int id, bool lineBreak) => new(
+                    new ParagraphProperties(new NumberingProperties(
+                        new NumberingLevelReference { Val = 0 }, new NumberingId { Val = id })),
+                    lineBreak ? new Run(new Break()) : null);
+                main.Document = new Document(new Body(Item(1, false), Item(2, true)));
+                main.Document.Save();
+            }
+
+            var markdown = DxpExport.ExportToString(path,
+                new DxpMarkdownVisitor(DxpMarkdownVisitorConfig.CreatePlainConfig()));
+            Assert.Equal(2, System.Text.RegularExpressions.Regex.Matches(markdown, @"(?m)^1\\\.$").Count);
+            Assert.DoesNotContain("1.\n", markdown);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    [Fact]
     public void EmptyNumberedMarkerStaysInItsTableCell()
     {
         var path = Path.Combine(Path.GetTempPath(), $"numbered-cell-{Guid.NewGuid():N}.docx");
