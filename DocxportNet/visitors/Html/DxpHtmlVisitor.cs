@@ -49,6 +49,8 @@ internal sealed class DxpHtmlVisitorState
     public StringBuilder PendingAlignedTabBuffer { get; } = new();
     public int SuppressFieldDepth { get; set; }
     public int SuppressParagraphDepth { get; set; }
+    public string? PendingEmptyNumberedMarkerHtml { get; set; }
+    public Paragraph? PendingEmptyNumberedNext { get; set; }
     public bool FootnotesOpen { get; set; }
 
     public TextWriter DeletedTextWriter = TextWriter.Null;
@@ -883,8 +885,26 @@ body.dxp-root {
 
     public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
     {
+        if (_state.PendingEmptyNumberedMarkerHtml != null && !ReferenceEquals(p, _state.PendingEmptyNumberedNext))
+            FlushPendingEmptyNumberedMarker(d);
+        var marker = d.KeepAccept ? paragraph.MarkerAccept : paragraph.MarkerReject;
+        bool markerOnly = marker?.marker != null && string.IsNullOrWhiteSpace(p.InnerText) &&
+            p.Descendants<Run>().All(run => run.ChildElements.All(child =>
+                child is RunProperties or TabChar));
+        if (markerOnly)
+        {
+            FlushPendingEmptyNumberedMarker(d);
+            _state.PendingEmptyNumberedMarkerHtml = BuildMarkerHtml(
+                NormalizeMarker(marker!.marker!), TryBuildMarkerCss(marker, d));
+            _state.PendingEmptyNumberedNext = p.NextSibling() as Paragraph;
+            if (_state.PendingEmptyNumberedNext == null)
+                FlushPendingEmptyNumberedMarker(d);
+            _state.SuppressParagraphDepth++;
+            return DxpDisposable.Create(() => _state.SuppressParagraphDepth--);
+        }
         if (!DxpParagraphs.HasRenderableParagraphContent(p))
         {
+            FlushPendingEmptyNumberedMarker(d);
             if (_config.RichTables && p.Ancestors<TableCell>().Any())
             {
                 var css = paragraph.ComputedStyle.ToCss(includeTextAlign: false);
@@ -920,15 +940,12 @@ body.dxp-root {
             _acceptBufferedWriter.Clear();
         }
 
-        var marker =
-            d.KeepAccept
-            ? paragraph.MarkerAccept
-            : paragraph.MarkerReject;
         var indent = paragraph.Indent;
 
         string innerText = p.InnerText;
         if (string.IsNullOrEmpty(innerText))
         {
+            FlushPendingEmptyNumberedMarker(d);
             return DxpDisposable.Create(() => WriteLine(d));
         }
 
@@ -957,6 +974,7 @@ body.dxp-root {
 
         if (!_config.EmitPageNumbers && styleChain.Any(sc => string.Equals(sc.StyleId, DxpWordBuiltInStyleId.wdStylePageNumber, StringComparison.OrdinalIgnoreCase)))
         {
+            FlushPendingEmptyNumberedMarker(d);
             return DxpDisposable.Empty;
         }
 
@@ -983,6 +1001,18 @@ body.dxp-root {
             marker = null;
         if (isCode)
             marker = null;
+
+        string? carriedMarkerHtml = _state.PendingEmptyNumberedMarkerHtml;
+        bool attachCarriedMarker = carriedMarkerHtml != null &&
+            ReferenceEquals(p, _state.PendingEmptyNumberedNext) && marker?.marker == null &&
+            !isHeading && !isBlockQuote && !isCode;
+        if (carriedMarkerHtml != null && !attachCarriedMarker)
+            FlushPendingEmptyNumberedMarker(d);
+        else if (attachCarriedMarker)
+        {
+            _state.PendingEmptyNumberedMarkerHtml = null;
+            _state.PendingEmptyNumberedNext = null;
+        }
 
         var paraClasses = new List<string>();
         string tag = "p";
@@ -1070,6 +1100,8 @@ body.dxp-root {
             var markerCss = TryBuildMarkerCss(marker, d);
             Write(d, BuildMarkerHtml(normalizedMarker, markerCss));
         }
+        else if (attachCarriedMarker)
+            Write(d, carriedMarkerHtml!);
 
         if (isCode)
             Write(d, "<code>");
@@ -1101,6 +1133,15 @@ body.dxp-root {
         return DxpDisposable.Create(() => {
             baseDispose.Dispose();
         });
+    }
+
+    private void FlushPendingEmptyNumberedMarker(DxpIDocumentContext d)
+    {
+        if (_state.PendingEmptyNumberedMarkerHtml == null)
+            return;
+        WriteLine(d, $"<p class=\"dxp-paragraph\">{_state.PendingEmptyNumberedMarkerHtml}</p>");
+        _state.PendingEmptyNumberedMarkerHtml = null;
+        _state.PendingEmptyNumberedNext = null;
     }
 
     private static bool ShouldPreventWrapForTabAlignedParagraph(Paragraph p, DxpIParagraphContext paragraph)
