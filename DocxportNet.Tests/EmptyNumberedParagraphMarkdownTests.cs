@@ -74,10 +74,15 @@ public sealed class EmptyNumberedParagraphMarkdownTests
                     new NumberingInstance(new AbstractNumId { Val = 1 }) { NumberID = 1 });
                 numbering.Numbering.Save();
 
-                Paragraph Numbered(string? text, bool tabOnly = false) => new(
-                    new ParagraphProperties(new NumberingProperties(
-                        new NumberingLevelReference { Val = 0 }, new NumberingId { Val = 1 })),
-                    text is null ? (tabOnly ? new Run(new TabChar()) : null) : new Run(new Text(text)));
+                Paragraph Numbered(string? text, bool tabOnly = false, bool lineBreak = false)
+                {
+                    var p = new Paragraph(new ParagraphProperties(new NumberingProperties(
+                        new NumberingLevelReference { Val = 0 }, new NumberingId { Val = 1 })));
+                    if (tabOnly) p.Append(new Run(new TabChar()));
+                    if (lineBreak) p.Append(new Run(new Break()));
+                    if (text != null) p.Append(new Run(new Text(text)));
+                    return p;
+                }
 
                 main.Document = new Document(new Body(
                     Numbered("First paragraph"),
@@ -90,36 +95,54 @@ public sealed class EmptyNumberedParagraphMarkdownTests
                     Numbered("Sixth paragraph"),
                     Numbered(null),
                     new Paragraph(),
-                    new Paragraph(new Run(new Text("Separated paragraph")))));
+                    new Paragraph(new Run(new Text("Separated paragraph"))),
+                    Numbered(null, lineBreak: true),
+                    new Paragraph(new Run(new Text("After line break"))),
+                    Numbered("Text after break", lineBreak: true)));
                 main.Document.Save();
             }
 
             var markdown = DxpExport.ExportToString(path,
                 new DxpMarkdownVisitor(DxpMarkdownVisitorConfig.CreatePlainConfig()));
-            Assert.Contains("2 Second paragraph", markdown);
+            Assert.Contains("2\n", markdown);
             Assert.Contains("1 First paragraph", markdown);
-            Assert.Contains("3 Third paragraph", markdown);
+            Assert.DoesNotContain("2 Second paragraph", markdown);
+            Assert.Matches(@"(?m)^3(?:\s|$)", markdown);
+            Assert.DoesNotContain("3 Third paragraph", markdown);
             Assert.Contains("4 Fourth paragraph", markdown);
             Assert.Contains("5\n", markdown);
             Assert.Contains("6 Sixth paragraph", markdown);
             Assert.Contains("7\n", markdown);
             Assert.DoesNotContain("7 Separated paragraph", markdown);
+            Assert.Contains("8\n", markdown);
+            Assert.DoesNotContain("8 After line break", markdown);
+            Assert.Contains("9", markdown);
+            Assert.Contains("Text after break", markdown);
 
             var html = DxpExport.ExportToString(path,
                 new DxpHtmlVisitor(DxpHtmlVisitorConfig.CreateRichConfig()));
-            Assert.Contains(">2</span> Second paragraph", html);
-            Assert.Contains(">3</span> Third paragraph", html);
+            Assert.Contains(">2</span> </p>", html);
+            Assert.Contains(">3</span> </p>", html);
+            Assert.DoesNotContain(">2</span> Second paragraph", html);
             Assert.Contains(">5</span>", html);
             Assert.Contains(">7</span>", html);
             Assert.DoesNotContain(">7</span> Separated paragraph", html);
+            Assert.Contains(">8</span> </p>", html);
+            Assert.DoesNotContain(">8</span> After line break", html);
 
             var plainText = DxpExport.ExportToString(path,
                 new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateAcceptConfig()));
-            Assert.Contains("2 Second paragraph", plainText);
-            Assert.Contains("3 Third paragraph", plainText);
+            Assert.Contains("2\n", plainText);
+            Assert.DoesNotContain("2 Second paragraph", plainText);
+            Assert.Matches(@"(?m)^3(?:\s|$)", plainText);
+            Assert.DoesNotContain("3 Third paragraph", plainText);
             Assert.Contains("5\n", plainText);
             Assert.Contains("7\n", plainText);
             Assert.DoesNotContain("7 Separated paragraph", plainText);
+            Assert.Contains("8\n", plainText);
+            Assert.DoesNotContain("8 After line break", plainText);
+            Assert.Contains("9", plainText);
+            Assert.Contains("Text after break", plainText);
         }
         finally
         {

@@ -48,8 +48,6 @@ internal sealed class DxpMarkdownVisitorState
     public InlineChangeMode CurrentInlineMode { get; set; } = InlineChangeMode.Unchanged;
     public int SuppressFieldDepth { get; set; }
     public int SuppressParagraphDepth { get; set; }
-    public string? PendingEmptyNumberedMarker { get; set; }
-    public Paragraph? PendingEmptyNumberedNext { get; set; }
 
     // the writer used to print deleted content
     public TextWriter DeletedTextWriter = TextWriter.Null;
@@ -718,28 +716,14 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
     public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
     {
-        if (_state.PendingEmptyNumberedMarker != null && !ReferenceEquals(p, _state.PendingEmptyNumberedNext))
-            FlushPendingEmptyNumberedMarker(d);
         var marker = d.KeepAccept ? paragraph.MarkerAccept : paragraph.MarkerReject;
-        // Some converted documents put the list marker on an empty paragraph
-        // and the associated text in the next, unnumbered paragraph.
-        bool markerOnly = marker?.marker != null && string.IsNullOrWhiteSpace(p.InnerText) &&
-            p.Descendants<Run>().All(run => run.ChildElements.All(child =>
-                child is RunProperties or TabChar));
-        if (markerOnly)
-        {
-            if (_state.PendingEmptyNumberedMarker != null)
-                FlushPendingEmptyNumberedMarker(d);
-            _state.PendingEmptyNumberedMarker = NormalizeMarker(marker!.marker!);
-            _state.PendingEmptyNumberedNext = p.NextSibling() as Paragraph;
-            if (_state.PendingEmptyNumberedNext == null)
-                FlushPendingEmptyNumberedMarker(d);
-            _state.SuppressParagraphDepth++;
-            return DxpDisposable.Create(() => _state.SuppressParagraphDepth--);
-        }
         if (!DxpParagraphs.HasRenderableParagraphContent(p))
         {
-            FlushPendingEmptyNumberedMarker(d);
+            if (marker?.marker != null)
+            {
+                WriteLine(d, NormalizeMarker(marker.marker));
+                WriteLine(d);
+            }
             _state.SuppressParagraphDepth++;
             return DxpDisposable.Create(() => _state.SuppressParagraphDepth--);
         }
@@ -765,7 +749,8 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
         if (string.IsNullOrEmpty(innerText))
         {
-            FlushPendingEmptyNumberedMarker(d);
+            if (marker?.marker != null)
+                WriteLine(d, NormalizeMarker(marker.marker));
             return DxpDisposable.Create(() => {
                 WriteLine(d);
             });
@@ -798,7 +783,6 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
         if (!_config.EmitPageNumbers && styleChain.Any(sc => string.Equals(sc.StyleId, DxpWordBuiltInStyleId.wdStylePageNumber, StringComparison.OrdinalIgnoreCase)))
         {
-            FlushPendingEmptyNumberedMarker(d);
             return DxpDisposable.Empty;
         }
 
@@ -814,18 +798,6 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
             string.Equals(sc.StyleId, DxpWordBuiltInStyleId.wdStyleHtmlPre, StringComparison.OrdinalIgnoreCase) ||
             string.Equals(sc.StyleId, DxpWordBuiltInStyleId.wdStyleHtmlCode, StringComparison.OrdinalIgnoreCase) ||
             string.Equals(sc.StyleId, "Code", StringComparison.OrdinalIgnoreCase));
-
-        string? carriedMarker = _state.PendingEmptyNumberedMarker;
-        bool immediateNext = ReferenceEquals(p, _state.PendingEmptyNumberedNext);
-        _state.PendingEmptyNumberedMarker = null;
-        _state.PendingEmptyNumberedNext = null;
-        bool attachCarriedMarker = carriedMarker != null && marker?.marker == null &&
-            immediateNext && !isHeading && !isBlockQuote && !isCode;
-        if (carriedMarker != null && !attachCarriedMarker)
-        {
-            WriteLine(d, carriedMarker);
-            WriteLine(d);
-        }
 
         string? headingStyle = null;
         if (isHeading && justify != null && _config.EmitParagraphAlignment && _config.EmitStyleFont)
@@ -869,10 +841,6 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
             if (!needsParagraphWrapper && LooksLikeOrderedListMarker(normalizedMarker))
                 normalizedMarker = EscapeOrderedListMarker(normalizedMarker);
             Write(d, $"""{normalizedMarker} """);
-        }
-        else if (attachCarriedMarker)
-        {
-            Write(d, $"{carriedMarker} ");
         }
 
         bool previousHeading = _state.InHeading;
@@ -1506,17 +1474,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
     public override IDisposable VisitDocumentBodyBegin(Body body, DxpIDocumentContext d)
     {
-        return DxpDisposable.Create(() => FlushPendingEmptyNumberedMarker(d));
-    }
-
-    private void FlushPendingEmptyNumberedMarker(DxpIDocumentContext d)
-    {
-        if (_state.PendingEmptyNumberedMarker == null)
-            return;
-        WriteLine(d, _state.PendingEmptyNumberedMarker);
-        WriteLine(d);
-        _state.PendingEmptyNumberedMarker = null;
-        _state.PendingEmptyNumberedNext = null;
+        return DxpDisposable.Empty;
     }
 
     private bool IsPageNumberField(string? instr)

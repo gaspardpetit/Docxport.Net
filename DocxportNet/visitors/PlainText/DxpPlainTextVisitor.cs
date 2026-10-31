@@ -267,30 +267,11 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
     public override IDisposable VisitParagraphBegin(Paragraph p, DxpIDocumentContext d, DxpIParagraphContext paragraph)
     {
-        if (_state.PendingEmptyNumberedMarker != null && !ReferenceEquals(p, _state.PendingEmptyNumberedNext))
-            FlushPendingEmptyNumberedMarker();
         var marker = _config.TrackedChangeMode == DxpPlainTextTrackedChangeMode.AcceptChanges
             ? paragraph.MarkerAccept
             : paragraph.MarkerReject;
-        bool markerOnly = marker?.marker != null && string.IsNullOrWhiteSpace(p.InnerText) &&
-            p.Descendants<Run>().All(run => run.ChildElements.All(child =>
-                child is RunProperties or TabChar));
-        if (markerOnly)
+        if (!DxpParagraphs.HasRenderableParagraphContent(p) && marker?.marker == null)
         {
-            FlushPendingEmptyNumberedMarker();
-            if (ShouldEmit(d) && _state.SuppressDepth == 0)
-            {
-                _state.PendingEmptyNumberedMarker = NormalizeMarker(marker!.marker!);
-                _state.PendingEmptyNumberedNext = p.NextSibling() as Paragraph;
-                if (_state.PendingEmptyNumberedNext == null)
-                    FlushPendingEmptyNumberedMarker();
-            }
-            _state.SuppressDepth++;
-            return DxpDisposable.Create(() => _state.SuppressDepth--);
-        }
-        if (!DxpParagraphs.HasRenderableParagraphContent(p))
-        {
-            FlushPendingEmptyNumberedMarker();
             _state.SuppressDepth++;
             return DxpDisposable.Create(() => _state.SuppressDepth--);
         }
@@ -330,18 +311,6 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor, IDisposab
             string.Equals(sc.StyleId, DxpWordBuiltInStyleId.wdStyleHtmlCode, StringComparison.OrdinalIgnoreCase) ||
             string.Equals(sc.StyleId, "Code", StringComparison.OrdinalIgnoreCase));
 
-        bool attachCarriedMarker = emit && _state.PendingEmptyNumberedMarker != null &&
-            ReferenceEquals(p, _state.PendingEmptyNumberedNext) && marker?.marker == null &&
-            !isHeading && !isBlockQuote && !isCode && !string.IsNullOrEmpty(p.InnerText);
-        if (attachCarriedMarker)
-        {
-            markerText = _state.PendingEmptyNumberedMarker + " ";
-            _state.PendingEmptyNumberedMarker = null;
-            _state.PendingEmptyNumberedNext = null;
-        }
-        else
-            FlushPendingEmptyNumberedMarker();
-
         bool inTable = _state.TableStack.Count > 0;
 
         string prefix = indentPrefix + markerText;
@@ -377,6 +346,8 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
         if (string.IsNullOrEmpty(content))
         {
+            if (!string.IsNullOrWhiteSpace(paragraph.Prefix))
+                WriteDirect(paragraph.Prefix.TrimEnd());
             WriteDirect(paragraph.Separator);
             return;
         }
@@ -388,16 +359,6 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
         WriteDirect(content);
         WriteDirect(paragraph.Separator);
-    }
-
-    private void FlushPendingEmptyNumberedMarker()
-    {
-        if (_state.PendingEmptyNumberedMarker == null)
-            return;
-        WriteDirect(_state.PendingEmptyNumberedMarker);
-        WriteDirect(_state.TableStack.Count > 0 ? "\n" : "\n\n");
-        _state.PendingEmptyNumberedMarker = null;
-        _state.PendingEmptyNumberedNext = null;
     }
 
     private static string PrefixLines(string text, string prefix)
@@ -730,8 +691,6 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
     private sealed class DxpPlainTextVisitorState
     {
-        public string? PendingEmptyNumberedMarker { get; set; }
-        public Paragraph? PendingEmptyNumberedNext { get; set; }
         public bool AllCaps { get; set; }
         public ParagraphBuffer? CurrentParagraph { get; set; }
         public Stack<TextWriter> WriterStack { get; } = new();
