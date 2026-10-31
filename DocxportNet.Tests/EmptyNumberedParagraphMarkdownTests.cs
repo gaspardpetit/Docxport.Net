@@ -111,7 +111,9 @@ public sealed class EmptyNumberedParagraphMarkdownTests
                     new NumberingInstance(new AbstractNumId { Val = 1 }) { NumberID = 1 });
                 numbering.Numbering.Save();
                 var emptyNumbered = new Paragraph(new ParagraphProperties(new NumberingProperties(
-                    new NumberingLevelReference { Val = 0 }, new NumberingId { Val = 1 })));
+                    new NumberingLevelReference { Val = 0 }, new NumberingId { Val = 1 }),
+                    new Shading { Fill = "FFFF00" },
+                    new ParagraphMarkRunProperties(new FontSize { Val = "32" })));
                 main.Document = new Document(new Body(new Table(new TableRow(
                     new TableCell(emptyNumbered),
                     new TableCell(new Paragraph(new Run(new Text("Next cell"))))))));
@@ -127,6 +129,11 @@ public sealed class EmptyNumberedParagraphMarkdownTests
                 new DxpHtmlVisitor(DxpHtmlVisitorConfig.CreateRichConfig()));
             Assert.Matches(@">1</span>\s*</p>\s*</td>", html);
             Assert.DoesNotContain(">1</span> Next cell", html);
+            var parsed = new HtmlParser().ParseDocument(html);
+            var numbered = Assert.Single(parsed.QuerySelectorAll("td p").Where(p =>
+                p.QuerySelector(".dxp-marker")?.TextContent.Trim() == "1"));
+            Assert.Contains("font-size:16pt", numbered.GetAttribute("style"));
+            Assert.Contains("background-color", numbered.GetAttribute("style"));
 
             var plainText = DxpExport.ExportToString(path,
                 new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateAcceptConfig()));
