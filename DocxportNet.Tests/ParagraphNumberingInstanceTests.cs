@@ -10,6 +10,71 @@ namespace DocxportNet.Tests;
 public sealed class ParagraphNumberingInstanceTests
 {
     [Fact]
+    public void FirstRestartedInstanceContinuesIntoStyleInstance()
+    {
+        var tracker = new DxpListTracker();
+
+        Assert.Equal(1, tracker.NextIndex(2, 7, 0, 1, true));
+        Assert.Equal(2, tracker.NextIndex(2, 7, 0, 1, true));
+        Assert.Equal(3, tracker.NextIndex(2, 7, 0, 1, true));
+        Assert.Equal(4, tracker.NextIndex(1, 7, 0, 1, false));
+        Assert.Equal(5, tracker.NextIndex(1, 7, 0, 1, false));
+    }
+
+    [Fact]
+    public void PlainMarkdownContinuesFromRestartedInstanceIntoStyleInstance()
+    {
+        var path = Path.Combine(Path.GetTempPath(), $"numbering-continuation-{Guid.NewGuid():N}.docx");
+        try
+        {
+            using (var doc = WordprocessingDocument.Create(path, WordprocessingDocumentType.Document))
+            {
+                var main = doc.AddMainDocumentPart();
+                var numbering = main.AddNewPart<NumberingDefinitionsPart>();
+                numbering.Numbering = new Numbering(
+                    new AbstractNum(new Level(
+                        new StartNumberingValue { Val = 1 },
+                        new NumberingFormat { Val = NumberFormatValues.Decimal },
+                        new LevelText { Val = "[%1]" }) { LevelIndex = 0 }) { AbstractNumberId = 7 },
+                    new NumberingInstance(new AbstractNumId { Val = 7 }) { NumberID = 1 },
+                    new NumberingInstance(new AbstractNumId { Val = 7 },
+                        new LevelOverride(new StartOverrideNumberingValue { Val = 1 }) { LevelIndex = 0 })
+                    { NumberID = 2 });
+                numbering.Numbering.Save();
+
+                var styles = main.AddNewPart<StyleDefinitionsPart>();
+                styles.Styles = new Styles(new Style(
+                    new StyleParagraphProperties(new NumberingProperties(new NumberingId { Val = 1 })))
+                { Type = StyleValues.Paragraph, StyleId = "NumberedBody" });
+                styles.Styles.Save();
+
+                Paragraph Explicit(string text) => new(
+                    new ParagraphProperties(new ParagraphStyleId { Val = "NumberedBody" },
+                        new NumberingProperties(new NumberingLevelReference { Val = 0 },
+                            new NumberingId { Val = 2 })),
+                    new Run(new Text(text)));
+                Paragraph Inherited(string text) => new(
+                    new ParagraphProperties(new ParagraphStyleId { Val = "NumberedBody" }),
+                    new Run(new Text(text)));
+                main.Document = new Document(new Body(
+                    Explicit("Majority one"), Explicit("Majority two"), Explicit("Majority three"),
+                    Inherited("Dissent one"), Inherited("Dissent two")));
+                main.Document.Save();
+            }
+
+            var markdown = DxpExport.ExportToString(path,
+                new DxpMarkdownVisitor(DxpMarkdownVisitorConfig.CreatePlainConfig()));
+            Assert.Contains("[3] Majority three", markdown);
+            Assert.Contains("[4] Dissent one", markdown);
+            Assert.Contains("[5] Dissent two", markdown);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    [Fact]
     public void ExplicitRestartDoesNotOverwriteAnotherInstancesProgress()
     {
         var tracker = new DxpListTracker();
