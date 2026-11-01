@@ -10,6 +10,56 @@ namespace DocxportNet.Tests;
 public sealed class ParagraphNumberingInstanceTests
 {
     [Fact]
+    public void PlainMarkdownHonorsLevelRestartRules()
+    {
+        var path = Path.Combine(Path.GetTempPath(), $"numbering-level-restart-{Guid.NewGuid():N}.docx");
+        try
+        {
+            using (var doc = WordprocessingDocument.Create(path, WordprocessingDocumentType.Document))
+            {
+                var main = doc.AddMainDocumentPart();
+                var numbering = main.AddNewPart<NumberingDefinitionsPart>();
+                numbering.Numbering = new Numbering(
+                    new AbstractNum(
+                        new Level(new StartNumberingValue { Val = 1 },
+                            new NumberingFormat { Val = NumberFormatValues.Decimal },
+                            new LevelText { Val = "[%1]" }) { LevelIndex = 0 },
+                        new Level(new StartNumberingValue { Val = 1 },
+                            new NumberingFormat { Val = NumberFormatValues.Decimal },
+                            new LevelText { Val = "(%2)" }, new LevelRestart { Val = 0 }) { LevelIndex = 1 },
+                        new Level(new StartNumberingValue { Val = 1 },
+                            new NumberingFormat { Val = NumberFormatValues.Decimal },
+                            new LevelText { Val = "{%3}" }, new LevelRestart { Val = 1 }) { LevelIndex = 2 })
+                    { AbstractNumberId = 7 },
+                    new NumberingInstance(new AbstractNumId { Val = 7 }) { NumberID = 1 });
+                numbering.Numbering.Save();
+
+                Paragraph Item(int level, string text) => new(
+                    new ParagraphProperties(new NumberingProperties(
+                        new NumberingLevelReference { Val = level }, new NumberingId { Val = 1 })),
+                    new Run(new Text(text)));
+                main.Document = new Document(new Body(
+                    Item(0, "Parent one"), Item(1, "Child one"),
+                    Item(2, "Grandchild one"), Item(2, "Grandchild two"),
+                    Item(1, "Child two"), Item(2, "Grandchild three"),
+                    Item(0, "Parent two"), Item(1, "Child three"),
+                    Item(2, "Grandchild after parent")));
+                main.Document.Save();
+            }
+
+            var markdown = DxpExport.ExportToString(path,
+                new DxpMarkdownVisitor(DxpMarkdownVisitorConfig.CreatePlainConfig()));
+            Assert.Contains("(3) Child three", markdown);
+            Assert.Contains("{3} Grandchild three", markdown);
+            Assert.Contains("{1} Grandchild after parent", markdown);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    [Fact]
     public void TwoRestartsContinueFromTheMostRecentInstance()
     {
         var tracker = new DxpListTracker();

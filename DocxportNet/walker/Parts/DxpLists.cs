@@ -88,6 +88,14 @@ public sealed class DxpNumberingResolver
         num.Elements<LevelOverride>().Any(level => level.LevelIndex?.Value == ilvl &&
             level.StartOverrideNumberingValue?.Val?.Value != null);
 
+    public int GetRestartTrigger(int numId, int ilvl)
+    {
+        var level = ResolveLevel(numId, ilvl)?.lvl;
+        var restart = level?.GetFirstChild<LevelRestart>()?.Val?.Value;
+        // OOXML uses a one-based level index; zero disables automatic restart.
+        return restart == null ? ilvl - 1 : restart.Value - 1;
+    }
+
     private AbstractNum? FollowAbstractNumLinks(AbstractNum abs)
     {
         // If it already has levels, nothing to do.
@@ -160,7 +168,8 @@ public sealed class DxpListTracker
         return arr;
     }
 
-    public int NextIndex(int numId, int abstractId, int ilvl, int startAt, bool hasStartOverride)
+    public int NextIndex(int numId, int abstractId, int ilvl, int startAt, bool hasStartOverride,
+        IReadOnlyList<int>? restartTriggers = null)
     {
         var arr = GetArr(abstractId);
         // A heading can establish an instance before its first body paragraph.
@@ -173,6 +182,10 @@ public sealed class DxpListTracker
 
         for (int d = ilvl + 1; d < arr.Length; d++)
         {
+            var trigger = restartTriggers != null && d < restartTriggers.Count
+                ? restartTriggers[d] : d - 1;
+            if (trigger < ilvl)
+                continue;
             if (!independent)
                 arr[d] = null;
             if (_restartedCounters.ContainsKey((numId, d)))
@@ -304,8 +317,10 @@ public static class DxpListMarkerFormatter
 
         // Increment current level (normal list item / bullet / numbered)
         var abstractId = abs.AbstractNumberId?.Value ?? numPr.NumId;
+        var restartTriggers = Enumerable.Range(0, 9)
+            .Select(level => nr.GetRestartTrigger(numPr.NumId, level)).ToArray();
         tracker.NextIndex(numPr.NumId, abstractId, numPr.Ilvl, startAt,
-            nr.HasStartOverride(numPr.NumId, numPr.Ilvl));
+            nr.HasStartOverride(numPr.NumId, numPr.Ilvl), restartTriggers);
 
         // If bullet, Word stores the glyph directly in lvlText (and font is in lvl.rPr).
         if (fmt == NumberFormatValues.Bullet)
