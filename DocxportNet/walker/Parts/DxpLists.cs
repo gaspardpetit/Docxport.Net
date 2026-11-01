@@ -61,24 +61,21 @@ public sealed class DxpNumberingResolver
         if (ilvl > 8)
             ilvl = 8;
 
-        var lvl = abs.Elements<Level>().FirstOrDefault(x => x.LevelIndex?.Value == ilvl)
+        var abstractLevel = abs.Elements<Level>().FirstOrDefault(x => x.LevelIndex?.Value == ilvl)
                ?? abs.Elements<Level>().FirstOrDefault(x => x.LevelIndex?.Value == 0)
                ?? abs.Elements<Level>().OrderBy(x => x.LevelIndex?.Value ?? int.MaxValue).FirstOrDefault();
 
-        if (lvl == null)
+        if (abstractLevel == null)
             return null;
-
-        // startAt: from override if present, else from lvl.Start
-        int startAt = 1;
 
         var ov = num.Elements<LevelOverride>()
                     .FirstOrDefault(o => o.LevelIndex?.Value == ilvl);
-
-        var startOverride = ov?.StartOverrideNumberingValue?.Val?.Value;
-        if (startOverride != null)
-            startAt = startOverride.Value;
-        else if (lvl.StartNumberingValue?.Val?.Value != null)
-            startAt = lvl.StartNumberingValue.Val.Value;
+        var replacement = ov?.GetFirstChild<Level>();
+        var lvl = replacement ?? abstractLevel;
+        // Word gives a replacement level's start precedence over startOverride.
+        var startAt = replacement?.StartNumberingValue?.Val?.Value
+            ?? ov?.StartOverrideNumberingValue?.Val?.Value
+            ?? abstractLevel.StartNumberingValue?.Val?.Value ?? 1;
 
         return (abs, lvl, startAt);
     }
@@ -87,6 +84,16 @@ public sealed class DxpNumberingResolver
         _numById.TryGetValue(numId, out var num) &&
         num.Elements<LevelOverride>().Any(level => level.LevelIndex?.Value == ilvl &&
             level.StartOverrideNumberingValue?.Val?.Value != null);
+
+    public int GetRestartTrigger(int numId, int ilvl)
+    {
+        var abs = ResolveLevel(numId, ilvl)?.abs;
+        // Word ignores lvlRestart inside a replacement level.
+        var level = abs?.Elements<Level>().FirstOrDefault(x => x.LevelIndex?.Value == ilvl);
+        var restart = level?.GetFirstChild<LevelRestart>()?.Val?.Value;
+        // OOXML uses a one-based level index; zero disables automatic restart.
+        return restart == null ? ilvl - 1 : restart.Value - 1;
+    }
 
     private AbstractNum? FollowAbstractNumLinks(AbstractNum abs)
     {
@@ -144,9 +151,13 @@ public sealed class DxpNumberingResolver
 public sealed class DxpListTracker
 {
     private readonly Dictionary<int, int?[]> _counters = new();
+    private readonly Dictionary<int, int?[]> _activeCounters = new();
     private readonly HashSet<int> _visitedInstances = new();
     private readonly HashSet<(int NumId, int Level)> _restartedLevels = new();
     private readonly Dictionary<(int NumId, int Level), int?> _restartedCounters = new();
+    private readonly HashSet<(int NumId, int Level)> _sharedInstanceLevelsVisited = new();
+    private readonly HashSet<(int NumId, int Level)> _seededAncestorLevels = new();
+    private readonly Dictionary<(int AbstractId, int Level), int> _pendingRestartedCounters = new();
 
     private int?[] GetArr(int abstractId)
     {
@@ -158,36 +169,84 @@ public sealed class DxpListTracker
         return arr;
     }
 
-    public int NextIndex(int numId, int abstractId, int ilvl, int startAt, bool hasStartOverride)
+    public int NextIndex(int numId, int abstractId, int ilvl, int startAt, bool hasStartOverride,
+        IReadOnlyList<int>? restartTriggers = null)
     {
         var arr = GetArr(abstractId);
+        if (!_activeCounters.TryGetValue(abstractId, out var active))
+            _activeCounters[abstractId] = active = Enumerable.Repeat<int?>(null, 9).ToArray();
         // A heading can establish an instance before its first body paragraph.
         // The override applies when the instance first appears, not per level.
         var firstInInstance = _visitedInstances.Add(numId);
         var key = (numId, ilvl);
-        if (firstInInstance && hasStartOverride)
+        var seededAncestor = _seededAncestorLevels.Remove(key);
+        if ((firstInInstance || seededAncestor) && hasStartOverride)
             _restartedLevels.Add(key);
         var independent = IsIndependent(numId, ilvl);
-
-        for (int d = ilvl + 1; d < arr.Length; d++)
-        {
-            if (!independent)
-                arr[d] = null;
-            if (_restartedCounters.ContainsKey((numId, d)))
-                _restartedCounters[(numId, d)] = null;
-        }
+        ResetDescendants(numId, abstractId, ilvl, restartTriggers);
 
         if (independent)
         {
             _restartedCounters.TryGetValue(key, out var restarted);
             var next = restarted == null ? startAt : restarted.Value + 1;
             _restartedCounters[key] = next;
+            _pendingRestartedCounters[(abstractId, ilvl)] = next;
+            active[ilvl] = next;
             return next;
         }
 
+        var sharedKey = (abstractId, ilvl);
+        // A new instance without a start override continues the most recent
+        // restart. Returning to an already used instance keeps its own count.
+        if (_sharedInstanceLevelsVisited.Add(key) &&
+            _pendingRestartedCounters.TryGetValue(sharedKey, out var previous))
+            arr[ilvl] = previous;
+        _pendingRestartedCounters.Remove(sharedKey);
         arr[ilvl] = arr[ilvl] == null ? startAt : arr[ilvl]!.Value + 1;
+        active[ilvl] = arr[ilvl];
         return arr[ilvl]!.Value;
     }
+
+    public void ObserveNoDisplayLevel(int numId, int abstractId, int ilvl,
+        IReadOnlyList<int>? restartTriggers = null) =>
+        ResetDescendants(numId, abstractId, ilvl, restartTriggers);
+
+    private void ResetDescendants(int numId, int abstractId, int ilvl,
+        IReadOnlyList<int>? restartTriggers)
+    {
+        var arr = GetArr(abstractId);
+        if (!_activeCounters.TryGetValue(abstractId, out var active))
+            _activeCounters[abstractId] = active = Enumerable.Repeat<int?>(null, 9).ToArray();
+        var independent = IsIndependent(numId, ilvl);
+        for (int d = ilvl + 1; d < arr.Length; d++)
+        {
+            var trigger = restartTriggers != null && d < restartTriggers.Count
+                ? restartTriggers[d] : d - 1;
+            if (trigger < ilvl)
+                continue;
+            active[d] = null;
+            _pendingRestartedCounters.Remove((abstractId, d));
+            if (!independent)
+                arr[d] = null;
+            if (_restartedCounters.ContainsKey((numId, d)))
+                _restartedCounters[(numId, d)] = null;
+        }
+    }
+
+    public int SeedUnstartedAncestor(int numId, int abstractId, int ilvl, int abstractStart)
+    {
+        _seededAncestorLevels.Add((numId, ilvl));
+        var arr = GetArr(abstractId);
+        if (arr[ilvl] == null)
+            arr[ilvl] = abstractStart;
+        if (!_activeCounters.TryGetValue(abstractId, out var active))
+            _activeCounters[abstractId] = active = Enumerable.Repeat<int?>(null, 9).ToArray();
+        active[ilvl] ??= arr[ilvl];
+        return active[ilvl]!.Value;
+    }
+
+    public int? GetActiveCurrent(int abstractId, int ilvl) =>
+        _activeCounters.TryGetValue(abstractId, out var active) ? active[ilvl] : null;
 
     public int? GetCurrent(int numId, int abstractId, int ilvl)
     {
@@ -208,9 +267,13 @@ public sealed class DxpListTracker
     public void ClearAll()
     {
         _counters.Clear();
+        _activeCounters.Clear();
         _visitedInstances.Clear();
         _restartedLevels.Clear();
         _restartedCounters.Clear();
+        _sharedInstanceLevelsVisited.Clear();
+        _seededAncestorLevels.Clear();
+        _pendingRestartedCounters.Clear();
     }
 }
 
@@ -281,8 +344,10 @@ public static class DxpListMarkerFormatter
         // => Do NOT invent "%1." here.
         if (fmt == NumberFormatValues.None)
         {
-            // Do NOT advance counters for a "none" level; these are usually continuation lines.
-            // Behavior can be revisited if documents expect these to advance.
+            var noneAbstractId = abs.AbstractNumberId?.Value ?? numPr.NumId;
+            var noneRestartTriggers = Enumerable.Range(0, 9)
+                .Select(level => nr.GetRestartTrigger(numPr.NumId, level)).ToArray();
+            tracker.ObserveNoDisplayLevel(numPr.NumId, noneAbstractId, numPr.Ilvl, noneRestartTriggers);
             return string.IsNullOrEmpty(lvlText) ? null : lvlText;
         }
 
@@ -292,8 +357,10 @@ public static class DxpListMarkerFormatter
 
         // Increment current level (normal list item / bullet / numbered)
         var abstractId = abs.AbstractNumberId?.Value ?? numPr.NumId;
+        var restartTriggers = Enumerable.Range(0, 9)
+            .Select(level => nr.GetRestartTrigger(numPr.NumId, level)).ToArray();
         tracker.NextIndex(numPr.NumId, abstractId, numPr.Ilvl, startAt,
-            nr.HasStartOverride(numPr.NumId, numPr.Ilvl));
+            nr.HasStartOverride(numPr.NumId, numPr.Ilvl), restartTriggers);
 
         // If bullet, Word stores the glyph directly in lvlText (and font is in lvl.rPr).
         if (fmt == NumberFormatValues.Bullet)
@@ -312,12 +379,17 @@ public static class DxpListMarkerFormatter
             if (result.IndexOf(placeholder, StringComparison.Ordinal) < 0)
                 continue;
 
-            var cur = tracker.GetCurrent(numPr.NumId, abstractId, i);
+            var cur = i < numPr.Ilvl
+                ? tracker.GetActiveCurrent(abstractId, i)
+                : tracker.GetCurrent(numPr.NumId, abstractId, i);
             if (cur == null)
             {
-                // If a placeholder references a level that hasn't been started yet,
-                // Word's behavior is nuanced; "0" is safer than crashing.
-                cur = 0;
+                // Word displays the abstract start value before the ancestor emits.
+                // It also seeds the shared counter, so its first later item advances.
+                var abstractLevel = abs.Elements<Level>()
+                    .FirstOrDefault(level => level.LevelIndex?.Value == i);
+                cur = tracker.SeedUnstartedAncestor(numPr.NumId, abstractId, i,
+                    abstractLevel?.StartNumberingValue?.Val?.Value ?? 1);
             }
 
             var refLvl = nr.ResolveLevel(numPr.NumId, i)?.lvl;
@@ -342,6 +414,8 @@ public static class DxpListMarkerFormatter
 
     public static string FormatNumber(int n, NumberFormatValues fmt, CultureInfo? culture = null)
     {
+        if (fmt == NumberFormatValues.None)
+            return "";
         culture ??= CultureInfo.CurrentCulture;
         if (fmt == NumberFormatValues.Decimal)
             return n.ToString(CultureInfo.InvariantCulture);
