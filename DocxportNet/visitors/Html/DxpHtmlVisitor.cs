@@ -969,6 +969,10 @@ body.dxp-root {
             string.Equals(sc.StyleId, DxpWordBuiltInStyleId.wdStyleHtmlCode, StringComparison.OrdinalIgnoreCase) ||
             string.Equals(sc.StyleId, "Code", StringComparison.OrdinalIgnoreCase));
 
+        // Keep source numbering available to metadata even when the visual
+        // marker is suppressed for quotes, code, or heading rendering.
+        var metadataMarker = marker;
+
         // Margin/borders are precomputed in the walker; keep alignment as classes for existing output shape.
         var computedParaCss = paragraph.ComputedStyle.ToCss(includeTextAlign: false);
         bool hasComputedCss = !string.IsNullOrEmpty(computedParaCss);
@@ -1070,12 +1074,12 @@ body.dxp-root {
                     .Append(HtmlAttr(string.Join(" ", styleChain.Select(style => style.StyleId)))).Append('"');
             if (headingLevel is int resolvedHeadingLevel)
                 openTag.Append(" data-heading-level=\"").Append(resolvedHeadingLevel).Append('"');
-            if (marker?.numId is int numId)
+            if (metadataMarker?.numId is int numId)
                 openTag.Append(" data-num-id=\"").Append(numId).Append('"');
-            if (marker?.iLvl is int numLevel)
+            if (metadataMarker?.iLvl is int numLevel)
                 openTag.Append(" data-num-level=\"").Append(numLevel).Append('"');
-            if (!string.IsNullOrEmpty(marker?.marker))
-                openTag.Append(" data-marker=\"").Append(HtmlAttr(marker.marker)).Append('"');
+            if (!string.IsNullOrEmpty(metadataMarker?.marker))
+                openTag.Append(" data-marker=\"").Append(HtmlAttr(metadataMarker.marker)).Append('"');
         }
         openTag.Append('>');
         Write(d, openTag.ToString());

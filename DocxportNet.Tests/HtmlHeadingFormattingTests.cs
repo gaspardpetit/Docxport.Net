@@ -63,6 +63,46 @@ public sealed class HtmlHeadingFormattingTests
         Assert.DoesNotContain("<h2", html);
     }
 
+    [Fact]
+    public void ParagraphMetadataRetainsNumberingForQuoteAndCodeStyles()
+    {
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source,
+            DocumentFormat.OpenXml.WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            var numbering = main.AddNewPart<NumberingDefinitionsPart>();
+            numbering.Numbering = new Numbering(
+                new AbstractNum(new Level(
+                    new StartNumberingValue { Val = 1 },
+                    new NumberingFormat { Val = NumberFormatValues.Decimal },
+                    new LevelText { Val = "[%1]" }) { LevelIndex = 0 }) { AbstractNumberId = 1 },
+                new NumberingInstance(new AbstractNumId { Val = 1 }) { NumberID = 1 });
+            numbering.Numbering.Save();
+
+            var styles = main.AddNewPart<StyleDefinitionsPart>();
+            styles.Styles = new Styles(
+                new Style(new StyleName { Val = "Quote" }) { Type = StyleValues.Paragraph, StyleId = "Quote" },
+                new Style(new StyleName { Val = "Code" }) { Type = StyleValues.Paragraph, StyleId = "Code" });
+            styles.Styles.Save();
+
+            Paragraph Numbered(string style, string text) => new(
+                new ParagraphProperties(new ParagraphStyleId { Val = style },
+                    new NumberingProperties(new NumberingLevelReference { Val = 0 },
+                        new NumberingId { Val = 1 })),
+                new Run(new Text(text)));
+            main.Document = new Document(new Body(
+                Numbered("Quote", "Quoted text"), Numbered("Code", "Code text")));
+            main.Document.Save();
+        }
+
+        var config = DxpHtmlVisitorConfig.CreatePlainConfig() with { EmitParagraphMetadata = true };
+        var html = DxpExport.ExportToString(source.ToArray(), new DxpHtmlVisitor(config));
+        Assert.Matches("<p[^>]*data-style-id=\"Quote\"[^>]*data-num-id=\"1\"[^>]*data-num-level=\"0\"[^>]*data-marker=\"\\[1\\]\"", html);
+        Assert.Matches("<pre[^>]*data-style-id=\"Code\"[^>]*data-num-id=\"1\"[^>]*data-num-level=\"0\"[^>]*data-marker=\"\\[2\\]\"", html);
+        Assert.DoesNotContain("<span class=\"dxp-marker\">", html);
+    }
+
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
