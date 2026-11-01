@@ -60,6 +60,7 @@ public sealed record DxpHtmlVisitorConfig
 {
     public bool EmitImages = true;
     public bool EmitParagraphMetadata = false;
+    public bool DetectHeadings = true;
     public bool EmitStyleFont = true;
     public bool EmitRunColor = true;
     public bool EmitRunBackground = true;
@@ -944,14 +945,11 @@ body.dxp-root {
 
         var headingLevel = d.Styles.GetHeadingLevel(p);
         bool hasNumbering = marker?.numId != null;
-        bool isHeading = headingLevel != null && !hasNumbering;
         var paragraphStyleId = p.ParagraphProperties?.ParagraphStyleId?.Val?.Value;
 
-        if (!isHeading && !hasNumbering && styleChain.Any(sc => string.Equals(sc.StyleId, DxpWordBuiltInStyleId.wdStyleSubtitle, StringComparison.OrdinalIgnoreCase)))
-        {
+        if (headingLevel == null && !hasNumbering && styleChain.Any(sc => string.Equals(sc.StyleId, DxpWordBuiltInStyleId.wdStyleSubtitle, StringComparison.OrdinalIgnoreCase)))
             headingLevel = 2;
-            isHeading = true;
-        }
+        bool isHeading = _config.DetectHeadings && headingLevel != null && !hasNumbering;
 
         if (!_config.EmitPageNumbers && styleChain.Any(sc => string.Equals(sc.StyleId, DxpWordBuiltInStyleId.wdStylePageNumber, StringComparison.OrdinalIgnoreCase)))
         {
@@ -970,6 +968,10 @@ body.dxp-root {
             string.Equals(sc.StyleId, DxpWordBuiltInStyleId.wdStyleHtmlPre, StringComparison.OrdinalIgnoreCase) ||
             string.Equals(sc.StyleId, DxpWordBuiltInStyleId.wdStyleHtmlCode, StringComparison.OrdinalIgnoreCase) ||
             string.Equals(sc.StyleId, "Code", StringComparison.OrdinalIgnoreCase));
+
+        // Keep source numbering available to metadata even when the visual
+        // marker is suppressed for quotes, code, or heading rendering.
+        var metadataMarker = marker;
 
         // Margin/borders are precomputed in the walker; keep alignment as classes for existing output shape.
         var computedParaCss = paragraph.ComputedStyle.ToCss(includeTextAlign: false);
@@ -1064,6 +1066,20 @@ body.dxp-root {
             string? docxPart = GetDocxPartName(d.CurrentPart);
             if (!string.IsNullOrEmpty(docxPart))
                 openTag.Append(" data-docx-part=\"").Append(HtmlAttr(docxPart)).Append('"');
+
+            if (!string.IsNullOrEmpty(paragraphStyleId))
+                openTag.Append(" data-style-id=\"").Append(HtmlAttr(paragraphStyleId)).Append('"');
+            if (styleChain.Count > 0)
+                openTag.Append(" data-style-chain=\"")
+                    .Append(HtmlAttr(string.Join(" ", styleChain.Select(style => style.StyleId)))).Append('"');
+            if (headingLevel is int resolvedHeadingLevel)
+                openTag.Append(" data-heading-level=\"").Append(resolvedHeadingLevel).Append('"');
+            if (metadataMarker?.numId is int numId)
+                openTag.Append(" data-num-id=\"").Append(numId).Append('"');
+            if (metadataMarker?.iLvl is int numLevel)
+                openTag.Append(" data-num-level=\"").Append(numLevel).Append('"');
+            if (!string.IsNullOrEmpty(metadataMarker?.marker))
+                openTag.Append(" data-marker=\"").Append(HtmlAttr(metadataMarker.marker)).Append('"');
         }
         openTag.Append('>');
         Write(d, openTag.ToString());

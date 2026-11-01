@@ -30,6 +30,8 @@ string? outputPath = null;
 string format = "markdown";
 string tracked = "accept";
 bool plainOutput = false;
+bool htmlDetectHeadings = true;
+bool htmlParagraphMetadata = false;
 bool showProgress = true;
 bool formatExplicit = false;
 var cliVariables = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -72,6 +74,10 @@ for (int i = 0; i < args.Length; i++)
     }
     else if (arg.Equals("--plain", StringComparison.OrdinalIgnoreCase))
         plainOutput = true;
+    else if (arg.Equals("--html-no-headings", StringComparison.OrdinalIgnoreCase))
+        htmlDetectHeadings = false;
+    else if (arg.Equals("--html-paragraph-metadata", StringComparison.OrdinalIgnoreCase))
+        htmlParagraphMetadata = true;
     else if (arg.Equals("--no-progress", StringComparison.OrdinalIgnoreCase))
         showProgress = false;
     else if (arg.StartsWith("--fields=", StringComparison.OrdinalIgnoreCase))
@@ -256,6 +262,12 @@ if (fontDirectories.Count > 0 && !format.Equals("pdf", StringComparison.OrdinalI
     return;
 }
 
+if ((!htmlDetectHeadings || htmlParagraphMetadata) && !format.Equals("html", StringComparison.OrdinalIgnoreCase))
+{
+    Console.Error.WriteLine("--html-no-headings and --html-paragraph-metadata require HTML export.");
+    return;
+}
+
 switch (format.ToLowerInvariant())
 {
     case "metadata":
@@ -266,7 +278,7 @@ switch (format.ToLowerInvariant())
         ExportMarkdown(inputPath, outputPath, trackedMode, plainOutput, fieldMode, varsPath, cliVariables, includePaths, databaseConnections, logLevel, showProgress);
         break;
     case "html":
-        ExportHtml(inputPath, outputPath, trackedMode, plainOutput, fieldMode, varsPath, cliVariables, includePaths, databaseConnections, logLevel, showProgress);
+        ExportHtml(inputPath, outputPath, trackedMode, plainOutput, htmlDetectHeadings, htmlParagraphMetadata, fieldMode, varsPath, cliVariables, includePaths, databaseConnections, logLevel, showProgress);
         break;
     case "text":
     case "txt":
@@ -420,6 +432,8 @@ static void ExportHtml(
     string? outputPath,
     DxpTrackedChangeMode trackedMode,
     bool plainOutput,
+    bool detectHeadings,
+    bool paragraphMetadata,
     DxpFieldEvalExportMode fieldMode,
     string? varsPath,
     IReadOnlyDictionary<string, string> cliVariables,
@@ -428,7 +442,11 @@ static void ExportHtml(
     LogLevel logLevel,
     bool showProgress)
 {
-    var config = (plainOutput ? DxpHtmlVisitorConfig.CreatePlainConfig() : DxpHtmlVisitorConfig.CreateRichConfig()) with { TrackedChangeMode = trackedMode };
+    var config = (plainOutput ? DxpHtmlVisitorConfig.CreatePlainConfig() : DxpHtmlVisitorConfig.CreateRichConfig()) with {
+        TrackedChangeMode = trackedMode,
+        DetectHeadings = detectHeadings,
+        EmitParagraphMetadata = paragraphMetadata,
+    };
     string output = outputPath ?? Path.ChangeExtension(inputPath, trackedMode == DxpTrackedChangeMode.RejectChanges ? ".reject.html" : ".html");
     using var loggerFactory = CreateLoggerFactory(logLevel);
     var logger = loggerFactory.CreateLogger("docxport");
@@ -529,7 +547,7 @@ static void PrintHelp()
 {
     Console.WriteLine($"""
 docxport ({GetVersion()})
-Usage: docxport <input.doc|input.docx> [--format=markdown|html|text|docx|doc|pdf|metadata] [--tracked=accept|reject|inline|split] [--plain] [--fields=evaluate|cache|none] [--no-progress] [-o|--output=path] [--vars=path] [-D name=value] [--include-path=directory] [--font-dir=directory] [--database=[LABEL=]CONNECTION_STRING]
+Usage: docxport <input.doc|input.docx> [--format=markdown|html|text|docx|doc|pdf|metadata] [--tracked=accept|reject|inline|split] [--plain] [--html-no-headings] [--html-paragraph-metadata] [--fields=evaluate|cache|none] [--no-progress] [-o|--output=path] [--vars=path] [-D name=value] [--include-path=directory] [--font-dir=directory] [--database=[LABEL=]CONNECTION_STRING]
 
 Options:
   --format=...   Output format (default: markdown); metadata emits JSON to stdout unless -o is supplied.
@@ -537,6 +555,8 @@ Options:
                 If --format is omitted, the format is inferred from -o/--output extension (.md/.html/.txt/.docx/.doc/.pdf/.json).
   --tracked=...  Tracked change mode (accept, reject, inline, split). Plain text supports accept/reject.
     --plain        Plain output for markdown/html (minimal styling/features)
+  --html-no-headings  Emit HTML headings as paragraphs while retaining heading metadata.
+  --html-paragraph-metadata  Emit paragraph style and numbering attributes in HTML.
     --fields=...   Field result mode (evaluate, cache, none). Default: cache.
   -o, --output=...  Output path; without it DOCX writes <name>.resolved.docx, DOC writes
                   <name>.plain.doc, PDF writes <name>.pdf, metadata writes JSON to stdout, and text formats
