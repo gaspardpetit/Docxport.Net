@@ -6,6 +6,32 @@ namespace DocxportNet.Tests;
 
 public sealed class HtmlHeadingFormattingTests
 {
+    [Fact]
+    public void PlainHtmlCanKeepHeadingAsParagraphWithStyleMetadata()
+    {
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source,
+            DocumentFormat.OpenXml.WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            main.Document = new Document(new Body(new Paragraph(
+                new ParagraphProperties(new ParagraphStyleId { Val = "Title4LevelTitre4Niveau" },
+                    new OutlineLevel { Val = 3 }),
+                new Run(new Text("Heading text")))));
+            main.Document.Save();
+        }
+
+        var config = DxpHtmlVisitorConfig.CreatePlainConfig() with {
+            DetectHeadings = false,
+            EmitParagraphMetadata = true,
+        };
+        var html = DxpExport.ExportToString(source.ToArray(), new DxpHtmlVisitor(config));
+        Assert.Contains("<p class=\"dxp-paragraph\"", html);
+        Assert.Contains("data-style-id=\"Title4LevelTitre4Niveau\"", html);
+        Assert.Contains("data-heading-level=\"5\"", html);
+        Assert.DoesNotContain("<h5", html);
+    }
+
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
