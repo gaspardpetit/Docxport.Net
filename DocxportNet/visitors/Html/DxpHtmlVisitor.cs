@@ -945,14 +945,11 @@ body.dxp-root {
 
         var headingLevel = d.Styles.GetHeadingLevel(p);
         bool hasNumbering = marker?.numId != null;
-        bool isHeading = _config.DetectHeadings && headingLevel != null && !hasNumbering;
         var paragraphStyleId = p.ParagraphProperties?.ParagraphStyleId?.Val?.Value;
 
-        if (_config.DetectHeadings && !isHeading && !hasNumbering && styleChain.Any(sc => string.Equals(sc.StyleId, DxpWordBuiltInStyleId.wdStyleSubtitle, StringComparison.OrdinalIgnoreCase)))
-        {
+        if (headingLevel == null && !hasNumbering && styleChain.Any(sc => string.Equals(sc.StyleId, DxpWordBuiltInStyleId.wdStyleSubtitle, StringComparison.OrdinalIgnoreCase)))
             headingLevel = 2;
-            isHeading = true;
-        }
+        bool isHeading = _config.DetectHeadings && headingLevel != null && !hasNumbering;
 
         if (!_config.EmitPageNumbers && styleChain.Any(sc => string.Equals(sc.StyleId, DxpWordBuiltInStyleId.wdStylePageNumber, StringComparison.OrdinalIgnoreCase)))
         {

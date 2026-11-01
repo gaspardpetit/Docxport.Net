@@ -32,6 +32,37 @@ public sealed class HtmlHeadingFormattingTests
         Assert.DoesNotContain("<h5", html);
     }
 
+    [Fact]
+    public void PlainHtmlRetainsSubtitleHeadingLevelWhenHeadingTagsAreDisabled()
+    {
+        using var source = new MemoryStream();
+        using (var document = WordprocessingDocument.Create(source,
+            DocumentFormat.OpenXml.WordprocessingDocumentType.Document, true))
+        {
+            var main = document.AddMainDocumentPart();
+            var styles = main.AddNewPart<StyleDefinitionsPart>();
+            styles.Styles = new Styles(new Style(new StyleName { Val = "Subtitle" }) {
+                Type = StyleValues.Paragraph,
+                StyleId = "Subtitle",
+            });
+            styles.Styles.Save();
+            main.Document = new Document(new Body(new Paragraph(
+                new ParagraphProperties(new ParagraphStyleId { Val = "Subtitle" }),
+                new Run(new Text("Subtitle text")))));
+            main.Document.Save();
+        }
+
+        var config = DxpHtmlVisitorConfig.CreatePlainConfig() with {
+            DetectHeadings = false,
+            EmitParagraphMetadata = true,
+        };
+        var html = DxpExport.ExportToString(source.ToArray(), new DxpHtmlVisitor(config));
+        Assert.Contains("<p class=\"dxp-paragraph\"", html);
+        Assert.Contains("data-style-id=\"Subtitle\"", html);
+        Assert.Contains("data-heading-level=\"2\"", html);
+        Assert.DoesNotContain("<h2", html);
+    }
+
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
