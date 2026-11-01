@@ -10,6 +10,32 @@ namespace DocxportNet.Tests;
 public sealed class ParagraphNumberingInstanceTests
 {
     [Fact]
+    public void TwoRestartsContinueFromTheMostRecentInstance()
+    {
+        var tracker = new DxpListTracker();
+
+        Assert.Equal(1, tracker.NextIndex(2, 7, 0, 1, true));
+        Assert.Equal(2, tracker.NextIndex(2, 7, 0, 1, true));
+        Assert.Equal(10, tracker.NextIndex(4, 7, 0, 10, true));
+        Assert.Equal(11, tracker.NextIndex(4, 7, 0, 10, true));
+        Assert.Equal(12, tracker.NextIndex(3, 7, 0, 1, false));
+    }
+
+    [Fact]
+    public void NewInstanceContinuesRestartedChildAndParentLevels()
+    {
+        var tracker = new DxpListTracker();
+
+        Assert.Equal(1, tracker.NextIndex(1, 7, 0, 1, false));
+        Assert.Equal(1, tracker.NextIndex(1, 7, 1, 1, false));
+        Assert.Equal(2, tracker.NextIndex(1, 7, 1, 1, false));
+        Assert.Equal(1, tracker.NextIndex(2, 7, 0, 1, true));
+        Assert.Equal(1, tracker.NextIndex(2, 7, 1, 1, false));
+        Assert.Equal(2, tracker.NextIndex(3, 7, 1, 1, false));
+        Assert.Equal(2, tracker.NextIndex(3, 7, 0, 1, false));
+    }
+
+    [Fact]
     public void NewSharedInstanceContinuesTheMostRecentRestart()
     {
         var tracker = new DxpListTracker();
