@@ -147,7 +147,8 @@ public sealed class DxpListTracker
     private readonly HashSet<int> _visitedInstances = new();
     private readonly HashSet<(int NumId, int Level)> _restartedLevels = new();
     private readonly Dictionary<(int NumId, int Level), int?> _restartedCounters = new();
-    private readonly HashSet<(int AbstractId, int Level)> _sharedLevelsStarted = new();
+    private readonly HashSet<(int NumId, int Level)> _sharedInstanceLevelsVisited = new();
+    private readonly Dictionary<(int AbstractId, int Level), int> _pendingRestartedCounters = new();
 
     private int?[] GetArr(int abstractId)
     {
@@ -183,14 +184,17 @@ public sealed class DxpListTracker
             _restartedCounters.TryGetValue(key, out var restarted);
             var next = restarted == null ? startAt : restarted.Value + 1;
             _restartedCounters[key] = next;
-            // When a restarted instance appears before the shared instance, Word
-            // continues its count when the shared instance first appears.
-            if (!_sharedLevelsStarted.Contains((abstractId, ilvl)))
-                arr[ilvl] = next;
+            _pendingRestartedCounters[(abstractId, ilvl)] = next;
             return next;
         }
 
-        _sharedLevelsStarted.Add((abstractId, ilvl));
+        var sharedKey = (abstractId, ilvl);
+        // A new instance without a start override continues the most recent
+        // restart. Returning to an already used instance keeps its own count.
+        if (_sharedInstanceLevelsVisited.Add(key) &&
+            _pendingRestartedCounters.TryGetValue(sharedKey, out var previous))
+            arr[ilvl] = previous;
+        _pendingRestartedCounters.Remove(sharedKey);
         arr[ilvl] = arr[ilvl] == null ? startAt : arr[ilvl]!.Value + 1;
         return arr[ilvl]!.Value;
     }
@@ -217,7 +221,8 @@ public sealed class DxpListTracker
         _visitedInstances.Clear();
         _restartedLevels.Clear();
         _restartedCounters.Clear();
-        _sharedLevelsStarted.Clear();
+        _sharedInstanceLevelsVisited.Clear();
+        _pendingRestartedCounters.Clear();
     }
 }
 

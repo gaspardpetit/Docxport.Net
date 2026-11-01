@@ -10,6 +10,71 @@ namespace DocxportNet.Tests;
 public sealed class ParagraphNumberingInstanceTests
 {
     [Fact]
+    public void NewSharedInstanceContinuesTheMostRecentRestart()
+    {
+        var tracker = new DxpListTracker();
+
+        Assert.Equal(1, tracker.NextIndex(7, 5, 0, 1, false));
+        Assert.Equal(2, tracker.NextIndex(7, 5, 0, 1, false));
+        Assert.Equal(1, tracker.NextIndex(15, 5, 0, 1, true));
+        Assert.Equal(2, tracker.NextIndex(8, 5, 0, 1, false));
+        Assert.Equal(3, tracker.NextIndex(8, 5, 0, 1, false));
+    }
+
+    [Fact]
+    public void PlainMarkdownRestartsHeadingsThenContinuesAcrossInstances()
+    {
+        var path = Path.Combine(Path.GetTempPath(), $"numbering-headings-{Guid.NewGuid():N}.docx");
+        try
+        {
+            using (var doc = WordprocessingDocument.Create(path, WordprocessingDocumentType.Document))
+            {
+                var main = doc.AddMainDocumentPart();
+                var numbering = main.AddNewPart<NumberingDefinitionsPart>();
+                numbering.Numbering = new Numbering(
+                    new AbstractNum(new Level(
+                        new StartNumberingValue { Val = 1 },
+                        new NumberingFormat { Val = NumberFormatValues.UpperRoman },
+                        new LevelText { Val = "%1." }) { LevelIndex = 0 }) { AbstractNumberId = 5 },
+                    new NumberingInstance(new AbstractNumId { Val = 5 }) { NumberID = 7 },
+                    new NumberingInstance(new AbstractNumId { Val = 5 }) { NumberID = 8 },
+                    new NumberingInstance(new AbstractNumId { Val = 5 },
+                        new LevelOverride(new StartOverrideNumberingValue { Val = 1 }) { LevelIndex = 0 })
+                    { NumberID = 15 });
+                numbering.Numbering.Save();
+
+                var styles = main.AddNewPart<StyleDefinitionsPart>();
+                styles.Styles = new Styles(new Style(
+                    new StyleParagraphProperties(new NumberingProperties(new NumberingId { Val = 7 })))
+                { Type = StyleValues.Paragraph, StyleId = "Heading" });
+                styles.Styles.Save();
+
+                Paragraph Heading(string text, int? numId = null) => new(
+                    new ParagraphProperties(new ParagraphStyleId { Val = "Heading" },
+                        numId is int id ? new NumberingProperties(new NumberingLevelReference { Val = 0 },
+                            new NumberingId { Val = id }) : null),
+                    new Run(new Text(text)));
+                main.Document = new Document(new Body(
+                    Heading("First section"), Heading("First facts"),
+                    Heading("Second introduction", 15), Heading("Second facts", 8),
+                    Heading("Second analysis", 8)));
+                main.Document.Save();
+            }
+
+            var markdown = DxpExport.ExportToString(path,
+                new DxpMarkdownVisitor(DxpMarkdownVisitorConfig.CreatePlainConfig()));
+            Assert.Contains("II. First facts", markdown);
+            Assert.Contains("I. Second introduction", markdown);
+            Assert.Contains("II. Second facts", markdown);
+            Assert.Contains("III. Second analysis", markdown);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    [Fact]
     public void FirstRestartedInstanceContinuesIntoStyleInstance()
     {
         var tracker = new DxpListTracker();
