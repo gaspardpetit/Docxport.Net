@@ -9,6 +9,129 @@ namespace DocxportNet.Tests;
 
 public sealed class ParagraphNumberingInstanceTests
 {
+    [Fact]
+    public void NonprintingLevelRestartsItsDependentChild()
+    {
+        var markdown = ExportProbe(new[]
+        {
+            ProbeLevel(0, "%1."), ProbeLevel(1, "%1.%2"),
+            ProbeLevel(2, "", NumberFormatValues.None), ProbeLevel(3, "%1.%4")
+        }, new[] { (0, "Parent"), (3, "Child one"), (3, "Child two"),
+            (2, "Nonprinting"), (3, "Child after none") });
+
+        Assert.Contains("1.1 Child one", markdown);
+        Assert.Contains("1.2 Child two", markdown);
+        Assert.Contains("1.1 Child after none", markdown);
+    }
+
+    [Fact]
+    public void UnstartedAncestorUsesAbstractStartAndAdvancesWhenItAppears()
+    {
+        var markdown = ExportProbe(new[]
+        {
+            ProbeLevel(0, "%1.", start: 5), ProbeLevel(1, "%1.%2")
+        }, new[] { (1, "Before parent"), (0, "Parent"), (1, "After parent") });
+
+        Assert.Contains("5.1 Before parent", markdown);
+        Assert.Contains("6.1 After parent", markdown);
+    }
+
+    [Fact]
+    public void UnstartedAncestorUsesAbstractStartEvenWithInstanceStartOverride()
+    {
+        var markdown = ExportProbe(new[]
+        {
+            ProbeLevel(0, "%1.", start: 5), ProbeLevel(1, "%1.%2")
+        }, new[] { (1, "Before parent"), (0, "Parent"), (1, "After parent") },
+            new LevelOverride(new StartOverrideNumberingValue { Val = 9 }) { LevelIndex = 0 });
+
+        Assert.Contains("5.1 Before parent", markdown);
+        Assert.Contains("9.1 After parent", markdown);
+    }
+
+    [Fact]
+    public void ReplacementLevelControlsMarkerFormatAndStart()
+    {
+        var markdown = ExportProbe(new[]
+        {
+            ProbeLevel(0, "%1."), ProbeLevel(1, "%1.%2")
+        }, new[] { (0, "Parent"), (1, "First child"), (1, "Second child") },
+            new LevelOverride(ProbeLevel(1, "OV-%2", NumberFormatValues.UpperRoman, 4))
+                { LevelIndex = 1 });
+
+        Assert.Contains("OV-IV First child", markdown);
+        Assert.Contains("OV-V Second child", markdown);
+    }
+
+    [Fact]
+    public void ReplacementLevelStartTakesPrecedenceOverStartOverride()
+    {
+        var markdown = ExportProbe(new[]
+        {
+            ProbeLevel(0, "%1."), ProbeLevel(1, "%1.%2", start: 2)
+        }, new[] { (0, "Parent"), (1, "Child") },
+            new LevelOverride(new StartOverrideNumberingValue { Val = 9 },
+                ProbeLevel(1, "%1.%2", start: 7)) { LevelIndex = 1 });
+
+        Assert.Contains("1.7 Child", markdown);
+    }
+
+    [Fact]
+    public void ReplacementLevelRestartRuleDoesNotOverrideAbstractRestart()
+    {
+        var replacement = ProbeLevel(1, "%1.%2", start: 7);
+        replacement.Append(new LevelRestart { Val = 0 });
+        var markdown = ExportProbe(new[]
+        {
+            ProbeLevel(0, "%1."), ProbeLevel(1, "%1.%2")
+        }, new[] { (0, "Parent one"), (1, "Child one"), (1, "Child two"),
+            (0, "Parent two"), (1, "Child after parent") },
+            new LevelOverride(replacement) { LevelIndex = 1 });
+
+        Assert.Contains("1.7 Child one", markdown);
+        Assert.Contains("1.8 Child two", markdown);
+        Assert.Contains("2.7 Child after parent", markdown);
+    }
+
+    private static Level ProbeLevel(int index, string marker,
+        NumberFormatValues? format = null, int start = 1) =>
+        new(new StartNumberingValue { Val = start },
+            new NumberingFormat { Val = format ?? NumberFormatValues.Decimal },
+            new LevelText { Val = marker })
+            { LevelIndex = index };
+
+    private static string ExportProbe(Level[] levels, (int Level, string Text)[] items,
+        LevelOverride? levelOverride = null)
+    {
+        var path = Path.Combine(Path.GetTempPath(), $"numbering-word-probe-{Guid.NewGuid():N}.docx");
+        try
+        {
+            using (var doc = WordprocessingDocument.Create(path, WordprocessingDocumentType.Document))
+            {
+                var main = doc.AddMainDocumentPart();
+                var numbering = main.AddNewPart<NumberingDefinitionsPart>();
+                var instance = new NumberingInstance(new AbstractNumId { Val = 7 }) { NumberID = 1 };
+                if (levelOverride != null)
+                    instance.Append(levelOverride);
+                numbering.Numbering = new Numbering(
+                    new AbstractNum(levels) { AbstractNumberId = 7 }, instance);
+                numbering.Numbering.Save();
+                main.Document = new Document(new Body(items.Select(item => new Paragraph(
+                    new ParagraphProperties(new NumberingProperties(
+                        new NumberingLevelReference { Val = item.Level },
+                        new NumberingId { Val = 1 })),
+                    new Run(new Text(item.Text)))).ToArray()));
+                main.Document.Save();
+            }
+            return DxpExport.ExportToString(path,
+                new DxpMarkdownVisitor(DxpMarkdownVisitorConfig.CreatePlainConfig()));
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
     [Theory]
     [InlineData(true, "10.2 Shared child")]
     [InlineData(false, "2.1 Shared child")]
