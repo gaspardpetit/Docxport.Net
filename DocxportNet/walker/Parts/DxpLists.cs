@@ -152,6 +152,7 @@ public sealed class DxpNumberingResolver
 public sealed class DxpListTracker
 {
     private readonly Dictionary<int, int?[]> _counters = new();
+    private readonly Dictionary<int, int?[]> _activeCounters = new();
     private readonly HashSet<int> _visitedInstances = new();
     private readonly HashSet<(int NumId, int Level)> _restartedLevels = new();
     private readonly Dictionary<(int NumId, int Level), int?> _restartedCounters = new();
@@ -172,6 +173,8 @@ public sealed class DxpListTracker
         IReadOnlyList<int>? restartTriggers = null)
     {
         var arr = GetArr(abstractId);
+        if (!_activeCounters.TryGetValue(abstractId, out var active))
+            _activeCounters[abstractId] = active = Enumerable.Repeat<int?>(null, 9).ToArray();
         // A heading can establish an instance before its first body paragraph.
         // The override applies when the instance first appears, not per level.
         var firstInInstance = _visitedInstances.Add(numId);
@@ -186,6 +189,8 @@ public sealed class DxpListTracker
                 ? restartTriggers[d] : d - 1;
             if (trigger < ilvl)
                 continue;
+            active[d] = null;
+            _pendingRestartedCounters.Remove((abstractId, d));
             if (!independent)
                 arr[d] = null;
             if (_restartedCounters.ContainsKey((numId, d)))
@@ -198,6 +203,7 @@ public sealed class DxpListTracker
             var next = restarted == null ? startAt : restarted.Value + 1;
             _restartedCounters[key] = next;
             _pendingRestartedCounters[(abstractId, ilvl)] = next;
+            active[ilvl] = next;
             return next;
         }
 
@@ -209,8 +215,12 @@ public sealed class DxpListTracker
             arr[ilvl] = previous;
         _pendingRestartedCounters.Remove(sharedKey);
         arr[ilvl] = arr[ilvl] == null ? startAt : arr[ilvl]!.Value + 1;
+        active[ilvl] = arr[ilvl];
         return arr[ilvl]!.Value;
     }
+
+    public int? GetActiveCurrent(int abstractId, int ilvl) =>
+        _activeCounters.TryGetValue(abstractId, out var active) ? active[ilvl] : null;
 
     public int? GetCurrent(int numId, int abstractId, int ilvl)
     {
@@ -231,6 +241,7 @@ public sealed class DxpListTracker
     public void ClearAll()
     {
         _counters.Clear();
+        _activeCounters.Clear();
         _visitedInstances.Clear();
         _restartedLevels.Clear();
         _restartedCounters.Clear();
@@ -339,7 +350,9 @@ public static class DxpListMarkerFormatter
             if (result.IndexOf(placeholder, StringComparison.Ordinal) < 0)
                 continue;
 
-            var cur = tracker.GetCurrent(numPr.NumId, abstractId, i);
+            var cur = i < numPr.Ilvl
+                ? tracker.GetActiveCurrent(abstractId, i)
+                : tracker.GetCurrent(numPr.NumId, abstractId, i);
             if (cur == null)
             {
                 // If a placeholder references a level that hasn't been started yet,

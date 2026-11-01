@@ -9,6 +9,79 @@ namespace DocxportNet.Tests;
 
 public sealed class ParagraphNumberingInstanceTests
 {
+    [Theory]
+    [InlineData(true, "10.2 Shared child")]
+    [InlineData(false, "2.1 Shared child")]
+    public void PlainMarkdownKeepsParentAndChildCountersAcrossInstances(bool sharedParentFirst, string expected)
+    {
+        var path = Path.Combine(Path.GetTempPath(), $"numbering-instance-child-{Guid.NewGuid():N}.docx");
+        try
+        {
+            using (var doc = WordprocessingDocument.Create(path, WordprocessingDocumentType.Document))
+            {
+                var main = doc.AddMainDocumentPart();
+                var numbering = main.AddNewPart<NumberingDefinitionsPart>();
+                numbering.Numbering = new Numbering(
+                    new AbstractNum(
+                        new Level(new StartNumberingValue { Val = 1 },
+                            new NumberingFormat { Val = NumberFormatValues.Decimal },
+                            new LevelText { Val = "%1." }) { LevelIndex = 0 },
+                        new Level(new StartNumberingValue { Val = 1 },
+                            new NumberingFormat { Val = NumberFormatValues.Decimal },
+                            new LevelText { Val = "%1.%2" }) { LevelIndex = 1 })
+                    { AbstractNumberId = 7 },
+                    new NumberingInstance(new AbstractNumId { Val = 7 }) { NumberID = 1 },
+                    new NumberingInstance(new AbstractNumId { Val = 7 },
+                        new LevelOverride(new StartOverrideNumberingValue
+                            { Val = sharedParentFirst ? 10 : 1 }) { LevelIndex = 0 })
+                    { NumberID = 8 });
+                numbering.Numbering.Save();
+
+                Paragraph Item(int numId, int level, string text) => new(
+                    new ParagraphProperties(new NumberingProperties(
+                        new NumberingLevelReference { Val = level }, new NumberingId { Val = numId })),
+                    new Run(new Text(text)));
+                main.Document = new Document(new Body(sharedParentFirst
+                    ? new[] { Item(1, 0, "Shared parent"), Item(8, 0, "Restarted parent"),
+                        Item(8, 1, "Restarted child"), Item(1, 1, "Shared child") }
+                    : new[] { Item(8, 0, "Restarted parent"), Item(8, 1, "Restarted child"),
+                        Item(1, 0, "Shared parent"), Item(1, 1, "Shared child") }));
+                main.Document.Save();
+            }
+
+            var markdown = DxpExport.ExportToString(path,
+                new DxpMarkdownVisitor(DxpMarkdownVisitorConfig.CreatePlainConfig()));
+            Assert.Contains(expected, markdown);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    [Fact]
+    public void ChildUsesMostRecentParentAcrossInstances()
+    {
+        var tracker = new DxpListTracker();
+
+        Assert.Equal(1, tracker.NextIndex(1, 7, 0, 1, false));
+        Assert.Equal(10, tracker.NextIndex(8, 7, 0, 10, true));
+        Assert.Equal(1, tracker.NextIndex(8, 7, 1, 1, false));
+        Assert.Equal(2, tracker.NextIndex(1, 7, 1, 1, false));
+        Assert.Equal(10, tracker.GetActiveCurrent(7, 0));
+    }
+
+    [Fact]
+    public void ParentAdvanceClearsPendingChildFromAnotherInstance()
+    {
+        var tracker = new DxpListTracker();
+
+        Assert.Equal(1, tracker.NextIndex(8, 7, 0, 1, true));
+        Assert.Equal(1, tracker.NextIndex(8, 7, 1, 1, false));
+        Assert.Equal(2, tracker.NextIndex(1, 7, 0, 1, false));
+        Assert.Equal(1, tracker.NextIndex(1, 7, 1, 1, false));
+    }
+
     [Fact]
     public void PlainMarkdownHonorsLevelRestartRules()
     {
