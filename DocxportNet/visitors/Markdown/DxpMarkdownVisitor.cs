@@ -844,7 +844,7 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
             var normalizedMarker = NormalizeMarker(marker.marker);
             if (!needsParagraphWrapper && LooksLikeOrderedListMarker(normalizedMarker))
                 normalizedMarker = EscapeOrderedListMarker(normalizedMarker);
-            Write(d, $"""{normalizedMarker} """);
+            Write(d, normalizedMarker + marker.TextSeparator);
         }
 
         bool previousHeading = _state.InHeading;

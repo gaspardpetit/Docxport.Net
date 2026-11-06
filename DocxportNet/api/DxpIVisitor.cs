@@ -63,7 +63,11 @@ public interface DxpIFootnoteContext
     int? Index { get; }
 }
 
-public sealed record DxpMarker(string? marker, int? numId, int? iLvl);
+public sealed record DxpMarker(string? marker, int? numId, int? iLvl)
+{
+    /// <summary>Separator for text export; layout tabs are normalized to a space.</summary>
+    public string TextSeparator { get; init; } = " ";
+}
 
 public sealed record DxpLinkAnchor(string? internalRef, string uri);
 public sealed record DxpHeaderFooterContext(HeaderFooterValues Kind, OpenXmlPart? Part);
