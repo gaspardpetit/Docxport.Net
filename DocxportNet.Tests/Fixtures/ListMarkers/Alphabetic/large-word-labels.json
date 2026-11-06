@@ -1,0 +1,92 @@
+[
+  {
+    "start": 1000,
+    "format": "lowerLetter",
+    "value": "lllllllll",
+    "length": 9
+  },
+  {
+    "start": 100000,
+    "format": "lowerLetter",
+    "value": "ddddddd",
+    "length": 7
+  },
+  {
+    "start": 10345021,
+    "format": "lowerLetter",
+    "value": "kkkkkkkkkkkkkkkkkkkkkkkkkk",
+    "length": 26
+  },
+  {
+    "start": 26,
+    "format": "lowerLetter",
+    "value": "z",
+    "length": 1
+  },
+  {
+    "start": 6656,
+    "format": "lowerLetter",
+    "value": "zzzzzzzzzzzzzzzz",
+    "length": 16
+  },
+  {
+    "start": 6657,
+    "format": "lowerLetter",
+    "value": "aaaaaaaaaaaaaaaaa",
+    "length": 17
+  },
+  {
+    "start": 676,
+    "format": "lowerLetter",
+    "value": "zzzzzzzzzzzzzzzzzzzzzzzzzz",
+    "length": 26
+  },
+  {
+    "start": 677,
+    "format": "lowerLetter",
+    "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "length": 27
+  },
+  {
+    "start": 779,
+    "format": "lowerLetter",
+    "value": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyy",
+    "length": 30
+  },
+  {
+    "start": 780,
+    "format": "lowerLetter",
+    "value": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzz",
+    "length": 30
+  },
+  {
+    "start": 781,
+    "format": "lowerLetter",
+    "value": "a",
+    "length": 1
+  },
+  {
+    "start": 782,
+    "format": "lowerLetter",
+    "value": "b",
+    "length": 1
+  },
+  {
+    "start": 1000,
+    "format": "upperLetter",
+    "value": "LLLLLLLLL",
+    "length": 9
+  },
+  {
+    "start": 780,
+    "format": "upperLetter",
+    "value": "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ",
+    "length": 30
+  },
+  {
+    "start": 781,
+    "format": "upperLetter",
+    "value": "A",
+    "length": 1
+  }
+]

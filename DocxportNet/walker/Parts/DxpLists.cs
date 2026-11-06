@@ -511,7 +511,7 @@ public static class DxpListMarkerFormatter
 
             string formatted = customWidth != null
                 ? cur.Value.ToString(CultureInfo.InvariantCulture).PadLeft(customWidth.Value, '0')
-                : FormatNumber(cur.Value, refFmt, culture);
+                : FormatListNumber(cur.Value, refFmt, culture);
             if ((refFmt == NumberFormatValues.CardinalText || refFmt == NumberFormatValues.OrdinalText) &&
                 formatted.Length > 0)
                 formatted = char.ToUpper(formatted[0], culture ?? CultureInfo.CurrentCulture) + formatted.Substring(1);
@@ -523,6 +523,18 @@ public static class DxpListMarkerFormatter
         var referenceIndex = 0;
         return System.Text.RegularExpressions.Regex.Replace(lvlText, "%[1-9]", match =>
             referenceIndex++ < 9 && substitutions.TryGetValue(match.Value, out var value) ? value : match.Value);
+    }
+
+    private static string FormatListNumber(int n, NumberFormatValues fmt, CultureInfo? culture)
+    {
+        // Word lists repeat a single Latin letter (AA, BB). Field formatting
+        // uses positional letters (AA, AB) and continues through FormatNumber.
+        if (n > 0 && (fmt == NumberFormatValues.UpperLetter || fmt == NumberFormatValues.LowerLetter))
+        {
+            var first = fmt == NumberFormatValues.UpperLetter ? 'A' : 'a';
+            return new string((char)(first + (n - 1) % 26), (n - 1) / 26 % 30 + 1);
+        }
+        return FormatNumber(n, fmt, culture);
     }
 
     public static string FormatNumber(int n, NumberFormatValues fmt, CultureInfo? culture = null)
