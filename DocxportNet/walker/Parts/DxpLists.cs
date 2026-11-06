@@ -53,7 +53,8 @@ public sealed class DxpNumberingResolver
             return null;
 
         // IMPORTANT: some abstractNum are just a link (numStyleLink/styleLink) and contain no <w:lvl>
-        abs = FollowAbstractNumLinks(abs) ?? abs;
+        abs = FollowAbstractNumLinks(abs);
+        if (abs == null) return null;
 
         // clamp + Word-like fallback to level 0 when missing
         if (ilvl < 0)
@@ -85,6 +86,9 @@ public sealed class DxpNumberingResolver
         num.Elements<LevelOverride>().Any(level => level.LevelIndex?.Value == ilvl &&
             level.StartOverrideNumberingValue?.Val?.Value != null);
 
+    public int GetCounterAbstractId(int numId) =>
+        _numById.TryGetValue(numId, out var num) ? num.AbstractNumId?.Val?.Value ?? numId : numId;
+
     public int GetRestartTrigger(int numId, int ilvl)
     {
         var abs = ResolveLevel(numId, ilvl)?.abs;
@@ -95,31 +99,26 @@ public sealed class DxpNumberingResolver
         return restart == null ? ilvl - 1 : restart.Value - 1;
     }
 
-    private AbstractNum? FollowAbstractNumLinks(AbstractNum abs)
+    internal AbstractNum? FollowAbstractNumLinks(AbstractNum abs)
     {
         // If it already has levels, nothing to do.
         if (abs.Elements<Level>().Any())
             return abs;
+        if (abs.StyleLink != null)
+            return null; // A style-associated definition must supply its own levels in Word.
 
         // 1) numStyleLink (abstractNumId may point to a linked style without levels)
         var numStyleLinkId = abs.NumberingStyleLink?.Val?.Value; // maps to <w:numStyleLink>
         if (!string.IsNullOrEmpty(numStyleLinkId))
         {
             var linked = ResolveAbstractFromNumberingStyleId(numStyleLinkId!);
-            if (linked != null)
+            if (linked?.StyleLink?.Val?.Value == numStyleLinkId && linked.Elements<Level>().Any())
                 return linked;
         }
 
-        // 2) styleLink (also common)
-        var styleLinkId = abs.StyleLink?.Val?.Value; // maps to <w:styleLink>
-        if (!string.IsNullOrEmpty(styleLinkId))
-        {
-            var linked = ResolveAbstractFromNumberingStyleId(styleLinkId!);
-            if (linked != null)
-                return linked;
-        }
-
-        return null;
+        // styleLink is a reverse association, not a forward numbering reference.
+        // Word does not resolve multi-hop abstract links or a missing reverse link.
+        return string.IsNullOrEmpty(numStyleLinkId) ? abs : null;
     }
 
     private AbstractNum? ResolveAbstractFromNumberingStyleId(string numberingStyleId)
@@ -128,9 +127,17 @@ public sealed class DxpNumberingResolver
         if (!_styleById.TryGetValue(numberingStyleId, out var style))
             return null;
 
-        var numId = style.StyleParagraphProperties?
-                        .NumberingProperties?
-                        .NumberingId?.Val?.Value;
+        int? numId = null;
+        var visited = new HashSet<string>(StringComparer.Ordinal);
+        while (visited.Add(style.StyleId?.Value ?? ""))
+        {
+            numId = style.StyleParagraphProperties?.NumberingProperties?.NumberingId?.Val?.Value;
+            if (numId != null)
+                break;
+            var parent = style.BasedOn?.Val?.Value;
+            if (parent == null || !_styleById.TryGetValue(parent, out style))
+                break;
+        }
 
         if (numId == null || numId.Value == 0)
             return null;
@@ -404,7 +411,7 @@ public static class DxpListMarkerFormatter
         // => Do NOT invent "%1." here.
         if (fmt == NumberFormatValues.None)
         {
-            var noneAbstractId = abs.AbstractNumberId?.Value ?? numPr.NumId;
+            var noneAbstractId = nr.GetCounterAbstractId(numPr.NumId);
             var noneRestartTriggers = Enumerable.Range(0, 9)
                 .Select(level => nr.GetRestartTrigger(numPr.NumId, level)).ToArray();
             tracker.ObserveNoDisplayLevel(numPr.NumId, noneAbstractId, numPr.Ilvl, noneRestartTriggers);
@@ -416,7 +423,7 @@ public static class DxpListMarkerFormatter
             return null;
 
         // Increment current level (normal list item / bullet / numbered)
-        var abstractId = abs.AbstractNumberId?.Value ?? numPr.NumId;
+        var abstractId = nr.GetCounterAbstractId(numPr.NumId);
         var restartTriggers = Enumerable.Range(0, 9)
             .Select(level => nr.GetRestartTrigger(numPr.NumId, level)).ToArray();
         var effectiveStarts = Enumerable.Range(0, 9)

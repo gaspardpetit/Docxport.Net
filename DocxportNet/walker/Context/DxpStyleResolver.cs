@@ -1044,29 +1044,18 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
 
     public DxpStyleEffectiveNumPr? ResolveEffectiveNumPr(Paragraph p)
     {
-        // 1) direct pPr wins, including explicit "no numbering" (numId=0)
-        var directNp = p.ParagraphProperties?.NumberingProperties;
-        if (directNp != null)
-        {
-            var directNumId = directNp.NumberingId?.Val?.Value;
-            if (directNumId != null)
-            {
-                if (directNumId.Value == 0)
-                    return null; // explicit suppression: do NOT consult styles
-
-                var directIlvl = directNp.NumberingLevelReference?.Val?.Value ?? 0;
-                return new DxpStyleEffectiveNumPr(directNumId.Value, directIlvl);
-            }
-
-            // If there's a direct numPr but no numId, Word still considers it "direct";
-            // in that weird case we fall through to styles.
-        }
-
-        // 2) from style chain (closest style wins)
-        var pStyleId = p.ParagraphProperties?.ParagraphStyleId?.Val?.Value;
-
-        int? numId = null;
-        int? ilvl = null;
+        // Resolve individual properties through direct formatting and the style
+        // chain. A direct numId need not have a direct level, and vice versa.
+        var markerProperties = p.ParagraphProperties;
+        var directNp = markerProperties?.NumberingProperties;
+        int? numId = directNp?.NumberingId?.Val?.Value;
+        if (numId == 0)
+            return null;
+        var pStyleId = markerProperties?.ParagraphStyleId?.Val?.Value;
+        if (string.IsNullOrEmpty(pStyleId))
+            pStyleId = _styles?.Elements<Style>().FirstOrDefault(style =>
+                style.Type?.Value == StyleValues.Paragraph && style.Default?.Value == true)?.StyleId?.Value;
+        int? ilvl = directNp?.NumberingLevelReference?.Val?.Value;
 
         foreach (var style in EnumerateStyleChainRaw(pStyleId, StyleValues.Paragraph)) // direct -> parent -> ...
         {
@@ -1075,20 +1064,19 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
                 continue;
 
             var sid = np.NumberingId?.Val?.Value;
-            if (sid != null)
+            if (sid != null && numId == null)
             {
                 // If a style explicitly sets numId=0, treat as "no numbering" too.
                 if (sid.Value == 0)
                     return null;
 
-                if (numId == null)
-                    numId = sid.Value;
+                numId = sid.Value;
             }
 
             if (ilvl == null)
                 ilvl = np.NumberingLevelReference?.Val?.Value;
 
-            if (numId != null)
+            if (numId != null && ilvl != null)
                 break;
         }
 
