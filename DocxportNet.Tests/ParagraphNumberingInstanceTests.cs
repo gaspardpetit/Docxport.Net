@@ -3,6 +3,9 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
 using DocxportNet.Visitors.Markdown;
+using DocxportNet.Visitors.Html;
+using DocxportNet.Visitors.PlainText;
+using AngleSharp.Html.Parser;
 using DocxportNet.Walker;
 
 namespace DocxportNet.Tests;
@@ -412,7 +415,7 @@ public sealed class ParagraphNumberingInstanceTests
     }
 
     [Fact]
-    public void ExplicitRestartDoesNotOverwriteAnotherInstancesProgress()
+    public void ReturningInstanceContinuesAfterExplicitRestart()
     {
         var tracker = new DxpListTracker();
 
@@ -420,13 +423,15 @@ public sealed class ParagraphNumberingInstanceTests
         Assert.Equal(2, tracker.NextIndex(1, 7, 0, 1, false));
         Assert.Equal(10, tracker.NextIndex(8, 7, 0, 10, true));
         Assert.Equal(11, tracker.NextIndex(8, 7, 0, 10, true));
-        Assert.Equal(3, tracker.NextIndex(1, 7, 0, 1, false));
-        Assert.Equal(3, tracker.GetCurrent(1, 7, 0));
-        Assert.Equal(11, tracker.GetCurrent(8, 7, 0));
+        // Word: 1, 2, 10, 11, 12, even though instance 1 was used before.
+        Assert.Equal(12, tracker.NextIndex(1, 7, 0, 1, false));
+        Assert.Equal(12, tracker.GetCurrent(1, 7, 0));
+        Assert.Equal(13, tracker.NextIndex(8, 7, 0, 10, true));
+        Assert.Equal(14, tracker.NextIndex(1, 7, 0, 1, false));
     }
 
     [Fact]
-    public void ExplicitRestartDoesNotResetAnotherInstancesDescendants()
+    public void ReturningInstancesShareDescendantProgressAndParentResets()
     {
         var tracker = new DxpListTracker();
 
@@ -435,13 +440,112 @@ public sealed class ParagraphNumberingInstanceTests
         Assert.Equal(2, tracker.NextIndex(1, 7, 1, 1, false));
         Assert.Equal(10, tracker.NextIndex(8, 7, 0, 10, true));
         Assert.Equal(1, tracker.NextIndex(8, 7, 1, 1, false));
-        Assert.Equal(3, tracker.NextIndex(1, 7, 1, 1, false));
-        Assert.Equal(2, tracker.NextIndex(8, 7, 1, 1, false));
+        // Word: 1, 1.1, 1.2, 10, 10.1, 10.2, 10.3, 11, 11.1, 11.2.
+        Assert.Equal(2, tracker.NextIndex(1, 7, 1, 1, false));
+        Assert.Equal(3, tracker.NextIndex(8, 7, 1, 1, false));
         Assert.Equal(11, tracker.NextIndex(8, 7, 0, 10, true));
         Assert.Equal(1, tracker.NextIndex(8, 7, 1, 1, false));
-        Assert.Equal(4, tracker.NextIndex(1, 7, 1, 1, false));
+        Assert.Equal(2, tracker.NextIndex(1, 7, 1, 1, false));
         Assert.Equal(11, tracker.GetCurrent(8, 7, 0));
-        Assert.Equal(4, tracker.GetCurrent(1, 7, 1));
+        Assert.Equal(2, tracker.GetCurrent(1, 7, 1));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void PlainMarkdownReturnsToExistingInstanceAfterRestart(bool allLevelsOverridden)
+    {
+        // Minimal reproduction exported with Word: [1], [2], [10], [11], [12].
+        // Cover both a single override and Word's all-nine-level override form.
+        var path = Path.Combine(Path.GetTempPath(), $"numbering-return-{Guid.NewGuid():N}.docx");
+        try
+        {
+            using (var doc = WordprocessingDocument.Create(path, WordprocessingDocumentType.Document))
+            {
+                var main = doc.AddMainDocumentPart();
+                var numbering = main.AddNewPart<NumberingDefinitionsPart>();
+                var restart = new NumberingInstance(new AbstractNumId { Val = 7 }) { NumberID = 8 };
+                for (int i = 0; i < (allLevelsOverridden ? 9 : 1); i++)
+                    restart.Append(new LevelOverride(new StartOverrideNumberingValue { Val = i == 0 ? 10 : 1 })
+                        { LevelIndex = i });
+                numbering.Numbering = new Numbering(
+                    new AbstractNum(ProbeLevel(0, "[%1]")) { AbstractNumberId = 7 },
+                    new NumberingInstance(new AbstractNumId { Val = 7 }) { NumberID = 1 }, restart);
+                main.Document = new Document(new Body(new[] { 1, 1, 8, 8, 1 }.Select((id, i) =>
+                    new Paragraph(new ParagraphProperties(new NumberingProperties(
+                        new NumberingLevelReference { Val = 0 }, new NumberingId { Val = id })),
+                        new Run(new Text($"Item {i + 1}"))))));
+                main.Document.Save();
+                numbering.Numbering.Save();
+            }
+            var markdown = DxpExport.ExportToString(path,
+                new DxpMarkdownVisitor(DxpMarkdownVisitorConfig.CreatePlainConfig()));
+            Assert.Equal(new[] { "[1] Item 1", "[2] Item 2", "[10] Item 3", "[11] Item 4", "[12] Item 5" },
+                markdown.Split('\n').Select(line => line.Trim()).Where(line => line.StartsWith("[")));
+        }
+        finally { File.Delete(path); }
+    }
+
+    [Theory]
+    [InlineData("markdown")]
+    [InlineData("html")]
+    [InlineData("text")]
+    public void ExportsKeepContinuousMarkersAcrossMcGregorInstanceTransitions(string format)
+    {
+        // Synthetic text with the source's instance transitions and start values.
+        var path = Path.Combine(Path.GetTempPath(), $"numbering-mcgregor-{Guid.NewGuid():N}.docx");
+        try
+        {
+            using (var doc = WordprocessingDocument.Create(path, WordprocessingDocumentType.Document))
+            {
+                var main = doc.AddMainDocumentPart();
+                var numbering = main.AddNewPart<NumberingDefinitionsPart>();
+                numbering.Numbering = new Numbering();
+                foreach (var (id, start) in new[] { (20, 1), (18, 11), (19, 14), (7, 35) })
+                    numbering.Numbering.Append(new AbstractNum(ProbeLevel(0, "[%1]", start: start))
+                        { AbstractNumberId = id });
+                foreach (var (id, abs, start) in new[] { (16, 20, 0), (1, 18, 0), (18, 20, 12),
+                    (19, 19, 0), (20, 20, 15), (26, 7, 0), (27, 20, 37), (29, 18, 46) })
+                {
+                    var num = new NumberingInstance(new AbstractNumId { Val = abs }) { NumberID = id };
+                    if (start != 0)
+                        num.Append(new LevelOverride(new StartOverrideNumberingValue { Val = start }) { LevelIndex = 0 });
+                    numbering.Numbering.Append(num);
+                }
+                var styles = main.AddNewPart<StyleDefinitionsPart>();
+                styles.Styles = new Styles(new Style(new StyleParagraphProperties(
+                    new NumberingProperties(new NumberingId { Val = 1 })))
+                    { Type = StyleValues.Paragraph, StyleId = "NumberedBody" });
+                var body = new Body();
+                for (int i = 1; i <= 115; i++)
+                {
+                    int id = i switch { 11 => 1, 12 => 18, 14 => 19, 15 => 20,
+                        35 or 36 => 26, 37 => 27, 46 => 29, >= 47 => 1, _ => 16 };
+                    var properties = new ParagraphProperties(new ParagraphStyleId { Val = "NumberedBody" });
+                    if (id != 1)
+                        properties.Append(new NumberingProperties(new NumberingLevelReference { Val = 0 },
+                            new NumberingId { Val = id }));
+                    body.Append(new Paragraph(properties, new Run(new Text($"Paragraph {i}"))));
+                }
+                main.Document = new Document(body);
+                numbering.Numbering.Save();
+                styles.Styles.Save();
+                main.Document.Save();
+            }
+            DxpITextVisitor visitor = format switch
+            {
+                "html" => new DxpHtmlVisitor(DxpHtmlVisitorConfig.CreatePlainConfig()),
+                "text" => new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateAcceptConfig()),
+                _ => new DxpMarkdownVisitor(DxpMarkdownVisitorConfig.CreatePlainConfig())
+            };
+            var output = DxpExport.ExportToString(path, visitor);
+            var lines = format == "html"
+                ? new HtmlParser().ParseDocument(output).QuerySelectorAll("p").Select(p => p.TextContent.Trim())
+                : output.Split('\n').Select(line => line.Trim()).Where(line => line.StartsWith("["));
+            Assert.Equal(Enumerable.Range(1, 115).Select(i => $"[{i}] Paragraph {i}"),
+                lines);
+        }
+        finally { File.Delete(path); }
     }
 
     [Fact]
@@ -499,8 +603,9 @@ public sealed class ParagraphNumberingInstanceTests
 
             var markdown = DxpExport.ExportToString(path,
                 new DxpMarkdownVisitor(DxpMarkdownVisitorConfig.CreatePlainConfig()));
-            Assert.Contains("[88] First paragraph", markdown);
-            Assert.Contains("[89] Second paragraph", markdown);
+            // Word displays (2), [2], [3], including across missing intermediate levels.
+            Assert.Contains("[2] First paragraph", markdown);
+            Assert.Contains("[3] Second paragraph", markdown);
             Assert.DoesNotContain("[1] Second paragraph", markdown);
         }
         finally
