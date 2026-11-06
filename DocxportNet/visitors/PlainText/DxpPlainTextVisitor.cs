@@ -284,7 +284,7 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor, IDisposab
             : string.Empty;
 
         if (!string.IsNullOrEmpty(markerText))
-            markerText += " ";
+            markerText += marker!.TextSeparator;
 
         double adjustedMargin = indent.Left.HasValue ? AdjustMarginLeft(DxpTwipValue.ToPoints(indent.Left.Value), d) : 0.0;
         int indentSpaces = adjustedMargin > 0.0 ? Math.Min(40, (int)Math.Round(adjustedMargin / 4.0)) : 0;

@@ -1088,7 +1088,7 @@ body.dxp-root {
         {
             var normalizedMarker = NormalizeMarker(marker.marker);
             var markerCss = TryBuildMarkerCss(marker, d);
-            Write(d, BuildMarkerHtml(normalizedMarker, markerCss));
+            Write(d, BuildMarkerHtml(normalizedMarker, markerCss, marker.TextSeparator));
         }
 
         if (isCode)
@@ -1789,7 +1789,7 @@ body.dxp-root {
         return trimmed;
     }
 
-    private static string BuildMarkerHtml(string marker, string? markerCss)
+    private static string BuildMarkerHtml(string marker, string? markerCss, string separator)
     {
         if (string.IsNullOrEmpty(marker))
             return string.Empty;
@@ -1797,7 +1797,7 @@ body.dxp-root {
         bool markerIsHtml = marker.IndexOf('<') >= 0 && marker.IndexOf('>') > marker.IndexOf('<');
         var inner = markerIsHtml ? marker : WebUtility.HtmlEncode(marker);
         var cssAttr = !string.IsNullOrEmpty(markerCss) ? " style=\"" + HtmlAttr(markerCss!) + "\"" : "";
-        return $"""<span class="dxp-marker"{cssAttr}>{inner}</span> """;
+        return $"""<span class="dxp-marker"{cssAttr}>{inner}</span>""" + WebUtility.HtmlEncode(separator);
     }
 
     private static string StripTags(string input) => Regex.Replace(input, "<.*?>", string.Empty);

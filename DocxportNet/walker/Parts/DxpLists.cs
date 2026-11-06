@@ -690,6 +690,7 @@ public class DxpLists
         string? marker = null;
         int? numId = null;
         int? iLvl = null;
+        var separator = " ";
 
         if (_num != null)
         {
@@ -708,9 +709,11 @@ public class DxpLists
                 marker = DxpListMarkerFormatter.TryBuildMarkerText(numPr, _num, lists, culture);
                 numId = numPr.NumId;
                 iLvl = numPr.Ilvl;
+                if (_num.ResolveLevel(numPr.NumId, numPr.Ilvl)?.lvl.LevelSuffix?.Val?.Value == LevelSuffixValues.Nothing)
+                    separator = string.Empty;
             }
         }
-        return new DxpMarker(marker, numId, iLvl);
+        return new DxpMarker(marker, numId, iLvl) { TextSeparator = separator };
     }
 
     public DxpStyleEffectiveIndentTwips GetIndentation(Paragraph p, DxpIStyleResolver s)
