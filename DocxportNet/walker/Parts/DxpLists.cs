@@ -152,12 +152,27 @@ public sealed class DxpListTracker
 {
     private readonly Dictionary<int, int?[]> _counters = new();
     private readonly Dictionary<int, int?[]> _activeCounters = new();
+    private readonly Dictionary<int, bool[]> _referenceLevels = new();
     private readonly HashSet<int> _visitedInstances = new();
-    private readonly HashSet<(int NumId, int Level)> _restartedLevels = new();
-    private readonly Dictionary<(int NumId, int Level), int?> _restartedCounters = new();
-    private readonly HashSet<(int NumId, int Level)> _sharedInstanceLevelsVisited = new();
+    private readonly HashSet<int> _appliedStartOverrideInstances = new();
+    private readonly HashSet<(int NumId, int Level)> _startedLevels = new();
+    private readonly Dictionary<int, int?[]> _restartStarts = new();
     private readonly HashSet<(int NumId, int Level)> _seededAncestorLevels = new();
-    private readonly Dictionary<(int AbstractId, int Level), int> _pendingRestartedCounters = new();
+    private readonly HashSet<(int NumId, int Level)> _consumedAncestorOverrides = new();
+    internal DxpListTracker CopyForReference()
+    {
+        var copy = new DxpListTracker();
+        foreach (var entry in _counters) copy._counters.Add(entry.Key, (int?[])entry.Value.Clone());
+        foreach (var entry in _activeCounters) copy._activeCounters.Add(entry.Key, (int?[])entry.Value.Clone());
+        foreach (var entry in _referenceLevels) copy._referenceLevels.Add(entry.Key, (bool[])entry.Value.Clone());
+        copy._visitedInstances.UnionWith(_visitedInstances);
+        copy._appliedStartOverrideInstances.UnionWith(_appliedStartOverrideInstances);
+        copy._startedLevels.UnionWith(_startedLevels);
+        foreach (var entry in _restartStarts) copy._restartStarts.Add(entry.Key, (int?[])entry.Value.Clone());
+        copy._seededAncestorLevels.UnionWith(_seededAncestorLevels);
+        copy._consumedAncestorOverrides.UnionWith(_consumedAncestorOverrides);
+        return copy;
+    }
 
     private int?[] GetArr(int abstractId)
     {
@@ -171,6 +186,12 @@ public sealed class DxpListTracker
 
     public int NextIndex(int numId, int abstractId, int ilvl, int startAt, bool hasStartOverride,
         IReadOnlyList<int>? restartTriggers = null)
+        => NextIndex(numId, abstractId, ilvl, startAt, hasStartOverride, restartTriggers, null);
+
+    internal int NextIndex(int numId, int abstractId, int ilvl, int startAt, bool hasStartOverride,
+        IReadOnlyList<int>? restartTriggers, IReadOnlyList<int>? restartStarts,
+        IReadOnlyList<bool>? ancestorStartOverrides = null,
+        IReadOnlyList<int>? declaredStarts = null)
     {
         var arr = GetArr(abstractId);
         if (!_activeCounters.TryGetValue(abstractId, out var active))
@@ -179,31 +200,54 @@ public sealed class DxpListTracker
         // The override applies when the instance first appears, not per level.
         var firstInInstance = _visitedInstances.Add(numId);
         var key = (numId, ilvl);
+        var firstAtLevel = _startedLevels.Add(key);
         var seededAncestor = _seededAncestorLevels.Remove(key);
-        if ((firstInInstance || seededAncestor) && hasStartOverride)
-            _restartedLevels.Add(key);
-        var independent = IsIndependent(numId, ilvl);
-        ResetDescendants(numId, abstractId, ilvl, restartTriggers);
-
-        if (independent)
+        var consumedAncestorOverride = _consumedAncestorOverrides.Remove(key);
+        // Word shares progress across instances of the same abstract list,
+        // including returns to instances used before an explicit restart.
+        // A start override changes that shared progress when first applied;
+        // it does not create a private counter for the restarted instance.
+        // Word wraps signed 32-bit counters, even when callers enable checked arithmetic.
+        // Replacement and override starts initialize the instance's level.
+        // After an ancestor clears an already-used level, Word uses the start
+        // belonging to that ancestor's instance, including across instances.
+        var restartStartAt = _restartStarts.TryGetValue(abstractId, out var pending)
+            ? pending[ilvl] ?? startAt : startAt;
+        var applyStartOverride = hasStartOverride &&
+            (firstInInstance || seededAncestor && firstAtLevel && !consumedAncestorOverride ||
+                arr[ilvl] == null && firstAtLevel &&
+                    !(restartTriggers != null && ilvl < restartTriggers.Count && restartTriggers[ilvl] == -1 &&
+                        _appliedStartOverrideInstances.Contains(numId)));
+        if (applyStartOverride) _appliedStartOverrideInstances.Add(numId);
+        ResetDescendants(numId, abstractId, ilvl, restartTriggers, restartStarts,
+            applyStartOverride ? declaredStarts : null);
+        arr[ilvl] = applyStartOverride ? startAt : arr[ilvl] == null ? restartStartAt
+            : unchecked(arr[ilvl]!.Value + 1);
+        // Applying a child's override also consumes unvisited ancestor overrides.
+        // Their future counters use effective starts, while the active placeholder
+        // keeps its existing/abstract display until the ancestor actually appears.
+        // A skipped never-restarting level below an actual ancestor is different:
+        // its unconsumed start-1 seed survives, although its override is consumed.
+        if (applyStartOverride && ancestorStartOverrides != null && restartStarts != null)
         {
-            _restartedCounters.TryGetValue(key, out var restarted);
-            var next = restarted == null ? startAt : restarted.Value + 1;
-            _restartedCounters[key] = next;
-            _pendingRestartedCounters[(abstractId, ilvl)] = next;
-            active[ilvl] = next;
-            return next;
+            for (var ancestor = 0; ancestor < ilvl; ancestor++)
+            {
+                if (ancestor >= ancestorStartOverrides.Count || !ancestorStartOverrides[ancestor] ||
+                    ancestor >= restartStarts.Count || _startedLevels.Contains((numId, ancestor))) continue;
+                _consumedAncestorOverrides.Add((numId, ancestor));
+                var never = restartTriggers != null && ancestor < restartTriggers.Count && restartTriggers[ancestor] == -1;
+                var hasActualAncestors = _referenceLevels.TryGetValue(abstractId, out var actualAncestors);
+                var alreadyActual = hasActualAncestors && actualAncestors![ancestor];
+                var belowActual = hasActualAncestors && actualAncestors!.Take(ancestor).Any(value => value);
+                // Another instance can already own the shared actual ancestor.
+                // Consume this instance's override without replacing that progress.
+                if (!alreadyActual && (!never || !belowActual)) arr[ancestor] = restartStarts[ancestor];
+            }
         }
-
-        var sharedKey = (abstractId, ilvl);
-        // A new instance without a start override continues the most recent
-        // restart. Returning to an already used instance keeps its own count.
-        if (_sharedInstanceLevelsVisited.Add(key) &&
-            _pendingRestartedCounters.TryGetValue(sharedKey, out var previous))
-            arr[ilvl] = previous;
-        _pendingRestartedCounters.Remove(sharedKey);
-        arr[ilvl] = arr[ilvl] == null ? startAt : arr[ilvl]!.Value + 1;
         active[ilvl] = arr[ilvl];
+        if (!_referenceLevels.TryGetValue(abstractId, out var visited))
+            _referenceLevels[abstractId] = visited = new bool[9];
+        visited[ilvl] = true;
         return arr[ilvl]!.Value;
     }
 
@@ -212,68 +256,84 @@ public sealed class DxpListTracker
         ResetDescendants(numId, abstractId, ilvl, restartTriggers);
 
     private void ResetDescendants(int numId, int abstractId, int ilvl,
-        IReadOnlyList<int>? restartTriggers)
+        IReadOnlyList<int>? restartTriggers, IReadOnlyList<int>? restartStarts = null,
+        IReadOnlyList<int>? declaredStarts = null)
     {
         var arr = GetArr(abstractId);
+        _referenceLevels.TryGetValue(abstractId, out var visited);
         if (!_activeCounters.TryGetValue(abstractId, out var active))
             _activeCounters[abstractId] = active = Enumerable.Repeat<int?>(null, 9).ToArray();
-        var independent = IsIndependent(numId, ilvl);
         for (int d = ilvl + 1; d < arr.Length; d++)
         {
+            // A new ancestor starts a new paragraph chain even when lvlRestart
+            // keeps the descendant's numeric counter running.
+            if (visited != null) visited[d] = false;
             var trigger = restartTriggers != null && d < restartTriggers.Count
                 ? restartTriggers[d] : d - 1;
+            if (!_restartStarts.TryGetValue(abstractId, out var pending))
+                _restartStarts[abstractId] = pending = new int?[9];
             if (trigger < ilvl)
+            {
+                active[d] = null;
+                // Even a never-restarting level acquires its initial start
+                // from the first ancestor's instance, before any child visit.
+                if (pending[d] == null && restartStarts != null && d < restartStarts.Count)
+                    // A never-restarting child first reached after this instance
+                    // began at an ancestor has skipped its initial override.
+                    // Replacement-level starts still belong to the level itself.
+                    pending[d] = trigger == -1 && declaredStarts != null && d < declaredStarts.Count
+                        ? declaredStarts[d] : restartStarts[d];
                 continue;
+            }
             active[d] = null;
-            _pendingRestartedCounters.Remove((abstractId, d));
-            if (!independent)
-                arr[d] = null;
-            if (_restartedCounters.ContainsKey((numId, d)))
-                _restartedCounters[(numId, d)] = null;
+            arr[d] = null;
+            pending[d] = restartStarts != null && d < restartStarts.Count ? restartStarts[d] : null;
         }
     }
 
     public int SeedUnstartedAncestor(int numId, int abstractId, int ilvl, int abstractStart)
+        => SeedUnstartedAncestor(numId, abstractId, ilvl, abstractStart, restartNever: false);
+
+    internal int SeedUnstartedAncestor(int numId, int abstractId, int ilvl, int abstractStart,
+        bool restartNever, int? effectiveStart = null)
     {
         _seededAncestorLevels.Add((numId, ilvl));
         var arr = GetArr(abstractId);
+        var belowActualAncestor = _referenceLevels.TryGetValue(abstractId, out var visited) &&
+            visited.Take(ilvl).Any(value => value);
         if (arr[ilvl] == null)
-            arr[ilvl] = abstractStart;
+        {
+            // Under an actual ancestor, a skipped never-restarting level has not
+            // consumed its first value. Word exposes start-1 in child placeholders
+            // and advances to start on that level's first actual paragraph.
+            arr[ilvl] = restartNever && belowActualAncestor ? abstractStart - 1
+                : _startedLevels.Contains((numId, ilvl)) || _consumedAncestorOverrides.Contains((numId, ilvl))
+                    ? effectiveStart ?? abstractStart : abstractStart;
+        }
         if (!_activeCounters.TryGetValue(abstractId, out var active))
             _activeCounters[abstractId] = active = Enumerable.Repeat<int?>(null, 9).ToArray();
-        active[ilvl] ??= arr[ilvl];
+        var displayStart = _startedLevels.Contains((numId, ilvl)) &&
+            _restartStarts.TryGetValue(abstractId, out var pending) ? pending[ilvl] ?? abstractStart : abstractStart;
+        active[ilvl] ??= restartNever && belowActualAncestor ? abstractStart - 1 : displayStart;
         return active[ilvl]!.Value;
     }
 
     public int? GetActiveCurrent(int abstractId, int ilvl) =>
         _activeCounters.TryGetValue(abstractId, out var active) ? active[ilvl] : null;
 
-    public int? GetCurrent(int numId, int abstractId, int ilvl)
-    {
-        if (!IsIndependent(numId, ilvl))
-            return GetArr(abstractId)[ilvl];
-        return _restartedCounters.TryGetValue((numId, ilvl), out var restarted)
-            ? restarted : null;
-    }
-
-    private bool IsIndependent(int numId, int ilvl)
-    {
-        for (int level = 0; level <= ilvl; level++)
-            if (_restartedLevels.Contains((numId, level)))
-                return true;
-        return false;
-    }
+    public int? GetCurrent(int numId, int abstractId, int ilvl) => GetArr(abstractId)[ilvl];
 
     public void ClearAll()
     {
         _counters.Clear();
         _activeCounters.Clear();
+        _referenceLevels.Clear();
         _visitedInstances.Clear();
-        _restartedLevels.Clear();
-        _restartedCounters.Clear();
-        _sharedInstanceLevelsVisited.Clear();
+        _appliedStartOverrideInstances.Clear();
+        _startedLevels.Clear();
+        _restartStarts.Clear();
         _seededAncestorLevels.Clear();
-        _pendingRestartedCounters.Clear();
+        _consumedAncestorOverrides.Clear();
     }
 }
 
@@ -359,8 +419,29 @@ public static class DxpListMarkerFormatter
         var abstractId = abs.AbstractNumberId?.Value ?? numPr.NumId;
         var restartTriggers = Enumerable.Range(0, 9)
             .Select(level => nr.GetRestartTrigger(numPr.NumId, level)).ToArray();
+        var effectiveStarts = Enumerable.Range(0, 9)
+            .Select(level => nr.ResolveLevel(numPr.NumId, level)?.startAt ?? 0).ToArray();
+        var ancestorStartOverrides = Enumerable.Range(0, 9)
+            .Select(level => nr.HasStartOverride(numPr.NumId, level)).ToArray();
+        var declaredStarts = Enumerable.Range(0, 9)
+            .Select(level => nr.ResolveLevel(numPr.NumId, level)?.lvl.StartNumberingValue?.Val?.Value ?? 0).ToArray();
         tracker.NextIndex(numPr.NumId, abstractId, numPr.Ilvl, startAt,
-            nr.HasStartOverride(numPr.NumId, numPr.Ilvl), restartTriggers);
+            nr.HasStartOverride(numPr.NumId, numPr.Ilvl), restartTriggers,
+            effectiveStarts, ancestorStartOverrides, declaredStarts);
+
+        // Word establishes defined ancestors on visiting a child, even when
+        // the child's label has no placeholder referring to those ancestors.
+        for (var ancestorIndex = numPr.Ilvl - 1; ancestorIndex >= 0; ancestorIndex--)
+        {
+            var ancestor = abs.Elements<Level>().FirstOrDefault(level => level.LevelIndex?.Value == ancestorIndex);
+            if (ancestor == null)
+                break;
+            if (tracker.GetActiveCurrent(abstractId, ancestorIndex) == null)
+                tracker.SeedUnstartedAncestor(numPr.NumId, abstractId, ancestorIndex,
+                    ancestor.StartNumberingValue?.Val?.Value ?? 0,
+                    restartNever: nr.GetRestartTrigger(numPr.NumId, ancestorIndex) == -1,
+                    effectiveStart: nr.ResolveLevel(numPr.NumId, ancestorIndex)?.startAt);
+        }
 
         // If bullet, Word stores the glyph directly in lvlText (and font is in lvl.rPr).
         if (fmt == NumberFormatValues.Bullet)
@@ -389,7 +470,8 @@ public static class DxpListMarkerFormatter
                 var abstractLevel = abs.Elements<Level>()
                     .FirstOrDefault(level => level.LevelIndex?.Value == i);
                 cur = tracker.SeedUnstartedAncestor(numPr.NumId, abstractId, i,
-                    abstractLevel?.StartNumberingValue?.Val?.Value ?? 1);
+                    abstractLevel?.StartNumberingValue?.Val?.Value ?? 0,
+                    restartTriggers[i] == -1, effectiveStarts[i]);
             }
 
             var refLvl = nr.ResolveLevel(numPr.NumId, i)?.lvl;
