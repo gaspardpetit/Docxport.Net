@@ -62,21 +62,22 @@ public sealed class DxpNumberingResolver
         if (ilvl > 8)
             ilvl = 8;
 
-        var abstractLevel = abs.Elements<Level>().FirstOrDefault(x => x.LevelIndex?.Value == ilvl)
-               ?? abs.Elements<Level>().FirstOrDefault(x => x.LevelIndex?.Value == 0)
-               ?? abs.Elements<Level>().OrderBy(x => x.LevelIndex?.Value ?? int.MaxValue).FirstOrDefault();
-
-        if (abstractLevel == null)
-            return null;
+        var abstractLevel = abs.Elements<Level>().FirstOrDefault(x => x.LevelIndex?.Value == ilvl);
 
         var ov = num.Elements<LevelOverride>()
                     .FirstOrDefault(o => o.LevelIndex?.Value == ilvl);
         var replacement = ov?.GetFirstChild<Level>();
-        var lvl = replacement ?? abstractLevel;
-        // Word gives a replacement level's start precedence over startOverride.
-        var startAt = replacement?.StartNumberingValue?.Val?.Value
+        var lvl = replacement ?? abstractLevel ?? new Level(new LevelText { Val = "" }) { LevelIndex = ilvl };
+        // At the root, Word activates the replacement start only with startOverride.
+        // At deeper levels its start takes precedence even without startOverride.
+        var overrideStart = ov?.StartOverrideNumberingValue?.Val?.Value;
+        var startAt = ilvl == 0 && overrideStart == null
+            ? abstractLevel?.StartNumberingValue?.Val?.Value ?? 0
+            : replacement?.StartNumberingValue?.Val?.Value
             ?? ov?.StartOverrideNumberingValue?.Val?.Value
-            ?? abstractLevel.StartNumberingValue?.Val?.Value ?? 1;
+            // A replacement without a start has its own default zero;
+            // only the absence of a replacement inherits the abstract start.
+            ?? (replacement != null ? 0 : abstractLevel?.StartNumberingValue?.Val?.Value ?? 0);
 
         return (abs, lvl, startAt);
     }
@@ -404,23 +405,23 @@ public static class DxpListMarkerFormatter
 
         var fmt = lvl.NumberingFormat?.Val?.Value;     // w:numFmt (may be null)
         var lvlText = lvl.LevelText?.Val?.Value ?? ""; // w:lvlText ("" is meaningful!)
-
-        // IMPORTANT: Word semantics
-        // - numFmt="none" means "this level displays no numbering"
-        // - lvlText may be "" (show nothing) or "–" (show a dash), etc.
-        // => Do NOT invent "%1." here.
-        if (fmt == NumberFormatValues.None)
+        // Word stores at most 31 label units; each of its first nine numeric
+        // references occupies one unit, regardless of the expanded number width.
+        var labelEnd = 0;
+        var referenceCount = 0;
+        for (var units = 0; units < 31 && labelEnd < lvlText.Length; units++)
         {
-            var noneAbstractId = nr.GetCounterAbstractId(numPr.NumId);
-            var noneRestartTriggers = Enumerable.Range(0, 9)
-                .Select(level => nr.GetRestartTrigger(numPr.NumId, level)).ToArray();
-            tracker.ObserveNoDisplayLevel(numPr.NumId, noneAbstractId, numPr.Ilvl, noneRestartTriggers);
-            return string.IsNullOrEmpty(lvlText) ? null : lvlText;
+            if (lvlText[labelEnd] == '%' && labelEnd + 1 < lvlText.Length &&
+                lvlText[labelEnd + 1] is >= '0' and <= '9' && referenceCount < 9)
+            {
+                referenceCount++;
+                labelEnd++;
+            }
+            labelEnd++;
         }
-
-        // If there is no lvlText for a non-none format, do NOT guess.
-        if (string.IsNullOrEmpty(lvlText))
-            return null;
+        lvlText = lvlText.Substring(0, labelEnd);
+        var references = System.Text.RegularExpressions.Regex.Matches(lvlText, "%[0-9]")
+            .Cast<System.Text.RegularExpressions.Match>().Take(9).ToArray();
 
         // Increment current level (normal list item / bullet / numbered)
         var abstractId = nr.GetCounterAbstractId(numPr.NumId);
@@ -432,6 +433,13 @@ public static class DxpListMarkerFormatter
             .Select(level => nr.HasStartOverride(numPr.NumId, level)).ToArray();
         var declaredStarts = Enumerable.Range(0, 9)
             .Select(level => nr.ResolveLevel(numPr.NumId, level)?.lvl.StartNumberingValue?.Val?.Value ?? 0).ToArray();
+        // Before an actual ancestor establishes the chain, an unactivated
+        // replacement uses the abstract start for its first visible item.
+        if (!nr.HasStartOverride(numPr.NumId, numPr.Ilvl) && numPr.Ilvl > 0 &&
+            tracker.GetActiveCurrent(abstractId, numPr.Ilvl - 1) == null &&
+            abs.Elements<Level>().Any(level => level.LevelIndex?.Value == numPr.Ilvl - 1))
+            startAt = abs.Elements<Level>().FirstOrDefault(level => level.LevelIndex?.Value == numPr.Ilvl)
+                ?.StartNumberingValue?.Val?.Value ?? startAt;
         tracker.NextIndex(numPr.NumId, abstractId, numPr.Ilvl, startAt,
             nr.HasStartOverride(numPr.NumId, numPr.Ilvl), restartTriggers,
             effectiveStarts, ancestorStartOverrides, declaredStarts);
@@ -450,6 +458,12 @@ public static class DxpListMarkerFormatter
                     effectiveStart: nr.ResolveLevel(numPr.NumId, ancestorIndex)?.startAt);
         }
 
+        // Hidden numeric paragraphs advance; an invalid/future reference suppresses
+        // the label without visiting a descendant counter.
+        if (string.IsNullOrEmpty(lvlText) || references.Any(reference =>
+            reference.Value[1] == '0' || reference.Value[1] - '1' > numPr.Ilvl))
+            return null;
+
         // If bullet, Word stores the glyph directly in lvlText (and font is in lvl.rPr).
         if (fmt == NumberFormatValues.Bullet)
         {
@@ -459,12 +473,12 @@ public static class DxpListMarkerFormatter
             return lvlText;
         }
 
-        string result = lvlText;
+        var substitutions = new Dictionary<string, string>(StringComparer.Ordinal);
 
         for (int i = 0; i < 9; i++)
         {
             var placeholder = "%" + (i + 1).ToString(CultureInfo.InvariantCulture);
-            if (result.IndexOf(placeholder, StringComparison.Ordinal) < 0)
+            if (!references.Any(reference => reference.Value == placeholder))
                 continue;
 
             var cur = i < numPr.Ilvl
@@ -483,9 +497,17 @@ public static class DxpListMarkerFormatter
 
             var refLvl = nr.ResolveLevel(numPr.NumId, i)?.lvl;
             var refFmt = refLvl?.NumberingFormat?.Val?.Value ?? NumberFormatValues.Decimal;
+            var legal = lvl.GetFirstChild<IsLegalNumberingStyle>();
+            if (legal != null && (legal.Val == null || legal.Val.Value) &&
+                refFmt != NumberFormatValues.None && refFmt != NumberFormatValues.Bullet &&
+                refFmt != NumberFormatValues.DecimalZero)
+                refFmt = NumberFormatValues.Decimal;
+
+
 
             // Custom "0001" padding (from mc:AlternateContent) if present
-            int? customWidth = refLvl != null ? TryGetCustomDecimalWidth(refLvl) : null;
+            int? customWidth = legal?.Val?.Value != false && legal != null ? null
+                : refLvl != null ? TryGetCustomDecimalWidth(refLvl) : null;
 
             string formatted = customWidth != null
                 ? cur.Value.ToString(CultureInfo.InvariantCulture).PadLeft(customWidth.Value, '0')
@@ -494,11 +516,13 @@ public static class DxpListMarkerFormatter
                 formatted.Length > 0)
                 formatted = char.ToUpper(formatted[0], culture ?? CultureInfo.CurrentCulture) + formatted.Substring(1);
 
-            result = result.Replace(placeholder, formatted);
+            substitutions[placeholder] = formatted;
 
         }
 
-        return result;
+        var referenceIndex = 0;
+        return System.Text.RegularExpressions.Regex.Replace(lvlText, "%[1-9]", match =>
+            referenceIndex++ < 9 && substitutions.TryGetValue(match.Value, out var value) ? value : match.Value);
     }
 
     public static string FormatNumber(int n, NumberFormatValues fmt, CultureInfo? culture = null)

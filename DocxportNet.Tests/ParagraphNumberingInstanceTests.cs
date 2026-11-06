@@ -12,6 +12,92 @@ namespace DocxportNet.Tests;
 
 public sealed class ParagraphNumberingInstanceTests
 {
+    [Theory]
+    [InlineData("%%1", "%1 First", "%2 Second")]
+    [InlineData("%%%1", "%%1 First", "%%2 Second")]
+    [InlineData("%10", "10 First", "20 Second")]
+    [InlineData("%a-%1", "%a-1 First", "%a-2 Second")]
+    [InlineData("%0-%1", "First", "Second")]
+    [InlineData("%1%1%1%1%1%1%1%1%1%1", "111111111%1 First", "222222222%1 Second")]
+    [InlineData("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-%1", "ABCDEFGHIJKLMNOPQRSTUVWXYZ01234 First", "ABCDEFGHIJKLMNOPQRSTUVWXYZ01234 Second")]
+    public void LevelTextExpansionMatchesWord(string label, string first, string second)
+    {
+        var output = ExportProbe(new[] { ProbeLevel(0, label) }, new[] { (0, "First"), (0, "Second") });
+        Assert.Equal(new[] { first, second }, output.Split('\n').Select(line => line.Trim()).Where(line => line.Length > 0));
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(1234)]
+    public void LevelTextLimitCountsAReferenceAsOneUnit(int start)
+    {
+        var literal = new string('A', 30);
+        var output = ExportProbe(new[] { ProbeLevel(0, literal + "%1", start: start) }, new[] { (0, "Item") });
+        Assert.Contains(literal + start + " Item", output);
+    }
+
+    [Fact]
+    public void MissingLevelHasNoFallbackLabelAndEstablishesAncestors()
+    {
+        var output = ExportProbe(new[] { ProbeLevel(0, "[%1]"), ProbeLevel(1, "%1.%2") },
+            new[] { (2, "Hidden one"), (2, "Hidden two"), (1, "Child"), (0, "Parent") });
+        Assert.DoesNotContain("[1] Hidden", output);
+        Assert.Contains("1.2 Child", output);
+        Assert.Contains("[2] Parent", output);
+    }
+
+    [Theory]
+    [InlineData(false, "OV-0 First", "OV-1 Second")]
+    [InlineData(true, "OV-9 First", "OV-10 Second")]
+    public void ReplacementOnlyLevelUsesWordStartRules(bool startOverride, string first, string second)
+    {
+        var replacement = new LevelOverride(ProbeLevel(0, "OV-%1", start: 9)) { LevelIndex = 0 };
+        if (startOverride)
+            replacement.PrependChild(new StartOverrideNumberingValue { Val = 7 });
+        var output = ExportProbe(Array.Empty<Level>(), new[] { (0, "First"), (0, "Second") }, replacement);
+        Assert.Contains(first, output);
+        Assert.Contains(second, output);
+    }
+
+    [Fact]
+    public void OmittedStartBeginsAtZeroInWord()
+    {
+        var level = ProbeLevel(0, "[%1]");
+        level.RemoveAllChildren<StartNumberingValue>();
+        var output = ExportProbe(new[] { level }, new[] { (0, "First"), (0, "Second") });
+        Assert.Contains("[0] First", output);
+        Assert.Contains("[1] Second", output);
+    }
+
+    [Fact]
+    public void HiddenNumericItemsAdvanceTheAncestorCounter()
+    {
+        var markdown = ExportProbe(new[] { ProbeLevel(0, ""), ProbeLevel(1, "%1.%2") },
+            new[] { (0, "Hidden one"), (0, "Hidden two"), (1, "Child") });
+        Assert.Contains("2.1 Child", markdown);
+    }
+
+    [Fact]
+    public void FutureLevelReferenceSuppressesMarkerWithoutAdvancingChild()
+    {
+        var markdown = ExportProbe(new[] { ProbeLevel(0, "%1-%2"), ProbeLevel(1, "CHILD-%2") },
+            new[] { (0, "Parent"), (1, "Child") });
+        Assert.DoesNotContain("1-1", markdown);
+        Assert.Contains("CHILD-1 Child", markdown);
+    }
+
+    [Theory]
+    [InlineData(true, "1.1 Child")]
+    [InlineData(false, "I.a Child")]
+    public void LegalNumberingUsesDecimalForEveryReferencedLevel(bool enabled, string expected)
+    {
+        var child = ProbeLevel(1, "%1.%2", NumberFormatValues.LowerLetter);
+        child.Append(new IsLegalNumberingStyle { Val = enabled });
+        var markdown = ExportProbe(new[] { ProbeLevel(0, "%1.", NumberFormatValues.UpperRoman), child },
+            new[] { (0, "Parent"), (1, "Child") });
+        Assert.Contains(expected, markdown);
+    }
+
     [Fact]
     public void NonprintingLevelRestartsItsDependentChild()
     {
@@ -104,7 +190,7 @@ public sealed class ParagraphNumberingInstanceTests
             { LevelIndex = index };
 
     private static string ExportProbe(Level[] levels, (int Level, string Text)[] items,
-        LevelOverride? levelOverride = null)
+        LevelOverride? levelOverride = null, bool inheritNumberingId = false, string format = "markdown")
     {
         var path = Path.Combine(Path.GetTempPath(), $"numbering-word-probe-{Guid.NewGuid():N}.docx");
         try
@@ -112,6 +198,12 @@ public sealed class ParagraphNumberingInstanceTests
             using (var doc = WordprocessingDocument.Create(path, WordprocessingDocumentType.Document))
             {
                 var main = doc.AddMainDocumentPart();
+                if (inheritNumberingId)
+                {
+                    main.AddNewPart<StyleDefinitionsPart>().Styles = new Styles(
+                        new Style(new StyleParagraphProperties(new NumberingProperties(
+                            new NumberingId { Val = 1 }))) { StyleId = "ListBody", Type = StyleValues.Paragraph });
+                }
                 var numbering = main.AddNewPart<NumberingDefinitionsPart>();
                 var instance = new NumberingInstance(new AbstractNumId { Val = 7 }) { NumberID = 1 };
                 if (levelOverride != null)
@@ -122,12 +214,18 @@ public sealed class ParagraphNumberingInstanceTests
                 main.Document = new Document(new Body(items.Select(item => new Paragraph(
                     new ParagraphProperties(new NumberingProperties(
                         new NumberingLevelReference { Val = item.Level },
-                        new NumberingId { Val = 1 })),
+                        inheritNumberingId ? null : new NumberingId { Val = 1 }),
+                        inheritNumberingId ? new ParagraphStyleId { Val = "ListBody" } : null),
                     new Run(new Text(item.Text)))).ToArray()));
                 main.Document.Save();
             }
-            return DxpExport.ExportToString(path,
-                new DxpMarkdownVisitor(DxpMarkdownVisitorConfig.CreatePlainConfig()));
+            return format switch
+            {
+                "html" => DxpExport.ExportToString(path, new DxpHtmlVisitor(DxpHtmlVisitorConfig.CreatePlainConfig())),
+                "text" => DxpExport.ExportToString(path, new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateAcceptConfig())),
+                _ => DxpExport.ExportToString(path,
+                    new DxpMarkdownVisitor(DxpMarkdownVisitorConfig.CreatePlainConfig()))
+            };
         }
         finally
         {
@@ -603,7 +701,9 @@ public sealed class ParagraphNumberingInstanceTests
 
             var markdown = DxpExport.ExportToString(path,
                 new DxpMarkdownVisitor(DxpMarkdownVisitorConfig.CreatePlainConfig()));
-            // Word displays (2), [2], [3], including across missing intermediate levels.
+            // Actual Word capture: marker-seeded-override-gap-minimal/heading-and-body.
+            // Applying the heading's override consumes the root override even
+            // across undefined intermediate levels: the next shared root is 2.
             Assert.Contains("[2] First paragraph", markdown);
             Assert.Contains("[3] Second paragraph", markdown);
             Assert.DoesNotContain("[1] Second paragraph", markdown);
