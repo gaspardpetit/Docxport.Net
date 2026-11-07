@@ -570,6 +570,14 @@ public static class DxpListMarkerFormatter
 
     private static string FormatListNumber(int n, NumberFormatValues fmt, CultureInfo? culture)
     {
+        if (fmt == NumberFormatValues.UpperRoman || fmt == NumberFormatValues.LowerRoman)
+        {
+            if (n <= 0) return n == 0 ? " " : "";
+            // Word restarts Roman list labels after 32767 without resetting the
+            // underlying counter. Bound conversion before constructing the text.
+            var roman = ToRoman((n - 1) % short.MaxValue + 1);
+            return fmt == NumberFormatValues.UpperRoman ? roman.ToUpperInvariant() : roman.ToLowerInvariant();
+        }
         // Word's hexadecimal list expansions are limited to unsigned 16-bit
         // values. An empty expansion still leaves the label and counter intact.
         if (fmt == NumberFormatValues.Hex && (n < 0 || n > ushort.MaxValue))
