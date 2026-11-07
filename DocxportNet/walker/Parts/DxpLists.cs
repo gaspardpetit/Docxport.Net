@@ -570,6 +570,16 @@ public static class DxpListMarkerFormatter
 
     private static string FormatListNumber(int n, NumberFormatValues fmt, CultureInfo? culture)
     {
+        if (fmt == NumberFormatValues.DecimalEnclosedCircle || fmt == NumberFormatValues.DecimalEnclosedCircleChinese ||
+            fmt == NumberFormatValues.DecimalEnclosedFullstop || fmt == NumberFormatValues.DecimalEnclosedParen)
+        {
+            // Word lists use only the first enclosed-number range, then decimal
+            // text, even when Unicode provides additional circled characters.
+            var limit = fmt == NumberFormatValues.DecimalEnclosedCircleChinese ? 10 : 20;
+            var first = fmt == NumberFormatValues.DecimalEnclosedFullstop ? '\u2488'
+                : fmt == NumberFormatValues.DecimalEnclosedParen ? '\u2474' : '\u2460';
+            return n > 0 && n <= limit ? ((char)(first + n - 1)).ToString() : n.ToString(CultureInfo.InvariantCulture);
+        }
         if (fmt == NumberFormatValues.UpperRoman || fmt == NumberFormatValues.LowerRoman)
         {
             if (n <= 0) return n == 0 ? " " : "";

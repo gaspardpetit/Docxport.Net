@@ -11,6 +11,7 @@ under the same group and basename in
 | Alphabetic | Word alphabetic rollover and large-label goldens |
 | AlphabeticBoundaries | Alphabetic zero, negatives and signed overflow |
 | DecimalBoundaries | Signed decimal counter boundaries and zero-padding |
+| EnclosedBoundaries | Circled, parenthesized and full-stop marker ranges |
 | GappedHeading | Heading/body counter continuity across missing levels |
 | HexBoundaries | Hexadecimal marker range, signed boundaries and overflow |
 | NegativeStarts | Negative level starts versus standalone overrides |
