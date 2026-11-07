@@ -1,0 +1,150 @@
+{
+  "chicago--1": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/ChicagoBoundaries/chicago--1.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/ChicagoBoundaries/chicago--1.pdf",
+    "sourceSha256": "88773442bcf994d2ff660178b2e10373c92f6cca523fa02a64ee4da356a5aac6",
+    "wordPdfSha256": "5999ef5e632abc59a7c279b2ab788438b94bfa9fd30a1d214d41e48448d8479b",
+    "labels": [],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "chicago--2147483648": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/ChicagoBoundaries/chicago--2147483648.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/ChicagoBoundaries/chicago--2147483648.pdf",
+    "sourceSha256": "b5ec4fec9bb2342e3b4315aa666ea5a69194284bc2e7777709dcec581b3fdedc",
+    "wordPdfSha256": "5109534a61c1a18992bd1ff3735665ea1d633f67b4143ea9a70c69a78e849a75",
+    "labels": [],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "chicago-0": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/ChicagoBoundaries/chicago-0.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/ChicagoBoundaries/chicago-0.pdf",
+    "sourceSha256": "413e89f76fef7dae2a758aeef35fd6ee1e3b596c7fae4459da5cfac7e9a620a6",
+    "wordPdfSha256": "580f2f0478c87c6795b69f118d1e4358da59d22f8879aed640a88aada7f289b3",
+    "labels": [
+      ""
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "chicago-1": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/ChicagoBoundaries/chicago-1.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/ChicagoBoundaries/chicago-1.pdf",
+    "sourceSha256": "5016df08f996ed15bc90530546ee64a511d28d62f326a1629d6bff0fcae3f031",
+    "wordPdfSha256": "7f42f56fa1c42cf27457e586fa29fb414fd9f5f5d58d465dc857e1ff9d899821",
+    "labels": [
+      "*"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "chicago-1024": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/ChicagoBoundaries/chicago-1024.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/ChicagoBoundaries/chicago-1024.pdf",
+    "sourceSha256": "c43b08711c3cf62c3c05316a46b314c2c0060240cbd5c81a081964c80b69dcbe",
+    "wordPdfSha256": "670354eda6a5f67e2a4b9e9f347abb4d692d28af3ede26b801e49f7ec3526911",
+    "labels": [
+      "\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "chicago-1025": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/ChicagoBoundaries/chicago-1025.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/ChicagoBoundaries/chicago-1025.pdf",
+    "sourceSha256": "d58d678fd7d6d228bf9f9aa2743dd581c18fde2075f651a2be57f58cb45eb626",
+    "wordPdfSha256": "b84d6b68c5b316dcab25cb2cf0ed1e20a561878d2489700272eef7fffc40eef8",
+    "labels": [
+      "*****************"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "chicago-119": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/ChicagoBoundaries/chicago-119.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/ChicagoBoundaries/chicago-119.pdf",
+    "sourceSha256": "a8b41c2f91c93d82039d6791cb1c37eac37b1dbe7e75f6c4d549a2a4fdd84c3c",
+    "wordPdfSha256": "f40903dd1c295f01ce1b3a1d82d700fd156cf505947f82a21390bdaa1419f59d",
+    "labels": [
+      "\u2021\u2021\u2021\u2021\u2021\u2021\u2021\u2021\u2021\u2021\u2021\u2021\u2021\u2021\u2021\u2021\u2021\u2021\u2021\u2021\u2021\u2021\u2021\u2021\u2021\u2021\u2021\u2021\u2021\u2021"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "chicago-120": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/ChicagoBoundaries/chicago-120.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/ChicagoBoundaries/chicago-120.pdf",
+    "sourceSha256": "70e2ec91d4075b00b6b8c0430ffe6195880a9b8a86363d378c592805cc0e2e9d",
+    "wordPdfSha256": "c189df2b58b4f9dcaa16b11608a98b763f80c778cca19d63204a55a856c7dd3f",
+    "labels": [
+      "\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7\u00a7"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "chicago-121": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/ChicagoBoundaries/chicago-121.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/ChicagoBoundaries/chicago-121.pdf",
+    "sourceSha256": "fb8887db7f6df783bdbc76b2772c8a117b16683ab83e6dea884a37a8d2916e98",
+    "wordPdfSha256": "a26a9395dff0901f21c105518cde25bad58809a72b50c00fcb79422c4a0da7f7",
+    "labels": [
+      "*"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "chicago-124": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/ChicagoBoundaries/chicago-124.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/ChicagoBoundaries/chicago-124.pdf",
+    "sourceSha256": "326b5ccec6795bdf03b2126c136e42d724db3a949f95632758f490a0535331cc",
+    "wordPdfSha256": "c2c42c183c90e74a7fc61fe063d56b0aab267572441a734330c8d7235d646c2e",
+    "labels": [
+      "\u00a7"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "chicago-2147483647": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/ChicagoBoundaries/chicago-2147483647.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/ChicagoBoundaries/chicago-2147483647.pdf",
+    "sourceSha256": "70e417f4fac06aeac99cd57c8c9419e6b453b3d5042f43336a91cb436b6091ad",
+    "wordPdfSha256": "7c352673f3facf14a86c171bf5da493d428d425abab8751b354d5895f5c98bf9",
+    "labels": [
+      "\u2021\u2021"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "chicago-4": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/ChicagoBoundaries/chicago-4.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/ChicagoBoundaries/chicago-4.pdf",
+    "sourceSha256": "0ca404bf92a6706c2f505ba288fe35f4e6a5dc3c51fe341b9067377ae4f83522",
+    "wordPdfSha256": "4d249d8a8f4153eecd66247a69930972ff4a1a02d3e9def33e886d7bbdfaf714",
+    "labels": [
+      "\u00a7"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "chicago-5": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/ChicagoBoundaries/chicago-5.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/ChicagoBoundaries/chicago-5.pdf",
+    "sourceSha256": "14678d41f046759eb04e70f61b246e18ff66016e60e891d6af119dcd7b28c02f",
+    "wordPdfSha256": "2a1b323ea86b5f272524ee8fdce8464f39fb4d22da0f2fa722cde5b52c918945",
+    "labels": [
+      "**"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "chicago-override--1": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/ChicagoBoundaries/chicago-override--1.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/ChicagoBoundaries/chicago-override--1.pdf",
+    "sourceSha256": "415e95fa66816b4e2da377521f3c7021ae1756073c6477df95ff9b90dcca9777",
+    "wordPdfSha256": "8b4e69e301d94ba7bea673507c5c347e6a4696c576bd8b77c240ef3bb655eaf5",
+    "labels": [
+      "*",
+      ""
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "chicago-override--2147483648": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/ChicagoBoundaries/chicago-override--2147483648.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/ChicagoBoundaries/chicago-override--2147483648.pdf",
+    "sourceSha256": "ccce674547666cd743fc0d9e3607de53dc8a57b8c0956d6d0ec2a5195ef3211a",
+    "wordPdfSha256": "13c071b080e7e2f4ca06ec5ceba3e80e0a37c4537f130c300a5073e61a7fe5bb",
+    "labels": [
+      "*",
+      ""
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  }
+}
