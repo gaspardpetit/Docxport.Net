@@ -10,6 +10,7 @@ under the same group and basename in
 | --- | --- |
 | Alphabetic | Word alphabetic rollover and large-label goldens |
 | AlphabeticBoundaries | Alphabetic zero, negatives and signed overflow |
+| ChicagoBoundaries | Chicago symbol repetition, rollover and nonpositive counters |
 | DecimalBoundaries | Signed decimal counter boundaries and zero-padding |
 | EnclosedBoundaries | Circled, parenthesized and full-stop marker ranges |
 | GappedHeading | Heading/body counter continuity across missing levels |

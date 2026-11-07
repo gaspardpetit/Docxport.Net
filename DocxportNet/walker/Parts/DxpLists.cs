@@ -570,6 +570,12 @@ public static class DxpListMarkerFormatter
 
     private static string FormatListNumber(int n, NumberFormatValues fmt, CultureInfo? culture)
     {
+        if (fmt == NumberFormatValues.Chicago)
+        {
+            if (n <= 0) return "";
+            // Word wraps the repetition count after 30 copies of a list symbol.
+            return new string("*\u2020\u2021\u00a7"[(n - 1) % 4], (n - 1) / 4 % 30 + 1);
+        }
         if (fmt == NumberFormatValues.DecimalEnclosedCircle || fmt == NumberFormatValues.DecimalEnclosedCircleChinese ||
             fmt == NumberFormatValues.DecimalEnclosedFullstop || fmt == NumberFormatValues.DecimalEnclosedParen)
         {
