@@ -570,6 +570,10 @@ public static class DxpListMarkerFormatter
 
     private static string FormatListNumber(int n, NumberFormatValues fmt, CultureInfo? culture)
     {
+        // Word's hexadecimal list expansions are limited to unsigned 16-bit
+        // values. An empty expansion still leaves the label and counter intact.
+        if (fmt == NumberFormatValues.Hex && (n < 0 || n > ushort.MaxValue))
+            return "";
         // Word leaves the decimal expansion empty at the signed minimum and
         // suppresses negative zero-padded labels. The counter still advances.
         // Keep these list rules out of the shared field-number formatter.

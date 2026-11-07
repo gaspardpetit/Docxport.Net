@@ -1,0 +1,133 @@
+{
+  "hex-abstract-max": {
+    "format": "hex",
+    "start": 2147483646,
+    "override": false,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/HexBoundaries/hex-abstract-max.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/HexBoundaries/hex-abstract-max.pdf",
+    "sourceSha256": "5a43f361cd866e96cca680c8b4ca433399753868c67b9c9c4b37dfb30cba7375",
+    "wordPdfSha256": "08be875c1d2ab1557a8615808c24b834617fdeebdf7be6d559f56498be70c01d",
+    "labels": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "hex-override-max": {
+    "format": "hex",
+    "start": 2147483646,
+    "override": true,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/HexBoundaries/hex-override-max.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/HexBoundaries/hex-override-max.pdf",
+    "sourceSha256": "90019d5cb23947b45af238efd926db6e02ca3d0fe350f2cf26209fd9d2adfb8a",
+    "wordPdfSha256": "7711ecefa55a9a644d5b290706217744b5526fb740c01ee7c4484a410899e1af",
+    "labels": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "hex-override-min": {
+    "format": "hex",
+    "start": -2147483648,
+    "override": true,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/HexBoundaries/hex-override-min.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/HexBoundaries/hex-override-min.pdf",
+    "sourceSha256": "4709d8c8e3f64eecfb7b6411ea1fcc11bb75a2dcce879509ba01dbe5b0745193",
+    "wordPdfSha256": "5a64600d3d9571fc16f4906a4b5018099673eaf0b3117af316d19d714bce1915",
+    "labels": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "hex-override-negative": {
+    "format": "hex",
+    "start": -1,
+    "override": true,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/HexBoundaries/hex-override-negative.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/HexBoundaries/hex-override-negative.pdf",
+    "sourceSha256": "5503eefc6dec7aed1986450dce5805dee0cf5c56913e0700d3cee8577b6cee1a",
+    "wordPdfSha256": "9f55206194f8b42c89a7d7015364f5670b0513e0d140b5c2110c4f7dcaf0b649",
+    "labels": [
+      "",
+      "0",
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "hex-abstract-zero": {
+    "format": "hex",
+    "start": 0,
+    "override": false,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/HexBoundaries/hex-abstract-zero.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/HexBoundaries/hex-abstract-zero.pdf",
+    "sourceSha256": "6eab9b2baa60252e01a4829ae0fbc4e32ac7f7b6fc86c44e355ea1a6d7abeb54",
+    "wordPdfSha256": "f5a78789144649a5315a6908dc8d4f61eb6ed66fb4cafefacd4a157163d91251",
+    "labels": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "hex-override-zero": {
+    "format": "hex",
+    "start": 0,
+    "override": true,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/HexBoundaries/hex-override-zero.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/HexBoundaries/hex-override-zero.pdf",
+    "sourceSha256": "5177bc2e24125c86ca8dee59b1a1c4d97dfba0d95e9399a6c3741f68344277f0",
+    "wordPdfSha256": "0161dbbe5adf176be646fd89c4d2e067bb334ec1a670791ec67b365db12757f8",
+    "labels": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "hex-65534": {
+    "format": "hex",
+    "start": 65534,
+    "override": false,
+    "count": 4,
+    "sourcePath": "fixtures/docx/regressions/list-markers/HexBoundaries/hex-65534.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/HexBoundaries/hex-65534.pdf",
+    "sourceSha256": "0752eca75e121d8ce79f261cb36d6a1b5fda1ef36407737815f2558c5388c276",
+    "wordPdfSha256": "fa011457db4e1c80bfcb30a7d3c6b566512923d56f49b2222a24e1b698eb6ccf",
+    "labels": [
+      "FFFE",
+      "FFFF",
+      "",
+      ""
+    ],
+    "labelPattern": "\\[(.*?)\\]"
+  }
+}
