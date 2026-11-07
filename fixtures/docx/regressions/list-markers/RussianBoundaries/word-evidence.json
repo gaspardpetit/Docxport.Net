@@ -1,0 +1,308 @@
+{
+  "russianLower--1": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/RussianBoundaries/russianLower--1.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RussianBoundaries/russianLower--1.pdf",
+    "sourceSha256": "cb41dc2b2dac9ad32901325d6bd25e4dcc1aea5f931801809867611881350c1e",
+    "wordPdfSha256": "8fb6c89872c6ae6e7bb6c389aaf51de1e5cdd9517f32b57b04aaaf3fc014bcfb",
+    "labels": [],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "russianLower--2147483648": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/RussianBoundaries/russianLower--2147483648.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RussianBoundaries/russianLower--2147483648.pdf",
+    "sourceSha256": "f5d19d3aebb689a46d82a6c5a6afc45df83ca500691184265c08a1ae1aeba3c7",
+    "wordPdfSha256": "f778c095810df3a904945546f6816ced6288f981f470bdd807407b495e8de457",
+    "labels": [],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "russianLower-1": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/RussianBoundaries/russianLower-1.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RussianBoundaries/russianLower-1.pdf",
+    "sourceSha256": "2df296400d3e8566d265085bdff2c75c78cb017978680c8017967f90c359441b",
+    "wordPdfSha256": "ca22dd6c907b457ea6519607d0a91a48a8550dc9e40d8cc9d8052483223294a1",
+    "labels": [
+      "\u0430"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "russianLower-2147483647": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/RussianBoundaries/russianLower-2147483647.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RussianBoundaries/russianLower-2147483647.pdf",
+    "sourceSha256": "1d425e681032ea4adb92f8a93a7503c26fcb3defbc4725bf5a9e25cf1152d927",
+    "wordPdfSha256": "d9839eb13466811667b975852d4f69eff7075c89ef73d750a6a378ee648cac59",
+    "labels": [
+      "\u0436"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "russianLower-29": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/RussianBoundaries/russianLower-29.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RussianBoundaries/russianLower-29.pdf",
+    "sourceSha256": "6f21064e8ca899a9169f3bca2a32f6fcd4d4fa9f7e4cb83b89f560866c162188",
+    "wordPdfSha256": "b03595aa88fa268313785b4c3315af45e7e7333efd673ffc56effb1f5603412c",
+    "labels": [
+      "\u044f"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "russianLower-30": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/RussianBoundaries/russianLower-30.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RussianBoundaries/russianLower-30.pdf",
+    "sourceSha256": "283ffb960df718b3223485e7dacf34c2ce89aa190a1ea4e68f64ca89a3ad3846",
+    "wordPdfSha256": "48b014248225d375383691a4a99054b1b4454ff0e888887925760ee579ee311d",
+    "labels": [
+      "\u0430\u0430"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "russianLower-7424": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/RussianBoundaries/russianLower-7424.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RussianBoundaries/russianLower-7424.pdf",
+    "sourceSha256": "0319d99c692535d4901f5ba27d3657bc0884361b4f3ea394fbbe4f46a8a32f7f",
+    "wordPdfSha256": "c2cff3eb85a7372700e65debac6e2357067323e56e7eacb6462c060e607b212d",
+    "labels": [
+      "\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "russianLower-7425": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/RussianBoundaries/russianLower-7425.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RussianBoundaries/russianLower-7425.pdf",
+    "sourceSha256": "8668e66136f4874e7672cb14a09e937935825983b0df62a47f2a54ee4f249ac7",
+    "wordPdfSha256": "0216e38812e4905d417e98f3d3ca5f915a121bdc694a89f6c0b3a60a8ece7637",
+    "labels": [
+      "\u0430\u0430\u0430\u0430\u0430\u0430\u0430\u0430\u0430\u0430\u0430\u0430\u0430\u0430\u0430\u0430\u0430"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "russianLower-869": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/RussianBoundaries/russianLower-869.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RussianBoundaries/russianLower-869.pdf",
+    "sourceSha256": "574281bdb25a59175520205755e419b4f723dd665b974a7015ff9615c1d7cdc8",
+    "wordPdfSha256": "5d008fb7ce3ab3e88b2fbea0ca5a7bb2f779b43db2e21222703f03d915b41468",
+    "labels": [
+      "\u044e\u044e\u044e\u044e\u044e\u044e\u044e\u044e\u044e\u044e\u044e\u044e\u044e\u044e\u044e\u044e\u044e\u044e\u044e\u044e\u044e\u044e\u044e\u044e\u044e\u044e\u044e\u044e\u044e\u044e"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "russianLower-870": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/RussianBoundaries/russianLower-870.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RussianBoundaries/russianLower-870.pdf",
+    "sourceSha256": "fa7d185abe8fcef8567f088843fa28f38ccf707b99f7c59c2237b79e5d03a855",
+    "wordPdfSha256": "77bcd5f6a982cd20b4f752b9aaba2c675821c8e7215a069f2ed05dbd6dfe1390",
+    "labels": [
+      "\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f\u044f"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "russianLower-871": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/RussianBoundaries/russianLower-871.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RussianBoundaries/russianLower-871.pdf",
+    "sourceSha256": "8681659255ba1b36e4633f9ec58e0a4d34d5eb47836fcdf505b2934becfd24f1",
+    "wordPdfSha256": "45cbe016bc20f245337a41717b78a6cf4a81f09c0e5983f052cac220c02ca278",
+    "labels": [
+      "\u0430"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "russianLower-899": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/RussianBoundaries/russianLower-899.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RussianBoundaries/russianLower-899.pdf",
+    "sourceSha256": "2a1f2c7d6a7bd1570794acfbda2f2ff39de588c1ec37407a871ceb8a4136c41d",
+    "wordPdfSha256": "34eb1c0c4c46bfc6e8f4b06886a367b5e77aaf43e8a6c6bd349aba9c7df7eb3d",
+    "labels": [
+      "\u044f"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "russianLower-override--1": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/RussianBoundaries/russianLower-override--1.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RussianBoundaries/russianLower-override--1.pdf",
+    "sourceSha256": "f499a936b333f56126da0e7baa1a895a402f629e3613e559d0166362265d649b",
+    "wordPdfSha256": "84c13a779cf76940b10abfaee0847d2b155b9c4198a0f0f72f37323919710d9e",
+    "labels": [
+      "\u0430",
+      ""
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "russianLower-override--2147483648": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/RussianBoundaries/russianLower-override--2147483648.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RussianBoundaries/russianLower-override--2147483648.pdf",
+    "sourceSha256": "22cab3f7c8e5679f72813f1106c0ddd145acfa69514b0f123297eb224a12fe4a",
+    "wordPdfSha256": "405415b72ea41a8f695f02c2ae77da97f07b41b65eefb43fe79ccfc5c339ece6",
+    "labels": [
+      "\u0430",
+      ""
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "russianUpper--1": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/RussianBoundaries/russianUpper--1.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RussianBoundaries/russianUpper--1.pdf",
+    "sourceSha256": "bc3ac3b9b5ba5ce959de70d68c6fb7643ed749c6e406ecbd526ec2dd3b9aca90",
+    "wordPdfSha256": "9766d9c737b769271d16ef9993f29aa31f4a9c1e971711f4deb5e29615e5d147",
+    "labels": [],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "russianUpper--2147483648": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/RussianBoundaries/russianUpper--2147483648.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RussianBoundaries/russianUpper--2147483648.pdf",
+    "sourceSha256": "8f28b7a889a661e1be3ee3843ffb16bfbb5baa03af96ed54ebbe28d3cb0203f1",
+    "wordPdfSha256": "8f493154d07c330bd5d7a283bc1ff697fa38aa7e4e868bdeaafe9b4f3de4c7b2",
+    "labels": [],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "russianUpper-1": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/RussianBoundaries/russianUpper-1.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RussianBoundaries/russianUpper-1.pdf",
+    "sourceSha256": "9ad3a140e42adf547198d4db0722ad1663171aadaa62cb4e1eec1b8d22f3289d",
+    "wordPdfSha256": "0860b445213719e205a88f856810a1d8add1e4d9bfafaf076e47339aa35315cb",
+    "labels": [
+      "\u0410"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "russianUpper-2147483647": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/RussianBoundaries/russianUpper-2147483647.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RussianBoundaries/russianUpper-2147483647.pdf",
+    "sourceSha256": "21698e0f7a1098cb83fd02913b1e85eabff87c50517e32a4b3ee59f9daf956a1",
+    "wordPdfSha256": "e309c0ca8762ff15cdbf85015d53e7702797b64c3d38dcdc5cdda5efe9eace38",
+    "labels": [
+      "\u0416"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "russianUpper-29": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/RussianBoundaries/russianUpper-29.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RussianBoundaries/russianUpper-29.pdf",
+    "sourceSha256": "4cd08445fd56743a50594d45e8ed4ec6a450fdc705397a1e8ec0e0ab346c5e49",
+    "wordPdfSha256": "e9feea84143ef054dcb03e58ec289beaaef78bcfb62705bab687c6314b6faa02",
+    "labels": [
+      "\u042f"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "russianUpper-30": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/RussianBoundaries/russianUpper-30.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RussianBoundaries/russianUpper-30.pdf",
+    "sourceSha256": "ede4bc2736774327d85801a616be2a709c76b7262d6078e972b2bfeff9110187",
+    "wordPdfSha256": "4531ca8bf67782a9b121ae91661d997be9e2fef44961f22faf17c698c5e599c8",
+    "labels": [
+      "\u0410\u0410"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "russianUpper-7424": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/RussianBoundaries/russianUpper-7424.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RussianBoundaries/russianUpper-7424.pdf",
+    "sourceSha256": "b6d0a8a3a2c08cb64a0ac828fa898e0a6a18b20f8fe3eced5dfee398ad744783",
+    "wordPdfSha256": "a12a0f0c630dd2f73de806bc552e5e63889ef8605f1e16d938c4c77ce5914e80",
+    "labels": [
+      "\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "russianUpper-7425": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/RussianBoundaries/russianUpper-7425.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RussianBoundaries/russianUpper-7425.pdf",
+    "sourceSha256": "dbaa6117203694455cdd25b39dbc82afab252b0389e472bd76c305d2789e42bc",
+    "wordPdfSha256": "a08be5323b61cf1dce7aec3d1ce5b13c7a758ea6b217983513c57316ebca31d8",
+    "labels": [
+      "\u0410\u0410\u0410\u0410\u0410\u0410\u0410\u0410\u0410\u0410\u0410\u0410\u0410\u0410\u0410\u0410\u0410"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "russianUpper-869": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/RussianBoundaries/russianUpper-869.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RussianBoundaries/russianUpper-869.pdf",
+    "sourceSha256": "60b37654e89f9a6ea227abb8b216c6870e7c2564e2e1845e82443cbddb751e1a",
+    "wordPdfSha256": "ccb3062d76105902dfb17b6a2b350cecfa9d439b43d49e0ccaef37be7549ce24",
+    "labels": [
+      "\u042e\u042e\u042e\u042e\u042e\u042e\u042e\u042e\u042e\u042e\u042e\u042e\u042e\u042e\u042e\u042e\u042e\u042e\u042e\u042e\u042e\u042e\u042e\u042e\u042e\u042e\u042e\u042e\u042e\u042e"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "russianUpper-870": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/RussianBoundaries/russianUpper-870.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RussianBoundaries/russianUpper-870.pdf",
+    "sourceSha256": "3ecb571b1249565ba8b30d80c7f156e65d828176ef41093678fbfb8f806d0219",
+    "wordPdfSha256": "1d45232edae12e9c49b50403c825c800bd4633c83dea6f06a2abb0360c4641bc",
+    "labels": [
+      "\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f\u042f"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "russianUpper-871": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/RussianBoundaries/russianUpper-871.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RussianBoundaries/russianUpper-871.pdf",
+    "sourceSha256": "7ca70e3a007dc14518a3d515d019892a90fc53af4d5d5ce1d88b816dcac46b90",
+    "wordPdfSha256": "5a02cf99c025282ab3b373b6d9ce67f2231b9f4ed7a1a3b3de331f37e131a4ad",
+    "labels": [
+      "\u0410"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "russianUpper-899": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/RussianBoundaries/russianUpper-899.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RussianBoundaries/russianUpper-899.pdf",
+    "sourceSha256": "a449fd738f5b121cff5764ac3dabb0cb50dd980f513c19b68a940530c90e06b0",
+    "wordPdfSha256": "e7aaeae4f541bcd39f7c7ea63392ff98b78826dea3329bbe537f635ffeb2e7a4",
+    "labels": [
+      "\u042f"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "russianUpper-override--1": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/RussianBoundaries/russianUpper-override--1.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RussianBoundaries/russianUpper-override--1.pdf",
+    "sourceSha256": "9b1a4136110269131b531716bce64d5e94e1a51ee0fb18353e0880a46b5fa813",
+    "wordPdfSha256": "a9cecd374db32b9c5d44582e04e7596cab86e52eb92c5956716fff68b0839bcf",
+    "labels": [
+      "\u0410",
+      ""
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "russianUpper-override--2147483648": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/RussianBoundaries/russianUpper-override--2147483648.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RussianBoundaries/russianUpper-override--2147483648.pdf",
+    "sourceSha256": "3dbe8877f3e7f61f6ffaee0611df293f4420a7f28bd91e62f1078abc01166c32",
+    "wordPdfSha256": "a27e249497cfb866a9b3c07e0bb5020bccf32049d8e636ff45c4150c5f9d251c",
+    "labels": [
+      "\u0410",
+      ""
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "russianLower-abstract-zero": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/RussianBoundaries/russianLower-abstract-zero.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RussianBoundaries/russianLower-abstract-zero.pdf",
+    "sourceSha256": "155da14fc446ac3267a7ab5961da519909c93cec3075d285bc01de8259a67834",
+    "wordPdfSha256": "2e8b3aa453e4bcce92c17d18b5d8bf2071e27cc6c4d00a2762cdf5cdc3cb2fe4",
+    "labels": [
+      " ",
+      "\u0430",
+      "\u0431",
+      "\u0432",
+      "\u0433",
+      "\u0434"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "russianUpper-abstract-zero": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/RussianBoundaries/russianUpper-abstract-zero.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RussianBoundaries/russianUpper-abstract-zero.pdf",
+    "sourceSha256": "f6d301656dbd1d6d801448bb8c5fb871240611f6574ff065673ca90cef013cc4",
+    "wordPdfSha256": "7fc595bc5e555c512504740d0b78ace6658a73c0c6ffff1cdcbd92bebbf76ef1",
+    "labels": [
+      " ",
+      "\u0410",
+      "\u0411",
+      "\u0412",
+      "\u0413",
+      "\u0414"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  }
+}

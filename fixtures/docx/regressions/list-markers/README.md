@@ -19,6 +19,7 @@ under the same group and basename in
 | Resolution | Independent numbering-property and linked-style resolution |
 | Restart | Restart-declaration import normalization |
 | RomanBoundaries | Roman marker rollover, zero and signed boundaries |
+| RussianBoundaries | Russian alphabetic repetition, rollover and nonpositive counters |
 | Suffix | List suffix nothing |
 | Text | Level-text expansion and missing-level start rules |
 

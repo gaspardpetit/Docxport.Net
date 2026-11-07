@@ -612,6 +612,15 @@ public static class DxpListMarkerFormatter
             var first = fmt == NumberFormatValues.UpperLetter ? 'A' : 'a';
             return new string((char)(first + (n - 1) % 26), (n - 1) / 26 % 30 + 1);
         }
+        if (fmt == NumberFormatValues.RussianLower || fmt == NumberFormatValues.RussianUpper)
+        {
+            if (n <= 0) return n == 0 ? " " : "";
+            // Word's Russian list alphabet repeats one letter, wrapping after 30 copies.
+            var alphabet = fmt == NumberFormatValues.RussianLower
+                ? "абвгдежзиклмнопрстуфхцчшщыэюя"
+                : "АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЭЮЯ";
+            return new string(alphabet[(n - 1) % alphabet.Length], (n - 1) / alphabet.Length % 30 + 1);
+        }
         return FormatNumber(n, fmt, culture);
     }
 
