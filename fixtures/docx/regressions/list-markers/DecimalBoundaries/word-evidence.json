@@ -1,0 +1,218 @@
+{
+  "decimal-abstract-max": {
+    "format": "decimal",
+    "start": 2147483646,
+    "override": false,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/DecimalBoundaries/decimal-abstract-max.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DecimalBoundaries/decimal-abstract-max.pdf",
+    "sourceSha256": "b0789070e55ca2c504e139722b5a2beab495a571e4ecd9bef6c73269aaaa24f4",
+    "wordPdfSha256": "b7f92935f9516070d950938bc19ce584227ab3c3c7e5a9dcc2b86ee665f7d38c",
+    "markers": [
+      "BEGIN2147483646END",
+      "BEGIN2147483647END",
+      "BEGINEND",
+      "BEGIN-2147483647END",
+      "BEGIN-2147483646END",
+      "BEGIN-2147483645END"
+    ]
+  },
+  "decimal-override-max": {
+    "format": "decimal",
+    "start": 2147483646,
+    "override": true,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/DecimalBoundaries/decimal-override-max.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DecimalBoundaries/decimal-override-max.pdf",
+    "sourceSha256": "6263f3db0ade3fdb138ffe16e4ae22fe55609b37b80bef482760ac6f22aec1de",
+    "wordPdfSha256": "c13c86c2e21e1a357f6a61594c1e1d002dafbe9d9450714521e8d7e2e856b478",
+    "markers": [
+      "BEGIN2147483646END",
+      "BEGIN2147483647END",
+      "BEGINEND",
+      "BEGIN-2147483647END",
+      "BEGIN-2147483646END",
+      "BEGIN-2147483645END"
+    ]
+  },
+  "decimal-override-min": {
+    "format": "decimal",
+    "start": -2147483648,
+    "override": true,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/DecimalBoundaries/decimal-override-min.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DecimalBoundaries/decimal-override-min.pdf",
+    "sourceSha256": "8c7c01fae1d9a692cfb5b85abc746f2da82fbd430ee656ac7240c9fd53f79018",
+    "wordPdfSha256": "b9af992863119f6a9324f9406e58aff2e9dcd2764a5a05c0c27b0181cf7a5a31",
+    "markers": [
+      "BEGINEND",
+      "BEGIN-2147483647END",
+      "BEGIN-2147483646END",
+      "BEGIN-2147483645END",
+      "BEGIN-2147483644END",
+      "BEGIN-2147483643END"
+    ]
+  },
+  "decimal-override-negative": {
+    "format": "decimal",
+    "start": -1,
+    "override": true,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/DecimalBoundaries/decimal-override-negative.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DecimalBoundaries/decimal-override-negative.pdf",
+    "sourceSha256": "0477ae6635dfe5d2a95f8348c86bfdd85a96ea6b9ebeb72dd1f6d3c305955bea",
+    "wordPdfSha256": "640a02fd9351e422614bcf8155cc91a17a38a3d836a9b0ac9b078bf4e27f9868",
+    "markers": [
+      "BEGIN-1END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END"
+    ]
+  },
+  "decimal-abstract-zero": {
+    "format": "decimal",
+    "start": 0,
+    "override": false,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/DecimalBoundaries/decimal-abstract-zero.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DecimalBoundaries/decimal-abstract-zero.pdf",
+    "sourceSha256": "c53efa9bf538a8a410438f23c4671e76af95ab0f2b6eb3bdfca66f90b74be0d9",
+    "wordPdfSha256": "1ecd5cfbd5fef753c6da86dc2deefae20a93823dc221a411d7ad6ea8bc8f21e9",
+    "markers": [
+      "BEGIN0END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END"
+    ]
+  },
+  "decimal-override-zero": {
+    "format": "decimal",
+    "start": 0,
+    "override": true,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/DecimalBoundaries/decimal-override-zero.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DecimalBoundaries/decimal-override-zero.pdf",
+    "sourceSha256": "b650db4c4f87834081c0211330e8855ff6650d418c3eb4f402f0f36861593d3e",
+    "wordPdfSha256": "075f3e715d26a62355b6697c58b068791b69d646fb3e2dba9a0eef804a355760",
+    "markers": [
+      "BEGIN0END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END"
+    ]
+  },
+  "decimalZero-abstract-max": {
+    "format": "decimalZero",
+    "start": 2147483646,
+    "override": false,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/DecimalBoundaries/decimalZero-abstract-max.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DecimalBoundaries/decimalZero-abstract-max.pdf",
+    "sourceSha256": "ebe98b09647d1864fe050c4f960d6a3014b065ec15a70b0a85d3a2f8e4526985",
+    "wordPdfSha256": "6d2e1ec73e8559072ea98ccd3bff98aafc26d8fa0e48f49630792d7ce5680676",
+    "markers": [
+      "BEGIN2147483646END",
+      "BEGIN2147483647END",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND"
+    ]
+  },
+  "decimalZero-override-max": {
+    "format": "decimalZero",
+    "start": 2147483646,
+    "override": true,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/DecimalBoundaries/decimalZero-override-max.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DecimalBoundaries/decimalZero-override-max.pdf",
+    "sourceSha256": "6fdadc42d5a673cbb35891555ab92e04fd865c5a779ec5c49da07d2be26f6ffa",
+    "wordPdfSha256": "34587b74307f4877b66f3c59b18b4091c246385a452ee8a2ae509e6c62cc1da4",
+    "markers": [
+      "BEGIN2147483646END",
+      "BEGIN2147483647END",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND"
+    ]
+  },
+  "decimalZero-override-min": {
+    "format": "decimalZero",
+    "start": -2147483648,
+    "override": true,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/DecimalBoundaries/decimalZero-override-min.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DecimalBoundaries/decimalZero-override-min.pdf",
+    "sourceSha256": "563440bc35486b9411c01ce2f91075dae0663b46332bcdded1c8f7772e6f6d82",
+    "wordPdfSha256": "ccdf232131935effeb4431e0af0a3ad7e1e8cd48f5e454ac232e5ddc74f7a174",
+    "markers": [
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND"
+    ]
+  },
+  "decimalZero-override-negative": {
+    "format": "decimalZero",
+    "start": -1,
+    "override": true,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/DecimalBoundaries/decimalZero-override-negative.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DecimalBoundaries/decimalZero-override-negative.pdf",
+    "sourceSha256": "1b87252dcb6b4a744077103b188b4ca0d7d9437565160bb0a8968d23a4feb16c",
+    "wordPdfSha256": "dc9921fa6ff533dd98ff7bd758b994c7da56132d723cfae6d4538e9edf7b89ec",
+    "markers": [
+      "BEGINEND",
+      "BEGIN00END",
+      "BEGIN01END",
+      "BEGIN02END",
+      "BEGIN03END",
+      "BEGIN04END"
+    ]
+  },
+  "decimalZero-abstract-zero": {
+    "format": "decimalZero",
+    "start": 0,
+    "override": false,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/DecimalBoundaries/decimalZero-abstract-zero.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DecimalBoundaries/decimalZero-abstract-zero.pdf",
+    "sourceSha256": "e815cc3ff5356c135e4ba24eb1874929ccdea7c45be82af5ac6a591b36ec5506",
+    "wordPdfSha256": "526bcf0a6247bca75cea8a4bd4ab258c01a2a289850500032d97e75499961c4a",
+    "markers": [
+      "BEGIN00END",
+      "BEGIN01END",
+      "BEGIN02END",
+      "BEGIN03END",
+      "BEGIN04END",
+      "BEGIN05END"
+    ]
+  },
+  "decimalZero-override-zero": {
+    "format": "decimalZero",
+    "start": 0,
+    "override": true,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/DecimalBoundaries/decimalZero-override-zero.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DecimalBoundaries/decimalZero-override-zero.pdf",
+    "sourceSha256": "4a5603e0098e16de2d25a7e6a3c2036ab7ff5738472bfd4d9e0d2264af0f49ff",
+    "wordPdfSha256": "d65929949a48cf7d6d0559283b9ec53ea524e38a0eaa3414e6faa6e96f4dc60c",
+    "markers": [
+      "BEGIN00END",
+      "BEGIN01END",
+      "BEGIN02END",
+      "BEGIN03END",
+      "BEGIN04END",
+      "BEGIN05END"
+    ]
+  }
+}
