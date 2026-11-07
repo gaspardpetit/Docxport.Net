@@ -1,0 +1,30 @@
+{
+  "direct-id-style-level": {
+    "sourceSha256": "F473C9E44A7438A1495C25D252553FC2BD3800A6F3C0603406875377F6B8488C",
+    "wordPdfSha256": "9708E590958CD05E5E8D332E921E62B79182129E022BF6A6B676B886AB28FE29",
+    "wordText": "L1-1 \nStyled \n",
+    "sourcePath": "fixtures/docx/regressions/list-markers/Resolution/direct-id-style-level.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/Resolution/direct-id-style-level.pdf"
+  },
+  "style-id-level-base": {
+    "sourceSha256": "0B1BE56A0BF4BF961C1617A4843841B5F7014B8C44577D1D8C26192D71EAB064",
+    "wordPdfSha256": "4ACA104D1612839D010B6C0BBBA651BC98139A6A86B4AAB31F2F1934BBC95B59",
+    "wordText": "L1-1 \nStyled \n",
+    "sourcePath": "fixtures/docx/regressions/list-markers/Resolution/style-id-level-base.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/Resolution/style-id-level-base.pdf"
+  },
+  "override": {
+    "sourceSha256": "6BACBD614A00D54261435197AE118CFF813EEB88553B61E715CE24340513D0FF",
+    "wordPdfSha256": "8D1C9E4D114084D9584D233114069665218C04684487814DD02A8DBAE99966CA",
+    "wordText": "[1] \nItem1 \n[2] \nItem2 \n[9] \nItem3 \n[3] \nItem4 \n",
+    "sourcePath": "fixtures/docx/regressions/list-markers/Resolution/override.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/Resolution/override.pdf"
+  },
+  "basic": {
+    "sourceSha256": "378AE8BF40E79D730B2A18D57C7DD243A7C015150105346168447125E378671A",
+    "wordPdfSha256": "8CE0D9A557D996AEC332E9E3237D3520C1BF692196AA21C94F760412C6D5D6AD",
+    "wordText": "Item1 \nItem2 \n[1] \nItem3 \nItem4 \n",
+    "sourcePath": "fixtures/docx/regressions/list-markers/Resolution/basic.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/Resolution/basic.pdf"
+  }
+}

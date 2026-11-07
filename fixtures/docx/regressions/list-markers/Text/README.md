@@ -8,3 +8,9 @@ generated text and do not require Word during a normal test run.
 The visible Word result takes precedence over an assumption based only on
 OOXML prose. Coverage is limited to the supplied cases, rather than a claim of
 universal conformance. Layout and marker-font behavior are outside this change.
+
+## Evidence locations
+
+DOCX sources, manifests and supporting data stay together in this group.
+Captured Word PDFs are in [the matching truth group](../../../../../truth/pdf-word/regressions/list-markers/Text/).
+Each manifest records repository-relative source and capture paths.

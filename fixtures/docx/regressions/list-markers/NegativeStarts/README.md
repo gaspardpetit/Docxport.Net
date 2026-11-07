@@ -21,3 +21,9 @@ is made for it.
 No PDF visitor or layout source changes are needed. This change builds on the
 restart-import normalization merged in #199, checking invalid starts before
 restart declarations in the same private numbering view.
+
+## Evidence locations
+
+DOCX sources, manifests and supporting data stay together in this group.
+Captured Word PDFs are in [the matching truth group](../../../../../truth/pdf-word/regressions/list-markers/NegativeStarts/).
+Each manifest records repository-relative source and capture paths.

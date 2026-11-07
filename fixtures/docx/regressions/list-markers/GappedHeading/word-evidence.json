@@ -1,0 +1,15 @@
+{
+  "application": "Microsoft Word",
+  "version": "16.0",
+  "build": "16.0.20527",
+  "sourceSha256": "3B9BFF3173AC155B2BBFC8E045E6D2F380B2C64182EDE5039219E1EC031750CA",
+  "markers": [
+    "(2)",
+    "[2]",
+    "[3]"
+  ],
+  "validation": "OpenXmlValidator Office2013: zero errors",
+  "wordPdfSha256": "DEB15737C07AC05E8C6D2A4C3FAEF124390928C8EE39E0B1E9279ABB325703C9",
+  "sourcePath": "fixtures/docx/regressions/list-markers/GappedHeading/heading-and-body.docx",
+  "wordPdfPath": "truth/pdf-word/regressions/list-markers/GappedHeading/heading-and-body.pdf"
+}
