@@ -12,6 +12,9 @@ DOC and DOCX inputs are grouped by source format and purpose:
   `scripts/generate-shared-export-probes.ps1`.
 - `docx/legacy/` and `doc/legacy/`: paired Word-authored compatibility cases.
 - `docx/regressions/` and `doc/regressions/`: focused regression cases.
+- `docx/regressions/list-markers/`: grouped marker regression sources, Word
+  evidence manifests and supporting data. Matching captures retain the same
+  groups under `../truth/pdf-word/regressions/list-markers/`.
 - `docx/native-oracle/` and `doc/native-oracle/`: native Word comparison cases.
 - `docx/samples/`: larger real-world DOCX inputs shared by exporter tests.
 - `doc/samples/`: the 14 DOC counterparts of `docx/samples/`, used to test

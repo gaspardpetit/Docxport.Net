@@ -2,6 +2,8 @@
   "suffix-nothing": {
     "sourceSha256": "F5737FAF29009EB34E22B4300AF9F46E81D245E97E1A2EAE8DF9B0E18C0B8753",
     "wordPdfSha256": "011EBA6BED893320DB59E440317BE9E369F96595A649AE5106F757FB932556CB",
-    "wordText": "[1]Text \n"
+    "wordText": "[1]Text \n",
+    "sourcePath": "fixtures/docx/regressions/list-markers/Suffix/suffix-nothing.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/Suffix/suffix-nothing.pdf"
   }
 }

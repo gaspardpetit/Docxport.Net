@@ -1,7 +1,7 @@
 {
   "0-1-abstract": {
     "sourceSha256": "5ebeeac8699fbdf32509526ff0d1da8cabcc6501d2ad966dc687510cf0dc7da9",
-    "wordPdfSha256": "29f652d028e481a1fc259aa59ec558abf51a7903736c85e04f2502b636254247",
+    "wordPdfSha256": "29F652D028E481A1FC259AA59EC558ABF51A7903736C85E04F2502B636254247",
     "markers": "L0=1. L0=2. L0=3. L0=4. L0=5. L0=6.",
     "wordImportedLevels": [
       {
@@ -11,11 +11,13 @@
         "restart": "0",
         "label": "L0=%1."
       }
-    ]
+    ],
+    "sourcePath": "fixtures/docx/regressions/list-markers/Restart/0-1-abstract.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/Restart/0-1-abstract.pdf"
   },
   "2-0-abstract": {
     "sourceSha256": "f451839960ec1191c88d1797b36cd657458b8a194ee75d137201002bc8fe20c7",
-    "wordPdfSha256": "dfb95d8720033eaf1db2e9d96d3aaca680c72b9e4f4d53ae91a6f8e9475282b1",
+    "wordPdfSha256": "DFB95D8720033EAF1DB2E9D96D3AACA680C72B9E4F4D53AE91A6F8E9475282B1",
     "markers": "L0=1. L2=3. L2=4. L0=2. L2=5. L2=6.",
     "wordImportedLevels": [
       {
@@ -25,11 +27,13 @@
         "restart": "0",
         "label": "L2=%3."
       }
-    ]
+    ],
+    "sourcePath": "fixtures/docx/regressions/list-markers/Restart/2-0-abstract.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/Restart/2-0-abstract.pdf"
   },
   "2-1-abstract": {
     "sourceSha256": "8d7143c9bb385a7fe950a6c5da4a4520b9dcc6a976bdde0fc173bd22d0d2963b",
-    "wordPdfSha256": "913e3e2e58f68c721da26b8426645c64462b5e9d2d81f65e77be7fa6bb9cf803",
+    "wordPdfSha256": "913E3E2E58F68C721DA26B8426645C64462B5E9D2D81F65E77BE7FA6BB9CF803",
     "markers": "L0=1. L2=3. L2=4. L0=2. L2=3. L2=4.",
     "wordImportedLevels": [
       {
@@ -39,11 +43,13 @@
         "restart": "1",
         "label": "L2=%3."
       }
-    ]
+    ],
+    "sourcePath": "fixtures/docx/regressions/list-markers/Restart/2-1-abstract.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/Restart/2-1-abstract.pdf"
   },
   "2-2-abstract": {
     "sourceSha256": "4cad4efc115c04b30edd227ef1bdf426acf73791a4c5d9e5a31074c2cb029bc3",
-    "wordPdfSha256": "5100339f21cbe41e0a91648c202f58354dee1da4f1357e63b56455887173b5e1",
+    "wordPdfSha256": "5100339F21CBE41E0A91648C202F58354DEE1DA4F1357E63B56455887173B5E1",
     "markers": "L0=1. L0=2.",
     "wordImportedLevels": [
       {
@@ -53,11 +59,13 @@
         "restart": null,
         "label": ""
       }
-    ]
+    ],
+    "sourcePath": "fixtures/docx/regressions/list-markers/Restart/2-2-abstract.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/Restart/2-2-abstract.pdf"
   },
   "2-2-override": {
     "sourceSha256": "8688943844ff20d8f47d21234c92a03c42a4b15e5e9fa2605499c14e5b7ff487",
-    "wordPdfSha256": "d80b06020fca68b70ce5681d98e3c1e7a262c0a1ddec78fc54f9580f18ae203e",
+    "wordPdfSha256": "D80B06020FCA68B70CE5681D98E3C1E7A262C0A1DDEC78FC54F9580F18AE203E",
     "markers": "L0=1. L2=3. L2=4. L0=2. L2=3. L2=4.",
     "wordImportedLevels": [
       {
@@ -67,11 +75,13 @@
         "restart": null,
         "label": "L2=%3."
       }
-    ]
+    ],
+    "sourcePath": "fixtures/docx/regressions/list-markers/Restart/2-2-override.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/Restart/2-2-override.pdf"
   },
   "2-8-abstract": {
     "sourceSha256": "757ca6d87b7da92abe2ff39fd19fffc66bb33a5a7f5b46a25bbe00920b8364b4",
-    "wordPdfSha256": "f6df3f1fb47f4d36bd0232727ae6edd85f773851618674159dc56ab35ade0879",
+    "wordPdfSha256": "F6DF3F1FB47F4D36BD0232727AE6EDD85F773851618674159DC56AB35ADE0879",
     "markers": "L0=1. L2=3. L2=4. L0=2. L2=5. L2=6.",
     "wordImportedLevels": [
       {
@@ -81,11 +91,13 @@
         "restart": "0",
         "label": "L2=%3."
       }
-    ]
+    ],
+    "sourcePath": "fixtures/docx/regressions/list-markers/Restart/2-8-abstract.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/Restart/2-8-abstract.pdf"
   },
   "8-7-abstract": {
     "sourceSha256": "7c4fca3d35e1b3827243e3668a0506880a51247019ad49e4b34028827d348bcd",
-    "wordPdfSha256": "feac2a7464d856b5ab4ae394a1f5cf72405666dd44c49b6791314f44bea2f2b0",
+    "wordPdfSha256": "FEAC2A7464D856B5AB4AE394A1F5CF72405666DD44C49B6791314F44BEA2F2B0",
     "markers": "L0=1. L8=9. L8=10. L0=2. L8=9. L8=10.",
     "wordImportedLevels": [
       {
@@ -95,11 +107,15 @@
         "restart": "7",
         "label": "L8=%9."
       }
-    ]
+    ],
+    "sourcePath": "fixtures/docx/regressions/list-markers/Restart/8-7-abstract.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/Restart/8-7-abstract.pdf"
   },
   "invalid-override-with-start": {
     "sourceSha256": "db524d61e63fd5b7007a839f11c3cf5c311cd51fba56b8f15bf40daac3592fd1",
-    "wordPdfSha256": "f5744e167146dc1fe60b594b62009955dd97777dd4655cfaedfbdf7000ce8c85",
-    "markers": "L0=3. L1=2. L2=4. L2=5. L2=6."
+    "wordPdfSha256": "F5744E167146DC1FE60B594B62009955DD97777DD4655CFAEDFBDF7000CE8C85",
+    "markers": "L0=3. L1=2. L2=4. L2=5. L2=6.",
+    "sourcePath": "fixtures/docx/regressions/list-markers/Restart/invalid-override-with-start.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/Restart/invalid-override-with-start.pdf"
   }
 }

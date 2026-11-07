@@ -1,0 +1,30 @@
+{
+  "text-many-references": {
+    "sourceSha256": "E1A6A9191BF99CC77CCD0FEF7742CDF2F301EE4B87203F397CC98F4CB8285C40",
+    "wordPdfSha256": "490B5BE649D67C1B6816427BB4DD863D7F456066129FF026BB5F71B1793CA624",
+    "wordText": "111111111%1 \nItem1 \n",
+    "sourcePath": "fixtures/docx/regressions/list-markers/Text/text-many-references.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/Text/text-many-references.pdf"
+  },
+  "text-percent-zero": {
+    "sourceSha256": "235BE2C522D50C284BDA1D096BFE32A0886FBA025803D33408F7D08879830046",
+    "wordPdfSha256": "0BC23A655A63600A5C17629FA91B3C5500DE0A9622D034ABBFDB5F9139E98606",
+    "wordText": "Item1 \nItem2 \n",
+    "sourcePath": "fixtures/docx/regressions/list-markers/Text/text-percent-zero.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/Text/text-percent-zero.pdf"
+  },
+  "missing-start": {
+    "sourceSha256": "05D616450FECF5455D1555C7F641F848C98F1B406357443330739197382D4FA5",
+    "wordPdfSha256": "41FC59BD459ADC22A70E1EB6E2D9CE74E050B922E877DC8D7BF33BA40A98282C",
+    "wordText": "[0] \nItem1 \n[1] \nItem2 \n",
+    "sourcePath": "fixtures/docx/regressions/list-markers/Text/missing-start.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/Text/missing-start.pdf"
+  },
+  "replacement-only": {
+    "sourceSha256": "DAE167DFE038F0F18D3B07CE96F21A6E877343955538B5CEEA94B8BB5CC6DBEE",
+    "wordPdfSha256": "86F19955448CE55293A5A8141F091629C30C0DBB3278404C2510DEB50E846E58",
+    "wordText": "OV-0 Item1 \nOV-1 Item2 \n",
+    "sourcePath": "fixtures/docx/regressions/list-markers/Text/replacement-only.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/Text/replacement-only.pdf"
+  }
+}

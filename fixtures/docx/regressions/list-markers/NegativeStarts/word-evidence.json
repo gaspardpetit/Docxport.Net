@@ -1,0 +1,65 @@
+{
+  "abstract-min": {
+    "sourceSha256": "382b3409bb57be325838d88cd32967da009ab5a41b586d18c0a265a8fa25b48f",
+    "wordPdfSha256": "E6B88F8AB2394A4A1BECD8338F3D0A23E1F2DD855A2ADFF28EE349BD65F04D10",
+    "markers": "L0=3. L1=2. V=2.",
+    "sourcePath": "fixtures/docx/regressions/list-markers/NegativeStarts/abstract-min.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/NegativeStarts/abstract-min.pdf"
+  },
+  "abstract-negative": {
+    "sourceSha256": "1dd73d12e63db213eecd194cbb43402ae65938143a396bb70417481dccc579eb",
+    "wordPdfSha256": "0F304A3BAD2AFE190E28AEE63A18AB3A6BB83DAF036F627369AE11F9B918E7D2",
+    "markers": "L0=3. L1=2. V=2.",
+    "sourcePath": "fixtures/docx/regressions/list-markers/NegativeStarts/abstract-negative.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/NegativeStarts/abstract-negative.pdf"
+  },
+  "override-min": {
+    "sourceSha256": "e5d54bccaf6dd8c05670b16ac9acfce2ae7e919db842aa94125a45d0f79239f4",
+    "wordPdfSha256": "C5A476D6D955F8CDAD6CA96C30CDD6E13D3BF0177D45E7CBC97A737A5ED95C29",
+    "markers": "L0=3. L1=2. L2=4. L2=5. L2=.",
+    "sourcePath": "fixtures/docx/regressions/list-markers/NegativeStarts/override-min.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/NegativeStarts/override-min.pdf"
+  },
+  "override-negative": {
+    "sourceSha256": "8970f223283499ff6ca379fd71534a3d584f8a290af580b13560a5cf7c3283c5",
+    "wordPdfSha256": "78EA446D657EDEC471888D4ACB3C139E0B609630F584ABDC07915BE4D1C6991B",
+    "markers": "L0=3. L1=2. L2=4. L2=5. L2=-1.",
+    "sourcePath": "fixtures/docx/regressions/list-markers/NegativeStarts/override-negative.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/NegativeStarts/override-negative.pdf"
+  },
+  "replacement-missing-override-negative": {
+    "sourceSha256": "51c4f64580b037292f8e833cd0683ff2b89abd1d37f2145c633d6ba481b5a415",
+    "wordPdfSha256": "5343855D16242CC1F5A4B749EF5B2B4A20E62B0E568C4E6CA6A931B09514DE40",
+    "markers": "L0=3. L1=2. L2=4. L2=5. L2=6.",
+    "sourcePath": "fixtures/docx/regressions/list-markers/NegativeStarts/replacement-missing-override-negative.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/NegativeStarts/replacement-missing-override-negative.pdf"
+  },
+  "replacement-negative-with-start": {
+    "sourceSha256": "fc4f153cd8050baa3a145d0ffa265f10cf8681de0b7145d09360a10054500517",
+    "wordPdfSha256": "2ACF321B6F839DDCB18012614A4DC98A47F25BEEF93BA8EFBC1A317D8C15CD86",
+    "markers": "L0=3. L1=2. L2=4. L2=5. L2=6.",
+    "sourcePath": "fixtures/docx/regressions/list-markers/NegativeStarts/replacement-negative-with-start.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/NegativeStarts/replacement-negative-with-start.pdf"
+  },
+  "replacement-negative": {
+    "sourceSha256": "660aa991a4eed5ec2da377c10d68bc90358ccd23e0b227d034a064029d7b2560",
+    "wordPdfSha256": "3F7B32319CD080CA38A7BD61457183002368B9E7FBAF5EB8737ECAE87791BC2E",
+    "markers": "L0=3. L1=2. L2=4. L2=5. L2=6.",
+    "sourcePath": "fixtures/docx/regressions/list-markers/NegativeStarts/replacement-negative.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/NegativeStarts/replacement-negative.pdf"
+  },
+  "replacement-valid-override-negative": {
+    "sourceSha256": "799711e8d25923e25d0d145bb69ff4b8d6005c720f34678e8c004cc11a0ba36b",
+    "wordPdfSha256": "91F394BEDF788BC13DFA1D46D4641C553666BA74B76D83C4D8EA7636B2DD6F52",
+    "markers": "L0=3. L1=2. L2=4. L2=5. V=9.",
+    "sourcePath": "fixtures/docx/regressions/list-markers/NegativeStarts/replacement-valid-override-negative.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/NegativeStarts/replacement-valid-override-negative.pdf"
+  },
+  "replacement-zero-override-negative": {
+    "sourceSha256": "54566eb1629c415caa819481d9efaff3951ef95a60c5447a9a62f74b69e9ed1d",
+    "wordPdfSha256": "DD084A5FC757C5173C7C9FA2FA9FA049EDEA859C6E73C0ED30CBD0CFA4BBDD70",
+    "markers": "L0=3. L1=2. L2=4. L2=5. V=0.",
+    "sourcePath": "fixtures/docx/regressions/list-markers/NegativeStarts/replacement-zero-override-negative.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/NegativeStarts/replacement-zero-override-negative.pdf"
+  }
+}

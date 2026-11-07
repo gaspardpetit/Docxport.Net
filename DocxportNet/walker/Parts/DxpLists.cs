@@ -19,7 +19,7 @@ public sealed class DxpNumberingResolver
 
     public DxpNumberingResolver(WordprocessingDocument doc)
     {
-        _numbering = NormalizeRestartLevels(doc.MainDocumentPart?.NumberingDefinitionsPart?.Numbering);
+        _numbering = NormalizeImportedLevels(doc.MainDocumentPart?.NumberingDefinitionsPart?.Numbering);
         if (_numbering != null)
         {
             foreach (var n in _numbering.Elements<NumberingInstance>())
@@ -43,14 +43,25 @@ public sealed class DxpNumberingResolver
         }
     }
 
-    private static Numbering? NormalizeRestartLevels(Numbering? source)
+    private static Numbering? NormalizeImportedLevels(Numbering? source)
     {
-        if (source == null || !source.Descendants<LevelRestart>().Any()) return source;
-        // Word normalizes restart declarations on import. Keep that view private:
+        bool InvalidStart(Level level) => level.StartNumberingValue?.Val?.Value < 0 ||
+            (level.StartNumberingValue == null && level.Parent is LevelOverride replacement &&
+                replacement.StartOverrideNumberingValue?.Val?.Value < 0);
+        if (source == null || (!source.Descendants<LevelRestart>().Any() &&
+            !source.Descendants<Level>().Any(InvalidStart))) return source;
+        // Word normalizes these declarations on import. Keep that view private:
         // exporting must not rewrite the caller's numbering definitions.
         var numbering = (Numbering)source.CloneNode(true);
         foreach (var level in numbering.Descendants<Level>().ToArray())
         {
+            // Negative level starts are invalid, but standalone negative
+            // startOverride values are accepted. A replacement's own start wins.
+            if (InvalidStart(level))
+            {
+                DiscardLevel(level);
+                continue;
+            }
             var restart = level.GetFirstChild<LevelRestart>();
             if (restart?.Val?.Value is not int value) continue;
             // Root declarations and values outside Word's accepted range mean never.
@@ -60,14 +71,19 @@ public sealed class DxpNumberingResolver
                 continue;
             }
             if (value == 0 || value < (level.LevelIndex?.Value ?? 0)) continue;
-            if (level.Parent is LevelOverride replacement)
-                // An invalid replacement loses its startOverride as well as its level.
-                replacement.Remove();
-            else
-                level.Parent?.ReplaceChild(new Level(new NumberingFormat { Val = NumberFormatValues.None },
-                    new LevelText { Val = "" }) { LevelIndex = level.LevelIndex?.Value }, level);
+            DiscardLevel(level);
         }
         return numbering;
+    }
+
+    private static void DiscardLevel(Level level)
+    {
+        if (level.Parent is LevelOverride replacement)
+            // An invalid replacement loses its startOverride as well as its level.
+            replacement.Remove();
+        else
+            level.Parent?.ReplaceChild(new Level(new NumberingFormat { Val = NumberFormatValues.None },
+                new LevelText { Val = "" }) { LevelIndex = level.LevelIndex?.Value }, level);
     }
 
     public (AbstractNum abs, Level lvl, int startAt)? ResolveLevel(int numId, int ilvl)

@@ -26,3 +26,9 @@ that every accepted Word value is prescribed by OOXML. The resolver applies
 them to a private numbering copy. Tests also verify source immutability and
 the counter progress of invisible levels through plain HTML, Markdown and text.
 No PDF visitor or layout code is changed by this PR.
+
+## Evidence locations
+
+DOCX sources, manifests and supporting data stay together in this group.
+Captured Word PDFs are in [the matching truth group](../../../../../truth/pdf-word/regressions/list-markers/Restart/).
+Each manifest records repository-relative source and capture paths.
