@@ -1,0 +1,169 @@
+{
+  "upperRoman-abstract-max": {
+    "format": "upperRoman",
+    "start": 2147483646,
+    "override": false,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/RomanBoundaries/upperRoman-abstract-max.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RomanBoundaries/upperRoman-abstract-max.pdf",
+    "sourceSha256": "bb5078918ce2a81cc98ca5a83f7a4a7a3ee615b5346c1a8ac3f37677971cb265",
+    "wordPdfSha256": "f4ed1abb8c534ab6fa6848630fedffe0ef905d60b910efd28376591f246a4d1e",
+    "labels": [
+      "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMDCCLXVII",
+      "I",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "upperRoman-override-max": {
+    "format": "upperRoman",
+    "start": 2147483646,
+    "override": true,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/RomanBoundaries/upperRoman-override-max.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RomanBoundaries/upperRoman-override-max.pdf",
+    "sourceSha256": "a354b8daa0ec1462c17b2c01be266134ae9cfe3a99a7d757e1de1eb557cadb4b",
+    "wordPdfSha256": "8428c24464041868d2be167abb1aa1c7ce12470ae403fffee58f0cfb72e0ef59",
+    "labels": [
+      "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMDCCLXVII",
+      "I",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "upperRoman-override-min": {
+    "format": "upperRoman",
+    "start": -2147483648,
+    "override": true,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/RomanBoundaries/upperRoman-override-min.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RomanBoundaries/upperRoman-override-min.pdf",
+    "sourceSha256": "0a47792c4baa68cd8ccac59d63f33007c48c9e3ed2e4125d22d9122af67aeac7",
+    "wordPdfSha256": "be3e35ee872bb727bd2a5f287cb9b2cba773d14521bd44718bc9d8d03537ba5e",
+    "labels": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "upperRoman-override-negative": {
+    "format": "upperRoman",
+    "start": -1,
+    "override": true,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/RomanBoundaries/upperRoman-override-negative.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RomanBoundaries/upperRoman-override-negative.pdf",
+    "sourceSha256": "0a9aabdde779dd08bf6df2f85e056098897afaa775a28848644784d432a2e588",
+    "wordPdfSha256": "2bba9392c820e5ba6135defbea8bdf9a85ea8ccfe6b354d59d3d1ae82d96bb2b",
+    "labels": [
+      "",
+      " ",
+      "I",
+      "II",
+      "III",
+      "IV"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "upperRoman-abstract-zero": {
+    "format": "upperRoman",
+    "start": 0,
+    "override": false,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/RomanBoundaries/upperRoman-abstract-zero.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RomanBoundaries/upperRoman-abstract-zero.pdf",
+    "sourceSha256": "e4b7c66cc6a97628153a00ce8f8fb6d81100641c2d1bbc173d7e2e479b4327e9",
+    "wordPdfSha256": "284dd7739dfc9e59f981949d1137bf2804cab2984f0c1bac10fb3bb47c30278c",
+    "labels": [
+      " ",
+      "I",
+      "II",
+      "III",
+      "IV",
+      "V"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "upperRoman-override-zero": {
+    "format": "upperRoman",
+    "start": 0,
+    "override": true,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/RomanBoundaries/upperRoman-override-zero.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RomanBoundaries/upperRoman-override-zero.pdf",
+    "sourceSha256": "82cbc8b4f489055c56345900fbe78e90c79d612708a7ed164aa7fa3a93eb6de6",
+    "wordPdfSha256": "8a5f070584cfc97083a8910631321f4fbfaf6acc6ad2ed70d953f7d7d6932bbc",
+    "labels": [
+      " ",
+      "I",
+      "II",
+      "III",
+      "IV",
+      "V"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "upperRoman-32766": {
+    "format": "upperRoman",
+    "start": 32766,
+    "override": false,
+    "count": 4,
+    "sourcePath": "fixtures/docx/regressions/list-markers/RomanBoundaries/upperRoman-32766.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RomanBoundaries/upperRoman-32766.pdf",
+    "sourceSha256": "db7d893f8b31c7c8b8bcb2588952395d8f6fe56d396dd05b2c6a7729bdc915c4",
+    "wordPdfSha256": "18375fe976c5298eb19487c827aa0dc893f56e75f8c75f12f443c2ce8135f908",
+    "labels": [
+      "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMDCCLXVI",
+      "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMDCCLXVII",
+      "I",
+      "II"
+    ],
+    "labelPattern": "\\[(.*?)\\]"
+  },
+  "upperRoman-65533": {
+    "format": "upperRoman",
+    "start": 65533,
+    "override": false,
+    "count": 4,
+    "sourcePath": "fixtures/docx/regressions/list-markers/RomanBoundaries/upperRoman-65533.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RomanBoundaries/upperRoman-65533.pdf",
+    "sourceSha256": "4bd8dda0bdc5ffde95c53d98469d40aa8c0bc4ecd32e244547a2f3d3fe82b0b8",
+    "wordPdfSha256": "18e54ba0c5fa58a654f6f3bb2d026f0b28a43d4ade8fd8972075d9da52ce8d1b",
+    "labels": [
+      "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMDCCLXVI",
+      "MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMDCCLXVII",
+      "I",
+      "II"
+    ],
+    "labelPattern": "\\[(.*?)\\]"
+  },
+  "lowerRoman-abstract-zero": {
+    "format": "lowerRoman",
+    "start": 0,
+    "override": false,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/RomanBoundaries/lowerRoman-abstract-zero.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/RomanBoundaries/lowerRoman-abstract-zero.pdf",
+    "sourceSha256": "86f18b9a446122a6ad6d53353828fde7e15a81ca10afc3644ec19ddfb23c5bfe",
+    "wordPdfSha256": "5e07972651a600ded4044a4a68a9873989f7758b332d0a1b25a552f654f991be",
+    "labels": [
+      " ",
+      "i",
+      "ii",
+      "iii",
+      "iv",
+      "v"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  }
+}

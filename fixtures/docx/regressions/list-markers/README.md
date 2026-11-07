@@ -15,6 +15,7 @@ under the same group and basename in
 | NegativeStarts | Negative level starts versus standalone overrides |
 | Resolution | Independent numbering-property and linked-style resolution |
 | Restart | Restart-declaration import normalization |
+| RomanBoundaries | Roman marker rollover, zero and signed boundaries |
 | Suffix | List suffix nothing |
 | Text | Level-text expansion and missing-level start rules |
 
