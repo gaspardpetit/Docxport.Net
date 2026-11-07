@@ -19,7 +19,7 @@ public sealed class DxpNumberingResolver
 
     public DxpNumberingResolver(WordprocessingDocument doc)
     {
-        _numbering = doc.MainDocumentPart?.NumberingDefinitionsPart?.Numbering;
+        _numbering = NormalizeRestartLevels(doc.MainDocumentPart?.NumberingDefinitionsPart?.Numbering);
         if (_numbering != null)
         {
             foreach (var n in _numbering.Elements<NumberingInstance>())
@@ -41,6 +41,33 @@ public sealed class DxpNumberingResolver
                     _styleById[id!] = s;
             }
         }
+    }
+
+    private static Numbering? NormalizeRestartLevels(Numbering? source)
+    {
+        if (source == null || !source.Descendants<LevelRestart>().Any()) return source;
+        // Word normalizes restart declarations on import. Keep that view private:
+        // exporting must not rewrite the caller's numbering definitions.
+        var numbering = (Numbering)source.CloneNode(true);
+        foreach (var level in numbering.Descendants<Level>().ToArray())
+        {
+            var restart = level.GetFirstChild<LevelRestart>();
+            if (restart?.Val?.Value is not int value) continue;
+            // Root declarations and values outside Word's accepted range mean never.
+            if ((level.LevelIndex?.Value ?? 0) == 0 || value < 0 || value > 7)
+            {
+                restart.Val = 0;
+                continue;
+            }
+            if (value == 0 || value < (level.LevelIndex?.Value ?? 0)) continue;
+            if (level.Parent is LevelOverride replacement)
+                // An invalid replacement loses its startOverride as well as its level.
+                replacement.Remove();
+            else
+                level.Parent?.ReplaceChild(new Level(new NumberingFormat { Val = NumberFormatValues.None },
+                    new LevelText { Val = "" }) { LevelIndex = level.LevelIndex?.Value }, level);
+        }
+        return numbering;
     }
 
     public (AbstractNum abs, Level lvl, int startAt)? ResolveLevel(int numId, int ilvl)
