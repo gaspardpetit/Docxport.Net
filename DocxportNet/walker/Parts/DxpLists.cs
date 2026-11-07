@@ -590,8 +590,9 @@ public static class DxpListMarkerFormatter
             return "";
         // Word lists repeat a single Latin letter (AA, BB). Field formatting
         // uses positional letters (AA, AB) and continues through FormatNumber.
-        if (n > 0 && (fmt == NumberFormatValues.UpperLetter || fmt == NumberFormatValues.LowerLetter))
+        if (fmt == NumberFormatValues.UpperLetter || fmt == NumberFormatValues.LowerLetter)
         {
+            if (n <= 0) return n == 0 ? " " : "";
             var first = fmt == NumberFormatValues.UpperLetter ? 'A' : 'a';
             return new string((char)(first + (n - 1) % 26), (n - 1) / 26 % 30 + 1);
         }

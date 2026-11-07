@@ -1,0 +1,135 @@
+{
+  "upperLetter-abstract-max": {
+    "format": "upperLetter",
+    "start": 2147483646,
+    "override": false,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/AlphabeticBoundaries/upperLetter-abstract-max.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/AlphabeticBoundaries/upperLetter-abstract-max.pdf",
+    "sourceSha256": "f7d511d76f46b5aec150daff2d5489e3cf62fdf66c349d1de1a04cf916293f34",
+    "wordPdfSha256": "67be8f5597215d7c877060638ad8f844b3a402f35246c1aed6f396e5c7b10200",
+    "labels": [
+      "VVVVV",
+      "WWWWW",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "upperLetter-override-max": {
+    "format": "upperLetter",
+    "start": 2147483646,
+    "override": true,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/AlphabeticBoundaries/upperLetter-override-max.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/AlphabeticBoundaries/upperLetter-override-max.pdf",
+    "sourceSha256": "c46cbd5eb2a6caec813eb8685ba29d9aaa6a35a47aeeba961f79cc10546ec2f2",
+    "wordPdfSha256": "840c78cf8fb00723183154fdba88b32f21b3bfb05e50478a70b1f6d6a9390fdc",
+    "labels": [
+      "VVVVV",
+      "WWWWW",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "upperLetter-override-min": {
+    "format": "upperLetter",
+    "start": -2147483648,
+    "override": true,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/AlphabeticBoundaries/upperLetter-override-min.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/AlphabeticBoundaries/upperLetter-override-min.pdf",
+    "sourceSha256": "0454df0f7e9e7fa50be47e6a47e9ff1cedb68ec50cd1e123b273ede7c68fddf1",
+    "wordPdfSha256": "77a952d95e936ac7a0d0e133234b51a8dae86b13a31a47f89a289e5e75490ed2",
+    "labels": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "upperLetter-override-negative": {
+    "format": "upperLetter",
+    "start": -1,
+    "override": true,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/AlphabeticBoundaries/upperLetter-override-negative.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/AlphabeticBoundaries/upperLetter-override-negative.pdf",
+    "sourceSha256": "9b2ede5f48b8f7b031f2c69acc6c5b3f9515c5c401fe2287cf947ae638494791",
+    "wordPdfSha256": "b9cd6ab6fd8f7d9726159f4c2f7db1850b884547f74de66f9d23e466d8ecf752",
+    "labels": [
+      "",
+      " ",
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "upperLetter-abstract-zero": {
+    "format": "upperLetter",
+    "start": 0,
+    "override": false,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/AlphabeticBoundaries/upperLetter-abstract-zero.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/AlphabeticBoundaries/upperLetter-abstract-zero.pdf",
+    "sourceSha256": "dc1760075d8f76d1fdc7bbf999549a3fdaeccd4a104ab521b58cf79d34a81d8e",
+    "wordPdfSha256": "435bb8573008617d617620e397d90683511cf5f8ef19c3e3dcd6d19e3bc6d558",
+    "labels": [
+      " ",
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "upperLetter-override-zero": {
+    "format": "upperLetter",
+    "start": 0,
+    "override": true,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/AlphabeticBoundaries/upperLetter-override-zero.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/AlphabeticBoundaries/upperLetter-override-zero.pdf",
+    "sourceSha256": "96a2503ddaf8bcb3c92f7b48b850108a35902450ef166c7d9e863d00a4ae862e",
+    "wordPdfSha256": "6d3634e96bb4bca4226345d88b01c6dd86fc88072b40eeff768c49f7a33a0b30",
+    "labels": [
+      " ",
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  },
+  "lowerLetter-abstract-zero": {
+    "format": "lowerLetter",
+    "start": 0,
+    "override": false,
+    "count": 6,
+    "sourcePath": "fixtures/docx/regressions/list-markers/AlphabeticBoundaries/lowerLetter-abstract-zero.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/AlphabeticBoundaries/lowerLetter-abstract-zero.pdf",
+    "sourceSha256": "4c62f85a47b72f90d758c64df2cefbf911d9b2bcd006465a276a7d1e0e257096",
+    "wordPdfSha256": "bbe3e048eb1a8ac659fd95e327c3bac26181a8a828eba7deb98cc34aa0e10545",
+    "labels": [
+      " ",
+      "a",
+      "b",
+      "c",
+      "d",
+      "e"
+    ],
+    "labelPattern": "BEGIN(.*?)END"
+  }
+}
