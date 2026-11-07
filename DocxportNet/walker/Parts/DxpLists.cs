@@ -570,6 +570,12 @@ public static class DxpListMarkerFormatter
 
     private static string FormatListNumber(int n, NumberFormatValues fmt, CultureInfo? culture)
     {
+        // Word leaves the decimal expansion empty at the signed minimum and
+        // suppresses negative zero-padded labels. The counter still advances.
+        // Keep these list rules out of the shared field-number formatter.
+        if (fmt == NumberFormatValues.Decimal && n == int.MinValue ||
+            fmt == NumberFormatValues.DecimalZero && n < 0)
+            return "";
         // Word lists repeat a single Latin letter (AA, BB). Field formatting
         // uses positional letters (AA, AB) and continues through FormatNumber.
         if (n > 0 && (fmt == NumberFormatValues.UpperLetter || fmt == NumberFormatValues.LowerLetter))

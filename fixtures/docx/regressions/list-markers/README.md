@@ -9,6 +9,7 @@ under the same group and basename in
 | Group | Behavior |
 | --- | --- |
 | Alphabetic | Word alphabetic rollover and large-label goldens |
+| DecimalBoundaries | Signed decimal counter boundaries and zero-padding |
 | GappedHeading | Heading/body counter continuity across missing levels |
 | NegativeStarts | Negative level starts versus standalone overrides |
 | Resolution | Independent numbering-property and linked-style resolution |

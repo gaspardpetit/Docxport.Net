@@ -17,6 +17,7 @@ public sealed class NegativeStartListMarkerTests
     [InlineData(-1, true, 9, null, "L0=3. L1=2. V=2.")]
     [InlineData(-2147483648, true, 9, null, "L0=3. L1=2. V=2.")]
     [InlineData(4, false, 9, -1, "L0=3. L1=2. L2=4. L2=5. L2=-1.")]
+    [InlineData(4, false, 9, -2147483648, "L0=3. L1=2. L2=4. L2=5. L2=.")]
     [InlineData(4, true, -1, null, "L0=3. L1=2. L2=4. L2=5. L2=6.")]
     [InlineData(4, true, -1, 7, "L0=3. L1=2. L2=4. L2=5. L2=6.")]
     [InlineData(4, true, 9, -1, "L0=3. L1=2. L2=4. L2=5. V=9.")]
