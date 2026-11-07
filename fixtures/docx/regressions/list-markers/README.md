@@ -9,6 +9,7 @@ under the same group and basename in
 | Group | Behavior |
 | --- | --- |
 | Alphabetic | Word alphabetic rollover and large-label goldens |
+| AlphabeticBoundaries | Alphabetic zero, negatives and signed overflow |
 | DecimalBoundaries | Signed decimal counter boundaries and zero-padding |
 | GappedHeading | Heading/body counter continuity across missing levels |
 | HexBoundaries | Hexadecimal marker range, signed boundaries and overflow |
