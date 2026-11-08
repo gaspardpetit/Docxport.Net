@@ -648,6 +648,15 @@ public static class DxpListMarkerFormatter
             // Word uses parenthesized ideographs only for counters 1 through 10.
             return n > 0 && n <= 10 ? ((char)('\u3220' + n - 1)).ToString() : n.ToString(CultureInfo.InvariantCulture);
         }
+        if (fmt == NumberFormatValues.IdeographZodiacTraditional)
+        {
+            if (n == int.MinValue) return "";
+            if (n <= 0) return n.ToString(CultureInfo.InvariantCulture);
+            const string stems = "\u7532\u4e59\u4e19\u4e01\u620a\u5df1\u5e9a\u8f9b\u58ec\u7678";
+            // Preserve Word's U+620D form in the eleventh branch.
+            const string branches = "\u5b50\u4e11\u5bc5\u536f\u8fb0\u5df3\u5348\u672a\u7533\u9149\u620d\u4ea5";
+            return stems[(n - 1) % stems.Length].ToString() + branches[(n - 1) % branches.Length];
+        }
         return FormatNumber(n, fmt, culture);
     }
 
