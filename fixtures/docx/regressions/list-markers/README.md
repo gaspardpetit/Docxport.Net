@@ -18,6 +18,7 @@ under the same group and basename in
 | HexBoundaries | Hexadecimal marker range, signed boundaries and overflow |
 | HindiThaiDigits | Hindi/Thai digit substitution and rollover |
 | IdeographRanges | Traditional and zodiac symbol ranges with decimal fallback |
+| JapaneseDigits | Japanese digit transitions and the 9999 limit |
 | Kana | Japanese Aiueo/Iroha width variants and cyclic rollover |
 | KoreanDigital2 | Korean ideographic digits, distinct zero and upper limit |
 | KoreanCycles | Ganada/Chosung cycles and signed boundaries |
