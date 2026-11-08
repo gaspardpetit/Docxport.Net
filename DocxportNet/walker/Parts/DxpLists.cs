@@ -705,6 +705,12 @@ public static class DxpListMarkerFormatter
             return JapaneseLegalNumber(n);
         if (n >= 0 && (fmt == NumberFormatValues.KoreanCounting || fmt == NumberFormatValues.KoreanLegal))
             return KoreanUnitNumber(n, fmt == NumberFormatValues.KoreanLegal);
+        if (n >= 0 && (fmt == NumberFormatValues.ChineseCountingThousand || fmt == NumberFormatValues.TaiwaneseCountingThousand))
+        {
+            var simplified = fmt == NumberFormatValues.ChineseCountingThousand;
+            return ChineseUnitNumber(n, simplified ? "〇一二三四五六七八九" : "零一二三四五六七八九",
+                "千百十", simplified ? "万" : "萬", omitInitialOne: true);
+        }
         return FormatNumber(n, fmt, culture);
     }
 
@@ -779,6 +785,44 @@ public static class DxpListMarkerFormatter
         }
         var high = number / 10000;
         return (high > 0 ? Group(high, true, false) + "만" : "") + Group(number % 10000, false, high > 0);
+    }
+
+    private static string ChineseUnitNumber(int number, string digits, string units, string myriad, bool omitInitialOne)
+    {
+        if (number > 999999)
+            return "";
+        if (number < 0)
+            return number.ToString(CultureInfo.InvariantCulture);
+        if (number == 0)
+            return digits[0].ToString();
+        string Group(int value)
+        {
+            var result = "";
+            var pendingZero = false;
+            var divisor = 1000;
+            for (var position = 0; position < 4; position++, divisor /= 10)
+            {
+                var digit = value / divisor;
+                value %= divisor;
+                if (digit == 0)
+                {
+                    pendingZero |= result.Length > 0 && value > 0;
+                    continue;
+                }
+                if (pendingZero)
+                    result += digits[0];
+                pendingZero = false;
+                result += digits[digit].ToString() + (position < 3 ? units[position].ToString() : "");
+            }
+            return result;
+        }
+        var high = number / 10000;
+        var low = number % 10000;
+        var prefix = high > 0 ? Group(high) + myriad : "";
+        if (high > 0 && low > 0 && (low < 1000 || high % 10 == 0))
+            prefix += digits[0];
+        var text = prefix + Group(low);
+        return omitInitialOne && number is >= 10 and < 20 ? text.Substring(1) : text;
     }
 
     public static string FormatNumber(int n, NumberFormatValues fmt, CultureInfo? culture = null)
