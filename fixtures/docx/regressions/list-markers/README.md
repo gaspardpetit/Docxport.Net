@@ -16,6 +16,7 @@ under the same group and basename in
 | EnclosedIdeographs | Parenthesized ideograph range and signed boundaries |
 | GappedHeading | Heading/body counter continuity across missing levels |
 | HexBoundaries | Hexadecimal marker range, signed boundaries and overflow |
+| HindiThaiDigits | Hindi/Thai digit substitution and rollover |
 | IdeographRanges | Traditional and zodiac symbol ranges with decimal fallback |
 | Kana | Japanese Aiueo/Iroha width variants and cyclic rollover |
 | KoreanCycles | Ganada/Chosung cycles and signed boundaries |
