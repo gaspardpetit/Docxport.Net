@@ -20,6 +20,7 @@ under the same group and basename in
 | IdeographRanges | Traditional and zodiac symbol ranges with decimal fallback |
 | JapaneseCounting | Japanese unit counting and the 999999 limit |
 | JapaneseDigits | Japanese digit transitions and the 9999 limit |
+| JapaneseLegal | Japanese legal numerals and unit transitions |
 | Kana | Japanese Aiueo/Iroha width variants and cyclic rollover |
 | KoreanDigital2 | Korean ideographic digits, distinct zero and upper limit |
 | KoreanCycles | Ganada/Chosung cycles and signed boundaries |
