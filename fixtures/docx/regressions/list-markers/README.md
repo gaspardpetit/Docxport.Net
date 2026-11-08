@@ -18,6 +18,7 @@ under the same group and basename in
 | HexBoundaries | Hexadecimal marker range, signed boundaries and overflow |
 | IdeographRanges | Traditional and zodiac symbol ranges with decimal fallback |
 | Kana | Japanese Aiueo/Iroha width variants and cyclic rollover |
+| KoreanCycles | Ganada/Chosung cycles and signed boundaries |
 | NegativeStarts | Negative level starts versus standalone overrides |
 | Resolution | Independent numbering-property and linked-style resolution |
 | Restart | Restart-declaration import normalization |

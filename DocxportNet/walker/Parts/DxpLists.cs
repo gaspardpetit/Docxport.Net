@@ -657,6 +657,16 @@ public static class DxpListMarkerFormatter
             const string branches = "\u5b50\u4e11\u5bc5\u536f\u8fb0\u5df3\u5348\u672a\u7533\u9149\u620d\u4ea5";
             return stems[(n - 1) % stems.Length].ToString() + branches[(n - 1) % branches.Length];
         }
+        if (fmt == NumberFormatValues.Ganada || fmt == NumberFormatValues.Chosung)
+        {
+            if (n == int.MinValue) return "";
+            if (n <= 0) return n.ToString(CultureInfo.InvariantCulture);
+            // Word cycles these alphabets instead of repeating their characters.
+            var alphabet = fmt == NumberFormatValues.Ganada
+                ? "\uac00\ub098\ub2e4\ub77c\ub9c8\ubc14\uc0ac\uc544\uc790\ucc28\uce74\ud0c0\ud30c\ud558"
+                : "\u3131\u3134\u3137\u3139\u3141\u3142\u3145\u3147\u3148\u314a\u314b\u314c\u314d\u314e";
+            return alphabet[(n - 1) % alphabet.Length].ToString();
+        }
         return FormatNumber(n, fmt, culture);
     }
 
