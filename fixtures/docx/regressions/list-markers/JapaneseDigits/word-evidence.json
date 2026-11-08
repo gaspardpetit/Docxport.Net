@@ -1,0 +1,86 @@
+{
+  "regional-japaneseDigitalTenThousand-1": {
+    "format": "japaneseDigitalTenThousand",
+    "start": 1,
+    "count": 21,
+    "sourcePath": "fixtures/docx/regressions/list-markers/JapaneseDigits/regional-japaneseDigitalTenThousand-1.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/JapaneseDigits/regional-japaneseDigitalTenThousand-1.pdf",
+    "sourceSha256": "28b04ec047783db70c71b1b00f24ccd139851a5c9e6bd1efd72fc0707f853543",
+    "wordPdfSha256": "15e7bdb73dd8aa111f0f02d5c5d434cb34a2b3449c1a35deafa49a7c29c26250",
+    "labels": [
+      "\u4e00",
+      "\u4e8c",
+      "\u4e09",
+      "\u56db",
+      "\u4e94",
+      "\u516d",
+      "\u4e03",
+      "\u516b",
+      "\u4e5d",
+      "\u4e00\u3007",
+      "\u4e00\u4e00",
+      "\u4e00\u4e8c",
+      "\u4e00\u4e09",
+      "\u4e00\u56db",
+      "\u4e00\u4e94",
+      "\u4e00\u516d",
+      "\u4e00\u4e03",
+      "\u4e00\u516b",
+      "\u4e00\u4e5d",
+      "\u4e8c\u3007",
+      "\u4e8c\u4e00"
+    ],
+    "labelPattern": "\\[(.*?)\\]"
+  },
+  "regional-japaneseDigitalTenThousand-98": {
+    "format": "japaneseDigitalTenThousand",
+    "start": 98,
+    "count": 5,
+    "sourcePath": "fixtures/docx/regressions/list-markers/JapaneseDigits/regional-japaneseDigitalTenThousand-98.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/JapaneseDigits/regional-japaneseDigitalTenThousand-98.pdf",
+    "sourceSha256": "f0a7ec67fb6f149f07e00fe0f6b4e1d05c196fafd24ce27b7581baacfec0a576",
+    "wordPdfSha256": "dfa5282e367747856bc818ed61881f326a4784829d8cba1760fb7abf86b4c707",
+    "labels": [
+      "\u4e5d\u516b",
+      "\u4e5d\u4e5d",
+      "\u4e00\u3007\u3007",
+      "\u4e00\u3007\u4e00",
+      "\u4e00\u3007\u4e8c"
+    ],
+    "labelPattern": "\\[(.*?)\\]"
+  },
+  "regional-japaneseDigitalTenThousand-998": {
+    "format": "japaneseDigitalTenThousand",
+    "start": 998,
+    "count": 5,
+    "sourcePath": "fixtures/docx/regressions/list-markers/JapaneseDigits/regional-japaneseDigitalTenThousand-998.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/JapaneseDigits/regional-japaneseDigitalTenThousand-998.pdf",
+    "sourceSha256": "dc7d9860c5a7b80b392ecc8da7c6e36b5cfbeabc950c93c075ce3116fef1e34a",
+    "wordPdfSha256": "a278a078fc97808e3e96caf9e223b64afbaa51b27e1d552be6c6f68f9bf471e5",
+    "labels": [
+      "\u4e5d\u4e5d\u516b",
+      "\u4e5d\u4e5d\u4e5d",
+      "\u4e00\u3007\u3007\u3007",
+      "\u4e00\u3007\u3007\u4e00",
+      "\u4e00\u3007\u3007\u4e8c"
+    ],
+    "labelPattern": "\\[(.*?)\\]"
+  },
+  "regional-japaneseDigitalTenThousand-9998": {
+    "format": "japaneseDigitalTenThousand",
+    "start": 9998,
+    "count": 5,
+    "sourcePath": "fixtures/docx/regressions/list-markers/JapaneseDigits/regional-japaneseDigitalTenThousand-9998.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/JapaneseDigits/regional-japaneseDigitalTenThousand-9998.pdf",
+    "sourceSha256": "04a4ce8bca39a5dbdee6d089b36f42d34ca2c5804c20baa9063d482a8eec4af3",
+    "wordPdfSha256": "83dc18888dbbd5ba44f3a5eb5e33f1d21db90f1fad883af093c09e5af4a1b711",
+    "labels": [
+      "\u4e5d\u4e5d\u4e5d\u516b",
+      "\u4e5d\u4e5d\u4e5d\u4e5d",
+      "",
+      "",
+      ""
+    ],
+    "labelPattern": "\\[(.*?)\\]"
+  }
+}
