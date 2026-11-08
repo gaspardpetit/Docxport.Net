@@ -717,6 +717,13 @@ public static class DxpListMarkerFormatter
                 ? "零壹贰叁肆伍陆柒捌玖" : "零壹貳參肆伍陸柒捌玖";
             return ChineseUnitNumber(n, digits, "仟佰拾", "萬", omitInitialOne: false);
         }
+        if (n >= 0 && (fmt == NumberFormatValues.ChineseCounting || fmt == NumberFormatValues.TaiwaneseCounting))
+        {
+            // Word uses unit counting below 100, then substitutes individual digits.
+            if (n > 0 && n < 100) return JapaneseGroup(n);
+            const string digits = "\u25cb\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d";
+            return new string(n.ToString(CultureInfo.InvariantCulture).Select(digit => digits[digit - '0']).ToArray());
+        }
         return FormatNumber(n, fmt, culture);
     }
 

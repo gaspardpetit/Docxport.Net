@@ -11,6 +11,7 @@ under the same group and basename in
 | Alphabetic | Word alphabetic rollover and large-label goldens |
 | AlphabeticBoundaries | Alphabetic zero, negatives and signed overflow |
 | ChicagoBoundaries | Chicago symbol repetition, rollover and nonpositive counters |
+| ChineseCounting | Chinese/Taiwanese counting-to-digits transition |
 | ChineseLegal | Simplified/traditional Chinese legal numerals and limits |
 | ChineseUnitCounting | Chinese/Taiwanese unit counting, internal zeros and limits |
 | DecimalBoundaries | Signed decimal counter boundaries and zero-padding |

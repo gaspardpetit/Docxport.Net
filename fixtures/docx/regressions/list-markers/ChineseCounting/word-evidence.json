@@ -1,0 +1,170 @@
+{
+  "regional-chineseCounting-1": {
+    "format": "chineseCounting",
+    "start": 1,
+    "count": 21,
+    "sourcePath": "fixtures/docx/regressions/list-markers/ChineseCounting/regional-chineseCounting-1.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/ChineseCounting/regional-chineseCounting-1.pdf",
+    "sourceSha256": "44038d563b86788ed2005ff5ae879e8423d1cf00721e7137e6d0cb227da4dd41",
+    "wordPdfSha256": "8b2553762ddd472816d1dc576e673dec709d82c8dca7a4a6a070788bbab0c552",
+    "labels": [
+      "\u4e00",
+      "\u4e8c",
+      "\u4e09",
+      "\u56db",
+      "\u4e94",
+      "\u516d",
+      "\u4e03",
+      "\u516b",
+      "\u4e5d",
+      "\u5341",
+      "\u5341\u4e00",
+      "\u5341\u4e8c",
+      "\u5341\u4e09",
+      "\u5341\u56db",
+      "\u5341\u4e94",
+      "\u5341\u516d",
+      "\u5341\u4e03",
+      "\u5341\u516b",
+      "\u5341\u4e5d",
+      "\u4e8c\u5341",
+      "\u4e8c\u5341\u4e00"
+    ],
+    "labelPattern": "\\[(.*?)\\]"
+  },
+  "regional-chineseCounting-98": {
+    "format": "chineseCounting",
+    "start": 98,
+    "count": 5,
+    "sourcePath": "fixtures/docx/regressions/list-markers/ChineseCounting/regional-chineseCounting-98.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/ChineseCounting/regional-chineseCounting-98.pdf",
+    "sourceSha256": "fa4200267c8325e76f7392d227e41f2fbd9f795ce9783205f3ff6e4835abc185",
+    "wordPdfSha256": "a11cf55e0740b67d4c2759eb4e95efa6a1bf864f91007e3df5579e2a38cfaa3f",
+    "labels": [
+      "\u4e5d\u5341\u516b",
+      "\u4e5d\u5341\u4e5d",
+      "\u4e00\u25cb\u25cb",
+      "\u4e00\u25cb\u4e00",
+      "\u4e00\u25cb\u4e8c"
+    ],
+    "labelPattern": "\\[(.*?)\\]"
+  },
+  "regional-chineseCounting-998": {
+    "format": "chineseCounting",
+    "start": 998,
+    "count": 5,
+    "sourcePath": "fixtures/docx/regressions/list-markers/ChineseCounting/regional-chineseCounting-998.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/ChineseCounting/regional-chineseCounting-998.pdf",
+    "sourceSha256": "e431701a690c11586078621d4e56c66764dd73ac7ccc8fa0d69d0ad316504985",
+    "wordPdfSha256": "5cb8e2989184799f28ebe717af4bce8959f408a6e126fcb60567a8a217e85a67",
+    "labels": [
+      "\u4e5d\u4e5d\u516b",
+      "\u4e5d\u4e5d\u4e5d",
+      "\u4e00\u25cb\u25cb\u25cb",
+      "\u4e00\u25cb\u25cb\u4e00",
+      "\u4e00\u25cb\u25cb\u4e8c"
+    ],
+    "labelPattern": "\\[(.*?)\\]"
+  },
+  "regional-chineseCounting-9998": {
+    "format": "chineseCounting",
+    "start": 9998,
+    "count": 5,
+    "sourcePath": "fixtures/docx/regressions/list-markers/ChineseCounting/regional-chineseCounting-9998.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/ChineseCounting/regional-chineseCounting-9998.pdf",
+    "sourceSha256": "ff33c7b6827a2be84e0e89aee06389e1dbe5169eb7d89800f399d689819b7d25",
+    "wordPdfSha256": "3130a04ad346737ffac3cdd3cafd7faa9b30a108518490c22123c366fa20c670",
+    "labels": [
+      "\u4e5d\u4e5d\u4e5d\u516b",
+      "\u4e5d\u4e5d\u4e5d\u4e5d",
+      "\u4e00\u25cb\u25cb\u25cb\u25cb",
+      "\u4e00\u25cb\u25cb\u25cb\u4e00",
+      "\u4e00\u25cb\u25cb\u25cb\u4e8c"
+    ],
+    "labelPattern": "\\[(.*?)\\]"
+  },
+  "regional-taiwaneseCounting-1": {
+    "format": "taiwaneseCounting",
+    "start": 1,
+    "count": 21,
+    "sourcePath": "fixtures/docx/regressions/list-markers/ChineseCounting/regional-taiwaneseCounting-1.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/ChineseCounting/regional-taiwaneseCounting-1.pdf",
+    "sourceSha256": "6972911725dac18e4429f67879b80db4df55ca765c770ee564b06b3c91cd4113",
+    "wordPdfSha256": "ee582ca03d44d8857d04366bc6ca1c80526bbda25d7fa71307e6bc706fe31214",
+    "labels": [
+      "\u4e00",
+      "\u4e8c",
+      "\u4e09",
+      "\u56db",
+      "\u4e94",
+      "\u516d",
+      "\u4e03",
+      "\u516b",
+      "\u4e5d",
+      "\u5341",
+      "\u5341\u4e00",
+      "\u5341\u4e8c",
+      "\u5341\u4e09",
+      "\u5341\u56db",
+      "\u5341\u4e94",
+      "\u5341\u516d",
+      "\u5341\u4e03",
+      "\u5341\u516b",
+      "\u5341\u4e5d",
+      "\u4e8c\u5341",
+      "\u4e8c\u5341\u4e00"
+    ],
+    "labelPattern": "\\[(.*?)\\]"
+  },
+  "regional-taiwaneseCounting-98": {
+    "format": "taiwaneseCounting",
+    "start": 98,
+    "count": 5,
+    "sourcePath": "fixtures/docx/regressions/list-markers/ChineseCounting/regional-taiwaneseCounting-98.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/ChineseCounting/regional-taiwaneseCounting-98.pdf",
+    "sourceSha256": "2afd0e239eb7c4d32117c8fc9be6199a1b6119cf35cc73b3e55cfb5c1d52ff1a",
+    "wordPdfSha256": "c804f55d0ff46eb940a6b39a5663e8cc60634e52fd7f6dcd1f39d01877e0df71",
+    "labels": [
+      "\u4e5d\u5341\u516b",
+      "\u4e5d\u5341\u4e5d",
+      "\u4e00\u25cb\u25cb",
+      "\u4e00\u25cb\u4e00",
+      "\u4e00\u25cb\u4e8c"
+    ],
+    "labelPattern": "\\[(.*?)\\]"
+  },
+  "regional-taiwaneseCounting-998": {
+    "format": "taiwaneseCounting",
+    "start": 998,
+    "count": 5,
+    "sourcePath": "fixtures/docx/regressions/list-markers/ChineseCounting/regional-taiwaneseCounting-998.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/ChineseCounting/regional-taiwaneseCounting-998.pdf",
+    "sourceSha256": "a25673a406e20fe26f5cfe6052b4bbe8ebf1f15de5967d72351ee9135f900738",
+    "wordPdfSha256": "11df8bff88d3579ef3cdce6a0c816e92b041c68455dd8b5aef4be3403d3e828d",
+    "labels": [
+      "\u4e5d\u4e5d\u516b",
+      "\u4e5d\u4e5d\u4e5d",
+      "\u4e00\u25cb\u25cb\u25cb",
+      "\u4e00\u25cb\u25cb\u4e00",
+      "\u4e00\u25cb\u25cb\u4e8c"
+    ],
+    "labelPattern": "\\[(.*?)\\]"
+  },
+  "regional-taiwaneseCounting-9998": {
+    "format": "taiwaneseCounting",
+    "start": 9998,
+    "count": 5,
+    "sourcePath": "fixtures/docx/regressions/list-markers/ChineseCounting/regional-taiwaneseCounting-9998.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/ChineseCounting/regional-taiwaneseCounting-9998.pdf",
+    "sourceSha256": "eb82eb720a7394e05787ffdec90776067b762e2a57feebcf5a39d10166d69d30",
+    "wordPdfSha256": "f950100fa5d79431b6305f1de8ff5b15716488b603489af18c075625435e5959",
+    "labels": [
+      "\u4e5d\u4e5d\u4e5d\u516b",
+      "\u4e5d\u4e5d\u4e5d\u4e5d",
+      "\u4e00\u25cb\u25cb\u25cb\u25cb",
+      "\u4e00\u25cb\u25cb\u25cb\u4e00",
+      "\u4e00\u25cb\u25cb\u25cb\u4e8c"
+    ],
+    "labelPattern": "\\[(.*?)\\]"
+  }
+}
