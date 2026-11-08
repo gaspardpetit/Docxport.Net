@@ -621,6 +621,21 @@ public static class DxpListMarkerFormatter
                 : "АБВГДЕЖЗИКЛМНОПРСТУФХЦЧШЩЫЭЮЯ";
             return new string(alphabet[(n - 1) % alphabet.Length], (n - 1) / alphabet.Length % 30 + 1);
         }
+        const string aiueo = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
+        const string halfAiueo = "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦﾝ";
+        const string iroha = "イロハニホヘトチリヌルヲワカヨタレソツネナラムウヰノオクヤマケフコエテアサキユメミシヱヒモセスン";
+        if (fmt == NumberFormatValues.Aiueo || fmt == NumberFormatValues.AiueoFullWidth ||
+            fmt == NumberFormatValues.Iroha || fmt == NumberFormatValues.IrohaFullWidth)
+        {
+            if (n <= 0)
+                return n.ToString(CultureInfo.InvariantCulture);
+            // Word cycles one kana at a time; archaic kana have no half-width form.
+            var alphabet = fmt == NumberFormatValues.Aiueo || fmt == NumberFormatValues.AiueoFullWidth ? aiueo : iroha;
+            var symbol = alphabet[(n - 1) % alphabet.Length];
+            var index = aiueo.IndexOf(symbol);
+            return (fmt == NumberFormatValues.Aiueo || fmt == NumberFormatValues.Iroha) && index >= 0
+                ? halfAiueo[index].ToString() : symbol.ToString();
+        }
         return FormatNumber(n, fmt, culture);
     }
 
