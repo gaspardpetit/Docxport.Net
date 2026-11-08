@@ -701,6 +701,8 @@ public static class DxpListMarkerFormatter
         if (fmt == NumberFormatValues.JapaneseCounting && n >= 0)
             return n > 999999 ? "" : n == 0 ? "\u3007"
                 : (n >= 10000 ? JapaneseGroup(n / 10000) + "\u4e07" : "") + JapaneseGroup(n % 10000);
+        if (fmt == NumberFormatValues.JapaneseLegal && n >= 0)
+            return JapaneseLegalNumber(n);
         return FormatNumber(n, fmt, culture);
     }
 
@@ -716,6 +718,30 @@ public static class DxpListMarkerFormatter
                 result += (digit == 1 && value != 1 ? "" : digits[digit].ToString()) + unit;
         }
         return result;
+    }
+
+    private static string JapaneseLegalNumber(int number)
+    {
+        if (number < 0)
+            return number.ToString(CultureInfo.InvariantCulture);
+        if (number == 0)
+            return "〇";
+        string Group(int value)
+        {
+            const string digits = "〇壱弐参四伍六七八九";
+            var text = "";
+            foreach (var (divisor, unit) in new[] { (1000, "阡"), (100, "百"), (10, "拾"), (1, "") })
+            {
+                var digit = value / divisor;
+                value %= divisor;
+                if (digit > 0)
+                    text += digits[digit].ToString() + unit;
+            }
+            return text;
+        }
+        var high = number / 100000000;
+        var middle = number / 10000 % 10000;
+        return (high > 0 ? Group(high) + "億" : "") + (middle > 0 ? Group(middle) + "萬" : "") + Group(number % 10000);
     }
 
     public static string FormatNumber(int n, NumberFormatValues fmt, CultureInfo? culture = null)
