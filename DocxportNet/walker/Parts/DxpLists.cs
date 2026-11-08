@@ -636,6 +636,12 @@ public static class DxpListMarkerFormatter
             return (fmt == NumberFormatValues.Aiueo || fmt == NumberFormatValues.Iroha) && index >= 0
                 ? halfAiueo[index].ToString() : symbol.ToString();
         }
+        if (fmt == NumberFormatValues.IdeographTraditional || fmt == NumberFormatValues.IdeographZodiac)
+        {
+            // Word uses a bounded symbol sequence, then falls back to decimal text.
+            var alphabet = fmt == NumberFormatValues.IdeographTraditional ? "甲乙丙丁戊己庚辛壬癸" : "子丑寅卯辰巳午未申酉戍亥";
+            return n > 0 && n <= alphabet.Length ? alphabet[n - 1].ToString() : n.ToString(CultureInfo.InvariantCulture);
+        }
         return FormatNumber(n, fmt, culture);
     }
 
