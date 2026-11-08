@@ -13,6 +13,7 @@ under the same group and basename in
 | ChicagoBoundaries | Chicago symbol repetition, rollover and nonpositive counters |
 | DecimalBoundaries | Signed decimal counter boundaries and zero-padding |
 | EnclosedBoundaries | Circled, parenthesized and full-stop marker ranges |
+| EnclosedIdeographs | Parenthesized ideograph range and signed boundaries |
 | GappedHeading | Heading/body counter continuity across missing levels |
 | HexBoundaries | Hexadecimal marker range, signed boundaries and overflow |
 | IdeographRanges | Traditional and zodiac symbol ranges with decimal fallback |

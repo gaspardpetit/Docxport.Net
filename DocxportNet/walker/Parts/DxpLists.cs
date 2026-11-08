@@ -642,6 +642,12 @@ public static class DxpListMarkerFormatter
             var alphabet = fmt == NumberFormatValues.IdeographTraditional ? "甲乙丙丁戊己庚辛壬癸" : "子丑寅卯辰巳午未申酉戍亥";
             return n > 0 && n <= alphabet.Length ? alphabet[n - 1].ToString() : n.ToString(CultureInfo.InvariantCulture);
         }
+        if (fmt == NumberFormatValues.IdeographEnclosedCircle)
+        {
+            if (n == int.MinValue) return "";
+            // Word uses parenthesized ideographs only for counters 1 through 10.
+            return n > 0 && n <= 10 ? ((char)('\u3220' + n - 1)).ToString() : n.ToString(CultureInfo.InvariantCulture);
+        }
         return FormatNumber(n, fmt, culture);
     }
 
