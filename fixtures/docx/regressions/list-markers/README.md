@@ -15,6 +15,7 @@ under the same group and basename in
 | EnclosedBoundaries | Circled, parenthesized and full-stop marker ranges |
 | GappedHeading | Heading/body counter continuity across missing levels |
 | HexBoundaries | Hexadecimal marker range, signed boundaries and overflow |
+| IdeographRanges | Traditional and zodiac symbol ranges with decimal fallback |
 | Kana | Japanese Aiueo/Iroha width variants and cyclic rollover |
 | NegativeStarts | Negative level starts versus standalone overrides |
 | Resolution | Independent numbering-property and linked-style resolution |
