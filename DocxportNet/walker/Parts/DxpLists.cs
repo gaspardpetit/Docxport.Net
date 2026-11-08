@@ -753,6 +753,21 @@ public static class DxpListMarkerFormatter
             // Word prefixes tav for each completed alphabet, and preserves a leading RLM.
             return "\u200f" + new string('\u05ea', value / alphabet.Length) + alphabet[value % alphabet.Length];
         }
+        if (fmt == NumberFormatValues.Hebrew1)
+        {
+            if (n <= 0) return "";
+            var value = (n - 1) % 392 + 1;
+            const string units = "\u05d0\u05d1\u05d2\u05d3\u05d4\u05d5\u05d6\u05d7\u05d8";
+            const string tens = "\u05d9\u05db\u05dc\u05de\u05e0\u05e1\u05e2\u05e4\u05e6";
+            const string hundreds = "\u05e7\u05e8\u05e9";
+            var result = value >= 100 ? hundreds[value / 100 - 1].ToString() : "";
+            value %= 100;
+            // Word uses tet-vav/tet-zayin for the 15/16 remainder, including hundreds.
+            if (value == 15 || value == 16) return result + "\u05d8" + units[value - 10];
+            if (value >= 10) result += tens[value / 10 - 1];
+            if (value % 10 != 0) result += units[value % 10 - 1];
+            return result;
+        }
         return FormatNumber(n, fmt, culture);
     }
 

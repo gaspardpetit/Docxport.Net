@@ -19,6 +19,7 @@ under the same group and basename in
 | EnclosedIdeographs | Parenthesized ideograph range and signed boundaries |
 | GappedHeading | Heading/body counter continuity across missing levels |
 | HebrewAlphabet | Hebrew alphabet progression, direction mark and rollover |
+| HebrewNumerals | Hebrew additive numerals, special forms and rollover |
 | HexBoundaries | Hexadecimal marker range, signed boundaries and overflow |
 | HindiLetters | Hindi letter sets, repetitions and rollover |
 | HindiThaiDigits | Hindi/Thai digit substitution and rollover |
