@@ -27,6 +27,7 @@ under the same group and basename in
 | RussianBoundaries | Russian alphabetic repetition, rollover and nonpositive counters |
 | Suffix | List suffix nothing |
 | ZodiacCycle | Paired traditional zodiac cycles and signed boundaries |
+| TaiwaneseKoreanDigits | Taiwanese/Korean digit substitution and signed boundaries |
 | Text | Level-text expansion and missing-level start rules |
 
 The tests recreate these structures in memory; normal test runs do not require

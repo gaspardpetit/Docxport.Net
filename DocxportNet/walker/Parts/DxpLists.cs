@@ -675,6 +675,15 @@ public static class DxpListMarkerFormatter
             var zero = fmt == NumberFormatValues.HindiNumbers ? '\u0966' : '\u0e50';
             return new string(value.ToString(CultureInfo.InvariantCulture).Select(digit => (char)(zero + digit - '0')).ToArray());
         }
+        if (fmt == NumberFormatValues.TaiwaneseDigital || fmt == NumberFormatValues.KoreanDigital)
+        {
+            if (n < 0) return "";
+            // These formats preserve the full counter value; Taiwanese zero is U+25CB.
+            var digits = fmt == NumberFormatValues.TaiwaneseDigital
+                ? "\u25cb\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d"
+                : "\uc601\uc77c\uc774\uc0bc\uc0ac\uc624\uc721\uce60\ud314\uad6c";
+            return new string(n.ToString(CultureInfo.InvariantCulture).Select(digit => digits[digit - '0']).ToArray());
+        }
         return FormatNumber(n, fmt, culture);
     }
 
