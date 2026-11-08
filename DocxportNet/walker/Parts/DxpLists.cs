@@ -667,6 +667,14 @@ public static class DxpListMarkerFormatter
                 : "\u3131\u3134\u3137\u3139\u3141\u3142\u3145\u3147\u3148\u314a\u314b\u314c\u314d\u314e";
             return alphabet[(n - 1) % alphabet.Length].ToString();
         }
+        if (fmt == NumberFormatValues.HindiNumbers || fmt == NumberFormatValues.ThaiNumbers)
+        {
+            if (n < 0) return "";
+            // Word wraps the displayed digits after 32767 without resetting the counter.
+            var value = n > 0 ? (n - 1) % short.MaxValue + 1 : 0;
+            var zero = fmt == NumberFormatValues.HindiNumbers ? '\u0966' : '\u0e50';
+            return new string(value.ToString(CultureInfo.InvariantCulture).Select(digit => (char)(zero + digit - '0')).ToArray());
+        }
         return FormatNumber(n, fmt, culture);
     }
 
