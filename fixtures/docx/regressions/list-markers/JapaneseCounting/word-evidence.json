@@ -1,0 +1,116 @@
+{
+  "regional-japaneseCounting-0": {
+    "format": "japaneseCounting",
+    "start": 0,
+    "count": 2,
+    "sourcePath": "fixtures/docx/regressions/list-markers/JapaneseCounting/regional-japaneseCounting-0.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/JapaneseCounting/regional-japaneseCounting-0.pdf",
+    "sourceSha256": "b6dd23b578c94babdebe6819eec285390728d3959884ed1edba16f317f56e8e2",
+    "wordPdfSha256": "0f6244cb61a1d7d34327504a1b8f825e2cdcf76ad85b8e4b55b7b9b0f9b0885e",
+    "labels": [
+      "\u3007",
+      "\u4e00"
+    ],
+    "labelPattern": "\\[(.*?)\\]"
+  },
+  "regional-japaneseCounting-1": {
+    "format": "japaneseCounting",
+    "start": 1,
+    "count": 21,
+    "sourcePath": "fixtures/docx/regressions/list-markers/JapaneseCounting/regional-japaneseCounting-1.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/JapaneseCounting/regional-japaneseCounting-1.pdf",
+    "sourceSha256": "0ab8b473f6db30afedd417380dcacce988afc72061db680e6ec8d3c3bf5ab976",
+    "wordPdfSha256": "46c112a205167794b26c55ef627d8ee3185ed012116a7a4cb174da150cdcef6a",
+    "labels": [
+      "\u4e00",
+      "\u4e8c",
+      "\u4e09",
+      "\u56db",
+      "\u4e94",
+      "\u516d",
+      "\u4e03",
+      "\u516b",
+      "\u4e5d",
+      "\u5341",
+      "\u5341\u4e00",
+      "\u5341\u4e8c",
+      "\u5341\u4e09",
+      "\u5341\u56db",
+      "\u5341\u4e94",
+      "\u5341\u516d",
+      "\u5341\u4e03",
+      "\u5341\u516b",
+      "\u5341\u4e5d",
+      "\u4e8c\u5341",
+      "\u4e8c\u5341\u4e00"
+    ],
+    "labelPattern": "\\[(.*?)\\]"
+  },
+  "regional-japaneseCounting-98": {
+    "format": "japaneseCounting",
+    "start": 98,
+    "count": 5,
+    "sourcePath": "fixtures/docx/regressions/list-markers/JapaneseCounting/regional-japaneseCounting-98.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/JapaneseCounting/regional-japaneseCounting-98.pdf",
+    "sourceSha256": "cec546a0e68654048b44754b5b683b170c0efc41ee9ba9be552bc13861884017",
+    "wordPdfSha256": "65f1165422b9f4a5d266bcd31b119054c90e24387d7dc7f0464bfc18f4b77418",
+    "labels": [
+      "\u4e5d\u5341\u516b",
+      "\u4e5d\u5341\u4e5d",
+      "\u767e",
+      "\u767e\u4e00",
+      "\u767e\u4e8c"
+    ],
+    "labelPattern": "\\[(.*?)\\]"
+  },
+  "regional-japaneseCounting-998": {
+    "format": "japaneseCounting",
+    "start": 998,
+    "count": 5,
+    "sourcePath": "fixtures/docx/regressions/list-markers/JapaneseCounting/regional-japaneseCounting-998.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/JapaneseCounting/regional-japaneseCounting-998.pdf",
+    "sourceSha256": "a247006f19371a615a860f6168d2e7c84520691e1686ea46518e97d96f8b3380",
+    "wordPdfSha256": "05a3911869b54ffc8c6d311df76bccd93207100ce50ec5043fb894d1ce4830c0",
+    "labels": [
+      "\u4e5d\u767e\u4e5d\u5341\u516b",
+      "\u4e5d\u767e\u4e5d\u5341\u4e5d",
+      "\u5343",
+      "\u5343\u4e00",
+      "\u5343\u4e8c"
+    ],
+    "labelPattern": "\\[(.*?)\\]"
+  },
+  "regional-japaneseCounting-9998": {
+    "format": "japaneseCounting",
+    "start": 9998,
+    "count": 5,
+    "sourcePath": "fixtures/docx/regressions/list-markers/JapaneseCounting/regional-japaneseCounting-9998.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/JapaneseCounting/regional-japaneseCounting-9998.pdf",
+    "sourceSha256": "3c139ca66b56b44d25bcc2a756964b1c5a4203dac3d02f8196d6a309a62b0867",
+    "wordPdfSha256": "3b930f810154a7d89a1996c199bf641212d4c8f70029289b76ff10fdc6b0faba",
+    "labels": [
+      "\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516b",
+      "\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5d",
+      "\u4e00\u4e07",
+      "\u4e00\u4e07\u4e00",
+      "\u4e00\u4e07\u4e8c"
+    ],
+    "labelPattern": "\\[(.*?)\\]"
+  },
+  "regional-japaneseCounting-999998": {
+    "format": "japaneseCounting",
+    "start": 999998,
+    "count": 4,
+    "sourcePath": "fixtures/docx/regressions/list-markers/JapaneseCounting/regional-japaneseCounting-999998.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/JapaneseCounting/regional-japaneseCounting-999998.pdf",
+    "sourceSha256": "79492546916c7998b02683af4619b01d499ebf5fd587e13bcbb75bf189754e39",
+    "wordPdfSha256": "0bcd999685d3eb94eabc1c697056b7a5f47286d0b3165211a31d86bd158c0f26",
+    "labels": [
+      "\u4e5d\u5341\u4e5d\u4e07\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516b",
+      "\u4e5d\u5341\u4e5d\u4e07\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5d",
+      "",
+      ""
+    ],
+    "labelPattern": "\\[(.*?)\\]"
+  }
+}

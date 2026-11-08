@@ -698,7 +698,24 @@ public static class DxpListMarkerFormatter
             const string digits = "\u3007\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d";
             return new string(n.ToString(CultureInfo.InvariantCulture).Select(digit => digits[digit - '0']).ToArray());
         }
+        if (fmt == NumberFormatValues.JapaneseCounting && n >= 0)
+            return n > 999999 ? "" : n == 0 ? "\u3007"
+                : (n >= 10000 ? JapaneseGroup(n / 10000) + "\u4e07" : "") + JapaneseGroup(n % 10000);
         return FormatNumber(n, fmt, culture);
+    }
+
+    private static string JapaneseGroup(int number)
+    {
+        const string digits = "〇一二三四五六七八九";
+        var result = "";
+        foreach (var (value, unit) in new[] { (1000, "千"), (100, "百"), (10, "十"), (1, "") })
+        {
+            var digit = number / value;
+            number %= value;
+            if (digit != 0)
+                result += (digit == 1 && value != 1 ? "" : digits[digit].ToString()) + unit;
+        }
+        return result;
     }
 
     public static string FormatNumber(int n, NumberFormatValues fmt, CultureInfo? culture = null)
