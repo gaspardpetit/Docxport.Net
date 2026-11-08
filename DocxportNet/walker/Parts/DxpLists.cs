@@ -732,6 +732,19 @@ public static class DxpListMarkerFormatter
             var value = (n - 1) % 1230;
             return new string(alphabet[value % alphabet.Length], value / alphabet.Length + 1);
         }
+        if (fmt == NumberFormatValues.HindiVowels || fmt == NumberFormatValues.HindiConsonants)
+        {
+            if (n <= 0) return n == 0 ? " " : "";
+            var value = (n - 1) % 304;
+            // Word uses consonants for hindiVowels and vowels for hindiConsonants.
+            var size = fmt == NumberFormatValues.HindiVowels ? 37 : 18;
+            var index = value % size;
+            var symbol = fmt == NumberFormatValues.HindiVowels
+                ? ((char)('\u0915' + index)).ToString()
+                : index < 16 ? ((char)('\u0905' + index)).ToString()
+                : index == 16 ? "\u0905\u0902" : "\u0905\u0903";
+            return string.Concat(Enumerable.Repeat(symbol, value / size + 1));
+        }
         return FormatNumber(n, fmt, culture);
     }
 
