@@ -703,6 +703,8 @@ public static class DxpListMarkerFormatter
                 : (n >= 10000 ? JapaneseGroup(n / 10000) + "\u4e07" : "") + JapaneseGroup(n % 10000);
         if (fmt == NumberFormatValues.JapaneseLegal && n >= 0)
             return JapaneseLegalNumber(n);
+        if (n >= 0 && (fmt == NumberFormatValues.KoreanCounting || fmt == NumberFormatValues.KoreanLegal))
+            return KoreanUnitNumber(n, fmt == NumberFormatValues.KoreanLegal);
         return FormatNumber(n, fmt, culture);
     }
 
@@ -742,6 +744,41 @@ public static class DxpListMarkerFormatter
         var high = number / 100000000;
         var middle = number / 10000 % 10000;
         return (high > 0 ? Group(high) + "億" : "") + (middle > 0 ? Group(middle) + "萬" : "") + Group(number % 10000);
+    }
+
+    private static string KoreanUnitNumber(int number, bool legal)
+    {
+        if (number < 0)
+            return number.ToString(CultureInfo.InvariantCulture);
+        if (number > (legal ? 9999999 : 999999))
+            return "";
+        if (number == 0)
+            return legal ? "0" : "영";
+        if (legal && number < 100)
+        {
+            var ones = new[] { "", "하나", "둘", "셋", "넷", "다섯", "여섯", "일곱", "여덟", "아홉" };
+            var tens = new[] { "", "열", "스물", "서른", "마흔", "쉰", "예순", "일흔", "여든", "아흔" };
+            return tens[number / 10] + ones[number % 10];
+        }
+        const string digits = "영일이삼사오육칠팔구";
+        string Group(int value, bool myriad, bool hasMyriad)
+        {
+            var text = "";
+            foreach (var (divisor, unit) in new[] { (1000, "천"), (100, "백"), (10, "십"), (1, "") })
+            {
+                var digit = value / divisor;
+                value %= divisor;
+                if (digit == 0)
+                    continue;
+                // Word omits one immediately before 만, including 110000.
+                var showOne = myriad ? divisor != 1 && text.Length > 0
+                    : divisor == 1 || divisor == 1000 && hasMyriad;
+                text += (digit != 1 || showOne ? digits[digit].ToString() : "") + unit;
+            }
+            return text;
+        }
+        var high = number / 10000;
+        return (high > 0 ? Group(high, true, false) + "만" : "") + Group(number % 10000, false, high > 0);
     }
 
     public static string FormatNumber(int n, NumberFormatValues fmt, CultureInfo? culture = null)

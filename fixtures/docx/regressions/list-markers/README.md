@@ -24,6 +24,7 @@ under the same group and basename in
 | Kana | Japanese Aiueo/Iroha width variants and cyclic rollover |
 | KoreanDigital2 | Korean ideographic digits, distinct zero and upper limit |
 | KoreanCycles | Ganada/Chosung cycles and signed boundaries |
+| KoreanUnitCounting | Korean counting/legal units and range limits |
 | NegativeStarts | Negative level starts versus standalone overrides |
 | Resolution | Independent numbering-property and linked-style resolution |
 | Restart | Restart-declaration import normalization |
