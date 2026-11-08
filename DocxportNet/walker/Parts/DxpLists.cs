@@ -711,6 +711,12 @@ public static class DxpListMarkerFormatter
             return ChineseUnitNumber(n, simplified ? "〇一二三四五六七八九" : "零一二三四五六七八九",
                 "千百十", simplified ? "万" : "萬", omitInitialOne: true);
         }
+        if (n >= 0 && (fmt == NumberFormatValues.ChineseLegalSimplified || fmt == NumberFormatValues.IdeographLegalTraditional))
+        {
+            var digits = fmt == NumberFormatValues.ChineseLegalSimplified
+                ? "零壹贰叁肆伍陆柒捌玖" : "零壹貳參肆伍陸柒捌玖";
+            return ChineseUnitNumber(n, digits, "仟佰拾", "萬", omitInitialOne: false);
+        }
         return FormatNumber(n, fmt, culture);
     }
 
