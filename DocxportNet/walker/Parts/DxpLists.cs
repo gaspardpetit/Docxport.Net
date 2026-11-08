@@ -684,6 +684,14 @@ public static class DxpListMarkerFormatter
                 : "\uc601\uc77c\uc774\uc0bc\uc0ac\uc624\uc721\uce60\ud314\uad6c";
             return new string(n.ToString(CultureInfo.InvariantCulture).Select(digit => digits[digit - '0']).ToArray());
         }
+        if (fmt == NumberFormatValues.KoreanDigital2 && n >= 0)
+        {
+            if (n > 999999) return "";
+            if (n == 0) return "\uf9b2";
+            // Word uses U+F9B2 for standalone zero, but U+96F6 within a number.
+            const string digits = "\u96f6\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d";
+            return new string(n.ToString(CultureInfo.InvariantCulture).Select(digit => digits[digit - '0']).ToArray());
+        }
         return FormatNumber(n, fmt, culture);
     }
 
