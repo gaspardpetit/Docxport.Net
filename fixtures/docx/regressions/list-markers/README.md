@@ -19,6 +19,7 @@ under the same group and basename in
 | HindiThaiDigits | Hindi/Thai digit substitution and rollover |
 | IdeographRanges | Traditional and zodiac symbol ranges with decimal fallback |
 | Kana | Japanese Aiueo/Iroha width variants and cyclic rollover |
+| KoreanDigital2 | Korean ideographic digits, distinct zero and upper limit |
 | KoreanCycles | Ganada/Chosung cycles and signed boundaries |
 | NegativeStarts | Negative level starts versus standalone overrides |
 | Resolution | Independent numbering-property and linked-style resolution |
