@@ -745,6 +745,14 @@ public static class DxpListMarkerFormatter
                 : index == 16 ? "\u0905\u0902" : "\u0905\u0903";
             return string.Concat(Enumerable.Repeat(symbol, value / size + 1));
         }
+        if (fmt == NumberFormatValues.Hebrew2)
+        {
+            if (n <= 0) return "";
+            var value = (n - 1) % 392;
+            const string alphabet = "\u05d0\u05d1\u05d2\u05d3\u05d4\u05d5\u05d6\u05d7\u05d8\u05d9\u05db\u05dc\u05de\u05e0\u05e1\u05e2\u05e4\u05e6\u05e7\u05e8\u05e9\u05ea";
+            // Word prefixes tav for each completed alphabet, and preserves a leading RLM.
+            return "\u200f" + new string('\u05ea', value / alphabet.Length) + alphabet[value % alphabet.Length];
+        }
         return FormatNumber(n, fmt, culture);
     }
 
