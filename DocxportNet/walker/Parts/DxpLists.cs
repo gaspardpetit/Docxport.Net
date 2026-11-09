@@ -768,6 +768,18 @@ public static class DxpListMarkerFormatter
             if (value % 10 != 0) result += units[value % 10 - 1];
             return result;
         }
+        if (fmt == NumberFormatValues.ArabicAlpha || fmt == NumberFormatValues.ArabicAbjad)
+        {
+            if (n <= 0) return "";
+            // Word repeats each letter with its joining control, then wraps after 392.
+            var value = (n - 1) % 392;
+            const string alpha = "\u0623\u0628\u062a\u062b\u062c\u062d\u062e\u062f\u0630\u0631\u0632\u0633\u0634\u0635\u0636\u0637\u0638\u0639\u063a\u0641\u0642\u0643\u0644\u0645\u0646\u0647\u0648\u064a";
+            const string abjad = "\u0623\u0628\u062c\u062f\u0647\u0648\u0632\u062d\u0637\u064a\u0643\u0644\u0645\u0646\u0633\u0639\u0641\u0635\u0642\u0631\u0634\u062a\u062b\u062e\u0630\u0636\u0638\u063a";
+            var alphabet = fmt == NumberFormatValues.ArabicAlpha ? alpha : abjad;
+            var letter = alphabet[value % alphabet.Length].ToString();
+            var symbol = fmt == NumberFormatValues.ArabicAlpha ? letter + "\u200c" : "\u200c" + letter;
+            return string.Concat(Enumerable.Repeat(symbol, value / alphabet.Length + 1));
+        }
         return FormatNumber(n, fmt, culture);
     }
 
