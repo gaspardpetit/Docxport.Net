@@ -27,6 +27,8 @@ internal static class DxpCustomListFormats
         ["\u30a2, \u30a4, \u30a6, ..."] = NumberFormatValues.AiueoFullWidth,
         ["\uff72, \uff9b, \uff8a, ..."] = NumberFormatValues.Iroha,
         ["\u30a4, \u30ed, \u30cf, ..."] = NumberFormatValues.IrohaFullWidth,
+        ["\uac00, \ub098, \ub2e4, ..."] = NumberFormatValues.Ganada,
+        ["\u3131, \u3134, \u3137, ..."] = NumberFormatValues.Chosung,
     };
 
     internal static bool TryResolve(NumberingFormat? format, out NumberFormatValues value)
