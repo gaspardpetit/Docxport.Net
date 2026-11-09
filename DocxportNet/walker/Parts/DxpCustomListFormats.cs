@@ -23,6 +23,10 @@ internal static class DxpCustomListFormats
         ["\u0e01, \u0e02, \u0e04, ..."] = NumberFormatValues.ThaiLetters,
         ["\u0430, \u0431, \u0432, ..."] = NumberFormatValues.RussianLower,
         ["\u0410, \u0411, \u0412, ..."] = NumberFormatValues.RussianUpper,
+        ["\uff71, \uff72, \uff73, ..."] = NumberFormatValues.Aiueo,
+        ["\u30a2, \u30a4, \u30a6, ..."] = NumberFormatValues.AiueoFullWidth,
+        ["\uff72, \uff9b, \uff8a, ..."] = NumberFormatValues.Iroha,
+        ["\u30a4, \u30ed, \u30cf, ..."] = NumberFormatValues.IrohaFullWidth,
     };
 
     internal static bool TryResolve(NumberingFormat? format, out NumberFormatValues value)
