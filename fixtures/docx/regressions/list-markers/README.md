@@ -17,6 +17,7 @@ under the same group and basename in
 | ChineseUnitCounting | Chinese/Taiwanese unit counting, internal zeros and limits |
 | CustomLatinAliases | Custom Latin letter and Roman aliases |
 | CustomNumeric | Direct custom numeric patterns and decimal fallback |
+| CustomWordAliases | Exact Hindi, Thai and Vietnamese counting-word aliases |
 | DecimalBoundaries | Signed decimal counter boundaries and zero-padding |
 | EnclosedBoundaries | Circled, parenthesized and full-stop marker ranges |
 | EnclosedIdeographs | Parenthesized ideograph range and signed boundaries |

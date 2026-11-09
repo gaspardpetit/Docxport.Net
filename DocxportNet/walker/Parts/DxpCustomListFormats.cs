@@ -11,6 +11,9 @@ internal static class DxpCustomListFormats
         ["a"] = NumberFormatValues.LowerLetter,
         ["I"] = NumberFormatValues.UpperRoman,
         ["i"] = NumberFormatValues.LowerRoman,
+        ["\u090f\u0915, \u0926\u094b, \u0924\u0940\u0928, ..."] = NumberFormatValues.HindiCounting,
+        ["\u0e2b\u0e19\u0e36\u0e48\u0e07, \u0e2a\u0e2d\u0e07, \u0e2a\u0e32\u0e21, ..."] = NumberFormatValues.ThaiCounting,
+        ["m\u00f4\u0323t, hai, ba, ..."] = NumberFormatValues.VietnameseCounting,
     };
 
     internal static bool TryResolve(NumberingFormat? format, out NumberFormatValues value)
