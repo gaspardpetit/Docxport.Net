@@ -17,6 +17,7 @@ under the same group and basename in
 | ChineseUnitCounting | Chinese/Taiwanese unit counting, internal zeros and limits |
 | CustomAlphabetAliases | Exact regional alphabet and Hebrew numeral aliases |
 | CustomKanaAliases | Exact Aiueo/Iroha half-width and full-width aliases |
+| CustomKoreanAlphabetAliases | Exact Ganada and Chosung aliases |
 | CustomLatinAliases | Custom Latin letter and Roman aliases |
 | CustomNumeric | Direct custom numeric patterns and decimal fallback |
 | CustomWordAliases | Exact Hindi, Thai and Vietnamese counting-word aliases |
