@@ -1,0 +1,322 @@
+{
+  "aiueo": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/CustomKanaAliases/aiueo.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/CustomKanaAliases/aiueo.pdf",
+    "sourceSha256": "9cb953acf278885e11af5f36ca95c65b253cb59cf39a5e6b0f80749854430377",
+    "wordPdfSha256": "dede0a932da5d03ddeefbb3a9af029bde68c6c0410698a34a354f2ea67e808e5",
+    "starts": [
+      -2147483648,
+      -1,
+      0,
+      1,
+      9,
+      10,
+      99,
+      100,
+      999,
+      1000,
+      9999,
+      10000,
+      32767,
+      32768,
+      65535,
+      999999,
+      2147483647
+    ],
+    "labelPattern": "BEGIN(.*?)END",
+    "labels": [
+      "",
+      "-1",
+      "0",
+      "\uff71",
+      "\uff79",
+      "\uff7a",
+      "\uff77",
+      "\uff78",
+      "\uff91",
+      "\uff92",
+      "\uff81",
+      "\uff82",
+      "\uff7f",
+      "\uff80",
+      "\uff8f",
+      "\uff75",
+      "\uff75"
+    ],
+    "pdfExtractedLabels": [
+      "",
+      "-1",
+      "0",
+      "\uff71",
+      "\uff79",
+      "\uff7a",
+      "\uff77",
+      "\uff78",
+      "\uff91",
+      "\uff92",
+      "\uff81",
+      "\uff82",
+      "\uff7f",
+      "\uff80",
+      "\uff8f",
+      "\uff75",
+      "\uff75"
+    ]
+  },
+  "aiueoFullWidth": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/CustomKanaAliases/aiueoFullWidth.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/CustomKanaAliases/aiueoFullWidth.pdf",
+    "sourceSha256": "1f0682b663218cfd4405edbd74bce4fb1480b7328860acb3e1e25e5164225b63",
+    "wordPdfSha256": "7836fc27dae72066f010b95d3d934657f0fe1481ac541946b7e73f95388f1c91",
+    "starts": [
+      -2147483648,
+      -1,
+      0,
+      1,
+      9,
+      10,
+      99,
+      100,
+      999,
+      1000,
+      9999,
+      10000,
+      32767,
+      32768,
+      65535,
+      999999,
+      2147483647
+    ],
+    "labelPattern": "BEGIN(.*?)END",
+    "labels": [
+      "",
+      "-1",
+      "0",
+      "\u30a2",
+      "\u30b1",
+      "\u30b3",
+      "\u30ad",
+      "\u30af",
+      "\u30e0",
+      "\u30e1",
+      "\u30c1",
+      "\u30c4",
+      "\u30bd",
+      "\u30bf",
+      "\u30de",
+      "\u30aa",
+      "\u30aa"
+    ],
+    "pdfExtractedLabels": [
+      "",
+      "-1",
+      "0",
+      "\u30a2",
+      "\u30b1",
+      "\u30b3",
+      "\u30ad",
+      "\u30af",
+      "\u30e0",
+      "\u30e1",
+      "\u30c1",
+      "\u30c4",
+      "\u30bd",
+      "\u30bf",
+      "\u30de",
+      "\u30aa",
+      "\u30aa"
+    ]
+  },
+  "iroha": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/CustomKanaAliases/iroha.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/CustomKanaAliases/iroha.pdf",
+    "sourceSha256": "36abfdc09c10aa0694948765926f33c2fb6d63939c884ebfb2b0bb88076bd04a",
+    "wordPdfSha256": "09ac004bf1505b2d0718f6a11e7668c4a45325053394b1297e532f55fe7f8ed1",
+    "starts": [
+      -2147483648,
+      -1,
+      0,
+      1,
+      9,
+      10,
+      99,
+      100,
+      999,
+      1000,
+      9999,
+      10000,
+      32767,
+      32768,
+      65535,
+      999999,
+      2147483647
+    ],
+    "labelPattern": "BEGIN(.*?)END",
+    "labels": [
+      "",
+      "-1",
+      "0",
+      "\uff72",
+      "\uff98",
+      "\uff87",
+      "\uff8a",
+      "\uff86",
+      "\uff95",
+      "\uff92",
+      "\uff96",
+      "\uff80",
+      "\uff79",
+      "\uff8c",
+      "\uff96",
+      "\uff96",
+      "\uff79"
+    ],
+    "pdfExtractedLabels": [
+      "",
+      "-1",
+      "0",
+      "\uff72",
+      "\uff98",
+      "\uff87",
+      "\uff8a",
+      "\uff86",
+      "\uff95",
+      "\uff92",
+      "\uff96",
+      "\uff80",
+      "\uff79",
+      "\uff8c",
+      "\uff96",
+      "\uff96",
+      "\uff79"
+    ]
+  },
+  "irohaFullWidth": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/CustomKanaAliases/irohaFullWidth.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/CustomKanaAliases/irohaFullWidth.pdf",
+    "sourceSha256": "8cd1b68592583caf96db8bbae1d5739eef538f13af521dec3f02008f97014cc0",
+    "wordPdfSha256": "9ee741d1246b87cc026f31bf959404fc3a17836d667d115b0dbf415d2037e2e8",
+    "starts": [
+      -2147483648,
+      -1,
+      0,
+      1,
+      9,
+      10,
+      99,
+      100,
+      999,
+      1000,
+      9999,
+      10000,
+      32767,
+      32768,
+      65535,
+      999999,
+      2147483647
+    ],
+    "labelPattern": "BEGIN(.*?)END",
+    "labels": [
+      "",
+      "-1",
+      "0",
+      "\u30a4",
+      "\u30ea",
+      "\u30cc",
+      "\u30cf",
+      "\u30cb",
+      "\u30e6",
+      "\u30e1",
+      "\u30e8",
+      "\u30bf",
+      "\u30b1",
+      "\u30d5",
+      "\u30e8",
+      "\u30e8",
+      "\u30b1"
+    ],
+    "pdfExtractedLabels": [
+      "",
+      "-1",
+      "0",
+      "\u30a4",
+      "\u30ea",
+      "\u30cc",
+      "\u30cf",
+      "\u30cb",
+      "\u30e6",
+      "\u30e1",
+      "\u30e8",
+      "\u30bf",
+      "\u30b1",
+      "\u30d5",
+      "\u30e8",
+      "\u30e8",
+      "\u30b1"
+    ]
+  },
+  "direct-min-aiueo": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/CustomKanaAliases/direct-min-aiueo.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/CustomKanaAliases/direct-min-aiueo.pdf",
+    "sourceSha256": "52b740b0eef6e59989fbd61642756e9652a4b98ffacddc2d5a1f443db9726a79",
+    "wordPdfSha256": "066ce87d512cffe83987808d55c72445aced0dc395dd6e72338ed7b1be16a484",
+    "starts": [
+      -2147483648
+    ],
+    "labelPattern": "BEGIN(.*?)END",
+    "labels": [
+      ""
+    ],
+    "pdfExtractedLabels": [
+      ""
+    ]
+  },
+  "direct-min-iroha": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/CustomKanaAliases/direct-min-iroha.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/CustomKanaAliases/direct-min-iroha.pdf",
+    "sourceSha256": "466232bb054961fb8ce3dc47d38eacc9e9ead0bec68918bc6149f77f9bde31d3",
+    "wordPdfSha256": "cda6ef16f80b8270b5ff6445b8d66c1bc4b7b656dc9c2bd99e3256c2faeaa3df",
+    "starts": [
+      -2147483648
+    ],
+    "labelPattern": "BEGIN(.*?)END",
+    "labels": [
+      ""
+    ],
+    "pdfExtractedLabels": [
+      ""
+    ]
+  },
+  "direct-min-irohaFullWidth": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/CustomKanaAliases/direct-min-irohaFullWidth.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/CustomKanaAliases/direct-min-irohaFullWidth.pdf",
+    "sourceSha256": "44a74cadc9c4065ad23c6ce0b152d20a48009677149e476845130f8d5f328ef2",
+    "wordPdfSha256": "8897c0be02df2ebe60f73e4fbb3d4adcad7e5b40785d1811e59f33e48be808aa",
+    "starts": [
+      -2147483648
+    ],
+    "labelPattern": "BEGIN(.*?)END",
+    "labels": [
+      ""
+    ],
+    "pdfExtractedLabels": [
+      ""
+    ]
+  },
+  "direct-min-aiueoFullWidth": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/CustomKanaAliases/direct-min-aiueoFullWidth.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/CustomKanaAliases/direct-min-aiueoFullWidth.pdf",
+    "sourceSha256": "504293c98acdcf000ae763f473cd2a5eb67919fa2a2e04d99a19a84a2cc00b9d",
+    "wordPdfSha256": "8f88283f30251aa4f70ec9d291bbfddb6fc1db7036a5b26e0e2729487e02baf4",
+    "starts": [
+      -2147483648
+    ],
+    "labelPattern": "BEGIN(.*?)END",
+    "labels": [
+      ""
+    ],
+    "pdfExtractedLabels": [
+      ""
+    ]
+  }
+}

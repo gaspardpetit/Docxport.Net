@@ -646,6 +646,7 @@ public static class DxpListMarkerFormatter
         if (fmt == NumberFormatValues.Aiueo || fmt == NumberFormatValues.AiueoFullWidth ||
             fmt == NumberFormatValues.Iroha || fmt == NumberFormatValues.IrohaFullWidth)
         {
+            if (n == int.MinValue) return "";
             if (n <= 0)
                 return n.ToString(CultureInfo.InvariantCulture);
             // Word cycles one kana at a time; archaic kana have no half-width form.
