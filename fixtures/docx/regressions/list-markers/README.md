@@ -18,6 +18,7 @@ under the same group and basename in
 | CustomAlphabetAliases | Exact regional alphabet and Hebrew numeral aliases |
 | CustomKanaAliases | Exact Aiueo/Iroha half-width and full-width aliases |
 | CustomKoreanAlphabetAliases | Exact Ganada and Chosung aliases |
+| CustomKoreanNumericAliases | Korean counting and digit aliases and boundary controls |
 | CustomLatinAliases | Custom Latin letter and Roman aliases |
 | CustomNumeric | Direct custom numeric patterns and decimal fallback |
 | CustomWordAliases | Exact Hindi, Thai and Vietnamese counting-word aliases |

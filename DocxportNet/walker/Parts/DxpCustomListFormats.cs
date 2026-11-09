@@ -29,6 +29,10 @@ internal static class DxpCustomListFormats
         ["\u30a4, \u30ed, \u30cf, ..."] = NumberFormatValues.IrohaFullWidth,
         ["\uac00, \ub098, \ub2e4, ..."] = NumberFormatValues.Ganada,
         ["\u3131, \u3134, \u3137, ..."] = NumberFormatValues.Chosung,
+        ["\uc77c, \uc774, \uc0bc, ..."] = NumberFormatValues.KoreanCounting,
+        ["\ud558\ub098, \ub458, \uc14b, ..."] = NumberFormatValues.KoreanLegal,
+        ["\uc77c, \uc77c\uc601, \uc77c\uc601\uc601, ..."] = NumberFormatValues.KoreanDigital,
+        ["\u4e00, \u4e00\u96f6, \u4e00\u96f6\u96f6, ..."] = NumberFormatValues.KoreanDigital2,
     };
 
     internal static bool TryResolve(NumberingFormat? format, out NumberFormatValues value)
