@@ -658,6 +658,7 @@ public static class DxpListMarkerFormatter
         }
         if (fmt == NumberFormatValues.IdeographTraditional || fmt == NumberFormatValues.IdeographZodiac)
         {
+            if (n == int.MinValue) return "";
             // Word uses a bounded symbol sequence, then falls back to decimal text.
             var alphabet = fmt == NumberFormatValues.IdeographTraditional ? "甲乙丙丁戊己庚辛壬癸" : "子丑寅卯辰巳午未申酉戍亥";
             return n > 0 && n <= alphabet.Length ? alphabet[n - 1].ToString() : n.ToString(CultureInfo.InvariantCulture);
