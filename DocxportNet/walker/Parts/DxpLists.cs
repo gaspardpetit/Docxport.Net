@@ -782,6 +782,7 @@ public static class DxpListMarkerFormatter
         }
         if (fmt == NumberFormatValues.HindiCounting) return DxpRegionalListWords.Hindi(n);
         if (fmt == NumberFormatValues.ThaiCounting) return DxpRegionalListWords.Thai(n);
+        if (fmt == NumberFormatValues.VietnameseCounting) return DxpRegionalListWords.Vietnamese(n);
         return FormatNumber(n, fmt, culture);
     }
 
