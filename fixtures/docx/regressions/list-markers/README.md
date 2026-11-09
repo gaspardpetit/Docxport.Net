@@ -22,6 +22,7 @@ under the same group and basename in
 | HebrewAlphabet | Hebrew alphabet progression, direction mark and rollover |
 | HebrewNumerals | Hebrew additive numerals, special forms and rollover |
 | HexBoundaries | Hexadecimal marker range, signed boundaries and overflow |
+| HindiCounting | Hindi counting words, lexical forms and rollover |
 | HindiLetters | Hindi letter sets, repetitions and rollover |
 | HindiThaiDigits | Hindi/Thai digit substitution and rollover |
 | IdeographRanges | Traditional and zodiac symbol ranges with decimal fallback |

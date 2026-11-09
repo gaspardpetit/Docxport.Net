@@ -780,6 +780,7 @@ public static class DxpListMarkerFormatter
             var symbol = fmt == NumberFormatValues.ArabicAlpha ? letter + "\u200c" : "\u200c" + letter;
             return string.Concat(Enumerable.Repeat(symbol, value / alphabet.Length + 1));
         }
+        if (fmt == NumberFormatValues.HindiCounting) return DxpRegionalListWords.Hindi(n);
         return FormatNumber(n, fmt, culture);
     }
 
