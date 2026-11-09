@@ -781,6 +781,7 @@ public static class DxpListMarkerFormatter
             return string.Concat(Enumerable.Repeat(symbol, value / alphabet.Length + 1));
         }
         if (fmt == NumberFormatValues.HindiCounting) return DxpRegionalListWords.Hindi(n);
+        if (fmt == NumberFormatValues.ThaiCounting) return DxpRegionalListWords.Thai(n);
         return FormatNumber(n, fmt, culture);
     }
 
