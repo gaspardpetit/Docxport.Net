@@ -39,6 +39,7 @@ under the same group and basename in
 | RomanBoundaries | Roman marker rollover, zero and signed boundaries |
 | RussianBoundaries | Russian alphabetic repetition, rollover and nonpositive counters |
 | Suffix | List suffix nothing |
+| VietnameseCounting | Vietnamese counting words, lexical forms and rollover |
 | ZodiacCycle | Paired traditional zodiac cycles and signed boundaries |
 | TaiwaneseKoreanDigits | Taiwanese/Korean digit substitution and signed boundaries |
 | ThaiCounting | Thai counting words, contextual forms and range boundaries |
