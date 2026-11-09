@@ -15,6 +15,7 @@ under the same group and basename in
 | ChineseCounting | Chinese/Taiwanese counting-to-digits transition |
 | ChineseLegal | Simplified/traditional Chinese legal numerals and limits |
 | ChineseUnitCounting | Chinese/Taiwanese unit counting, internal zeros and limits |
+| CustomNumeric | Direct custom numeric patterns and decimal fallback |
 | DecimalBoundaries | Signed decimal counter boundaries and zero-padding |
 | EnclosedBoundaries | Circled, parenthesized and full-stop marker ranges |
 | EnclosedIdeographs | Parenthesized ideograph range and signed boundaries |

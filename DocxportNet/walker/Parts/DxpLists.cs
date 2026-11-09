@@ -392,6 +392,19 @@ public static class DxpListMarkerFormatter
 {
     private static int? TryGetCustomDecimalWidth(Level lvl)
     {
+        var direct = lvl.NumberingFormat;
+        if (direct?.Val?.Value == NumberFormatValues.Custom)
+        {
+            // Word recognizes fixed patterns, not arbitrary numeric masks.
+            return direct.Format?.Value switch
+            {
+                "01, 02, 03, ..." => 2,
+                "001, 002, 003, ..." => 3,
+                "0001, 0002, 0003, ..." => 4,
+                "00001, 00002, 00003, ..." => 5,
+                _ => null
+            };
+        }
         // The "custom" numFmt is in mc:AlternateContent and may not be surfaced by the SDK as lvl.NumberingFormat.
         // So parse from the raw XML.
         var xml = lvl.OuterXml;
@@ -552,9 +565,12 @@ public static class DxpListMarkerFormatter
             int? customWidth = legal?.Val?.Value != false && legal != null ? null
                 : refLvl != null ? TryGetCustomDecimalWidth(refLvl) : null;
 
+            var directCustom = refLvl?.NumberingFormat?.Val?.Value == NumberFormatValues.Custom;
             string formatted = customWidth != null
-                ? cur.Value.ToString(CultureInfo.InvariantCulture).PadLeft(customWidth.Value, '0')
-                : FormatListNumber(cur.Value, refFmt, culture);
+                ? directCustom && cur.Value < 0 ? ""
+                    : cur.Value.ToString(CultureInfo.InvariantCulture).PadLeft(customWidth.Value, '0')
+                : FormatListNumber(cur.Value, directCustom && refFmt == NumberFormatValues.Custom
+                    ? NumberFormatValues.Decimal : refFmt, culture);
             if ((refFmt == NumberFormatValues.CardinalText || refFmt == NumberFormatValues.OrdinalText) &&
                 formatted.Length > 0)
                 formatted = char.ToUpper(formatted[0], culture ?? CultureInfo.CurrentCulture) + formatted.Substring(1);
