@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace DocxportNet.Walker;
 
 // Word list spelling and rollover rules; shared field formatting remains separate.
@@ -119,5 +121,53 @@ internal static class DxpRegionalListWords
         value %= 100;
         if (value > 0) parts.Add(HindiSmall[value]);
         return string.Join(" ", parts);
+    }
+
+    private static readonly string[] ThaiDigits =
+    {
+        "\u0e28\u0e39\u0e19\u0e22\u0e4c",
+        "\u0e2b\u0e19\u0e36\u0e48\u0e07",
+        "\u0e2a\u0e2d\u0e07",
+        "\u0e2a\u0e32\u0e21",
+        "\u0e2a\u0e35\u0e48",
+        "\u0e2b\u0e49\u0e32",
+        "\u0e2b\u0e01",
+        "\u0e40\u0e08\u0e47\u0e14",
+        "\u0e41\u0e1b\u0e14",
+        "\u0e40\u0e01\u0e49\u0e32",
+    };
+
+    internal static string Thai(int number)
+    {
+        if (number == int.MinValue) return "";
+        // Word displays zero beyond this range, including negative values.
+        if (number <= -1000000000 || number >= 1000000000 || number == 0) return ThaiDigits[0];
+        var negative = number < 0;
+        var value = negative ? -number : number;
+        var prefix = negative ? "\u0e25\u0e1a" : "";
+        if (value < 1000000) return prefix + ThaiGroup(value, value > 10);
+        var remainder = value % 1000000;
+        return prefix + ThaiGroup(value / 1000000, value / 1000000 > 10) + "\u0e25\u0e49\u0e32\u0e19"
+            + (remainder == 0 ? "" : ThaiGroup(remainder, true));
+    }
+
+    private static string ThaiGroup(int number, bool finalOneAsEd)
+    {
+        var text = new StringBuilder();
+        var remaining = number;
+        int[] divisors = { 100000, 10000, 1000, 100, 10, 1 };
+        string[] units = { "\u0e41\u0e2a\u0e19", "\u0e2b\u0e21\u0e37\u0e48\u0e19", "\u0e1e\u0e31\u0e19", "\u0e23\u0e49\u0e2d\u0e22", "", "" };
+        for (var i = 0; i < divisors.Length; i++)
+        {
+            var digit = remaining / divisors[i];
+            remaining %= divisors[i];
+            if (digit == 0) continue;
+            if (divisors[i] == 10)
+                text.Append(digit == 1 ? "\u0e2a\u0e34\u0e1a" : digit == 2 ? "\u0e22\u0e35\u0e48\u0e2a\u0e34\u0e1a" : ThaiDigits[digit] + "\u0e2a\u0e34\u0e1a");
+            else if (divisors[i] == 1)
+                text.Append(digit == 1 && finalOneAsEd ? "\u0e40\u0e2d\u0e47\u0e14" : ThaiDigits[digit]);
+            else text.Append(ThaiDigits[digit]).Append(units[i]);
+        }
+        return text.ToString();
     }
 }

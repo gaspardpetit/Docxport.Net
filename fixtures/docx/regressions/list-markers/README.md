@@ -41,6 +41,7 @@ under the same group and basename in
 | Suffix | List suffix nothing |
 | ZodiacCycle | Paired traditional zodiac cycles and signed boundaries |
 | TaiwaneseKoreanDigits | Taiwanese/Korean digit substitution and signed boundaries |
+| ThaiCounting | Thai counting words, contextual forms and range boundaries |
 | ThaiLetters | Thai alphabet repetitions, rollover and signed boundaries |
 | Text | Level-text expansion and missing-level start rules |
 
