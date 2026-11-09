@@ -33,6 +33,9 @@ internal static class DxpCustomListFormats
         ["\ud558\ub098, \ub458, \uc14b, ..."] = NumberFormatValues.KoreanLegal,
         ["\uc77c, \uc77c\uc601, \uc77c\uc601\uc601, ..."] = NumberFormatValues.KoreanDigital,
         ["\u4e00, \u4e00\u96f6, \u4e00\u96f6\u96f6, ..."] = NumberFormatValues.KoreanDigital2,
+        ["\u0967, \u0968, \u0969, ..."] = NumberFormatValues.HindiNumbers,
+        ["\u0e51, \u0e52, \u0e53, ..."] = NumberFormatValues.ThaiNumbers,
+        ["\u4e00, \u4e00\u25cb, \u4e00\u25cb\u25cb(\u7e41), ..."] = NumberFormatValues.TaiwaneseDigital,
     };
 
     internal static bool TryResolve(NumberingFormat? format, out NumberFormatValues value)
