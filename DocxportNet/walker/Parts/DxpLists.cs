@@ -49,12 +49,15 @@ public sealed class DxpNumberingResolver
             (level.StartNumberingValue == null && level.Parent is LevelOverride replacement &&
                 replacement.StartOverrideNumberingValue?.Val?.Value < 0);
         if (source == null || (!source.Descendants<LevelRestart>().Any() &&
-            !source.Descendants<Level>().Any(InvalidStart))) return source;
+            !source.Descendants<Level>().Any(InvalidStart) &&
+            !source.Descendants<NumberingFormat>().Any(format => DxpCustomListFormats.TryResolve(format, out _)))) return source;
         // Word normalizes these declarations on import. Keep that view private:
         // exporting must not rewrite the caller's numbering definitions.
         var numbering = (Numbering)source.CloneNode(true);
         foreach (var level in numbering.Descendants<Level>().ToArray())
         {
+            if (DxpCustomListFormats.TryResolve(level.NumberingFormat, out var alias))
+                level.NumberingFormat!.Val = alias;
             // Negative level starts are invalid, but standalone negative
             // startOverride values are accepted. A replacement's own start wins.
             if (InvalidStart(level))
