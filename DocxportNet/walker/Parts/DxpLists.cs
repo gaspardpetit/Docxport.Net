@@ -704,6 +704,11 @@ public static class DxpListMarkerFormatter
                 : "\uc601\uc77c\uc774\uc0bc\uc0ac\uc624\uc721\uce60\ud314\uad6c";
             return new string(n.ToString(CultureInfo.InvariantCulture).Select(digit => digits[digit - '0']).ToArray());
         }
+        // Word suppresses negatives for these formats; legal counting retains
+        // ordinary negatives but has an empty signed-minimum expansion.
+        if (n < 0 && (fmt == NumberFormatValues.KoreanCounting || fmt == NumberFormatValues.KoreanDigital2) ||
+            n == int.MinValue && fmt == NumberFormatValues.KoreanLegal)
+            return "";
         if (fmt == NumberFormatValues.KoreanDigital2 && n >= 0)
         {
             if (n > 999999) return "";
