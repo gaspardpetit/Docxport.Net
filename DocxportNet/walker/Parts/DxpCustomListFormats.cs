@@ -36,6 +36,10 @@ internal static class DxpCustomListFormats
         ["\u0967, \u0968, \u0969, ..."] = NumberFormatValues.HindiNumbers,
         ["\u0e51, \u0e52, \u0e53, ..."] = NumberFormatValues.ThaiNumbers,
         ["\u4e00, \u4e00\u25cb, \u4e00\u25cb\u25cb(\u7e41), ..."] = NumberFormatValues.TaiwaneseDigital,
+        ["\u7532, \u4e59, \u4e19, ..."] = NumberFormatValues.IdeographTraditional,
+        ["\u5b50, \u4e11, \u5bc5, ..."] = NumberFormatValues.IdeographZodiac,
+        ["\u7532\u5b50, \u4e59\u4e11, \u4e19\u5bc5, ..."] = NumberFormatValues.IdeographZodiacTraditional,
+        ["\u3220, \u3221, \u3222, ..."] = NumberFormatValues.IdeographEnclosedCircle,
     };
 
     internal static bool TryResolve(NumberingFormat? format, out NumberFormatValues value)
