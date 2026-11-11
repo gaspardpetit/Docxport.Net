@@ -21,6 +21,7 @@ under the same group and basename in
 | CustomFullWidthAlias | Exact full-width decimal alias and direct boundary controls |
 | CustomHexChicagoAliases | Exact hexadecimal and Chicago symbol aliases |
 | CustomIdeographAliases | Exact traditional, zodiac and enclosed ideograph aliases |
+| CustomJapaneseAliases | Exact Japanese numeric aliases and direct boundary controls |
 | CustomKanaAliases | Exact Aiueo/Iroha half-width and full-width aliases |
 | CustomKoreanAlphabetAliases | Exact Ganada and Chosung aliases |
 | CustomKoreanNumericAliases | Korean counting and digit aliases and boundary controls |
