@@ -40,6 +40,8 @@ internal static class DxpCustomListFormats
         ["\u5b50, \u4e11, \u5bc5, ..."] = NumberFormatValues.IdeographZodiac,
         ["\u7532\u5b50, \u4e59\u4e11, \u4e19\u5bc5, ..."] = NumberFormatValues.IdeographZodiacTraditional,
         ["\u3220, \u3221, \u3222, ..."] = NumberFormatValues.IdeographEnclosedCircle,
+        ["1, A, B, ..."] = NumberFormatValues.Hex,
+        ["*, \u2020, \u2021, ..."] = NumberFormatValues.Chicago,
     };
 
     internal static bool TryResolve(NumberingFormat? format, out NumberFormatValues value)
