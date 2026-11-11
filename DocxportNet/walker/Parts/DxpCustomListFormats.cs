@@ -42,6 +42,9 @@ internal static class DxpCustomListFormats
         ["\u3220, \u3221, \u3222, ..."] = NumberFormatValues.IdeographEnclosedCircle,
         ["1, A, B, ..."] = NumberFormatValues.Hex,
         ["*, \u2020, \u2021, ..."] = NumberFormatValues.Chicago,
+        ["\u2460, \u2461, \u2462, ..."] = NumberFormatValues.DecimalEnclosedCircle,
+        ["\u2488, \u2489, \u248a, ..."] = NumberFormatValues.DecimalEnclosedFullstop,
+        ["\u2474, \u2475, \u2476, ..."] = NumberFormatValues.DecimalEnclosedParen,
     };
 
     internal static bool TryResolve(NumberingFormat? format, out NumberFormatValues value)
