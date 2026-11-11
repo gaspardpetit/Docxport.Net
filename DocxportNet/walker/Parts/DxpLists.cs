@@ -600,6 +600,8 @@ public static class DxpListMarkerFormatter
         {
             // Word lists use only the first enclosed-number range, then decimal
             // text, even when Unicode provides additional circled characters.
+            // Direct Word captures confirm empty signed-minimum expansions.
+            if (n == int.MinValue && fmt != NumberFormatValues.DecimalEnclosedCircleChinese) return "";
             var limit = fmt == NumberFormatValues.DecimalEnclosedCircleChinese ? 10 : 20;
             var first = fmt == NumberFormatValues.DecimalEnclosedFullstop ? '\u2488'
                 : fmt == NumberFormatValues.DecimalEnclosedParen ? '\u2474' : '\u2460';

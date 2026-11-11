@@ -16,6 +16,7 @@ under the same group and basename in
 | ChineseLegal | Simplified/traditional Chinese legal numerals and limits |
 | ChineseUnitCounting | Chinese/Taiwanese unit counting, internal zeros and limits |
 | CustomAlphabetAliases | Exact regional alphabet and Hebrew numeral aliases |
+| CustomEnclosedAliases | Exact circled, full-stop and parenthesized number aliases |
 | CustomDigitAliases | Exact Hindi, Thai and Taiwanese digit aliases |
 | CustomHexChicagoAliases | Exact hexadecimal and Chicago symbol aliases |
 | CustomIdeographAliases | Exact traditional, zodiac and enclosed ideograph aliases |
