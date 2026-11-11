@@ -625,6 +625,11 @@ public static class DxpListMarkerFormatter
         if (fmt == NumberFormatValues.Decimal && n == int.MinValue ||
             fmt == NumberFormatValues.DecimalZero && n < 0)
             return "";
+        // Word's full-width variants differ for ordinary negatives; both
+        // suppress the signed minimum in list labels, leaving fields unchanged.
+        if (fmt == NumberFormatValues.DecimalFullWidth && n == int.MinValue ||
+            fmt == NumberFormatValues.DecimalFullWidth2 && n < 0)
+            return "";
         // Word lists repeat a single Latin letter (AA, BB). Field formatting
         // uses positional letters (AA, AB) and continues through FormatNumber.
         if (fmt == NumberFormatValues.UpperLetter || fmt == NumberFormatValues.LowerLetter)
