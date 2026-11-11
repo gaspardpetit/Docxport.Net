@@ -45,6 +45,7 @@ internal static class DxpCustomListFormats
         ["\u2460, \u2461, \u2462, ..."] = NumberFormatValues.DecimalEnclosedCircle,
         ["\u2488, \u2489, \u248a, ..."] = NumberFormatValues.DecimalEnclosedFullstop,
         ["\u2474, \u2475, \u2476, ..."] = NumberFormatValues.DecimalEnclosedParen,
+        ["\uff11, \uff12, \uff13, ..."] = NumberFormatValues.DecimalFullWidth,
     };
 
     internal static bool TryResolve(NumberingFormat? format, out NumberFormatValues value)
