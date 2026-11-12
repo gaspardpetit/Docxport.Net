@@ -212,6 +212,7 @@ public struct DxpEffectiveRunStyleBuilder
 public sealed class DxpStyleResolver : DxpIStyleResolver
 {
     private readonly Styles? _styles;
+    private readonly DxpStyleResolver? _numberingStyleResolver;
     private readonly ILogger? _logger;
     private readonly Dictionary<(string Id, StyleValues? Type), Style> _byIdType;
     private readonly Dictionary<string, List<Style>> _byIdAllTypes;
@@ -306,9 +307,18 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
 
 
     public DxpStyleResolver(WordprocessingDocument doc, ILogger? logger = null)
+        : this(doc, logger, null, false)
+    {
+    }
+
+    private DxpStyleResolver(WordprocessingDocument doc, ILogger? logger, Styles? numberingStyles, bool numberingView)
     {
         _logger = logger;
-        _styles = doc.MainDocumentPart?.StyleDefinitionsPart?.Styles;
+        _styles = numberingView ? numberingStyles : doc.MainDocumentPart?.StyleDefinitionsPart?.Styles;
+        if (!numberingView && DxpNumberingResolver.NormalizeNumberingStyles(_styles,
+            doc.MainDocumentPart?.NumberingDefinitionsPart?.Numbering) is { } normalized &&
+            !ReferenceEquals(normalized, _styles))
+            _numberingStyleResolver = new DxpStyleResolver(doc, null, normalized, true);
         _byIdType = new Dictionary<(string Id, StyleValues? Type), Style>(StyleLookupKeyComparer.Instance);
         _byIdAllTypes = new Dictionary<string, List<Style>>(StringComparer.Ordinal);
 
@@ -1044,6 +1054,8 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
 
     public DxpStyleEffectiveNumPr? ResolveEffectiveNumPr(Paragraph p)
     {
+        // Imported style/list ownership affects membership only; layout uses the source.
+        if (_numberingStyleResolver != null) return _numberingStyleResolver.ResolveEffectiveNumPr(p);
         // Resolve individual properties through direct formatting and the style
         // chain. A direct numId need not have a direct level, and vice versa.
         var markerProperties = DxpNumberingResolver.NormalizeParagraphNumberingProperties(p);

@@ -82,3 +82,5 @@ and update manifest hashes only after reviewing the new bytes.
 - `DirectCompatibility/`: Word-confirmed compatibility processing for direct paragraph list membership and explicit suppression.
 
 - `MarkerPropertyChoices/`: Word-confirmed visible caps selected inside numbering symbol run properties, with direct/off controls.
+
+- `StyleAssociations/`: 128 Word-confirmed style/list association controls, retaining six investigation subgroups.
