@@ -743,6 +743,11 @@ public static class DxpListMarkerFormatter
             return JapaneseLegalNumber(n);
         if (n >= 0 && (fmt == NumberFormatValues.KoreanCounting || fmt == NumberFormatValues.KoreanLegal))
             return KoreanUnitNumber(n, fmt == NumberFormatValues.KoreanLegal);
+        // Direct Word captures confirm empty negative Chinese/Taiwanese
+        // counting list expansions; shared field formatting remains separate.
+        if (n < 0 && (fmt == NumberFormatValues.ChineseCounting || fmt == NumberFormatValues.TaiwaneseCounting ||
+            fmt == NumberFormatValues.ChineseCountingThousand || fmt == NumberFormatValues.TaiwaneseCountingThousand))
+            return "";
         if (n >= 0 && (fmt == NumberFormatValues.ChineseCountingThousand || fmt == NumberFormatValues.TaiwaneseCountingThousand))
         {
             var simplified = fmt == NumberFormatValues.ChineseCountingThousand;
