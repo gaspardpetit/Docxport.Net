@@ -11,7 +11,8 @@ internal static class DocOpenXmlListReader
             Func<OpenXmlCompositeElement?, DocCharacterFormatting> readFormatting,
             Func<OpenXmlCompositeElement?, DocParagraphFormatting> readParagraphFormatting)
     {
-        var numbering = main?.NumberingDefinitionsPart?.Numbering;
+        var numbering = main?.OpenXmlPackage is WordprocessingDocument document
+            ? new DocxportNet.Walker.DxpNumberingResolver(document).ImportedNumbering : null;
         if (numbering == null)
             return (new DocListIndex([], []), new Dictionary<int, short>());
         var usedNumberIds = new HashSet<int>();

@@ -43,6 +43,8 @@ public sealed class DxpNumberingResolver
         }
     }
 
+    internal Numbering? ImportedNumbering => _numbering;
+
     internal static ParagraphProperties? NormalizeParagraphNumberingProperties(Paragraph source)
     {
         // Ordinary run content cannot supply paragraph properties. Avoid scanning
