@@ -1,0 +1,2378 @@
+{
+  "marker-style-association-target/backward-Base": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-association-target/backward-Base.docx",
+    "sourceSha256": "dd7d3d068abff04ac5542d73bd9bfb2960aa1dc1ca4207d5fe263be2998a2a08",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-association-target/backward-Base.pdf",
+    "wordPdfSha256": "76edbd00b7ec84710f6b4ae54cd81cf7276f5759d0d6a937a953e6ae53c7bd98",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "wordListStrings": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ]
+  },
+  "marker-style-association-target/backward-Character": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-association-target/backward-Character.docx",
+    "sourceSha256": "d396df7ebda9e6b3ec374e91b2cbb85dd3860db2c4c8339c3d194a2a4480069c",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-association-target/backward-Character.pdf",
+    "wordPdfSha256": "f076d214781ed8374576307f7ad1dd1eee9d51cff65be0fa86f1cc00c80dae0b",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "wordListStrings": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ]
+  },
+  "marker-style-association-target/backward-Derived": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-association-target/backward-Derived.docx",
+    "sourceSha256": "130b33d762b4b8cd53730ac32c1656d630da06fd7d2254f7229dfbbbb48858ba",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-association-target/backward-Derived.pdf",
+    "wordPdfSha256": "a014c6291c0be7175f6e0456b4b8d76acf21ca84b594ecf54d16393be5955ad7",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-association-target/backward-Ghost": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-association-target/backward-Ghost.docx",
+    "sourceSha256": "25ac0e909988c9eb42b016c5dd212828c192e20ada71f99e28e0665796189e59",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-association-target/backward-Ghost.pdf",
+    "wordPdfSha256": "960965b7bde5b71f4578087999a331e41368b02ce490841c7af2156aa65abb77",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "wordListStrings": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ]
+  },
+  "marker-style-association-target/backward-Normal": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-association-target/backward-Normal.docx",
+    "sourceSha256": "42702d87cccb5a899d73767c146bbca66e08093eb2c8dadae2e71beb48d0ce62",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-association-target/backward-Normal.pdf",
+    "wordPdfSha256": "079c30986e3375f65c5df15e0e4b31dc33f891d9fb8632182f744e4ef65e5126",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "wordListStrings": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ]
+  },
+  "marker-style-association-target/forward-Base": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-association-target/forward-Base.docx",
+    "sourceSha256": "cd809cd951f67575fd50d932d3bcc39ae6cf066098f326b0b0e0f6c2f320a85c",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-association-target/forward-Base.pdf",
+    "wordPdfSha256": "a75ee3a0ce5ffb9c01327807803f37fdaca13676c51b1d9c7cbf99b060685a80",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "wordListStrings": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ]
+  },
+  "marker-style-association-target/forward-Character": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-association-target/forward-Character.docx",
+    "sourceSha256": "b31ad36e3feba9545c04598d1b4610f622be57ca93156228eb8e5a1f7ec69b94",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-association-target/forward-Character.pdf",
+    "wordPdfSha256": "083a4f06cd7ee97f93e707af4153e6be3750f36d84636a90ad1d71a7cc12a466",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-association-target/forward-Derived": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-association-target/forward-Derived.docx",
+    "sourceSha256": "93325b8570de951d7a5c56fae026eb93f3a56686b43e3e459286f58d73cf939a",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-association-target/forward-Derived.pdf",
+    "wordPdfSha256": "a56d9fb27f647d23a4ff9584a66689de04af110affa0c0a7daa0c1885f1642b6",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-association-target/forward-Ghost": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-association-target/forward-Ghost.docx",
+    "sourceSha256": "3ac2b3d2dc9bd5c2c3078fb1b152deded3f0f6d438871f5a709d2d0277188e3c",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-association-target/forward-Ghost.pdf",
+    "wordPdfSha256": "2f35966ead3617ea275522475a8ef63ab376eb4e9b369a5ca37ed8789c1abb8c",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-association-target/forward-Normal": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-association-target/forward-Normal.docx",
+    "sourceSha256": "ef5600cadac89f58fecb873225972fa2999e09ea11e6ecb9d2ab26431977b14c",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-association-target/forward-Normal.pdf",
+    "wordPdfSha256": "12dc9155400f2bfa9847e092c71cde670f3d5758c04e0a70d868d6a06ac1e7a9",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-explicit-association/backward-full-one-shared-bound-Base": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-explicit-association/backward-full-one-shared-bound-Base.docx",
+    "sourceSha256": "572394b90b6d351759d942e57ba71b2f13acb8b41dd80c40756e6572e1c26047",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-explicit-association/backward-full-one-shared-bound-Base.pdf",
+    "wordPdfSha256": "a7724acd65b9c9b89229858fb04b6ab8f41768db7196a2993d7b14b3ea7cfaec",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-explicit-association/backward-full-one-shared-bound-Derived": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-explicit-association/backward-full-one-shared-bound-Derived.docx",
+    "sourceSha256": "5251b90155f1239809d555428c581d0c722b94ff8d4789539d0e1d20979a4b0e",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-explicit-association/backward-full-one-shared-bound-Derived.pdf",
+    "wordPdfSha256": "3b4348c9cdcbd8b4c3582db4ed619737c1a38d4b00f03b6de2be95fcc499032e",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ],
+    "wordListStrings": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ]
+  },
+  "marker-style-explicit-association/backward-full-zero-shared-bound-Base": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-explicit-association/backward-full-zero-shared-bound-Base.docx",
+    "sourceSha256": "413fcf0975066251b7853632cb9edcba707f050142ef447a2e617b487c4c3a6b",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-explicit-association/backward-full-zero-shared-bound-Base.pdf",
+    "wordPdfSha256": "799a9a346b844f5458331ba45c94ec89658f22ba52052810b3cdf6bcb6018733",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ],
+    "wordListStrings": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ]
+  },
+  "marker-style-explicit-association/backward-full-zero-shared-bound-Derived": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-explicit-association/backward-full-zero-shared-bound-Derived.docx",
+    "sourceSha256": "a4971f7b0b633a597d370a37d5c9011cb65c83571d20d6ea0b8b27074c6aa193",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-explicit-association/backward-full-zero-shared-bound-Derived.pdf",
+    "wordPdfSha256": "ad4eb92dc88a85d4ed8ff567fbbccdc24cf9cbf3eebac66bc6f4335f5ac1bc77",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ],
+    "wordListStrings": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ]
+  },
+  "marker-style-explicit-association/backward-id-only-shared-bound-Base": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-explicit-association/backward-id-only-shared-bound-Base.docx",
+    "sourceSha256": "7797495736ed114c9202a08d28d41c2d2e5c543cc49e526ce1e0bc98fc20e1ac",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-explicit-association/backward-id-only-shared-bound-Base.pdf",
+    "wordPdfSha256": "7715c658492a7a24bb6bf3faa85aa48421bc5e7eeec5274af35d709556d95268",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-explicit-association/backward-id-only-shared-bound-Derived": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-explicit-association/backward-id-only-shared-bound-Derived.docx",
+    "sourceSha256": "f8251e426c27c1ec71eb1040216ec7fc9706a0aa7f6533940e253e452b94b86c",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-explicit-association/backward-id-only-shared-bound-Derived.pdf",
+    "wordPdfSha256": "79b880fb75027cac601a2aadff60a4b3128d4525259a44772ee85ce78396aec4",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ],
+    "wordListStrings": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ]
+  },
+  "marker-style-explicit-association/forward-full-one-shared-bound-Base": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-explicit-association/forward-full-one-shared-bound-Base.docx",
+    "sourceSha256": "89e472fe122f7993a6f623fb3ed05668d2a9a475b3ea054f07f8d20adb8f45ad",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-explicit-association/forward-full-one-shared-bound-Base.pdf",
+    "wordPdfSha256": "428269881db1d34a649df1708dce0e4bcd80e815cacf674002b4f85c66c554c5",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-explicit-association/forward-full-one-shared-bound-Derived": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-explicit-association/forward-full-one-shared-bound-Derived.docx",
+    "sourceSha256": "ff9b86956965e241c430d5c5a4265ea42bc2ee73a4a609b61eb400ed4dbb7595",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-explicit-association/forward-full-one-shared-bound-Derived.pdf",
+    "wordPdfSha256": "b77c179a0e225ab79d95a0daa86d85805052fb5745e6e8fe217e01fe2fa65aed",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ],
+    "wordListStrings": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ]
+  },
+  "marker-style-explicit-association/forward-full-zero-shared-bound-Base": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-explicit-association/forward-full-zero-shared-bound-Base.docx",
+    "sourceSha256": "d64cfccae8342e2f3fccab7a85058166c5a2c44ce150af83f4eeec2856ddf5ba",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-explicit-association/forward-full-zero-shared-bound-Base.pdf",
+    "wordPdfSha256": "38f219f035870b0c8fe53f72d6059ec75e68d3bc36acaf60be3fb0c411d95717",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ],
+    "wordListStrings": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ]
+  },
+  "marker-style-explicit-association/forward-full-zero-shared-bound-Derived": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-explicit-association/forward-full-zero-shared-bound-Derived.docx",
+    "sourceSha256": "18aa9af37f39865f36512b927499b4bd91b0c896d396becd9df0c125df0fce26",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-explicit-association/forward-full-zero-shared-bound-Derived.pdf",
+    "wordPdfSha256": "988a6363d0fd966eb230f007136886f073fcc7bca62f5239696769dba3d57798",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ],
+    "wordListStrings": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ]
+  },
+  "marker-style-explicit-association/forward-id-only-shared-bound-Base": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-explicit-association/forward-id-only-shared-bound-Base.docx",
+    "sourceSha256": "36135aa891e6cfa3cd13ebaa61a47f3618f6bd821782a3eb73b06565a6dfb5db",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-explicit-association/forward-id-only-shared-bound-Base.pdf",
+    "wordPdfSha256": "0c2eceb37cfe0873f2f4e71f825bc35679acec90568f225d3af2f7bd897c130e",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-explicit-association/forward-id-only-shared-bound-Derived": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-explicit-association/forward-id-only-shared-bound-Derived.docx",
+    "sourceSha256": "e6f362a08a57b1b6b9b51bc2328da40543411e2015e752da650259cc636ab2a1",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-explicit-association/forward-id-only-shared-bound-Derived.pdf",
+    "wordPdfSha256": "8b43d680c019fd8ef35d0d269a4bb69da4596d26d2986c136858b8b31e790b59",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ],
+    "wordListStrings": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ]
+  },
+  "marker-style-explicit-association/inherited-backward-bound-Base": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-explicit-association/inherited-backward-bound-Base.docx",
+    "sourceSha256": "ef44ce68acc8baaf67120aa1d85e76f112f3e4585ebdc34c1f1139af886121b9",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-explicit-association/inherited-backward-bound-Base.pdf",
+    "wordPdfSha256": "bbfe74dd85d40611415a9d685df24a026ff87a162b2a202b1435bb172317c711",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "wordListStrings": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ]
+  },
+  "marker-style-explicit-association/inherited-backward-bound-Derived": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-explicit-association/inherited-backward-bound-Derived.docx",
+    "sourceSha256": "f54f8f9fe79187b48f958481c580df6fd668c72214bc4b82709211d2b5dfa897",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-explicit-association/inherited-backward-bound-Derived.pdf",
+    "wordPdfSha256": "8404d56347c8bbb158b875a8d0796d8abb9ffb5ecdbc27d00e42764fac7c2631",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-explicit-association/inherited-forward-bound-Base": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-explicit-association/inherited-forward-bound-Base.docx",
+    "sourceSha256": "e5421052e8e26e639376e12d8e728c89043ce596ed40bbf6088afba298e98815",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-explicit-association/inherited-forward-bound-Base.pdf",
+    "wordPdfSha256": "a89b9e39203603122dedf68e0552ea7c900f7550236755492dd5299210fe2160",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "wordListStrings": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ]
+  },
+  "marker-style-explicit-association/inherited-forward-bound-Derived": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-explicit-association/inherited-forward-bound-Derived.docx",
+    "sourceSha256": "8b180fb0a450c9f16be83eb0e9033b007ba5fd4de9270a9f630b153242cf34c3",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-explicit-association/inherited-forward-bound-Derived.pdf",
+    "wordPdfSha256": "b05d2dda96de40d565265989590779fcbd5c28d5988626cd0a646b8b1c4aba1e",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-instance-link/backward-full-one-separate": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-instance-link/backward-full-one-separate.docx",
+    "sourceSha256": "486ec0fefab5b25256f027d70d7ccaa1d5d0f9a5fb56a2f6abbc4fb5842f848d",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-instance-link/backward-full-one-separate.pdf",
+    "wordPdfSha256": "d0cbdb8912b7f586d814779792b2240d92931b77e93da0f0e1d855eaf0a622e4",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ],
+    "wordListStrings": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ]
+  },
+  "marker-style-instance-link/backward-full-one-shared": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-instance-link/backward-full-one-shared.docx",
+    "sourceSha256": "8cc209a861f3eadef56b6bdb51f18accc385566e0fe7be496f0ef725fb740e65",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-instance-link/backward-full-one-shared.pdf",
+    "wordPdfSha256": "f58257ca2d27cabce9e072f8cf9cb799403f12449542bfa6396dc5757c0f3a93",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-instance-link/backward-full-zero-separate": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-instance-link/backward-full-zero-separate.docx",
+    "sourceSha256": "13f5049414519d3dd481f70371eff2dbba692af243fc7e2f7c5e7ce6e2c9b0e3",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-instance-link/backward-full-zero-separate.pdf",
+    "wordPdfSha256": "eeb9a62bff99546b4369bd6828896cb72b0ed9e32ffd2de1a0e0c1c1d6fba58d",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ],
+    "wordListStrings": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ]
+  },
+  "marker-style-instance-link/backward-full-zero-shared": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-instance-link/backward-full-zero-shared.docx",
+    "sourceSha256": "9cc16d0a36e49a7b4c0fee19b20918d01479dc49086542324578a0f7621acae8",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-instance-link/backward-full-zero-shared.pdf",
+    "wordPdfSha256": "88757b02a34dccf29235a15162049fb1fb05d0d3ced0be6c369552ee755ec28d",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ],
+    "wordListStrings": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ]
+  },
+  "marker-style-instance-link/backward-id-cancel-separate": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-instance-link/backward-id-cancel-separate.docx",
+    "sourceSha256": "855591450f13a6ecf7e50b1abde10a81c5335533730fd166cb256120cdc1402c",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-instance-link/backward-id-cancel-separate.pdf",
+    "wordPdfSha256": "1e6f130a7f8ab5d2c8ec8ab8bfab8ab15f9c3bcfdf4b8f30c1e9a7d6c921b107",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-instance-link/backward-id-cancel-shared": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-instance-link/backward-id-cancel-shared.docx",
+    "sourceSha256": "1df5c5aa109e4b54f78d50aa669a9f6ed8def5868af98dd62667ade19609036a",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-instance-link/backward-id-cancel-shared.pdf",
+    "wordPdfSha256": "489cc987143215704bd1a2fecc750894cc3af7ab895599367144d3018e200eb4",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-instance-link/backward-id-only-separate": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-instance-link/backward-id-only-separate.docx",
+    "sourceSha256": "232c0e3d17d92ad1a9baaf002af603d444c2bdbe31bffc129fd3fe47ea41e7a6",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-instance-link/backward-id-only-separate.pdf",
+    "wordPdfSha256": "7fd577f2274d2c36ff75fce419d243931fc87a5c224b1f43a7ebb873543699b2",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ],
+    "wordListStrings": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ]
+  },
+  "marker-style-instance-link/backward-id-only-shared": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-instance-link/backward-id-only-shared.docx",
+    "sourceSha256": "b1245c5e2df98f44319557bc781480dd713ba89ef1fb4556cbf4f38d6247c6ba",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-instance-link/backward-id-only-shared.pdf",
+    "wordPdfSha256": "d69a49cf3610fc9583aeee1726e1260fc4fac089754630021b740029334e7040",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-instance-link/forward-full-one-separate": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-instance-link/forward-full-one-separate.docx",
+    "sourceSha256": "386b18a390b340b3737f8ccc183860498f3aa60c22b7cb80fad39f2baa148f37",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-instance-link/forward-full-one-separate.pdf",
+    "wordPdfSha256": "6cac285bce4acb752aa32f135561bc9129eda5a223a27246f439077992b8c72c",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ],
+    "wordListStrings": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ]
+  },
+  "marker-style-instance-link/forward-full-one-shared": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-instance-link/forward-full-one-shared.docx",
+    "sourceSha256": "d7ee44ba1d5eb2ac060bb7965020c74bce87453c168b5f82cebff6809c7517fb",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-instance-link/forward-full-one-shared.pdf",
+    "wordPdfSha256": "af74afb43d906dbb6c2cf629ba55201dd1471569460c4ae6229a7e728bff9a09",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ],
+    "wordListStrings": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ]
+  },
+  "marker-style-instance-link/forward-full-zero-separate": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-instance-link/forward-full-zero-separate.docx",
+    "sourceSha256": "7aca8a57f92286787dec1875d333483a43c4d52def42b2a069b592fc6377c868",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-instance-link/forward-full-zero-separate.pdf",
+    "wordPdfSha256": "9fa6ed9c96ace5fdd18cc5eb48cfbadcbcde8452bdbcfa71665b88b5277a7fe2",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ],
+    "wordListStrings": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ]
+  },
+  "marker-style-instance-link/forward-full-zero-shared": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-instance-link/forward-full-zero-shared.docx",
+    "sourceSha256": "49abb5adfe50e659318ba0213955836cb71706b8bfda037e3e6fefe01954e06d",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-instance-link/forward-full-zero-shared.pdf",
+    "wordPdfSha256": "f014589b5a871ce3aef175bca0999796bb824fffb1cbb83c55134bfbb025d176",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ],
+    "wordListStrings": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ]
+  },
+  "marker-style-instance-link/forward-id-cancel-separate": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-instance-link/forward-id-cancel-separate.docx",
+    "sourceSha256": "7ae3f18ff0b4f01d03c80b749385bc6bbec1f353c221f98e884e9d6ff3aa025c",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-instance-link/forward-id-cancel-separate.pdf",
+    "wordPdfSha256": "c0b47605a3e85bca44d0a53c1726fcaea0c701750513bc69ff11f7ae833c61bb",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-instance-link/forward-id-cancel-shared": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-instance-link/forward-id-cancel-shared.docx",
+    "sourceSha256": "721883d361c7874fa10244ece4cb52da2e01c7e4f62d3a8359b5bf977cb1902d",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-instance-link/forward-id-cancel-shared.pdf",
+    "wordPdfSha256": "4656a5bf47bc9f1b78fb98742fe58cd652f6f40cbf884f1b15ad9418893f7fc8",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-instance-link/forward-id-only-separate": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-instance-link/forward-id-only-separate.docx",
+    "sourceSha256": "38df5c57d94f5b1404501ea5702976b4eba1d91888604bb310f8b5b63f07d182",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-instance-link/forward-id-only-separate.pdf",
+    "wordPdfSha256": "d4242d4d883799c6d51974281fc2560f803f9fbcd2c28b99aba01902b5fb38bf",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ],
+    "wordListStrings": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ]
+  },
+  "marker-style-instance-link/forward-id-only-shared": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-instance-link/forward-id-only-shared.docx",
+    "sourceSha256": "781f731fcc580a39cf10914a30f1e8fd28e7a97e989be77ce61a4a7f9d92e6a4",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-instance-link/forward-id-only-shared.pdf",
+    "wordPdfSha256": "9b44ff700da0dfb1bf50d530760709084d5293fd7dccfbbc6364aacc145f053e",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ],
+    "wordListStrings": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ]
+  },
+  "marker-style-order-extra/derived-full-Base-Derived-Middle": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-full-Base-Derived-Middle.docx",
+    "sourceSha256": "bda7681edf4eb26ead18e214222a6b8b185a0bf009f7751e124e5101e613b377",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-full-Base-Derived-Middle.pdf",
+    "wordPdfSha256": "2be7752c1aea8a4adfd01ff3783de782fe65e62f6c8ee8d5fd932c3e7e0b0228",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order-extra/derived-full-Base-Middle-Derived": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-full-Base-Middle-Derived.docx",
+    "sourceSha256": "9a11e29c0078021e9f716632cb0728ba5b1d3d5c9f6520692b1112ab8932c218",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-full-Base-Middle-Derived.pdf",
+    "wordPdfSha256": "4607517308fed94ecd229d916e4a21e4484600b9f86c4724d37229cd44acb3b3",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order-extra/derived-full-Derived-Base-Middle": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-full-Derived-Base-Middle.docx",
+    "sourceSha256": "183540dbb7f7f97107c8c87723c455dbc10e1e695bc3b48c4f4465974c920b67",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-full-Derived-Base-Middle.pdf",
+    "wordPdfSha256": "937589265eb68ecd1b8fe848d7756b493edf4ed8111db12d3a18f6019b90b279",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order-extra/derived-full-Derived-Middle-Base": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-full-Derived-Middle-Base.docx",
+    "sourceSha256": "b8895c640efbdf8b44a4671c0036e94ced621003b59ebea39c2de5dc8a2c0674",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-full-Derived-Middle-Base.pdf",
+    "wordPdfSha256": "9960fb22e069001061dbd3891c56f02abb2bde0f2983dbbb5a25ca0bc345dc14",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order-extra/derived-full-Middle-Base-Derived": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-full-Middle-Base-Derived.docx",
+    "sourceSha256": "d08b700687df3449353c8c018f70e3b7c03cae46794533a8a4d233a37ea6628e",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-full-Middle-Base-Derived.pdf",
+    "wordPdfSha256": "5a10ce2d775fc0d677947eacd8440d1de5ddb2d497d28367da3b00978bac6107",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order-extra/derived-full-Middle-Derived-Base": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-full-Middle-Derived-Base.docx",
+    "sourceSha256": "5e81e3b0fca5bdf2ec2b9623fc0e8c1e1064143d5d3085bd97c8ca1c2b406889",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-full-Middle-Derived-Base.pdf",
+    "wordPdfSha256": "fe9d457e42101333bc978cae73a4f65a1e962237c10e0571db0a6dc609d4e64f",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order-extra/derived-id-Base-Derived-Middle": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-id-Base-Derived-Middle.docx",
+    "sourceSha256": "95786a323764bc4fb023638f4c1d2e575f5d3d9ef844ffeec1383564530aea45",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-id-Base-Derived-Middle.pdf",
+    "wordPdfSha256": "6fd9d5cc123c71526f0457ec32bb6f29bcd8b8e2f0e9aec05d482fe260e9d5fd",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order-extra/derived-id-Base-Middle-Derived": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-id-Base-Middle-Derived.docx",
+    "sourceSha256": "5f5fcea78b2ebdb37dd506464a79cf2256885987ba06235721051a4e19694020",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-id-Base-Middle-Derived.pdf",
+    "wordPdfSha256": "018fe938388d48bd720b47fe5764f2f00742052c2669a88d3edde2c2dbb9f4af",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order-extra/derived-id-Derived-Base-Middle": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-id-Derived-Base-Middle.docx",
+    "sourceSha256": "fae6a772f533955edeb3f62e733f073f0ce8c5b59d2533ac13b3e32c5a38da84",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-id-Derived-Base-Middle.pdf",
+    "wordPdfSha256": "9c1a477d537bd160042bd86d50848946c2518660f95c4147bca1811cb0445dc9",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order-extra/derived-id-Derived-Middle-Base": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-id-Derived-Middle-Base.docx",
+    "sourceSha256": "3cf6d12d227f4d3b1a517c1c22074d8cf48b2d344aabdd3e3cd17bdf76949777",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-id-Derived-Middle-Base.pdf",
+    "wordPdfSha256": "6f915329e7dd33e8cef0399860897657b306cf6a7acfbf1bc6f4a72e9102c2b7",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order-extra/derived-id-Middle-Base-Derived": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-id-Middle-Base-Derived.docx",
+    "sourceSha256": "00f2f2c44cff3a43d2c515c236a54260a5d646ea5943a18d0cd34775cb92e195",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-id-Middle-Base-Derived.pdf",
+    "wordPdfSha256": "3c5792abe07b4ba5d13cdbf9c082954d9be066b8611e4bee1dcf225df4f84498",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order-extra/derived-id-Middle-Derived-Base": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-id-Middle-Derived-Base.docx",
+    "sourceSha256": "9eac71c2ced7f776b0881aede3b9cdb3660d85a7069088c5ae95c1f8d4c6bff6",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-id-Middle-Derived-Base.pdf",
+    "wordPdfSha256": "9a3366fe64ef9eb10a7a48a5c64900049033a80c8b1026478db4f082214062a2",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order-extra/derived-level-Base-Derived-Middle": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-level-Base-Derived-Middle.docx",
+    "sourceSha256": "40ee7d73f1fb49692cef41525dff15b3fdb7b78a767430296c3f92459ad60c35",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-level-Base-Derived-Middle.pdf",
+    "wordPdfSha256": "03b5bfcbe6985c64572fe45d556f3b7b5ca887e6ed3b46fb98e573d057b4e87c",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order-extra/derived-level-Base-Middle-Derived": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-level-Base-Middle-Derived.docx",
+    "sourceSha256": "92d505881d336afc8e7436b5c14816dd8cbf957c3e242791f93f9017956f9976",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-level-Base-Middle-Derived.pdf",
+    "wordPdfSha256": "9f48e61beddeeca4fbcdfa03f6660e20559439d9f9e11bbc75603f1831b14f91",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order-extra/derived-level-Derived-Base-Middle": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-level-Derived-Base-Middle.docx",
+    "sourceSha256": "be26eb5c2f847a8c7813928c41788f8b04c30fc6ed38acb37478ee8288bc5691",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-level-Derived-Base-Middle.pdf",
+    "wordPdfSha256": "32c7dfc2ccfc525eb2293222ed69942b8b293e5f2310ee1bae0a79b0f7b73e35",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order-extra/derived-level-Derived-Middle-Base": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-level-Derived-Middle-Base.docx",
+    "sourceSha256": "beaf3770ed96431f2e667aff5b7e65c71a951271a85e6b13cb69e25831c79236",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-level-Derived-Middle-Base.pdf",
+    "wordPdfSha256": "b4b4047922a3193d1f11c2159e06db61dd28eb79b7c1ac518d92bbb56795fe21",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order-extra/derived-level-Middle-Base-Derived": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-level-Middle-Base-Derived.docx",
+    "sourceSha256": "302f8b65503e5d321e95dcf361330b42b5d0064c0e1858fa64704d881ec3f67a",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-level-Middle-Base-Derived.pdf",
+    "wordPdfSha256": "5697569e9b734cbaaf7914910d66c53a4e0688a3418f9dd7092891a02e6f91bb",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order-extra/derived-level-Middle-Derived-Base": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-level-Middle-Derived-Base.docx",
+    "sourceSha256": "cb97657f9946862e92cd5ae216f956111c974de36591cd897411c2adc05d6370",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/derived-level-Middle-Derived-Base.pdf",
+    "wordPdfSha256": "0c069519c00ad89b22fdd36267241c82ebb987729b8a62977cd518fe3069a8bc",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order-extra/empty-derived-Base-Derived-Middle": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/empty-derived-Base-Derived-Middle.docx",
+    "sourceSha256": "0066f4a818900a3e7ff183b1fbaa8dd23fb37d63356d5f1c111b6fc21bfebbb1",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/empty-derived-Base-Derived-Middle.pdf",
+    "wordPdfSha256": "9666a554af22bd896c1787cd2a80b81e2a4507ccb0087323f9bf9a90f700bad8",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "wordListStrings": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ]
+  },
+  "marker-style-order-extra/empty-derived-Base-Middle-Derived": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/empty-derived-Base-Middle-Derived.docx",
+    "sourceSha256": "fa40a1ff0c8dec348077874b0e15261477a5b0d360bd7d71270d49a02875914c",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/empty-derived-Base-Middle-Derived.pdf",
+    "wordPdfSha256": "0056e513c864fe6ec7ccfef22ff661f3fd8370ab011518abe2abafa4d25cc4d7",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "wordListStrings": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ]
+  },
+  "marker-style-order-extra/empty-derived-Derived-Base-Middle": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/empty-derived-Derived-Base-Middle.docx",
+    "sourceSha256": "ed5f831ec2b4ea4f9598af240f6e0b10fdd20eab20e464ba25ccb510f468e303",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/empty-derived-Derived-Base-Middle.pdf",
+    "wordPdfSha256": "1359cec64f9299f413e7b93d63476dcddafc298c9a6a7ce68300e126e9e0bbc8",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order-extra/empty-derived-Derived-Middle-Base": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/empty-derived-Derived-Middle-Base.docx",
+    "sourceSha256": "b6ddc65c9b35c82d89fcefdb6ea3787c6533f57d8c4485c9f5cfde26827762bd",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/empty-derived-Derived-Middle-Base.pdf",
+    "wordPdfSha256": "70cf6aba598107b54874badb4ee381f649039d9823618b3de18080d84788b80e",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order-extra/empty-derived-Middle-Base-Derived": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/empty-derived-Middle-Base-Derived.docx",
+    "sourceSha256": "2b1fd85691d3558716ba2524dea0418274ac5859aa79a7644a54d8170c8063b8",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/empty-derived-Middle-Base-Derived.pdf",
+    "wordPdfSha256": "e468e9f5bb2f5669f34684651c480dc40642ef44bcc4bc5c2f9b57eb9a8236cc",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order-extra/empty-derived-Middle-Derived-Base": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/empty-derived-Middle-Derived-Base.docx",
+    "sourceSha256": "80a29d5f2f17c2b7d2e3fba06d4e11b166d5d3e43b10780ae68f999146bcbb4f",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/empty-derived-Middle-Derived-Base.pdf",
+    "wordPdfSha256": "7cf06aafebdea0f4b6bbaf0a00975d73086c89721810b6cb72ff6beda87b7f2e",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order-extra/empty-middle-Base-Derived-Middle": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/empty-middle-Base-Derived-Middle.docx",
+    "sourceSha256": "af3868ac47766d5390c30a524f28e103b08334c9c53ea54d0f57399a808790ee",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/empty-middle-Base-Derived-Middle.pdf",
+    "wordPdfSha256": "34e18c1469e19ed6da1862dc54413bbabbd9c808a76eb62126d6d4e64fa372d1",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "wordListStrings": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ]
+  },
+  "marker-style-order-extra/empty-middle-Base-Middle-Derived": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/empty-middle-Base-Middle-Derived.docx",
+    "sourceSha256": "16eeda77163c9b22c6e36996d04c9e66631cc43469cbd989a4d307414af1221b",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/empty-middle-Base-Middle-Derived.pdf",
+    "wordPdfSha256": "7f2dcca617b3d2cc987664501f09f159f67cfe5da20cfebb1850f81eb645b7c5",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "wordListStrings": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ]
+  },
+  "marker-style-order-extra/empty-middle-Derived-Base-Middle": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/empty-middle-Derived-Base-Middle.docx",
+    "sourceSha256": "c3974a84da7d56f90c8fdd6c7948bae1433918c430f31aa170e95ee40f21c6d0",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/empty-middle-Derived-Base-Middle.pdf",
+    "wordPdfSha256": "516e44898f122319a24fed5789002c4276dd738dfecf5ba78e2e8dbb3620d6e5",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order-extra/empty-middle-Derived-Middle-Base": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/empty-middle-Derived-Middle-Base.docx",
+    "sourceSha256": "db7bface64358576e8b609e588763947b4f69b42fccfc27f3ae501179f1cfbff",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/empty-middle-Derived-Middle-Base.pdf",
+    "wordPdfSha256": "7b2e8f13fe5c15075b1ad3dbeb07739a29827d0cfbf8c7b4ca19d9f25758b173",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order-extra/empty-middle-Middle-Base-Derived": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/empty-middle-Middle-Base-Derived.docx",
+    "sourceSha256": "aeddd14b1dfe90d94eb835015e7b6c897e950e305a910dd64800ec261672dccb",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/empty-middle-Middle-Base-Derived.pdf",
+    "wordPdfSha256": "6b5db52473c352c598385dc641c2f7e7cd7faa22e662265f750087fcb10d5b83",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order-extra/empty-middle-Middle-Derived-Base": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/empty-middle-Middle-Derived-Base.docx",
+    "sourceSha256": "48e989e1f678505dd55e3971d631317f07e15f27f32c8f16983f7bc832ac5ad2",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/empty-middle-Middle-Derived-Base.pdf",
+    "wordPdfSha256": "3c50640e948eaf7fe3e15d9458fd94f782248c558ea5bca714216fc28508145c",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order-extra/middle-cancel-Base-Derived-Middle": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/middle-cancel-Base-Derived-Middle.docx",
+    "sourceSha256": "bf90e83c1e93301dfe34265645671f2b82f1ff37a6586c73902851465b9128b7",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/middle-cancel-Base-Derived-Middle.pdf",
+    "wordPdfSha256": "bcae596e60d8c11920393218d4d709d0dad0912d019c1ddbb4bfddf75ad9fa44",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order-extra/middle-cancel-Base-Middle-Derived": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/middle-cancel-Base-Middle-Derived.docx",
+    "sourceSha256": "de14328b62b7b19e831f771d75e8e672adcf6ae4e0056e964d8fed89850b4ec2",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/middle-cancel-Base-Middle-Derived.pdf",
+    "wordPdfSha256": "1137f2ede51cd44927f90152546d8c0f3fc52a071ae570e6d87f55f5670bce53",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order-extra/middle-cancel-Derived-Base-Middle": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/middle-cancel-Derived-Base-Middle.docx",
+    "sourceSha256": "ae885dd9c7f6f2592b01648e3632389e71bfcf33bd0a821e49e75bff4f5ab4f3",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/middle-cancel-Derived-Base-Middle.pdf",
+    "wordPdfSha256": "07ef1434ba4f908753cfc824f408fa5e4b66bb6d643c8adc7150b9a149678576",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order-extra/middle-cancel-Derived-Middle-Base": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/middle-cancel-Derived-Middle-Base.docx",
+    "sourceSha256": "cf436ad688275e260fee8a34b4fbd3dba4e0d16cc8f2507ca7a5893e84800ce4",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/middle-cancel-Derived-Middle-Base.pdf",
+    "wordPdfSha256": "620374b8da64658927f4252fdd7aa6a22c1c573ff79a60b04ddff75927b2a740",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order-extra/middle-cancel-Middle-Base-Derived": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/middle-cancel-Middle-Base-Derived.docx",
+    "sourceSha256": "b50a914029d07d486c0c4c0f9803edb9fae94be9bad9a16307f8ddec095642da",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/middle-cancel-Middle-Base-Derived.pdf",
+    "wordPdfSha256": "00cea943e9e88e8a86b5260f679864658f1f39458679c88f5bf242cb88269344",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order-extra/middle-cancel-Middle-Derived-Base": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/middle-cancel-Middle-Derived-Base.docx",
+    "sourceSha256": "6e9bc1072b1c393b7f626beb65f4bfc5f63fa0271d4a0915272db91ff2874523",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/middle-cancel-Middle-Derived-Base.pdf",
+    "wordPdfSha256": "59432deaf62eb1f89b8826c87964cca6a4d34019757ccec2e19de120a5a9b220",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order-extra/middle-id-Base-Derived-Middle": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/middle-id-Base-Derived-Middle.docx",
+    "sourceSha256": "41e5ff3550c90b57bd70fd38874031f63a91102743a83450ae84a9bce819cfe4",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/middle-id-Base-Derived-Middle.pdf",
+    "wordPdfSha256": "01dcb239d3d907c9ac1a4013d3d7260fca6cdd9c348b259f5e9c45c55e5037af",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order-extra/middle-id-Base-Middle-Derived": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/middle-id-Base-Middle-Derived.docx",
+    "sourceSha256": "ebede1e9826cefc1198bcb56179d69585775855fef3561c1fb7c2d2858845993",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/middle-id-Base-Middle-Derived.pdf",
+    "wordPdfSha256": "a718cd7b58057243026647ddbf00c4df61fcd1ff59184260333411d008a6e0d2",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order-extra/middle-id-Derived-Base-Middle": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/middle-id-Derived-Base-Middle.docx",
+    "sourceSha256": "b5d6dda04d9264468bb6aed56206713911f30172dafcb545186149d9626aedc1",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/middle-id-Derived-Base-Middle.pdf",
+    "wordPdfSha256": "b42126a875fa8fc065a1f53845524dda6d7ccf7b0d71f91d09d32797ba323e5e",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order-extra/middle-id-Derived-Middle-Base": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/middle-id-Derived-Middle-Base.docx",
+    "sourceSha256": "63f3c9e5d65a547f06fe5e7d90ffa14643ee65fd5fc04c2573ea028e5d490fe9",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/middle-id-Derived-Middle-Base.pdf",
+    "wordPdfSha256": "25c0e0b84df71381622ffc081b562ae9de8f01b0c2caa965986af7c44aab4185",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order-extra/middle-id-Middle-Base-Derived": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/middle-id-Middle-Base-Derived.docx",
+    "sourceSha256": "2a05e6052ee6088575755d0a7046ea9a90e5b60c27c0cc57af1a557ec17ae246",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/middle-id-Middle-Base-Derived.pdf",
+    "wordPdfSha256": "94b9c29c3a328335f77d559057d6626d7b93093e50ea4b4ddc75ba86233a7021",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order-extra/middle-id-Middle-Derived-Base": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-extra/middle-id-Middle-Derived-Base.docx",
+    "sourceSha256": "3c073fd66ac1c48d9e776adab049cd08c077ae4642a50883f0b7b9c56746484e",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-extra/middle-id-Middle-Derived-Base.pdf",
+    "wordPdfSha256": "f8a8ab7806db4c99ff0c06fcabea630fc4f13db17b75add4704390591e84298a",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order-listid/child-id-backward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-listid/child-id-backward.docx",
+    "sourceSha256": "fd6702b357856dd93aabf6a32ab333c633c955d252fcfe4b8a51d37743b97c19",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-listid/child-id-backward.pdf",
+    "wordPdfSha256": "d54562a9f7c876b98fdf6da98e8fb84cb057096561947ced3b56b733c3c7cecf",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order-listid/child-id-forward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-listid/child-id-forward.docx",
+    "sourceSha256": "1b1c4e6d2992fe943f18b0bf2835ad041e76e6f243246f982799bda28f20f8e4",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-listid/child-id-forward.pdf",
+    "wordPdfSha256": "92f5da94a28be3555b0d68c29c97687febd9450349e468bdee988b93a919872c",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ],
+    "wordListStrings": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ]
+  },
+  "marker-style-order-listid/child-id-other-backward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-listid/child-id-other-backward.docx",
+    "sourceSha256": "e8b3a42cfa8cd68c72a5590bdece2f242a607df80d56ee4706c445dfa9f07b1e",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-listid/child-id-other-backward.pdf",
+    "wordPdfSha256": "2c5ae9d9f76da23ac16046c93ac92151b13b2a32a5c26939b60bf573aa793de2",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order-listid/child-id-other-forward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-listid/child-id-other-forward.docx",
+    "sourceSha256": "08f51ff44961748876dcf56c3950dfad82748fa7826b6fc24e34bc33334c8728",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-listid/child-id-other-forward.pdf",
+    "wordPdfSha256": "6825d9f1e97d3c7221edb42e6d4ad029e7373c5a841e15db94dc43db2ba252af",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "wordListStrings": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ]
+  },
+  "marker-style-order-listid/child-level-backward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-listid/child-level-backward.docx",
+    "sourceSha256": "79ec80c6a3f2c1fd56bec4fb5c6a21dcaf75606c41588ad1f10055bdaec7dab1",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-listid/child-level-backward.pdf",
+    "wordPdfSha256": "44b26be034eba4a37913cf831e68bdd4004b89a9a48293e9f6ca41f21a0ad59d",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ],
+    "wordListStrings": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ]
+  },
+  "marker-style-order-listid/child-level-forward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-listid/child-level-forward.docx",
+    "sourceSha256": "36e7187d79f786d93a2fa03ed0be5e90e0abcb0f57254555861d6f3e5cb4bd3a",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-listid/child-level-forward.pdf",
+    "wordPdfSha256": "b59d6610d271dd19190d259c1efd99a30cdd7c01b3c1928fad8faa80ae980bd8",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ],
+    "wordListStrings": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ]
+  },
+  "marker-style-order-listid/inherited-backward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-listid/inherited-backward.docx",
+    "sourceSha256": "85fdefe194b9211e5d84596ae0254324153dfa5458c5b0b914f3d612d64bf4b5",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-listid/inherited-backward.pdf",
+    "wordPdfSha256": "d08fbfed094f9a6e76371b3756520366473dd48e2c74cfd31711d094f9b74de2",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ],
+    "wordListStrings": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ]
+  },
+  "marker-style-order-listid/inherited-forward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-listid/inherited-forward.docx",
+    "sourceSha256": "f61009c008fd0165b467e907e30e35a5fcce80ff9a7ac3d326254a7c9bf2af5c",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-listid/inherited-forward.pdf",
+    "wordPdfSha256": "ea8329164f4efd89cb4efc2e74773ab5ae943a1cf5ab94d185754342a51b076b",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order-listid/paragraph-id-backward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-listid/paragraph-id-backward.docx",
+    "sourceSha256": "3df8705b30a8718303fd7b19d5fc1ae963f76e6c6220f2170a1e34623931feb2",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-listid/paragraph-id-backward.pdf",
+    "wordPdfSha256": "fa3cfb16f7a421716a1d70dff5cde0c3962930f3c985fb6e9138d781d5b99840",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ],
+    "wordListStrings": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ]
+  },
+  "marker-style-order-listid/paragraph-id-forward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-listid/paragraph-id-forward.docx",
+    "sourceSha256": "dc4d977c35d665ddfc02529e821fc83c7b176f62fc22352ae9bd17c540e9e1a0",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-listid/paragraph-id-forward.pdf",
+    "wordPdfSha256": "4dcdab1e32ce2413f2f58c24dc9898f5c3dfd37ea1f251c06cf7dbdeb27ad408",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ],
+    "wordListStrings": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN27END",
+      "BEGIN28END",
+      "BEGIN29END"
+    ]
+  },
+  "marker-style-order-listid/paragraph-level-backward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-listid/paragraph-level-backward.docx",
+    "sourceSha256": "695dd4d28d245c83be4e497f9dc848ad77efec59bb8d6ec2e017a96053f1d8db",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-listid/paragraph-level-backward.pdf",
+    "wordPdfSha256": "343bb84c7b7028676cb99780c0b8800ae8e091dbb60d776de863f5b83c932871",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ],
+    "wordListStrings": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD13END",
+      "CHILD14END",
+      "CHILD15END"
+    ]
+  },
+  "marker-style-order-listid/paragraph-level-forward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order-listid/paragraph-level-forward.docx",
+    "sourceSha256": "909f0ccf4758770241ac86db072aa4b24c2b1a7b67323389388cc65bd533f92e",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order-listid/paragraph-level-forward.pdf",
+    "wordPdfSha256": "51f86094c56c0d35ab03e7f9447e180358c81697cda107ff4a2f5e1df96d84c7",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order/base-id-only-backward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/base-id-only-backward.docx",
+    "sourceSha256": "5fcd788fede529ead5d9776a6982dc18ea188a3f838325cfe319cd5038edc66a",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/base-id-only-backward.pdf",
+    "wordPdfSha256": "aba215827f0d14638c221b81c3f74ff95f40bc8930087df049f9c9c1df733cd7",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "wordListStrings": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ]
+  },
+  "marker-style-order/base-id-only-forward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/base-id-only-forward.docx",
+    "sourceSha256": "d410749f713ce5f85f6a56e1bfe21c197c25232c7a492e3f82a4bda18ffcae54",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/base-id-only-forward.pdf",
+    "wordPdfSha256": "7c5e7d7370b0a0104986cf68747a68c676e0e724e2083e3f1fca4487f02a18ea",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order/chain--level-Base-Derived-Middle": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/chain--level-Base-Derived-Middle.docx",
+    "sourceSha256": "4fb25f44622f0a179625de89144b6c9c15dc5223e6bbe860e3a0cbece86d89ff",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/chain--level-Base-Derived-Middle.pdf",
+    "wordPdfSha256": "8f28157908984ad3404575e6925fd22bb52a2493354ba908350085573f757487",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order/chain--level-Base-Middle-Derived": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/chain--level-Base-Middle-Derived.docx",
+    "sourceSha256": "703412155b6cf8d69928509a03ae00a58ee4d2e86a1c8c37406ad85f1f146eec",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/chain--level-Base-Middle-Derived.pdf",
+    "wordPdfSha256": "21d3dc7ab262cf21fc57390ca0c3efb15977bf1b0ef86a4798d1a9a76f84aebd",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order/chain--level-Derived-Base-Middle": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/chain--level-Derived-Base-Middle.docx",
+    "sourceSha256": "afba920c0f46b032ed2cd7319dc35d69f34c4eb0a780e071685f08dc7473d724",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/chain--level-Derived-Base-Middle.pdf",
+    "wordPdfSha256": "1a6568fa3700c3f896c231418bcda6464ae0e33a6dba6aa5eb1cdfe1706ebbf2",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order/chain--level-Derived-Middle-Base": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/chain--level-Derived-Middle-Base.docx",
+    "sourceSha256": "3cc2a66a17a096af9512801cc606adfe98cafc957898b58ba3554db1a82ce81d",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/chain--level-Derived-Middle-Base.pdf",
+    "wordPdfSha256": "31d6a21de71aa129bb84596b62df7c4055b2c519badccbe012671517f7fa0d65",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order/chain--level-Middle-Base-Derived": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/chain--level-Middle-Base-Derived.docx",
+    "sourceSha256": "5c136e7f0fa4151c21d35581fd2b4f2704ea8bea4369af547d3278addd7643e7",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/chain--level-Middle-Base-Derived.pdf",
+    "wordPdfSha256": "5d6a5ace68cc2d025f83dbf891b183d2e993ce9d3d143f67c4bdf662c1417db0",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order/chain--level-Middle-Derived-Base": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/chain--level-Middle-Derived-Base.docx",
+    "sourceSha256": "ff003dfa68b1cb144a745967a407c1e31e98405d9ec0afd566640cebe7d8be9c",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/chain--level-Middle-Derived-Base.pdf",
+    "wordPdfSha256": "82c16a9d665b4c59ac4f3468967480474559418314cddc9e47a0891764379a27",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order/chain-plain-Base-Derived-Middle": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/chain-plain-Base-Derived-Middle.docx",
+    "sourceSha256": "c967c4543554bf1b05e68e436d0c62072c0ad0a42df03515bd49bb76544feae9",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/chain-plain-Base-Derived-Middle.pdf",
+    "wordPdfSha256": "f958bdd3810a294ee2a7b6b1775f271f6f9604cec0a27e7d86e67393d12583c0",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "wordListStrings": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ]
+  },
+  "marker-style-order/chain-plain-Base-Middle-Derived": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/chain-plain-Base-Middle-Derived.docx",
+    "sourceSha256": "a225353a342f0fe921c09b2ec5fe1b90adf2f16d42be5df6e74879109dc2c385",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/chain-plain-Base-Middle-Derived.pdf",
+    "wordPdfSha256": "82069d8e42ce7cc931be953d5168d2d023844e27830bfbd231c966012fe80882",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "wordListStrings": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ]
+  },
+  "marker-style-order/chain-plain-Derived-Base-Middle": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/chain-plain-Derived-Base-Middle.docx",
+    "sourceSha256": "030a6235cf19a683bcb7f3fa6f6d95c52606a5c56c39f05a96ffe34edee7a7e2",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/chain-plain-Derived-Base-Middle.pdf",
+    "wordPdfSha256": "f3fa4f90ef9b7c8ac964b918cfbdc1cabbed3217f11a3a51f133f6cccf73eff0",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order/chain-plain-Derived-Middle-Base": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/chain-plain-Derived-Middle-Base.docx",
+    "sourceSha256": "f77641f439b47a6ccdc6dcc9f575ce9cb3a3a95bc9d120e94b7b54caaca2b715",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/chain-plain-Derived-Middle-Base.pdf",
+    "wordPdfSha256": "2e8645ac09a1c0b10c20fd74d5d77db95abcb809447ab0e816728da53440b093",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order/chain-plain-Middle-Base-Derived": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/chain-plain-Middle-Base-Derived.docx",
+    "sourceSha256": "140fbc641e3837c9f11020157cd7f42f5d18aae41bdb7249f331dd89a06b4f2d",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/chain-plain-Middle-Base-Derived.pdf",
+    "wordPdfSha256": "40c3bfde111031136b8115bd1213281f9042149fb61974c63a8ff108197e4caf",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order/chain-plain-Middle-Derived-Base": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/chain-plain-Middle-Derived-Base.docx",
+    "sourceSha256": "36e8b7202313e6b26b56e73dfabc4b97f74b1b38ec962b0a7ec12e6b87f0ea2f",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/chain-plain-Middle-Derived-Base.pdf",
+    "wordPdfSha256": "875a1326f24cb6419f6d95736c1c3cbc6ed1cdc7c70377ba0690d44e325ed599",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order/child-cancel-backward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/child-cancel-backward.docx",
+    "sourceSha256": "710473e68c4b47f1f4763b8096b2a0feb2188157815a3e99fd28b2dc47333886",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/child-cancel-backward.pdf",
+    "wordPdfSha256": "b9d4e2d6fe210c697124f0f74ce3c45c3315bacf807c1523f46de96dcb4e5849",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order/child-cancel-forward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/child-cancel-forward.docx",
+    "sourceSha256": "c43100341b1ea59ed7c4f99ae79bd7e0b413f7180d83af41eab6f7de8608c333",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/child-cancel-forward.pdf",
+    "wordPdfSha256": "801a908990e540b39d997f86642b981206bbe94ca3534573d2bfb26760a0ac1b",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order/child-full-backward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/child-full-backward.docx",
+    "sourceSha256": "45f134dcf6df84fa52d693180f593cfdaa4249fd94226bfe023a0afca96eccca",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/child-full-backward.pdf",
+    "wordPdfSha256": "8053ae1eee4c34437add649c51321b304249ee6f123525a9d7478d3da0120011",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order/child-full-forward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/child-full-forward.docx",
+    "sourceSha256": "6ea0543f97d705dd08529e8f0c344024cd75b94c852fd6b3fd70df2fcaaf77e8",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/child-full-forward.pdf",
+    "wordPdfSha256": "df07eb9b1b0ce5d224b2acca0c99b92ad332f66a477cc8a7bc2bd30503d39bcf",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order/child-id-backward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/child-id-backward.docx",
+    "sourceSha256": "edce5ae1f538d4f7c64a7160ccffe7575f6d948c7393976db053c244168b6439",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/child-id-backward.pdf",
+    "wordPdfSha256": "ea5506eee226bd2e48fb8a8d5dfe855648aee3872a1aa05bafb70b707897da3f",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order/child-id-forward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/child-id-forward.docx",
+    "sourceSha256": "b5f8aa5dc485cfd4e020b3c3a0116439ce168754962adb57016840a1c50030df",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/child-id-forward.pdf",
+    "wordPdfSha256": "a9e14a00e44c9923b41f5bdaef4dc76bb95b8e01c4b5c22936123bc383ef6dce",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order/child-level-backward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/child-level-backward.docx",
+    "sourceSha256": "67f32740ee170ed14a163f8e7922c21f295ce574cf7f5a196a267db8350b103b",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/child-level-backward.pdf",
+    "wordPdfSha256": "203e5910cffb6a37ce0e5cd7c170bd1eeb66c5f3d889ad9a97f2049d84fe132b",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order/child-level-forward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/child-level-forward.docx",
+    "sourceSha256": "f22863651ef701646360bd7ad74c76ea38ab04a08323327357e33652d06431cf",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/child-level-forward.pdf",
+    "wordPdfSha256": "9dc6470a70039b0414046bb85314ad59c635e98d7d87920975e2b712009f0556",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order/inherited-backward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/inherited-backward.docx",
+    "sourceSha256": "e3e330d7740781020c837186afe624868f0df8f7911a1e9908c8366b8ead8dfd",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/inherited-backward.pdf",
+    "wordPdfSha256": "0e93b2d75e532f06f2cf2f0bd1fe5b9cd3000add750402406fe2f2bef676cb31",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "wordListStrings": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ]
+  },
+  "marker-style-order/inherited-forward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/inherited-forward.docx",
+    "sourceSha256": "6d9ceef38a00ab47a93b8054e1d72e54d12d38e2511f15e732a1e98df877622e",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/inherited-forward.pdf",
+    "wordPdfSha256": "8523dbd7f6114c306e20d240ac97ef940de190309c517a00aa72aeee53309dfd",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order/paragraph-cancel-backward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/paragraph-cancel-backward.docx",
+    "sourceSha256": "a19654e4931cdc59921e4a9e4176436145a89949eddadc3dae65c366657286b8",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/paragraph-cancel-backward.pdf",
+    "wordPdfSha256": "7b97328986dd54625f0988569d8f42b28a351b84a5aa0b7b5cbb207a6a8992d5",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order/paragraph-cancel-forward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/paragraph-cancel-forward.docx",
+    "sourceSha256": "4b84de82ed89e0a6e502ff8b6b18621f8c82a99477e98c2988939550e5b74d6c",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/paragraph-cancel-forward.pdf",
+    "wordPdfSha256": "3468cb399c6ebd6ddadbaea6f3e08fb185b445212e2e922a87ae4daa66b0fc8e",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  },
+  "marker-style-order/paragraph-full-backward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/paragraph-full-backward.docx",
+    "sourceSha256": "c1460cf754bcea5ecad5951f9f311b092204ba61355f0540f8178b25d1d872e3",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/paragraph-full-backward.pdf",
+    "wordPdfSha256": "115d97646c5544b387da1f626c92516cb73d5b272e3590de8ddf950770c3169a",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order/paragraph-full-forward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/paragraph-full-forward.docx",
+    "sourceSha256": "8c67c0852daf7a61796cf8a0c5b1e932a6282855e285a16802536933d92bb254",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/paragraph-full-forward.pdf",
+    "wordPdfSha256": "96e61150249cb0315c5c694444277a08c79e8692663bac5f4d45967af6fa5ae8",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order/paragraph-id-backward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/paragraph-id-backward.docx",
+    "sourceSha256": "d9a21f1dc9c22e212ced740fa495a36f06a8477d9a253718a14a63055590bed6",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/paragraph-id-backward.pdf",
+    "wordPdfSha256": "f91fd994ab1e13039371a1ce5e545288b298823b6c48c1e795357b15897a30cd",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order/paragraph-id-forward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/paragraph-id-forward.docx",
+    "sourceSha256": "1dd3f84002da5da6012eaff65381a08b985dac56bea9b830e29278c53bdf20d6",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/paragraph-id-forward.pdf",
+    "wordPdfSha256": "10e6d5bb2f90211000064cae373c55c878b5d42eb61d38de3664b27bca3716c4",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "wordListStrings": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ]
+  },
+  "marker-style-order/paragraph-level-backward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/paragraph-level-backward.docx",
+    "sourceSha256": "7dec451d21f9d3438cd7aff815de470a65d94a2c3726000fbb8df71e807115a8",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/paragraph-level-backward.pdf",
+    "wordPdfSha256": "0b7812b53507161845770b4492adeb9a4aa82c75b0111a7838e9c0defa2caa58",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "wordListStrings": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHILD3END",
+      "CHILD4END",
+      "CHILD5END"
+    ]
+  },
+  "marker-style-order/paragraph-level-forward": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/StyleAssociations/marker-style-order/paragraph-level-forward.docx",
+    "sourceSha256": "3c7bc3de0fb4d557977c2d26882110d81b9a944c735643d466e17487e54c8ffd",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/StyleAssociations/marker-style-order/paragraph-level-forward.pdf",
+    "wordPdfSha256": "cf3443fe1d7a2d595290ddb26ada1c28e713f51185fc65663177cbd55934f4ba",
+    "capturedAt": "2026-11-12",
+    "labels": [],
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "pdfExtractedLabels": []
+  }
+}

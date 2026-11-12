@@ -31,7 +31,7 @@ public sealed class DxpNumberingResolver
                     _absById[a.AbstractNumberId.Value] = a;
         }
 
-        var styles = doc.MainDocumentPart?.StyleDefinitionsPart?.Styles;
+        var styles = NormalizeNumberingStyles(doc.MainDocumentPart?.StyleDefinitionsPart?.Styles, _numbering);
         if (styles != null)
         {
             foreach (var s in styles.Elements<Style>())
@@ -65,6 +65,9 @@ public sealed class DxpNumberingResolver
         }
         return paragraph.ParagraphProperties;
     }
+
+    internal static Styles? NormalizeNumberingStyles(Styles? source, Numbering? numbering = null) =>
+        DxpNumberingStyleAssociations.Normalize(source, NormalizeImportedLevels(numbering));
 
     private static Numbering? NormalizeImportedLevels(Numbering? source)
     {
