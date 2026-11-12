@@ -73,6 +73,8 @@ internal static class DxpCustomListFormats
     {
         ["A, \u00c7, \u011c, ..."] = "ABC\u00c7DEFG\u011eHI\u0130JKLMNO\u00d6PRS\u015eTU\u00dcVYZ",
         ["a, \u00e7, \u011d, ..."] = "abc\u00e7defg\u011fh\u0131ijklmno\u00f6prs\u015ftu\u00fcvyz",
+        ["\u0410, \u0419, \u041a, ..."] = "\u0410\u0411\u0412\u0413\u0414\u0415\u0416\u0417\u0418\u0419\u041a\u041b\u041c\u041d\u041e\u041f\u0420\u0421\u0422\u0423\u0424\u0425\u0426\u0427\u0428\u0429\u042a\u042e\u042f",
+        ["\u0430, \u0439, \u043a, ..."] = "\u0430\u0431\u0432\u0433\u0434\u0435\u0436\u0437\u0438\u0439\u043a\u043b\u043c\u043d\u043e\u043f\u0440\u0441\u0442\u0443\u0444\u0445\u0446\u0447\u0448\u0449\u044a\u044e\u044f",
     };
 
     internal static string? FormatExtension(NumberingFormat? format, int number)
