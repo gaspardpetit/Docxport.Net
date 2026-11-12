@@ -9,7 +9,10 @@ public sealed record DocListLevel(int Index, int StartAt, byte NumberFormat,
     DocCharacterFormatting? LabelFormatting = null,
     DocParagraphFormatting? ParagraphFormatting = null,
     byte LabelJustification = 0,
-    byte? RestartLimit = null);
+    byte? RestartLimit = null)
+{
+    public bool IsLegal { get; init; }
+}
 
 public sealed record DocListDefinition(int ListId, IReadOnlyList<DocListLevel> Levels);
 
@@ -131,7 +134,7 @@ internal static class DocListReader
         return new DocListLevel(level,
             BinaryPrimitives.ReadInt32LittleEndian(bytes), bytes[4], text, bytes[15],
             labelFormatting, paragraphFormatting, (byte)(bytes[5] & 3),
-            (bytes[5] & 0x08) != 0 ? bytes[26] : null);
+            (bytes[5] & 0x08) != 0 ? bytes[26] : null) { IsLegal = (bytes[5] & 0x04) != 0 };
     }
 
     private static DocStructureNode? Expand(DocStructure structure, string name)

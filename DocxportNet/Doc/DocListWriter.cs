@@ -97,7 +97,7 @@ internal static class DocListWriter
         BinaryPrimitives.WriteInt32LittleEndian(header, level.StartAt);
         header[4] = level.NumberFormat;
         header[5] = checked((byte)(level.LabelJustification |
-            (level.RestartLimit != null ? 0x08 : 0)));
+            (level.RestartLimit != null ? 0x08 : 0) | (level.IsLegal ? 0x04 : 0)));
         header[15] = level.FollowCharacter;
         if (level.RestartLimit is byte restartLimit)
             header[26] = restartLimit;

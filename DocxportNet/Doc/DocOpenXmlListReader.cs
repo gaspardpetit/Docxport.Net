@@ -146,6 +146,9 @@ internal static class DocOpenXmlListReader
             level.LevelText?.Val?.Value ?? string.Empty, follow,
             readFormatting(level.NumberingSymbolRunProperties),
             paragraphFormatting, justification,
-            restartValue is int restart ? checked((byte)restart) : null);
+            restartValue is int restart ? checked((byte)restart) : null)
+        {
+            IsLegal = level.GetFirstChild<IsLegalNumberingStyle>() is { } legal && legal.Val?.Value != false
+        };
     }
 }
