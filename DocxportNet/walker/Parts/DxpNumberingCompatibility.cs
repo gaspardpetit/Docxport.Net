@@ -11,6 +11,9 @@ internal static class DxpNumberingCompatibility
     internal static Numbering? NormalizeIgnorableContent(Numbering? source, Func<string, bool> understood)
         => NormalizeIgnorableContent(source, understood, xml => new Numbering(xml));
 
+    internal static Styles? NormalizeIgnorableContent(Styles? source, Func<string, bool> understood)
+        => NormalizeIgnorableContent(source, understood, xml => new Styles(xml));
+
     internal static Paragraph? NormalizeIgnorableContent(Paragraph? source, Func<string, bool> understood)
         => NormalizeIgnorableContent(source, understood, xml => new Paragraph(xml));
 
