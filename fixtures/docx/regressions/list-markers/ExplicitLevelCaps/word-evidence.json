@@ -1,0 +1,128 @@
+{
+  "none-latin-off": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/ExplicitLevelCaps/none-latin-off.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/ExplicitLevelCaps/none-latin-off.pdf",
+    "sourceSha256": "aa5635195c29f44236a549c4a29c8d120c999d5ed9268c94324a104f510d4778",
+    "wordPdfSha256": "3f33df3692177087516602e21b4d32fa5bfd224fe0d205f9e2edc7058e985d5e",
+    "labels": [
+      "ab",
+      "ab",
+      "ab"
+    ],
+    "pdfExtractedLabels": [
+      "ab",
+      "ab",
+      "ab"
+    ],
+    "wordListStrings": [
+      "ab",
+      "ab",
+      "ab"
+    ]
+  },
+  "none-greek-off": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/ExplicitLevelCaps/none-greek-off.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/ExplicitLevelCaps/none-greek-off.pdf",
+    "sourceSha256": "043dc59c8af82fd3c2e868997eb8413bd3f4caa5b02640cb7111999769d04b3a",
+    "wordPdfSha256": "0b93a4a2042786a2c4d0e24c114e2a46581e0d2d5f1888a3bf460ba87be52715",
+    "labels": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "pdfExtractedLabels": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ]
+  },
+  "level-latin-off": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/ExplicitLevelCaps/level-latin-off.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/ExplicitLevelCaps/level-latin-off.pdf",
+    "sourceSha256": "dc2ba286c63607546458b463706646ccec251695ddbb5e30b05d0f2a0a51f225",
+    "wordPdfSha256": "a6165ffc2fc9fde378edc8afef2c181c48b2ae9a9e7a17c6aa28957256ee43e2",
+    "labels": [
+      "ab",
+      "ab",
+      "ab"
+    ],
+    "pdfExtractedLabels": [
+      "ab",
+      "ab",
+      "ab"
+    ],
+    "wordListStrings": [
+      "ab",
+      "ab",
+      "ab"
+    ]
+  },
+  "level-latin-on": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/ExplicitLevelCaps/level-latin-on.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/ExplicitLevelCaps/level-latin-on.pdf",
+    "sourceSha256": "e475626cba051ab272155dcf61bdab65a4e1d624554caf6811056d92d7ea590f",
+    "wordPdfSha256": "d3b8b5a31e66d1527ee0479e163d9da87651c1f4e35c913de8b5b3103adc5b5a",
+    "labels": [
+      "AB",
+      "AB",
+      "AB"
+    ],
+    "pdfExtractedLabels": [
+      "AB",
+      "AB",
+      "AB"
+    ],
+    "wordListStrings": [
+      "ab",
+      "ab",
+      "ab"
+    ]
+  },
+  "level-greek-off": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/ExplicitLevelCaps/level-greek-off.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/ExplicitLevelCaps/level-greek-off.pdf",
+    "sourceSha256": "39cd35b43b083f6371ab6f7af2326462fcb3bfa10e0f5446805f3f5efb8c32d3",
+    "wordPdfSha256": "d314681fcbefce5f49465e60658c76c395c04a4b956ca787b7c528f889f48be5",
+    "labels": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "pdfExtractedLabels": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ]
+  },
+  "level-greek-on": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/ExplicitLevelCaps/level-greek-on.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/ExplicitLevelCaps/level-greek-on.pdf",
+    "sourceSha256": "2d133b57878555952db129e37272f1e813b7556ca47e474b9fc8854e23a40ca4",
+    "wordPdfSha256": "43417479d897847fcd65cb9c151d563838f4c9283ffee3fa697e00f60dd963de",
+    "labels": [
+      "\u0391\u0392",
+      "\u0391\u0392",
+      "\u0391\u0392"
+    ],
+    "pdfExtractedLabels": [
+      "\u0391\u0392",
+      "\u0391\u0392",
+      "\u0391\u0392"
+    ],
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ]
+  }
+}

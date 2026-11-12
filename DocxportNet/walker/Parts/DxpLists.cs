@@ -580,6 +580,10 @@ public static class DxpListMarkerFormatter
         var referenceIndex = 0;
         var expandedText = System.Text.RegularExpressions.Regex.Replace(lvlText, "%[1-9]", match =>
             referenceIndex++ < 9 && substitutions.TryGetValue(match.Value, out var value) ? value : match.Value);
+        // Word applies explicit numbering-level caps to the visible marker,
+        // after expansion and before adding generated font markup.
+        if (lvl.NumberingSymbolRunProperties?.Caps is { } caps && caps.Val?.Value != false)
+            expandedText = expandedText.ToUpperInvariant();
         // A bullet label can contain numeric ancestor references. Expand those
         // before applying its existing font wrapper, preserving literal bullets.
         if (fmt == NumberFormatValues.Bullet)
