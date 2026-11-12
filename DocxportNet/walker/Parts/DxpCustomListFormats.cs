@@ -77,15 +77,35 @@ internal static class DxpCustomListFormats
         ["\u0430, \u0439, \u043a, ..."] = "\u0430\u0431\u0432\u0433\u0434\u0435\u0436\u0437\u0438\u0439\u043a\u043b\u043c\u043d\u043e\u043f\u0440\u0441\u0442\u0443\u0444\u0445\u0446\u0447\u0448\u0449\u044a\u044e\u044f",
     };
 
+    private const string GreekUpperPattern = "\u0391, \u0392, \u0393, ...";
+    private const string GreekLowerPattern = "\u03b1, \u03b2, \u03b3, ...";
+    private static readonly string[] GreekUnits = { "\u0391", "\u0392", "\u0393", "\u0394", "\u0395", "\u03a3\u03a4", "\u0396", "\u0397", "\u0398" };
+    private const string GreekTens = "\u0399\u039a\u039b\u039c\u039d\u039e\u039f\u03a0\u03de";
+    private const string GreekHundreds = "\u03a1\u03a3\u03a4\u03a5\u03a6\u03a7\u03a8\u03a9\u03e0";
+
     internal static string? FormatExtension(NumberingFormat? format, int number)
     {
-        if (format?.Val?.Value != NumberFormatValues.Custom ||
-            format.Format?.Value is not string pattern || !ExtensionAlphabets.TryGetValue(pattern, out var alphabet))
+        if (format?.Val?.Value != NumberFormatValues.Custom || format.Format?.Value is not string pattern)
             return null;
+        if (ExtensionAlphabets.TryGetValue(pattern, out var alphabet))
+        {
+            if (number < 0) return "";
+            if (number == 0) return " ";
+            // Word repeats each alphabet letter, wrapping after thirty repetitions.
+            return new string(alphabet[(number - 1) % alphabet.Length], (number - 1) / alphabet.Length % 30 + 1);
+        }
+        if (pattern != GreekUpperPattern && pattern != GreekLowerPattern) return null;
         if (number < 0) return "";
         if (number == 0) return " ";
-        // Word repeats each alphabet letter, wrapping after thirty repetitions.
-        return new string(alphabet[(number - 1) % alphabet.Length], (number - 1) / alphabet.Length % 30 + 1);
+        // Greek numeric lists cycle through 1..9999, using additive symbols.
+        var value = (number - 1) % 9999 + 1;
+        var text = value >= 1000 ? "," + GreekUnits[value / 1000 - 1] : "";
+        value %= 1000;
+        if (value >= 100) text += GreekHundreds[value / 100 - 1];
+        value %= 100;
+        if (value >= 10) text += GreekTens[value / 10 - 1];
+        if (value % 10 != 0) text += GreekUnits[value % 10 - 1];
+        return pattern == GreekLowerPattern ? text.ToLowerInvariant() : text;
     }
 
 }
