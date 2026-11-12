@@ -1,0 +1,189 @@
+{
+  "abstract": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/NumberingProcessContent/abstract.docx",
+    "sourceSha256": "b257e603cff25d3a300b7605fb6d99ef041592d30af296da25fa8faebd09f4ed",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/NumberingProcessContent/abstract.pdf",
+    "wordPdfSha256": "83b79c2638f02fcadc32704f5f1019d4e924cd151d814a165906cae41e5aee88",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ]
+  },
+  "choice-wrapper": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/NumberingProcessContent/choice-wrapper.docx",
+    "sourceSha256": "902d009c8e4709db39e9454d6e400f7fd9b1cddb56584af8f3d66d7f35c6701a",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/NumberingProcessContent/choice-wrapper.pdf",
+    "wordPdfSha256": "33dc7c276831baf75749ca0df31a1b6806b31ec90a74e1622530c9f8dcb3a5c0",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ]
+  },
+  "ignored": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/NumberingProcessContent/ignored.docx",
+    "sourceSha256": "ef9913f01a9da2ed75f92bd89c4a046c7fb47c486f7402ef4565db16caeff380",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/NumberingProcessContent/ignored.pdf",
+    "wordPdfSha256": "34eab5be30d312920a6bb7b029daa715420f6c5ffdaacf749507370736d85091",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END"
+    ]
+  },
+  "instance": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/NumberingProcessContent/instance.docx",
+    "sourceSha256": "923b5413ed5d41b68c779e05e6689e6940846ee184851c36d75eb29d2e4977cc",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/NumberingProcessContent/instance.pdf",
+    "wordPdfSha256": "34b844092ccb552a0ae5259b88b09bf2640981366b1013e598c44d0ae0eda805",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ]
+  },
+  "label": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/NumberingProcessContent/label.docx",
+    "sourceSha256": "104dff669f2703a01906c7f9770bf3ea71df214b86779c92f27c6819bd6c02a0",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/NumberingProcessContent/label.pdf",
+    "wordPdfSha256": "193b448d04b7aacc1a37042d7ef7c862cb0b08c0a0657bda25b93d1111fc76d0",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "CHOICE3END",
+      "CHOICE4END",
+      "CHOICE5END"
+    ],
+    "pdfExtractedLabels": [
+      "CHOICE3END",
+      "CHOICE4END",
+      "CHOICE5END"
+    ]
+  },
+  "level": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/NumberingProcessContent/level.docx",
+    "sourceSha256": "6f1c518c525583e6749e9c5095fd117d5f997c692dff058352f2be0369a54b16",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/NumberingProcessContent/level.pdf",
+    "wordPdfSha256": "655db9be24cb1c9d830cff7f2a2515e1fb6cd6fffcc7433d456ad2c52a2c5158",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ]
+  },
+  "local-choice": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/NumberingProcessContent/local-choice.docx",
+    "sourceSha256": "59007f349ebd5a90467b0ca3e77425e2d97ef4c2a097da8716c95db58430ec7d",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/NumberingProcessContent/local-choice.pdf",
+    "wordPdfSha256": "46f5289df5b451599d41c862726fbbb7cb12b62944adae54a1e3c5fde398cb4c",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ]
+  },
+  "local-prefix": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/NumberingProcessContent/local-prefix.docx",
+    "sourceSha256": "b3d04a3cfad4666651bfa8df561c849c90d4aa6f7c24790299e98ace6063e55e",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/NumberingProcessContent/local-prefix.pdf",
+    "wordPdfSha256": "20552fffb946ee58caa4b79f39669d549111da98b896328ffc9e95f88f807b3f",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ]
+  },
+  "nested": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/NumberingProcessContent/nested.docx",
+    "sourceSha256": "2e300357a428b97134c57000106657f9fcb3fe538ba0249f3f0ae04ca65975ff",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/NumberingProcessContent/nested.pdf",
+    "wordPdfSha256": "c58107152eb2ad89b840069d4f2da7a7f7e8ff812dc33f327eb2defad42d57dc",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ]
+  },
+  "start": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/NumberingProcessContent/start.docx",
+    "sourceSha256": "d141f37febf10715bdc74a5f4fe2d4521490423e9987fefc2658c33e017a6b97",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/NumberingProcessContent/start.pdf",
+    "wordPdfSha256": "916abdbcaded77fb6276e84f185bf1cccf143c19052b0208b575fa369f05ddd7",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ]
+  },
+  "wildcard": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/NumberingProcessContent/wildcard.docx",
+    "sourceSha256": "d68dc53722d77add299e71ef0f09c1589e0116b20f8c23ba462b11dfae696703",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/NumberingProcessContent/wildcard.pdf",
+    "wordPdfSha256": "60eafb21cd7de1ae4b1260f91089418063340a5814e07ebfc2239dad1b2fb077",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END"
+    ]
+  }
+}

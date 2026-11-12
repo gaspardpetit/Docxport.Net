@@ -45,6 +45,7 @@ public sealed class DxpNumberingResolver
 
     private static Numbering? NormalizeImportedLevels(Numbering? source)
     {
+        source = DxpNumberingCompatibility.NormalizeIgnorableContent(source, IsSupportedNumberingNamespace);
         bool InvalidStart(Level level) => level.StartNumberingValue?.Val?.Value < 0 ||
             (level.StartNumberingValue == null && level.Parent is LevelOverride replacement &&
                 replacement.StartOverrideNumberingValue?.Val?.Value < 0);
