@@ -1,0 +1,1082 @@
+{
+  "bullet-disabled/doc": {
+    "sourcePath": "fixtures/doc/regressions/list-markers/LegalNumbering/bullet-disabled.doc",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/doc/bullet-disabled.pdf",
+    "sourceSha256": "6bd04667f424c5a77e539aae3e12c88f03640e750d3ad0be8a24d9ef629680c3",
+    "wordPdfSha256": "51963739c462afb9e8ac43b70859789b4f382ee419f04a659c693ce7b7806d7c",
+    "labels": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ],
+    "wordListStrings": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ],
+    "pdfExtractedLabels": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ]
+  },
+  "bullet-disabled/projected": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocLegalNumbering/projected/bullet-disabled.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/projected/bullet-disabled.pdf",
+    "sourceSha256": "975c491a89d21e402a7995625d4b60251434bdcdc8eb0015888250b299f04c7e",
+    "wordPdfSha256": "55454bc70c92488ab4558d83d62752f441ffb92a2c3b999df509530c594de041",
+    "labels": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ],
+    "wordListStrings": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ],
+    "pdfExtractedLabels": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ]
+  },
+  "bullet-disabled/source": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocLegalNumbering/source/bullet-disabled.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/source/bullet-disabled.pdf",
+    "sourceSha256": "e9b072947ffa88012160c009fd162ec35f1407c0f7caa70956fd0233bb732c8e",
+    "wordPdfSha256": "d75932a9a88470afeb4b3ec796f2be3462e02e39fbf71e39cec8d514879fb798",
+    "labels": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ],
+    "wordListStrings": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ],
+    "pdfExtractedLabels": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ]
+  },
+  "bullet-legal/doc": {
+    "sourcePath": "fixtures/doc/regressions/list-markers/LegalNumbering/bullet-legal.doc",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/doc/bullet-legal.pdf",
+    "sourceSha256": "82e10b0b9ed0665a8a44da803b949a0418704b45eb364331967e9fa318d8854c",
+    "wordPdfSha256": "d75c538d8c4ff9654407d74bcc2d035cd0c33615c5bea86a0991907b44cc47ac",
+    "labels": [
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END",
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END"
+    ],
+    "wordListStrings": [
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END",
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END",
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END"
+    ]
+  },
+  "bullet-legal/projected": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocLegalNumbering/projected/bullet-legal.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/projected/bullet-legal.pdf",
+    "sourceSha256": "f0e5984e90558ca6c31b45876d52aff484d6661c63139ba56f14f0eb704167e5",
+    "wordPdfSha256": "b2b0de37e6718ae13bd7ee3d2c80212779cae6ebd5aedf0a5a2cfcacd082137a",
+    "labels": [
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END",
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END"
+    ],
+    "wordListStrings": [
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END",
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END",
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END"
+    ]
+  },
+  "bullet-legal/source": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocLegalNumbering/source/bullet-legal.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/source/bullet-legal.pdf",
+    "sourceSha256": "2ac51ccdfa27ca828954d298b76c1b204c0bdc50ac32dd74010e097ccbfaadb6",
+    "wordPdfSha256": "93d081b90c11a529e4b30b267d32adff7e01b57cbd17e679b0aa350fa2694935",
+    "labels": [
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END",
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END"
+    ],
+    "wordListStrings": [
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END",
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END",
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END"
+    ]
+  },
+  "bullet-normal/doc": {
+    "sourcePath": "fixtures/doc/regressions/list-markers/LegalNumbering/bullet-normal.doc",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/doc/bullet-normal.pdf",
+    "sourceSha256": "c845a5eecfe7b9ece9fbfe7aafba8dc49888295d7b5ccde6db149033771a59be",
+    "wordPdfSha256": "2944cb2367ea37cfaa52e30e40d0e0b90d0b8521364e54340cedb0d5eea7bf34",
+    "labels": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ],
+    "wordListStrings": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ],
+    "pdfExtractedLabels": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ]
+  },
+  "bullet-normal/projected": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocLegalNumbering/projected/bullet-normal.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/projected/bullet-normal.pdf",
+    "sourceSha256": "cfe3c7aa4c96192408c05daed61c4c669e97dbeb469de3b967fd12ad022d46db",
+    "wordPdfSha256": "b4428f8459a36190ce2d7b45485459f96dc7da29af597a0b4748bf6b146e1b5e",
+    "labels": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ],
+    "wordListStrings": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ],
+    "pdfExtractedLabels": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ]
+  },
+  "bullet-normal/source": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocLegalNumbering/source/bullet-normal.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/source/bullet-normal.pdf",
+    "sourceSha256": "d2df6ad6032680fc4ffa138a926929e5abc87fc789c8ae71dd424ea36959cd4b",
+    "wordPdfSha256": "de66711a0ab83e0a3f17fa0aab79bfd7f09044e3fb5c8031f113186426bfe483",
+    "labels": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ],
+    "wordListStrings": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ],
+    "pdfExtractedLabels": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ]
+  },
+  "decimalZero-disabled/doc": {
+    "sourcePath": "fixtures/doc/regressions/list-markers/LegalNumbering/decimalZero-disabled.doc",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/doc/decimalZero-disabled.pdf",
+    "sourceSha256": "1eb05abca6d6e9178524652099c1f5b6b81718b5e2441a969b1298499f41b06e",
+    "wordPdfSha256": "4ad62bb633d0b9dbcf76a7c62758f8abe432f90731783296e4b72383181b1da6",
+    "labels": [
+      "ROOT03END",
+      "BEGIN03/iEND",
+      "BEGIN03/iiEND",
+      "ROOT04END",
+      "BEGIN04/iEND",
+      "BEGIN04/iiEND"
+    ],
+    "wordListStrings": [
+      "ROOT03END",
+      "BEGIN03/iEND",
+      "BEGIN03/iiEND",
+      "ROOT04END",
+      "BEGIN04/iEND",
+      "BEGIN04/iiEND"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT03END",
+      "BEGIN03/iEND",
+      "BEGIN03/iiEND",
+      "ROOT04END",
+      "BEGIN04/iEND",
+      "BEGIN04/iiEND"
+    ]
+  },
+  "decimalZero-disabled/projected": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocLegalNumbering/projected/decimalZero-disabled.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/projected/decimalZero-disabled.pdf",
+    "sourceSha256": "6a3291aadb42faa4bfcbf748d265d7787a51b8e041561aeb1e78960d81c9562e",
+    "wordPdfSha256": "90cc6e1d770f801d641032dc1c600543c20e2d34c42e248327db9ee30cbf4d72",
+    "labels": [
+      "ROOT03END",
+      "BEGIN03/iEND",
+      "BEGIN03/iiEND",
+      "ROOT04END",
+      "BEGIN04/iEND",
+      "BEGIN04/iiEND"
+    ],
+    "wordListStrings": [
+      "ROOT03END",
+      "BEGIN03/iEND",
+      "BEGIN03/iiEND",
+      "ROOT04END",
+      "BEGIN04/iEND",
+      "BEGIN04/iiEND"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT03END",
+      "BEGIN03/iEND",
+      "BEGIN03/iiEND",
+      "ROOT04END",
+      "BEGIN04/iEND",
+      "BEGIN04/iiEND"
+    ]
+  },
+  "decimalZero-disabled/source": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocLegalNumbering/source/decimalZero-disabled.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/source/decimalZero-disabled.pdf",
+    "sourceSha256": "4a075f9668cc3c03568535362f6bf6075bb51c2a0afb3eaab2b30cc530a4fa8f",
+    "wordPdfSha256": "c7c35d02572084bbc1210feb52e7cc032127485006b5721b6dab3991db3ad00e",
+    "labels": [
+      "ROOT03END",
+      "BEGIN03/iEND",
+      "BEGIN03/iiEND",
+      "ROOT04END",
+      "BEGIN04/iEND",
+      "BEGIN04/iiEND"
+    ],
+    "wordListStrings": [
+      "ROOT03END",
+      "BEGIN03/iEND",
+      "BEGIN03/iiEND",
+      "ROOT04END",
+      "BEGIN04/iEND",
+      "BEGIN04/iiEND"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT03END",
+      "BEGIN03/iEND",
+      "BEGIN03/iiEND",
+      "ROOT04END",
+      "BEGIN04/iEND",
+      "BEGIN04/iiEND"
+    ]
+  },
+  "decimalZero-legal/doc": {
+    "sourcePath": "fixtures/doc/regressions/list-markers/LegalNumbering/decimalZero-legal.doc",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/doc/decimalZero-legal.pdf",
+    "sourceSha256": "d6fc4664b60c26f026cc81ef3d4ecbe5e4acb587d1cd2c9a54d8508a941b93ca",
+    "wordPdfSha256": "ebc3891e1258c78d6bfc3f33bb709f32532d99c5c553b08a5fd91f608b99fdd3",
+    "labels": [
+      "ROOT03END",
+      "BEGIN03/1END",
+      "BEGIN03/2END",
+      "ROOT04END",
+      "BEGIN04/1END",
+      "BEGIN04/2END"
+    ],
+    "wordListStrings": [
+      "ROOT03END",
+      "BEGIN03/1END",
+      "BEGIN03/2END",
+      "ROOT04END",
+      "BEGIN04/1END",
+      "BEGIN04/2END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT03END",
+      "BEGIN03/1END",
+      "BEGIN03/2END",
+      "ROOT04END",
+      "BEGIN04/1END",
+      "BEGIN04/2END"
+    ]
+  },
+  "decimalZero-legal/projected": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocLegalNumbering/projected/decimalZero-legal.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/projected/decimalZero-legal.pdf",
+    "sourceSha256": "75e094726a0798ae6dcdfa41912d83c9fdffbf2941fe7e591dc3e6fab6f4c271",
+    "wordPdfSha256": "ae64d180fe9814a1d1a11224502f69f99d8e1292294f4dba8dfaa189611e36b0",
+    "labels": [
+      "ROOT03END",
+      "BEGIN03/1END",
+      "BEGIN03/2END",
+      "ROOT04END",
+      "BEGIN04/1END",
+      "BEGIN04/2END"
+    ],
+    "wordListStrings": [
+      "ROOT03END",
+      "BEGIN03/1END",
+      "BEGIN03/2END",
+      "ROOT04END",
+      "BEGIN04/1END",
+      "BEGIN04/2END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT03END",
+      "BEGIN03/1END",
+      "BEGIN03/2END",
+      "ROOT04END",
+      "BEGIN04/1END",
+      "BEGIN04/2END"
+    ]
+  },
+  "decimalZero-legal/source": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocLegalNumbering/source/decimalZero-legal.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/source/decimalZero-legal.pdf",
+    "sourceSha256": "9173462ee0f17512dfebfcecd6c9a009574faa4c345a20d4a5beed44a47ce22c",
+    "wordPdfSha256": "3a754c047f8671eb1b307ca48cdbd57955d56730857375d6f1acc28c373eb42d",
+    "labels": [
+      "ROOT03END",
+      "BEGIN03/1END",
+      "BEGIN03/2END",
+      "ROOT04END",
+      "BEGIN04/1END",
+      "BEGIN04/2END"
+    ],
+    "wordListStrings": [
+      "ROOT03END",
+      "BEGIN03/1END",
+      "BEGIN03/2END",
+      "ROOT04END",
+      "BEGIN04/1END",
+      "BEGIN04/2END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT03END",
+      "BEGIN03/1END",
+      "BEGIN03/2END",
+      "ROOT04END",
+      "BEGIN04/1END",
+      "BEGIN04/2END"
+    ]
+  },
+  "decimalZero-normal/doc": {
+    "sourcePath": "fixtures/doc/regressions/list-markers/LegalNumbering/decimalZero-normal.doc",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/doc/decimalZero-normal.pdf",
+    "sourceSha256": "b930298a73205878cca8aa2036f95ad885bd7596ae1101ed9158c9a5eabe7831",
+    "wordPdfSha256": "4f49cabe88b95c2af98f66e43ffd2f9b946f2b972a082cd439c721ad31330dcc",
+    "labels": [
+      "ROOT03END",
+      "BEGIN03/iEND",
+      "BEGIN03/iiEND",
+      "ROOT04END",
+      "BEGIN04/iEND",
+      "BEGIN04/iiEND"
+    ],
+    "wordListStrings": [
+      "ROOT03END",
+      "BEGIN03/iEND",
+      "BEGIN03/iiEND",
+      "ROOT04END",
+      "BEGIN04/iEND",
+      "BEGIN04/iiEND"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT03END",
+      "BEGIN03/iEND",
+      "BEGIN03/iiEND",
+      "ROOT04END",
+      "BEGIN04/iEND",
+      "BEGIN04/iiEND"
+    ]
+  },
+  "decimalZero-normal/projected": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocLegalNumbering/projected/decimalZero-normal.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/projected/decimalZero-normal.pdf",
+    "sourceSha256": "ba709eaa4281581efd17d1eed3819cd5ce424a7fa96cb28bc45c889f4f0644c4",
+    "wordPdfSha256": "4cfeeda2020be9b28ec62930079769bde6b88af6eb773c82dc5c0c149c0d7111",
+    "labels": [
+      "ROOT03END",
+      "BEGIN03/iEND",
+      "BEGIN03/iiEND",
+      "ROOT04END",
+      "BEGIN04/iEND",
+      "BEGIN04/iiEND"
+    ],
+    "wordListStrings": [
+      "ROOT03END",
+      "BEGIN03/iEND",
+      "BEGIN03/iiEND",
+      "ROOT04END",
+      "BEGIN04/iEND",
+      "BEGIN04/iiEND"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT03END",
+      "BEGIN03/iEND",
+      "BEGIN03/iiEND",
+      "ROOT04END",
+      "BEGIN04/iEND",
+      "BEGIN04/iiEND"
+    ]
+  },
+  "decimalZero-normal/source": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocLegalNumbering/source/decimalZero-normal.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/source/decimalZero-normal.pdf",
+    "sourceSha256": "4b22462a10a4fc6db48009c85c23bac58e4dea404279401fe554f93542392cee",
+    "wordPdfSha256": "6087f955a0c3079cd38a99c9a0b8071f3edb847d8c25dab82d6b11c321d5871a",
+    "labels": [
+      "ROOT03END",
+      "BEGIN03/iEND",
+      "BEGIN03/iiEND",
+      "ROOT04END",
+      "BEGIN04/iEND",
+      "BEGIN04/iiEND"
+    ],
+    "wordListStrings": [
+      "ROOT03END",
+      "BEGIN03/iEND",
+      "BEGIN03/iiEND",
+      "ROOT04END",
+      "BEGIN04/iEND",
+      "BEGIN04/iiEND"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT03END",
+      "BEGIN03/iEND",
+      "BEGIN03/iiEND",
+      "ROOT04END",
+      "BEGIN04/iEND",
+      "BEGIN04/iiEND"
+    ]
+  },
+  "none-disabled/doc": {
+    "sourcePath": "fixtures/doc/regressions/list-markers/LegalNumbering/none-disabled.doc",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/doc/none-disabled.pdf",
+    "sourceSha256": "c53c9da054f66ddf319ae2dfc98bcf051f9bfe88ca73e7f6ea5de524810d6264",
+    "wordPdfSha256": "439c6c94b51909b19e89b6af32701790966ea1d7a6f9019e3f373db14acdc024",
+    "labels": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ],
+    "wordListStrings": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ],
+    "pdfExtractedLabels": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ]
+  },
+  "none-disabled/projected": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocLegalNumbering/projected/none-disabled.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/projected/none-disabled.pdf",
+    "sourceSha256": "5998366bf5f22f8b7159964699538e47816854ad79a319a12af02372e4dd91f0",
+    "wordPdfSha256": "11757b267b6198e9b2b2a3ab7e9046e94bc8287222a54baf79f7af93a3ec31ec",
+    "labels": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ],
+    "wordListStrings": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ],
+    "pdfExtractedLabels": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ]
+  },
+  "none-disabled/source": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocLegalNumbering/source/none-disabled.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/source/none-disabled.pdf",
+    "sourceSha256": "a2e68dbda713a7ff49e196aad44b34378d261a2085e639a02454ffe89a3cf2fb",
+    "wordPdfSha256": "0cb963ff851acc18c2196bbb34d9e79c25a244e7509157fe443cb2bc36baa893",
+    "labels": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ],
+    "wordListStrings": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ],
+    "pdfExtractedLabels": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ]
+  },
+  "none-legal/doc": {
+    "sourcePath": "fixtures/doc/regressions/list-markers/LegalNumbering/none-legal.doc",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/doc/none-legal.pdf",
+    "sourceSha256": "cf8bf5b993d44b74639ae4ca81aa578262b3d2b5dd92dac07b5225085eaa044c",
+    "wordPdfSha256": "152c3020376f82b65e0a2bb8bdfb6933f6728b86a5337933e37b3452a6f35a8e",
+    "labels": [
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END",
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END"
+    ],
+    "wordListStrings": [
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END",
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END",
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END"
+    ]
+  },
+  "none-legal/projected": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocLegalNumbering/projected/none-legal.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/projected/none-legal.pdf",
+    "sourceSha256": "488ee55096a3de401d6c0792caab2436fa038b37fd0ddc8efd67faa220be667c",
+    "wordPdfSha256": "6506b68791df7248ace0548131c326c642645b700b48c230b7fb285224544896",
+    "labels": [
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END",
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END"
+    ],
+    "wordListStrings": [
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END",
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END",
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END"
+    ]
+  },
+  "none-legal/source": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocLegalNumbering/source/none-legal.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/source/none-legal.pdf",
+    "sourceSha256": "a40be654cc00eefd2f66bdc620e053fdeb8230e2d758a1a415ece471ce3eb605",
+    "wordPdfSha256": "4b09d7672af4cb48ba4063a65e16e58672d9d57ace01b455a30fc3e414bd8356",
+    "labels": [
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END",
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END"
+    ],
+    "wordListStrings": [
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END",
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END",
+      "ROOTEND",
+      "BEGIN/1END",
+      "BEGIN/2END"
+    ]
+  },
+  "none-normal/doc": {
+    "sourcePath": "fixtures/doc/regressions/list-markers/LegalNumbering/none-normal.doc",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/doc/none-normal.pdf",
+    "sourceSha256": "f5e7155462a336ec544d3d8c2357318b136b920fa8f55111af646e956f17f409",
+    "wordPdfSha256": "23b1ba8c61238dbe3d441dae8e6f66a833eae01a4b4049e4ee3c92f664436875",
+    "labels": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ],
+    "wordListStrings": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ],
+    "pdfExtractedLabels": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ]
+  },
+  "none-normal/projected": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocLegalNumbering/projected/none-normal.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/projected/none-normal.pdf",
+    "sourceSha256": "48664669a4fc41400efb44770b9c3af7a1d10271b1b6dd7ac4f6fbef708bae52",
+    "wordPdfSha256": "ce607b9bf8b13069cb78ea215125c6c63f216cd574862939607dc996676c4f8d",
+    "labels": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ],
+    "wordListStrings": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ],
+    "pdfExtractedLabels": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ]
+  },
+  "none-normal/source": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocLegalNumbering/source/none-normal.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/source/none-normal.pdf",
+    "sourceSha256": "9a58162633fc5ad194f14600cb9360be1b80107f954e7a6afc8f7bfd757a24a8",
+    "wordPdfSha256": "699b64262e0b2e4e9f35a6318f80bf6c998be203817dfef00401d635c6983958",
+    "labels": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ],
+    "wordListStrings": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ],
+    "pdfExtractedLabels": [
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND",
+      "ROOTEND",
+      "BEGIN/iEND",
+      "BEGIN/iiEND"
+    ]
+  },
+  "upperRoman-disabled/doc": {
+    "sourcePath": "fixtures/doc/regressions/list-markers/LegalNumbering/upperRoman-disabled.doc",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/doc/upperRoman-disabled.pdf",
+    "sourceSha256": "8519e9644e0f09c4d911449cf327e8b53015dd717265bbb627c58f42e9687f98",
+    "wordPdfSha256": "f42fd5c25912f6807ce9155a477de9ec7a3fd4cc259e77930278f5fe13215d64",
+    "labels": [
+      "ROOTIIIEND",
+      "BEGINIII/iEND",
+      "BEGINIII/iiEND",
+      "ROOTIVEND",
+      "BEGINIV/iEND",
+      "BEGINIV/iiEND"
+    ],
+    "wordListStrings": [
+      "ROOTIIIEND",
+      "BEGINIII/iEND",
+      "BEGINIII/iiEND",
+      "ROOTIVEND",
+      "BEGINIV/iEND",
+      "BEGINIV/iiEND"
+    ],
+    "pdfExtractedLabels": [
+      "ROOTIIIEND",
+      "BEGINIII/iEND",
+      "BEGINIII/iiEND",
+      "ROOTIVEND",
+      "BEGINIV/iEND",
+      "BEGINIV/iiEND"
+    ]
+  },
+  "upperRoman-disabled/projected": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocLegalNumbering/projected/upperRoman-disabled.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/projected/upperRoman-disabled.pdf",
+    "sourceSha256": "b70997a16b6e6f083c534a529db7ed2e0e8868dc517b9c67bd9c44ae0a8e88d0",
+    "wordPdfSha256": "f99d115de0e4844b9640a116bb4ec3289fde756321adce9c20ccca2a55368d68",
+    "labels": [
+      "ROOTIIIEND",
+      "BEGINIII/iEND",
+      "BEGINIII/iiEND",
+      "ROOTIVEND",
+      "BEGINIV/iEND",
+      "BEGINIV/iiEND"
+    ],
+    "wordListStrings": [
+      "ROOTIIIEND",
+      "BEGINIII/iEND",
+      "BEGINIII/iiEND",
+      "ROOTIVEND",
+      "BEGINIV/iEND",
+      "BEGINIV/iiEND"
+    ],
+    "pdfExtractedLabels": [
+      "ROOTIIIEND",
+      "BEGINIII/iEND",
+      "BEGINIII/iiEND",
+      "ROOTIVEND",
+      "BEGINIV/iEND",
+      "BEGINIV/iiEND"
+    ]
+  },
+  "upperRoman-disabled/source": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocLegalNumbering/source/upperRoman-disabled.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/source/upperRoman-disabled.pdf",
+    "sourceSha256": "f9a7c8a71c583ec85f0cbd27e077cc0e72667a38c31959616a88ceb69a8a5eb8",
+    "wordPdfSha256": "f08bdbef64a11bf2026f0c633a9c6c2a3c68e06c8b69df3dfce4c3ea7f05bc43",
+    "labels": [
+      "ROOTIIIEND",
+      "BEGINIII/iEND",
+      "BEGINIII/iiEND",
+      "ROOTIVEND",
+      "BEGINIV/iEND",
+      "BEGINIV/iiEND"
+    ],
+    "wordListStrings": [
+      "ROOTIIIEND",
+      "BEGINIII/iEND",
+      "BEGINIII/iiEND",
+      "ROOTIVEND",
+      "BEGINIV/iEND",
+      "BEGINIV/iiEND"
+    ],
+    "pdfExtractedLabels": [
+      "ROOTIIIEND",
+      "BEGINIII/iEND",
+      "BEGINIII/iiEND",
+      "ROOTIVEND",
+      "BEGINIV/iEND",
+      "BEGINIV/iiEND"
+    ]
+  },
+  "upperRoman-legal/doc": {
+    "sourcePath": "fixtures/doc/regressions/list-markers/LegalNumbering/upperRoman-legal.doc",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/doc/upperRoman-legal.pdf",
+    "sourceSha256": "2e24e729d752b1db1898b8e3276a8d5bac373e2ce569cbdf89f45d59742fe84d",
+    "wordPdfSha256": "6014c6f18d884c60d9cfbb18fcafe1d100be8b6c443b08068a46306d1790877b",
+    "labels": [
+      "ROOTIIIEND",
+      "BEGIN3/1END",
+      "BEGIN3/2END",
+      "ROOTIVEND",
+      "BEGIN4/1END",
+      "BEGIN4/2END"
+    ],
+    "wordListStrings": [
+      "ROOTIIIEND",
+      "BEGIN3/1END",
+      "BEGIN3/2END",
+      "ROOTIVEND",
+      "BEGIN4/1END",
+      "BEGIN4/2END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOTIIIEND",
+      "BEGIN3/1END",
+      "BEGIN3/2END",
+      "ROOTIVEND",
+      "BEGIN4/1END",
+      "BEGIN4/2END"
+    ]
+  },
+  "upperRoman-legal/projected": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocLegalNumbering/projected/upperRoman-legal.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/projected/upperRoman-legal.pdf",
+    "sourceSha256": "4320b2207ba6c95c0e3f27ddb63795d23ec02427725214044481aaaa19170dfc",
+    "wordPdfSha256": "b0bf129a3a26407b457942dfdeb06d72e58134f67930f9b537aa22a27a7aa7cb",
+    "labels": [
+      "ROOTIIIEND",
+      "BEGIN3/1END",
+      "BEGIN3/2END",
+      "ROOTIVEND",
+      "BEGIN4/1END",
+      "BEGIN4/2END"
+    ],
+    "wordListStrings": [
+      "ROOTIIIEND",
+      "BEGIN3/1END",
+      "BEGIN3/2END",
+      "ROOTIVEND",
+      "BEGIN4/1END",
+      "BEGIN4/2END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOTIIIEND",
+      "BEGIN3/1END",
+      "BEGIN3/2END",
+      "ROOTIVEND",
+      "BEGIN4/1END",
+      "BEGIN4/2END"
+    ]
+  },
+  "upperRoman-legal/source": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocLegalNumbering/source/upperRoman-legal.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/source/upperRoman-legal.pdf",
+    "sourceSha256": "f02b9c21f616c5af9e296578aeb5466345d53f146a6903ec87714ccfdafe8d84",
+    "wordPdfSha256": "e0a69045c3e2a9bac4aa17cc9e724beb4dc9b0328eee4d93c7aee45261f4a6b5",
+    "labels": [
+      "ROOTIIIEND",
+      "BEGIN3/1END",
+      "BEGIN3/2END",
+      "ROOTIVEND",
+      "BEGIN4/1END",
+      "BEGIN4/2END"
+    ],
+    "wordListStrings": [
+      "ROOTIIIEND",
+      "BEGIN3/1END",
+      "BEGIN3/2END",
+      "ROOTIVEND",
+      "BEGIN4/1END",
+      "BEGIN4/2END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOTIIIEND",
+      "BEGIN3/1END",
+      "BEGIN3/2END",
+      "ROOTIVEND",
+      "BEGIN4/1END",
+      "BEGIN4/2END"
+    ]
+  },
+  "upperRoman-normal/doc": {
+    "sourcePath": "fixtures/doc/regressions/list-markers/LegalNumbering/upperRoman-normal.doc",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/doc/upperRoman-normal.pdf",
+    "sourceSha256": "55a1c63122354ddd9e72fd06d5f07eda9970750107e917147fd728a3d4cf6e4f",
+    "wordPdfSha256": "7fd5f96794391eb64a42481ccaa91ef8f3fd3ba55a1de8aa3cd39553aad85683",
+    "labels": [
+      "ROOTIIIEND",
+      "BEGINIII/iEND",
+      "BEGINIII/iiEND",
+      "ROOTIVEND",
+      "BEGINIV/iEND",
+      "BEGINIV/iiEND"
+    ],
+    "wordListStrings": [
+      "ROOTIIIEND",
+      "BEGINIII/iEND",
+      "BEGINIII/iiEND",
+      "ROOTIVEND",
+      "BEGINIV/iEND",
+      "BEGINIV/iiEND"
+    ],
+    "pdfExtractedLabels": [
+      "ROOTIIIEND",
+      "BEGINIII/iEND",
+      "BEGINIII/iiEND",
+      "ROOTIVEND",
+      "BEGINIV/iEND",
+      "BEGINIV/iiEND"
+    ]
+  },
+  "upperRoman-normal/projected": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocLegalNumbering/projected/upperRoman-normal.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/projected/upperRoman-normal.pdf",
+    "sourceSha256": "de1d7c7034e246b1109713072963608198938c3cf62598762a5e1d12321cbd0f",
+    "wordPdfSha256": "75862754ea2f460cc96bf7836e0396fea93679616b4a6319d2f32120a65b97f7",
+    "labels": [
+      "ROOTIIIEND",
+      "BEGINIII/iEND",
+      "BEGINIII/iiEND",
+      "ROOTIVEND",
+      "BEGINIV/iEND",
+      "BEGINIV/iiEND"
+    ],
+    "wordListStrings": [
+      "ROOTIIIEND",
+      "BEGINIII/iEND",
+      "BEGINIII/iiEND",
+      "ROOTIVEND",
+      "BEGINIV/iEND",
+      "BEGINIV/iiEND"
+    ],
+    "pdfExtractedLabels": [
+      "ROOTIIIEND",
+      "BEGINIII/iEND",
+      "BEGINIII/iiEND",
+      "ROOTIVEND",
+      "BEGINIV/iEND",
+      "BEGINIV/iiEND"
+    ]
+  },
+  "upperRoman-normal/source": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocLegalNumbering/source/upperRoman-normal.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocLegalNumbering/source/upperRoman-normal.pdf",
+    "sourceSha256": "a02ba94581c21f3144b0d0c125ee48485cd8ed943556f2d65650dd84e592350f",
+    "wordPdfSha256": "155514cc8877285498099bdb4377667027676606251554f8ec9346cb84590562",
+    "labels": [
+      "ROOTIIIEND",
+      "BEGINIII/iEND",
+      "BEGINIII/iiEND",
+      "ROOTIVEND",
+      "BEGINIV/iEND",
+      "BEGINIV/iiEND"
+    ],
+    "wordListStrings": [
+      "ROOTIIIEND",
+      "BEGINIII/iEND",
+      "BEGINIII/iiEND",
+      "ROOTIVEND",
+      "BEGINIV/iEND",
+      "BEGINIV/iiEND"
+    ],
+    "pdfExtractedLabels": [
+      "ROOTIIIEND",
+      "BEGINIII/iEND",
+      "BEGINIII/iiEND",
+      "ROOTIVEND",
+      "BEGINIV/iEND",
+      "BEGINIV/iiEND"
+    ]
+  }
+}

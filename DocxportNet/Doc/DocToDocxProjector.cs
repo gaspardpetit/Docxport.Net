@@ -399,6 +399,8 @@ public sealed class DocToDocxProjector
                         _ => throw new InvalidDataException("A DOC list label has invalid alignment.")
                     } })
                     { LevelIndex = level.Index };
+                if (level.IsLegal)
+                    outputLevel.InsertBefore(new IsLegalNumberingStyle(), outputLevel.GetFirstChild<LevelSuffix>());
                 if (level.RestartLimit is byte restartLimit)
                     outputLevel.InsertAfter(new LevelRestart { Val = restartLimit },
                         outputLevel.GetFirstChild<NumberingFormat>());
