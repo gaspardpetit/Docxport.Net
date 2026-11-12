@@ -60,6 +60,7 @@ internal static class DxpCustomListFormats
         ["- 1 -, - 2 -, - 3 -, ..."] = NumberFormatValues.NumberInDash,
         ["One, Two, Three, ..."] = NumberFormatValues.CardinalText,
         ["First, Second, Third, ..."] = NumberFormatValues.OrdinalText,
+        [""] = NumberFormatValues.None,
     };
 
     internal static bool TryResolve(NumberingFormat? format, out NumberFormatValues value)
