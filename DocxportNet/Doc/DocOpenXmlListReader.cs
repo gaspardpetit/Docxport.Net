@@ -11,8 +11,8 @@ internal static class DocOpenXmlListReader
             Func<OpenXmlCompositeElement?, DocCharacterFormatting> readFormatting,
             Func<OpenXmlCompositeElement?, DocParagraphFormatting> readParagraphFormatting)
     {
-        var numbering = main?.OpenXmlPackage is WordprocessingDocument document
-            ? new DocxportNet.Walker.DxpNumberingResolver(document).ImportedNumbering : null;
+        var numbering = DocxportNet.Walker.DxpNumberingResolver.NormalizeDocNumbering(
+            main?.NumberingDefinitionsPart?.Numbering);
         if (numbering == null)
             return (new DocListIndex([], []), new Dictionary<int, short>());
         var usedNumberIds = new HashSet<int>();
@@ -114,7 +114,7 @@ internal static class DocOpenXmlListReader
             format == NumberFormatValues.RussianLower ? (byte)0x3A :
             format == NumberFormatValues.RussianUpper ? (byte)0x3B :
             format == NumberFormatValues.None ? (byte)0xFF :
-            throw new NotSupportedException($"DOCX list format '{format}' is unsupported.");
+            throw new NotSupportedException($"DOCX list format '{level.NumberingFormat?.Val?.InnerText}' is unsupported.");
         var suffix = level.LevelSuffix?.Val?.Value;
         byte follow = suffix == null || suffix == LevelSuffixValues.Tab ? (byte)0 :
             suffix == LevelSuffixValues.Space ? (byte)1 :

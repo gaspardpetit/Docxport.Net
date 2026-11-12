@@ -43,7 +43,12 @@ public sealed class DxpNumberingResolver
         }
     }
 
-    internal Numbering? ImportedNumbering => _numbering;
+    // Binary DOC has no representation for the newer custom numFmt choices.
+    // Keep its Office 2007 compatibility profile separate from text rendering.
+    internal static Numbering? NormalizeDocNumbering(Numbering? source) =>
+        NormalizeImportedLevels(source, ns => IsSupportedNumberingNamespace(ns) &&
+            ns != "http://schemas.microsoft.com/office/word/2010/wordml" &&
+            ns != "http://schemas.microsoft.com/office/word/2012/wordml");
 
     internal static ParagraphProperties? NormalizeParagraphNumberingProperties(Paragraph source)
     {
@@ -80,9 +85,10 @@ public sealed class DxpNumberingResolver
         return DxpNumberingStyleAssociations.Normalize(source, NormalizeImportedLevels(numbering));
     }
 
-    private static Numbering? NormalizeImportedLevels(Numbering? source)
+    private static Numbering? NormalizeImportedLevels(Numbering? source, Func<string, bool>? understood = null)
     {
-        source = DxpNumberingCompatibility.NormalizeIgnorableContent(source, IsSupportedNumberingNamespace);
+        understood ??= IsSupportedNumberingNamespace;
+        source = DxpNumberingCompatibility.NormalizeIgnorableContent(source, understood);
         bool InvalidStart(Level level) => level.StartNumberingValue?.Val?.Value < 0 ||
             (level.StartNumberingValue == null && level.Parent is LevelOverride replacement &&
                 replacement.StartOverrideNumberingValue?.Val?.Value < 0);
@@ -93,7 +99,7 @@ public sealed class DxpNumberingResolver
         // Word normalizes these declarations on import. Keep that view private:
         // exporting must not rewrite the caller's numbering definitions.
         var numbering = (Numbering)source.CloneNode(true);
-        NormalizeNumberingChoices(numbering);
+        NormalizeNumberingChoices(numbering, understood);
         foreach (var level in numbering.Descendants<Level>().ToArray())
         {
             if (DxpCustomListFormats.TryResolve(level.NumberingFormat, out var alias))
@@ -119,8 +125,9 @@ public sealed class DxpNumberingResolver
         return numbering;
     }
 
-    private static void NormalizeNumberingChoices(OpenXmlCompositeElement parent)
+    private static void NormalizeNumberingChoices(OpenXmlCompositeElement parent, Func<string, bool>? understood = null)
     {
+        understood ??= IsSupportedNumberingNamespace;
         while (parent.Elements<AlternateContent>().FirstOrDefault() is { } alternate)
         {
             // Selection depends on namespace identity, never the author's prefix.
@@ -129,7 +136,7 @@ public sealed class DxpNumberingResolver
             {
                 var prefixes = DocxportNet.Walker.Parts.DxpAlternateContents.GetRequiredPrefixes(choice);
                 return prefixes.Count > 0 && prefixes.All(prefix =>
-                    choice.LookupNamespace(prefix) is string ns && IsSupportedNumberingNamespace(ns));
+                    choice.LookupNamespace(prefix) is string ns && understood(ns));
             }
             OpenXmlElement? selected = alternate.Elements<AlternateContentChoice>().FirstOrDefault(Supported);
             selected ??= alternate.GetFirstChild<AlternateContentFallback>();
@@ -152,7 +159,7 @@ public sealed class DxpNumberingResolver
         foreach (var child in parent.ChildElements.OfType<OpenXmlCompositeElement>().ToArray())
             if (child is AbstractNum or NumberingInstance or LevelOverride or Level or
                 ParagraphProperties or NumberingProperties or NumberingSymbolRunProperties or Style or StyleParagraphProperties)
-                NormalizeNumberingChoices(child);
+                NormalizeNumberingChoices(child, understood);
     }
 
     private static bool IsSupportedNumberingNamespace(string ns) => ns is
