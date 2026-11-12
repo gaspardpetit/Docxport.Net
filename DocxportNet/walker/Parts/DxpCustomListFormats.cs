@@ -55,6 +55,7 @@ internal static class DxpCustomListFormats
         ["\u4e00, \u5341, \u4e00\u767e(\u7e41), ..."] = NumberFormatValues.TaiwaneseCountingThousand,
         ["\u58f9, \u8d30, \u53c1, ..."] = NumberFormatValues.ChineseLegalSimplified,
         ["\u58f9, \u8cb3, \u53c3, ..."] = NumberFormatValues.IdeographLegalTraditional,
+        ["\u4e00, \u4e00\u3007, \u4e00\u3007\u3007, ..."] = NumberFormatValues.IdeographDigital,
     };
 
     internal static bool TryResolve(NumberingFormat? format, out NumberFormatValues value)

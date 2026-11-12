@@ -24,6 +24,7 @@ under the same group and basename in
 | CustomJapaneseAliases | Exact Japanese numeric aliases and direct boundary controls |
 | CustomChineseCountingAliases | Exact Chinese and Taiwanese counting aliases and direct boundary controls |
 | CustomChineseLegalAliases | Exact Chinese legal numeral aliases and direct boundary controls |
+| CustomIdeographDigitalAlias | Exact Ideographic digit alias and direct boundary controls |
 | CustomKanaAliases | Exact Aiueo/Iroha half-width and full-width aliases |
 | CustomKoreanAlphabetAliases | Exact Ganada and Chosung aliases |
 | CustomKoreanNumericAliases | Korean counting and digit aliases and boundary controls |
