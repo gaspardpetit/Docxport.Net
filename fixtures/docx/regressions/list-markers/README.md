@@ -84,3 +84,5 @@ and update manifest hashes only after reviewing the new bytes.
 - `MarkerPropertyChoices/`: Word-confirmed visible caps selected inside numbering symbol run properties, with direct/off controls.
 
 - `StyleAssociations/`: 128 Word-confirmed style/list association controls, retaining six investigation subgroups.
+
+- `StyleCompatibility/`: Word-confirmed wrappers/choices in numbering styles, including inherited association suppression.

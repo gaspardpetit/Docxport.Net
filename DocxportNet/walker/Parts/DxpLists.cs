@@ -66,8 +66,17 @@ public sealed class DxpNumberingResolver
         return paragraph.ParagraphProperties;
     }
 
-    internal static Styles? NormalizeNumberingStyles(Styles? source, Numbering? numbering = null) =>
-        DxpNumberingStyleAssociations.Normalize(source, NormalizeImportedLevels(numbering));
+    internal static Styles? NormalizeNumberingStyles(Styles? source, Numbering? numbering = null)
+    {
+        source = DxpNumberingCompatibility.NormalizeIgnorableContent(source, IsSupportedNumberingNamespace);
+        if (source?.Descendants<AlternateContent>().Any() == true)
+        {
+            source = (Styles)source.CloneNode(true);
+            NormalizeNumberingChoices(source);
+        }
+        // Word's association import sees the selected style definitions.
+        return DxpNumberingStyleAssociations.Normalize(source, NormalizeImportedLevels(numbering));
+    }
 
     private static Numbering? NormalizeImportedLevels(Numbering? source)
     {
@@ -140,7 +149,7 @@ public sealed class DxpNumberingResolver
         }
         foreach (var child in parent.ChildElements.OfType<OpenXmlCompositeElement>().ToArray())
             if (child is AbstractNum or NumberingInstance or LevelOverride or Level or
-                ParagraphProperties or NumberingProperties or NumberingSymbolRunProperties)
+                ParagraphProperties or NumberingProperties or NumberingSymbolRunProperties or Style or StyleParagraphProperties)
                 NormalizeNumberingChoices(child);
     }
 
