@@ -633,6 +633,10 @@ public static class DxpListMarkerFormatter
         // Word leaves negative ideographic digit list expansions empty.
         if (fmt == NumberFormatValues.IdeographDigital && n < 0)
             return "";
+        // Direct Word captures confirm empty signed-minimum ordinal and
+        // dashed-number list expansions; ordinary negatives remain supported.
+        if (n == int.MinValue && (fmt == NumberFormatValues.Ordinal || fmt == NumberFormatValues.NumberInDash))
+            return "";
         // Word lists repeat a single Latin letter (AA, BB). Field formatting
         // uses positional letters (AA, AB) and continues through FormatNumber.
         if (fmt == NumberFormatValues.UpperLetter || fmt == NumberFormatValues.LowerLetter)
