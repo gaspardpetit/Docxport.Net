@@ -18,11 +18,10 @@ The three pre-fix DOC Word PDFs are retained in the `before` subgroup with
 their hashes and extracted 2–7 sequences in the same manifest.
 
 The focused tests inspect the binary flags and decoded start values for every
-case, and plain Markdown projection for the nine non-formatting-only cases.
-Flattening formatting-only replacements into DOCX currently changes their
-activation; that pre-existing projection issue is intentionally left for a
-separate PR. These fixtures preserve its Word controls rather than treating
-the current projection as correct.
+case, and plain Markdown projection for all twelve cases. The formatting-only
+projection issue originally deferred from this group is now covered by
+`DocFormatOverrides`, including distinct Roman replacement formats and fresh
+Word source/DOC/projected captures.
 
 The production fix preserves independent LFOLVL fStartAt/fFormatting bits and
 reads the combined start from the nested LVL, leaving the ignored outer start

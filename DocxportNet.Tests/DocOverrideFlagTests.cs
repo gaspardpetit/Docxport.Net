@@ -32,9 +32,6 @@ public sealed class DocOverrideFlagTests
         Assert.Equal(hasFormat, instance.FormattingOverrides.ContainsKey(depth));
         if (hasStart) Assert.Equal(7, instance.StartOverrides[depth]);
         if (hasFormat) Assert.Equal(7, instance.FormattingOverrides[depth].StartAt);
-        // Word's formatting-only controls retain the abstract start. Flattening
-        // replacements in DOCX projection is a separate existing issue.
-        if (mode != "format")
         {
             using var projectedStream = new MemoryStream(DxpDocToDocx.Project(binary).DocxBytes);
             using var projected = WordprocessingDocument.Open(projectedStream, false);
