@@ -69,4 +69,21 @@ internal static class DxpCustomListFormats
         return format?.Val?.Value == NumberFormatValues.Custom &&
             format.Format?.Value is string pattern && Aliases.TryGetValue(pattern, out value);
     }
+    private static readonly Dictionary<string, string> ExtensionAlphabets = new(StringComparer.Ordinal)
+    {
+        ["A, \u00c7, \u011c, ..."] = "ABC\u00c7DEFG\u011eHI\u0130JKLMNO\u00d6PRS\u015eTU\u00dcVYZ",
+        ["a, \u00e7, \u011d, ..."] = "abc\u00e7defg\u011fh\u0131ijklmno\u00f6prs\u015ftu\u00fcvyz",
+    };
+
+    internal static string? FormatExtension(NumberingFormat? format, int number)
+    {
+        if (format?.Val?.Value != NumberFormatValues.Custom ||
+            format.Format?.Value is not string pattern || !ExtensionAlphabets.TryGetValue(pattern, out var alphabet))
+            return null;
+        if (number < 0) return "";
+        if (number == 0) return " ";
+        // Word repeats each alphabet letter, wrapping after thirty repetitions.
+        return new string(alphabet[(number - 1) % alphabet.Length], (number - 1) / alphabet.Length % 30 + 1);
+    }
+
 }

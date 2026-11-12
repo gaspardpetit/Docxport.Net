@@ -33,6 +33,7 @@ under the same group and basename in
 | CustomKoreanNumericAliases | Korean counting and digit aliases and boundary controls |
 | CustomLatinAliases | Custom Latin letter and Roman aliases |
 | CustomNumeric | Direct custom numeric patterns and decimal fallback |
+| CustomTurkishAlphabets | Exact Turkish alphabet extensions and fallback controls |
 | CustomWordAliases | Exact Hindi, Thai and Vietnamese counting-word aliases |
 | DecimalBoundaries | Signed decimal counter boundaries and zero-padding |
 | EnclosedBoundaries | Circled, parenthesized and full-stop marker ranges |

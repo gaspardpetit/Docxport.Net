@@ -569,7 +569,9 @@ public static class DxpListMarkerFormatter
                 : refLvl != null ? TryGetCustomDecimalWidth(refLvl) : null;
 
             var directCustom = refLvl?.NumberingFormat?.Val?.Value == NumberFormatValues.Custom;
-            string formatted = customWidth != null
+            var customExtension = legal != null && (legal.Val == null || legal.Val.Value)
+                ? null : DxpCustomListFormats.FormatExtension(refLvl?.NumberingFormat, cur.Value);
+            string formatted = customExtension != null ? customExtension : customWidth != null
                 ? directCustom && cur.Value < 0 ? ""
                     : cur.Value.ToString(CultureInfo.InvariantCulture).PadLeft(customWidth.Value, '0')
                 : FormatListNumber(cur.Value, directCustom && refFmt == NumberFormatValues.Custom
