@@ -67,7 +67,12 @@ internal static class DocListReader
                 if ((bytes[4] & 0x20) != 0)
                 {
                     var nested = levelOverride.Children.Single(x => x.Kind == "LVL");
-                    formats[level] = ReadLevel(index, nested, level);
+                    var formatting = ReadLevel(index, nested, level);
+                    formats[level] = formatting;
+                    // With both flags set, the start is stored in the nested LVL,
+                    // not in LFOLVL.iStartAt.
+                    if ((bytes[4] & 0x10) != 0)
+                        starts[level] = formatting.StartAt;
                 }
             }
             instances[i] = new DocListInstance(checked((short)(i + 1)),

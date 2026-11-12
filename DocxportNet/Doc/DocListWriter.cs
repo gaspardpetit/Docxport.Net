@@ -72,7 +72,7 @@ internal static class DocListWriter
                     out var formatting);
                 WriteI32(overrides, hasStart && !hasFormatting ? start : 0);
                 overrides.WriteByte(checked((byte)(levelIndex |
-                    (hasFormatting ? 0x20 : 0x10))));
+                    (hasFormatting ? 0x20 : 0) | (hasStart ? 0x10 : 0))));
                 overrides.WriteByte(0);
                 overrides.WriteByte(0);
                 overrides.WriteByte(0);
