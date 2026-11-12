@@ -41,6 +41,7 @@ under the same group and basename in
 | DecimalBoundaries | Signed decimal counter boundaries and zero-padding |
 | EnclosedBoundaries | Circled, parenthesized and full-stop marker ranges |
 | EnclosedIdeographs | Parenthesized ideograph range and signed boundaries |
+| ExplicitLevelCaps | Direct numbering-level caps presentation in Latin and Greek |
 | GappedHeading | Heading/body counter continuity across missing levels |
 | HebrewAlphabet | Hebrew alphabet progression, direction mark and rollover |
 | HebrewNumerals | Hebrew additive numerals, special forms and rollover |
