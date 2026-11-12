@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocxportNet.API;
+using DocxportNet.Doc;
 using DocxportNet.Visitors.Html;
 using DocxportNet.Visitors.Markdown;
 using DocxportNet.Visitors.PlainText;
@@ -76,8 +77,13 @@ public sealed class NumberingProcessContentListMarkerTests
             new DxpHtmlVisitor(DxpHtmlVisitorConfig.CreatePlainConfig()),
             new DxpMarkdownVisitor(DxpMarkdownVisitorConfig.CreateRichConfig()),
             new DxpHtmlVisitor(DxpHtmlVisitorConfig.CreateRichConfig()), new DxpPlainTextVisitor(DxpPlainTextVisitorConfig.CreateAcceptConfig())];
+        using var binarySource = new MemoryStream();
+        using (var copy = doc.Clone(binarySource)) { }
+        var binary = DxpDocExport.Export(binarySource.ToArray());
+        using var projectedStream = new MemoryStream(DxpDocToDocx.Project(binary).DocxBytes);
+        using var projected = WordprocessingDocument.Open(projectedStream, false);
         var expected = Enumerable.Range(start, 3).Select(n => label + n + "END").ToArray();
-        foreach (var source in new[] { oracle, doc })
+        foreach (var source in new[] { oracle, doc, projected })
             foreach (var visitor in Visitors())
             {
                 var output = DxpExport.ExportToString(source, visitor);
