@@ -1,0 +1,126 @@
+{
+  "bullet-parent-bullet": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/BulletPlaceholders/bullet-parent-bullet.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/BulletPlaceholders/bullet-parent-bullet.pdf",
+    "sourceSha256": "b46d55e8b5e3d19fdeea2d4709f3f4998c561052ff23187a5302da50714b04c2",
+    "wordPdfSha256": "0866d847d54930edf24de1f8a67de69557350ee01349412392c44bcbe2835e1f",
+    "levels": [
+      0,
+      1,
+      1,
+      0,
+      1,
+      1
+    ],
+    "labelPattern": "(?:BEGIN|ROOT).*?END",
+    "labels": [
+      "ROOTEND",
+      "BEGIN/END",
+      "BEGIN/END",
+      "ROOTEND",
+      "BEGIN/END",
+      "BEGIN/END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOTEND",
+      "BEGIN/END",
+      "BEGIN/END",
+      "ROOTEND",
+      "BEGIN/END",
+      "BEGIN/END"
+    ]
+  },
+  "bullet-parent-decimal": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/BulletPlaceholders/bullet-parent-decimal.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/BulletPlaceholders/bullet-parent-decimal.pdf",
+    "sourceSha256": "f999b8ef199b7698711728986e39791d83a31cdfd2d34b1e8196dba3f3796e49",
+    "wordPdfSha256": "94dd6eef31b9712ddf27de548144dc4c62b249bca2d9f11850dd6390d113e2f2",
+    "levels": [
+      0,
+      1,
+      1,
+      0,
+      1,
+      1
+    ],
+    "labelPattern": "(?:BEGIN|ROOT).*?END",
+    "labels": [
+      "ROOT3END",
+      "BEGIN3/END",
+      "BEGIN3/END",
+      "ROOT4END",
+      "BEGIN4/END",
+      "BEGIN4/END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT3END",
+      "BEGIN3/END",
+      "BEGIN3/END",
+      "ROOT4END",
+      "BEGIN4/END",
+      "BEGIN4/END"
+    ]
+  },
+  "bullet-parent-upperRoman": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/BulletPlaceholders/bullet-parent-upperRoman.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/BulletPlaceholders/bullet-parent-upperRoman.pdf",
+    "sourceSha256": "a31d09d6b3a691dd67b55fa940399218c2518b5442205f49d20c89cb969a6b7c",
+    "wordPdfSha256": "c9cc4f267d0e3682756e91bfec88894d96da8d0ade7fabdc8b01776c9e9e4358",
+    "levels": [
+      0,
+      1,
+      1,
+      0,
+      1,
+      1
+    ],
+    "labelPattern": "(?:BEGIN|ROOT).*?END",
+    "labels": [
+      "ROOTIIIEND",
+      "BEGINIII/END",
+      "BEGINIII/END",
+      "ROOTIVEND",
+      "BEGINIV/END",
+      "BEGINIV/END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOTIIIEND",
+      "BEGINIII/END",
+      "BEGINIII/END",
+      "ROOTIVEND",
+      "BEGINIV/END",
+      "BEGINIV/END"
+    ]
+  },
+  "bullet-quotes": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/BulletPlaceholders/bullet-quotes.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/BulletPlaceholders/bullet-quotes.pdf",
+    "sourceSha256": "9aa36669303fc68458767348b6a35ca4c2943bef580cdbf37189cd0d6ba63c94",
+    "wordPdfSha256": "93e805aa197a66c7da487d205a2d1bb3f2beebb10aa03b195adf70ceb6d143aa",
+    "levels": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "labelPattern": "(?:BEGIN|ROOT).*?END",
+    "labels": [
+      "BEGINA\"B'CEND",
+      "BEGINA\"B'CEND",
+      "BEGINA\"B'CEND",
+      "BEGINA\"B'CEND",
+      "BEGINA\"B'CEND",
+      "BEGINA\"B'CEND"
+    ],
+    "pdfExtractedLabels": [
+      "BEGINA\"B'CEND",
+      "BEGINA\"B'CEND",
+      "BEGINA\"B'CEND",
+      "BEGINA\"B'CEND",
+      "BEGINA\"B'CEND",
+      "BEGINA\"B'CEND"
+    ]
+  }
+}
