@@ -46,6 +46,9 @@ internal static class DxpCustomListFormats
         ["\u2488, \u2489, \u248a, ..."] = NumberFormatValues.DecimalEnclosedFullstop,
         ["\u2474, \u2475, \u2476, ..."] = NumberFormatValues.DecimalEnclosedParen,
         ["\uff11, \uff12, \uff13, ..."] = NumberFormatValues.DecimalFullWidth,
+        ["\u4e00, \u4e8c, \u4e09, ..."] = NumberFormatValues.JapaneseCounting,
+        ["\u4e00, \u4e8c, \u4e09, \u4e07, ..."] = NumberFormatValues.JapaneseDigitalTenThousand,
+        ["\u58f1, \u5f10, \u53c2, ..."] = NumberFormatValues.JapaneseLegal,
     };
 
     internal static bool TryResolve(NumberingFormat? format, out NumberFormatValues value)

@@ -725,6 +725,11 @@ public static class DxpListMarkerFormatter
             const string digits = "\u96f6\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d";
             return new string(n.ToString(CultureInfo.InvariantCulture).Select(digit => digits[digit - '0']).ToArray());
         }
+        // Word suppresses negative Japanese numeric list expansions, including
+        // the signed minimum; shared field formatting keeps its own behavior.
+        if (n < 0 && (fmt == NumberFormatValues.JapaneseCounting ||
+            fmt == NumberFormatValues.JapaneseDigitalTenThousand || fmt == NumberFormatValues.JapaneseLegal))
+            return "";
         if (fmt == NumberFormatValues.JapaneseDigitalTenThousand && n >= 0)
         {
             if (n > 9999) return "";
