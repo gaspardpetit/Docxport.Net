@@ -630,6 +630,9 @@ public static class DxpListMarkerFormatter
         if (fmt == NumberFormatValues.DecimalFullWidth && n == int.MinValue ||
             fmt == NumberFormatValues.DecimalFullWidth2 && n < 0)
             return "";
+        // Word leaves negative ideographic digit list expansions empty.
+        if (fmt == NumberFormatValues.IdeographDigital && n < 0)
+            return "";
         // Word lists repeat a single Latin letter (AA, BB). Field formatting
         // uses positional letters (AA, AB) and continues through FormatNumber.
         if (fmt == NumberFormatValues.UpperLetter || fmt == NumberFormatValues.LowerLetter)
