@@ -74,3 +74,5 @@ The tests recreate these structures in memory; normal test runs do not require
 Word. Capture generation uses the repository's standard fixture-to-truth path
 mapping. Review generated captures before replacing the recorded Word evidence
 and update manifest hashes only after reviewing the new bytes.
+
+- `NumberingDefinitionChoices/`: Word-confirmed compatibility branch selection inside numbering definitions, with direct replacement controls.

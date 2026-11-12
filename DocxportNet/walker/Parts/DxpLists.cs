@@ -50,10 +50,12 @@ public sealed class DxpNumberingResolver
                 replacement.StartOverrideNumberingValue?.Val?.Value < 0);
         if (source == null || (!source.Descendants<LevelRestart>().Any() &&
             !source.Descendants<Level>().Any(InvalidStart) &&
+            !source.Descendants<AlternateContent>().Any() &&
             !source.Descendants<NumberingFormat>().Any(format => DxpCustomListFormats.TryResolve(format, out _)))) return source;
         // Word normalizes these declarations on import. Keep that view private:
         // exporting must not rewrite the caller's numbering definitions.
         var numbering = (Numbering)source.CloneNode(true);
+        NormalizeNumberingChoices(numbering);
         foreach (var level in numbering.Descendants<Level>().ToArray())
         {
             if (DxpCustomListFormats.TryResolve(level.NumberingFormat, out var alias))
@@ -78,6 +80,51 @@ public sealed class DxpNumberingResolver
         }
         return numbering;
     }
+
+    private static void NormalizeNumberingChoices(OpenXmlCompositeElement parent)
+    {
+        while (parent.Elements<AlternateContent>().FirstOrDefault() is { } alternate)
+        {
+            // Selection depends on namespace identity, never the author's prefix.
+            // Every required namespace must be supported before selecting a choice.
+            bool Supported(AlternateContentChoice choice)
+            {
+                var prefixes = DocxportNet.Walker.Parts.DxpAlternateContents.GetRequiredPrefixes(choice);
+                return prefixes.Count > 0 && prefixes.All(prefix =>
+                    choice.LookupNamespace(prefix) is string ns && IsSupportedNumberingNamespace(ns));
+            }
+            OpenXmlElement? selected = alternate.Elements<AlternateContentChoice>().FirstOrDefault(Supported);
+            selected ??= alternate.GetFirstChild<AlternateContentFallback>();
+            if (selected != null)
+            {
+                foreach (var child in selected.ChildElements)
+                {
+                    var replacement = child.CloneNode(true);
+                    // Keep bindings declared on the removed wrappers available to nested choices.
+                    var namespaces = alternate.NamespaceDeclarations.ToDictionary(pair => pair.Key, pair => pair.Value);
+                    foreach (var pair in selected.NamespaceDeclarations) namespaces[pair.Key] = pair.Value;
+                    foreach (var pair in namespaces)
+                        if (!replacement.NamespaceDeclarations.Any(existing => existing.Key == pair.Key))
+                            replacement.AddNamespaceDeclaration(pair.Key, pair.Value);
+                    parent.InsertBefore(replacement, alternate);
+                }
+            }
+            alternate.Remove();
+        }
+        foreach (var child in parent.ChildElements.OfType<OpenXmlCompositeElement>().ToArray())
+            if (child is AbstractNum or NumberingInstance or LevelOverride or Level)
+                NormalizeNumberingChoices(child);
+    }
+
+    private static bool IsSupportedNumberingNamespace(string ns) => ns is
+        "http://schemas.openxmlformats.org/wordprocessingml/2006/main" or
+        "urn:schemas-microsoft-com:vml" or
+        "http://schemas.openxmlformats.org/drawingml/2006/main" or
+        "http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" or
+        "http://schemas.openxmlformats.org/drawingml/2006/picture" or
+        "http://schemas.openxmlformats.org/officeDocument/2006/relationships" or
+        "http://schemas.microsoft.com/office/word/2010/wordml" or
+        "http://schemas.microsoft.com/office/word/2012/wordml";
 
     private static void DiscardLevel(Level level)
     {
