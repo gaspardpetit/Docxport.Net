@@ -10,6 +10,7 @@ under the same group and basename in
 | --- | --- |
 | Alphabetic | Word alphabetic rollover and large-label goldens |
 | AlphabeticBoundaries | Alphabetic zero, negatives and signed overflow |
+| BulletPlaceholders | Bullet label expansion with numeric and bullet ancestors |
 | ChicagoBoundaries | Chicago symbol repetition, rollover and nonpositive counters |
 | ArabicAlphabets | Arabic alphabetical/Abjad orders, non-joiners and rollover |
 | ChineseCounting | Chinese/Taiwanese counting-to-digits transition |

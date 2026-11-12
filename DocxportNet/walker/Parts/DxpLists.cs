@@ -523,15 +523,6 @@ public static class DxpListMarkerFormatter
             reference.Value[1] == '0' || reference.Value[1] - '1' > numPr.Ilvl))
             return null;
 
-        // If bullet, Word stores the glyph directly in lvlText (and font is in lvl.rPr).
-        if (fmt == NumberFormatValues.Bullet)
-        {
-            var font = GetBulletFont(lvl);
-            if (!string.IsNullOrEmpty(font) && lvlText.Length > 0)
-                return $"""<span style="font-family:{font}">{lvlText}</span>""";
-            return lvlText;
-        }
-
         var substitutions = new Dictionary<string, string>(StringComparer.Ordinal);
 
         for (int i = 0; i < 9; i++)
@@ -571,7 +562,9 @@ public static class DxpListMarkerFormatter
             var directCustom = refLvl?.NumberingFormat?.Val?.Value == NumberFormatValues.Custom;
             var customExtension = legal != null && (legal.Val == null || legal.Val.Value)
                 ? null : DxpCustomListFormats.FormatExtension(refLvl?.NumberingFormat, cur.Value);
-            string formatted = customExtension != null ? customExtension : customWidth != null
+            // Bullet references have no numeric expansion, including their own level.
+            string formatted = refFmt == NumberFormatValues.Bullet ? ""
+                : customExtension != null ? customExtension : customWidth != null
                 ? directCustom && cur.Value < 0 ? ""
                     : cur.Value.ToString(CultureInfo.InvariantCulture).PadLeft(customWidth.Value, '0')
                 : FormatListNumber(cur.Value, directCustom && refFmt == NumberFormatValues.Custom
@@ -585,8 +578,17 @@ public static class DxpListMarkerFormatter
         }
 
         var referenceIndex = 0;
-        return System.Text.RegularExpressions.Regex.Replace(lvlText, "%[1-9]", match =>
+        var expandedText = System.Text.RegularExpressions.Regex.Replace(lvlText, "%[1-9]", match =>
             referenceIndex++ < 9 && substitutions.TryGetValue(match.Value, out var value) ? value : match.Value);
+        // A bullet label can contain numeric ancestor references. Expand those
+        // before applying its existing font wrapper, preserving literal bullets.
+        if (fmt == NumberFormatValues.Bullet)
+        {
+            var font = GetBulletFont(lvl);
+            if (!string.IsNullOrEmpty(font) && expandedText.Length > 0)
+                return $"""<span style="font-family:{font}">{expandedText}</span>""";
+        }
+        return expandedText;
     }
 
     private static string FormatListNumber(int n, NumberFormatValues fmt, CultureInfo? culture)
