@@ -589,6 +589,21 @@ public static class DxpListMarkerFormatter
 
     private static string FormatListNumber(int n, NumberFormatValues fmt, CultureInfo? culture)
     {
+        if ((fmt == NumberFormatValues.CardinalText || fmt == NumberFormatValues.OrdinalText) &&
+            ResolveNumberProvider(culture ?? CultureInfo.CurrentCulture) is DocxportNet.Formatting.Impl.EnglishNumberToWordsProvider english)
+        {
+            // Word's English list words cover 0..999999. Keep the field
+            // provider's existing range and other language providers unchanged.
+            if (n < 0 || n > 999999) return "";
+            if (n > 32767)
+            {
+                var text = english.ToCardinal(n / 1000) + " thousand";
+                var remainder = n % 1000;
+                return remainder == 0 ? text + (fmt == NumberFormatValues.OrdinalText ? "th" : "")
+                    : text + " " + (fmt == NumberFormatValues.OrdinalText
+                        ? english.ToOrdinalWords(remainder) : english.ToCardinal(remainder));
+            }
+        }
         if (fmt == NumberFormatValues.Chicago)
         {
             if (n <= 0) return "";

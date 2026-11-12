@@ -26,6 +26,7 @@ under the same group and basename in
 | CustomChineseLegalAliases | Exact Chinese legal numeral aliases and direct boundary controls |
 | CustomIdeographDigitalAlias | Exact Ideographic digit alias and direct boundary controls |
 | CustomOrdinalDashAliases | Exact Ordinal and dash aliases and direct boundary controls |
+| CustomEnglishWordAliases | Exact English word aliases and direct boundary controls |
 | CustomKanaAliases | Exact Aiueo/Iroha half-width and full-width aliases |
 | CustomKoreanAlphabetAliases | Exact Ganada and Chosung aliases |
 | CustomKoreanNumericAliases | Korean counting and digit aliases and boundary controls |

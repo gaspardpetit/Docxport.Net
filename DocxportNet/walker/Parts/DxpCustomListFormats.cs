@@ -58,6 +58,8 @@ internal static class DxpCustomListFormats
         ["\u4e00, \u4e00\u3007, \u4e00\u3007\u3007, ..."] = NumberFormatValues.IdeographDigital,
         ["1st, 2nd, 3rd, ..."] = NumberFormatValues.Ordinal,
         ["- 1 -, - 2 -, - 3 -, ..."] = NumberFormatValues.NumberInDash,
+        ["One, Two, Three, ..."] = NumberFormatValues.CardinalText,
+        ["First, Second, Third, ..."] = NumberFormatValues.OrdinalText,
     };
 
     internal static bool TryResolve(NumberingFormat? format, out NumberFormatValues value)
