@@ -50,7 +50,7 @@ internal static class DocOpenXmlListReader
                 throw new InvalidDataException("A DOCX abstract list ID is duplicated.");
             listIds.Add(sourceId, listId);
             var levels = abstractNum.Elements<Level>().Select(x => ReadLevel(x, readFormatting,
-                readParagraphFormatting))
+                readParagraphFormatting, defaultStart: 0))
                 .OrderBy(x => x.Index).ToArray();
             if (levels.Length == 0 || levels.Length > 9 ||
                 levels.Select(x => x.Index).Distinct().Count() != levels.Length ||
@@ -79,9 +79,11 @@ internal static class DocOpenXmlListReader
                     throw new InvalidDataException("A DOCX list override has an invalid level.");
                 if (level.StartOverrideNumberingValue?.Val?.Value is int start)
                     starts[levelIndex] = start;
+                // Replacement activation has separate rules; retain its existing
+                // fallback while fixing omitted starts in abstract definitions.
                 if (level.Level != null)
                     formats[levelIndex] = ReadLevel(level.Level, readFormatting,
-                        readParagraphFormatting);
+                        readParagraphFormatting, defaultStart: 1);
             }
             instances.Add(new DocListInstance(overrideIndex, listId, starts, formats));
         }
@@ -90,7 +92,7 @@ internal static class DocOpenXmlListReader
 
     private static DocListLevel ReadLevel(Level level,
         Func<OpenXmlCompositeElement?, DocCharacterFormatting> readFormatting,
-        Func<OpenXmlCompositeElement?, DocParagraphFormatting> readParagraphFormatting)
+        Func<OpenXmlCompositeElement?, DocParagraphFormatting> readParagraphFormatting, int defaultStart)
     {
         if (level.LevelIndex?.Value is not int index || index is < 0 or > 8)
             throw new InvalidDataException("A DOCX list level has an invalid index.");
@@ -142,7 +144,7 @@ internal static class DocOpenXmlListReader
             restartValue is not (>= 0 and <= 7))
             throw new NotSupportedException("A list restart level must be between 0 and 7.");
         return new DocListLevel(index,
-            level.StartNumberingValue?.Val?.Value ?? 1, code,
+            level.StartNumberingValue?.Val?.Value ?? defaultStart, code,
             level.LevelText?.Val?.Value ?? string.Empty, follow,
             readFormatting(level.NumberingSymbolRunProperties),
             paragraphFormatting, justification,
