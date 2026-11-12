@@ -1046,7 +1046,7 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
     {
         // Resolve individual properties through direct formatting and the style
         // chain. A direct numId need not have a direct level, and vice versa.
-        var markerProperties = p.ParagraphProperties;
+        var markerProperties = DxpNumberingResolver.NormalizeParagraphNumberingProperties(p);
         var directNp = markerProperties?.NumberingProperties;
         int? numId = directNp?.NumberingId?.Val?.Value;
         if (numId == 0)

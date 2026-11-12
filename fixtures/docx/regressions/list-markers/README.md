@@ -78,3 +78,5 @@ and update manifest hashes only after reviewing the new bytes.
 - `NumberingDefinitionChoices/`: Word-confirmed compatibility branch selection inside numbering definitions, with direct replacement controls.
 
 - `NumberingProcessContent/`: Word-confirmed processing of ignorable wrappers in numbering definitions, with ignore and AlternateContent controls.
+
+- `DirectCompatibility/`: Word-confirmed compatibility processing for direct paragraph list membership and explicit suppression.

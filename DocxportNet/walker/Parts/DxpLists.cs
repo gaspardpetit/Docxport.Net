@@ -43,6 +43,29 @@ public sealed class DxpNumberingResolver
         }
     }
 
+    internal static ParagraphProperties? NormalizeParagraphNumberingProperties(Paragraph source)
+    {
+        // Ordinary run content cannot supply paragraph properties. Avoid scanning
+        // or reparsing drawings/text when resolving only list membership.
+        if (!source.ChildElements.Any(child => child is AlternateContent ||
+            child.NamespaceUri != "http://schemas.openxmlformats.org/wordprocessingml/2006/main"))
+        {
+            var properties = source.ParagraphProperties;
+            var normalized = DxpNumberingCompatibility.NormalizeIgnorableContent(properties, IsSupportedNumberingNamespace);
+            if (normalized == null || !normalized.Descendants<AlternateContent>().Any()) return normalized;
+            if (ReferenceEquals(normalized, properties)) normalized = DxpNumberingCompatibility.ClonePropertiesWithContext(properties!);
+            NormalizeNumberingChoices(normalized);
+            return normalized;
+        }
+        var paragraph = DxpNumberingCompatibility.NormalizeIgnorableContent(source, IsSupportedNumberingNamespace)!;
+        if (paragraph.Descendants<AlternateContent>().Any())
+        {
+            if (ReferenceEquals(paragraph, source)) paragraph = DxpNumberingCompatibility.CloneParagraphWithContext(source);
+            NormalizeNumberingChoices(paragraph);
+        }
+        return paragraph.ParagraphProperties;
+    }
+
     private static Numbering? NormalizeImportedLevels(Numbering? source)
     {
         source = DxpNumberingCompatibility.NormalizeIgnorableContent(source, IsSupportedNumberingNamespace);
@@ -113,7 +136,8 @@ public sealed class DxpNumberingResolver
             alternate.Remove();
         }
         foreach (var child in parent.ChildElements.OfType<OpenXmlCompositeElement>().ToArray())
-            if (child is AbstractNum or NumberingInstance or LevelOverride or Level)
+            if (child is AbstractNum or NumberingInstance or LevelOverride or Level or
+                ParagraphProperties or NumberingProperties)
                 NormalizeNumberingChoices(child);
     }
 
