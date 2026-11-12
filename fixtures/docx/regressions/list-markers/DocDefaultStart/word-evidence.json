@@ -1,0 +1,1172 @@
+{
+  "depth-0-0/doc": {
+    "sourcePath": "fixtures/doc/regressions/list-markers/DefaultStart/depth-0-0.doc",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/doc/depth-0-0.pdf",
+    "sourceSha256": "22099efedf19510a7f483bef0766569744bf22fdfd43b8a8db708c3003dc0eb4",
+    "wordPdfSha256": "7feaae5424f35ab783cec2bd56fe9ccc5fd8247932c431d298288534ed13f352",
+    "labels": [
+      "BEGIN0END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END"
+    ],
+    "wordListStrings": [
+      "BEGIN0END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN0END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END"
+    ]
+  },
+  "depth-0-0/projected": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocDefaultStart/projected/depth-0-0.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/projected/depth-0-0.pdf",
+    "sourceSha256": "043fec5e4bd127d17e649cb649f0a185884ff365646956a6c4e2ea9919d6bd78",
+    "wordPdfSha256": "557bb53a43eb63f926d99b4b50922642cabe11d20eae1466aa776271974233e3",
+    "labels": [
+      "BEGIN0END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END"
+    ],
+    "wordListStrings": [
+      "BEGIN0END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN0END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END"
+    ]
+  },
+  "depth-0-0/source": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocDefaultStart/source/depth-0-0.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/source/depth-0-0.pdf",
+    "sourceSha256": "a61eeaf713153cbbbf77f25d602c88cf44165a69ced03c61267fec4ae3e2d5d7",
+    "wordPdfSha256": "24038d44ba7362f54fdbba5b034b648005b5b49426beae97930add3ec1ce81b9",
+    "labels": [
+      "BEGIN0END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END"
+    ],
+    "wordListStrings": [
+      "BEGIN0END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN0END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END"
+    ]
+  },
+  "depth-0-1/doc": {
+    "sourcePath": "fixtures/doc/regressions/list-markers/DefaultStart/depth-0-1.doc",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/doc/depth-0-1.pdf",
+    "sourceSha256": "bdee257abacf595f942294fa52793935b3bdde3df85d7465e59699c3a7cad621",
+    "wordPdfSha256": "13a330d09fa7c786573d255455e34c701e8e075a550c482badda9cd1b84f1ad0",
+    "labels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  "depth-0-1/projected": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocDefaultStart/projected/depth-0-1.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/projected/depth-0-1.pdf",
+    "sourceSha256": "b411e1fd95560bf5685a1bac87ce6edbbd2e4b5bbfb2d7a2ed4224094c2ac710",
+    "wordPdfSha256": "9157fdb219e323951d117cb502f5276d7e98ac1b83c7ad1f667f9c90843596f5",
+    "labels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  "depth-0-1/source": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocDefaultStart/source/depth-0-1.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/source/depth-0-1.pdf",
+    "sourceSha256": "0e0acf55da4c6daddf549cc048e3f113fc16dd90068d2ea1878675f8574f4b20",
+    "wordPdfSha256": "4c31c7b0e25e795bfeb9a25dc17646b1f234f4b59d0bb685bf5937628cf646cf",
+    "labels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  "depth-0-7/doc": {
+    "sourcePath": "fixtures/doc/regressions/list-markers/DefaultStart/depth-0-7.doc",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/doc/depth-0-7.pdf",
+    "sourceSha256": "674d96d95ad831aa5a1ebace9a570a7a0baf53a14f619145542cc6dfb9af5f72",
+    "wordPdfSha256": "37d698101fc961e7efbee06e7c03e50cdb962b84992c4558173c7dbf0749e664",
+    "labels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END",
+      "BEGIN11END",
+      "BEGIN12END"
+    ],
+    "wordListStrings": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END",
+      "BEGIN11END",
+      "BEGIN12END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END",
+      "BEGIN11END",
+      "BEGIN12END"
+    ]
+  },
+  "depth-0-7/projected": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocDefaultStart/projected/depth-0-7.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/projected/depth-0-7.pdf",
+    "sourceSha256": "75bae004bef495a196c640f065dd1a0cbccbe06723fcfc907abf85fee47460f5",
+    "wordPdfSha256": "5bf99a22d92d7f76eec4ad679d58cf22ea46c8de39b55d93dae46e6dc11e30a3",
+    "labels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END",
+      "BEGIN11END",
+      "BEGIN12END"
+    ],
+    "wordListStrings": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END",
+      "BEGIN11END",
+      "BEGIN12END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END",
+      "BEGIN11END",
+      "BEGIN12END"
+    ]
+  },
+  "depth-0-7/source": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocDefaultStart/source/depth-0-7.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/source/depth-0-7.pdf",
+    "sourceSha256": "bb12554925c668d5200be8373da40f3389a860cc58ba7ecce0ba5c505fa98c69",
+    "wordPdfSha256": "1fb2d13bec5379cc1c4f28d60b31648391e24c798632358dd562c7d50abed253",
+    "labels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END",
+      "BEGIN11END",
+      "BEGIN12END"
+    ],
+    "wordListStrings": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END",
+      "BEGIN11END",
+      "BEGIN12END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END",
+      "BEGIN11END",
+      "BEGIN12END"
+    ]
+  },
+  "depth-0-absent/doc": {
+    "sourcePath": "fixtures/doc/regressions/list-markers/DefaultStart/depth-0-absent.doc",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/doc/depth-0-absent.pdf",
+    "sourceSha256": "9914b7d4f439e6e2453b2b56bc71932aff3bcef7278e35d6fdd42db06bff293e",
+    "wordPdfSha256": "41431caddcfcd74ae0afcb899c2ebf6cc2c08480b8aea041f6e0bd1bd390ec86",
+    "labels": [
+      "BEGIN0END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END"
+    ],
+    "wordListStrings": [
+      "BEGIN0END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN0END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END"
+    ]
+  },
+  "depth-0-absent/projected": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocDefaultStart/projected/depth-0-absent.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/projected/depth-0-absent.pdf",
+    "sourceSha256": "92bfa8ee5eed819c827c82eb6ccc1ae23e5275465523f0736ef45e8789a4be18",
+    "wordPdfSha256": "8ef5ee475816e7f1e36daa0b0893eeb48da4429a2907c628d97ddd9b38067dc8",
+    "labels": [
+      "BEGIN0END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END"
+    ],
+    "wordListStrings": [
+      "BEGIN0END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN0END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END"
+    ]
+  },
+  "depth-0-absent/source": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocDefaultStart/source/depth-0-absent.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/source/depth-0-absent.pdf",
+    "sourceSha256": "2374e8488ce249bb1ebc64e7ebb59622ef9ee576fd9a9dfc784edea3d0513997",
+    "wordPdfSha256": "e074d1717bb5a72147ccfdb52a511f06a44c559cc8cf53b5013a3494de17e11e",
+    "labels": [
+      "BEGIN0END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END"
+    ],
+    "wordListStrings": [
+      "BEGIN0END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN0END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END"
+    ]
+  },
+  "depth-1-0/doc": {
+    "sourcePath": "fixtures/doc/regressions/list-markers/DefaultStart/depth-1-0.doc",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/doc/depth-1-0.pdf",
+    "sourceSha256": "5a1cf4852a604139f388c235bda214ba592c3b7b38fda1dfcab012e36234d123",
+    "wordPdfSha256": "20303a5bf57cc0d9243726a2471e5070d3cac3104d14ade78b25a0f02562bceb",
+    "labels": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ],
+    "wordListStrings": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ]
+  },
+  "depth-1-0/projected": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocDefaultStart/projected/depth-1-0.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/projected/depth-1-0.pdf",
+    "sourceSha256": "a61dcfadec1a20ede4198403233e3e4b5734d763c2701397bb317cb04f73a03e",
+    "wordPdfSha256": "49a7aac1b3afa7e3e569bbdf0bb0a3f2226ae93605c6bddd3ebae25113922bad",
+    "labels": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ],
+    "wordListStrings": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ]
+  },
+  "depth-1-0/source": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocDefaultStart/source/depth-1-0.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/source/depth-1-0.pdf",
+    "sourceSha256": "2ff0a31688e4a1e82d8bc6fbd9b8f0cffc8e6d621be0c84d7d638beefe91a962",
+    "wordPdfSha256": "d29b0cf621f05aed4b48b5631eabd9c675418e5fb741b5340420b3a0cbf6606b",
+    "labels": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ],
+    "wordListStrings": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ]
+  },
+  "depth-1-1/doc": {
+    "sourcePath": "fixtures/doc/regressions/list-markers/DefaultStart/depth-1-1.doc",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/doc/depth-1-1.pdf",
+    "sourceSha256": "d6061d2f24cd11d3fc3cb8ddf7e356816993135ef35989e6c7900d57bea4fed4",
+    "wordPdfSha256": "419ded6fe9d8d343f1bd67b2d51b905cc0c8c213847cb06c236dfee3cf2a9023",
+    "labels": [
+      "ROOT3END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "ROOT4END",
+      "BEGIN1END",
+      "BEGIN2END"
+    ],
+    "wordListStrings": [
+      "ROOT3END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "ROOT4END",
+      "BEGIN1END",
+      "BEGIN2END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT3END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "ROOT4END",
+      "BEGIN1END",
+      "BEGIN2END"
+    ]
+  },
+  "depth-1-1/projected": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocDefaultStart/projected/depth-1-1.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/projected/depth-1-1.pdf",
+    "sourceSha256": "c3c705f1ad57bd44699dcc452028e1adfa90f79b8907ee7df05f396a21b8f973",
+    "wordPdfSha256": "503512b58b03978620b6f80dfbee252122c8d4885f7fe2972323f7a2e7fa8cb3",
+    "labels": [
+      "ROOT3END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "ROOT4END",
+      "BEGIN1END",
+      "BEGIN2END"
+    ],
+    "wordListStrings": [
+      "ROOT3END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "ROOT4END",
+      "BEGIN1END",
+      "BEGIN2END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT3END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "ROOT4END",
+      "BEGIN1END",
+      "BEGIN2END"
+    ]
+  },
+  "depth-1-1/source": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocDefaultStart/source/depth-1-1.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/source/depth-1-1.pdf",
+    "sourceSha256": "e25b11930db06df29865ffd8e811455423e4be6491a35e3a8d5e4383802cb575",
+    "wordPdfSha256": "82ed1bdb1815f919b9e00d475dd4489a855a72688bad5317ee2199f4f156baf2",
+    "labels": [
+      "ROOT3END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "ROOT4END",
+      "BEGIN1END",
+      "BEGIN2END"
+    ],
+    "wordListStrings": [
+      "ROOT3END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "ROOT4END",
+      "BEGIN1END",
+      "BEGIN2END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT3END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "ROOT4END",
+      "BEGIN1END",
+      "BEGIN2END"
+    ]
+  },
+  "depth-1-7/doc": {
+    "sourcePath": "fixtures/doc/regressions/list-markers/DefaultStart/depth-1-7.doc",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/doc/depth-1-7.pdf",
+    "sourceSha256": "e7cd50985eda1727a4907d00c71a19ba2306779093352746c1ece33ebb07c2bc",
+    "wordPdfSha256": "250afaa1d7f8e69aae380daf8d92c2a2b448a38a05976713fddeefa634208ccd",
+    "labels": [
+      "ROOT3END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "ROOT4END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ],
+    "wordListStrings": [
+      "ROOT3END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "ROOT4END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT3END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "ROOT4END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ]
+  },
+  "depth-1-7/projected": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocDefaultStart/projected/depth-1-7.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/projected/depth-1-7.pdf",
+    "sourceSha256": "4aa086951bc7102fdb8b2b01f7e68a992fab56c8dc9b69d78843f715809e192c",
+    "wordPdfSha256": "df831924ad234c4898c5f04756b83ff840890b0265742831930a76ac7ea0fa89",
+    "labels": [
+      "ROOT3END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "ROOT4END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ],
+    "wordListStrings": [
+      "ROOT3END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "ROOT4END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT3END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "ROOT4END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ]
+  },
+  "depth-1-7/source": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocDefaultStart/source/depth-1-7.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/source/depth-1-7.pdf",
+    "sourceSha256": "fb775bd7b93a216fda85166eb95577483747a3bc473d26139db5a52ab32f3866",
+    "wordPdfSha256": "cd0b6b08e3f840ffc40f32712ab2b1c8f22fbfa9933a4828ab3f05d98d8775d5",
+    "labels": [
+      "ROOT3END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "ROOT4END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ],
+    "wordListStrings": [
+      "ROOT3END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "ROOT4END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT3END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "ROOT4END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ]
+  },
+  "depth-1-absent/doc": {
+    "sourcePath": "fixtures/doc/regressions/list-markers/DefaultStart/depth-1-absent.doc",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/doc/depth-1-absent.pdf",
+    "sourceSha256": "a1a0195b0a021b43e972e6beb4f4d06dd92afaa2ab18d1f0cbe8dd7e0ab80075",
+    "wordPdfSha256": "97707ddf3d1f58dbea47a3177072ce40187124f1e86af2c2cb9bc831ff5f258d",
+    "labels": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ],
+    "wordListStrings": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ]
+  },
+  "depth-1-absent/projected": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocDefaultStart/projected/depth-1-absent.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/projected/depth-1-absent.pdf",
+    "sourceSha256": "a93662b55d9390655333d54c63bee165b6b530a51fe467dc1349e8b1ad536468",
+    "wordPdfSha256": "5722684f2a99937bf1cb7236e840274e0daaf8f6b2d6538f190d1a8c0531cbf0",
+    "labels": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ],
+    "wordListStrings": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ]
+  },
+  "depth-1-absent/source": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocDefaultStart/source/depth-1-absent.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/source/depth-1-absent.pdf",
+    "sourceSha256": "cdfff3580ee9f17ecbb1b388bd639f2ad7ab498d05ca75c4d19a43cb3b6aa6d2",
+    "wordPdfSha256": "0213e146f0c7e77ccfdaf44175790f7a1774ce6646b0e3e8d62900abc979c756",
+    "labels": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ],
+    "wordListStrings": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ]
+  },
+  "depth-8-0/doc": {
+    "sourcePath": "fixtures/doc/regressions/list-markers/DefaultStart/depth-8-0.doc",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/doc/depth-8-0.pdf",
+    "sourceSha256": "7eea1792dc893d3338fd00d78270d18bb800ed55182c65038cc90b0711d41046",
+    "wordPdfSha256": "5051868bbdfdb9872f08b98f8974df5dbf129e7ff9214a2c414a6ca98166af01",
+    "labels": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ],
+    "wordListStrings": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ]
+  },
+  "depth-8-0/projected": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocDefaultStart/projected/depth-8-0.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/projected/depth-8-0.pdf",
+    "sourceSha256": "93aa011a961e4b726f2dd609b599058e784ace0be952c06750c5cdd9728a3dab",
+    "wordPdfSha256": "aa900cc212cd61ab9df841f0a738d8069e2626a0e9230e95c0c664c5220a5be5",
+    "labels": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ],
+    "wordListStrings": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ]
+  },
+  "depth-8-0/source": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocDefaultStart/source/depth-8-0.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/source/depth-8-0.pdf",
+    "sourceSha256": "4edcb34c32625bc4f46d6fe649c51a3d016b201f518269802ca6493c87eff164",
+    "wordPdfSha256": "e56c23ba8331a96719e2eda09769dceecf48ac081ce2ac9d0904b09143996a55",
+    "labels": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ],
+    "wordListStrings": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ]
+  },
+  "depth-8-1/doc": {
+    "sourcePath": "fixtures/doc/regressions/list-markers/DefaultStart/depth-8-1.doc",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/doc/depth-8-1.pdf",
+    "sourceSha256": "857181ae5fee302401d96330835a6a992ad9dbe53bda80e37d61b5ff45ebfb0f",
+    "wordPdfSha256": "278820a46550174f8bea83a4ca009f96794ab54aa3a7d05f9b8d336e746b7bd8",
+    "labels": [
+      "ROOT3END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "ROOT4END",
+      "BEGIN1END",
+      "BEGIN2END"
+    ],
+    "wordListStrings": [
+      "ROOT3END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "ROOT4END",
+      "BEGIN1END",
+      "BEGIN2END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT3END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "ROOT4END",
+      "BEGIN1END",
+      "BEGIN2END"
+    ]
+  },
+  "depth-8-1/projected": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocDefaultStart/projected/depth-8-1.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/projected/depth-8-1.pdf",
+    "sourceSha256": "df055db879f0d365b680ce19d482420cd8eb9f3c61beeff4147386030ec37883",
+    "wordPdfSha256": "f8b6d9ead7df787ea6506c252a4332de2bd665043f8035a42ec457feef497c7e",
+    "labels": [
+      "ROOT3END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "ROOT4END",
+      "BEGIN1END",
+      "BEGIN2END"
+    ],
+    "wordListStrings": [
+      "ROOT3END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "ROOT4END",
+      "BEGIN1END",
+      "BEGIN2END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT3END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "ROOT4END",
+      "BEGIN1END",
+      "BEGIN2END"
+    ]
+  },
+  "depth-8-1/source": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocDefaultStart/source/depth-8-1.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/source/depth-8-1.pdf",
+    "sourceSha256": "2dadbe492d114c8024cd879cb8c4d01b38e779768bec89660d252e52e2446492",
+    "wordPdfSha256": "e8ee645727a9ea770c26a0d92046b6ceddef98a1b987296ea023d32999eb9d1d",
+    "labels": [
+      "ROOT3END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "ROOT4END",
+      "BEGIN1END",
+      "BEGIN2END"
+    ],
+    "wordListStrings": [
+      "ROOT3END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "ROOT4END",
+      "BEGIN1END",
+      "BEGIN2END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT3END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "ROOT4END",
+      "BEGIN1END",
+      "BEGIN2END"
+    ]
+  },
+  "depth-8-7/doc": {
+    "sourcePath": "fixtures/doc/regressions/list-markers/DefaultStart/depth-8-7.doc",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/doc/depth-8-7.pdf",
+    "sourceSha256": "c1a558d0a13e740b30cb08851f9ab60c86d16ea72f9b3370db9c879d2dd63a24",
+    "wordPdfSha256": "dc79c933debabe40e7f91ba7f4c40030a74ed1acc3941dcd24fbebee0510f552",
+    "labels": [
+      "ROOT3END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "ROOT4END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ],
+    "wordListStrings": [
+      "ROOT3END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "ROOT4END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT3END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "ROOT4END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ]
+  },
+  "depth-8-7/projected": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocDefaultStart/projected/depth-8-7.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/projected/depth-8-7.pdf",
+    "sourceSha256": "3478ae6d55f3c843e4ab97736a784c681bd7c2d53e8d20497b6d677dba490ede",
+    "wordPdfSha256": "ee15f95e315f19446aa66a8e12139e578fbdbf68334cee44e39bac6ff64e0b4b",
+    "labels": [
+      "ROOT3END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "ROOT4END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ],
+    "wordListStrings": [
+      "ROOT3END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "ROOT4END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT3END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "ROOT4END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ]
+  },
+  "depth-8-7/source": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocDefaultStart/source/depth-8-7.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/source/depth-8-7.pdf",
+    "sourceSha256": "fabb2bbcfe131736fcd32e6f264eb4bf11f73a83e398c1356065ce4e5e1f48f0",
+    "wordPdfSha256": "3b8407e03da5b86a186e8a2747ce7200c8d26d0b9b1197439126f8c2bcece3a9",
+    "labels": [
+      "ROOT3END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "ROOT4END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ],
+    "wordListStrings": [
+      "ROOT3END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "ROOT4END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT3END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "ROOT4END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ]
+  },
+  "depth-8-absent/doc": {
+    "sourcePath": "fixtures/doc/regressions/list-markers/DefaultStart/depth-8-absent.doc",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/doc/depth-8-absent.pdf",
+    "sourceSha256": "b4a3798383cf3415c093e9e532458ef2d7c5a200100975d01e4a14d596786aae",
+    "wordPdfSha256": "722ed87910bddbf6ea15688da7901fcb7984ed72f8d805fbaaa5678220ace1ce",
+    "labels": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ],
+    "wordListStrings": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ]
+  },
+  "depth-8-absent/projected": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocDefaultStart/projected/depth-8-absent.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/projected/depth-8-absent.pdf",
+    "sourceSha256": "a37ebfbc5f5b18dd0cd18bfc4c4cd26692f255a030a1d2e12c2fe6bd564a8ce8",
+    "wordPdfSha256": "6d25a755082fec6c386bf989a9dcc6456f17fbe278b904d6241e9379ad94d014",
+    "labels": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ],
+    "wordListStrings": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ]
+  },
+  "depth-8-absent/source": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocDefaultStart/source/depth-8-absent.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/source/depth-8-absent.pdf",
+    "sourceSha256": "02b92dcaae2bf2246ef8edcb0de28a94240fc445d45b609d1a0c9c68d96e19d6",
+    "wordPdfSha256": "9346991a5afc47415e0fea56f3438d7c9fc46e8b3c4089c9b76c5822c434e7de",
+    "labels": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ],
+    "wordListStrings": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ],
+    "pdfExtractedLabels": [
+      "ROOT3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "ROOT4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ]
+  },
+  "root-missing-replacement-control/doc": {
+    "sourcePath": "fixtures/doc/regressions/list-markers/DefaultStart/root-missing-replacement-control.doc",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/doc/root-missing-replacement-control.pdf",
+    "sourceSha256": "2b63e95c084ba0e3dc8d84d3715ee8196c8f533be602929a8857c49bb80fcd81",
+    "wordPdfSha256": "8754949197f58a9fb89572bebae4805cddd29ba7430b7e1ed6a5f2c181311a1d",
+    "labels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  "root-missing-replacement-control/projected": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocDefaultStart/projected/root-missing-replacement-control.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/projected/root-missing-replacement-control.pdf",
+    "sourceSha256": "d6f6ec55abc7c14dde6f5ed5f58412867181ed38cc0c9c6d00325ac55aa0b4b9",
+    "wordPdfSha256": "3b19aebbcf9c461c12201bd45e51ed8d9d44da0c679138182102c2832ede3de0",
+    "labels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  "root-missing-replacement-control/source": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/DocDefaultStart/source/root-missing-replacement-control.docx",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/DocDefaultStart/source/root-missing-replacement-control.pdf",
+    "sourceSha256": "90d5eb755728ddc14d091434223e4317bddcc75b3ff7eef43da22422a7b0f388",
+    "wordPdfSha256": "4f12da0d053991a8eedc3a94a6c0eca0a6cab3a9cc2634cc4d219de9130dcfb3",
+    "labels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfExtractedLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  }
+}
