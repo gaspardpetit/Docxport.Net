@@ -137,7 +137,7 @@ public sealed class DxpNumberingResolver
         }
         foreach (var child in parent.ChildElements.OfType<OpenXmlCompositeElement>().ToArray())
             if (child is AbstractNum or NumberingInstance or LevelOverride or Level or
-                ParagraphProperties or NumberingProperties)
+                ParagraphProperties or NumberingProperties or NumberingSymbolRunProperties)
                 NormalizeNumberingChoices(child);
     }
 

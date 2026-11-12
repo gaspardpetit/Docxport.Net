@@ -1,0 +1,188 @@
+{
+  "direct-off": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/MarkerPropertyChoices/direct-off.docx",
+    "sourceSha256": "ac372e4f50e8398dfed7ac8bacbffbf185fd82809444e7b55333dd175662903b",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/MarkerPropertyChoices/direct-off.pdf",
+    "wordPdfSha256": "02761e320052400a76d314b2c2c1152bae514c47dd02724e47cfab923fcd7c95",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGINaEND",
+      "BEGINbEND",
+      "BEGINcEND",
+      "BEGINdEND",
+      "BEGINeEND",
+      "BEGINfEND"
+    ],
+    "wordListStrings": [
+      "BEGINaEND",
+      "BEGINbEND",
+      "BEGINcEND",
+      "BEGINdEND",
+      "BEGINeEND",
+      "BEGINfEND"
+    ],
+    "pdfExtractedLabels": [
+      "BEGINaEND",
+      "BEGINbEND",
+      "BEGINcEND",
+      "BEGINdEND",
+      "BEGINeEND",
+      "BEGINfEND"
+    ]
+  },
+  "direct-on": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/MarkerPropertyChoices/direct-on.docx",
+    "sourceSha256": "f59cce24189934e08ead9463fbea1665009901daaf244405776674aeda30a652",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/MarkerPropertyChoices/direct-on.pdf",
+    "wordPdfSha256": "2c08e2e30b7bdafc67256037bea30f2eb1ea35d6d7b026c98a903c9b4b8386db",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGINAEND",
+      "BEGINBEND",
+      "BEGINCEND",
+      "BEGINDEND",
+      "BEGINEEND",
+      "BEGINFEND"
+    ],
+    "wordListStrings": [
+      "BEGINaEND",
+      "BEGINbEND",
+      "BEGINcEND",
+      "BEGINdEND",
+      "BEGINeEND",
+      "BEGINfEND"
+    ],
+    "pdfExtractedLabels": [
+      "BEGINAEND",
+      "BEGINBEND",
+      "BEGINCEND",
+      "BEGINDEND",
+      "BEGINEEND",
+      "BEGINFEND"
+    ]
+  },
+  "fallback-on": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/MarkerPropertyChoices/fallback-on.docx",
+    "sourceSha256": "58b5976000927f466b82c339c6b85b457c1b53236683fe50892c7c3982647f56",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/MarkerPropertyChoices/fallback-on.pdf",
+    "wordPdfSha256": "046ba57658428bb3a2a65b76785bde9fd57ee07110dbc20b15d0129fe68dc45f",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGINAEND",
+      "BEGINBEND",
+      "BEGINCEND",
+      "BEGINDEND",
+      "BEGINEEND",
+      "BEGINFEND"
+    ],
+    "wordListStrings": [
+      "BEGINaEND",
+      "BEGINbEND",
+      "BEGINcEND",
+      "BEGINdEND",
+      "BEGINeEND",
+      "BEGINfEND"
+    ],
+    "pdfExtractedLabels": [
+      "BEGINAEND",
+      "BEGINBEND",
+      "BEGINCEND",
+      "BEGINDEND",
+      "BEGINEEND",
+      "BEGINFEND"
+    ]
+  },
+  "nested-on": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/MarkerPropertyChoices/nested-on.docx",
+    "sourceSha256": "5a0893a7a3c406d0e59fd42a8070ab076d76b033550139cb04dd866e6430097d",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/MarkerPropertyChoices/nested-on.pdf",
+    "wordPdfSha256": "76e4d4ebb8e8282047e7a1a5bd7f1a7b0d4bc079bf124bac4e66d7c0b40eafa8",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGINAEND",
+      "BEGINBEND",
+      "BEGINCEND",
+      "BEGINDEND",
+      "BEGINEEND",
+      "BEGINFEND"
+    ],
+    "wordListStrings": [
+      "BEGINaEND",
+      "BEGINbEND",
+      "BEGINcEND",
+      "BEGINdEND",
+      "BEGINeEND",
+      "BEGINfEND"
+    ],
+    "pdfExtractedLabels": [
+      "BEGINAEND",
+      "BEGINBEND",
+      "BEGINCEND",
+      "BEGINDEND",
+      "BEGINEEND",
+      "BEGINFEND"
+    ]
+  },
+  "supported-off": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/MarkerPropertyChoices/supported-off.docx",
+    "sourceSha256": "a3c9d8f10a7c24744d42304820168b937712b93db732d708cdd9106f34873cd2",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/MarkerPropertyChoices/supported-off.pdf",
+    "wordPdfSha256": "071e46bd13f1cd2016b711a6a273e5151a7d13f4279bd171be1214310ed4e239",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGINaEND",
+      "BEGINbEND",
+      "BEGINcEND",
+      "BEGINdEND",
+      "BEGINeEND",
+      "BEGINfEND"
+    ],
+    "wordListStrings": [
+      "BEGINaEND",
+      "BEGINbEND",
+      "BEGINcEND",
+      "BEGINdEND",
+      "BEGINeEND",
+      "BEGINfEND"
+    ],
+    "pdfExtractedLabels": [
+      "BEGINaEND",
+      "BEGINbEND",
+      "BEGINcEND",
+      "BEGINdEND",
+      "BEGINeEND",
+      "BEGINfEND"
+    ]
+  },
+  "supported-on": {
+    "sourcePath": "fixtures/docx/regressions/list-markers/MarkerPropertyChoices/supported-on.docx",
+    "sourceSha256": "96a1a82e8426f22cea0e6f952042cb6ceb2fb18883efdf0f4207db762d296357",
+    "wordPdfPath": "truth/pdf-word/regressions/list-markers/MarkerPropertyChoices/supported-on.pdf",
+    "wordPdfSha256": "9e70dce2bd047f6ceaae9f1a9e67d18dd567f631c0d3a9f36c10cbffd5738268",
+    "capturedAt": "2026-11-12",
+    "labels": [
+      "BEGINAEND",
+      "BEGINBEND",
+      "BEGINCEND",
+      "BEGINDEND",
+      "BEGINEEND",
+      "BEGINFEND"
+    ],
+    "wordListStrings": [
+      "BEGINaEND",
+      "BEGINbEND",
+      "BEGINcEND",
+      "BEGINdEND",
+      "BEGINeEND",
+      "BEGINfEND"
+    ],
+    "pdfExtractedLabels": [
+      "BEGINAEND",
+      "BEGINBEND",
+      "BEGINCEND",
+      "BEGINDEND",
+      "BEGINEEND",
+      "BEGINFEND"
+    ]
+  }
+}
