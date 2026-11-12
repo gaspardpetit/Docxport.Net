@@ -49,6 +49,10 @@ internal static class DxpCustomListFormats
         ["\u4e00, \u4e8c, \u4e09, ..."] = NumberFormatValues.JapaneseCounting,
         ["\u4e00, \u4e8c, \u4e09, \u4e07, ..."] = NumberFormatValues.JapaneseDigitalTenThousand,
         ["\u58f1, \u5f10, \u53c2, ..."] = NumberFormatValues.JapaneseLegal,
+        ["\u4e00, \u5341, \u4e00\u25cb\u25cb(\u7b80), ..."] = NumberFormatValues.ChineseCounting,
+        ["\u4e00, \u5341, \u4e00\u767e(\u7b80), ..."] = NumberFormatValues.ChineseCountingThousand,
+        ["\u4e00, \u5341, \u4e00\u25cb\u25cb(\u7e41), ..."] = NumberFormatValues.TaiwaneseCounting,
+        ["\u4e00, \u5341, \u4e00\u767e(\u7e41), ..."] = NumberFormatValues.TaiwaneseCountingThousand,
     };
 
     internal static bool TryResolve(NumberingFormat? format, out NumberFormatValues value)
