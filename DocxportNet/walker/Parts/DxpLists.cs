@@ -754,6 +754,10 @@ public static class DxpListMarkerFormatter
             return ChineseUnitNumber(n, simplified ? "〇一二三四五六七八九" : "零一二三四五六七八九",
                 "千百十", simplified ? "万" : "萬", omitInitialOne: true);
         }
+        // Word leaves negative Chinese legal list expansions empty, including
+        // the signed minimum; keep this rule out of shared field formatting.
+        if (n < 0 && (fmt == NumberFormatValues.ChineseLegalSimplified || fmt == NumberFormatValues.IdeographLegalTraditional))
+            return "";
         if (n >= 0 && (fmt == NumberFormatValues.ChineseLegalSimplified || fmt == NumberFormatValues.IdeographLegalTraditional))
         {
             var digits = fmt == NumberFormatValues.ChineseLegalSimplified
