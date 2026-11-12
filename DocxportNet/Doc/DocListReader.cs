@@ -109,27 +109,25 @@ internal static class DocListReader
         if (textOffset + 2 + count * 2 > bytes.Length)
             throw new InvalidDataException("A DOC list level has truncated number text.");
         var text = Encoding.Unicode.GetString(bytes, textOffset + 2, count * 2);
-        if (bytes[4] != 0x17)
+        // The placeholder table applies to bullet labels as well.
+        var placeholders = new bool[text.Length];
+        for (var i = 0; i < 9; i++)
         {
-            var placeholders = new bool[text.Length];
-            for (var i = 0; i < 9; i++)
-            {
-                var position = bytes[6 + i] - 1;
-                if (position >= 0 && position < text.Length && text[position] <= 8)
-                    placeholders[position] = true;
-            }
-            var builder = new StringBuilder();
-            for (var i = 0; i < text.Length; i++)
-            {
-                if (placeholders[i])
-                {
-                    builder.Append('%');
-                    builder.Append((char)('1' + text[i]));
-                }
-                else builder.Append(text[i]);
-            }
-            text = builder.ToString();
+            var position = bytes[6 + i] - 1;
+            if (position >= 0 && position < text.Length && text[position] <= 8)
+                placeholders[position] = true;
         }
+        var builder = new StringBuilder();
+        for (var i = 0; i < text.Length; i++)
+        {
+            if (placeholders[i])
+            {
+                builder.Append('%');
+                builder.Append((char)('1' + text[i]));
+            }
+            else builder.Append(text[i]);
+        }
+        text = builder.ToString();
         return new DocListLevel(level,
             BinaryPrimitives.ReadInt32LittleEndian(bytes), bytes[4], text, bytes[15],
             labelFormatting, paragraphFormatting, (byte)(bytes[5] & 3),

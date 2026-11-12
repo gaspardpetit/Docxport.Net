@@ -114,11 +114,11 @@ internal static class DocListWriter
         header[24] = checked((byte)characterProperties.Length);
         header[25] = checked((byte)paragraphProperties.Length);
         var text = new StringBuilder();
+        // Word expands level references in bullet and no-sequence labels too.
         var placeholderCount = 0;
         for (var i = 0; i < level.NumberText.Length; i++)
         {
-            if (level.NumberFormat is not (0x17 or 0xFF) &&
-                level.NumberText[i] == '%' &&
+            if (level.NumberText[i] == '%' &&
                 i + 1 < level.NumberText.Length &&
                 level.NumberText[i + 1] is >= '1' and <= '9')
             {
