@@ -53,6 +53,8 @@ internal static class DxpCustomListFormats
         ["\u4e00, \u5341, \u4e00\u767e(\u7b80), ..."] = NumberFormatValues.ChineseCountingThousand,
         ["\u4e00, \u5341, \u4e00\u25cb\u25cb(\u7e41), ..."] = NumberFormatValues.TaiwaneseCounting,
         ["\u4e00, \u5341, \u4e00\u767e(\u7e41), ..."] = NumberFormatValues.TaiwaneseCountingThousand,
+        ["\u58f9, \u8d30, \u53c1, ..."] = NumberFormatValues.ChineseLegalSimplified,
+        ["\u58f9, \u8cb3, \u53c3, ..."] = NumberFormatValues.IdeographLegalTraditional,
     };
 
     internal static bool TryResolve(NumberingFormat? format, out NumberFormatValues value)
