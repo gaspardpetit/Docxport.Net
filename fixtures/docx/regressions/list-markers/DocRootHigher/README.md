@@ -27,4 +27,4 @@ Two pre-fix DOCs and their Word PDFs are retained in `before` subgroups, with
 a separate hash manifest. Word renders all six DOC items as root markers 2–7,
 losing the blank or replacement child markers and shifting later parent items.
 This group covers explicit numId/ilvl pairs and higher overrides. Split
-paragraph/style inheritance remains a separate extraction.
+paragraph/style inheritance is covered separately by `DocStyleContext`.

@@ -37,6 +37,28 @@ internal static class DocOpenXmlListReader
         foreach (var footer in main?.FooterParts ?? [])
             if (footer.Footer != null)
                 Collect(footer.Footer.Descendants<NumberingProperties>());
+        // Direct formatting can supply only numId or ilvl; styles supply the
+        // other property. Choose slots from the effective pair as well.
+        var styleResolver = main?.OpenXmlPackage is WordprocessingDocument document
+            ? new DocxportNet.Walker.Context.DxpStyleResolver(document) : null;
+        void CollectParagraphs(IEnumerable<Paragraph> paragraphs)
+        {
+            foreach (var paragraph in paragraphs)
+                if (styleResolver?.ResolveEffectiveNumPr(paragraph) is { } effective)
+                {
+                    usedNumberIds.Add(effective.NumId);
+                    if (effective.Ilvl > 0)
+                        usedHigherLevels.Add(effective.NumId);
+                }
+        }
+        if (main?.Document != null)
+            CollectParagraphs(main.Document.Descendants<Paragraph>());
+        foreach (var header in main?.HeaderParts ?? [])
+            if (header.Header != null)
+                CollectParagraphs(header.Header.Descendants<Paragraph>());
+        foreach (var footer in main?.FooterParts ?? [])
+            if (footer.Footer != null)
+                CollectParagraphs(footer.Footer.Descendants<Paragraph>());
         if (usedNumberIds.Count == 0)
             return (new DocListIndex([], []), new Dictionary<int, short>());
         var usedAbstractIds = new HashSet<int>(numbering.Elements<NumberingInstance>()

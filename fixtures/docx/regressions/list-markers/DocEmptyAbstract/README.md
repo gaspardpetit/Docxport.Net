@@ -22,4 +22,4 @@ Tests verify imported slots, source numbering immutability, five text visitors,
 complete labels/body, projected schema validity, and the ordinary root controls.
 Root-only definitions used at higher levels through explicit paragraph pairs
 or overrides are covered separately by `DocRootHigher`. Split paragraph/style
-inheritance remains separate work.
+inheritance is covered separately by `DocStyleContext`.
