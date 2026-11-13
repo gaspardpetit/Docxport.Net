@@ -1,0 +1,98 @@
+[
+  {
+    "name": "kana-depth-0-aiueo-1",
+    "depth": 0,
+    "mode": "aiueo-1",
+    "error": "DOCX list format 'aiueo' is unsupported."
+  },
+  {
+    "name": "kana-depth-0-aiueo-22",
+    "depth": 0,
+    "mode": "aiueo-22",
+    "error": "DOCX list format 'aiueo' is unsupported."
+  },
+  {
+    "name": "kana-depth-0-aiueo-46",
+    "depth": 0,
+    "mode": "aiueo-46",
+    "error": "DOCX list format 'aiueo' is unsupported."
+  },
+  {
+    "name": "kana-depth-0-iroha-1",
+    "depth": 0,
+    "mode": "iroha-1",
+    "error": "DOCX list format 'iroha' is unsupported."
+  },
+  {
+    "name": "kana-depth-0-iroha-22",
+    "depth": 0,
+    "mode": "iroha-22",
+    "error": "DOCX list format 'iroha' is unsupported."
+  },
+  {
+    "name": "kana-depth-0-iroha-46",
+    "depth": 0,
+    "mode": "iroha-46",
+    "error": "DOCX list format 'iroha' is unsupported."
+  },
+  {
+    "name": "kana-depth-0-aiueo-full-1",
+    "depth": 0,
+    "mode": "aiueo-full-1",
+    "error": "DOCX list format 'aiueoFullWidth' is unsupported."
+  },
+  {
+    "name": "kana-depth-0-aiueo-full-22",
+    "depth": 0,
+    "mode": "aiueo-full-22",
+    "error": "DOCX list format 'aiueoFullWidth' is unsupported."
+  },
+  {
+    "name": "kana-depth-0-aiueo-full-46",
+    "depth": 0,
+    "mode": "aiueo-full-46",
+    "error": "DOCX list format 'aiueoFullWidth' is unsupported."
+  },
+  {
+    "name": "kana-depth-0-iroha-full-1",
+    "depth": 0,
+    "mode": "iroha-full-1",
+    "error": "DOCX list format 'irohaFullWidth' is unsupported."
+  },
+  {
+    "name": "kana-depth-0-iroha-full-22",
+    "depth": 0,
+    "mode": "iroha-full-22",
+    "error": "DOCX list format 'irohaFullWidth' is unsupported."
+  },
+  {
+    "name": "kana-depth-0-iroha-full-46",
+    "depth": 0,
+    "mode": "iroha-full-46",
+    "error": "DOCX list format 'irohaFullWidth' is unsupported."
+  },
+  {
+    "name": "kana-depth-8-aiueo-46",
+    "depth": 8,
+    "mode": "aiueo-46",
+    "error": "DOCX list format 'aiueo' is unsupported."
+  },
+  {
+    "name": "kana-depth-8-iroha-46",
+    "depth": 8,
+    "mode": "iroha-46",
+    "error": "DOCX list format 'iroha' is unsupported."
+  },
+  {
+    "name": "kana-depth-8-aiueo-full-46",
+    "depth": 8,
+    "mode": "aiueo-full-46",
+    "error": "DOCX list format 'aiueoFullWidth' is unsupported."
+  },
+  {
+    "name": "kana-depth-8-iroha-full-46",
+    "depth": 8,
+    "mode": "iroha-full-46",
+    "error": "DOCX list format 'irohaFullWidth' is unsupported."
+  }
+]

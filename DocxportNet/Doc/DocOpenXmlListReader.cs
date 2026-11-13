@@ -156,9 +156,13 @@ internal static class DocOpenXmlListReader
             format == NumberFormatValues.OrdinalText ? (byte)7 :
             format == NumberFormatValues.Hex ? (byte)8 :
             format == NumberFormatValues.IdeographDigital ? (byte)0x0A :
+            format == NumberFormatValues.Aiueo ? (byte)0x0C :
+            format == NumberFormatValues.Iroha ? (byte)0x0D :
             format == NumberFormatValues.DecimalFullWidth ? (byte)0x0E :
             format == NumberFormatValues.DecimalHalfWidth ? (byte)0x0F :
             format == NumberFormatValues.DecimalEnclosedCircle ? (byte)0x12 :
+            format == NumberFormatValues.AiueoFullWidth ? (byte)0x14 :
+            format == NumberFormatValues.IrohaFullWidth ? (byte)0x15 :
             format == NumberFormatValues.DecimalZero ? (byte)0x16 :
             format == NumberFormatValues.Bullet ? (byte)0x17 :
             format == NumberFormatValues.Ganada ? (byte)0x18 :
