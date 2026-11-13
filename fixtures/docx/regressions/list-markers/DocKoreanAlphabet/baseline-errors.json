@@ -1,0 +1,74 @@
+[
+  {
+    "name": "korean-depth-0-ganada-1",
+    "depth": 0,
+    "mode": "ganada-1",
+    "error": "DOCX list format 'ganada' is unsupported."
+  },
+  {
+    "name": "korean-depth-0-ganada-13",
+    "depth": 0,
+    "mode": "ganada-13",
+    "error": "DOCX list format 'ganada' is unsupported."
+  },
+  {
+    "name": "korean-depth-0-ganada-19",
+    "depth": 0,
+    "mode": "ganada-19",
+    "error": "DOCX list format 'ganada' is unsupported."
+  },
+  {
+    "name": "korean-depth-0-chosung-1",
+    "depth": 0,
+    "mode": "chosung-1",
+    "error": "DOCX list format 'chosung' is unsupported."
+  },
+  {
+    "name": "korean-depth-0-chosung-13",
+    "depth": 0,
+    "mode": "chosung-13",
+    "error": "DOCX list format 'chosung' is unsupported."
+  },
+  {
+    "name": "korean-depth-0-chosung-19",
+    "depth": 0,
+    "mode": "chosung-19",
+    "error": "DOCX list format 'chosung' is unsupported."
+  },
+  {
+    "name": "korean-depth-8-ganada-1",
+    "depth": 8,
+    "mode": "ganada-1",
+    "error": "DOCX list format 'ganada' is unsupported."
+  },
+  {
+    "name": "korean-depth-8-ganada-13",
+    "depth": 8,
+    "mode": "ganada-13",
+    "error": "DOCX list format 'ganada' is unsupported."
+  },
+  {
+    "name": "korean-depth-8-ganada-19",
+    "depth": 8,
+    "mode": "ganada-19",
+    "error": "DOCX list format 'ganada' is unsupported."
+  },
+  {
+    "name": "korean-depth-8-chosung-1",
+    "depth": 8,
+    "mode": "chosung-1",
+    "error": "DOCX list format 'chosung' is unsupported."
+  },
+  {
+    "name": "korean-depth-8-chosung-13",
+    "depth": 8,
+    "mode": "chosung-13",
+    "error": "DOCX list format 'chosung' is unsupported."
+  },
+  {
+    "name": "korean-depth-8-chosung-19",
+    "depth": 8,
+    "mode": "chosung-19",
+    "error": "DOCX list format 'chosung' is unsupported."
+  }
+]
