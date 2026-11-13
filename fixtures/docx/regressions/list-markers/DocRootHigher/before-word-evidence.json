@@ -1,0 +1,48 @@
+[
+  {
+    "name": "higher-depth-1-none",
+    "source": "fixtures/doc/regressions/list-markers/RootHigher/before/higher-depth-1-none.doc",
+    "sourceSha256": "b3a41449cdeb0a98f3415eb3a99ceeaee2fd02f979c3467847e5982dce8a442d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/before/higher-depth-1-none.pdf",
+    "wordPdfSha256": "fc0c42fe0373181fcbd9dbd1926ac1f057fa0293aeaaff15302b8a026d74fc01",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "expectedSourceListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "higher-depth-1-format",
+    "source": "fixtures/doc/regressions/list-markers/RootHigher/before/higher-depth-1-format.doc",
+    "sourceSha256": "ebfdca49663104b56120e0a936ed74b5bea47ae3201827417b27cce23ae5746f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/before/higher-depth-1-format.pdf",
+    "wordPdfSha256": "b6f3037ddf99f6da00c60901799a2edc172376877d6170b68d3125587b1dec79",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "expectedSourceListStrings": [
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN3END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ]
+  }
+]

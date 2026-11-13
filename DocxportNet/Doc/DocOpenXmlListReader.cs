@@ -16,11 +16,16 @@ internal static class DocOpenXmlListReader
         if (numbering == null)
             return (new DocListIndex([], []), new Dictionary<int, short>());
         var usedNumberIds = new HashSet<int>();
+        var usedHigherLevels = new HashSet<int>();
         void Collect(IEnumerable<NumberingProperties> properties)
         {
             foreach (var item in properties)
                 if (item.NumberingId?.Val?.Value is int id && id != 0)
+                {
                     usedNumberIds.Add(id);
+                    if (item.NumberingLevelReference?.Val?.Value > 0)
+                        usedHigherLevels.Add(id);
+                }
         }
         if (main?.Document != null)
             Collect(main.Document.Descendants<NumberingProperties>());
@@ -55,7 +60,14 @@ internal static class DocOpenXmlListReader
             if (levels.Length > 9 ||
                 levels.Select(x => x.Index).Distinct().Count() != levels.Length)
                 throw new NotSupportedException("DOC list levels must have unique indexes from zero through eight.");
-            if (levels.Length != 1 || levels[0].Index > 0)
+            // A root-only definition still needs positional slots when a used
+            // instance references higher levels, even only through an override.
+            var usesHigherLevels = numbering.Elements<NumberingInstance>().Any(number =>
+                number.AbstractNumId?.Val?.Value == sourceId &&
+                number.NumberID?.Value is int numberId && usedNumberIds.Contains(numberId) &&
+                (usedHigherLevels.Contains(numberId) ||
+                    number.Elements<LevelOverride>().Any(level => level.LevelIndex?.Value > 0)));
+            if (levels.Length != 1 || levels[0].Index > 0 || usesHigherLevels)
             {
                 // DOC requires positional slots. Word leaves omitted OOXML
                 // levels blank, with a zero counter available to placeholders.

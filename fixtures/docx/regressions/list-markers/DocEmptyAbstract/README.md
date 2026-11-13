@@ -20,5 +20,6 @@ independent PDF extraction checks the complete labels and body text.
 
 Tests verify imported slots, source numbering immutability, five text visitors,
 complete labels/body, projected schema validity, and the ordinary root controls.
-Root-only definitions used at higher levels through paragraph/style/replacement
-context remain separate work.
+Root-only definitions used at higher levels through explicit paragraph pairs
+or overrides are covered separately by `DocRootHigher`. Split paragraph/style
+inheritance remains separate work.
