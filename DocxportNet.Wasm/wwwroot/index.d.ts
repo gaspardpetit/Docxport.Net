@@ -103,6 +103,11 @@ export interface PdfExportRequest extends ExportProgressOptions {
 }
 
 export interface ResolveRequest { fields?: FieldOptions; }
+/** IDs are the data-dxp-review-id values emitted by inline HTML export. */
+export interface ReviewRequest {
+  accept?: string[] | null;
+  reject?: string[] | null;
+}
 export interface CoreProperties {
   title: string | null;
   subject: string | null;
@@ -181,6 +186,7 @@ export interface Docxport {
   editDocEnvelope(input: Uint8Array | ArrayBuffer, edits: DocEnvelopeEdit[]): Promise<Uint8Array>;
   /** Return resolved DOCX bytes; binary DOC input is projected first. */
   resolveDocx(input: Uint8Array | ArrayBuffer, request?: ResolveRequest): Promise<Uint8Array>;
+  reviewDocx(input: Uint8Array | ArrayBuffer, request?: ReviewRequest): Promise<Uint8Array>;
 }
 
 export function createDocxport(options?: DocxportInitOptions): Promise<Docxport>;

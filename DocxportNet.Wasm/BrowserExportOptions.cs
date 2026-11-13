@@ -41,6 +41,12 @@ public sealed class BrowserResolveRequest
     public BrowserFieldOptions? Fields { get; set; }
 }
 
+public sealed class BrowserReviewRequest
+{
+    public string[]? Accept { get; set; }
+    public string[]? Reject { get; set; }
+}
+
 public sealed class BrowserDocumentInfo
 {
     public DxpCoreMetadata CoreProperties { get; set; } = new();
@@ -176,6 +182,7 @@ public sealed class BrowserDocEmailEnvelope
     UseStringEnumConverter = true)]
 [JsonSerializable(typeof(BrowserExportRequest))]
 [JsonSerializable(typeof(BrowserResolveRequest))]
+[JsonSerializable(typeof(BrowserReviewRequest))]
 [JsonSerializable(typeof(BrowserDocumentInfo))]
 [JsonSerializable(typeof(BrowserExportProgress))]
 [JsonSerializable(typeof(BrowserDocEnvelopeEdit[]))]

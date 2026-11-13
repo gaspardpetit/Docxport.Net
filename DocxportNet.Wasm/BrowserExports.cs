@@ -201,6 +201,19 @@ public static partial class BrowserExports
 
     [JSExport]
     [SupportedOSPlatform("browser")]
+    public static byte[] ReviewDocx(byte[] docxBytes, string requestJson)
+    {
+        ValidateBytes(docxBytes);
+        var request = JsonSerializer.Deserialize(requestJson, BrowserJsonContext.Default.BrowserReviewRequest)
+            ?? throw new ArgumentException("A review request is required.", nameof(requestJson));
+        return DxpReview.Apply(docxBytes, request.Accept, request.Reject);
+    }
+
+    public static byte[] ReviewDocxForTests(byte[] docxBytes, BrowserReviewRequest request) =>
+        DxpReview.Apply(docxBytes, request.Accept, request.Reject);
+
+    [JSExport]
+    [SupportedOSPlatform("browser")]
     public static string Inspect(byte[] docxBytes)
         => JsonSerializer.Serialize(InspectCore(docxBytes), BrowserJsonContext.Default.BrowserDocumentInfo);
 
