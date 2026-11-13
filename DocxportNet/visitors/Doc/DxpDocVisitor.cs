@@ -2884,7 +2884,12 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
         short? listOverride = null;
         byte? listLevel = null;
         var numbering = properties?.GetFirstChild<NumberingProperties>();
-        if (numbering?.NumberingId?.Val?.Value is int numberId && numberId != 0)
+        if (numbering?.NumberingId?.Val?.Value == 0)
+        {
+            // Zero explicitly cancels numbering inherited from a style.
+            listOverride = 0;
+        }
+        else if (numbering?.NumberingId?.Val?.Value is int numberId)
         {
             if (!_listNumberIds.TryGetValue(numberId, out var index))
                 throw new InvalidDataException($"DOCX list {numberId} has no numbering instance.");

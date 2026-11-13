@@ -1,0 +1,938 @@
+[
+  {
+    "name": "cancel-depth-1-control",
+    "kind": "doc",
+    "depth": 1,
+    "mode": "control",
+    "source": "fixtures/doc/regressions/list-markers/Cancellation/cancel-depth-1-control.doc",
+    "sourceSha256": "da7887b626c80227b1905d6d464c71156e83d26a1b40493868eeabac3292fe01",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/doc/cancel-depth-1-control.pdf",
+    "wordPdfSha256": "b2545e1e5cd56e715b11ec6994e855093c1fb9c92110ff7634dbb38304385b42",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  {
+    "name": "cancel-depth-1-control",
+    "kind": "projected",
+    "depth": 1,
+    "mode": "control",
+    "source": "fixtures/docx/regressions/list-markers/DocCancellation/projected/cancel-depth-1-control.docx",
+    "sourceSha256": "b1297014e6ec4f761797df1cfdad261dec2c0f06c1ba9975007ac801686325c8",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/projected/cancel-depth-1-control.pdf",
+    "wordPdfSha256": "3f577df1219be77669a54603f8fd7ffe8e019d181a0b5a9410e78a93f3347301",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  {
+    "name": "cancel-depth-1-control",
+    "kind": "source",
+    "depth": 1,
+    "mode": "control",
+    "source": "fixtures/docx/regressions/list-markers/DocCancellation/source/cancel-depth-1-control.docx",
+    "sourceSha256": "351e4678cf87658455164e7f5a37fcae8ea12883ef9c18e5414823987a6da4ab",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/source/cancel-depth-1-control.pdf",
+    "wordPdfSha256": "f032900b2d0d09e00010709a7a10b4166718e7d312bb8299a357f2e759233b1d",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  {
+    "name": "cancel-depth-1-direct-level",
+    "kind": "doc",
+    "depth": 1,
+    "mode": "direct-level",
+    "source": "fixtures/doc/regressions/list-markers/Cancellation/cancel-depth-1-direct-level.doc",
+    "sourceSha256": "6dd9b3225611d4e36b725f5dc5531f667b8416c98f754a44661ca6366ead1831",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/doc/cancel-depth-1-direct-level.pdf",
+    "wordPdfSha256": "8cc42b748afed2f3c8aca97964a76a498b75e65fff16aa874f1e797f5ca2e012",
+    "wordListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "cancel-depth-1-direct-level",
+    "kind": "projected",
+    "depth": 1,
+    "mode": "direct-level",
+    "source": "fixtures/docx/regressions/list-markers/DocCancellation/projected/cancel-depth-1-direct-level.docx",
+    "sourceSha256": "bb22e24ce8d986cfcf5c9bc4499d0c08a17b70013a90aaabe8960ae3d2b11774",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/projected/cancel-depth-1-direct-level.pdf",
+    "wordPdfSha256": "ead95cc9cf8ccae7364649270c572545eadc1fe6b3ff476e701659b1ea8bf169",
+    "wordListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "cancel-depth-1-direct-level",
+    "kind": "source",
+    "depth": 1,
+    "mode": "direct-level",
+    "source": "fixtures/docx/regressions/list-markers/DocCancellation/source/cancel-depth-1-direct-level.docx",
+    "sourceSha256": "036d84ab7a37f65e01df276afa547029065cea096b6940859128fe9147cf880c",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/source/cancel-depth-1-direct-level.pdf",
+    "wordPdfSha256": "33c148d5fc70c58b8e2c497ac377d12a5d3969420979e52e69cd3c37ab7a69b1",
+    "wordListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "cancel-depth-1-direct",
+    "kind": "doc",
+    "depth": 1,
+    "mode": "direct",
+    "source": "fixtures/doc/regressions/list-markers/Cancellation/cancel-depth-1-direct.doc",
+    "sourceSha256": "268d0ff4d1f4af35d645d80daac9fe6ae57170e196e0f85dd42bb4d6702f0b33",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/doc/cancel-depth-1-direct.pdf",
+    "wordPdfSha256": "24c06aa34193c4eec0c281eab9575f9b842bd8b4e241263e69ec95db2df72d56",
+    "wordListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "cancel-depth-1-direct",
+    "kind": "projected",
+    "depth": 1,
+    "mode": "direct",
+    "source": "fixtures/docx/regressions/list-markers/DocCancellation/projected/cancel-depth-1-direct.docx",
+    "sourceSha256": "350cda2726b7e213623c0ec3f6d9f375d877da02fe8e4727e7c19544471891fd",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/projected/cancel-depth-1-direct.pdf",
+    "wordPdfSha256": "3844a83b726c977a36922e350c3ef72c47ce45fded74e9c17f1ab9b1eab8532a",
+    "wordListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "cancel-depth-1-direct",
+    "kind": "source",
+    "depth": 1,
+    "mode": "direct",
+    "source": "fixtures/docx/regressions/list-markers/DocCancellation/source/cancel-depth-1-direct.docx",
+    "sourceSha256": "a305a86136920d9b108c80b7d78bd756e92154f82bdc1ef9b3fca5f5b1a7c5b3",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/source/cancel-depth-1-direct.pdf",
+    "wordPdfSha256": "fc002ece7f69d047a5e869d6f2cae90425741c9ba3fc1767c56891920d4a7608",
+    "wordListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "cancel-depth-1-reenabled",
+    "kind": "doc",
+    "depth": 1,
+    "mode": "reenabled",
+    "source": "fixtures/doc/regressions/list-markers/Cancellation/cancel-depth-1-reenabled.doc",
+    "sourceSha256": "7b066a85ebfc77a1baa61898252ca1a47f40ff707f1eeb6c243a27220768cec5",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/doc/cancel-depth-1-reenabled.pdf",
+    "wordPdfSha256": "b1991e23cbc0d8e65f949cd06bfca14b8cd9e8b1427177a2b197192b81f5f244",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  {
+    "name": "cancel-depth-1-reenabled",
+    "kind": "projected",
+    "depth": 1,
+    "mode": "reenabled",
+    "source": "fixtures/docx/regressions/list-markers/DocCancellation/projected/cancel-depth-1-reenabled.docx",
+    "sourceSha256": "3fca5b40d7c66f2d2584b9653cce19a8fd5c3a6567eb01450441146a38eb2174",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/projected/cancel-depth-1-reenabled.pdf",
+    "wordPdfSha256": "c6c7d265abfc95f64b1497b18a14ba89d5b98dd910cefd6d16f765dab6c4165f",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  {
+    "name": "cancel-depth-1-reenabled",
+    "kind": "source",
+    "depth": 1,
+    "mode": "reenabled",
+    "source": "fixtures/docx/regressions/list-markers/DocCancellation/source/cancel-depth-1-reenabled.docx",
+    "sourceSha256": "0797d5d85cf33bdbea2449e00fddc5c2c00ba1df735f34db0f03765cfbc24a5b",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/source/cancel-depth-1-reenabled.pdf",
+    "wordPdfSha256": "37bd4f72e774131654dd3896c7473fd26644f9c330c09ca874a80648860477cd",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  {
+    "name": "cancel-depth-1-resume",
+    "kind": "doc",
+    "depth": 1,
+    "mode": "resume",
+    "source": "fixtures/doc/regressions/list-markers/Cancellation/cancel-depth-1-resume.doc",
+    "sourceSha256": "8a18090e2861fa2487168ba80cf3f52146c130c994cc9f4c3954fb81b936432f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/doc/cancel-depth-1-resume.pdf",
+    "wordPdfSha256": "0632feea05e7194c011dd085d2c97620575c7893b6295ef0167dca5d6a088089",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "",
+      "BEGIN3END",
+      "",
+      "BEGIN5END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "",
+      "BEGIN3END",
+      "",
+      "BEGIN5END"
+    ]
+  },
+  {
+    "name": "cancel-depth-1-resume",
+    "kind": "projected",
+    "depth": 1,
+    "mode": "resume",
+    "source": "fixtures/docx/regressions/list-markers/DocCancellation/projected/cancel-depth-1-resume.docx",
+    "sourceSha256": "f59a19c10fb0cd67a3c5c390c52c1e31e1888176c2a389ec58ed94cbf5af865b",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/projected/cancel-depth-1-resume.pdf",
+    "wordPdfSha256": "0202390ac177018b1e6057e08888a7d806faaf62d0aa856706f786e16905044e",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "",
+      "BEGIN3END",
+      "",
+      "BEGIN5END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "",
+      "BEGIN3END",
+      "",
+      "BEGIN5END"
+    ]
+  },
+  {
+    "name": "cancel-depth-1-resume",
+    "kind": "source",
+    "depth": 1,
+    "mode": "resume",
+    "source": "fixtures/docx/regressions/list-markers/DocCancellation/source/cancel-depth-1-resume.docx",
+    "sourceSha256": "fec6566941b7aa9e249202d9ca0954089700aa0fd27e513c036449f60be9e2e9",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/source/cancel-depth-1-resume.pdf",
+    "wordPdfSha256": "209c3e29b7511d8154b3efe175ed70c8217b656b91da6b5a126d5db0264f78c5",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "",
+      "BEGIN3END",
+      "",
+      "BEGIN5END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "",
+      "BEGIN3END",
+      "",
+      "BEGIN5END"
+    ]
+  },
+  {
+    "name": "cancel-depth-1-style",
+    "kind": "doc",
+    "depth": 1,
+    "mode": "style",
+    "source": "fixtures/doc/regressions/list-markers/Cancellation/cancel-depth-1-style.doc",
+    "sourceSha256": "edf33e2624208ff75668bd6b39e039f6660ad97d7c547bc0a59c19db41a0e023",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/doc/cancel-depth-1-style.pdf",
+    "wordPdfSha256": "52998b292274b84c617ea6a44a58556bf848473365ac8a6f59aeeb194821bc46",
+    "wordListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "cancel-depth-1-style",
+    "kind": "projected",
+    "depth": 1,
+    "mode": "style",
+    "source": "fixtures/docx/regressions/list-markers/DocCancellation/projected/cancel-depth-1-style.docx",
+    "sourceSha256": "1b2f38705edc7db1a0984e900751161888ab9ab16d2a825eb8cc22b0acef497c",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/projected/cancel-depth-1-style.pdf",
+    "wordPdfSha256": "f59a479328dfa5fae20b35f2339eaaeb84330be06c55a9ad88890a84424b3385",
+    "wordListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "cancel-depth-1-style",
+    "kind": "source",
+    "depth": 1,
+    "mode": "style",
+    "source": "fixtures/docx/regressions/list-markers/DocCancellation/source/cancel-depth-1-style.docx",
+    "sourceSha256": "13268ff52ce474f301a6c8fd953f84541508df7a9b4ffd543346662f58ffd6f6",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/source/cancel-depth-1-style.pdf",
+    "wordPdfSha256": "05bfb965dd476aa01ed14b7dba9845f810bf28c2e86f5311d656fcc789a3fcc4",
+    "wordListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "cancel-depth-8-control",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "control",
+    "source": "fixtures/doc/regressions/list-markers/Cancellation/cancel-depth-8-control.doc",
+    "sourceSha256": "19f49cbefe2b9bafae67099c3851bc03b9c31984283fe258ee15c966ab083aaa",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/doc/cancel-depth-8-control.pdf",
+    "wordPdfSha256": "fa3f28aed0430ceb0910e0c9e2c59b6674789c2492172a2f96ab126963fe4711",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  {
+    "name": "cancel-depth-8-control",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "control",
+    "source": "fixtures/docx/regressions/list-markers/DocCancellation/projected/cancel-depth-8-control.docx",
+    "sourceSha256": "6b2952b8c0b2ca37eb0a563a63f32707ef42d350dbcbca131e7fa0656ff9d2d0",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/projected/cancel-depth-8-control.pdf",
+    "wordPdfSha256": "7c4ea36970a3e0cedb6e5cf98fa4cc16d84386716bfb74297c8234235d8f380e",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  {
+    "name": "cancel-depth-8-control",
+    "kind": "source",
+    "depth": 8,
+    "mode": "control",
+    "source": "fixtures/docx/regressions/list-markers/DocCancellation/source/cancel-depth-8-control.docx",
+    "sourceSha256": "7eb1f99f6683037a36b2300117fcbd647510beb05cb49e8ac4464c0bd5dac171",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/source/cancel-depth-8-control.pdf",
+    "wordPdfSha256": "39579d7a7b0e8580a3d268cd967bc6f8b48d322a0517e62ce949c123d0a3e62d",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  {
+    "name": "cancel-depth-8-direct-level",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "direct-level",
+    "source": "fixtures/doc/regressions/list-markers/Cancellation/cancel-depth-8-direct-level.doc",
+    "sourceSha256": "f23a412ce407ca82133446bf88ac1da79aa9e8630df5cf2642dda1f4f6cc97dc",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/doc/cancel-depth-8-direct-level.pdf",
+    "wordPdfSha256": "8b0c6ab8757b2296a6020a95949890f50754fbc96081b42ac4220c9c34ff04dc",
+    "wordListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "cancel-depth-8-direct-level",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "direct-level",
+    "source": "fixtures/docx/regressions/list-markers/DocCancellation/projected/cancel-depth-8-direct-level.docx",
+    "sourceSha256": "0d56a04cedd7d81fb14368d5d1e408cb13a65d757a380c7f1f5f3568b7750488",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/projected/cancel-depth-8-direct-level.pdf",
+    "wordPdfSha256": "5b2f657289e565cb11d63b91654f3d313b6766a19cf545d72bcbff8d48f35210",
+    "wordListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "cancel-depth-8-direct-level",
+    "kind": "source",
+    "depth": 8,
+    "mode": "direct-level",
+    "source": "fixtures/docx/regressions/list-markers/DocCancellation/source/cancel-depth-8-direct-level.docx",
+    "sourceSha256": "a3bf87a121de0aa8393829f86a0ecf8264de296a50fe48b596c0b20001f924ec",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/source/cancel-depth-8-direct-level.pdf",
+    "wordPdfSha256": "229e6761309fcd10cc99e955e66b3023a62119a226519731a47b0f8839a785fe",
+    "wordListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "cancel-depth-8-direct",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "direct",
+    "source": "fixtures/doc/regressions/list-markers/Cancellation/cancel-depth-8-direct.doc",
+    "sourceSha256": "b34e24f5db248884e5ddf4739fcc214c116c7312625147858964f4fada026f1d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/doc/cancel-depth-8-direct.pdf",
+    "wordPdfSha256": "11019de0d9fe83b280e4582c042e466817eea03c7de0cdd7e0d887095ac120ae",
+    "wordListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "cancel-depth-8-direct",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "direct",
+    "source": "fixtures/docx/regressions/list-markers/DocCancellation/projected/cancel-depth-8-direct.docx",
+    "sourceSha256": "c408dc9c41a0c7b43f5dcbfb0b703bf5d0a91fcc67c73355989e4bb33a19fb85",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/projected/cancel-depth-8-direct.pdf",
+    "wordPdfSha256": "999252c5e208857365e062ee68898a489475814ac3352d36e8216e94a03a7d1c",
+    "wordListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "cancel-depth-8-direct",
+    "kind": "source",
+    "depth": 8,
+    "mode": "direct",
+    "source": "fixtures/docx/regressions/list-markers/DocCancellation/source/cancel-depth-8-direct.docx",
+    "sourceSha256": "b77e0a73e9374ecdb86e0866e381768f0ba0aba835108fd235910c7d74bddf6f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/source/cancel-depth-8-direct.pdf",
+    "wordPdfSha256": "62c3be99f2fbc96ea14b7d0ed05e796b37120ba1ed015001146afd19849922f7",
+    "wordListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "cancel-depth-8-reenabled",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "reenabled",
+    "source": "fixtures/doc/regressions/list-markers/Cancellation/cancel-depth-8-reenabled.doc",
+    "sourceSha256": "2b4451429f52c3e46974a76ca2ed6dae80c98f694e8d0666c0eef51ca9bc8f1d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/doc/cancel-depth-8-reenabled.pdf",
+    "wordPdfSha256": "33e81f9dc8fc3e962d1c5e39167783c24d50fbe48785ef77e9ecae5acb3c4885",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  {
+    "name": "cancel-depth-8-reenabled",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "reenabled",
+    "source": "fixtures/docx/regressions/list-markers/DocCancellation/projected/cancel-depth-8-reenabled.docx",
+    "sourceSha256": "aff9842d7b474a6921597e7a952b63abfaf8ddd0570cf17059bb4f7a71a03daf",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/projected/cancel-depth-8-reenabled.pdf",
+    "wordPdfSha256": "af83b724f637d67d715e96260b1dadd28235b8a429c76359d83fede384daef39",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  {
+    "name": "cancel-depth-8-reenabled",
+    "kind": "source",
+    "depth": 8,
+    "mode": "reenabled",
+    "source": "fixtures/docx/regressions/list-markers/DocCancellation/source/cancel-depth-8-reenabled.docx",
+    "sourceSha256": "918fc58638bdd5a242f519e85ae9e3dbc37a51424bcb6085602082c3bfd46e8c",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/source/cancel-depth-8-reenabled.pdf",
+    "wordPdfSha256": "647a21b0f6e4f99d335d6097a33b4fea2381e9c727d8af9947c96ef3a53d2e7b",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  {
+    "name": "cancel-depth-8-resume",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "resume",
+    "source": "fixtures/doc/regressions/list-markers/Cancellation/cancel-depth-8-resume.doc",
+    "sourceSha256": "1e866faf4c6f0123f5eea803c916b4e9a28e424ff771f7d7e21f5894a5a9691b",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/doc/cancel-depth-8-resume.pdf",
+    "wordPdfSha256": "723025396d89d2e84b356a7547b9f99438dbac24fd7d3291db840a2f5db3b2cf",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "",
+      "BEGIN3END",
+      "",
+      "BEGIN5END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "",
+      "BEGIN3END",
+      "",
+      "BEGIN5END"
+    ]
+  },
+  {
+    "name": "cancel-depth-8-resume",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "resume",
+    "source": "fixtures/docx/regressions/list-markers/DocCancellation/projected/cancel-depth-8-resume.docx",
+    "sourceSha256": "8a70e0c9e3f4ec406f2387a1c95bada26b4168321095bf88c99f913868c2e579",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/projected/cancel-depth-8-resume.pdf",
+    "wordPdfSha256": "bd5cc998671d21299c42115a0f26841fc801a28f9a3fec913e555ee73f49c003",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "",
+      "BEGIN3END",
+      "",
+      "BEGIN5END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "",
+      "BEGIN3END",
+      "",
+      "BEGIN5END"
+    ]
+  },
+  {
+    "name": "cancel-depth-8-resume",
+    "kind": "source",
+    "depth": 8,
+    "mode": "resume",
+    "source": "fixtures/docx/regressions/list-markers/DocCancellation/source/cancel-depth-8-resume.docx",
+    "sourceSha256": "fe585ce87edf46f3bfebbb5677ed3af9812063cbec502d5481dc8d37195387d9",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/source/cancel-depth-8-resume.pdf",
+    "wordPdfSha256": "5c03aec1932813ad0246eb0705573de2854dd0fe7e31dd319b9517e1fdff52e2",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "",
+      "BEGIN3END",
+      "",
+      "BEGIN5END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "",
+      "BEGIN3END",
+      "",
+      "BEGIN5END"
+    ]
+  },
+  {
+    "name": "cancel-depth-8-style",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "style",
+    "source": "fixtures/doc/regressions/list-markers/Cancellation/cancel-depth-8-style.doc",
+    "sourceSha256": "bb8b7a1dc146b3eb075a9289144243891f3b8590907ef69cb7fd7bd31255bba7",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/doc/cancel-depth-8-style.pdf",
+    "wordPdfSha256": "4a9e36d7b5161ce5e3d878fd0f191262b5fed08c616163293e9308d1d920fe67",
+    "wordListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "cancel-depth-8-style",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "style",
+    "source": "fixtures/docx/regressions/list-markers/DocCancellation/projected/cancel-depth-8-style.docx",
+    "sourceSha256": "a2e1b5c13ac135b7e1fc8a06bce247308d918fb5d0c56c52462aa31d4cb10fa6",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/projected/cancel-depth-8-style.pdf",
+    "wordPdfSha256": "263558e10415f05230dde7431cea66f1c4fc1368b7a41509830a2adcbaf1efbf",
+    "wordListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "cancel-depth-8-style",
+    "kind": "source",
+    "depth": 8,
+    "mode": "style",
+    "source": "fixtures/docx/regressions/list-markers/DocCancellation/source/cancel-depth-8-style.docx",
+    "sourceSha256": "8016f45c51b66397bef692c1193fe79dd7f3cb2cda2c141ffb679d43ca7ec2a7",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/source/cancel-depth-8-style.pdf",
+    "wordPdfSha256": "907ec81f50b230adb51a76039c8d48b4574cdecb3e47f5d42695be6f936780d3",
+    "wordListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  }
+]

@@ -2129,7 +2129,9 @@ public sealed class DocToDocxProjector
             properties.AppendChild(new PageBreakBefore { Val = pageBreakBefore });
         if (formatting.WidowControl is bool widowControl)
             properties.AppendChild(new WidowControl { Val = widowControl });
-        if (formatting.ListOverrideIndex is > 0 and var listIndex)
+        if (formatting.ListOverrideIndex == 0)
+            properties.AppendChild(new NumberingProperties(new NumberingId { Val = 0 }));
+        else if (formatting.ListOverrideIndex is > 0 and var listIndex)
             properties.AppendChild(new NumberingProperties(
                 new NumberingLevelReference { Val = formatting.ListLevel ?? 0 },
                 new NumberingId { Val = listIndex }));

@@ -31,5 +31,4 @@ set including prior sparse/empty/start/override cases: 94 passed.
 The expanded marker and editable-field round-trip regression set passes 441
 tests, including the mixed-section styled-story control.
 
-Explicit numId=0 cancellation is a separate known DOC export/projection issue
-and remains outside this inheritance fix.
+Explicit numId=0 cancellation is covered separately by `DocCancellation`.

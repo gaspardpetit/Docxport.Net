@@ -1,0 +1,71 @@
+[
+  {
+    "name": "cancel-depth-1-direct",
+    "source": "fixtures/doc/regressions/list-markers/Cancellation/before/cancel-depth-1-direct.doc",
+    "sourceSha256": "16c810fd007cc228ec637c4ddf455774ca9228421e7f1f19090b728f55a45154",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/before/cancel-depth-1-direct.pdf",
+    "wordPdfSha256": "f76bdb5b98e454954d33b5ea757932fbc88e9d072c4026c9bf8371e16d262552",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "expectedSourceListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "cancel-depth-1-direct-level",
+    "source": "fixtures/doc/regressions/list-markers/Cancellation/before/cancel-depth-1-direct-level.doc",
+    "sourceSha256": "17c0e928b423c66b68053cd7a2c7e4438ea81fba1bc39631bf53cb4b8af49c19",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/before/cancel-depth-1-direct-level.pdf",
+    "wordPdfSha256": "ebbcc0d8d78031e79582416fbf94b2edba3961baf287dad6c73a3778466cd4b4",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "expectedSourceListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "cancel-depth-1-style",
+    "source": "fixtures/doc/regressions/list-markers/Cancellation/before/cancel-depth-1-style.doc",
+    "sourceSha256": "b68070d9fe81daf8ef6243d6900be81a14250f4eea8c58793d3ce16045a702ed",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocCancellation/before/cancel-depth-1-style.pdf",
+    "wordPdfSha256": "00d5c8e4f7a36f612c8fee666108a36c77b7746fefa25c93bc0346c591e83df0",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "expectedSourceListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  }
+]
