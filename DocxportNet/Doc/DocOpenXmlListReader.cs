@@ -53,9 +53,16 @@ internal static class DocOpenXmlListReader
                 readParagraphFormatting, defaultStart: 0))
                 .OrderBy(x => x.Index).ToArray();
             if (levels.Length == 0 || levels.Length > 9 ||
-                levels.Select(x => x.Index).Distinct().Count() != levels.Length ||
-                levels.Where((x, i) => x.Index != i).Any())
-                throw new NotSupportedException("DOC list levels must be contiguous from zero.");
+                levels.Select(x => x.Index).Distinct().Count() != levels.Length)
+                throw new NotSupportedException("DOC list levels must have unique indexes from zero through eight.");
+            if (levels.Length > 1 || levels[0].Index > 0)
+            {
+                // DOC requires positional slots. Word leaves omitted OOXML
+                // levels blank, with a zero counter available to placeholders.
+                var byLevel = levels.ToDictionary(x => x.Index);
+                levels = Enumerable.Range(0, 9).Select(index => byLevel.TryGetValue(index, out var level)
+                    ? level : new DocListLevel(index, 0, 0, "", 0)).ToArray();
+            }
             definitions.Add(new DocListDefinition(listId, levels));
         }
         var instances = new List<DocListInstance>();
