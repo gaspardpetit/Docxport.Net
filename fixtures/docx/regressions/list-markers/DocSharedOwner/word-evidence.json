@@ -1,0 +1,1406 @@
+[
+  {
+    "name": "shared-depth-0-both",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "both",
+    "source": "fixtures/doc/regressions/list-markers/SharedOwner/shared-depth-0-both.doc",
+    "sourceSha256": "70ed1ef4dd3354e924c06ee358913230d418702c50d8aa8182b746065a612b72",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/doc/shared-depth-0-both.pdf",
+    "wordPdfSha256": "26ceae8f99b7acbdfff4d2949cef8b468020e13cb68b9d2c500983ecc3a54ecf",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINVIIEND",
+      "BEGINVIIIEND",
+      "BEGIN9END",
+      "BEGINXEND"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINVIIEND",
+      "BEGINVIIIEND",
+      "BEGIN9END",
+      "BEGINXEND"
+    ]
+  },
+  {
+    "name": "shared-depth-0-both",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "both",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/projected/shared-depth-0-both.docx",
+    "sourceSha256": "12fee0f5b10407258b00ef77d09c70ade5c3c28606062ab0b29f4b77df34834a",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/projected/shared-depth-0-both.pdf",
+    "wordPdfSha256": "2774bc44e7538659831db73bc623e4760ad0cc3aa067c854a3dc36be88e0481a",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINVIIEND",
+      "BEGINVIIIEND",
+      "BEGIN9END",
+      "BEGINXEND"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINVIIEND",
+      "BEGINVIIIEND",
+      "BEGIN9END",
+      "BEGINXEND"
+    ]
+  },
+  {
+    "name": "shared-depth-0-both",
+    "kind": "source",
+    "depth": 0,
+    "mode": "both",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/source/shared-depth-0-both.docx",
+    "sourceSha256": "f250b18a24085a5808e53638bbb711995e612f8c093770e0a6d389be4a1b298a",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/source/shared-depth-0-both.pdf",
+    "wordPdfSha256": "ab6fc43f88e0da1ad19643a8db844547d44efe7f3425a781f56c4a0104ec2e9d",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINVIIEND",
+      "BEGINVIIIEND",
+      "BEGIN9END",
+      "BEGINXEND"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINVIIEND",
+      "BEGINVIIIEND",
+      "BEGIN9END",
+      "BEGINXEND"
+    ]
+  },
+  {
+    "name": "shared-depth-0-distinct",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "distinct",
+    "source": "fixtures/doc/regressions/list-markers/SharedOwner/shared-depth-0-distinct.doc",
+    "sourceSha256": "6b26bc48094edd99f71d5809be69006e33797211df61317e96be4553132148c2",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/doc/shared-depth-0-distinct.pdf",
+    "wordPdfSha256": "b997d8934c3ff68259c6aed937ed9b875bab56c0c810da12eafe644be8b45ebc",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN3END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN3END"
+    ]
+  },
+  {
+    "name": "shared-depth-0-distinct",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "distinct",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/projected/shared-depth-0-distinct.docx",
+    "sourceSha256": "1326f4e8d0b354766c679b05fc948660c1ed35821f5c83dd84540bcfed01d066",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/projected/shared-depth-0-distinct.pdf",
+    "wordPdfSha256": "4910717457862346abe9cb89a50b9726030af130d8490b4d379205398a9e27d4",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN3END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN3END"
+    ]
+  },
+  {
+    "name": "shared-depth-0-distinct",
+    "kind": "source",
+    "depth": 0,
+    "mode": "distinct",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/source/shared-depth-0-distinct.docx",
+    "sourceSha256": "787ed622efea57b9c44325f1c16393e024dc882cfe862da10d4f34641fd60b0e",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/source/shared-depth-0-distinct.pdf",
+    "wordPdfSha256": "599fc87631847d527ba0505329f89c5b595b898e4e0838016faeba8f73390379",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN3END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN3END"
+    ]
+  },
+  {
+    "name": "shared-depth-0-format",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "format",
+    "source": "fixtures/doc/regressions/list-markers/SharedOwner/shared-depth-0-format.doc",
+    "sourceSha256": "b2a5db469f0f045f45c846bb7bfba4828d0359c9e5230c66cd8d8fdd5e2fa6c2",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/doc/shared-depth-0-format.pdf",
+    "wordPdfSha256": "0968404ff06563e970ffb4a65f8aaf79a3f5d46419b784b58fe74ca6e8bb974a",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINIIIEND",
+      "BEGINIVEND",
+      "BEGIN5END",
+      "BEGINVIEND"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINIIIEND",
+      "BEGINIVEND",
+      "BEGIN5END",
+      "BEGINVIEND"
+    ]
+  },
+  {
+    "name": "shared-depth-0-format",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "format",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/projected/shared-depth-0-format.docx",
+    "sourceSha256": "aef2cb14813bca63311af0e6431f60b8894b7e16b769b10b26b2695974f6b99e",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/projected/shared-depth-0-format.pdf",
+    "wordPdfSha256": "d1f283cbb12ddc13457a502601b7f26921aeb8ceb249b2a9c689b6b060cd4114",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINIIIEND",
+      "BEGINIVEND",
+      "BEGIN5END",
+      "BEGINVIEND"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINIIIEND",
+      "BEGINIVEND",
+      "BEGIN5END",
+      "BEGINVIEND"
+    ]
+  },
+  {
+    "name": "shared-depth-0-format",
+    "kind": "source",
+    "depth": 0,
+    "mode": "format",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/source/shared-depth-0-format.docx",
+    "sourceSha256": "95b3b6a5db788c892f578402f281ac77a2637a27f8cc6a406bb3d068d2cf5c25",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/source/shared-depth-0-format.pdf",
+    "wordPdfSha256": "f376ef4c144f74c62a84aff321bc2262f0bbab8e05e9b6d7c06a7c65178aae8b",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINIIIEND",
+      "BEGINIVEND",
+      "BEGIN5END",
+      "BEGINVIEND"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINIIIEND",
+      "BEGINIVEND",
+      "BEGIN5END",
+      "BEGINVIEND"
+    ]
+  },
+  {
+    "name": "shared-depth-0-none",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "none",
+    "source": "fixtures/doc/regressions/list-markers/SharedOwner/shared-depth-0-none.doc",
+    "sourceSha256": "562c658e7b12cc9d602ab1b030ff640818b0a1e34855efd00fbaa15009cdde20",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/doc/shared-depth-0-none.pdf",
+    "wordPdfSha256": "0f7d270ba18ed09cfb29aad3c63f7fcd1d799f25940f41f04d9b74b0159309b3",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  {
+    "name": "shared-depth-0-none",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "none",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/projected/shared-depth-0-none.docx",
+    "sourceSha256": "f24a68b77b93f63e0df4aa6fe5f5117906ba5db6b9be224eedd7a4063b7e9056",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/projected/shared-depth-0-none.pdf",
+    "wordPdfSha256": "64484087d6daa099b29a4ffa60f6bf772ebf0066d880f4e03486818e6cda610b",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  {
+    "name": "shared-depth-0-none",
+    "kind": "source",
+    "depth": 0,
+    "mode": "none",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/source/shared-depth-0-none.docx",
+    "sourceSha256": "2fc1b422a5ffc8d2adcdc6ee5f08eee1b6fcc28694633ce30fb811ecf0d34e88",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/source/shared-depth-0-none.pdf",
+    "wordPdfSha256": "db74cbc4e876b6e71c76ce98bd52733987e94ac1b7852b1ac139cfbac7af590d",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  {
+    "name": "shared-depth-0-start-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "start-1",
+    "source": "fixtures/doc/regressions/list-markers/SharedOwner/shared-depth-0-start-1.doc",
+    "sourceSha256": "5488bf930edd83b350d69cc80ea87816623e9ac21340e188cd780341b07dc15b",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/doc/shared-depth-0-start-1.pdf",
+    "wordPdfSha256": "a51360ff6c62fc52d886d5bbd18bb0a0344684ffd063a23e915b7016fa2dca21",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END"
+    ]
+  },
+  {
+    "name": "shared-depth-0-start-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "start-1",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/projected/shared-depth-0-start-1.docx",
+    "sourceSha256": "2ebc7098476163dede7434c6ebb2f287aba653b7848a947797a1005b42754986",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/projected/shared-depth-0-start-1.pdf",
+    "wordPdfSha256": "dbf524d4b69ad5ae4980bffc950420ba01a65a61514558cb1463b235a974a598",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END"
+    ]
+  },
+  {
+    "name": "shared-depth-0-start-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "start-1",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/source/shared-depth-0-start-1.docx",
+    "sourceSha256": "93d45ea03054b9f6bdce9a5a79c226833a70e318e186499c3c9c6a5e87010191",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/source/shared-depth-0-start-1.pdf",
+    "wordPdfSha256": "5851b904dad0acf5a54254a0fa569a06310328f0b77143c742fb0a7b3bd4e6bb",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END"
+    ]
+  },
+  {
+    "name": "shared-depth-0-start-7",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "start-7",
+    "source": "fixtures/doc/regressions/list-markers/SharedOwner/shared-depth-0-start-7.doc",
+    "sourceSha256": "141ac58c231c73eb5ff83373dc4a9c310f989422e5ec23a265492756a5a11b03",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/doc/shared-depth-0-start-7.pdf",
+    "wordPdfSha256": "1563e9925de566c6a46c5b157aac94c738f88e28fabb2077b6cd28a7b4a3994a",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END"
+    ]
+  },
+  {
+    "name": "shared-depth-0-start-7",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "start-7",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/projected/shared-depth-0-start-7.docx",
+    "sourceSha256": "f81e2892c497343e2feb376a8f98a06a20adba13ade0333fc2d1fe04ed3e7cfc",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/projected/shared-depth-0-start-7.pdf",
+    "wordPdfSha256": "a04c7de25761c85f88aec51fc7b152c673b29456cb2aa8bbb3cf46e4fa37a6f7",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END"
+    ]
+  },
+  {
+    "name": "shared-depth-0-start-7",
+    "kind": "source",
+    "depth": 0,
+    "mode": "start-7",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/source/shared-depth-0-start-7.docx",
+    "sourceSha256": "6883c36b91dc00e97d8be15d719b95d418a81909030fcf74de80c605af1b6065",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/source/shared-depth-0-start-7.pdf",
+    "wordPdfSha256": "d87e4db8e6ac491cfe17fd9de5470d4c94b4489937d9e1b608eba56bd72aee37",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END"
+    ]
+  },
+  {
+    "name": "shared-depth-1-both",
+    "kind": "doc",
+    "depth": 1,
+    "mode": "both",
+    "source": "fixtures/doc/regressions/list-markers/SharedOwner/shared-depth-1-both.doc",
+    "sourceSha256": "01a02242f4b1d46d36c57a66ee1af57430d4fa19e1dfbf568e5f4b3e18ae2c1c",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/doc/shared-depth-1-both.pdf",
+    "wordPdfSha256": "2833308ef4ad358c3e410f0a09edeba6c5997f27abba8b22a057fd31d51321ad",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINVIIEND",
+      "BEGINVIIIEND",
+      "BEGIN9END",
+      "BEGINXEND"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINVIIEND",
+      "BEGINVIIIEND",
+      "BEGIN9END",
+      "BEGINXEND"
+    ]
+  },
+  {
+    "name": "shared-depth-1-both",
+    "kind": "projected",
+    "depth": 1,
+    "mode": "both",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/projected/shared-depth-1-both.docx",
+    "sourceSha256": "0494404f618254ba14fa074969e29b1452c91b75d3515e2e59e7f38139c7e0b8",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/projected/shared-depth-1-both.pdf",
+    "wordPdfSha256": "7a792d62fab4a47ab20dafad42ac5d83209ea098e94a2c80857edcf74d30808f",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINVIIEND",
+      "BEGINVIIIEND",
+      "BEGIN9END",
+      "BEGINXEND"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINVIIEND",
+      "BEGINVIIIEND",
+      "BEGIN9END",
+      "BEGINXEND"
+    ]
+  },
+  {
+    "name": "shared-depth-1-both",
+    "kind": "source",
+    "depth": 1,
+    "mode": "both",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/source/shared-depth-1-both.docx",
+    "sourceSha256": "e79ef949f92a702bb3fae524e5f9bc76a108c8983c026bbeb67b8cce5df4bd12",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/source/shared-depth-1-both.pdf",
+    "wordPdfSha256": "25cd391946dde567a7681a30691d97623d6b44efbe6fb9b671f948bf0e611050",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINVIIEND",
+      "BEGINVIIIEND",
+      "BEGIN9END",
+      "BEGINXEND"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINVIIEND",
+      "BEGINVIIIEND",
+      "BEGIN9END",
+      "BEGINXEND"
+    ]
+  },
+  {
+    "name": "shared-depth-1-distinct",
+    "kind": "doc",
+    "depth": 1,
+    "mode": "distinct",
+    "source": "fixtures/doc/regressions/list-markers/SharedOwner/shared-depth-1-distinct.doc",
+    "sourceSha256": "9439951f337893cef1c43d6a36e87ce2dba1461f4de7b71f1b94a7398cb2da07",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/doc/shared-depth-1-distinct.pdf",
+    "wordPdfSha256": "c29dc419192c75690a0ce4a65000eeef391e23ae0d195a6a40f73e0414f09736",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN3END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN3END"
+    ]
+  },
+  {
+    "name": "shared-depth-1-distinct",
+    "kind": "projected",
+    "depth": 1,
+    "mode": "distinct",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/projected/shared-depth-1-distinct.docx",
+    "sourceSha256": "d36fae08ef7457d537f5eee788ce5ae64001785060ededaeabdd9b4a23f5cc77",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/projected/shared-depth-1-distinct.pdf",
+    "wordPdfSha256": "66929a1f45423ab07693929bf6e4b657f1aff89836c80e28830c55ba32fd5753",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN3END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN3END"
+    ]
+  },
+  {
+    "name": "shared-depth-1-distinct",
+    "kind": "source",
+    "depth": 1,
+    "mode": "distinct",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/source/shared-depth-1-distinct.docx",
+    "sourceSha256": "8b43262cf76ef968e154b0ed79f2655fc0d08bb0c9168f47a08eaa20e6da2189",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/source/shared-depth-1-distinct.pdf",
+    "wordPdfSha256": "7b4e6593f539218dbbe60db9049e3f18543370fa902343f4234914cc5fef6f35",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN3END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN3END"
+    ]
+  },
+  {
+    "name": "shared-depth-1-format",
+    "kind": "doc",
+    "depth": 1,
+    "mode": "format",
+    "source": "fixtures/doc/regressions/list-markers/SharedOwner/shared-depth-1-format.doc",
+    "sourceSha256": "5270410d4041351fc75f62f00f6be0fc05ec8cf108ab34699aa30569874e93ba",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/doc/shared-depth-1-format.pdf",
+    "wordPdfSha256": "efbd8968b62113b81fd12686a263cf9d8f098a7c49092d361ac7af0502fe6e0a",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINIIIEND",
+      "BEGINIVEND",
+      "BEGIN5END",
+      "BEGINVIEND"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINIIIEND",
+      "BEGINIVEND",
+      "BEGIN5END",
+      "BEGINVIEND"
+    ]
+  },
+  {
+    "name": "shared-depth-1-format",
+    "kind": "projected",
+    "depth": 1,
+    "mode": "format",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/projected/shared-depth-1-format.docx",
+    "sourceSha256": "6e9885c06f9fc933b60bc6334016737f04f30809e59cb7e120ad944133e79bd9",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/projected/shared-depth-1-format.pdf",
+    "wordPdfSha256": "dee30615b7d0747a2b6e27d5df1306bacee9eb4351754088eb8b741a70765331",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINIIIEND",
+      "BEGINIVEND",
+      "BEGIN5END",
+      "BEGINVIEND"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINIIIEND",
+      "BEGINIVEND",
+      "BEGIN5END",
+      "BEGINVIEND"
+    ]
+  },
+  {
+    "name": "shared-depth-1-format",
+    "kind": "source",
+    "depth": 1,
+    "mode": "format",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/source/shared-depth-1-format.docx",
+    "sourceSha256": "60b38cba641f1be68988844d8ffad8a663f61297422860200ff9c7982ddbb001",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/source/shared-depth-1-format.pdf",
+    "wordPdfSha256": "e8ba6bbd167d9714fa4e2ee4b7c5678dba4eaf74bd8244b7b31960e3be079f9f",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINIIIEND",
+      "BEGINIVEND",
+      "BEGIN5END",
+      "BEGINVIEND"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINIIIEND",
+      "BEGINIVEND",
+      "BEGIN5END",
+      "BEGINVIEND"
+    ]
+  },
+  {
+    "name": "shared-depth-1-none",
+    "kind": "doc",
+    "depth": 1,
+    "mode": "none",
+    "source": "fixtures/doc/regressions/list-markers/SharedOwner/shared-depth-1-none.doc",
+    "sourceSha256": "94c38c6725431582f9c741147b85c84cbd984f0823154e85b8f0df1bd1971224",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/doc/shared-depth-1-none.pdf",
+    "wordPdfSha256": "4b22ea325516148e8c35757f31b9de5706c9490d7412bd06616ca2fb5406f8cf",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  {
+    "name": "shared-depth-1-none",
+    "kind": "projected",
+    "depth": 1,
+    "mode": "none",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/projected/shared-depth-1-none.docx",
+    "sourceSha256": "f094c95098b81b9020ab46fed8f7b1349c552efea2e14184dc3df997e28e3333",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/projected/shared-depth-1-none.pdf",
+    "wordPdfSha256": "8287dd0a6ae565fded5ff5bc62e77e0ccb57a97a00c56b1f569a2caa1ec4ac3f",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  {
+    "name": "shared-depth-1-none",
+    "kind": "source",
+    "depth": 1,
+    "mode": "none",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/source/shared-depth-1-none.docx",
+    "sourceSha256": "a24baa4cbd106ffa50e935d7f0c8b65e63f9a7e38ca8c2681c2c1957146af356",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/source/shared-depth-1-none.pdf",
+    "wordPdfSha256": "b694fdcc2380975b171fd555c4e543f7e05c79601aaead4a374adf4ead594d56",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  {
+    "name": "shared-depth-1-start-1",
+    "kind": "doc",
+    "depth": 1,
+    "mode": "start-1",
+    "source": "fixtures/doc/regressions/list-markers/SharedOwner/shared-depth-1-start-1.doc",
+    "sourceSha256": "dc86903738572453ba8b03553f2567559b79c93980525ff1335e36555168fdd5",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/doc/shared-depth-1-start-1.pdf",
+    "wordPdfSha256": "581824edbaf2124212673b84c3b429e085b80d421b9e1721597e6c729eef22f0",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END"
+    ]
+  },
+  {
+    "name": "shared-depth-1-start-1",
+    "kind": "projected",
+    "depth": 1,
+    "mode": "start-1",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/projected/shared-depth-1-start-1.docx",
+    "sourceSha256": "4005ab8ce7d003bf2e4f7aa6c13b28b988b143695493d7f07338b3d12ee7a82c",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/projected/shared-depth-1-start-1.pdf",
+    "wordPdfSha256": "972ae21e76f3eaf21ba7d532e938d11385c0915d372cc2e92be53cf8f259d4ab",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END"
+    ]
+  },
+  {
+    "name": "shared-depth-1-start-1",
+    "kind": "source",
+    "depth": 1,
+    "mode": "start-1",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/source/shared-depth-1-start-1.docx",
+    "sourceSha256": "1d5a4919f4be176a1d9e7b4c2359b83dd8f21caaf37431fdee7d976d4ec99868",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/source/shared-depth-1-start-1.pdf",
+    "wordPdfSha256": "c7a160afc5102a1834fd9b9356179ff1fa410afef936cb5e7012944e18a1e0e3",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END"
+    ]
+  },
+  {
+    "name": "shared-depth-1-start-7",
+    "kind": "doc",
+    "depth": 1,
+    "mode": "start-7",
+    "source": "fixtures/doc/regressions/list-markers/SharedOwner/shared-depth-1-start-7.doc",
+    "sourceSha256": "2591ffc7f5e43c4329471a6d834b600e70b3a839fa301f9c1e4c613018ac60e5",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/doc/shared-depth-1-start-7.pdf",
+    "wordPdfSha256": "9ee36279cbfa222d61d3d560395d0fd9eacd6a57efcf87839a1d46b9c23f2525",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END"
+    ]
+  },
+  {
+    "name": "shared-depth-1-start-7",
+    "kind": "projected",
+    "depth": 1,
+    "mode": "start-7",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/projected/shared-depth-1-start-7.docx",
+    "sourceSha256": "71e44da516e59892e32f3ba285f38f5521e48c3f43e89e1f7b9607117231d261",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/projected/shared-depth-1-start-7.pdf",
+    "wordPdfSha256": "32e7c25a520f614d6524e494d64136cd5f6642c716ef5c72e9b3ac70df27d34c",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END"
+    ]
+  },
+  {
+    "name": "shared-depth-1-start-7",
+    "kind": "source",
+    "depth": 1,
+    "mode": "start-7",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/source/shared-depth-1-start-7.docx",
+    "sourceSha256": "4d4bcf05d417aa0f89e308f847efcb75dd50089a14cfae29f491f1cfe761126f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/source/shared-depth-1-start-7.pdf",
+    "wordPdfSha256": "b4f6e6e353fdc0268f8d97cbb4a7c421cf6455cdea6359849fbadee5fe875703",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END"
+    ]
+  },
+  {
+    "name": "shared-depth-8-both",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "both",
+    "source": "fixtures/doc/regressions/list-markers/SharedOwner/shared-depth-8-both.doc",
+    "sourceSha256": "457f19ee646cdf126aa30fac3a44fa87597308b68f542046c8afb7daec5b9a0a",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/doc/shared-depth-8-both.pdf",
+    "wordPdfSha256": "14f29763d2556bee58b0ef734ecc731db36cbd0c86035f9e35a8304b4b5a9d56",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINVIIEND",
+      "BEGINVIIIEND",
+      "BEGIN9END",
+      "BEGINXEND"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINVIIEND",
+      "BEGINVIIIEND",
+      "BEGIN9END",
+      "BEGINXEND"
+    ]
+  },
+  {
+    "name": "shared-depth-8-both",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "both",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/projected/shared-depth-8-both.docx",
+    "sourceSha256": "72b4bd0a9d4930e69ecad63c7201b888377528abbe1a54e3ad2911c59fe26a22",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/projected/shared-depth-8-both.pdf",
+    "wordPdfSha256": "ac0fdf1be337ea87712db20da02567c12698fb26d0377d6ac25b3d45438a3265",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINVIIEND",
+      "BEGINVIIIEND",
+      "BEGIN9END",
+      "BEGINXEND"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINVIIEND",
+      "BEGINVIIIEND",
+      "BEGIN9END",
+      "BEGINXEND"
+    ]
+  },
+  {
+    "name": "shared-depth-8-both",
+    "kind": "source",
+    "depth": 8,
+    "mode": "both",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/source/shared-depth-8-both.docx",
+    "sourceSha256": "434ed89f42904a0dc8eb42cb7b41596486870119f40a8432ce7a18e2fb3d2de4",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/source/shared-depth-8-both.pdf",
+    "wordPdfSha256": "6f6161ce7adc12e1aed28409114adb67662775184e3ce6ce8bfb7014b0b518d4",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINVIIEND",
+      "BEGINVIIIEND",
+      "BEGIN9END",
+      "BEGINXEND"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINVIIEND",
+      "BEGINVIIIEND",
+      "BEGIN9END",
+      "BEGINXEND"
+    ]
+  },
+  {
+    "name": "shared-depth-8-distinct",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "distinct",
+    "source": "fixtures/doc/regressions/list-markers/SharedOwner/shared-depth-8-distinct.doc",
+    "sourceSha256": "f1f5e7233d1b5a3980d9fe94db599a42644e13544537e4b65b97512c10a3f878",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/doc/shared-depth-8-distinct.pdf",
+    "wordPdfSha256": "17945cb5e20984136de8656f7cb2c3edb380c959d244c9f2d9030c4f7a2c9843",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN3END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN3END"
+    ]
+  },
+  {
+    "name": "shared-depth-8-distinct",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "distinct",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/projected/shared-depth-8-distinct.docx",
+    "sourceSha256": "e1eeae6001e7c98da9fc25781ac14180979eeaec2708f3fc7adc805b0abf7e4d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/projected/shared-depth-8-distinct.pdf",
+    "wordPdfSha256": "b41ac7e0a372616912b76f33a3feb636a57f6d1402ccdb39dae0dbf4597c1a12",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN3END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN3END"
+    ]
+  },
+  {
+    "name": "shared-depth-8-distinct",
+    "kind": "source",
+    "depth": 8,
+    "mode": "distinct",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/source/shared-depth-8-distinct.docx",
+    "sourceSha256": "a15e273a236b975cc1694b7b6a44b7f0a23b4b57c317064e8388aae14a6bd790",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/source/shared-depth-8-distinct.pdf",
+    "wordPdfSha256": "7a6a7d83fc54e46a7967bff45d5a928e1c5797b70e5fd46abc7c2d0655f4b8d8",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN3END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN3END"
+    ]
+  },
+  {
+    "name": "shared-depth-8-format",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "format",
+    "source": "fixtures/doc/regressions/list-markers/SharedOwner/shared-depth-8-format.doc",
+    "sourceSha256": "d86dec2bf70d7f55f0c79b2f29b0c4c80b514f0069262235be565f3a7d380ab6",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/doc/shared-depth-8-format.pdf",
+    "wordPdfSha256": "e771f8a09197fc5a2e4db233ee64dd86ebe8535ed7bdbe295c59ec3324a19698",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINIIIEND",
+      "BEGINIVEND",
+      "BEGIN5END",
+      "BEGINVIEND"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINIIIEND",
+      "BEGINIVEND",
+      "BEGIN5END",
+      "BEGINVIEND"
+    ]
+  },
+  {
+    "name": "shared-depth-8-format",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "format",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/projected/shared-depth-8-format.docx",
+    "sourceSha256": "0ebfd2ce0d90988b2268dcfa9f5e679e2ce35c58faa82eb736a469220e1fc440",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/projected/shared-depth-8-format.pdf",
+    "wordPdfSha256": "69fedf7a5fc5de146749eb0c3735f845d5d0c104fb619286a52802990818a196",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINIIIEND",
+      "BEGINIVEND",
+      "BEGIN5END",
+      "BEGINVIEND"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINIIIEND",
+      "BEGINIVEND",
+      "BEGIN5END",
+      "BEGINVIEND"
+    ]
+  },
+  {
+    "name": "shared-depth-8-format",
+    "kind": "source",
+    "depth": 8,
+    "mode": "format",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/source/shared-depth-8-format.docx",
+    "sourceSha256": "45703bc23b72e49078a062abba40898db22051b66cb91528b1e53b6b9aa3dc53",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/source/shared-depth-8-format.pdf",
+    "wordPdfSha256": "458e78e46a7bbb98dc622ceddb51236f7efcc436877baf48d50430999499a6db",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINIIIEND",
+      "BEGINIVEND",
+      "BEGIN5END",
+      "BEGINVIEND"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINIIIEND",
+      "BEGINIVEND",
+      "BEGIN5END",
+      "BEGINVIEND"
+    ]
+  },
+  {
+    "name": "shared-depth-8-none",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "none",
+    "source": "fixtures/doc/regressions/list-markers/SharedOwner/shared-depth-8-none.doc",
+    "sourceSha256": "8e700ddf2a8ae8d24c9f04bde32b9e9362fb463e7883fb310abc320f583e88f9",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/doc/shared-depth-8-none.pdf",
+    "wordPdfSha256": "b677aeceeaf80e5ccc6fd80417515a67f8e9796fba6e53cbfdbce0309677022d",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  {
+    "name": "shared-depth-8-none",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "none",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/projected/shared-depth-8-none.docx",
+    "sourceSha256": "104e339677ab93b0a02bae84da27964da845c00b8bfedb87f17e03bace99344d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/projected/shared-depth-8-none.pdf",
+    "wordPdfSha256": "fb0c5bb05429dff5c54f66ee8a24d917cca15db15dd043a285ff74c9d5fdc581",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  {
+    "name": "shared-depth-8-none",
+    "kind": "source",
+    "depth": 8,
+    "mode": "none",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/source/shared-depth-8-none.docx",
+    "sourceSha256": "b263a644d5ab7990a88d1a1367252e77fe5f408d78dddc8f991aefacf00b3a7a",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/source/shared-depth-8-none.pdf",
+    "wordPdfSha256": "28b8d6cc093490d320cd1abfa1da2ebeca017e3beed5940346ed46f4bc7b61d4",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  {
+    "name": "shared-depth-8-start-1",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "start-1",
+    "source": "fixtures/doc/regressions/list-markers/SharedOwner/shared-depth-8-start-1.doc",
+    "sourceSha256": "019bf09083a53a70907043fc489213e4e8410126faf785970e05b33cfe9f7589",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/doc/shared-depth-8-start-1.pdf",
+    "wordPdfSha256": "076a0013b3b332d1ec211ac75f9d65fe43fa0119eb4ca70355e7e79c7c3dafbd",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END"
+    ]
+  },
+  {
+    "name": "shared-depth-8-start-1",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "start-1",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/projected/shared-depth-8-start-1.docx",
+    "sourceSha256": "dc1a99b416909cf503a7fd8de38e3d134b26c429acdbb4d6d7ef5f93972cb0e1",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/projected/shared-depth-8-start-1.pdf",
+    "wordPdfSha256": "01dbc202b71e2d7b84fb8c0efac69c12ad0885cb93f5ab9393e995343f69e25a",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END"
+    ]
+  },
+  {
+    "name": "shared-depth-8-start-1",
+    "kind": "source",
+    "depth": 8,
+    "mode": "start-1",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/source/shared-depth-8-start-1.docx",
+    "sourceSha256": "ae92b5e24047b5d38fd1124106f455309a8a5554bdfcd3e31ae0ae5346c2568f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/source/shared-depth-8-start-1.pdf",
+    "wordPdfSha256": "df1c2e40ac0941cd5774c5f24067299872171873ae5bbc6dea6a9a425caf8983",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END"
+    ]
+  },
+  {
+    "name": "shared-depth-8-start-7",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "start-7",
+    "source": "fixtures/doc/regressions/list-markers/SharedOwner/shared-depth-8-start-7.doc",
+    "sourceSha256": "1646074e439d80f3dab976c28bf1e4e8f397c842e62ade0be2a292884c4a2bb7",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/doc/shared-depth-8-start-7.pdf",
+    "wordPdfSha256": "85d21a2c149166161b549cd197decab525a9e197dcf81a0a7b15f6b1b6afac75",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END"
+    ]
+  },
+  {
+    "name": "shared-depth-8-start-7",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "start-7",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/projected/shared-depth-8-start-7.docx",
+    "sourceSha256": "1443cf33a1151f6f83fc5d46714cb95b092e5b209ab0c70c5ab6bd5235c4ecb2",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/projected/shared-depth-8-start-7.pdf",
+    "wordPdfSha256": "4854c9d4e426a99620148bb12b0f4a0539ba1d9ad5bebdf2fbd620a6b68f6b28",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END"
+    ]
+  },
+  {
+    "name": "shared-depth-8-start-7",
+    "kind": "source",
+    "depth": 8,
+    "mode": "start-7",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/source/shared-depth-8-start-7.docx",
+    "sourceSha256": "948a9e0e75fa4f107cc234c316246613e816b94b34635fac09de3035203e53eb",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/source/shared-depth-8-start-7.pdf",
+    "wordPdfSha256": "07a8d6733c18dafc905462502aea28a59ab628acc6de8e1858fae9f8c6e93807",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END"
+    ]
+  }
+]
