@@ -1,0 +1,92 @@
+[
+  {
+    "name": "enclosed-depth-0-fullstop-1",
+    "depth": 0,
+    "mode": "fullstop-1",
+    "error": "DOCX list format 'decimalEnclosedFullstop' is unsupported."
+  },
+  {
+    "name": "enclosed-depth-0-fullstop-19",
+    "depth": 0,
+    "mode": "fullstop-19",
+    "error": "DOCX list format 'decimalEnclosedFullstop' is unsupported."
+  },
+  {
+    "name": "enclosed-depth-0-paren-1",
+    "depth": 0,
+    "mode": "paren-1",
+    "error": "DOCX list format 'decimalEnclosedParen' is unsupported."
+  },
+  {
+    "name": "enclosed-depth-0-paren-19",
+    "depth": 0,
+    "mode": "paren-19",
+    "error": "DOCX list format 'decimalEnclosedParen' is unsupported."
+  },
+  {
+    "name": "enclosed-depth-0-circle-chinese-1",
+    "depth": 0,
+    "mode": "circle-chinese-1",
+    "error": "DOCX list format 'decimalEnclosedCircleChinese' is unsupported."
+  },
+  {
+    "name": "enclosed-depth-0-circle-chinese-9",
+    "depth": 0,
+    "mode": "circle-chinese-9",
+    "error": "DOCX list format 'decimalEnclosedCircleChinese' is unsupported."
+  },
+  {
+    "name": "enclosed-depth-0-ideograph-1",
+    "depth": 0,
+    "mode": "ideograph-1",
+    "error": "DOCX list format 'ideographEnclosedCircle' is unsupported."
+  },
+  {
+    "name": "enclosed-depth-0-ideograph-9",
+    "depth": 0,
+    "mode": "ideograph-9",
+    "error": "DOCX list format 'ideographEnclosedCircle' is unsupported."
+  },
+  {
+    "name": "enclosed-depth-0-circle-1",
+    "depth": 0,
+    "mode": "circle-1",
+    "error": null
+  },
+  {
+    "name": "enclosed-depth-0-circle-19",
+    "depth": 0,
+    "mode": "circle-19",
+    "error": null
+  },
+  {
+    "name": "enclosed-depth-8-fullstop-19",
+    "depth": 8,
+    "mode": "fullstop-19",
+    "error": "DOCX list format 'decimalEnclosedFullstop' is unsupported."
+  },
+  {
+    "name": "enclosed-depth-8-paren-19",
+    "depth": 8,
+    "mode": "paren-19",
+    "error": "DOCX list format 'decimalEnclosedParen' is unsupported."
+  },
+  {
+    "name": "enclosed-depth-8-circle-chinese-9",
+    "depth": 8,
+    "mode": "circle-chinese-9",
+    "error": "DOCX list format 'decimalEnclosedCircleChinese' is unsupported."
+  },
+  {
+    "name": "enclosed-depth-8-ideograph-9",
+    "depth": 8,
+    "mode": "ideograph-9",
+    "error": "DOCX list format 'ideographEnclosedCircle' is unsupported."
+  },
+  {
+    "name": "enclosed-depth-8-circle-19",
+    "depth": 8,
+    "mode": "circle-19",
+    "error": null
+  }
+]
