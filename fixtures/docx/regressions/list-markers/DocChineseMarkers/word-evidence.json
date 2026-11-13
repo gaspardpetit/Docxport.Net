@@ -1,0 +1,938 @@
+[
+  {
+    "name": "chinese-depth-0-counting-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "counting-1",
+    "source": "fixtures/doc/regressions/list-markers/ChineseMarkers/chinese-depth-0-counting-1.doc",
+    "sourceSha256": "392f87e03f5f54dafcd070634f3db61f949067b6d52fa34f9a52fce2ba4980f6",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/doc/chinese-depth-0-counting-1.pdf",
+    "wordPdfSha256": "fd3585ab1ac2d32f1cc824513cf712cecdfa62c2c0d51a798fd32c78874244d8",
+    "wordListStrings": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ]
+  },
+  {
+    "name": "chinese-depth-0-counting-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "counting-1",
+    "source": "fixtures/docx/regressions/list-markers/DocChineseMarkers/projected/chinese-depth-0-counting-1.docx",
+    "sourceSha256": "b6c2497991d1cf9118211344120206212b8cf983f5103ae11c9582567531d4a1",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/projected/chinese-depth-0-counting-1.pdf",
+    "wordPdfSha256": "d5872d7629b7d228b4e63095b4814a88b513cbc75e02a90ca0ee8ee9fd513b0c",
+    "wordListStrings": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ]
+  },
+  {
+    "name": "chinese-depth-0-counting-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "counting-1",
+    "source": "fixtures/docx/regressions/list-markers/DocChineseMarkers/source/chinese-depth-0-counting-1.docx",
+    "sourceSha256": "e00cbddad36333b6ae178badd5b36ae99b348ef9bede396f9ba88d01d9d408e7",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/source/chinese-depth-0-counting-1.pdf",
+    "wordPdfSha256": "d0df5c6ab032041c223e1833d10cd670f5024f9647fb5a85f24cd79db2b8ad76",
+    "wordListStrings": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ]
+  },
+  {
+    "name": "chinese-depth-0-counting-98",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "counting-98",
+    "source": "fixtures/doc/regressions/list-markers/ChineseMarkers/chinese-depth-0-counting-98.doc",
+    "sourceSha256": "a12a35e4d1ed91afd44fc3e8ff7c0804736593f6ba42864d099bb4d11bc0559d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/doc/chinese-depth-0-counting-98.pdf",
+    "wordPdfSha256": "c38cfc9921cb3e6063fd25eb4eec8233ebc6af1f083a425d0a2c81d2df9bd341",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u4e09END"
+    ]
+  },
+  {
+    "name": "chinese-depth-0-counting-98",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "counting-98",
+    "source": "fixtures/docx/regressions/list-markers/DocChineseMarkers/projected/chinese-depth-0-counting-98.docx",
+    "sourceSha256": "c705d636d6711592b9756a7c23735c92e3a3b5024767b872415201557818df63",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/projected/chinese-depth-0-counting-98.pdf",
+    "wordPdfSha256": "bb7b28a5852b614803b0cc0124d4b815ae194e019a349830796476f6b79d6e8e",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u4e09END"
+    ]
+  },
+  {
+    "name": "chinese-depth-0-counting-98",
+    "kind": "source",
+    "depth": 0,
+    "mode": "counting-98",
+    "source": "fixtures/docx/regressions/list-markers/DocChineseMarkers/source/chinese-depth-0-counting-98.docx",
+    "sourceSha256": "c388030627e594cbe3fba4d8196cb46ed5c6906d05e3a28a697ba106c5449bf2",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/source/chinese-depth-0-counting-98.pdf",
+    "wordPdfSha256": "6481c295fe5ac76be8177e5bfdf1332658bb6a971335e80c988cccb96c48e0c4",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u4e09END"
+    ]
+  },
+  {
+    "name": "chinese-depth-0-counting-9998",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "counting-9998",
+    "source": "fixtures/doc/regressions/list-markers/ChineseMarkers/chinese-depth-0-counting-9998.doc",
+    "sourceSha256": "2028ddacab088831787148eb2108c3d0b9c2548524222b7e9f0cb9416a8eee29",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/doc/chinese-depth-0-counting-9998.pdf",
+    "wordPdfSha256": "1d12d60207f7d9d00a16f25bf3807d8439f4789ab789c5feb36ac470406c8c4c",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ]
+  },
+  {
+    "name": "chinese-depth-0-counting-9998",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "counting-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocChineseMarkers/projected/chinese-depth-0-counting-9998.docx",
+    "sourceSha256": "afd37890619ba7518521259900479e6bc1b5c427f26b07345251bd6c42abbb9b",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/projected/chinese-depth-0-counting-9998.pdf",
+    "wordPdfSha256": "30643ff80da1bbf3b0cba4c1541979c548c24a1f66e4fd505ecf375f6d169557",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ]
+  },
+  {
+    "name": "chinese-depth-0-counting-9998",
+    "kind": "source",
+    "depth": 0,
+    "mode": "counting-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocChineseMarkers/source/chinese-depth-0-counting-9998.docx",
+    "sourceSha256": "afc30e3e8408174b534aa6715f9f1b7b545640e1800486bc79b9bfeac6522439",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/source/chinese-depth-0-counting-9998.pdf",
+    "wordPdfSha256": "3f935770850ab1a3bc5b86a23766a38efe4108fe006f2aff26c484948c078764",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ]
+  },
+  {
+    "name": "chinese-depth-0-legal-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "legal-1",
+    "source": "fixtures/doc/regressions/list-markers/ChineseMarkers/chinese-depth-0-legal-1.doc",
+    "sourceSha256": "0287dc259be68ffa93a8f5561bcd8115120879f2d26887ef8d404ffc7e9bb2d8",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/doc/chinese-depth-0-legal-1.pdf",
+    "wordPdfSha256": "c94110bbe87b2f4b70d811bebc7f6458033557b6809c1d2cb73785fe0c1235cb",
+    "wordListStrings": [
+      "BEGIN\u58f9END",
+      "BEGIN\u8d30END",
+      "BEGIN\u53c1END",
+      "BEGIN\u8086END",
+      "BEGIN\u4f0dEND",
+      "BEGIN\u9646END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u58f9END",
+      "BEGIN\u8d30END",
+      "BEGIN\u53c1END",
+      "BEGIN\u8086END",
+      "BEGIN\u4f0dEND",
+      "BEGIN\u9646END"
+    ]
+  },
+  {
+    "name": "chinese-depth-0-legal-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "legal-1",
+    "source": "fixtures/docx/regressions/list-markers/DocChineseMarkers/projected/chinese-depth-0-legal-1.docx",
+    "sourceSha256": "5dcc0a4c941d0f39e1ef6b47a2ec78db2b0e4cadefd71238e2c018e1770ec1bd",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/projected/chinese-depth-0-legal-1.pdf",
+    "wordPdfSha256": "44254ae774f585fdc3399b380cca718a60c34c2f4c9909dc7aa2c82d9de8e469",
+    "wordListStrings": [
+      "BEGIN\u58f9END",
+      "BEGIN\u8d30END",
+      "BEGIN\u53c1END",
+      "BEGIN\u8086END",
+      "BEGIN\u4f0dEND",
+      "BEGIN\u9646END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u58f9END",
+      "BEGIN\u8d30END",
+      "BEGIN\u53c1END",
+      "BEGIN\u8086END",
+      "BEGIN\u4f0dEND",
+      "BEGIN\u9646END"
+    ]
+  },
+  {
+    "name": "chinese-depth-0-legal-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "legal-1",
+    "source": "fixtures/docx/regressions/list-markers/DocChineseMarkers/source/chinese-depth-0-legal-1.docx",
+    "sourceSha256": "0bc9b456987d2d7281b53c51a8491dbed339f58c44a686aa3e27e58cd50e6d1c",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/source/chinese-depth-0-legal-1.pdf",
+    "wordPdfSha256": "a8f709994f8ca2d61b3e8e3303672aa72583b035cf96f5bd965fcf2c7be4c98d",
+    "wordListStrings": [
+      "BEGIN\u58f9END",
+      "BEGIN\u8d30END",
+      "BEGIN\u53c1END",
+      "BEGIN\u8086END",
+      "BEGIN\u4f0dEND",
+      "BEGIN\u9646END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u58f9END",
+      "BEGIN\u8d30END",
+      "BEGIN\u53c1END",
+      "BEGIN\u8086END",
+      "BEGIN\u4f0dEND",
+      "BEGIN\u9646END"
+    ]
+  },
+  {
+    "name": "chinese-depth-0-legal-98",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "legal-98",
+    "source": "fixtures/doc/regressions/list-markers/ChineseMarkers/chinese-depth-0-legal-98.doc",
+    "sourceSha256": "64b71a4ae8ab7d33809782a307c2c9e593e03ec0d7dff8fad5fed84e19f7f4d6",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/doc/chinese-depth-0-legal-98.pdf",
+    "wordPdfSha256": "24b204e9fe911234ed661ec3496b54c01deadeb6e44d0d47e3b867364cc13f05",
+    "wordListStrings": [
+      "BEGIN\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u4f70END",
+      "BEGIN\u58f9\u4f70\u96f6\u58f9END",
+      "BEGIN\u58f9\u4f70\u96f6\u8d30END",
+      "BEGIN\u58f9\u4f70\u96f6\u53c1END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u4f70END",
+      "BEGIN\u58f9\u4f70\u96f6\u58f9END",
+      "BEGIN\u58f9\u4f70\u96f6\u8d30END",
+      "BEGIN\u58f9\u4f70\u96f6\u53c1END"
+    ]
+  },
+  {
+    "name": "chinese-depth-0-legal-98",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "legal-98",
+    "source": "fixtures/docx/regressions/list-markers/DocChineseMarkers/projected/chinese-depth-0-legal-98.docx",
+    "sourceSha256": "d8ad6758cb69ad96d0a7d44dac70f1a20c49c9e7e163cc62ec75fc54e0f4eb38",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/projected/chinese-depth-0-legal-98.pdf",
+    "wordPdfSha256": "14cf0b16f5875c654434d34749f4d4adfee9d4fc76685a2ee9ed1acd2a1658d8",
+    "wordListStrings": [
+      "BEGIN\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u4f70END",
+      "BEGIN\u58f9\u4f70\u96f6\u58f9END",
+      "BEGIN\u58f9\u4f70\u96f6\u8d30END",
+      "BEGIN\u58f9\u4f70\u96f6\u53c1END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u4f70END",
+      "BEGIN\u58f9\u4f70\u96f6\u58f9END",
+      "BEGIN\u58f9\u4f70\u96f6\u8d30END",
+      "BEGIN\u58f9\u4f70\u96f6\u53c1END"
+    ]
+  },
+  {
+    "name": "chinese-depth-0-legal-98",
+    "kind": "source",
+    "depth": 0,
+    "mode": "legal-98",
+    "source": "fixtures/docx/regressions/list-markers/DocChineseMarkers/source/chinese-depth-0-legal-98.docx",
+    "sourceSha256": "10abba76df329841d6c1275c8f33eac55c6afe36217874dd15ae8f76a3259808",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/source/chinese-depth-0-legal-98.pdf",
+    "wordPdfSha256": "dc276d2309117cc8b08d7811b4c36eafdba0a2fe8a7ac64cc404ca0c6d2f316d",
+    "wordListStrings": [
+      "BEGIN\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u4f70END",
+      "BEGIN\u58f9\u4f70\u96f6\u58f9END",
+      "BEGIN\u58f9\u4f70\u96f6\u8d30END",
+      "BEGIN\u58f9\u4f70\u96f6\u53c1END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u4f70END",
+      "BEGIN\u58f9\u4f70\u96f6\u58f9END",
+      "BEGIN\u58f9\u4f70\u96f6\u8d30END",
+      "BEGIN\u58f9\u4f70\u96f6\u53c1END"
+    ]
+  },
+  {
+    "name": "chinese-depth-0-legal-9998",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "legal-9998",
+    "source": "fixtures/doc/regressions/list-markers/ChineseMarkers/chinese-depth-0-legal-9998.doc",
+    "sourceSha256": "a00313e20d71d4ed510a095a8cdb9bd4092f4a577cefff8837cd1bd51fb3b592",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/doc/chinese-depth-0-legal-9998.pdf",
+    "wordPdfSha256": "ac0d4b176b970eab0f06dd34587b031327baf8fd071f37f7f6f5af5903650f0a",
+    "wordListStrings": [
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u842cEND",
+      "BEGIN\u58f9\u842c\u96f6\u58f9END",
+      "BEGIN\u58f9\u842c\u96f6\u8d30END",
+      "BEGIN\u58f9\u842c\u96f6\u53c1END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u842cEND",
+      "BEGIN\u58f9\u842c\u96f6\u58f9END",
+      "BEGIN\u58f9\u842c\u96f6\u8d30END",
+      "BEGIN\u58f9\u842c\u96f6\u53c1END"
+    ]
+  },
+  {
+    "name": "chinese-depth-0-legal-9998",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "legal-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocChineseMarkers/projected/chinese-depth-0-legal-9998.docx",
+    "sourceSha256": "f57a8df9568056b11d6311d00132b50795f9a1f5a546ceaca1218f6ebc875d17",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/projected/chinese-depth-0-legal-9998.pdf",
+    "wordPdfSha256": "53787ed1afc6d34c635a64fb0fc29edf41fee1c0656a9992e14efd0f50f88a35",
+    "wordListStrings": [
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u842cEND",
+      "BEGIN\u58f9\u842c\u96f6\u58f9END",
+      "BEGIN\u58f9\u842c\u96f6\u8d30END",
+      "BEGIN\u58f9\u842c\u96f6\u53c1END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u842cEND",
+      "BEGIN\u58f9\u842c\u96f6\u58f9END",
+      "BEGIN\u58f9\u842c\u96f6\u8d30END",
+      "BEGIN\u58f9\u842c\u96f6\u53c1END"
+    ]
+  },
+  {
+    "name": "chinese-depth-0-legal-9998",
+    "kind": "source",
+    "depth": 0,
+    "mode": "legal-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocChineseMarkers/source/chinese-depth-0-legal-9998.docx",
+    "sourceSha256": "a1b14430c877a9312481362623d4c3d5e0ff50b86e1e21182eb2f2695e902c78",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/source/chinese-depth-0-legal-9998.pdf",
+    "wordPdfSha256": "6845b02d6a4742897a3fd63a30064f82cb615d624de36c7dcb717e6951da0282",
+    "wordListStrings": [
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u842cEND",
+      "BEGIN\u58f9\u842c\u96f6\u58f9END",
+      "BEGIN\u58f9\u842c\u96f6\u8d30END",
+      "BEGIN\u58f9\u842c\u96f6\u53c1END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u842cEND",
+      "BEGIN\u58f9\u842c\u96f6\u58f9END",
+      "BEGIN\u58f9\u842c\u96f6\u8d30END",
+      "BEGIN\u58f9\u842c\u96f6\u53c1END"
+    ]
+  },
+  {
+    "name": "chinese-depth-0-thousand-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "thousand-1",
+    "source": "fixtures/doc/regressions/list-markers/ChineseMarkers/chinese-depth-0-thousand-1.doc",
+    "sourceSha256": "dc1dcbb94e9e61f6c1618a06a66e7db2396d78a76df71575ff955e95fdc9afea",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/doc/chinese-depth-0-thousand-1.pdf",
+    "wordPdfSha256": "c24ccce1343e31d1641cd9c81e9d245da4f6149fe7ad2a22a7d10277cb753b98",
+    "wordListStrings": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ]
+  },
+  {
+    "name": "chinese-depth-0-thousand-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "thousand-1",
+    "source": "fixtures/docx/regressions/list-markers/DocChineseMarkers/projected/chinese-depth-0-thousand-1.docx",
+    "sourceSha256": "f08b8ec27c386ec51fa9a0053c932416f57130623f7bfe11411dba1fc6f58a4b",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/projected/chinese-depth-0-thousand-1.pdf",
+    "wordPdfSha256": "de86cb41eee1f90ef26d23bb6f66bbee3724ff38f96a96f1e7a6a6eebc993398",
+    "wordListStrings": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ]
+  },
+  {
+    "name": "chinese-depth-0-thousand-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "thousand-1",
+    "source": "fixtures/docx/regressions/list-markers/DocChineseMarkers/source/chinese-depth-0-thousand-1.docx",
+    "sourceSha256": "a3f68065a60e8caabbf6c95f95b204b2963b729125beee258923b75e172196ca",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/source/chinese-depth-0-thousand-1.pdf",
+    "wordPdfSha256": "a4ed6f43df56680a89e0e0021f00ff2a7302a3d08852027e41d5790ebc29a448",
+    "wordListStrings": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ]
+  },
+  {
+    "name": "chinese-depth-0-thousand-98",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "thousand-98",
+    "source": "fixtures/doc/regressions/list-markers/ChineseMarkers/chinese-depth-0-thousand-98.doc",
+    "sourceSha256": "daab9b80e2c77777ce327e51cba1eb75c6c36cb1eb6eb70965e59f9e95c06c27",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/doc/chinese-depth-0-thousand-98.pdf",
+    "wordPdfSha256": "96fbe5b491151fd394394c137fa86d702e84859130716158e53d43b703ae6890",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u767eEND",
+      "BEGIN\u4e00\u767e\u3007\u4e00END",
+      "BEGIN\u4e00\u767e\u3007\u4e8cEND",
+      "BEGIN\u4e00\u767e\u3007\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u767eEND",
+      "BEGIN\u4e00\u767e\u3007\u4e00END",
+      "BEGIN\u4e00\u767e\u3007\u4e8cEND",
+      "BEGIN\u4e00\u767e\u3007\u4e09END"
+    ]
+  },
+  {
+    "name": "chinese-depth-0-thousand-98",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "thousand-98",
+    "source": "fixtures/docx/regressions/list-markers/DocChineseMarkers/projected/chinese-depth-0-thousand-98.docx",
+    "sourceSha256": "194cb740777f53ad79bfdfdc4d60cd942e31f8bb44d989395a631a0df5b2e998",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/projected/chinese-depth-0-thousand-98.pdf",
+    "wordPdfSha256": "371ccef16200c0c6001365ae3cbc929dc810fd3186fc4c28323a1dea7779e680",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u767eEND",
+      "BEGIN\u4e00\u767e\u3007\u4e00END",
+      "BEGIN\u4e00\u767e\u3007\u4e8cEND",
+      "BEGIN\u4e00\u767e\u3007\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u767eEND",
+      "BEGIN\u4e00\u767e\u3007\u4e00END",
+      "BEGIN\u4e00\u767e\u3007\u4e8cEND",
+      "BEGIN\u4e00\u767e\u3007\u4e09END"
+    ]
+  },
+  {
+    "name": "chinese-depth-0-thousand-98",
+    "kind": "source",
+    "depth": 0,
+    "mode": "thousand-98",
+    "source": "fixtures/docx/regressions/list-markers/DocChineseMarkers/source/chinese-depth-0-thousand-98.docx",
+    "sourceSha256": "88f0a7b052d1fd29769de6e17c444282a55701bd75b9e82dc70d06753bee4c82",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/source/chinese-depth-0-thousand-98.pdf",
+    "wordPdfSha256": "c79b4226e44d88301574c73789b2e60d14d500f0c7d99f22598262038eca19c4",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u767eEND",
+      "BEGIN\u4e00\u767e\u3007\u4e00END",
+      "BEGIN\u4e00\u767e\u3007\u4e8cEND",
+      "BEGIN\u4e00\u767e\u3007\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u767eEND",
+      "BEGIN\u4e00\u767e\u3007\u4e00END",
+      "BEGIN\u4e00\u767e\u3007\u4e8cEND",
+      "BEGIN\u4e00\u767e\u3007\u4e09END"
+    ]
+  },
+  {
+    "name": "chinese-depth-0-thousand-9998",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "thousand-9998",
+    "source": "fixtures/doc/regressions/list-markers/ChineseMarkers/chinese-depth-0-thousand-9998.doc",
+    "sourceSha256": "19200c8b2aca56988437ecbbdb2ead67108276a849f50bbe80d0b8e233710fa2",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/doc/chinese-depth-0-thousand-9998.pdf",
+    "wordPdfSha256": "19d91b055f2b3a01b50c817724e51b39769e5e7e7e76745d3f4db0afdacb20f7",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u4e07END",
+      "BEGIN\u4e00\u4e07\u3007\u4e00END",
+      "BEGIN\u4e00\u4e07\u3007\u4e8cEND",
+      "BEGIN\u4e00\u4e07\u3007\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u4e07END",
+      "BEGIN\u4e00\u4e07\u3007\u4e00END",
+      "BEGIN\u4e00\u4e07\u3007\u4e8cEND",
+      "BEGIN\u4e00\u4e07\u3007\u4e09END"
+    ]
+  },
+  {
+    "name": "chinese-depth-0-thousand-9998",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "thousand-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocChineseMarkers/projected/chinese-depth-0-thousand-9998.docx",
+    "sourceSha256": "7bf49b9b3637aeda5ec5b255ad98726842b849c94bee5081da83c96f2f82772f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/projected/chinese-depth-0-thousand-9998.pdf",
+    "wordPdfSha256": "dd16b1ee176ba33ebb3c460f038daf117b736af55274aaabab9393c84df51bc2",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u4e07END",
+      "BEGIN\u4e00\u4e07\u3007\u4e00END",
+      "BEGIN\u4e00\u4e07\u3007\u4e8cEND",
+      "BEGIN\u4e00\u4e07\u3007\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u4e07END",
+      "BEGIN\u4e00\u4e07\u3007\u4e00END",
+      "BEGIN\u4e00\u4e07\u3007\u4e8cEND",
+      "BEGIN\u4e00\u4e07\u3007\u4e09END"
+    ]
+  },
+  {
+    "name": "chinese-depth-0-thousand-9998",
+    "kind": "source",
+    "depth": 0,
+    "mode": "thousand-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocChineseMarkers/source/chinese-depth-0-thousand-9998.docx",
+    "sourceSha256": "a2f19d35326a13223f0c0e29e77e141fdd38d680b0716227f73f8cec9c33f6e4",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/source/chinese-depth-0-thousand-9998.pdf",
+    "wordPdfSha256": "89bf544e12f7d41bf2c95d5fa4814d3dbd8d37787df5401b478f4d200e8eeac6",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u4e07END",
+      "BEGIN\u4e00\u4e07\u3007\u4e00END",
+      "BEGIN\u4e00\u4e07\u3007\u4e8cEND",
+      "BEGIN\u4e00\u4e07\u3007\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u4e07END",
+      "BEGIN\u4e00\u4e07\u3007\u4e00END",
+      "BEGIN\u4e00\u4e07\u3007\u4e8cEND",
+      "BEGIN\u4e00\u4e07\u3007\u4e09END"
+    ]
+  },
+  {
+    "name": "chinese-depth-8-counting-9998",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "counting-9998",
+    "source": "fixtures/doc/regressions/list-markers/ChineseMarkers/chinese-depth-8-counting-9998.doc",
+    "sourceSha256": "65a9e04a1606de2a63b3d42d8cfd056771980b1ecf2dc7eb2041492d76ff6e8f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/doc/chinese-depth-8-counting-9998.pdf",
+    "wordPdfSha256": "ca33234c1620479fe51784155dd193661474c0e8eddbb0401d9931f1915570c1",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ]
+  },
+  {
+    "name": "chinese-depth-8-counting-9998",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "counting-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocChineseMarkers/projected/chinese-depth-8-counting-9998.docx",
+    "sourceSha256": "edce968cfc4cb7dd9b8b847fdff680a653f094b81bba8e946d5344e231bd91e6",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/projected/chinese-depth-8-counting-9998.pdf",
+    "wordPdfSha256": "b20cf787be58185f4cf0f84eb7a4b881650bcd423eca47c751cca0191c7fc736",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ]
+  },
+  {
+    "name": "chinese-depth-8-counting-9998",
+    "kind": "source",
+    "depth": 8,
+    "mode": "counting-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocChineseMarkers/source/chinese-depth-8-counting-9998.docx",
+    "sourceSha256": "207068d3bad87c7b98bd6d5d7c1cf035f706b23e6f49e7852a79be81e0c23578",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/source/chinese-depth-8-counting-9998.pdf",
+    "wordPdfSha256": "044eb057c391abe61d9399c63c97010d17782dadf7ae6b2ef4af5688e5f41b2c",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ]
+  },
+  {
+    "name": "chinese-depth-8-legal-9998",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "legal-9998",
+    "source": "fixtures/doc/regressions/list-markers/ChineseMarkers/chinese-depth-8-legal-9998.doc",
+    "sourceSha256": "f9dfd153fd4887143d4174d1037b5a24bb271c59b94e4cceb321b52d54d4ab98",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/doc/chinese-depth-8-legal-9998.pdf",
+    "wordPdfSha256": "7dce78f822fba5b6e28f415d3229002cc75b7b09dfdfccbde903482ef5065639",
+    "wordListStrings": [
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u842cEND",
+      "BEGIN\u58f9\u842c\u96f6\u58f9END",
+      "BEGIN\u58f9\u842c\u96f6\u8d30END",
+      "BEGIN\u58f9\u842c\u96f6\u53c1END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u842cEND",
+      "BEGIN\u58f9\u842c\u96f6\u58f9END",
+      "BEGIN\u58f9\u842c\u96f6\u8d30END",
+      "BEGIN\u58f9\u842c\u96f6\u53c1END"
+    ]
+  },
+  {
+    "name": "chinese-depth-8-legal-9998",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "legal-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocChineseMarkers/projected/chinese-depth-8-legal-9998.docx",
+    "sourceSha256": "62c8265ce3763254b62e1d6cfec034f54fd3d373edf44af37764015d758c949d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/projected/chinese-depth-8-legal-9998.pdf",
+    "wordPdfSha256": "9dd46052c4311416ac5ac38b7cf36040335218d68535082102ad14583a54ac7f",
+    "wordListStrings": [
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u842cEND",
+      "BEGIN\u58f9\u842c\u96f6\u58f9END",
+      "BEGIN\u58f9\u842c\u96f6\u8d30END",
+      "BEGIN\u58f9\u842c\u96f6\u53c1END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u842cEND",
+      "BEGIN\u58f9\u842c\u96f6\u58f9END",
+      "BEGIN\u58f9\u842c\u96f6\u8d30END",
+      "BEGIN\u58f9\u842c\u96f6\u53c1END"
+    ]
+  },
+  {
+    "name": "chinese-depth-8-legal-9998",
+    "kind": "source",
+    "depth": 8,
+    "mode": "legal-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocChineseMarkers/source/chinese-depth-8-legal-9998.docx",
+    "sourceSha256": "116d80809a7495f27b1eb3ca8b00f4741dc32b11d6af72d7206672ec8e97119e",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/source/chinese-depth-8-legal-9998.pdf",
+    "wordPdfSha256": "141f02df71bdeb7868d3639d8b3c144ef8474969c6b024673a527c02aa25c0c0",
+    "wordListStrings": [
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u842cEND",
+      "BEGIN\u58f9\u842c\u96f6\u58f9END",
+      "BEGIN\u58f9\u842c\u96f6\u8d30END",
+      "BEGIN\u58f9\u842c\u96f6\u53c1END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u842cEND",
+      "BEGIN\u58f9\u842c\u96f6\u58f9END",
+      "BEGIN\u58f9\u842c\u96f6\u8d30END",
+      "BEGIN\u58f9\u842c\u96f6\u53c1END"
+    ]
+  },
+  {
+    "name": "chinese-depth-8-thousand-9998",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "thousand-9998",
+    "source": "fixtures/doc/regressions/list-markers/ChineseMarkers/chinese-depth-8-thousand-9998.doc",
+    "sourceSha256": "0ddb172dea4c665e1b4057977dbbde4cb067fda852a76dd3279e344e63f861fe",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/doc/chinese-depth-8-thousand-9998.pdf",
+    "wordPdfSha256": "3f944006858d50556c89fc2689313b546b1ea989e84c1315bae19339b6ea9d2e",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u4e07END",
+      "BEGIN\u4e00\u4e07\u3007\u4e00END",
+      "BEGIN\u4e00\u4e07\u3007\u4e8cEND",
+      "BEGIN\u4e00\u4e07\u3007\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u4e07END",
+      "BEGIN\u4e00\u4e07\u3007\u4e00END",
+      "BEGIN\u4e00\u4e07\u3007\u4e8cEND",
+      "BEGIN\u4e00\u4e07\u3007\u4e09END"
+    ]
+  },
+  {
+    "name": "chinese-depth-8-thousand-9998",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "thousand-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocChineseMarkers/projected/chinese-depth-8-thousand-9998.docx",
+    "sourceSha256": "a21f97360a7cc599dbda10e4848990a34ea5089be7a31f01dc71348eb1a30322",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/projected/chinese-depth-8-thousand-9998.pdf",
+    "wordPdfSha256": "52870a3ab1e17b9b33e82dd708509cf5c568cb7ae5d88e0a47a95a03ad312089",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u4e07END",
+      "BEGIN\u4e00\u4e07\u3007\u4e00END",
+      "BEGIN\u4e00\u4e07\u3007\u4e8cEND",
+      "BEGIN\u4e00\u4e07\u3007\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u4e07END",
+      "BEGIN\u4e00\u4e07\u3007\u4e00END",
+      "BEGIN\u4e00\u4e07\u3007\u4e8cEND",
+      "BEGIN\u4e00\u4e07\u3007\u4e09END"
+    ]
+  },
+  {
+    "name": "chinese-depth-8-thousand-9998",
+    "kind": "source",
+    "depth": 8,
+    "mode": "thousand-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocChineseMarkers/source/chinese-depth-8-thousand-9998.docx",
+    "sourceSha256": "3059409a3a7658b66c7e0ac277d7ece574b4d349f7d17284cd31fecc0c297091",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocChineseMarkers/source/chinese-depth-8-thousand-9998.pdf",
+    "wordPdfSha256": "fae2d953409f602a2d604d4e35c51ad80e2d838db9d30546dc73e0a020c5b2f3",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u4e07END",
+      "BEGIN\u4e00\u4e07\u3007\u4e00END",
+      "BEGIN\u4e00\u4e07\u3007\u4e8cEND",
+      "BEGIN\u4e00\u4e07\u3007\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u4e07END",
+      "BEGIN\u4e00\u4e07\u3007\u4e00END",
+      "BEGIN\u4e00\u4e07\u3007\u4e8cEND",
+      "BEGIN\u4e00\u4e07\u3007\u4e09END"
+    ]
+  }
+]
