@@ -335,6 +335,75 @@ public sealed class DocToDocxProjector
         var instances = lists.Instances.ToDictionary(x => x.OverrideIndex);
         var definitions = lists.Definitions.ToDictionary(x => x.ListId);
         var numbering = new Numbering();
+        Level ConvertLevel(DocListLevel level, short overrideIndex)
+        {
+            var format = level.NumberFormat switch
+            {
+                0 => NumberFormatValues.Decimal,
+                1 => NumberFormatValues.UpperRoman,
+                2 => NumberFormatValues.LowerRoman,
+                3 => NumberFormatValues.UpperLetter,
+                4 => NumberFormatValues.LowerLetter,
+                5 => NumberFormatValues.Ordinal,
+                6 => NumberFormatValues.CardinalText,
+                7 => NumberFormatValues.OrdinalText,
+                8 => NumberFormatValues.Hex,
+                0x0A => NumberFormatValues.IdeographDigital,
+                0x09 => NumberFormatValues.Chicago,
+                0x0E => NumberFormatValues.DecimalFullWidth,
+                0x0F => NumberFormatValues.DecimalHalfWidth,
+                0x12 => NumberFormatValues.DecimalEnclosedCircle,
+                0x13 => NumberFormatValues.DecimalFullWidth2,
+                0x16 => NumberFormatValues.DecimalZero,
+                0x17 => NumberFormatValues.Bullet,
+                0x39 => NumberFormatValues.NumberInDash,
+                0x3A => NumberFormatValues.RussianLower,
+                0x3B => NumberFormatValues.RussianUpper,
+                0xFF => NumberFormatValues.None,
+                _ => throw new NotSupportedException(
+                    $"DOC list number format {level.NumberFormat} is unsupported.")
+            };
+            if (level.NumberText.Any(x => x < 0x20 && x is not ('\t' or '\n' or '\r')))
+                throw new NotSupportedException($"DOC list {overrideIndex} level {level.Index} format {level.NumberFormat} has unsupported number text {string.Join(",", level.NumberText.Select(x => $"U+{(int)x:X4}"))}.");
+            var suffix = level.FollowCharacter switch
+            {
+                0 => LevelSuffixValues.Tab,
+                1 => LevelSuffixValues.Space,
+                2 => LevelSuffixValues.Nothing,
+                _ => throw new InvalidDataException("A DOC list has an invalid label suffix.")
+            };
+            var outputLevel = new Level(
+                new StartNumberingValue { Val = level.StartAt },
+                new NumberingFormat { Val = format },
+                new LevelSuffix { Val = suffix },
+                new LevelText { Val = level.NumberText },
+                new LevelJustification { Val = level.LabelJustification switch
+                {
+                    0 => LevelJustificationValues.Left,
+                    1 => LevelJustificationValues.Center,
+                    2 => LevelJustificationValues.Right,
+                    _ => throw new InvalidDataException("A DOC list label has invalid alignment.")
+                } })
+                { LevelIndex = level.Index };
+            if (level.IsLegal)
+                outputLevel.InsertBefore(new IsLegalNumberingStyle(), outputLevel.GetFirstChild<LevelSuffix>());
+            if (level.RestartLimit is byte restartLimit)
+                outputLevel.InsertAfter(new LevelRestart { Val = restartLimit },
+                    outputLevel.GetFirstChild<NumberingFormat>());
+            if (level.ParagraphFormatting is { IsEmpty: false } paragraphFormatting)
+            {
+                var properties = new PreviousParagraphProperties();
+                AppendParagraphFormatting(properties, paragraphFormatting);
+                if (properties.HasChildren) outputLevel.AppendChild(properties);
+            }
+            if (level.LabelFormatting is { IsEmpty: false } labelFormatting)
+            {
+                var properties = new NumberingSymbolRunProperties();
+                AppendCharacterFormatting(properties, labelFormatting, styles);
+                if (properties.HasChildren) outputLevel.AppendChild(properties);
+            }
+            return outputLevel;
+        }
         var selected = new List<(DocListInstance Instance, DocListDefinition Definition,
             int AbstractId)>();
         foreach (var index in usedIndexes.OrderBy(x => x))
@@ -347,87 +416,26 @@ public sealed class DocToDocxProjector
         foreach (var (instance, definition, abstractId) in selected)
         {
             var abstractNum = new AbstractNum { AbstractNumberId = abstractId };
-            foreach (var baseLevel in definition.Levels)
-            {
-                var level = instance.FormattingOverrides.TryGetValue(baseLevel.Index,
-                    out var replacement) ? replacement : baseLevel;
-                var format = level.NumberFormat switch
-                {
-                    0 => NumberFormatValues.Decimal,
-                    1 => NumberFormatValues.UpperRoman,
-                    2 => NumberFormatValues.LowerRoman,
-                    3 => NumberFormatValues.UpperLetter,
-                    4 => NumberFormatValues.LowerLetter,
-                    5 => NumberFormatValues.Ordinal,
-                    6 => NumberFormatValues.CardinalText,
-                    7 => NumberFormatValues.OrdinalText,
-                    8 => NumberFormatValues.Hex,
-                    0x0A => NumberFormatValues.IdeographDigital,
-                    0x09 => NumberFormatValues.Chicago,
-                    0x0E => NumberFormatValues.DecimalFullWidth,
-                    0x0F => NumberFormatValues.DecimalHalfWidth,
-                    0x12 => NumberFormatValues.DecimalEnclosedCircle,
-                    0x13 => NumberFormatValues.DecimalFullWidth2,
-                    0x16 => NumberFormatValues.DecimalZero,
-                    0x17 => NumberFormatValues.Bullet,
-                    0x39 => NumberFormatValues.NumberInDash,
-                    0x3A => NumberFormatValues.RussianLower,
-                    0x3B => NumberFormatValues.RussianUpper,
-                    0xFF => NumberFormatValues.None,
-                    _ => throw new NotSupportedException(
-                        $"DOC list number format {level.NumberFormat} is unsupported.")
-                };
-                if (level.NumberText.Any(x => x < 0x20 && x is not ('\t' or '\n' or '\r')))
-                    throw new NotSupportedException($"DOC list {instance.OverrideIndex} level {level.Index} format {level.NumberFormat} has unsupported number text {string.Join(",", level.NumberText.Select(x => $"U+{(int)x:X4}"))}.");
-                var suffix = level.FollowCharacter switch
-                {
-                    0 => LevelSuffixValues.Tab,
-                    1 => LevelSuffixValues.Space,
-                    2 => LevelSuffixValues.Nothing,
-                    _ => throw new InvalidDataException("A DOC list has an invalid label suffix.")
-                };
-                var outputLevel = new Level(
-                    new StartNumberingValue { Val = level.StartAt },
-                    new NumberingFormat { Val = format },
-                    new LevelSuffix { Val = suffix },
-                    new LevelText { Val = level.NumberText },
-                    new LevelJustification { Val = level.LabelJustification switch
-                    {
-                        0 => LevelJustificationValues.Left,
-                        1 => LevelJustificationValues.Center,
-                        2 => LevelJustificationValues.Right,
-                        _ => throw new InvalidDataException("A DOC list label has invalid alignment.")
-                    } })
-                    { LevelIndex = level.Index };
-                if (level.IsLegal)
-                    outputLevel.InsertBefore(new IsLegalNumberingStyle(), outputLevel.GetFirstChild<LevelSuffix>());
-                if (level.RestartLimit is byte restartLimit)
-                    outputLevel.InsertAfter(new LevelRestart { Val = restartLimit },
-                        outputLevel.GetFirstChild<NumberingFormat>());
-                if (level.ParagraphFormatting is { IsEmpty: false } paragraphFormatting)
-                {
-                    var properties = new PreviousParagraphProperties();
-                    AppendParagraphFormatting(properties, paragraphFormatting);
-                    if (properties.HasChildren) outputLevel.AppendChild(properties);
-                }
-                if (level.LabelFormatting is { IsEmpty: false } labelFormatting)
-                {
-                    var properties = new NumberingSymbolRunProperties();
-                    AppendCharacterFormatting(properties, labelFormatting, styles);
-                    if (properties.HasChildren) outputLevel.AppendChild(properties);
-                }
-                abstractNum.AppendChild(outputLevel);
-            }
+            // Flattening replacements into the abstract level activates their
+            // starts too early. Preserve the base and override separately.
+            foreach (var level in definition.Levels)
+                abstractNum.AppendChild(ConvertLevel(level, instance.OverrideIndex));
             numbering.AppendChild(abstractNum);
         }
         foreach (var (instance, _, abstractId) in selected)
         {
             var num = new NumberingInstance(new AbstractNumId { Val = abstractId })
                 { NumberID = instance.OverrideIndex };
-            foreach (var start in instance.StartOverrides.OrderBy(x => x.Key))
-                num.AppendChild(new LevelOverride(
-                    new StartOverrideNumberingValue { Val = start.Value })
-                    { LevelIndex = start.Key });
+            foreach (var index in instance.StartOverrides.Keys.Union(instance.FormattingOverrides.Keys)
+                .Distinct().OrderBy(x => x))
+            {
+                var levelOverride = new LevelOverride { LevelIndex = index };
+                if (instance.StartOverrides.TryGetValue(index, out var start))
+                    levelOverride.AppendChild(new StartOverrideNumberingValue { Val = start });
+                if (instance.FormattingOverrides.TryGetValue(index, out var replacement))
+                    levelOverride.AppendChild(ConvertLevel(replacement, instance.OverrideIndex));
+                num.AppendChild(levelOverride);
+            }
             numbering.AppendChild(num);
         }
         var part = main.AddNewPart<NumberingDefinitionsPart>();
