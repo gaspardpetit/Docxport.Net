@@ -1,0 +1,1250 @@
+[
+  {
+    "name": "korean-numeric-depth-0-counting-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "counting-1",
+    "source": "fixtures/doc/regressions/list-markers/KoreanNumericMarkers/korean-numeric-depth-0-counting-1.doc",
+    "sourceSha256": "5e0f3a6e089f647b7fab12b72be6505a67022e76fbce93bf34afdd48ad7c996f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/doc/korean-numeric-depth-0-counting-1.pdf",
+    "wordPdfSha256": "cddb951cf7ca677c5115cbe3417444c6b395fe124be67561b93cd96cf0acb3ca",
+    "wordListStrings": [
+      "BEGIN\uc77cEND",
+      "BEGIN\uc774END",
+      "BEGIN\uc0bcEND",
+      "BEGIN\uc0acEND",
+      "BEGIN\uc624END",
+      "BEGIN\uc721END"
+    ],
+    "pdfLabels": [
+      "BEGIN\uc77cEND",
+      "BEGIN\uc774END",
+      "BEGIN\uc0bcEND",
+      "BEGIN\uc0acEND",
+      "BEGIN\uc624END",
+      "BEGIN\uc721END"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-counting-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "counting-1",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-0-counting-1.docx",
+    "sourceSha256": "c1396d145de2f2885a73fbafc756f520b3a46b777b160a89d35ce332ff72ad23",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-0-counting-1.pdf",
+    "wordPdfSha256": "0e17c2d9eda489c29f0816d3704bbb32421a789d14010b58fe94eeb4c00bacbf",
+    "wordListStrings": [
+      "BEGIN\uc77cEND",
+      "BEGIN\uc774END",
+      "BEGIN\uc0bcEND",
+      "BEGIN\uc0acEND",
+      "BEGIN\uc624END",
+      "BEGIN\uc721END"
+    ],
+    "pdfLabels": [
+      "BEGIN\uc77cEND",
+      "BEGIN\uc774END",
+      "BEGIN\uc0bcEND",
+      "BEGIN\uc0acEND",
+      "BEGIN\uc624END",
+      "BEGIN\uc721END"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-counting-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "counting-1",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-0-counting-1.docx",
+    "sourceSha256": "f27afc4fea9ba4dcf371bbee026198be05144d775dba7759369a9c3884317674",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-0-counting-1.pdf",
+    "wordPdfSha256": "e14de46cc854af50ce23f6db9175d8f6b8906710562c511e33976f7d5f1f6c63",
+    "wordListStrings": [
+      "BEGIN\uc77cEND",
+      "BEGIN\uc774END",
+      "BEGIN\uc0bcEND",
+      "BEGIN\uc0acEND",
+      "BEGIN\uc624END",
+      "BEGIN\uc721END"
+    ],
+    "pdfLabels": [
+      "BEGIN\uc77cEND",
+      "BEGIN\uc774END",
+      "BEGIN\uc0bcEND",
+      "BEGIN\uc0acEND",
+      "BEGIN\uc624END",
+      "BEGIN\uc721END"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-counting-98",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "counting-98",
+    "source": "fixtures/doc/regressions/list-markers/KoreanNumericMarkers/korean-numeric-depth-0-counting-98.doc",
+    "sourceSha256": "7eccb97edc1164752b87f8cb5f085379ed9c3afae716b65a6c2328e23c3a5cc8",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/doc/korean-numeric-depth-0-counting-98.pdf",
+    "wordPdfSha256": "68b6035e6dc235c68b81d704d7ded7d9fddc8557f65a095f3fbfc9c211083f5e",
+    "wordListStrings": [
+      "BEGIN\uad6c\uc2ed\ud314END",
+      "BEGIN\uad6c\uc2ed\uad6cEND",
+      "BEGIN\ubc31END",
+      "BEGIN\ubc31\uc77cEND",
+      "BEGIN\ubc31\uc774END",
+      "BEGIN\ubc31\uc0bcEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uad6c\uc2ed\ud314END",
+      "BEGIN\uad6c\uc2ed\uad6cEND",
+      "BEGIN\ubc31END",
+      "BEGIN\ubc31\uc77cEND",
+      "BEGIN\ubc31\uc774END",
+      "BEGIN\ubc31\uc0bcEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-counting-98",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "counting-98",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-0-counting-98.docx",
+    "sourceSha256": "716ea36d877de93b274b68320f429a1683924ae457b2122347ad993d456fafae",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-0-counting-98.pdf",
+    "wordPdfSha256": "bf41fd7ef59c55fd0ee32375b3b87df7533f50827e3f3a195bba2a76c185c431",
+    "wordListStrings": [
+      "BEGIN\uad6c\uc2ed\ud314END",
+      "BEGIN\uad6c\uc2ed\uad6cEND",
+      "BEGIN\ubc31END",
+      "BEGIN\ubc31\uc77cEND",
+      "BEGIN\ubc31\uc774END",
+      "BEGIN\ubc31\uc0bcEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uad6c\uc2ed\ud314END",
+      "BEGIN\uad6c\uc2ed\uad6cEND",
+      "BEGIN\ubc31END",
+      "BEGIN\ubc31\uc77cEND",
+      "BEGIN\ubc31\uc774END",
+      "BEGIN\ubc31\uc0bcEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-counting-98",
+    "kind": "source",
+    "depth": 0,
+    "mode": "counting-98",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-0-counting-98.docx",
+    "sourceSha256": "0465c771bdecfe84cbd59310d419dff2717510c16aa0cef617c789d14cb8e17a",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-0-counting-98.pdf",
+    "wordPdfSha256": "0ca92bbf105a0978fdbf5e87d6124e6372eb45347a540c199ab942f8d86fea31",
+    "wordListStrings": [
+      "BEGIN\uad6c\uc2ed\ud314END",
+      "BEGIN\uad6c\uc2ed\uad6cEND",
+      "BEGIN\ubc31END",
+      "BEGIN\ubc31\uc77cEND",
+      "BEGIN\ubc31\uc774END",
+      "BEGIN\ubc31\uc0bcEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uad6c\uc2ed\ud314END",
+      "BEGIN\uad6c\uc2ed\uad6cEND",
+      "BEGIN\ubc31END",
+      "BEGIN\ubc31\uc77cEND",
+      "BEGIN\ubc31\uc774END",
+      "BEGIN\ubc31\uc0bcEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-counting-9998",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "counting-9998",
+    "source": "fixtures/doc/regressions/list-markers/KoreanNumericMarkers/korean-numeric-depth-0-counting-9998.doc",
+    "sourceSha256": "894b80abd7e4732f18c5597d8800160e3e42f142fc63e2f75abdd5a678431e1a",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/doc/korean-numeric-depth-0-counting-9998.pdf",
+    "wordPdfSha256": "77cf133e740236ab558846d75b66e4d2d1b66bc3aba0bc86ccc2d72e470b83ee",
+    "wordListStrings": [
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\ud314END",
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\uad6cEND",
+      "BEGIN\ub9ccEND",
+      "BEGIN\ub9cc\uc77cEND",
+      "BEGIN\ub9cc\uc774END",
+      "BEGIN\ub9cc\uc0bcEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\ud314END",
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\uad6cEND",
+      "BEGIN\ub9ccEND",
+      "BEGIN\ub9cc\uc77cEND",
+      "BEGIN\ub9cc\uc774END",
+      "BEGIN\ub9cc\uc0bcEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-counting-9998",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "counting-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-0-counting-9998.docx",
+    "sourceSha256": "673bf2d82cb18604649844d550a2829398186bbdbe71655aa140bfbc8d4f8981",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-0-counting-9998.pdf",
+    "wordPdfSha256": "c194669eecc53592ea42243736639dc73c3352f4c7bbc6983184b8568d79a3a1",
+    "wordListStrings": [
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\ud314END",
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\uad6cEND",
+      "BEGIN\ub9ccEND",
+      "BEGIN\ub9cc\uc77cEND",
+      "BEGIN\ub9cc\uc774END",
+      "BEGIN\ub9cc\uc0bcEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\ud314END",
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\uad6cEND",
+      "BEGIN\ub9ccEND",
+      "BEGIN\ub9cc\uc77cEND",
+      "BEGIN\ub9cc\uc774END",
+      "BEGIN\ub9cc\uc0bcEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-counting-9998",
+    "kind": "source",
+    "depth": 0,
+    "mode": "counting-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-0-counting-9998.docx",
+    "sourceSha256": "1eedc8d4cfd4b178256ea1e0d7ce0ca7ccaa2c3f1548b9442962ceaec175ede4",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-0-counting-9998.pdf",
+    "wordPdfSha256": "8843e51a2726b32fa7813f005fb06e854611bd22bffee0c16b8bd191cc2077a3",
+    "wordListStrings": [
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\ud314END",
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\uad6cEND",
+      "BEGIN\ub9ccEND",
+      "BEGIN\ub9cc\uc77cEND",
+      "BEGIN\ub9cc\uc774END",
+      "BEGIN\ub9cc\uc0bcEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\ud314END",
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\uad6cEND",
+      "BEGIN\ub9ccEND",
+      "BEGIN\ub9cc\uc77cEND",
+      "BEGIN\ub9cc\uc774END",
+      "BEGIN\ub9cc\uc0bcEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-digital-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "digital-1",
+    "source": "fixtures/doc/regressions/list-markers/KoreanNumericMarkers/korean-numeric-depth-0-digital-1.doc",
+    "sourceSha256": "8a777a2f2854f724eda6e1dcca498a05f29e076963863871f0f102cfa6497df6",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/doc/korean-numeric-depth-0-digital-1.pdf",
+    "wordPdfSha256": "8fdd45c6a603e7b38a06a925615363470d2260247bdf2c7186bce4dd0da9dd7b",
+    "wordListStrings": [
+      "BEGIN\uc77cEND",
+      "BEGIN\uc774END",
+      "BEGIN\uc0bcEND",
+      "BEGIN\uc0acEND",
+      "BEGIN\uc624END",
+      "BEGIN\uc721END"
+    ],
+    "pdfLabels": [
+      "BEGIN\uc77cEND",
+      "BEGIN\uc774END",
+      "BEGIN\uc0bcEND",
+      "BEGIN\uc0acEND",
+      "BEGIN\uc624END",
+      "BEGIN\uc721END"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-digital-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "digital-1",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-0-digital-1.docx",
+    "sourceSha256": "9626e9a0f2cd08e56674056794328cbebdf40b2c1e50055b06831baa00f855e8",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-0-digital-1.pdf",
+    "wordPdfSha256": "4940238e22e71f29221680149d7bb263cfdc9bbadf922ba4e6a1352506b1e71f",
+    "wordListStrings": [
+      "BEGIN\uc77cEND",
+      "BEGIN\uc774END",
+      "BEGIN\uc0bcEND",
+      "BEGIN\uc0acEND",
+      "BEGIN\uc624END",
+      "BEGIN\uc721END"
+    ],
+    "pdfLabels": [
+      "BEGIN\uc77cEND",
+      "BEGIN\uc774END",
+      "BEGIN\uc0bcEND",
+      "BEGIN\uc0acEND",
+      "BEGIN\uc624END",
+      "BEGIN\uc721END"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-digital-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "digital-1",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-0-digital-1.docx",
+    "sourceSha256": "bfd1a381153f7fd4729d1f8202784ca17503fe175963890f25b5ca3661dcd850",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-0-digital-1.pdf",
+    "wordPdfSha256": "c71154be2f01c6c76be8a503a01f5a370d9288c7077731e8726fafbefae4c3ea",
+    "wordListStrings": [
+      "BEGIN\uc77cEND",
+      "BEGIN\uc774END",
+      "BEGIN\uc0bcEND",
+      "BEGIN\uc0acEND",
+      "BEGIN\uc624END",
+      "BEGIN\uc721END"
+    ],
+    "pdfLabels": [
+      "BEGIN\uc77cEND",
+      "BEGIN\uc774END",
+      "BEGIN\uc0bcEND",
+      "BEGIN\uc0acEND",
+      "BEGIN\uc624END",
+      "BEGIN\uc721END"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-digital-98",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "digital-98",
+    "source": "fixtures/doc/regressions/list-markers/KoreanNumericMarkers/korean-numeric-depth-0-digital-98.doc",
+    "sourceSha256": "ad9dde204386371cacc2ed30bbe06e1ac8ce81586ac33ea7092cb3ebb9651920",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/doc/korean-numeric-depth-0-digital-98.pdf",
+    "wordPdfSha256": "55c8c1f75ccb6edfea5ad66bd466e51422fd6e3fe3c5b079d54912b29519acef",
+    "wordListStrings": [
+      "BEGIN\uad6c\ud314END",
+      "BEGIN\uad6c\uad6cEND",
+      "BEGIN\uc77c\uc601\uc601END",
+      "BEGIN\uc77c\uc601\uc77cEND",
+      "BEGIN\uc77c\uc601\uc774END",
+      "BEGIN\uc77c\uc601\uc0bcEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uad6c\ud314END",
+      "BEGIN\uad6c\uad6cEND",
+      "BEGIN\uc77c\uc601\uc601END",
+      "BEGIN\uc77c\uc601\uc77cEND",
+      "BEGIN\uc77c\uc601\uc774END",
+      "BEGIN\uc77c\uc601\uc0bcEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-digital-98",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "digital-98",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-0-digital-98.docx",
+    "sourceSha256": "92ea41814cd6b279cb51fbf42feaceb0e44e376cce2ebb7fb4bbb40cbedb1b43",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-0-digital-98.pdf",
+    "wordPdfSha256": "a63d8156bfcc063c98a78b72a9252738bda07c089d15b9b4e89be923beec7a76",
+    "wordListStrings": [
+      "BEGIN\uad6c\ud314END",
+      "BEGIN\uad6c\uad6cEND",
+      "BEGIN\uc77c\uc601\uc601END",
+      "BEGIN\uc77c\uc601\uc77cEND",
+      "BEGIN\uc77c\uc601\uc774END",
+      "BEGIN\uc77c\uc601\uc0bcEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uad6c\ud314END",
+      "BEGIN\uad6c\uad6cEND",
+      "BEGIN\uc77c\uc601\uc601END",
+      "BEGIN\uc77c\uc601\uc77cEND",
+      "BEGIN\uc77c\uc601\uc774END",
+      "BEGIN\uc77c\uc601\uc0bcEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-digital-98",
+    "kind": "source",
+    "depth": 0,
+    "mode": "digital-98",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-0-digital-98.docx",
+    "sourceSha256": "7fd54cb79ff24323094dcc2128e78bf3e8fc244d6a048b598ea81daa29652509",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-0-digital-98.pdf",
+    "wordPdfSha256": "38779686ddaa37eb5eccc40f7701c7132138d88dcf69be8763bfa574113279f1",
+    "wordListStrings": [
+      "BEGIN\uad6c\ud314END",
+      "BEGIN\uad6c\uad6cEND",
+      "BEGIN\uc77c\uc601\uc601END",
+      "BEGIN\uc77c\uc601\uc77cEND",
+      "BEGIN\uc77c\uc601\uc774END",
+      "BEGIN\uc77c\uc601\uc0bcEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uad6c\ud314END",
+      "BEGIN\uad6c\uad6cEND",
+      "BEGIN\uc77c\uc601\uc601END",
+      "BEGIN\uc77c\uc601\uc77cEND",
+      "BEGIN\uc77c\uc601\uc774END",
+      "BEGIN\uc77c\uc601\uc0bcEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-digital-9998",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "digital-9998",
+    "source": "fixtures/doc/regressions/list-markers/KoreanNumericMarkers/korean-numeric-depth-0-digital-9998.doc",
+    "sourceSha256": "d26ce48bbf32a15cc6b60d899e7c08151938f30966f36fc3d2c58627dbec61cb",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/doc/korean-numeric-depth-0-digital-9998.pdf",
+    "wordPdfSha256": "dfabeadfdfa6b9d11dc290af2c1ad95664e4fe0d530ce6043b5f0970651972e1",
+    "wordListStrings": [
+      "BEGIN\uad6c\uad6c\uad6c\ud314END",
+      "BEGIN\uad6c\uad6c\uad6c\uad6cEND",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc601END",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc77cEND",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc774END",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc0bcEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uad6c\uad6c\uad6c\ud314END",
+      "BEGIN\uad6c\uad6c\uad6c\uad6cEND",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc601END",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc77cEND",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc774END",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc0bcEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-digital-9998",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "digital-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-0-digital-9998.docx",
+    "sourceSha256": "24bb59bc7ddf0dca5a035f9ccc21b6d2fe27d2220816a7452149e27a899ae142",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-0-digital-9998.pdf",
+    "wordPdfSha256": "a7a01c7eb247fb5088ee024d01f3d238e226acb0c5c0670c1176d28d27a79878",
+    "wordListStrings": [
+      "BEGIN\uad6c\uad6c\uad6c\ud314END",
+      "BEGIN\uad6c\uad6c\uad6c\uad6cEND",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc601END",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc77cEND",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc774END",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc0bcEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uad6c\uad6c\uad6c\ud314END",
+      "BEGIN\uad6c\uad6c\uad6c\uad6cEND",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc601END",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc77cEND",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc774END",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc0bcEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-digital-9998",
+    "kind": "source",
+    "depth": 0,
+    "mode": "digital-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-0-digital-9998.docx",
+    "sourceSha256": "7f2fbe5ac4112222bb263fe275eb8ad1e3bbba279538531f21f81e1eef8833f3",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-0-digital-9998.pdf",
+    "wordPdfSha256": "6bda55f58f254231ca1614fd3129324c1f66fe31c5ff8076f98f2620382c31d3",
+    "wordListStrings": [
+      "BEGIN\uad6c\uad6c\uad6c\ud314END",
+      "BEGIN\uad6c\uad6c\uad6c\uad6cEND",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc601END",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc77cEND",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc774END",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc0bcEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uad6c\uad6c\uad6c\ud314END",
+      "BEGIN\uad6c\uad6c\uad6c\uad6cEND",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc601END",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc77cEND",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc774END",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc0bcEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-digital2-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "digital2-1",
+    "source": "fixtures/doc/regressions/list-markers/KoreanNumericMarkers/korean-numeric-depth-0-digital2-1.doc",
+    "sourceSha256": "b9babf18f99c3f764f1defa65d90059b688c72b3ffe6464cf4e70c16445781ff",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/doc/korean-numeric-depth-0-digital2-1.pdf",
+    "wordPdfSha256": "9367dd862e26595e2a0ff02a358cd95565a19e6a6fc589fb50d49eeea4c8fb5f",
+    "wordListStrings": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-digital2-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "digital2-1",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-0-digital2-1.docx",
+    "sourceSha256": "8908dd5eeae594c6d0914e9f2957d5eb84d13bf04cb849c12126ad271238818f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-0-digital2-1.pdf",
+    "wordPdfSha256": "2c550b38ea40fba04379aa305bd237b25b198ff0eb08d0cd982db9b8eacee86e",
+    "wordListStrings": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-digital2-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "digital2-1",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-0-digital2-1.docx",
+    "sourceSha256": "0192df577f06695b38b6b8c72da82d57297a503d53a23c531c24fd1b929dc284",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-0-digital2-1.pdf",
+    "wordPdfSha256": "9453d75fc566cf95159f43ebdf8f2bea0a57d76ff1e09dd99a4034fe87034937",
+    "wordListStrings": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-digital2-98",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "digital2-98",
+    "source": "fixtures/doc/regressions/list-markers/KoreanNumericMarkers/korean-numeric-depth-0-digital2-98.doc",
+    "sourceSha256": "8a646edba5d6e57f9846e5023c85becea412be8b4c3d810283c1995e750e8dec",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/doc/korean-numeric-depth-0-digital2-98.pdf",
+    "wordPdfSha256": "3f2dc442891d2fcc50bf794adbb915656f87fa44e418b645b643f3ea79163e90",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u96f6\u96f6END",
+      "BEGIN\u4e00\u96f6\u4e00END",
+      "BEGIN\u4e00\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u96f6\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u96f6\u96f6END",
+      "BEGIN\u4e00\u96f6\u4e00END",
+      "BEGIN\u4e00\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u96f6\u4e09END"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-digital2-98",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "digital2-98",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-0-digital2-98.docx",
+    "sourceSha256": "05d91882c1b8d32954d74c9d56ddab6428d6a2901629368161dce81d6dd4a70f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-0-digital2-98.pdf",
+    "wordPdfSha256": "0f9fbc48960e2f69d95ffa8f7a1a611fc0ddc41b9e5b9c61c55c5b008e5e75fa",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u96f6\u96f6END",
+      "BEGIN\u4e00\u96f6\u4e00END",
+      "BEGIN\u4e00\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u96f6\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u96f6\u96f6END",
+      "BEGIN\u4e00\u96f6\u4e00END",
+      "BEGIN\u4e00\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u96f6\u4e09END"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-digital2-98",
+    "kind": "source",
+    "depth": 0,
+    "mode": "digital2-98",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-0-digital2-98.docx",
+    "sourceSha256": "e14bee7f010c7775fb7a8198aea9a2292fe1c5b211dae53aff520fce5d32f116",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-0-digital2-98.pdf",
+    "wordPdfSha256": "d7b10af63c5668c44840ad837c28344dca462458d1526fa4456e055f9d8a3f34",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u96f6\u96f6END",
+      "BEGIN\u4e00\u96f6\u4e00END",
+      "BEGIN\u4e00\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u96f6\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u96f6\u96f6END",
+      "BEGIN\u4e00\u96f6\u4e00END",
+      "BEGIN\u4e00\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u96f6\u4e09END"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-digital2-9998",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "digital2-9998",
+    "source": "fixtures/doc/regressions/list-markers/KoreanNumericMarkers/korean-numeric-depth-0-digital2-9998.doc",
+    "sourceSha256": "ab2f1a774e984a17946f743d5aac1ba7fc6706b4b11be8addcfa273630b9baea",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/doc/korean-numeric-depth-0-digital2-9998.pdf",
+    "wordPdfSha256": "11ab539b49ef8f229c5a2b0a06348520c482015e4134a54444bb2f26ae20255a",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u96f6END",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e00END",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u96f6END",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e00END",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e09END"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-digital2-9998",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "digital2-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-0-digital2-9998.docx",
+    "sourceSha256": "657e9b175e392436a76fa4336a373fce4d8ab966f59c70117136a0038af633d4",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-0-digital2-9998.pdf",
+    "wordPdfSha256": "fc4b6769d2c31acc25031d5280bea5605afe725cbda8159348d8c5766c34b8ec",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u96f6END",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e00END",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u96f6END",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e00END",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e09END"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-digital2-9998",
+    "kind": "source",
+    "depth": 0,
+    "mode": "digital2-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-0-digital2-9998.docx",
+    "sourceSha256": "83b1dbd06c09c0175939db8d46234c7f05a267cea8da43216cbb2aaeeca72ec7",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-0-digital2-9998.pdf",
+    "wordPdfSha256": "87a79803cdbcdb0b7b07e568836915a649258db318a3e8d869fa4363c75f17cc",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u96f6END",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e00END",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u96f6END",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e00END",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e09END"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-legal-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "legal-1",
+    "source": "fixtures/doc/regressions/list-markers/KoreanNumericMarkers/korean-numeric-depth-0-legal-1.doc",
+    "sourceSha256": "88fbe07789b0d5ea51fe33fac214d27b4c92c2263078bd6d29966831c811a2b7",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/doc/korean-numeric-depth-0-legal-1.pdf",
+    "wordPdfSha256": "19e100b2e621b9c8599276d024ecc5ba22287c42d3bcb3ac7702c8159a7a0242",
+    "wordListStrings": [
+      "BEGIN\ud558\ub098END",
+      "BEGIN\ub458END",
+      "BEGIN\uc14bEND",
+      "BEGIN\ub137END",
+      "BEGIN\ub2e4\uc12fEND",
+      "BEGIN\uc5ec\uc12fEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\ud558\ub098END",
+      "BEGIN\ub458END",
+      "BEGIN\uc14bEND",
+      "BEGIN\ub137END",
+      "BEGIN\ub2e4\uc12fEND",
+      "BEGIN\uc5ec\uc12fEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-legal-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "legal-1",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-0-legal-1.docx",
+    "sourceSha256": "ee2cf58d0b9f8c71147a0020b295573a80762d286a8c9aaf0532345609dd43f5",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-0-legal-1.pdf",
+    "wordPdfSha256": "0341b7e05e657d9b8c1094b4c9246a382a1f1d7d41ffacf62cd221126c1af2ae",
+    "wordListStrings": [
+      "BEGIN\ud558\ub098END",
+      "BEGIN\ub458END",
+      "BEGIN\uc14bEND",
+      "BEGIN\ub137END",
+      "BEGIN\ub2e4\uc12fEND",
+      "BEGIN\uc5ec\uc12fEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\ud558\ub098END",
+      "BEGIN\ub458END",
+      "BEGIN\uc14bEND",
+      "BEGIN\ub137END",
+      "BEGIN\ub2e4\uc12fEND",
+      "BEGIN\uc5ec\uc12fEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-legal-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "legal-1",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-0-legal-1.docx",
+    "sourceSha256": "a27cf43f4dc34de85c53faccfc0baa488fd2630008f9109e84f281ad784e86b4",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-0-legal-1.pdf",
+    "wordPdfSha256": "f78f6a4a1de2ac600bc7213f3e02dac9ae5d5981f2167246e1d393c29db16f4d",
+    "wordListStrings": [
+      "BEGIN\ud558\ub098END",
+      "BEGIN\ub458END",
+      "BEGIN\uc14bEND",
+      "BEGIN\ub137END",
+      "BEGIN\ub2e4\uc12fEND",
+      "BEGIN\uc5ec\uc12fEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\ud558\ub098END",
+      "BEGIN\ub458END",
+      "BEGIN\uc14bEND",
+      "BEGIN\ub137END",
+      "BEGIN\ub2e4\uc12fEND",
+      "BEGIN\uc5ec\uc12fEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-legal-98",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "legal-98",
+    "source": "fixtures/doc/regressions/list-markers/KoreanNumericMarkers/korean-numeric-depth-0-legal-98.doc",
+    "sourceSha256": "8133582357f9bb219cce1eb10a1a5ba498f018dd18319ddbdf715e185c04b12b",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/doc/korean-numeric-depth-0-legal-98.pdf",
+    "wordPdfSha256": "d929847affaaeeb080b3088b2ea126933ac3d4050584af306e876f68380656b9",
+    "wordListStrings": [
+      "BEGIN\uc544\ud754\uc5ec\ub35fEND",
+      "BEGIN\uc544\ud754\uc544\ud649END",
+      "BEGIN\ubc31END",
+      "BEGIN\ubc31\uc77cEND",
+      "BEGIN\ubc31\uc774END",
+      "BEGIN\ubc31\uc0bcEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uc544\ud754\uc5ec\ub35fEND",
+      "BEGIN\uc544\ud754\uc544\ud649END",
+      "BEGIN\ubc31END",
+      "BEGIN\ubc31\uc77cEND",
+      "BEGIN\ubc31\uc774END",
+      "BEGIN\ubc31\uc0bcEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-legal-98",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "legal-98",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-0-legal-98.docx",
+    "sourceSha256": "93aa76cc274739a0de2047eb7ea73ed00b6c26ff8ca92e2fb6eebf7b0e31a73c",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-0-legal-98.pdf",
+    "wordPdfSha256": "307fedfcc8392bf37619dd27830772af985474d65b218bef9266e15b7b2ff47b",
+    "wordListStrings": [
+      "BEGIN\uc544\ud754\uc5ec\ub35fEND",
+      "BEGIN\uc544\ud754\uc544\ud649END",
+      "BEGIN\ubc31END",
+      "BEGIN\ubc31\uc77cEND",
+      "BEGIN\ubc31\uc774END",
+      "BEGIN\ubc31\uc0bcEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uc544\ud754\uc5ec\ub35fEND",
+      "BEGIN\uc544\ud754\uc544\ud649END",
+      "BEGIN\ubc31END",
+      "BEGIN\ubc31\uc77cEND",
+      "BEGIN\ubc31\uc774END",
+      "BEGIN\ubc31\uc0bcEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-legal-98",
+    "kind": "source",
+    "depth": 0,
+    "mode": "legal-98",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-0-legal-98.docx",
+    "sourceSha256": "fd13d7fbff18bb070be7ee3136848179dda680cce1b72b2d3f3f4759492c9826",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-0-legal-98.pdf",
+    "wordPdfSha256": "30251a573d217bd0efbf7df1e62fc3a31fd09808416ded0c81be4c214a529aa0",
+    "wordListStrings": [
+      "BEGIN\uc544\ud754\uc5ec\ub35fEND",
+      "BEGIN\uc544\ud754\uc544\ud649END",
+      "BEGIN\ubc31END",
+      "BEGIN\ubc31\uc77cEND",
+      "BEGIN\ubc31\uc774END",
+      "BEGIN\ubc31\uc0bcEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uc544\ud754\uc5ec\ub35fEND",
+      "BEGIN\uc544\ud754\uc544\ud649END",
+      "BEGIN\ubc31END",
+      "BEGIN\ubc31\uc77cEND",
+      "BEGIN\ubc31\uc774END",
+      "BEGIN\ubc31\uc0bcEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-legal-9998",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "legal-9998",
+    "source": "fixtures/doc/regressions/list-markers/KoreanNumericMarkers/korean-numeric-depth-0-legal-9998.doc",
+    "sourceSha256": "a9340efb04b0e35f4a2de6ef3390a7f14f83e8ebc73e2c1192a996bdb8bedb5b",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/doc/korean-numeric-depth-0-legal-9998.pdf",
+    "wordPdfSha256": "c7163cdf14d5e1a37dc58b3613aa77b6a5aec4abf30e2ac4f5e306894464ce0d",
+    "wordListStrings": [
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\ud314END",
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\uad6cEND",
+      "BEGIN\ub9ccEND",
+      "BEGIN\ub9cc\uc77cEND",
+      "BEGIN\ub9cc\uc774END",
+      "BEGIN\ub9cc\uc0bcEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\ud314END",
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\uad6cEND",
+      "BEGIN\ub9ccEND",
+      "BEGIN\ub9cc\uc77cEND",
+      "BEGIN\ub9cc\uc774END",
+      "BEGIN\ub9cc\uc0bcEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-legal-9998",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "legal-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-0-legal-9998.docx",
+    "sourceSha256": "5a1fcfdbfe15be1792a8292ca4991588aa37eaef2baf6936abb68430b0ab1257",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-0-legal-9998.pdf",
+    "wordPdfSha256": "f9b6d23946dab111093727599751bea59e53fd083f61bce8b8e77f377d30e5bd",
+    "wordListStrings": [
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\ud314END",
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\uad6cEND",
+      "BEGIN\ub9ccEND",
+      "BEGIN\ub9cc\uc77cEND",
+      "BEGIN\ub9cc\uc774END",
+      "BEGIN\ub9cc\uc0bcEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\ud314END",
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\uad6cEND",
+      "BEGIN\ub9ccEND",
+      "BEGIN\ub9cc\uc77cEND",
+      "BEGIN\ub9cc\uc774END",
+      "BEGIN\ub9cc\uc0bcEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-0-legal-9998",
+    "kind": "source",
+    "depth": 0,
+    "mode": "legal-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-0-legal-9998.docx",
+    "sourceSha256": "e0752cf595a6fef503c0ed9d7df1d58e090368353b43978561fd3d5383e7b9ae",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-0-legal-9998.pdf",
+    "wordPdfSha256": "0543e0666638e4b58354bb6bd3c0b3505791ec7cc7cd1a695aed7154c8b6ddf7",
+    "wordListStrings": [
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\ud314END",
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\uad6cEND",
+      "BEGIN\ub9ccEND",
+      "BEGIN\ub9cc\uc77cEND",
+      "BEGIN\ub9cc\uc774END",
+      "BEGIN\ub9cc\uc0bcEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\ud314END",
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\uad6cEND",
+      "BEGIN\ub9ccEND",
+      "BEGIN\ub9cc\uc77cEND",
+      "BEGIN\ub9cc\uc774END",
+      "BEGIN\ub9cc\uc0bcEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-8-counting-9998",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "counting-9998",
+    "source": "fixtures/doc/regressions/list-markers/KoreanNumericMarkers/korean-numeric-depth-8-counting-9998.doc",
+    "sourceSha256": "e8ae056e9b46d15c50e3a676d520bc149cc6d207a56c332ee6d306904fd4610f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/doc/korean-numeric-depth-8-counting-9998.pdf",
+    "wordPdfSha256": "6f4e7cd6e8d56b7751ea0b782fffd4f537dd26b613eb917dc548746619e2f444",
+    "wordListStrings": [
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\ud314END",
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\uad6cEND",
+      "BEGIN\ub9ccEND",
+      "BEGIN\ub9cc\uc77cEND",
+      "BEGIN\ub9cc\uc774END",
+      "BEGIN\ub9cc\uc0bcEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\ud314END",
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\uad6cEND",
+      "BEGIN\ub9ccEND",
+      "BEGIN\ub9cc\uc77cEND",
+      "BEGIN\ub9cc\uc774END",
+      "BEGIN\ub9cc\uc0bcEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-8-counting-9998",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "counting-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-8-counting-9998.docx",
+    "sourceSha256": "a2abec53c136023977bc751b36039c45156d2404ef6d2a98ea0c6060a641e891",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-8-counting-9998.pdf",
+    "wordPdfSha256": "8ada7ef6502c9147e4a58131f7d77678263764762668ad7bc17298323f4dd1dc",
+    "wordListStrings": [
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\ud314END",
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\uad6cEND",
+      "BEGIN\ub9ccEND",
+      "BEGIN\ub9cc\uc77cEND",
+      "BEGIN\ub9cc\uc774END",
+      "BEGIN\ub9cc\uc0bcEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\ud314END",
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\uad6cEND",
+      "BEGIN\ub9ccEND",
+      "BEGIN\ub9cc\uc77cEND",
+      "BEGIN\ub9cc\uc774END",
+      "BEGIN\ub9cc\uc0bcEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-8-counting-9998",
+    "kind": "source",
+    "depth": 8,
+    "mode": "counting-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-8-counting-9998.docx",
+    "sourceSha256": "22eb8ac5335b9125527f5c63c6fe9c8d01b2fe72a102c4f26051344731c6e31d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-8-counting-9998.pdf",
+    "wordPdfSha256": "56479cc2b1fecdf55a91f8d2a153dd851d4c8e52bbaf0cd111a4119a5c27c486",
+    "wordListStrings": [
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\ud314END",
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\uad6cEND",
+      "BEGIN\ub9ccEND",
+      "BEGIN\ub9cc\uc77cEND",
+      "BEGIN\ub9cc\uc774END",
+      "BEGIN\ub9cc\uc0bcEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\ud314END",
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\uad6cEND",
+      "BEGIN\ub9ccEND",
+      "BEGIN\ub9cc\uc77cEND",
+      "BEGIN\ub9cc\uc774END",
+      "BEGIN\ub9cc\uc0bcEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-8-digital-9998",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "digital-9998",
+    "source": "fixtures/doc/regressions/list-markers/KoreanNumericMarkers/korean-numeric-depth-8-digital-9998.doc",
+    "sourceSha256": "09bad8aab0065ccf9a46d3bf5797d4698fd3d9160b060ca1159196b2a9f4698e",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/doc/korean-numeric-depth-8-digital-9998.pdf",
+    "wordPdfSha256": "f1d32c1bc11775e35d0b6f0bdf32b9c886d9570b92bc419db263c39d96052f4a",
+    "wordListStrings": [
+      "BEGIN\uad6c\uad6c\uad6c\ud314END",
+      "BEGIN\uad6c\uad6c\uad6c\uad6cEND",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc601END",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc77cEND",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc774END",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc0bcEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uad6c\uad6c\uad6c\ud314END",
+      "BEGIN\uad6c\uad6c\uad6c\uad6cEND",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc601END",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc77cEND",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc774END",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc0bcEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-8-digital-9998",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "digital-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-8-digital-9998.docx",
+    "sourceSha256": "e17613f71fcea81e141eef831dd3dd2d290d1aef75c8d4f46df0c04e09021c16",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-8-digital-9998.pdf",
+    "wordPdfSha256": "45929fa0b031b4203ff3011ba8cf5ce8e21965360a6fd71dd53caa00acd6537a",
+    "wordListStrings": [
+      "BEGIN\uad6c\uad6c\uad6c\ud314END",
+      "BEGIN\uad6c\uad6c\uad6c\uad6cEND",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc601END",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc77cEND",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc774END",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc0bcEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uad6c\uad6c\uad6c\ud314END",
+      "BEGIN\uad6c\uad6c\uad6c\uad6cEND",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc601END",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc77cEND",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc774END",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc0bcEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-8-digital-9998",
+    "kind": "source",
+    "depth": 8,
+    "mode": "digital-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-8-digital-9998.docx",
+    "sourceSha256": "686c29990de54f6e9009ad5213c6f6acc4d1da41cdb3d59cf0a1ebac570b96ff",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-8-digital-9998.pdf",
+    "wordPdfSha256": "fa1e8664664bd6b1497ab15288a433583e7c512319c79cfee6ccd205f7c7c592",
+    "wordListStrings": [
+      "BEGIN\uad6c\uad6c\uad6c\ud314END",
+      "BEGIN\uad6c\uad6c\uad6c\uad6cEND",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc601END",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc77cEND",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc774END",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc0bcEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uad6c\uad6c\uad6c\ud314END",
+      "BEGIN\uad6c\uad6c\uad6c\uad6cEND",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc601END",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc77cEND",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc774END",
+      "BEGIN\uc77c\uc601\uc601\uc601\uc0bcEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-8-digital2-9998",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "digital2-9998",
+    "source": "fixtures/doc/regressions/list-markers/KoreanNumericMarkers/korean-numeric-depth-8-digital2-9998.doc",
+    "sourceSha256": "4cbf0880e7ffe17087bddaf842f010034a3eb165b8357de6dc97f503c1b8a6fe",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/doc/korean-numeric-depth-8-digital2-9998.pdf",
+    "wordPdfSha256": "ab93d35e8e8a7cf33c1c5471cae42ac5143b3940e5042c631c3b6e03ea5914eb",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u96f6END",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e00END",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u96f6END",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e00END",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e09END"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-8-digital2-9998",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "digital2-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-8-digital2-9998.docx",
+    "sourceSha256": "b76f5b5791be33a61e733b18ecb1c3074c5c7fd14af37a5ba0304be3cb7fa560",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-8-digital2-9998.pdf",
+    "wordPdfSha256": "2f57b11d441f26a6b0b30dbf8b5282d8b9bb2e5c7e9132086f3620041e33a5d0",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u96f6END",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e00END",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u96f6END",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e00END",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e09END"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-8-digital2-9998",
+    "kind": "source",
+    "depth": 8,
+    "mode": "digital2-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-8-digital2-9998.docx",
+    "sourceSha256": "9eb454db6dd37463f947cacb03852bf0b4888c0be1a10a8ee117a90959e900e0",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-8-digital2-9998.pdf",
+    "wordPdfSha256": "6eda67439c81c417a4ea31003c8067eb49d7be359ad050392825120586f85979",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u96f6END",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e00END",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u96f6END",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e00END",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u96f6\u96f6\u96f6\u4e09END"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-8-legal-9998",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "legal-9998",
+    "source": "fixtures/doc/regressions/list-markers/KoreanNumericMarkers/korean-numeric-depth-8-legal-9998.doc",
+    "sourceSha256": "134a4c402cc4b735896ecfcb21b8e235c48321b7f8484927c73ac149fdf889ab",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/doc/korean-numeric-depth-8-legal-9998.pdf",
+    "wordPdfSha256": "2f05b92ebbece7a0d22e5af3061206d7495774f68a8630b9a4d216f6c17e1944",
+    "wordListStrings": [
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\ud314END",
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\uad6cEND",
+      "BEGIN\ub9ccEND",
+      "BEGIN\ub9cc\uc77cEND",
+      "BEGIN\ub9cc\uc774END",
+      "BEGIN\ub9cc\uc0bcEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\ud314END",
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\uad6cEND",
+      "BEGIN\ub9ccEND",
+      "BEGIN\ub9cc\uc77cEND",
+      "BEGIN\ub9cc\uc774END",
+      "BEGIN\ub9cc\uc0bcEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-8-legal-9998",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "legal-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-8-legal-9998.docx",
+    "sourceSha256": "89f31eb54882e9cd22e6447ba61b796d82e04ad9eb5327a811986c644b1663f6",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/projected/korean-numeric-depth-8-legal-9998.pdf",
+    "wordPdfSha256": "e137a26456c00b50f775d50e9768bd8c60a46d00344d1660d572ade89cba439a",
+    "wordListStrings": [
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\ud314END",
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\uad6cEND",
+      "BEGIN\ub9ccEND",
+      "BEGIN\ub9cc\uc77cEND",
+      "BEGIN\ub9cc\uc774END",
+      "BEGIN\ub9cc\uc0bcEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\ud314END",
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\uad6cEND",
+      "BEGIN\ub9ccEND",
+      "BEGIN\ub9cc\uc77cEND",
+      "BEGIN\ub9cc\uc774END",
+      "BEGIN\ub9cc\uc0bcEND"
+    ]
+  },
+  {
+    "name": "korean-numeric-depth-8-legal-9998",
+    "kind": "source",
+    "depth": 8,
+    "mode": "legal-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-8-legal-9998.docx",
+    "sourceSha256": "3c719076dc527d87c7a2884b442150413308ecaa9abba16192f69121990b0699",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanNumericMarkers/source/korean-numeric-depth-8-legal-9998.pdf",
+    "wordPdfSha256": "cc4b729e5e9e1d857ecfcb007ec6e7380270da355154876e79b8dab7a6f15db2",
+    "wordListStrings": [
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\ud314END",
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\uad6cEND",
+      "BEGIN\ub9ccEND",
+      "BEGIN\ub9cc\uc77cEND",
+      "BEGIN\ub9cc\uc774END",
+      "BEGIN\ub9cc\uc0bcEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\ud314END",
+      "BEGIN\uad6c\ucc9c\uad6c\ubc31\uad6c\uc2ed\uad6cEND",
+      "BEGIN\ub9ccEND",
+      "BEGIN\ub9cc\uc77cEND",
+      "BEGIN\ub9cc\uc774END",
+      "BEGIN\ub9cc\uc0bcEND"
+    ]
+  }
+]

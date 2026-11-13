@@ -1,0 +1,98 @@
+[
+  {
+    "name": "korean-numeric-depth-0-digital-1",
+    "depth": 0,
+    "mode": "digital-1",
+    "error": "DOCX list format 'koreanDigital' is unsupported."
+  },
+  {
+    "name": "korean-numeric-depth-0-digital-98",
+    "depth": 0,
+    "mode": "digital-98",
+    "error": "DOCX list format 'koreanDigital' is unsupported."
+  },
+  {
+    "name": "korean-numeric-depth-0-digital-9998",
+    "depth": 0,
+    "mode": "digital-9998",
+    "error": "DOCX list format 'koreanDigital' is unsupported."
+  },
+  {
+    "name": "korean-numeric-depth-8-digital-9998",
+    "depth": 8,
+    "mode": "digital-9998",
+    "error": "DOCX list format 'koreanDigital' is unsupported."
+  },
+  {
+    "name": "korean-numeric-depth-0-counting-1",
+    "depth": 0,
+    "mode": "counting-1",
+    "error": "DOCX list format 'koreanCounting' is unsupported."
+  },
+  {
+    "name": "korean-numeric-depth-0-counting-98",
+    "depth": 0,
+    "mode": "counting-98",
+    "error": "DOCX list format 'koreanCounting' is unsupported."
+  },
+  {
+    "name": "korean-numeric-depth-0-counting-9998",
+    "depth": 0,
+    "mode": "counting-9998",
+    "error": "DOCX list format 'koreanCounting' is unsupported."
+  },
+  {
+    "name": "korean-numeric-depth-8-counting-9998",
+    "depth": 8,
+    "mode": "counting-9998",
+    "error": "DOCX list format 'koreanCounting' is unsupported."
+  },
+  {
+    "name": "korean-numeric-depth-0-legal-1",
+    "depth": 0,
+    "mode": "legal-1",
+    "error": "DOCX list format 'koreanLegal' is unsupported."
+  },
+  {
+    "name": "korean-numeric-depth-0-legal-98",
+    "depth": 0,
+    "mode": "legal-98",
+    "error": "DOCX list format 'koreanLegal' is unsupported."
+  },
+  {
+    "name": "korean-numeric-depth-0-legal-9998",
+    "depth": 0,
+    "mode": "legal-9998",
+    "error": "DOCX list format 'koreanLegal' is unsupported."
+  },
+  {
+    "name": "korean-numeric-depth-8-legal-9998",
+    "depth": 8,
+    "mode": "legal-9998",
+    "error": "DOCX list format 'koreanLegal' is unsupported."
+  },
+  {
+    "name": "korean-numeric-depth-0-digital2-1",
+    "depth": 0,
+    "mode": "digital2-1",
+    "error": "DOCX list format 'koreanDigital2' is unsupported."
+  },
+  {
+    "name": "korean-numeric-depth-0-digital2-98",
+    "depth": 0,
+    "mode": "digital2-98",
+    "error": "DOCX list format 'koreanDigital2' is unsupported."
+  },
+  {
+    "name": "korean-numeric-depth-0-digital2-9998",
+    "depth": 0,
+    "mode": "digital2-9998",
+    "error": "DOCX list format 'koreanDigital2' is unsupported."
+  },
+  {
+    "name": "korean-numeric-depth-8-digital2-9998",
+    "depth": 8,
+    "mode": "digital2-9998",
+    "error": "DOCX list format 'koreanDigital2' is unsupported."
+  }
+]
