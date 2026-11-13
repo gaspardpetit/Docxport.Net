@@ -11406,7 +11406,13 @@ public class DocStructureWalkerTests
             .Descendants<NumberingProperties>());
         var labelProperties = projected.MainDocumentPart.NumberingDefinitionsPart!
             .Numbering!.Descendants<NumberingSymbolRunProperties>().ToArray();
-        Assert.Equal(2, labelProperties.Length);
+        var projectedNumbering = projected.MainDocumentPart.NumberingDefinitionsPart.Numbering!;
+        var sharedDefinition = Assert.Single(projectedNumbering.Elements<AbstractNum>());
+        var projectedInstances = projectedNumbering.Elements<NumberingInstance>().ToArray();
+        Assert.Equal(2, projectedInstances.Length);
+        Assert.All(projectedInstances, instance => Assert.Equal(sharedDefinition.AbstractNumberId!.Value,
+            instance.AbstractNumId!.Val!.Value));
+        Assert.Single(labelProperties);
         Assert.All(labelProperties, properties =>
         {
             Assert.Equal("Arial", properties.GetFirstChild<RunFonts>()?.Ascii?.Value);
@@ -11418,7 +11424,7 @@ public class DocStructureWalkerTests
         });
         var levelProperties = projected.MainDocumentPart.NumberingDefinitionsPart!
             .Numbering!.Descendants<PreviousParagraphProperties>().ToArray();
-        Assert.Equal(2, levelProperties.Length);
+        Assert.Single(levelProperties);
         Assert.All(levelProperties, properties =>
         {
             Assert.Equal("720", properties.GetFirstChild<Indentation>()?.Left?.Value);

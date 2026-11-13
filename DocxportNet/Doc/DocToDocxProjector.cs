@@ -404,27 +404,29 @@ public sealed class DocToDocxProjector
             }
             return outputLevel;
         }
-        var selected = new List<(DocListInstance Instance, DocListDefinition Definition,
-            int AbstractId)>();
+        // A DOC list definition owns the counter shared by its instances.
+        // Preserve that identity instead of resetting it for each instance.
+        var abstractIds = new Dictionary<int, int>();
+        var selected = new List<DocListInstance>();
         foreach (var index in usedIndexes.OrderBy(x => x))
         {
             if (!instances.TryGetValue(index, out var instance) ||
                 !definitions.TryGetValue(instance.ListId, out var definition))
                 throw new InvalidDataException($"DOC list override {index} has no definition.");
-            selected.Add((instance, definition, selected.Count));
-        }
-        foreach (var (instance, definition, abstractId) in selected)
-        {
+            selected.Add(instance);
+            if (abstractIds.ContainsKey(instance.ListId)) continue;
+            var abstractId = abstractIds.Count;
+            abstractIds.Add(instance.ListId, abstractId);
             var abstractNum = new AbstractNum { AbstractNumberId = abstractId };
             // Flattening replacements into the abstract level activates their
             // starts too early. Preserve the base and override separately.
             foreach (var level in definition.Levels)
-                abstractNum.AppendChild(ConvertLevel(level, instance.OverrideIndex));
+                abstractNum.AppendChild(ConvertLevel(level, index));
             numbering.AppendChild(abstractNum);
         }
-        foreach (var (instance, _, abstractId) in selected)
+        foreach (var instance in selected)
         {
-            var num = new NumberingInstance(new AbstractNumId { Val = abstractId })
+            var num = new NumberingInstance(new AbstractNumId { Val = abstractIds[instance.ListId] })
                 { NumberID = instance.OverrideIndex };
             foreach (var index in instance.StartOverrides.Keys.Union(instance.FormattingOverrides.Keys)
                 .Distinct().OrderBy(x => x))

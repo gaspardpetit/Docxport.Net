@@ -1,0 +1,71 @@
+[
+  {
+    "name": "shared-depth-0-none",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/before/shared-depth-0-none.docx",
+    "sourceSha256": "f2662793709f64b79cc1a9fa0f379843e8c6bcf29801435f66d1d9bf27f5e22d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/before/shared-depth-0-none.pdf",
+    "wordPdfSha256": "1850bee7dd77daac0a119fd031c5378f721a05e093942fd7898374496ebcee39",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN3END"
+    ],
+    "expectedSourceListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  {
+    "name": "shared-depth-1-format",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/before/shared-depth-1-format.docx",
+    "sourceSha256": "d773c31ec18fa48aa9d5e545bb2b018e93367732e811cee80a4d46d044555280",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/before/shared-depth-1-format.pdf",
+    "wordPdfSha256": "e44c775ccf87288e8e0bae48c7e1dfc82745bf35b4f70f1fc905684b77dba1f0",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINIEND",
+      "BEGINIIEND",
+      "BEGIN3END",
+      "BEGINIIIEND"
+    ],
+    "expectedSourceListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINIIIEND",
+      "BEGINIVEND",
+      "BEGIN5END",
+      "BEGINVIEND"
+    ]
+  },
+  {
+    "name": "shared-depth-8-start-7",
+    "source": "fixtures/docx/regressions/list-markers/DocSharedOwner/before/shared-depth-8-start-7.docx",
+    "sourceSha256": "72475cf4e64a4e785ab89b6f853bbdcd7f7c7380ea5e625c9c87b0e9b49c10f8",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSharedOwner/before/shared-depth-8-start-7.pdf",
+    "wordPdfSha256": "6be72ccaaed9e86c2e283f1f865be5b9a7007e5058c4a88cd65b202dbfdc7e06",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN3END",
+      "BEGIN9END"
+    ],
+    "expectedSourceListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END"
+    ]
+  }
+]
