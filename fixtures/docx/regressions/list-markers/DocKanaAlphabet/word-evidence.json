@@ -1,0 +1,1250 @@
+[
+  {
+    "name": "kana-depth-0-aiueo-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "aiueo-1",
+    "source": "fixtures/doc/regressions/list-markers/KanaAlphabet/kana-depth-0-aiueo-1.doc",
+    "sourceSha256": "43a9d83c0245dc9d3835247c694189191e9a1e167d8e8ceb0be621132fb8bd59",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/doc/kana-depth-0-aiueo-1.pdf",
+    "wordPdfSha256": "2564de9f1f01ea6285a1cafbbc0c717a862a8c19aa0175628b0544db207ff8d9",
+    "wordListStrings": [
+      "BEGIN\uff71END",
+      "BEGIN\uff72END",
+      "BEGIN\uff73END",
+      "BEGIN\uff74END",
+      "BEGIN\uff75END",
+      "BEGIN\uff76END"
+    ],
+    "pdfLabels": [
+      "BEGIN\uff71END",
+      "BEGIN\uff72END",
+      "BEGIN\uff73END",
+      "BEGIN\uff74END",
+      "BEGIN\uff75END",
+      "BEGIN\uff76END"
+    ]
+  },
+  {
+    "name": "kana-depth-0-aiueo-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "aiueo-1",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-0-aiueo-1.docx",
+    "sourceSha256": "e28c27810f6df6766b80ba7617d59d46ff95bcaaa25e2c8d8c9293bc09b41b9c",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-0-aiueo-1.pdf",
+    "wordPdfSha256": "1bab7f2d41eb745c47a64545f2b0d4c083d626e50cd6ec02080198de594c1c78",
+    "wordListStrings": [
+      "BEGIN\uff71END",
+      "BEGIN\uff72END",
+      "BEGIN\uff73END",
+      "BEGIN\uff74END",
+      "BEGIN\uff75END",
+      "BEGIN\uff76END"
+    ],
+    "pdfLabels": [
+      "BEGIN\uff71END",
+      "BEGIN\uff72END",
+      "BEGIN\uff73END",
+      "BEGIN\uff74END",
+      "BEGIN\uff75END",
+      "BEGIN\uff76END"
+    ]
+  },
+  {
+    "name": "kana-depth-0-aiueo-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "aiueo-1",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/source/kana-depth-0-aiueo-1.docx",
+    "sourceSha256": "3f46b0e9a907898864b02e044a0a7be1d762a624dc5cbaf4a1080aa6c0370593",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/source/kana-depth-0-aiueo-1.pdf",
+    "wordPdfSha256": "93c322defc87c1ed4734f6dc99b33d0e214604360d8e140c1085a30bc01099d7",
+    "wordListStrings": [
+      "BEGIN\uff71END",
+      "BEGIN\uff72END",
+      "BEGIN\uff73END",
+      "BEGIN\uff74END",
+      "BEGIN\uff75END",
+      "BEGIN\uff76END"
+    ],
+    "pdfLabels": [
+      "BEGIN\uff71END",
+      "BEGIN\uff72END",
+      "BEGIN\uff73END",
+      "BEGIN\uff74END",
+      "BEGIN\uff75END",
+      "BEGIN\uff76END"
+    ]
+  },
+  {
+    "name": "kana-depth-0-aiueo-22",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "aiueo-22",
+    "source": "fixtures/doc/regressions/list-markers/KanaAlphabet/kana-depth-0-aiueo-22.doc",
+    "sourceSha256": "93619ae1b657d5efad5c11a759a143875353bafd55454cd3f139d10a45888fab",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/doc/kana-depth-0-aiueo-22.pdf",
+    "wordPdfSha256": "3b5d6914fb308d2c11201a7080647ebd05abe6721317f0a133a0dc10a08c8c80",
+    "wordListStrings": [
+      "BEGIN\uff86END",
+      "BEGIN\uff87END",
+      "BEGIN\uff88END",
+      "BEGIN\uff89END",
+      "BEGIN\uff8aEND",
+      "BEGIN\uff8bEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uff86END",
+      "BEGIN\uff87END",
+      "BEGIN\uff88END",
+      "BEGIN\uff89END",
+      "BEGIN\uff8aEND",
+      "BEGIN\uff8bEND"
+    ]
+  },
+  {
+    "name": "kana-depth-0-aiueo-22",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "aiueo-22",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-0-aiueo-22.docx",
+    "sourceSha256": "892896be40821ee044ccc57680d53fc3b76acf46ac106e91a5b16ac181980b79",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-0-aiueo-22.pdf",
+    "wordPdfSha256": "f7d36c51d10131448640cddd4fae4e83960cb27d556263967fd623169533243d",
+    "wordListStrings": [
+      "BEGIN\uff86END",
+      "BEGIN\uff87END",
+      "BEGIN\uff88END",
+      "BEGIN\uff89END",
+      "BEGIN\uff8aEND",
+      "BEGIN\uff8bEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uff86END",
+      "BEGIN\uff87END",
+      "BEGIN\uff88END",
+      "BEGIN\uff89END",
+      "BEGIN\uff8aEND",
+      "BEGIN\uff8bEND"
+    ]
+  },
+  {
+    "name": "kana-depth-0-aiueo-22",
+    "kind": "source",
+    "depth": 0,
+    "mode": "aiueo-22",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/source/kana-depth-0-aiueo-22.docx",
+    "sourceSha256": "2ef82d2a32e5df29a138e2f7a4909e7ca24581074e2f5d8fefe8cc7278ceada1",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/source/kana-depth-0-aiueo-22.pdf",
+    "wordPdfSha256": "be6026d43a889a8d52d8a250a13a4fef82b0b40b683b300f2e244448e0d79727",
+    "wordListStrings": [
+      "BEGIN\uff86END",
+      "BEGIN\uff87END",
+      "BEGIN\uff88END",
+      "BEGIN\uff89END",
+      "BEGIN\uff8aEND",
+      "BEGIN\uff8bEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uff86END",
+      "BEGIN\uff87END",
+      "BEGIN\uff88END",
+      "BEGIN\uff89END",
+      "BEGIN\uff8aEND",
+      "BEGIN\uff8bEND"
+    ]
+  },
+  {
+    "name": "kana-depth-0-aiueo-46",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "aiueo-46",
+    "source": "fixtures/doc/regressions/list-markers/KanaAlphabet/kana-depth-0-aiueo-46.doc",
+    "sourceSha256": "5bb7ef3a1e0e1f91f31ec986098101b34158d5a573f11ac1cb08f4d6e39cf6f2",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/doc/kana-depth-0-aiueo-46.pdf",
+    "wordPdfSha256": "8e885a3a1baeea73af95ade9a822111b218f6b298f422b890bbef6b778589a9e",
+    "wordListStrings": [
+      "BEGIN\uff9dEND",
+      "BEGIN\uff71END",
+      "BEGIN\uff72END",
+      "BEGIN\uff73END",
+      "BEGIN\uff74END",
+      "BEGIN\uff75END"
+    ],
+    "pdfLabels": [
+      "BEGIN\uff9dEND",
+      "BEGIN\uff71END",
+      "BEGIN\uff72END",
+      "BEGIN\uff73END",
+      "BEGIN\uff74END",
+      "BEGIN\uff75END"
+    ]
+  },
+  {
+    "name": "kana-depth-0-aiueo-46",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "aiueo-46",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-0-aiueo-46.docx",
+    "sourceSha256": "586f118e94dec3ebd76806c8e9f0b4e48b43b407b66cb1d3140fdb6664001139",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-0-aiueo-46.pdf",
+    "wordPdfSha256": "6a6f1a8944586819191f91c8bac14e0422a83a7b4ad702a75a3dc0ace8e299b0",
+    "wordListStrings": [
+      "BEGIN\uff9dEND",
+      "BEGIN\uff71END",
+      "BEGIN\uff72END",
+      "BEGIN\uff73END",
+      "BEGIN\uff74END",
+      "BEGIN\uff75END"
+    ],
+    "pdfLabels": [
+      "BEGIN\uff9dEND",
+      "BEGIN\uff71END",
+      "BEGIN\uff72END",
+      "BEGIN\uff73END",
+      "BEGIN\uff74END",
+      "BEGIN\uff75END"
+    ]
+  },
+  {
+    "name": "kana-depth-0-aiueo-46",
+    "kind": "source",
+    "depth": 0,
+    "mode": "aiueo-46",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/source/kana-depth-0-aiueo-46.docx",
+    "sourceSha256": "ba5923cd82a51e396d76bbf75780d08e9ffb7c7c226ac113ca8306aab04266e3",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/source/kana-depth-0-aiueo-46.pdf",
+    "wordPdfSha256": "13cffc8f6ee5e04c008866d8a28d3873e4ce640ed040d73ac00aa2fc0f83bacc",
+    "wordListStrings": [
+      "BEGIN\uff9dEND",
+      "BEGIN\uff71END",
+      "BEGIN\uff72END",
+      "BEGIN\uff73END",
+      "BEGIN\uff74END",
+      "BEGIN\uff75END"
+    ],
+    "pdfLabels": [
+      "BEGIN\uff9dEND",
+      "BEGIN\uff71END",
+      "BEGIN\uff72END",
+      "BEGIN\uff73END",
+      "BEGIN\uff74END",
+      "BEGIN\uff75END"
+    ]
+  },
+  {
+    "name": "kana-depth-0-aiueo-full-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "aiueo-full-1",
+    "source": "fixtures/doc/regressions/list-markers/KanaAlphabet/kana-depth-0-aiueo-full-1.doc",
+    "sourceSha256": "2bd21dd0934da1c47c3158ac232178a4230e4964e06e38f4e3fe5019741819eb",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/doc/kana-depth-0-aiueo-full-1.pdf",
+    "wordPdfSha256": "462eab527018ee3e452c9ba7a1ae16668aa6c42c50064682b480b1c1ffa1014e",
+    "wordListStrings": [
+      "BEGIN\u30a2END",
+      "BEGIN\u30a4END",
+      "BEGIN\u30a6END",
+      "BEGIN\u30a8END",
+      "BEGIN\u30aaEND",
+      "BEGIN\u30abEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u30a2END",
+      "BEGIN\u30a4END",
+      "BEGIN\u30a6END",
+      "BEGIN\u30a8END",
+      "BEGIN\u30aaEND",
+      "BEGIN\u30abEND"
+    ]
+  },
+  {
+    "name": "kana-depth-0-aiueo-full-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "aiueo-full-1",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-0-aiueo-full-1.docx",
+    "sourceSha256": "d55bee68edc74caa5206f29c2aca24d9e85fb50a96e4a2322e4526a7aea87c8a",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-0-aiueo-full-1.pdf",
+    "wordPdfSha256": "413224cd02239cc472d8b677f7c5b6070a9feecaaa29676df6cac7c6d00cb985",
+    "wordListStrings": [
+      "BEGIN\u30a2END",
+      "BEGIN\u30a4END",
+      "BEGIN\u30a6END",
+      "BEGIN\u30a8END",
+      "BEGIN\u30aaEND",
+      "BEGIN\u30abEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u30a2END",
+      "BEGIN\u30a4END",
+      "BEGIN\u30a6END",
+      "BEGIN\u30a8END",
+      "BEGIN\u30aaEND",
+      "BEGIN\u30abEND"
+    ]
+  },
+  {
+    "name": "kana-depth-0-aiueo-full-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "aiueo-full-1",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/source/kana-depth-0-aiueo-full-1.docx",
+    "sourceSha256": "ad8dc3bfccf8f5a715157d8470c74a020e61d36ae9b10b8ef6d6a35eae92354d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/source/kana-depth-0-aiueo-full-1.pdf",
+    "wordPdfSha256": "890480c2fce290737155fad3559f012cbcd4e233172003360148a21c876885d1",
+    "wordListStrings": [
+      "BEGIN\u30a2END",
+      "BEGIN\u30a4END",
+      "BEGIN\u30a6END",
+      "BEGIN\u30a8END",
+      "BEGIN\u30aaEND",
+      "BEGIN\u30abEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u30a2END",
+      "BEGIN\u30a4END",
+      "BEGIN\u30a6END",
+      "BEGIN\u30a8END",
+      "BEGIN\u30aaEND",
+      "BEGIN\u30abEND"
+    ]
+  },
+  {
+    "name": "kana-depth-0-aiueo-full-22",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "aiueo-full-22",
+    "source": "fixtures/doc/regressions/list-markers/KanaAlphabet/kana-depth-0-aiueo-full-22.doc",
+    "sourceSha256": "70e4798403aef60391d6f8b12f18a8c09890d924a6906850b56bfeac17417734",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/doc/kana-depth-0-aiueo-full-22.pdf",
+    "wordPdfSha256": "de3b4a82268fe33036ed2dc4d5ef145dfa81fb828da18618e0f84e2da7749f7b",
+    "wordListStrings": [
+      "BEGIN\u30cbEND",
+      "BEGIN\u30ccEND",
+      "BEGIN\u30cdEND",
+      "BEGIN\u30ceEND",
+      "BEGIN\u30cfEND",
+      "BEGIN\u30d2END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u30cbEND",
+      "BEGIN\u30ccEND",
+      "BEGIN\u30cdEND",
+      "BEGIN\u30ceEND",
+      "BEGIN\u30cfEND",
+      "BEGIN\u30d2END"
+    ]
+  },
+  {
+    "name": "kana-depth-0-aiueo-full-22",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "aiueo-full-22",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-0-aiueo-full-22.docx",
+    "sourceSha256": "9a22b2b0ae030220bfcf65a580221c1098db0dd665fdcec2185f61219620bd6e",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-0-aiueo-full-22.pdf",
+    "wordPdfSha256": "bd60cd19664f8bf8bc6b27b8a38c730d4e930ae6af3deb165b29e51aa50d9153",
+    "wordListStrings": [
+      "BEGIN\u30cbEND",
+      "BEGIN\u30ccEND",
+      "BEGIN\u30cdEND",
+      "BEGIN\u30ceEND",
+      "BEGIN\u30cfEND",
+      "BEGIN\u30d2END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u30cbEND",
+      "BEGIN\u30ccEND",
+      "BEGIN\u30cdEND",
+      "BEGIN\u30ceEND",
+      "BEGIN\u30cfEND",
+      "BEGIN\u30d2END"
+    ]
+  },
+  {
+    "name": "kana-depth-0-aiueo-full-22",
+    "kind": "source",
+    "depth": 0,
+    "mode": "aiueo-full-22",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/source/kana-depth-0-aiueo-full-22.docx",
+    "sourceSha256": "3621f9f37ac3992cc755cb660ce51ef3cad30ac5ff6596ba24664d4c6179453e",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/source/kana-depth-0-aiueo-full-22.pdf",
+    "wordPdfSha256": "9b5d32ee4149da0382337fb5b431aa154bcaa748b304d4ec4c7f3239f989d83c",
+    "wordListStrings": [
+      "BEGIN\u30cbEND",
+      "BEGIN\u30ccEND",
+      "BEGIN\u30cdEND",
+      "BEGIN\u30ceEND",
+      "BEGIN\u30cfEND",
+      "BEGIN\u30d2END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u30cbEND",
+      "BEGIN\u30ccEND",
+      "BEGIN\u30cdEND",
+      "BEGIN\u30ceEND",
+      "BEGIN\u30cfEND",
+      "BEGIN\u30d2END"
+    ]
+  },
+  {
+    "name": "kana-depth-0-aiueo-full-46",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "aiueo-full-46",
+    "source": "fixtures/doc/regressions/list-markers/KanaAlphabet/kana-depth-0-aiueo-full-46.doc",
+    "sourceSha256": "8c1842da9f4478a1b8973588d7ccaaa165c9f3b373d4f711180de820b6ed07ee",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/doc/kana-depth-0-aiueo-full-46.pdf",
+    "wordPdfSha256": "c71142b054874062bd6a158c766b9ebba3f4473ead6480783f35514b28a6cfef",
+    "wordListStrings": [
+      "BEGIN\u30f3END",
+      "BEGIN\u30a2END",
+      "BEGIN\u30a4END",
+      "BEGIN\u30a6END",
+      "BEGIN\u30a8END",
+      "BEGIN\u30aaEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u30f3END",
+      "BEGIN\u30a2END",
+      "BEGIN\u30a4END",
+      "BEGIN\u30a6END",
+      "BEGIN\u30a8END",
+      "BEGIN\u30aaEND"
+    ]
+  },
+  {
+    "name": "kana-depth-0-aiueo-full-46",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "aiueo-full-46",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-0-aiueo-full-46.docx",
+    "sourceSha256": "01ab4f4f5be9264eebb8e1f2462f171257a1cff660f0a381d4241c8b8cbc90fc",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-0-aiueo-full-46.pdf",
+    "wordPdfSha256": "edd9efccd3a6d7266137b20f89c5b6ec1aa4d08f661f6468a5c93f37cbd23514",
+    "wordListStrings": [
+      "BEGIN\u30f3END",
+      "BEGIN\u30a2END",
+      "BEGIN\u30a4END",
+      "BEGIN\u30a6END",
+      "BEGIN\u30a8END",
+      "BEGIN\u30aaEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u30f3END",
+      "BEGIN\u30a2END",
+      "BEGIN\u30a4END",
+      "BEGIN\u30a6END",
+      "BEGIN\u30a8END",
+      "BEGIN\u30aaEND"
+    ]
+  },
+  {
+    "name": "kana-depth-0-aiueo-full-46",
+    "kind": "source",
+    "depth": 0,
+    "mode": "aiueo-full-46",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/source/kana-depth-0-aiueo-full-46.docx",
+    "sourceSha256": "59f20ee8317c4e950cd05f71984998cefd291cf611e146b1f4b13b75d2a2eb5e",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/source/kana-depth-0-aiueo-full-46.pdf",
+    "wordPdfSha256": "c66b6bcfe615a7af1f9b11fc8bd481605cfd4929ea28cc4b3a2ea62aef95827e",
+    "wordListStrings": [
+      "BEGIN\u30f3END",
+      "BEGIN\u30a2END",
+      "BEGIN\u30a4END",
+      "BEGIN\u30a6END",
+      "BEGIN\u30a8END",
+      "BEGIN\u30aaEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u30f3END",
+      "BEGIN\u30a2END",
+      "BEGIN\u30a4END",
+      "BEGIN\u30a6END",
+      "BEGIN\u30a8END",
+      "BEGIN\u30aaEND"
+    ]
+  },
+  {
+    "name": "kana-depth-0-iroha-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "iroha-1",
+    "source": "fixtures/doc/regressions/list-markers/KanaAlphabet/kana-depth-0-iroha-1.doc",
+    "sourceSha256": "6cb810fb8a13fa42c04f77dcfc13c82e3d8590f4143cf1f38a2f66778310be00",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/doc/kana-depth-0-iroha-1.pdf",
+    "wordPdfSha256": "d862c5f1a266ea140e9759f1ab7e327fbf4a905d6e1d3e4a986c1f73dac9de94",
+    "wordListStrings": [
+      "BEGIN\uff72END",
+      "BEGIN\uff9bEND",
+      "BEGIN\uff8aEND",
+      "BEGIN\uff86END",
+      "BEGIN\uff8eEND",
+      "BEGIN\uff8dEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uff72END",
+      "BEGIN\uff9bEND",
+      "BEGIN\uff8aEND",
+      "BEGIN\uff86END",
+      "BEGIN\uff8eEND",
+      "BEGIN\uff8dEND"
+    ]
+  },
+  {
+    "name": "kana-depth-0-iroha-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "iroha-1",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-0-iroha-1.docx",
+    "sourceSha256": "446e6b06af9ac1e94598ed63cabdfc0623bb57868e07252f99cb4f58644fe389",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-0-iroha-1.pdf",
+    "wordPdfSha256": "2ac145e762348789a786c1d634552db7f3e7585a69660b30b8142f2794a66a7d",
+    "wordListStrings": [
+      "BEGIN\uff72END",
+      "BEGIN\uff9bEND",
+      "BEGIN\uff8aEND",
+      "BEGIN\uff86END",
+      "BEGIN\uff8eEND",
+      "BEGIN\uff8dEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uff72END",
+      "BEGIN\uff9bEND",
+      "BEGIN\uff8aEND",
+      "BEGIN\uff86END",
+      "BEGIN\uff8eEND",
+      "BEGIN\uff8dEND"
+    ]
+  },
+  {
+    "name": "kana-depth-0-iroha-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "iroha-1",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/source/kana-depth-0-iroha-1.docx",
+    "sourceSha256": "95bd19c02aa8bb09ba4b51f4c663050e2307fab3526ddab7c651c825f3d4e0a3",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/source/kana-depth-0-iroha-1.pdf",
+    "wordPdfSha256": "841ffadc4756450a8c310a919820206ec4b8f863c24654eb0cf6763d5afb47d2",
+    "wordListStrings": [
+      "BEGIN\uff72END",
+      "BEGIN\uff9bEND",
+      "BEGIN\uff8aEND",
+      "BEGIN\uff86END",
+      "BEGIN\uff8eEND",
+      "BEGIN\uff8dEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uff72END",
+      "BEGIN\uff9bEND",
+      "BEGIN\uff8aEND",
+      "BEGIN\uff86END",
+      "BEGIN\uff8eEND",
+      "BEGIN\uff8dEND"
+    ]
+  },
+  {
+    "name": "kana-depth-0-iroha-22",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "iroha-22",
+    "source": "fixtures/doc/regressions/list-markers/KanaAlphabet/kana-depth-0-iroha-22.doc",
+    "sourceSha256": "7a434b7a35b51fc8086be03faae3b734c96762f9e1d15f80899a40355fc85d93",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/doc/kana-depth-0-iroha-22.pdf",
+    "wordPdfSha256": "45b3470d83a53cdd29f17a9378331117acb5de1989fcd96251e7caaef104e5d4",
+    "wordListStrings": [
+      "BEGIN\uff97END",
+      "BEGIN\uff91END",
+      "BEGIN\uff73END",
+      "BEGIN\u30f0END",
+      "BEGIN\uff89END",
+      "BEGIN\uff75END"
+    ],
+    "pdfLabels": [
+      "BEGIN\uff97END",
+      "BEGIN\uff91END",
+      "BEGIN\uff73END",
+      "BEGIN\u30f0END",
+      "BEGIN\uff89END",
+      "BEGIN\uff75END"
+    ]
+  },
+  {
+    "name": "kana-depth-0-iroha-22",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "iroha-22",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-0-iroha-22.docx",
+    "sourceSha256": "468c4870a135bf385f7db0af7c194085dde34ab561e2d54fd353f70ec8caa713",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-0-iroha-22.pdf",
+    "wordPdfSha256": "6c9db95af8c7a8d489493a1264a2693577d59d349d947496a0341151d4efedc9",
+    "wordListStrings": [
+      "BEGIN\uff97END",
+      "BEGIN\uff91END",
+      "BEGIN\uff73END",
+      "BEGIN\u30f0END",
+      "BEGIN\uff89END",
+      "BEGIN\uff75END"
+    ],
+    "pdfLabels": [
+      "BEGIN\uff97END",
+      "BEGIN\uff91END",
+      "BEGIN\uff73END",
+      "BEGIN\u30f0END",
+      "BEGIN\uff89END",
+      "BEGIN\uff75END"
+    ]
+  },
+  {
+    "name": "kana-depth-0-iroha-22",
+    "kind": "source",
+    "depth": 0,
+    "mode": "iroha-22",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/source/kana-depth-0-iroha-22.docx",
+    "sourceSha256": "c8aa940effb8391722a0cf782225d48d59ea2ea71ce32fcd89dca6773c544548",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/source/kana-depth-0-iroha-22.pdf",
+    "wordPdfSha256": "18560394587dc3f53db28768ad352ed024d25a75b12f6d3561b65d1266142c34",
+    "wordListStrings": [
+      "BEGIN\uff97END",
+      "BEGIN\uff91END",
+      "BEGIN\uff73END",
+      "BEGIN\u30f0END",
+      "BEGIN\uff89END",
+      "BEGIN\uff75END"
+    ],
+    "pdfLabels": [
+      "BEGIN\uff97END",
+      "BEGIN\uff91END",
+      "BEGIN\uff73END",
+      "BEGIN\u30f0END",
+      "BEGIN\uff89END",
+      "BEGIN\uff75END"
+    ]
+  },
+  {
+    "name": "kana-depth-0-iroha-46",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "iroha-46",
+    "source": "fixtures/doc/regressions/list-markers/KanaAlphabet/kana-depth-0-iroha-46.doc",
+    "sourceSha256": "66eae9cfc32d4105a9cb2eb79c1671a1a3433e79b240772bc7b352c7893d967d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/doc/kana-depth-0-iroha-46.pdf",
+    "wordPdfSha256": "efc0c2b34d447fb9d59aff6e53c513fc6a8c12842dcac5dadcef64ce06ad6c88",
+    "wordListStrings": [
+      "BEGIN\uff7eEND",
+      "BEGIN\uff7dEND",
+      "BEGIN\uff9dEND",
+      "BEGIN\uff72END",
+      "BEGIN\uff9bEND",
+      "BEGIN\uff8aEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uff7eEND",
+      "BEGIN\uff7dEND",
+      "BEGIN\uff9dEND",
+      "BEGIN\uff72END",
+      "BEGIN\uff9bEND",
+      "BEGIN\uff8aEND"
+    ]
+  },
+  {
+    "name": "kana-depth-0-iroha-46",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "iroha-46",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-0-iroha-46.docx",
+    "sourceSha256": "c92c63d89046037a1d1c54bdeed5aac40db4ae4886bc8f18e47b7ac8536e7b3f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-0-iroha-46.pdf",
+    "wordPdfSha256": "f079ee11de34f0458d36c316b3576f99483b927beba9ec44461d7321f3a6f0aa",
+    "wordListStrings": [
+      "BEGIN\uff7eEND",
+      "BEGIN\uff7dEND",
+      "BEGIN\uff9dEND",
+      "BEGIN\uff72END",
+      "BEGIN\uff9bEND",
+      "BEGIN\uff8aEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uff7eEND",
+      "BEGIN\uff7dEND",
+      "BEGIN\uff9dEND",
+      "BEGIN\uff72END",
+      "BEGIN\uff9bEND",
+      "BEGIN\uff8aEND"
+    ]
+  },
+  {
+    "name": "kana-depth-0-iroha-46",
+    "kind": "source",
+    "depth": 0,
+    "mode": "iroha-46",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/source/kana-depth-0-iroha-46.docx",
+    "sourceSha256": "8e32a94923f79770ef6f2e3db6f10a7cec8c189362dc0ea8a6d4176c986dcc10",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/source/kana-depth-0-iroha-46.pdf",
+    "wordPdfSha256": "9d0d8de8587fb8fc887f8f393efef55ea424cb201a2474f282ba12da76d17ed0",
+    "wordListStrings": [
+      "BEGIN\uff7eEND",
+      "BEGIN\uff7dEND",
+      "BEGIN\uff9dEND",
+      "BEGIN\uff72END",
+      "BEGIN\uff9bEND",
+      "BEGIN\uff8aEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uff7eEND",
+      "BEGIN\uff7dEND",
+      "BEGIN\uff9dEND",
+      "BEGIN\uff72END",
+      "BEGIN\uff9bEND",
+      "BEGIN\uff8aEND"
+    ]
+  },
+  {
+    "name": "kana-depth-0-iroha-full-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "iroha-full-1",
+    "source": "fixtures/doc/regressions/list-markers/KanaAlphabet/kana-depth-0-iroha-full-1.doc",
+    "sourceSha256": "9be9c3184e6dd4eda0e5fce1860153010e2326a0df6a2ef366e50427dd7bde3c",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/doc/kana-depth-0-iroha-full-1.pdf",
+    "wordPdfSha256": "bb5b2b3d87f543266e023648605cd2280b3999becf7474554998720ca6f5ef6f",
+    "wordListStrings": [
+      "BEGIN\u30a4END",
+      "BEGIN\u30edEND",
+      "BEGIN\u30cfEND",
+      "BEGIN\u30cbEND",
+      "BEGIN\u30dbEND",
+      "BEGIN\u30d8END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u30a4END",
+      "BEGIN\u30edEND",
+      "BEGIN\u30cfEND",
+      "BEGIN\u30cbEND",
+      "BEGIN\u30dbEND",
+      "BEGIN\u30d8END"
+    ]
+  },
+  {
+    "name": "kana-depth-0-iroha-full-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "iroha-full-1",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-0-iroha-full-1.docx",
+    "sourceSha256": "41f0bf61c50e884774622d5a7be52ba664df87dbcefc23f1ce3ce641d661f1fb",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-0-iroha-full-1.pdf",
+    "wordPdfSha256": "11af362abeac910f35ec0d0a850dc935300b2c1bd1ff8415ca0cbc2ba99e6a0b",
+    "wordListStrings": [
+      "BEGIN\u30a4END",
+      "BEGIN\u30edEND",
+      "BEGIN\u30cfEND",
+      "BEGIN\u30cbEND",
+      "BEGIN\u30dbEND",
+      "BEGIN\u30d8END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u30a4END",
+      "BEGIN\u30edEND",
+      "BEGIN\u30cfEND",
+      "BEGIN\u30cbEND",
+      "BEGIN\u30dbEND",
+      "BEGIN\u30d8END"
+    ]
+  },
+  {
+    "name": "kana-depth-0-iroha-full-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "iroha-full-1",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/source/kana-depth-0-iroha-full-1.docx",
+    "sourceSha256": "4384ad39225a16933fba23593d368f22b6804afb5baa81449f28f8c769f18e91",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/source/kana-depth-0-iroha-full-1.pdf",
+    "wordPdfSha256": "c21cd8468718a408e054eebf5236d545afc0f554ebc45adfbc1325ce360fc4b0",
+    "wordListStrings": [
+      "BEGIN\u30a4END",
+      "BEGIN\u30edEND",
+      "BEGIN\u30cfEND",
+      "BEGIN\u30cbEND",
+      "BEGIN\u30dbEND",
+      "BEGIN\u30d8END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u30a4END",
+      "BEGIN\u30edEND",
+      "BEGIN\u30cfEND",
+      "BEGIN\u30cbEND",
+      "BEGIN\u30dbEND",
+      "BEGIN\u30d8END"
+    ]
+  },
+  {
+    "name": "kana-depth-0-iroha-full-22",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "iroha-full-22",
+    "source": "fixtures/doc/regressions/list-markers/KanaAlphabet/kana-depth-0-iroha-full-22.doc",
+    "sourceSha256": "efc5a9745bdc1d96833b3350b26314a4cfcbc71675c5e6261ff76ca09ea5530f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/doc/kana-depth-0-iroha-full-22.pdf",
+    "wordPdfSha256": "4a663334aed5d9b7b874838942b8a4d3c8b66ee99184b08e9946f343f5fddefc",
+    "wordListStrings": [
+      "BEGIN\u30e9END",
+      "BEGIN\u30e0END",
+      "BEGIN\u30a6END",
+      "BEGIN\u30f0END",
+      "BEGIN\u30ceEND",
+      "BEGIN\u30aaEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u30e9END",
+      "BEGIN\u30e0END",
+      "BEGIN\u30a6END",
+      "BEGIN\u30f0END",
+      "BEGIN\u30ceEND",
+      "BEGIN\u30aaEND"
+    ]
+  },
+  {
+    "name": "kana-depth-0-iroha-full-22",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "iroha-full-22",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-0-iroha-full-22.docx",
+    "sourceSha256": "3ccdf09677cbf91c836ecc57ed65b758ec608e2c723b599e6a3e08850e108157",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-0-iroha-full-22.pdf",
+    "wordPdfSha256": "bee6b35d96076f2b07940e4e527fad101a6747a813a81128456a427a10fd00c4",
+    "wordListStrings": [
+      "BEGIN\u30e9END",
+      "BEGIN\u30e0END",
+      "BEGIN\u30a6END",
+      "BEGIN\u30f0END",
+      "BEGIN\u30ceEND",
+      "BEGIN\u30aaEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u30e9END",
+      "BEGIN\u30e0END",
+      "BEGIN\u30a6END",
+      "BEGIN\u30f0END",
+      "BEGIN\u30ceEND",
+      "BEGIN\u30aaEND"
+    ]
+  },
+  {
+    "name": "kana-depth-0-iroha-full-22",
+    "kind": "source",
+    "depth": 0,
+    "mode": "iroha-full-22",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/source/kana-depth-0-iroha-full-22.docx",
+    "sourceSha256": "5171a6c9025658d1e126f6c00e937bf4f6d6e444a90a4a5932d316ce369e677c",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/source/kana-depth-0-iroha-full-22.pdf",
+    "wordPdfSha256": "f207b5e383c8e968aefbf8c41bff6d178dee3f8de551e9e5ab4e1eb8cead6475",
+    "wordListStrings": [
+      "BEGIN\u30e9END",
+      "BEGIN\u30e0END",
+      "BEGIN\u30a6END",
+      "BEGIN\u30f0END",
+      "BEGIN\u30ceEND",
+      "BEGIN\u30aaEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u30e9END",
+      "BEGIN\u30e0END",
+      "BEGIN\u30a6END",
+      "BEGIN\u30f0END",
+      "BEGIN\u30ceEND",
+      "BEGIN\u30aaEND"
+    ]
+  },
+  {
+    "name": "kana-depth-0-iroha-full-46",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "iroha-full-46",
+    "source": "fixtures/doc/regressions/list-markers/KanaAlphabet/kana-depth-0-iroha-full-46.doc",
+    "sourceSha256": "8ca258a27904d8f61cda7bfb337dd557ac359afc01ede5b1b1c5c30ee9a930d1",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/doc/kana-depth-0-iroha-full-46.pdf",
+    "wordPdfSha256": "bb4d0b93090a3a1414d9d49fc3e94d6e6dcf9215a046abfc08f53c2409657f3b",
+    "wordListStrings": [
+      "BEGIN\u30bbEND",
+      "BEGIN\u30b9END",
+      "BEGIN\u30f3END",
+      "BEGIN\u30a4END",
+      "BEGIN\u30edEND",
+      "BEGIN\u30cfEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u30bbEND",
+      "BEGIN\u30b9END",
+      "BEGIN\u30f3END",
+      "BEGIN\u30a4END",
+      "BEGIN\u30edEND",
+      "BEGIN\u30cfEND"
+    ]
+  },
+  {
+    "name": "kana-depth-0-iroha-full-46",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "iroha-full-46",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-0-iroha-full-46.docx",
+    "sourceSha256": "7c2b0a5ea47df0c4452b8afc907345e07db9cb4a793644c6ce4a68d6e55ffb43",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-0-iroha-full-46.pdf",
+    "wordPdfSha256": "5b04f830eb3db2c477fb0619864e0ad915ff6579521bfc27577b8529fc696c99",
+    "wordListStrings": [
+      "BEGIN\u30bbEND",
+      "BEGIN\u30b9END",
+      "BEGIN\u30f3END",
+      "BEGIN\u30a4END",
+      "BEGIN\u30edEND",
+      "BEGIN\u30cfEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u30bbEND",
+      "BEGIN\u30b9END",
+      "BEGIN\u30f3END",
+      "BEGIN\u30a4END",
+      "BEGIN\u30edEND",
+      "BEGIN\u30cfEND"
+    ]
+  },
+  {
+    "name": "kana-depth-0-iroha-full-46",
+    "kind": "source",
+    "depth": 0,
+    "mode": "iroha-full-46",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/source/kana-depth-0-iroha-full-46.docx",
+    "sourceSha256": "dd873ff38aff23a620fadfe056ea81796f9ee557cc14f662685a807d8b7ba9d9",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/source/kana-depth-0-iroha-full-46.pdf",
+    "wordPdfSha256": "8b67e073804bff5c774c12bf61ccce5255b71ec31447333da46f6ba286a5bb08",
+    "wordListStrings": [
+      "BEGIN\u30bbEND",
+      "BEGIN\u30b9END",
+      "BEGIN\u30f3END",
+      "BEGIN\u30a4END",
+      "BEGIN\u30edEND",
+      "BEGIN\u30cfEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u30bbEND",
+      "BEGIN\u30b9END",
+      "BEGIN\u30f3END",
+      "BEGIN\u30a4END",
+      "BEGIN\u30edEND",
+      "BEGIN\u30cfEND"
+    ]
+  },
+  {
+    "name": "kana-depth-8-aiueo-46",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "aiueo-46",
+    "source": "fixtures/doc/regressions/list-markers/KanaAlphabet/kana-depth-8-aiueo-46.doc",
+    "sourceSha256": "f8d7b60d9b7ce28494fc8bd8c67e1c673f2df6142eb0eebc7b7542bf3c644d78",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/doc/kana-depth-8-aiueo-46.pdf",
+    "wordPdfSha256": "2c1760542e214ba9c2f8ca23dc8a3f93f2ba97533eb69677d179f1e7ae53dbfc",
+    "wordListStrings": [
+      "BEGIN\uff9dEND",
+      "BEGIN\uff71END",
+      "BEGIN\uff72END",
+      "BEGIN\uff73END",
+      "BEGIN\uff74END",
+      "BEGIN\uff75END"
+    ],
+    "pdfLabels": [
+      "BEGIN\uff9dEND",
+      "BEGIN\uff71END",
+      "BEGIN\uff72END",
+      "BEGIN\uff73END",
+      "BEGIN\uff74END",
+      "BEGIN\uff75END"
+    ]
+  },
+  {
+    "name": "kana-depth-8-aiueo-46",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "aiueo-46",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-8-aiueo-46.docx",
+    "sourceSha256": "0fe8afa4b5ba235a7af888d2bbb34952647ca66794f0f11fab172757964d02c8",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-8-aiueo-46.pdf",
+    "wordPdfSha256": "d160e4b1225058ff4459bf67a59e5a07e89d3452d3df4fb1ac5f5141b952e40d",
+    "wordListStrings": [
+      "BEGIN\uff9dEND",
+      "BEGIN\uff71END",
+      "BEGIN\uff72END",
+      "BEGIN\uff73END",
+      "BEGIN\uff74END",
+      "BEGIN\uff75END"
+    ],
+    "pdfLabels": [
+      "BEGIN\uff9dEND",
+      "BEGIN\uff71END",
+      "BEGIN\uff72END",
+      "BEGIN\uff73END",
+      "BEGIN\uff74END",
+      "BEGIN\uff75END"
+    ]
+  },
+  {
+    "name": "kana-depth-8-aiueo-46",
+    "kind": "source",
+    "depth": 8,
+    "mode": "aiueo-46",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/source/kana-depth-8-aiueo-46.docx",
+    "sourceSha256": "213f779f359faff41c96f89ce7dca89a477a15c525c2c2240910476cb892f77d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/source/kana-depth-8-aiueo-46.pdf",
+    "wordPdfSha256": "3dc551fe43f12d694dbe26af93524f702ba26f07c910baa8eb468d4f8b7b0d9d",
+    "wordListStrings": [
+      "BEGIN\uff9dEND",
+      "BEGIN\uff71END",
+      "BEGIN\uff72END",
+      "BEGIN\uff73END",
+      "BEGIN\uff74END",
+      "BEGIN\uff75END"
+    ],
+    "pdfLabels": [
+      "BEGIN\uff9dEND",
+      "BEGIN\uff71END",
+      "BEGIN\uff72END",
+      "BEGIN\uff73END",
+      "BEGIN\uff74END",
+      "BEGIN\uff75END"
+    ]
+  },
+  {
+    "name": "kana-depth-8-aiueo-full-46",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "aiueo-full-46",
+    "source": "fixtures/doc/regressions/list-markers/KanaAlphabet/kana-depth-8-aiueo-full-46.doc",
+    "sourceSha256": "7cca1fbf0d6ab66bf1c0cf3de6b28e1a112336e4f0886b9c917a78103b41e36c",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/doc/kana-depth-8-aiueo-full-46.pdf",
+    "wordPdfSha256": "fb196f7a94aa4267c6179fb201560f0ee9770711034ac4b3c7ba680da98d5a4d",
+    "wordListStrings": [
+      "BEGIN\u30f3END",
+      "BEGIN\u30a2END",
+      "BEGIN\u30a4END",
+      "BEGIN\u30a6END",
+      "BEGIN\u30a8END",
+      "BEGIN\u30aaEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u30f3END",
+      "BEGIN\u30a2END",
+      "BEGIN\u30a4END",
+      "BEGIN\u30a6END",
+      "BEGIN\u30a8END",
+      "BEGIN\u30aaEND"
+    ]
+  },
+  {
+    "name": "kana-depth-8-aiueo-full-46",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "aiueo-full-46",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-8-aiueo-full-46.docx",
+    "sourceSha256": "30dfe93b205d285da0f77b5a0edaade57529c9ae422a3811d30148bcc3be2088",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-8-aiueo-full-46.pdf",
+    "wordPdfSha256": "15def2ff123faaed7aeccb475922df01c64aa5e93d017a48f7dd954e6c0b3270",
+    "wordListStrings": [
+      "BEGIN\u30f3END",
+      "BEGIN\u30a2END",
+      "BEGIN\u30a4END",
+      "BEGIN\u30a6END",
+      "BEGIN\u30a8END",
+      "BEGIN\u30aaEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u30f3END",
+      "BEGIN\u30a2END",
+      "BEGIN\u30a4END",
+      "BEGIN\u30a6END",
+      "BEGIN\u30a8END",
+      "BEGIN\u30aaEND"
+    ]
+  },
+  {
+    "name": "kana-depth-8-aiueo-full-46",
+    "kind": "source",
+    "depth": 8,
+    "mode": "aiueo-full-46",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/source/kana-depth-8-aiueo-full-46.docx",
+    "sourceSha256": "1f7ba97eaa724fc410ccbe017d1941246ff06bd1f6b5f6df33cdcec634905571",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/source/kana-depth-8-aiueo-full-46.pdf",
+    "wordPdfSha256": "4e18c3638a2c1b36188990ba078009b3e4ff641861ccce381933d58dd8a2d007",
+    "wordListStrings": [
+      "BEGIN\u30f3END",
+      "BEGIN\u30a2END",
+      "BEGIN\u30a4END",
+      "BEGIN\u30a6END",
+      "BEGIN\u30a8END",
+      "BEGIN\u30aaEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u30f3END",
+      "BEGIN\u30a2END",
+      "BEGIN\u30a4END",
+      "BEGIN\u30a6END",
+      "BEGIN\u30a8END",
+      "BEGIN\u30aaEND"
+    ]
+  },
+  {
+    "name": "kana-depth-8-iroha-46",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "iroha-46",
+    "source": "fixtures/doc/regressions/list-markers/KanaAlphabet/kana-depth-8-iroha-46.doc",
+    "sourceSha256": "c5f17456cfde26b1c34a1182700d30d88eee1f4f06bedb92f8a2050a70dfd451",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/doc/kana-depth-8-iroha-46.pdf",
+    "wordPdfSha256": "c54c007c809557813265d0729c9497e0582b7790db0ecd6849fdb7fdf6d3404b",
+    "wordListStrings": [
+      "BEGIN\uff7eEND",
+      "BEGIN\uff7dEND",
+      "BEGIN\uff9dEND",
+      "BEGIN\uff72END",
+      "BEGIN\uff9bEND",
+      "BEGIN\uff8aEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uff7eEND",
+      "BEGIN\uff7dEND",
+      "BEGIN\uff9dEND",
+      "BEGIN\uff72END",
+      "BEGIN\uff9bEND",
+      "BEGIN\uff8aEND"
+    ]
+  },
+  {
+    "name": "kana-depth-8-iroha-46",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "iroha-46",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-8-iroha-46.docx",
+    "sourceSha256": "d35435db3ff0866ff3ff1ab3b54e7760a08e951a6c2d11a9f8d4bd13cb431df7",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-8-iroha-46.pdf",
+    "wordPdfSha256": "65c37a5ac1231fe694c8cb72ae8d10cf53ce286cfdce24eaa2493ee6081c98d6",
+    "wordListStrings": [
+      "BEGIN\uff7eEND",
+      "BEGIN\uff7dEND",
+      "BEGIN\uff9dEND",
+      "BEGIN\uff72END",
+      "BEGIN\uff9bEND",
+      "BEGIN\uff8aEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uff7eEND",
+      "BEGIN\uff7dEND",
+      "BEGIN\uff9dEND",
+      "BEGIN\uff72END",
+      "BEGIN\uff9bEND",
+      "BEGIN\uff8aEND"
+    ]
+  },
+  {
+    "name": "kana-depth-8-iroha-46",
+    "kind": "source",
+    "depth": 8,
+    "mode": "iroha-46",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/source/kana-depth-8-iroha-46.docx",
+    "sourceSha256": "77b2e3173ac6474fd12322d28346f5df2eaa3f7640a6bdb24b7e53c558d20675",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/source/kana-depth-8-iroha-46.pdf",
+    "wordPdfSha256": "ea04de76f7493f917780678c8b616c73cffb6c0c079fa82f8b45b4fc6c74f462",
+    "wordListStrings": [
+      "BEGIN\uff7eEND",
+      "BEGIN\uff7dEND",
+      "BEGIN\uff9dEND",
+      "BEGIN\uff72END",
+      "BEGIN\uff9bEND",
+      "BEGIN\uff8aEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\uff7eEND",
+      "BEGIN\uff7dEND",
+      "BEGIN\uff9dEND",
+      "BEGIN\uff72END",
+      "BEGIN\uff9bEND",
+      "BEGIN\uff8aEND"
+    ]
+  },
+  {
+    "name": "kana-depth-8-iroha-full-46",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "iroha-full-46",
+    "source": "fixtures/doc/regressions/list-markers/KanaAlphabet/kana-depth-8-iroha-full-46.doc",
+    "sourceSha256": "a25dde19ccc5aae5d121920db86819b7c3fead9521de28c5ee2f9f5c95d9de2e",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/doc/kana-depth-8-iroha-full-46.pdf",
+    "wordPdfSha256": "6afce2d7698f445e10b6f6e9cfa5c4365ed1387dfe387dce1800a5b36faee294",
+    "wordListStrings": [
+      "BEGIN\u30bbEND",
+      "BEGIN\u30b9END",
+      "BEGIN\u30f3END",
+      "BEGIN\u30a4END",
+      "BEGIN\u30edEND",
+      "BEGIN\u30cfEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u30bbEND",
+      "BEGIN\u30b9END",
+      "BEGIN\u30f3END",
+      "BEGIN\u30a4END",
+      "BEGIN\u30edEND",
+      "BEGIN\u30cfEND"
+    ]
+  },
+  {
+    "name": "kana-depth-8-iroha-full-46",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "iroha-full-46",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-8-iroha-full-46.docx",
+    "sourceSha256": "921b23b2154e223f205a1f3f8728709635a25e7723b28f2a69aa93b018172121",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/projected/kana-depth-8-iroha-full-46.pdf",
+    "wordPdfSha256": "01b5980b5a64a6da8dac6e2b55b71cda47085651b9c7bc28a1dab0facf1865e5",
+    "wordListStrings": [
+      "BEGIN\u30bbEND",
+      "BEGIN\u30b9END",
+      "BEGIN\u30f3END",
+      "BEGIN\u30a4END",
+      "BEGIN\u30edEND",
+      "BEGIN\u30cfEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u30bbEND",
+      "BEGIN\u30b9END",
+      "BEGIN\u30f3END",
+      "BEGIN\u30a4END",
+      "BEGIN\u30edEND",
+      "BEGIN\u30cfEND"
+    ]
+  },
+  {
+    "name": "kana-depth-8-iroha-full-46",
+    "kind": "source",
+    "depth": 8,
+    "mode": "iroha-full-46",
+    "source": "fixtures/docx/regressions/list-markers/DocKanaAlphabet/source/kana-depth-8-iroha-full-46.docx",
+    "sourceSha256": "9d1a8e38c6950da36c3c93d1aaad0d3755c918a931400872d73042440e980add",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKanaAlphabet/source/kana-depth-8-iroha-full-46.pdf",
+    "wordPdfSha256": "535955268930fe1cef2c8d81ac751ea81f12604b91cd46694ba4fb38a6585dce",
+    "wordListStrings": [
+      "BEGIN\u30bbEND",
+      "BEGIN\u30b9END",
+      "BEGIN\u30f3END",
+      "BEGIN\u30a4END",
+      "BEGIN\u30edEND",
+      "BEGIN\u30cfEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u30bbEND",
+      "BEGIN\u30b9END",
+      "BEGIN\u30f3END",
+      "BEGIN\u30a4END",
+      "BEGIN\u30edEND",
+      "BEGIN\u30cfEND"
+    ]
+  }
+]
