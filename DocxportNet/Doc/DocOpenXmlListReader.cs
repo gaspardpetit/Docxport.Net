@@ -171,6 +171,9 @@ internal static class DocOpenXmlListReader
             format == NumberFormatValues.DecimalEnclosedParen ? (byte)0x1B :
             format == NumberFormatValues.DecimalEnclosedCircleChinese ? (byte)0x1C :
             format == NumberFormatValues.IdeographEnclosedCircle ? (byte)0x1D :
+            format == NumberFormatValues.IdeographTraditional ? (byte)0x1E :
+            format == NumberFormatValues.IdeographZodiac ? (byte)0x1F :
+            format == NumberFormatValues.IdeographZodiacTraditional ? (byte)0x20 :
             format == NumberFormatValues.NumberInDash ? (byte)0x39 :
             format == NumberFormatValues.RussianLower ? (byte)0x3A :
             format == NumberFormatValues.RussianUpper ? (byte)0x3B :
