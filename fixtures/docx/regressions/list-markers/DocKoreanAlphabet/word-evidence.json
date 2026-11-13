@@ -1,0 +1,938 @@
+[
+  {
+    "name": "korean-depth-0-chosung-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "chosung-1",
+    "source": "fixtures/doc/regressions/list-markers/KoreanAlphabet/korean-depth-0-chosung-1.doc",
+    "sourceSha256": "1a6c64d9f6e17ce12a7ce48972fce76c7708f188a6dd4ba40d37cf69f60488b5",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/doc/korean-depth-0-chosung-1.pdf",
+    "wordPdfSha256": "a19a92ebd312f857f669a09a993cbdeba911e1ee6d479b86bbd3444dc5c45491",
+    "wordListStrings": [
+      "BEGIN\u3131END",
+      "BEGIN\u3134END",
+      "BEGIN\u3137END",
+      "BEGIN\u3139END",
+      "BEGIN\u3141END",
+      "BEGIN\u3142END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u3131END",
+      "BEGIN\u3134END",
+      "BEGIN\u3137END",
+      "BEGIN\u3139END",
+      "BEGIN\u3141END",
+      "BEGIN\u3142END"
+    ]
+  },
+  {
+    "name": "korean-depth-0-chosung-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "chosung-1",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanAlphabet/projected/korean-depth-0-chosung-1.docx",
+    "sourceSha256": "882a52775dc3372065ac19b26ff102862e94157c320edbb21ec6c93c4decfd73",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/projected/korean-depth-0-chosung-1.pdf",
+    "wordPdfSha256": "af3b3bcba9aa197fd0c2c34482321e2a682ca7770ddb751aa769fc23dd78312b",
+    "wordListStrings": [
+      "BEGIN\u3131END",
+      "BEGIN\u3134END",
+      "BEGIN\u3137END",
+      "BEGIN\u3139END",
+      "BEGIN\u3141END",
+      "BEGIN\u3142END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u3131END",
+      "BEGIN\u3134END",
+      "BEGIN\u3137END",
+      "BEGIN\u3139END",
+      "BEGIN\u3141END",
+      "BEGIN\u3142END"
+    ]
+  },
+  {
+    "name": "korean-depth-0-chosung-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "chosung-1",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanAlphabet/source/korean-depth-0-chosung-1.docx",
+    "sourceSha256": "f9653c4720433ad5147dbaba1602f754ab1e6dd6630329c8baeadb27508fa03f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/source/korean-depth-0-chosung-1.pdf",
+    "wordPdfSha256": "924161066f52b4367a82156ee7344959e94a04b839a3d7dba6bcffba1b95f951",
+    "wordListStrings": [
+      "BEGIN\u3131END",
+      "BEGIN\u3134END",
+      "BEGIN\u3137END",
+      "BEGIN\u3139END",
+      "BEGIN\u3141END",
+      "BEGIN\u3142END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u3131END",
+      "BEGIN\u3134END",
+      "BEGIN\u3137END",
+      "BEGIN\u3139END",
+      "BEGIN\u3141END",
+      "BEGIN\u3142END"
+    ]
+  },
+  {
+    "name": "korean-depth-0-chosung-13",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "chosung-13",
+    "source": "fixtures/doc/regressions/list-markers/KoreanAlphabet/korean-depth-0-chosung-13.doc",
+    "sourceSha256": "f5fb0bbebb15b2fb3b15b1e480b1f65dcc26f30f4f283b17e0ad22d0bdc2f4eb",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/doc/korean-depth-0-chosung-13.pdf",
+    "wordPdfSha256": "ec35477488a41a33e243a0b6a96c700fb566a20192112cc216115042a302b1e8",
+    "wordListStrings": [
+      "BEGIN\u314dEND",
+      "BEGIN\u314eEND",
+      "BEGIN\u3131END",
+      "BEGIN\u3134END",
+      "BEGIN\u3137END",
+      "BEGIN\u3139END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u314dEND",
+      "BEGIN\u314eEND",
+      "BEGIN\u3131END",
+      "BEGIN\u3134END",
+      "BEGIN\u3137END",
+      "BEGIN\u3139END"
+    ]
+  },
+  {
+    "name": "korean-depth-0-chosung-13",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "chosung-13",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanAlphabet/projected/korean-depth-0-chosung-13.docx",
+    "sourceSha256": "d3c8a4e468380216b404ad8637adb12798fd7559f4d61acf1eca3bc117dbc88c",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/projected/korean-depth-0-chosung-13.pdf",
+    "wordPdfSha256": "9c8774324855ec1e0896bfeae04ab92427ce5d6703e7d0f86c88224b4768514f",
+    "wordListStrings": [
+      "BEGIN\u314dEND",
+      "BEGIN\u314eEND",
+      "BEGIN\u3131END",
+      "BEGIN\u3134END",
+      "BEGIN\u3137END",
+      "BEGIN\u3139END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u314dEND",
+      "BEGIN\u314eEND",
+      "BEGIN\u3131END",
+      "BEGIN\u3134END",
+      "BEGIN\u3137END",
+      "BEGIN\u3139END"
+    ]
+  },
+  {
+    "name": "korean-depth-0-chosung-13",
+    "kind": "source",
+    "depth": 0,
+    "mode": "chosung-13",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanAlphabet/source/korean-depth-0-chosung-13.docx",
+    "sourceSha256": "353cdc8c2e3a7cec5a2418a0943dfb2085f95c41feddfb73177c50b29cae7f97",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/source/korean-depth-0-chosung-13.pdf",
+    "wordPdfSha256": "f089c211edf5dffd1c6dce14e0fefd1ce98b2d8d6b5d29ee55b5acdd58d34c97",
+    "wordListStrings": [
+      "BEGIN\u314dEND",
+      "BEGIN\u314eEND",
+      "BEGIN\u3131END",
+      "BEGIN\u3134END",
+      "BEGIN\u3137END",
+      "BEGIN\u3139END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u314dEND",
+      "BEGIN\u314eEND",
+      "BEGIN\u3131END",
+      "BEGIN\u3134END",
+      "BEGIN\u3137END",
+      "BEGIN\u3139END"
+    ]
+  },
+  {
+    "name": "korean-depth-0-chosung-19",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "chosung-19",
+    "source": "fixtures/doc/regressions/list-markers/KoreanAlphabet/korean-depth-0-chosung-19.doc",
+    "sourceSha256": "e8bb81d50ae95e24f6571d4d97a688f4e06f5376a1a90a05667f8e465b95fd60",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/doc/korean-depth-0-chosung-19.pdf",
+    "wordPdfSha256": "41cfeba110bcb36ea27e3ec1800b4258c11570110ebff7835dbde3f030b4d370",
+    "wordListStrings": [
+      "BEGIN\u3141END",
+      "BEGIN\u3142END",
+      "BEGIN\u3145END",
+      "BEGIN\u3147END",
+      "BEGIN\u3148END",
+      "BEGIN\u314aEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u3141END",
+      "BEGIN\u3142END",
+      "BEGIN\u3145END",
+      "BEGIN\u3147END",
+      "BEGIN\u3148END",
+      "BEGIN\u314aEND"
+    ]
+  },
+  {
+    "name": "korean-depth-0-chosung-19",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "chosung-19",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanAlphabet/projected/korean-depth-0-chosung-19.docx",
+    "sourceSha256": "24a52b668a6b74896d1b5add9bf6ad31fbfd07944b6d56a7e31deee3fba89074",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/projected/korean-depth-0-chosung-19.pdf",
+    "wordPdfSha256": "f57ec078aecb612db7383c592e9167e67f00a309342b5980f9880a7e5012b1e3",
+    "wordListStrings": [
+      "BEGIN\u3141END",
+      "BEGIN\u3142END",
+      "BEGIN\u3145END",
+      "BEGIN\u3147END",
+      "BEGIN\u3148END",
+      "BEGIN\u314aEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u3141END",
+      "BEGIN\u3142END",
+      "BEGIN\u3145END",
+      "BEGIN\u3147END",
+      "BEGIN\u3148END",
+      "BEGIN\u314aEND"
+    ]
+  },
+  {
+    "name": "korean-depth-0-chosung-19",
+    "kind": "source",
+    "depth": 0,
+    "mode": "chosung-19",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanAlphabet/source/korean-depth-0-chosung-19.docx",
+    "sourceSha256": "2db2b98c74e97d5ae1b306359cb100a1dfc8d8229a21c5aa564bae923ad1ce0b",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/source/korean-depth-0-chosung-19.pdf",
+    "wordPdfSha256": "caa7afabed6bf6e70fa89879b2d54a19a6fa82ed371f485605b2b0e5fc0c6893",
+    "wordListStrings": [
+      "BEGIN\u3141END",
+      "BEGIN\u3142END",
+      "BEGIN\u3145END",
+      "BEGIN\u3147END",
+      "BEGIN\u3148END",
+      "BEGIN\u314aEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u3141END",
+      "BEGIN\u3142END",
+      "BEGIN\u3145END",
+      "BEGIN\u3147END",
+      "BEGIN\u3148END",
+      "BEGIN\u314aEND"
+    ]
+  },
+  {
+    "name": "korean-depth-0-ganada-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "ganada-1",
+    "source": "fixtures/doc/regressions/list-markers/KoreanAlphabet/korean-depth-0-ganada-1.doc",
+    "sourceSha256": "be7f3870bbd446f2e94db8d19a0bbb4bcd64d0d6ed73eae1fd3f954949025b8f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/doc/korean-depth-0-ganada-1.pdf",
+    "wordPdfSha256": "4b94ae3b28ccd76e80d256805e930da01aee41325bc532251897d58132b33568",
+    "wordListStrings": [
+      "BEGIN\uac00END",
+      "BEGIN\ub098END",
+      "BEGIN\ub2e4END",
+      "BEGIN\ub77cEND",
+      "BEGIN\ub9c8END",
+      "BEGIN\ubc14END"
+    ],
+    "pdfLabels": [
+      "BEGIN\uac00END",
+      "BEGIN\ub098END",
+      "BEGIN\ub2e4END",
+      "BEGIN\ub77cEND",
+      "BEGIN\ub9c8END",
+      "BEGIN\ubc14END"
+    ]
+  },
+  {
+    "name": "korean-depth-0-ganada-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "ganada-1",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanAlphabet/projected/korean-depth-0-ganada-1.docx",
+    "sourceSha256": "82c63291c9e0008d1e12f76674f07848640181d558129c455689cbc627a9710c",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/projected/korean-depth-0-ganada-1.pdf",
+    "wordPdfSha256": "9ba2f5409b1d77c55d4c1ae7ad23ba3f34d591cf406d303b49a0192d13484228",
+    "wordListStrings": [
+      "BEGIN\uac00END",
+      "BEGIN\ub098END",
+      "BEGIN\ub2e4END",
+      "BEGIN\ub77cEND",
+      "BEGIN\ub9c8END",
+      "BEGIN\ubc14END"
+    ],
+    "pdfLabels": [
+      "BEGIN\uac00END",
+      "BEGIN\ub098END",
+      "BEGIN\ub2e4END",
+      "BEGIN\ub77cEND",
+      "BEGIN\ub9c8END",
+      "BEGIN\ubc14END"
+    ]
+  },
+  {
+    "name": "korean-depth-0-ganada-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "ganada-1",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanAlphabet/source/korean-depth-0-ganada-1.docx",
+    "sourceSha256": "2284ee19e0fcf1abb75ce3bc500d4a59e5c838265e5b86b38fd913e1d875c2a6",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/source/korean-depth-0-ganada-1.pdf",
+    "wordPdfSha256": "fcfa7d137393174294b6b14cb9620f81e0ee495e83db1c184e7f3e278f167dbd",
+    "wordListStrings": [
+      "BEGIN\uac00END",
+      "BEGIN\ub098END",
+      "BEGIN\ub2e4END",
+      "BEGIN\ub77cEND",
+      "BEGIN\ub9c8END",
+      "BEGIN\ubc14END"
+    ],
+    "pdfLabels": [
+      "BEGIN\uac00END",
+      "BEGIN\ub098END",
+      "BEGIN\ub2e4END",
+      "BEGIN\ub77cEND",
+      "BEGIN\ub9c8END",
+      "BEGIN\ubc14END"
+    ]
+  },
+  {
+    "name": "korean-depth-0-ganada-13",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "ganada-13",
+    "source": "fixtures/doc/regressions/list-markers/KoreanAlphabet/korean-depth-0-ganada-13.doc",
+    "sourceSha256": "d768d45afe5b270dafb553e63a04cd9ff672a0924a846f7a71dbe4a6a493a311",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/doc/korean-depth-0-ganada-13.pdf",
+    "wordPdfSha256": "aa44b23c6111e6ef396eb6203b15b8c157568cd8689f320c19ad6b6ed3f0651d",
+    "wordListStrings": [
+      "BEGIN\ud30cEND",
+      "BEGIN\ud558END",
+      "BEGIN\uac00END",
+      "BEGIN\ub098END",
+      "BEGIN\ub2e4END",
+      "BEGIN\ub77cEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\ud30cEND",
+      "BEGIN\ud558END",
+      "BEGIN\uac00END",
+      "BEGIN\ub098END",
+      "BEGIN\ub2e4END",
+      "BEGIN\ub77cEND"
+    ]
+  },
+  {
+    "name": "korean-depth-0-ganada-13",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "ganada-13",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanAlphabet/projected/korean-depth-0-ganada-13.docx",
+    "sourceSha256": "4ed205ea5d14271ca37c22d47d54cc4d2607f2a07b279acff26df2b8b463a9e2",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/projected/korean-depth-0-ganada-13.pdf",
+    "wordPdfSha256": "92bde083049e8697c72be391abe31d06496e4771232082d862faad3770d216e8",
+    "wordListStrings": [
+      "BEGIN\ud30cEND",
+      "BEGIN\ud558END",
+      "BEGIN\uac00END",
+      "BEGIN\ub098END",
+      "BEGIN\ub2e4END",
+      "BEGIN\ub77cEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\ud30cEND",
+      "BEGIN\ud558END",
+      "BEGIN\uac00END",
+      "BEGIN\ub098END",
+      "BEGIN\ub2e4END",
+      "BEGIN\ub77cEND"
+    ]
+  },
+  {
+    "name": "korean-depth-0-ganada-13",
+    "kind": "source",
+    "depth": 0,
+    "mode": "ganada-13",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanAlphabet/source/korean-depth-0-ganada-13.docx",
+    "sourceSha256": "2efaae5951fd93a2699fceee6d231ae1fc024dcac6c069fba72770e08612eb5c",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/source/korean-depth-0-ganada-13.pdf",
+    "wordPdfSha256": "5f21cfc9eac8d23bbd2f7773d2fa3bdcfa3a6e7a0cdceada106144b2769a554c",
+    "wordListStrings": [
+      "BEGIN\ud30cEND",
+      "BEGIN\ud558END",
+      "BEGIN\uac00END",
+      "BEGIN\ub098END",
+      "BEGIN\ub2e4END",
+      "BEGIN\ub77cEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\ud30cEND",
+      "BEGIN\ud558END",
+      "BEGIN\uac00END",
+      "BEGIN\ub098END",
+      "BEGIN\ub2e4END",
+      "BEGIN\ub77cEND"
+    ]
+  },
+  {
+    "name": "korean-depth-0-ganada-19",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "ganada-19",
+    "source": "fixtures/doc/regressions/list-markers/KoreanAlphabet/korean-depth-0-ganada-19.doc",
+    "sourceSha256": "2216245d19658d687f86de08e94c8d83336c1ee751ddc21266e79bb8bb9e52fc",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/doc/korean-depth-0-ganada-19.pdf",
+    "wordPdfSha256": "68a5fca25dc32f0e1704c0a8d60be567c84fe00b6201ebf68b46abcb0f310bb7",
+    "wordListStrings": [
+      "BEGIN\ub9c8END",
+      "BEGIN\ubc14END",
+      "BEGIN\uc0acEND",
+      "BEGIN\uc544END",
+      "BEGIN\uc790END",
+      "BEGIN\ucc28END"
+    ],
+    "pdfLabels": [
+      "BEGIN\ub9c8END",
+      "BEGIN\ubc14END",
+      "BEGIN\uc0acEND",
+      "BEGIN\uc544END",
+      "BEGIN\uc790END",
+      "BEGIN\ucc28END"
+    ]
+  },
+  {
+    "name": "korean-depth-0-ganada-19",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "ganada-19",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanAlphabet/projected/korean-depth-0-ganada-19.docx",
+    "sourceSha256": "a226a1105d8ee560eee5a6d954eb066ab8ec67e4824ef740359c46a2869f06cb",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/projected/korean-depth-0-ganada-19.pdf",
+    "wordPdfSha256": "93056b22506ae2e55d7885296a059b8e80c2a8fb0ba31ed600bcdd4ef535e1a6",
+    "wordListStrings": [
+      "BEGIN\ub9c8END",
+      "BEGIN\ubc14END",
+      "BEGIN\uc0acEND",
+      "BEGIN\uc544END",
+      "BEGIN\uc790END",
+      "BEGIN\ucc28END"
+    ],
+    "pdfLabels": [
+      "BEGIN\ub9c8END",
+      "BEGIN\ubc14END",
+      "BEGIN\uc0acEND",
+      "BEGIN\uc544END",
+      "BEGIN\uc790END",
+      "BEGIN\ucc28END"
+    ]
+  },
+  {
+    "name": "korean-depth-0-ganada-19",
+    "kind": "source",
+    "depth": 0,
+    "mode": "ganada-19",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanAlphabet/source/korean-depth-0-ganada-19.docx",
+    "sourceSha256": "45433e4e998c6d7c6da76c785e00ffb26443f48d2a43eeca459d9b1198e1ff15",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/source/korean-depth-0-ganada-19.pdf",
+    "wordPdfSha256": "e7ce00a100453879c9102410c273fca0c67cc6a554395bee18e1b1b6d71acfec",
+    "wordListStrings": [
+      "BEGIN\ub9c8END",
+      "BEGIN\ubc14END",
+      "BEGIN\uc0acEND",
+      "BEGIN\uc544END",
+      "BEGIN\uc790END",
+      "BEGIN\ucc28END"
+    ],
+    "pdfLabels": [
+      "BEGIN\ub9c8END",
+      "BEGIN\ubc14END",
+      "BEGIN\uc0acEND",
+      "BEGIN\uc544END",
+      "BEGIN\uc790END",
+      "BEGIN\ucc28END"
+    ]
+  },
+  {
+    "name": "korean-depth-8-chosung-1",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "chosung-1",
+    "source": "fixtures/doc/regressions/list-markers/KoreanAlphabet/korean-depth-8-chosung-1.doc",
+    "sourceSha256": "9603a0753cfdf803957d8acb2f4a32681bb0c0dab73bcc52ea8e6653ba80f3ab",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/doc/korean-depth-8-chosung-1.pdf",
+    "wordPdfSha256": "0a14408eee44de3534a6da03df86338fa730c39eda2b870345b4667ca585d1c6",
+    "wordListStrings": [
+      "BEGIN\u3131END",
+      "BEGIN\u3134END",
+      "BEGIN\u3137END",
+      "BEGIN\u3139END",
+      "BEGIN\u3141END",
+      "BEGIN\u3142END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u3131END",
+      "BEGIN\u3134END",
+      "BEGIN\u3137END",
+      "BEGIN\u3139END",
+      "BEGIN\u3141END",
+      "BEGIN\u3142END"
+    ]
+  },
+  {
+    "name": "korean-depth-8-chosung-1",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "chosung-1",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanAlphabet/projected/korean-depth-8-chosung-1.docx",
+    "sourceSha256": "e754f36a32d8c38c9c9b84f03f36935beff640126bbc5c9d326020f11901272d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/projected/korean-depth-8-chosung-1.pdf",
+    "wordPdfSha256": "59466f35e96126d2ccffa1a15f584720ccca8ae7443397dff8c309fdd8b5bfe9",
+    "wordListStrings": [
+      "BEGIN\u3131END",
+      "BEGIN\u3134END",
+      "BEGIN\u3137END",
+      "BEGIN\u3139END",
+      "BEGIN\u3141END",
+      "BEGIN\u3142END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u3131END",
+      "BEGIN\u3134END",
+      "BEGIN\u3137END",
+      "BEGIN\u3139END",
+      "BEGIN\u3141END",
+      "BEGIN\u3142END"
+    ]
+  },
+  {
+    "name": "korean-depth-8-chosung-1",
+    "kind": "source",
+    "depth": 8,
+    "mode": "chosung-1",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanAlphabet/source/korean-depth-8-chosung-1.docx",
+    "sourceSha256": "c6e49684693530e0f31c31d48f6b61d45e894f4a23f99833663bac8b0e27688e",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/source/korean-depth-8-chosung-1.pdf",
+    "wordPdfSha256": "0b22a782f54bc13d5b53b55b47931567208d43ca23b52040de7407691055899c",
+    "wordListStrings": [
+      "BEGIN\u3131END",
+      "BEGIN\u3134END",
+      "BEGIN\u3137END",
+      "BEGIN\u3139END",
+      "BEGIN\u3141END",
+      "BEGIN\u3142END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u3131END",
+      "BEGIN\u3134END",
+      "BEGIN\u3137END",
+      "BEGIN\u3139END",
+      "BEGIN\u3141END",
+      "BEGIN\u3142END"
+    ]
+  },
+  {
+    "name": "korean-depth-8-chosung-13",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "chosung-13",
+    "source": "fixtures/doc/regressions/list-markers/KoreanAlphabet/korean-depth-8-chosung-13.doc",
+    "sourceSha256": "54014cc161a958419d283c39256e3517671324cc62e06f7ea89175943651d751",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/doc/korean-depth-8-chosung-13.pdf",
+    "wordPdfSha256": "2dc24139cb0aa4b3b517b1bbd601c221d3e30c8203510e5ce2f580c08ca1fe51",
+    "wordListStrings": [
+      "BEGIN\u314dEND",
+      "BEGIN\u314eEND",
+      "BEGIN\u3131END",
+      "BEGIN\u3134END",
+      "BEGIN\u3137END",
+      "BEGIN\u3139END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u314dEND",
+      "BEGIN\u314eEND",
+      "BEGIN\u3131END",
+      "BEGIN\u3134END",
+      "BEGIN\u3137END",
+      "BEGIN\u3139END"
+    ]
+  },
+  {
+    "name": "korean-depth-8-chosung-13",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "chosung-13",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanAlphabet/projected/korean-depth-8-chosung-13.docx",
+    "sourceSha256": "4391736af35e3cbe36899d9be375b9942f1c3f838612d600494ca5652f607ad3",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/projected/korean-depth-8-chosung-13.pdf",
+    "wordPdfSha256": "5f28d4d7852d15446ea0df401f5c2e449647bb8b03f0b3d50a249eb06a272c55",
+    "wordListStrings": [
+      "BEGIN\u314dEND",
+      "BEGIN\u314eEND",
+      "BEGIN\u3131END",
+      "BEGIN\u3134END",
+      "BEGIN\u3137END",
+      "BEGIN\u3139END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u314dEND",
+      "BEGIN\u314eEND",
+      "BEGIN\u3131END",
+      "BEGIN\u3134END",
+      "BEGIN\u3137END",
+      "BEGIN\u3139END"
+    ]
+  },
+  {
+    "name": "korean-depth-8-chosung-13",
+    "kind": "source",
+    "depth": 8,
+    "mode": "chosung-13",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanAlphabet/source/korean-depth-8-chosung-13.docx",
+    "sourceSha256": "2810781df898927be9e70ae5e00240202ac7eeee34bca868a0eba4d1f16cc80f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/source/korean-depth-8-chosung-13.pdf",
+    "wordPdfSha256": "60f3caad92b8ba558e32f74f06f8697a91e912867b7280b78b64fc8e7d8cc61c",
+    "wordListStrings": [
+      "BEGIN\u314dEND",
+      "BEGIN\u314eEND",
+      "BEGIN\u3131END",
+      "BEGIN\u3134END",
+      "BEGIN\u3137END",
+      "BEGIN\u3139END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u314dEND",
+      "BEGIN\u314eEND",
+      "BEGIN\u3131END",
+      "BEGIN\u3134END",
+      "BEGIN\u3137END",
+      "BEGIN\u3139END"
+    ]
+  },
+  {
+    "name": "korean-depth-8-chosung-19",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "chosung-19",
+    "source": "fixtures/doc/regressions/list-markers/KoreanAlphabet/korean-depth-8-chosung-19.doc",
+    "sourceSha256": "e7a6486cb8d6efb03c398a9c03bcfad01ae7499682f18095060956fbeda4ae48",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/doc/korean-depth-8-chosung-19.pdf",
+    "wordPdfSha256": "09f547ea63b8f74ef0b63f6fe00123c1412a55ba08fbfabf7132e8c936e555d4",
+    "wordListStrings": [
+      "BEGIN\u3141END",
+      "BEGIN\u3142END",
+      "BEGIN\u3145END",
+      "BEGIN\u3147END",
+      "BEGIN\u3148END",
+      "BEGIN\u314aEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u3141END",
+      "BEGIN\u3142END",
+      "BEGIN\u3145END",
+      "BEGIN\u3147END",
+      "BEGIN\u3148END",
+      "BEGIN\u314aEND"
+    ]
+  },
+  {
+    "name": "korean-depth-8-chosung-19",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "chosung-19",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanAlphabet/projected/korean-depth-8-chosung-19.docx",
+    "sourceSha256": "a4e55df44dd357695163cdb30c280b853fd246524547f825dde247d142d98d0f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/projected/korean-depth-8-chosung-19.pdf",
+    "wordPdfSha256": "19234dc5dbd73fdf3cc35c9af163a1f132bcca54665c0a943300fb72c8b75083",
+    "wordListStrings": [
+      "BEGIN\u3141END",
+      "BEGIN\u3142END",
+      "BEGIN\u3145END",
+      "BEGIN\u3147END",
+      "BEGIN\u3148END",
+      "BEGIN\u314aEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u3141END",
+      "BEGIN\u3142END",
+      "BEGIN\u3145END",
+      "BEGIN\u3147END",
+      "BEGIN\u3148END",
+      "BEGIN\u314aEND"
+    ]
+  },
+  {
+    "name": "korean-depth-8-chosung-19",
+    "kind": "source",
+    "depth": 8,
+    "mode": "chosung-19",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanAlphabet/source/korean-depth-8-chosung-19.docx",
+    "sourceSha256": "c5e4bf149aba0a57e75b7224463f0208eed82ce8ad9aa2a58a3e6200d0e2f220",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/source/korean-depth-8-chosung-19.pdf",
+    "wordPdfSha256": "dfe93012af6e4e79dcd5a0dd20f0e3ce2ec90d061d99cb625183a8e0db640b05",
+    "wordListStrings": [
+      "BEGIN\u3141END",
+      "BEGIN\u3142END",
+      "BEGIN\u3145END",
+      "BEGIN\u3147END",
+      "BEGIN\u3148END",
+      "BEGIN\u314aEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u3141END",
+      "BEGIN\u3142END",
+      "BEGIN\u3145END",
+      "BEGIN\u3147END",
+      "BEGIN\u3148END",
+      "BEGIN\u314aEND"
+    ]
+  },
+  {
+    "name": "korean-depth-8-ganada-1",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "ganada-1",
+    "source": "fixtures/doc/regressions/list-markers/KoreanAlphabet/korean-depth-8-ganada-1.doc",
+    "sourceSha256": "73ab2ed0732e7a7bb4132421b2f824b3227338fb8f928b89f07e6bdd58ea46d7",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/doc/korean-depth-8-ganada-1.pdf",
+    "wordPdfSha256": "fd7eda242c35328f4341810763c89ee55354a20427087261c2d4174727afa1ea",
+    "wordListStrings": [
+      "BEGIN\uac00END",
+      "BEGIN\ub098END",
+      "BEGIN\ub2e4END",
+      "BEGIN\ub77cEND",
+      "BEGIN\ub9c8END",
+      "BEGIN\ubc14END"
+    ],
+    "pdfLabels": [
+      "BEGIN\uac00END",
+      "BEGIN\ub098END",
+      "BEGIN\ub2e4END",
+      "BEGIN\ub77cEND",
+      "BEGIN\ub9c8END",
+      "BEGIN\ubc14END"
+    ]
+  },
+  {
+    "name": "korean-depth-8-ganada-1",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "ganada-1",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanAlphabet/projected/korean-depth-8-ganada-1.docx",
+    "sourceSha256": "dca30a2a9c411cebf28456e2547c1c0134587b931251cd9261c776a34e4ac516",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/projected/korean-depth-8-ganada-1.pdf",
+    "wordPdfSha256": "b9993afd44f1ee293f226b40b2e6494ebb7617e8fa145749c7a7ab63ece37184",
+    "wordListStrings": [
+      "BEGIN\uac00END",
+      "BEGIN\ub098END",
+      "BEGIN\ub2e4END",
+      "BEGIN\ub77cEND",
+      "BEGIN\ub9c8END",
+      "BEGIN\ubc14END"
+    ],
+    "pdfLabels": [
+      "BEGIN\uac00END",
+      "BEGIN\ub098END",
+      "BEGIN\ub2e4END",
+      "BEGIN\ub77cEND",
+      "BEGIN\ub9c8END",
+      "BEGIN\ubc14END"
+    ]
+  },
+  {
+    "name": "korean-depth-8-ganada-1",
+    "kind": "source",
+    "depth": 8,
+    "mode": "ganada-1",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanAlphabet/source/korean-depth-8-ganada-1.docx",
+    "sourceSha256": "07b9d96adaead0f3d0c2ee8745b9dee3949780823f490c72ff4e8c0f585e8133",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/source/korean-depth-8-ganada-1.pdf",
+    "wordPdfSha256": "aecda7578c8dcf46256625be4327e19ed52c607ebd28706e6a1be3d8bd39220c",
+    "wordListStrings": [
+      "BEGIN\uac00END",
+      "BEGIN\ub098END",
+      "BEGIN\ub2e4END",
+      "BEGIN\ub77cEND",
+      "BEGIN\ub9c8END",
+      "BEGIN\ubc14END"
+    ],
+    "pdfLabels": [
+      "BEGIN\uac00END",
+      "BEGIN\ub098END",
+      "BEGIN\ub2e4END",
+      "BEGIN\ub77cEND",
+      "BEGIN\ub9c8END",
+      "BEGIN\ubc14END"
+    ]
+  },
+  {
+    "name": "korean-depth-8-ganada-13",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "ganada-13",
+    "source": "fixtures/doc/regressions/list-markers/KoreanAlphabet/korean-depth-8-ganada-13.doc",
+    "sourceSha256": "82559e63790dc2df28492b1e6df567183dd414f7967fa796911f93c3ea5c4c7a",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/doc/korean-depth-8-ganada-13.pdf",
+    "wordPdfSha256": "27221b0fdbbb6be187b7aaf4fb55cfeaed5d4f6cee8274816533273b0eff96ad",
+    "wordListStrings": [
+      "BEGIN\ud30cEND",
+      "BEGIN\ud558END",
+      "BEGIN\uac00END",
+      "BEGIN\ub098END",
+      "BEGIN\ub2e4END",
+      "BEGIN\ub77cEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\ud30cEND",
+      "BEGIN\ud558END",
+      "BEGIN\uac00END",
+      "BEGIN\ub098END",
+      "BEGIN\ub2e4END",
+      "BEGIN\ub77cEND"
+    ]
+  },
+  {
+    "name": "korean-depth-8-ganada-13",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "ganada-13",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanAlphabet/projected/korean-depth-8-ganada-13.docx",
+    "sourceSha256": "227fb7c6317d8b5fe5916082c7ec3b43f01c4cdca21f7477ad584e4f980ec90e",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/projected/korean-depth-8-ganada-13.pdf",
+    "wordPdfSha256": "32726fab741207fbe12826cafe2f838ba8fb9ad061fd017e83b8466b2e72815e",
+    "wordListStrings": [
+      "BEGIN\ud30cEND",
+      "BEGIN\ud558END",
+      "BEGIN\uac00END",
+      "BEGIN\ub098END",
+      "BEGIN\ub2e4END",
+      "BEGIN\ub77cEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\ud30cEND",
+      "BEGIN\ud558END",
+      "BEGIN\uac00END",
+      "BEGIN\ub098END",
+      "BEGIN\ub2e4END",
+      "BEGIN\ub77cEND"
+    ]
+  },
+  {
+    "name": "korean-depth-8-ganada-13",
+    "kind": "source",
+    "depth": 8,
+    "mode": "ganada-13",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanAlphabet/source/korean-depth-8-ganada-13.docx",
+    "sourceSha256": "d022973abfc32bf30d6e232863517f111e280d2822635a057ca097807cd1a5d8",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/source/korean-depth-8-ganada-13.pdf",
+    "wordPdfSha256": "44228eb0e20231529c543425f3bfe39389291988ee8e4ceda22fd84049799e31",
+    "wordListStrings": [
+      "BEGIN\ud30cEND",
+      "BEGIN\ud558END",
+      "BEGIN\uac00END",
+      "BEGIN\ub098END",
+      "BEGIN\ub2e4END",
+      "BEGIN\ub77cEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\ud30cEND",
+      "BEGIN\ud558END",
+      "BEGIN\uac00END",
+      "BEGIN\ub098END",
+      "BEGIN\ub2e4END",
+      "BEGIN\ub77cEND"
+    ]
+  },
+  {
+    "name": "korean-depth-8-ganada-19",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "ganada-19",
+    "source": "fixtures/doc/regressions/list-markers/KoreanAlphabet/korean-depth-8-ganada-19.doc",
+    "sourceSha256": "d47dc92131ccdf4efba457474f1d923e1f9cd3832aa26f8496808348f54bfb4c",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/doc/korean-depth-8-ganada-19.pdf",
+    "wordPdfSha256": "3a42bca892fdc0bc6cbd7950eb4586bb2c8e64639faba24122f41f3ccc1ef5c1",
+    "wordListStrings": [
+      "BEGIN\ub9c8END",
+      "BEGIN\ubc14END",
+      "BEGIN\uc0acEND",
+      "BEGIN\uc544END",
+      "BEGIN\uc790END",
+      "BEGIN\ucc28END"
+    ],
+    "pdfLabels": [
+      "BEGIN\ub9c8END",
+      "BEGIN\ubc14END",
+      "BEGIN\uc0acEND",
+      "BEGIN\uc544END",
+      "BEGIN\uc790END",
+      "BEGIN\ucc28END"
+    ]
+  },
+  {
+    "name": "korean-depth-8-ganada-19",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "ganada-19",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanAlphabet/projected/korean-depth-8-ganada-19.docx",
+    "sourceSha256": "cd2973981291509f45e1b74774490e3c95c60c19d5b4284238c963a0a55bf292",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/projected/korean-depth-8-ganada-19.pdf",
+    "wordPdfSha256": "88154e6da7786190feced8f491839e6050d1d942c00694f438f01023539e1129",
+    "wordListStrings": [
+      "BEGIN\ub9c8END",
+      "BEGIN\ubc14END",
+      "BEGIN\uc0acEND",
+      "BEGIN\uc544END",
+      "BEGIN\uc790END",
+      "BEGIN\ucc28END"
+    ],
+    "pdfLabels": [
+      "BEGIN\ub9c8END",
+      "BEGIN\ubc14END",
+      "BEGIN\uc0acEND",
+      "BEGIN\uc544END",
+      "BEGIN\uc790END",
+      "BEGIN\ucc28END"
+    ]
+  },
+  {
+    "name": "korean-depth-8-ganada-19",
+    "kind": "source",
+    "depth": 8,
+    "mode": "ganada-19",
+    "source": "fixtures/docx/regressions/list-markers/DocKoreanAlphabet/source/korean-depth-8-ganada-19.docx",
+    "sourceSha256": "5435b101813f8fdb783adf9bcaa0471162d7173f27d66d0b70b4231161744c8b",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocKoreanAlphabet/source/korean-depth-8-ganada-19.pdf",
+    "wordPdfSha256": "7ae4953ac87ecc6d1cd7c93a681f29d4f173157058027028572e591579f7f7b5",
+    "wordListStrings": [
+      "BEGIN\ub9c8END",
+      "BEGIN\ubc14END",
+      "BEGIN\uc0acEND",
+      "BEGIN\uc544END",
+      "BEGIN\uc790END",
+      "BEGIN\ucc28END"
+    ],
+    "pdfLabels": [
+      "BEGIN\ub9c8END",
+      "BEGIN\ubc14END",
+      "BEGIN\uc0acEND",
+      "BEGIN\uc544END",
+      "BEGIN\uc790END",
+      "BEGIN\ucc28END"
+    ]
+  }
+]

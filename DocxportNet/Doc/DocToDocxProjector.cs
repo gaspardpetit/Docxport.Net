@@ -356,6 +356,8 @@ public sealed class DocToDocxProjector
                 0x13 => NumberFormatValues.DecimalFullWidth2,
                 0x16 => NumberFormatValues.DecimalZero,
                 0x17 => NumberFormatValues.Bullet,
+                0x18 => NumberFormatValues.Ganada,
+                0x19 => NumberFormatValues.Chosung,
                 0x39 => NumberFormatValues.NumberInDash,
                 0x3A => NumberFormatValues.RussianLower,
                 0x3B => NumberFormatValues.RussianUpper,
