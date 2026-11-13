@@ -1,0 +1,71 @@
+[
+  {
+    "name": "replacement-depth-0-shared-high",
+    "source": "fixtures/docx/regressions/list-markers/DocReplacementStart/before/replacement-depth-0-shared-high.docx",
+    "sourceSha256": "6114dfaf092f90090d561e75474d515e6175a7957f95f52a46015fec194ef64c",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocReplacementStart/before/replacement-depth-0-shared-high.pdf",
+    "wordPdfSha256": "522c36f8bb15735fb3768904a1ac3f2380c05e7cf17183c5e4405cf1ffc1007e",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINIIEND",
+      "BEGINIIIEND",
+      "BEGIN4END",
+      "BEGINVEND"
+    ],
+    "expectedSourceListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINVIIEND",
+      "BEGINVIIIEND",
+      "BEGIN9END",
+      "BEGINXEND"
+    ]
+  },
+  {
+    "name": "replacement-depth-1-shared-high",
+    "source": "fixtures/docx/regressions/list-markers/DocReplacementStart/before/replacement-depth-1-shared-high.docx",
+    "sourceSha256": "864f21a40cab1b2f5654c31d8705233d83894e2b5aa4f0b455197f09c936325a",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocReplacementStart/before/replacement-depth-1-shared-high.pdf",
+    "wordPdfSha256": "761da0fedbc51fc1a9bcbef15c9c64a2bb37572476d5302a6967b60ef74e5654",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINIIEND",
+      "BEGINIIIEND",
+      "BEGIN4END",
+      "BEGINVEND"
+    ],
+    "expectedSourceListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGINVIIEND",
+      "BEGINVIIIEND",
+      "BEGIN9END",
+      "BEGINXEND"
+    ]
+  },
+  {
+    "name": "replacement-depth-8-single-low",
+    "source": "fixtures/docx/regressions/list-markers/DocReplacementStart/before/replacement-depth-8-single-low.docx",
+    "sourceSha256": "52b15c773416b3cefa544f8736bdb0526ffa4eaf4df2fe20c24e4675e9dfd760",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocReplacementStart/before/replacement-depth-8-single-low.pdf",
+    "wordPdfSha256": "5adecac11931518ca74d906c9f193df3fd104f3703d5aa1163dcf5b3fa7196ee",
+    "wordListStrings": [
+      "BEGINVIIEND",
+      "BEGINVIIIEND",
+      "BEGINIXEND",
+      "BEGINXEND",
+      "BEGINXIEND",
+      "BEGINXIIEND"
+    ],
+    "expectedSourceListStrings": [
+      "BEGINIIEND",
+      "BEGINIIIEND",
+      "BEGINIVEND",
+      "BEGINVEND",
+      "BEGINVIEND",
+      "BEGINVIIEND"
+    ]
+  }
+]

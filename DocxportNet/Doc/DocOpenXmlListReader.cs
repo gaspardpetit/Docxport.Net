@@ -119,7 +119,10 @@ internal static class DocOpenXmlListReader
                 if (level.LevelIndex?.Value is not int levelIndex || levelIndex is < 0 or > 8)
                     throw new InvalidDataException("A DOCX list override has an invalid level.");
                 if (level.StartOverrideNumberingValue?.Val?.Value is int start)
-                    starts[levelIndex] = start;
+                    // Word gives an explicit replacement-level start precedence.
+                    // DOC stores the effective start in the nested LVL when
+                    // both start and formatting overrides are present.
+                    starts[levelIndex] = level.Level?.StartNumberingValue?.Val?.Value ?? start;
                 // Replacement activation has separate rules; retain its existing
                 // fallback while fixing omitted starts in abstract definitions.
                 if (level.Level != null)
