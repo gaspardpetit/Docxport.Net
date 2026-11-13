@@ -1009,7 +1009,11 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
         var formatting = ReadParagraphFormatting(paragraph.ParagraphProperties);
         // DOC paragraph formatting must retain the effective pair: a direct
         // numId or ilvl can inherit its other half from a paragraph style.
-        if (context.Styles.ResolveEffectiveNumPr(paragraph) is { } numbering)
+        var directNumbering = paragraph.ParagraphProperties?.NumberingProperties;
+        var hasNumberId = directNumbering?.NumberingId?.Val?.Value != null;
+        var hasLevel = directNumbering?.NumberingLevelReference?.Val?.Value != null;
+        if (hasNumberId != hasLevel &&
+            context.Styles.ResolveEffectiveNumPr(paragraph) is { } numbering)
         {
             if (!_listNumberIds.TryGetValue(numbering.NumId, out var listIndex))
                 throw new InvalidDataException($"DOCX list {numbering.NumId} has no numbering instance.");
