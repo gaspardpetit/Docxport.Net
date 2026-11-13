@@ -1,0 +1,56 @@
+[
+  {
+    "name": "sexagenary-depth-0-traditional-1",
+    "depth": 0,
+    "mode": "traditional-1",
+    "error": "DOCX list format 'ideographTraditional' is unsupported."
+  },
+  {
+    "name": "sexagenary-depth-0-traditional-9",
+    "depth": 0,
+    "mode": "traditional-9",
+    "error": "DOCX list format 'ideographTraditional' is unsupported."
+  },
+  {
+    "name": "sexagenary-depth-8-traditional-9",
+    "depth": 8,
+    "mode": "traditional-9",
+    "error": "DOCX list format 'ideographTraditional' is unsupported."
+  },
+  {
+    "name": "sexagenary-depth-0-zodiac-1",
+    "depth": 0,
+    "mode": "zodiac-1",
+    "error": "DOCX list format 'ideographZodiac' is unsupported."
+  },
+  {
+    "name": "sexagenary-depth-0-zodiac-11",
+    "depth": 0,
+    "mode": "zodiac-11",
+    "error": "DOCX list format 'ideographZodiac' is unsupported."
+  },
+  {
+    "name": "sexagenary-depth-8-zodiac-11",
+    "depth": 8,
+    "mode": "zodiac-11",
+    "error": "DOCX list format 'ideographZodiac' is unsupported."
+  },
+  {
+    "name": "sexagenary-depth-0-cycle-1",
+    "depth": 0,
+    "mode": "cycle-1",
+    "error": "DOCX list format 'ideographZodiacTraditional' is unsupported."
+  },
+  {
+    "name": "sexagenary-depth-0-cycle-59",
+    "depth": 0,
+    "mode": "cycle-59",
+    "error": "DOCX list format 'ideographZodiacTraditional' is unsupported."
+  },
+  {
+    "name": "sexagenary-depth-8-cycle-59",
+    "depth": 8,
+    "mode": "cycle-59",
+    "error": "DOCX list format 'ideographZodiacTraditional' is unsupported."
+  }
+]

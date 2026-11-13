@@ -1,0 +1,704 @@
+[
+  {
+    "name": "sexagenary-depth-0-cycle-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "cycle-1",
+    "source": "fixtures/doc/regressions/list-markers/SexagenaryMarkers/sexagenary-depth-0-cycle-1.doc",
+    "sourceSha256": "9d7c5a431a2a80025e6d6757cec73454f6a9c3333abf030f1c3a7c42da388d36",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSexagenaryMarkers/doc/sexagenary-depth-0-cycle-1.pdf",
+    "wordPdfSha256": "73a9f9fd9f70911378e51bac2500cfe90a029a42af4d37fa3d734bf2a7879068",
+    "wordListStrings": [
+      "BEGIN\u7532\u5b50END",
+      "BEGIN\u4e59\u4e11END",
+      "BEGIN\u4e19\u5bc5END",
+      "BEGIN\u4e01\u536fEND",
+      "BEGIN\u620a\u8fb0END",
+      "BEGIN\u5df1\u5df3END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u7532\u5b50END",
+      "BEGIN\u4e59\u4e11END",
+      "BEGIN\u4e19\u5bc5END",
+      "BEGIN\u4e01\u536fEND",
+      "BEGIN\u620a\u8fb0END",
+      "BEGIN\u5df1\u5df3END"
+    ]
+  },
+  {
+    "name": "sexagenary-depth-0-cycle-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "cycle-1",
+    "source": "fixtures/docx/regressions/list-markers/DocSexagenaryMarkers/projected/sexagenary-depth-0-cycle-1.docx",
+    "sourceSha256": "2c32f72dbee3bdc40b0a6009bf0e2ed44b386ddd479ddaf1b369272d82c01226",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSexagenaryMarkers/projected/sexagenary-depth-0-cycle-1.pdf",
+    "wordPdfSha256": "6376f7ad5475b5351e399bc12a3c4079c82a2565d8050c61e54415b01f0f363f",
+    "wordListStrings": [
+      "BEGIN\u7532\u5b50END",
+      "BEGIN\u4e59\u4e11END",
+      "BEGIN\u4e19\u5bc5END",
+      "BEGIN\u4e01\u536fEND",
+      "BEGIN\u620a\u8fb0END",
+      "BEGIN\u5df1\u5df3END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u7532\u5b50END",
+      "BEGIN\u4e59\u4e11END",
+      "BEGIN\u4e19\u5bc5END",
+      "BEGIN\u4e01\u536fEND",
+      "BEGIN\u620a\u8fb0END",
+      "BEGIN\u5df1\u5df3END"
+    ]
+  },
+  {
+    "name": "sexagenary-depth-0-cycle-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "cycle-1",
+    "source": "fixtures/docx/regressions/list-markers/DocSexagenaryMarkers/source/sexagenary-depth-0-cycle-1.docx",
+    "sourceSha256": "510fd1ac46dae73e7dc9df93482abab220d0b61358e317bb6e7e845930a6ccbe",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSexagenaryMarkers/source/sexagenary-depth-0-cycle-1.pdf",
+    "wordPdfSha256": "a1f7a02490182b2141bea9fb157729d17e400fedcd632876b8c324944d8b5ba3",
+    "wordListStrings": [
+      "BEGIN\u7532\u5b50END",
+      "BEGIN\u4e59\u4e11END",
+      "BEGIN\u4e19\u5bc5END",
+      "BEGIN\u4e01\u536fEND",
+      "BEGIN\u620a\u8fb0END",
+      "BEGIN\u5df1\u5df3END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u7532\u5b50END",
+      "BEGIN\u4e59\u4e11END",
+      "BEGIN\u4e19\u5bc5END",
+      "BEGIN\u4e01\u536fEND",
+      "BEGIN\u620a\u8fb0END",
+      "BEGIN\u5df1\u5df3END"
+    ]
+  },
+  {
+    "name": "sexagenary-depth-0-cycle-59",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "cycle-59",
+    "source": "fixtures/doc/regressions/list-markers/SexagenaryMarkers/sexagenary-depth-0-cycle-59.doc",
+    "sourceSha256": "388177afe676df180f5298b2ebb594c9b12df8f13d2e0d987a6ea64026f89416",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSexagenaryMarkers/doc/sexagenary-depth-0-cycle-59.pdf",
+    "wordPdfSha256": "73283e80a37d05a69a3e6afd59d81f1453837e24606850cb5c2c260205231a32",
+    "wordListStrings": [
+      "BEGIN\u58ec\u620dEND",
+      "BEGIN\u7678\u4ea5END",
+      "BEGIN\u7532\u5b50END",
+      "BEGIN\u4e59\u4e11END",
+      "BEGIN\u4e19\u5bc5END",
+      "BEGIN\u4e01\u536fEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u58ec\u620dEND",
+      "BEGIN\u7678\u4ea5END",
+      "BEGIN\u7532\u5b50END",
+      "BEGIN\u4e59\u4e11END",
+      "BEGIN\u4e19\u5bc5END",
+      "BEGIN\u4e01\u536fEND"
+    ]
+  },
+  {
+    "name": "sexagenary-depth-0-cycle-59",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "cycle-59",
+    "source": "fixtures/docx/regressions/list-markers/DocSexagenaryMarkers/projected/sexagenary-depth-0-cycle-59.docx",
+    "sourceSha256": "29bbbab9a0aeb0c8581e1bcc9e686321dd15937909f7b177ea02d6128f79fbc3",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSexagenaryMarkers/projected/sexagenary-depth-0-cycle-59.pdf",
+    "wordPdfSha256": "111e03e5b8706d0a2938a57ead6f4d54652d2ffc772f9f609b72c27b3790c113",
+    "wordListStrings": [
+      "BEGIN\u58ec\u620dEND",
+      "BEGIN\u7678\u4ea5END",
+      "BEGIN\u7532\u5b50END",
+      "BEGIN\u4e59\u4e11END",
+      "BEGIN\u4e19\u5bc5END",
+      "BEGIN\u4e01\u536fEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u58ec\u620dEND",
+      "BEGIN\u7678\u4ea5END",
+      "BEGIN\u7532\u5b50END",
+      "BEGIN\u4e59\u4e11END",
+      "BEGIN\u4e19\u5bc5END",
+      "BEGIN\u4e01\u536fEND"
+    ]
+  },
+  {
+    "name": "sexagenary-depth-0-cycle-59",
+    "kind": "source",
+    "depth": 0,
+    "mode": "cycle-59",
+    "source": "fixtures/docx/regressions/list-markers/DocSexagenaryMarkers/source/sexagenary-depth-0-cycle-59.docx",
+    "sourceSha256": "bde7cc0ddfeb4d8aa56735d4cd686c09a8ca9d7abcbb0f07ad3673a415146f8e",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSexagenaryMarkers/source/sexagenary-depth-0-cycle-59.pdf",
+    "wordPdfSha256": "2d2d126217189012638c91b55dd09f44d3842ff76afcc732089145d2b0a3fab9",
+    "wordListStrings": [
+      "BEGIN\u58ec\u620dEND",
+      "BEGIN\u7678\u4ea5END",
+      "BEGIN\u7532\u5b50END",
+      "BEGIN\u4e59\u4e11END",
+      "BEGIN\u4e19\u5bc5END",
+      "BEGIN\u4e01\u536fEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u58ec\u620dEND",
+      "BEGIN\u7678\u4ea5END",
+      "BEGIN\u7532\u5b50END",
+      "BEGIN\u4e59\u4e11END",
+      "BEGIN\u4e19\u5bc5END",
+      "BEGIN\u4e01\u536fEND"
+    ]
+  },
+  {
+    "name": "sexagenary-depth-0-traditional-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "traditional-1",
+    "source": "fixtures/doc/regressions/list-markers/SexagenaryMarkers/sexagenary-depth-0-traditional-1.doc",
+    "sourceSha256": "8dd325f4577b53d0df264c5c81ea4dacaf9973930d291fedab8f4bd0ca4ba2b6",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSexagenaryMarkers/doc/sexagenary-depth-0-traditional-1.pdf",
+    "wordPdfSha256": "3843fc996ce29b1e93c4149d80bca5d17ac9faee95769fcab9527c9fbff9ed9e",
+    "wordListStrings": [
+      "BEGIN\u7532END",
+      "BEGIN\u4e59END",
+      "BEGIN\u4e19END",
+      "BEGIN\u4e01END",
+      "BEGIN\u620aEND",
+      "BEGIN\u5df1END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u7532END",
+      "BEGIN\u4e59END",
+      "BEGIN\u4e19END",
+      "BEGIN\u4e01END",
+      "BEGIN\u620aEND",
+      "BEGIN\u5df1END"
+    ]
+  },
+  {
+    "name": "sexagenary-depth-0-traditional-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "traditional-1",
+    "source": "fixtures/docx/regressions/list-markers/DocSexagenaryMarkers/projected/sexagenary-depth-0-traditional-1.docx",
+    "sourceSha256": "036cbb0a57aac5424d10228db2c1e2d79b7f04ab93d666c230449c8ac230a269",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSexagenaryMarkers/projected/sexagenary-depth-0-traditional-1.pdf",
+    "wordPdfSha256": "ebf26744201a241a00edad8bf6f4ade636585efc886db8e4aa1bfb44c1a46a75",
+    "wordListStrings": [
+      "BEGIN\u7532END",
+      "BEGIN\u4e59END",
+      "BEGIN\u4e19END",
+      "BEGIN\u4e01END",
+      "BEGIN\u620aEND",
+      "BEGIN\u5df1END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u7532END",
+      "BEGIN\u4e59END",
+      "BEGIN\u4e19END",
+      "BEGIN\u4e01END",
+      "BEGIN\u620aEND",
+      "BEGIN\u5df1END"
+    ]
+  },
+  {
+    "name": "sexagenary-depth-0-traditional-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "traditional-1",
+    "source": "fixtures/docx/regressions/list-markers/DocSexagenaryMarkers/source/sexagenary-depth-0-traditional-1.docx",
+    "sourceSha256": "d13ce310a024ac9e8d27cdb1dddc4ff022d56e7bb2a4c6835c06669a85d61ef6",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSexagenaryMarkers/source/sexagenary-depth-0-traditional-1.pdf",
+    "wordPdfSha256": "848ab4a85c9dfac9fb14f925520da32bfbc9ffd611a0cb5b9ac305a9e2e75a87",
+    "wordListStrings": [
+      "BEGIN\u7532END",
+      "BEGIN\u4e59END",
+      "BEGIN\u4e19END",
+      "BEGIN\u4e01END",
+      "BEGIN\u620aEND",
+      "BEGIN\u5df1END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u7532END",
+      "BEGIN\u4e59END",
+      "BEGIN\u4e19END",
+      "BEGIN\u4e01END",
+      "BEGIN\u620aEND",
+      "BEGIN\u5df1END"
+    ]
+  },
+  {
+    "name": "sexagenary-depth-0-traditional-9",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "traditional-9",
+    "source": "fixtures/doc/regressions/list-markers/SexagenaryMarkers/sexagenary-depth-0-traditional-9.doc",
+    "sourceSha256": "ab80b208d81dea1bd0ab21bc4a7ef8ace9125140f98e644671d2d88951f942d0",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSexagenaryMarkers/doc/sexagenary-depth-0-traditional-9.pdf",
+    "wordPdfSha256": "93064d5805000cded19d06abd6d07b96c6d0bf97bb8bc84eebed4dfcc35686e9",
+    "wordListStrings": [
+      "BEGIN\u58ecEND",
+      "BEGIN\u7678END",
+      "BEGIN11END",
+      "BEGIN12END",
+      "BEGIN13END",
+      "BEGIN14END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u58ecEND",
+      "BEGIN\u7678END",
+      "BEGIN11END",
+      "BEGIN12END",
+      "BEGIN13END",
+      "BEGIN14END"
+    ]
+  },
+  {
+    "name": "sexagenary-depth-0-traditional-9",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "traditional-9",
+    "source": "fixtures/docx/regressions/list-markers/DocSexagenaryMarkers/projected/sexagenary-depth-0-traditional-9.docx",
+    "sourceSha256": "fdee59119b157164151c65f1b215bab480c2a09e947dbcaef7eaabb9ab1cfda2",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSexagenaryMarkers/projected/sexagenary-depth-0-traditional-9.pdf",
+    "wordPdfSha256": "45dad2b06fed81ef14e0122a9866d7a55b0c9fd06dde128466972504cfce63fa",
+    "wordListStrings": [
+      "BEGIN\u58ecEND",
+      "BEGIN\u7678END",
+      "BEGIN11END",
+      "BEGIN12END",
+      "BEGIN13END",
+      "BEGIN14END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u58ecEND",
+      "BEGIN\u7678END",
+      "BEGIN11END",
+      "BEGIN12END",
+      "BEGIN13END",
+      "BEGIN14END"
+    ]
+  },
+  {
+    "name": "sexagenary-depth-0-traditional-9",
+    "kind": "source",
+    "depth": 0,
+    "mode": "traditional-9",
+    "source": "fixtures/docx/regressions/list-markers/DocSexagenaryMarkers/source/sexagenary-depth-0-traditional-9.docx",
+    "sourceSha256": "c259b42bf5eee01c822d3bb418a5759bd8e131ba22d941f50fb3d2c53e4b6c79",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSexagenaryMarkers/source/sexagenary-depth-0-traditional-9.pdf",
+    "wordPdfSha256": "f1c5733ed52d5bcb9656d167adddcea55d1279f16859b351039bcac4151d2f36",
+    "wordListStrings": [
+      "BEGIN\u58ecEND",
+      "BEGIN\u7678END",
+      "BEGIN11END",
+      "BEGIN12END",
+      "BEGIN13END",
+      "BEGIN14END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u58ecEND",
+      "BEGIN\u7678END",
+      "BEGIN11END",
+      "BEGIN12END",
+      "BEGIN13END",
+      "BEGIN14END"
+    ]
+  },
+  {
+    "name": "sexagenary-depth-0-zodiac-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "zodiac-1",
+    "source": "fixtures/doc/regressions/list-markers/SexagenaryMarkers/sexagenary-depth-0-zodiac-1.doc",
+    "sourceSha256": "fd84dfca9d959bf5182f079b696c495675d9fe89ebe11b71b2d7fadb41125f91",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSexagenaryMarkers/doc/sexagenary-depth-0-zodiac-1.pdf",
+    "wordPdfSha256": "44f5993d0e646022c0f3135823c3000fceaa277a38c0b036cc6601d0c8dc1808",
+    "wordListStrings": [
+      "BEGIN\u5b50END",
+      "BEGIN\u4e11END",
+      "BEGIN\u5bc5END",
+      "BEGIN\u536fEND",
+      "BEGIN\u8fb0END",
+      "BEGIN\u5df3END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u5b50END",
+      "BEGIN\u4e11END",
+      "BEGIN\u5bc5END",
+      "BEGIN\u536fEND",
+      "BEGIN\u8fb0END",
+      "BEGIN\u5df3END"
+    ]
+  },
+  {
+    "name": "sexagenary-depth-0-zodiac-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "zodiac-1",
+    "source": "fixtures/docx/regressions/list-markers/DocSexagenaryMarkers/projected/sexagenary-depth-0-zodiac-1.docx",
+    "sourceSha256": "6b1b56dc3854df068db273256593e78760fc129eebc04c68f6c0bc18453a337c",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSexagenaryMarkers/projected/sexagenary-depth-0-zodiac-1.pdf",
+    "wordPdfSha256": "74337b03f4b287dce2ee187d1f796361be843d8c468f3414fce7dc08fb595fdd",
+    "wordListStrings": [
+      "BEGIN\u5b50END",
+      "BEGIN\u4e11END",
+      "BEGIN\u5bc5END",
+      "BEGIN\u536fEND",
+      "BEGIN\u8fb0END",
+      "BEGIN\u5df3END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u5b50END",
+      "BEGIN\u4e11END",
+      "BEGIN\u5bc5END",
+      "BEGIN\u536fEND",
+      "BEGIN\u8fb0END",
+      "BEGIN\u5df3END"
+    ]
+  },
+  {
+    "name": "sexagenary-depth-0-zodiac-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "zodiac-1",
+    "source": "fixtures/docx/regressions/list-markers/DocSexagenaryMarkers/source/sexagenary-depth-0-zodiac-1.docx",
+    "sourceSha256": "fd62687b5a67793638382f552d2b3de49d3d68f16bfa954e8b530e5581ea5ce8",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSexagenaryMarkers/source/sexagenary-depth-0-zodiac-1.pdf",
+    "wordPdfSha256": "a8f31efed6757fc5ca60ff5761bb4d760a4d90d1ad52d03910b6591924b58b10",
+    "wordListStrings": [
+      "BEGIN\u5b50END",
+      "BEGIN\u4e11END",
+      "BEGIN\u5bc5END",
+      "BEGIN\u536fEND",
+      "BEGIN\u8fb0END",
+      "BEGIN\u5df3END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u5b50END",
+      "BEGIN\u4e11END",
+      "BEGIN\u5bc5END",
+      "BEGIN\u536fEND",
+      "BEGIN\u8fb0END",
+      "BEGIN\u5df3END"
+    ]
+  },
+  {
+    "name": "sexagenary-depth-0-zodiac-11",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "zodiac-11",
+    "source": "fixtures/doc/regressions/list-markers/SexagenaryMarkers/sexagenary-depth-0-zodiac-11.doc",
+    "sourceSha256": "0a5b927acfa0e4a10bfb3cc88ecddffff33887ccad44b162c307858ba7afee25",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSexagenaryMarkers/doc/sexagenary-depth-0-zodiac-11.pdf",
+    "wordPdfSha256": "06cb5fd892da0b26a8b297b32666e8a09e2763fee4e2d18d0c2fd130f953f039",
+    "wordListStrings": [
+      "BEGIN\u620dEND",
+      "BEGIN\u4ea5END",
+      "BEGIN13END",
+      "BEGIN14END",
+      "BEGIN15END",
+      "BEGIN16END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u620dEND",
+      "BEGIN\u4ea5END",
+      "BEGIN13END",
+      "BEGIN14END",
+      "BEGIN15END",
+      "BEGIN16END"
+    ]
+  },
+  {
+    "name": "sexagenary-depth-0-zodiac-11",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "zodiac-11",
+    "source": "fixtures/docx/regressions/list-markers/DocSexagenaryMarkers/projected/sexagenary-depth-0-zodiac-11.docx",
+    "sourceSha256": "3d13456b3aa7ed0b75239a0e39364993bd6b152780dd5c93d9a5498cef62d519",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSexagenaryMarkers/projected/sexagenary-depth-0-zodiac-11.pdf",
+    "wordPdfSha256": "c9dc3aec61d61ec62951719b2f27330f21d144f3fde8febff0121422551c9563",
+    "wordListStrings": [
+      "BEGIN\u620dEND",
+      "BEGIN\u4ea5END",
+      "BEGIN13END",
+      "BEGIN14END",
+      "BEGIN15END",
+      "BEGIN16END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u620dEND",
+      "BEGIN\u4ea5END",
+      "BEGIN13END",
+      "BEGIN14END",
+      "BEGIN15END",
+      "BEGIN16END"
+    ]
+  },
+  {
+    "name": "sexagenary-depth-0-zodiac-11",
+    "kind": "source",
+    "depth": 0,
+    "mode": "zodiac-11",
+    "source": "fixtures/docx/regressions/list-markers/DocSexagenaryMarkers/source/sexagenary-depth-0-zodiac-11.docx",
+    "sourceSha256": "00818e6d95d8c53840258b46da8a501610f2b9255c544910f55d0e08c89d868e",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSexagenaryMarkers/source/sexagenary-depth-0-zodiac-11.pdf",
+    "wordPdfSha256": "98f3a501d66a2fd60337c20abc3ba5e01dee380e737b9464618737a0337f21b7",
+    "wordListStrings": [
+      "BEGIN\u620dEND",
+      "BEGIN\u4ea5END",
+      "BEGIN13END",
+      "BEGIN14END",
+      "BEGIN15END",
+      "BEGIN16END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u620dEND",
+      "BEGIN\u4ea5END",
+      "BEGIN13END",
+      "BEGIN14END",
+      "BEGIN15END",
+      "BEGIN16END"
+    ]
+  },
+  {
+    "name": "sexagenary-depth-8-cycle-59",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "cycle-59",
+    "source": "fixtures/doc/regressions/list-markers/SexagenaryMarkers/sexagenary-depth-8-cycle-59.doc",
+    "sourceSha256": "4c36035d548e87957e1a1e8f95dfbf6970c5d82ffa98281fe52f092e506dfae1",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSexagenaryMarkers/doc/sexagenary-depth-8-cycle-59.pdf",
+    "wordPdfSha256": "5c04002523d0b4b827d16e30317843316ec11b10c8a5c82bb072a6dd89f8a7bf",
+    "wordListStrings": [
+      "BEGIN\u58ec\u620dEND",
+      "BEGIN\u7678\u4ea5END",
+      "BEGIN\u7532\u5b50END",
+      "BEGIN\u4e59\u4e11END",
+      "BEGIN\u4e19\u5bc5END",
+      "BEGIN\u4e01\u536fEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u58ec\u620dEND",
+      "BEGIN\u7678\u4ea5END",
+      "BEGIN\u7532\u5b50END",
+      "BEGIN\u4e59\u4e11END",
+      "BEGIN\u4e19\u5bc5END",
+      "BEGIN\u4e01\u536fEND"
+    ]
+  },
+  {
+    "name": "sexagenary-depth-8-cycle-59",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "cycle-59",
+    "source": "fixtures/docx/regressions/list-markers/DocSexagenaryMarkers/projected/sexagenary-depth-8-cycle-59.docx",
+    "sourceSha256": "7a00b5788515275c8907da8925585858ee8bf7cf3b4459d45fa016218a6c9d52",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSexagenaryMarkers/projected/sexagenary-depth-8-cycle-59.pdf",
+    "wordPdfSha256": "e5cd7135fcc82deca3232c4125b8f0713be012d7d40bb57499ed35e9efff280a",
+    "wordListStrings": [
+      "BEGIN\u58ec\u620dEND",
+      "BEGIN\u7678\u4ea5END",
+      "BEGIN\u7532\u5b50END",
+      "BEGIN\u4e59\u4e11END",
+      "BEGIN\u4e19\u5bc5END",
+      "BEGIN\u4e01\u536fEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u58ec\u620dEND",
+      "BEGIN\u7678\u4ea5END",
+      "BEGIN\u7532\u5b50END",
+      "BEGIN\u4e59\u4e11END",
+      "BEGIN\u4e19\u5bc5END",
+      "BEGIN\u4e01\u536fEND"
+    ]
+  },
+  {
+    "name": "sexagenary-depth-8-cycle-59",
+    "kind": "source",
+    "depth": 8,
+    "mode": "cycle-59",
+    "source": "fixtures/docx/regressions/list-markers/DocSexagenaryMarkers/source/sexagenary-depth-8-cycle-59.docx",
+    "sourceSha256": "c943e2e7e553dee177ea69c974f6112085ce3a22e535cb05c6e132c4fbf0c8f5",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSexagenaryMarkers/source/sexagenary-depth-8-cycle-59.pdf",
+    "wordPdfSha256": "dd48179ef9c874e719cf2643d7aae3d7ef229674a24d6da6244d3d77c96ee832",
+    "wordListStrings": [
+      "BEGIN\u58ec\u620dEND",
+      "BEGIN\u7678\u4ea5END",
+      "BEGIN\u7532\u5b50END",
+      "BEGIN\u4e59\u4e11END",
+      "BEGIN\u4e19\u5bc5END",
+      "BEGIN\u4e01\u536fEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u58ec\u620dEND",
+      "BEGIN\u7678\u4ea5END",
+      "BEGIN\u7532\u5b50END",
+      "BEGIN\u4e59\u4e11END",
+      "BEGIN\u4e19\u5bc5END",
+      "BEGIN\u4e01\u536fEND"
+    ]
+  },
+  {
+    "name": "sexagenary-depth-8-traditional-9",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "traditional-9",
+    "source": "fixtures/doc/regressions/list-markers/SexagenaryMarkers/sexagenary-depth-8-traditional-9.doc",
+    "sourceSha256": "67daedd4f897ec7d0ed1776f9a0cf17b42db1c078b730c371ce98a007605a594",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSexagenaryMarkers/doc/sexagenary-depth-8-traditional-9.pdf",
+    "wordPdfSha256": "d7bcaca6f8506eb57ca9d5a3137a503b887966fef979ef9f2683cdd294b459d0",
+    "wordListStrings": [
+      "BEGIN\u58ecEND",
+      "BEGIN\u7678END",
+      "BEGIN11END",
+      "BEGIN12END",
+      "BEGIN13END",
+      "BEGIN14END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u58ecEND",
+      "BEGIN\u7678END",
+      "BEGIN11END",
+      "BEGIN12END",
+      "BEGIN13END",
+      "BEGIN14END"
+    ]
+  },
+  {
+    "name": "sexagenary-depth-8-traditional-9",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "traditional-9",
+    "source": "fixtures/docx/regressions/list-markers/DocSexagenaryMarkers/projected/sexagenary-depth-8-traditional-9.docx",
+    "sourceSha256": "9137e2643420d9c90b66751c2580c0f67649531330ec826d9b9717a6c17c66ee",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSexagenaryMarkers/projected/sexagenary-depth-8-traditional-9.pdf",
+    "wordPdfSha256": "854555b892c5557e5aa091f4a326f9500ac6cd4e488754fae8c971d2bb31a6df",
+    "wordListStrings": [
+      "BEGIN\u58ecEND",
+      "BEGIN\u7678END",
+      "BEGIN11END",
+      "BEGIN12END",
+      "BEGIN13END",
+      "BEGIN14END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u58ecEND",
+      "BEGIN\u7678END",
+      "BEGIN11END",
+      "BEGIN12END",
+      "BEGIN13END",
+      "BEGIN14END"
+    ]
+  },
+  {
+    "name": "sexagenary-depth-8-traditional-9",
+    "kind": "source",
+    "depth": 8,
+    "mode": "traditional-9",
+    "source": "fixtures/docx/regressions/list-markers/DocSexagenaryMarkers/source/sexagenary-depth-8-traditional-9.docx",
+    "sourceSha256": "ed3c84b1b7caf6479a28957ce080949e1b193ccefa735054f37ce246d1be5680",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSexagenaryMarkers/source/sexagenary-depth-8-traditional-9.pdf",
+    "wordPdfSha256": "d00be344584646f0eb21ebdfb78247685db7cbaffe2e0de59c2da6335f1f9676",
+    "wordListStrings": [
+      "BEGIN\u58ecEND",
+      "BEGIN\u7678END",
+      "BEGIN11END",
+      "BEGIN12END",
+      "BEGIN13END",
+      "BEGIN14END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u58ecEND",
+      "BEGIN\u7678END",
+      "BEGIN11END",
+      "BEGIN12END",
+      "BEGIN13END",
+      "BEGIN14END"
+    ]
+  },
+  {
+    "name": "sexagenary-depth-8-zodiac-11",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "zodiac-11",
+    "source": "fixtures/doc/regressions/list-markers/SexagenaryMarkers/sexagenary-depth-8-zodiac-11.doc",
+    "sourceSha256": "d95c9e00294df6d047c72e2712a6af042ccbab38131deb236453ba129814bcfe",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSexagenaryMarkers/doc/sexagenary-depth-8-zodiac-11.pdf",
+    "wordPdfSha256": "f441d88e2db2d3e031eb36544e207cb8773d2ee541b59e00c149f8e7bbf11037",
+    "wordListStrings": [
+      "BEGIN\u620dEND",
+      "BEGIN\u4ea5END",
+      "BEGIN13END",
+      "BEGIN14END",
+      "BEGIN15END",
+      "BEGIN16END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u620dEND",
+      "BEGIN\u4ea5END",
+      "BEGIN13END",
+      "BEGIN14END",
+      "BEGIN15END",
+      "BEGIN16END"
+    ]
+  },
+  {
+    "name": "sexagenary-depth-8-zodiac-11",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "zodiac-11",
+    "source": "fixtures/docx/regressions/list-markers/DocSexagenaryMarkers/projected/sexagenary-depth-8-zodiac-11.docx",
+    "sourceSha256": "9a3ca9f7e77726d5ce327d72a911ad7dd61f40ad770458b766d08e2ee75e7b28",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSexagenaryMarkers/projected/sexagenary-depth-8-zodiac-11.pdf",
+    "wordPdfSha256": "a5525ba8201a186f834766a69dc28034b21c031e1c2b49770d88a2eed2b04f03",
+    "wordListStrings": [
+      "BEGIN\u620dEND",
+      "BEGIN\u4ea5END",
+      "BEGIN13END",
+      "BEGIN14END",
+      "BEGIN15END",
+      "BEGIN16END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u620dEND",
+      "BEGIN\u4ea5END",
+      "BEGIN13END",
+      "BEGIN14END",
+      "BEGIN15END",
+      "BEGIN16END"
+    ]
+  },
+  {
+    "name": "sexagenary-depth-8-zodiac-11",
+    "kind": "source",
+    "depth": 8,
+    "mode": "zodiac-11",
+    "source": "fixtures/docx/regressions/list-markers/DocSexagenaryMarkers/source/sexagenary-depth-8-zodiac-11.docx",
+    "sourceSha256": "a33efb1ecb41b815b69763d9e2e9beb395b9c220924c0c84c0764fb6e78ea7fd",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocSexagenaryMarkers/source/sexagenary-depth-8-zodiac-11.pdf",
+    "wordPdfSha256": "4483176eb0e9f68a351527766c75417f1d8a0e248dc95a3dda56bf135255afa7",
+    "wordListStrings": [
+      "BEGIN\u620dEND",
+      "BEGIN\u4ea5END",
+      "BEGIN13END",
+      "BEGIN14END",
+      "BEGIN15END",
+      "BEGIN16END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u620dEND",
+      "BEGIN\u4ea5END",
+      "BEGIN13END",
+      "BEGIN14END",
+      "BEGIN15END",
+      "BEGIN16END"
+    ]
+  }
+]
