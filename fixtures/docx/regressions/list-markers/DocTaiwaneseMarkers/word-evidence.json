@@ -1,0 +1,1250 @@
+[
+  {
+    "name": "taiwanese-depth-0-counting-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "counting-1",
+    "source": "fixtures/doc/regressions/list-markers/TaiwaneseMarkers/taiwanese-depth-0-counting-1.doc",
+    "sourceSha256": "88b7172387cf1aeb87ace96c99cc022041a1369c8dc38c30ac4382969bd7b953",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/doc/taiwanese-depth-0-counting-1.pdf",
+    "wordPdfSha256": "a305f1a7d4bf7d1649f50f02af69d3d4571325fc1610756ccd2aa21e0a8008be",
+    "wordListStrings": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-counting-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "counting-1",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-0-counting-1.docx",
+    "sourceSha256": "1e9e2e2079802324b2d5558ae483ec5c52ae862f36787cac75a7b56d0a59b39c",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-0-counting-1.pdf",
+    "wordPdfSha256": "b4060b0f94eab7dc01b961b3b9c34283f79cba68e43d13dc3a57681f874ca53e",
+    "wordListStrings": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-counting-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "counting-1",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-0-counting-1.docx",
+    "sourceSha256": "d7cadfcbc654fb1b5667a8aedfc471cc59666e4893baa9fdb8f8336d111c8dc7",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-0-counting-1.pdf",
+    "wordPdfSha256": "a681bbc45919f4b980463dc07af07645ed5789229581adeebbec6a094c5868f1",
+    "wordListStrings": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-counting-98",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "counting-98",
+    "source": "fixtures/doc/regressions/list-markers/TaiwaneseMarkers/taiwanese-depth-0-counting-98.doc",
+    "sourceSha256": "7be13e2b945caa756f927bc7d5a873882a43c61d4df8bb18d9eb2d0512db368d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/doc/taiwanese-depth-0-counting-98.pdf",
+    "wordPdfSha256": "73724117504b9df610a6ed8f33814748e7b7b64681b20573fd4fdba98ab96025",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u4e09END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-counting-98",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "counting-98",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-0-counting-98.docx",
+    "sourceSha256": "43f1eec31c82acb335a9487ddc5ecc7a4203ba14a22cb6bb1788d3185542ca55",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-0-counting-98.pdf",
+    "wordPdfSha256": "5a8a6e23758f97b5ff5fdaa94a7c7709c2aaef8e045f7628e47813235f0f01c2",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u4e09END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-counting-98",
+    "kind": "source",
+    "depth": 0,
+    "mode": "counting-98",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-0-counting-98.docx",
+    "sourceSha256": "8281202b7e9c508659403a081f6b2f48c8c196c6cc2fdbc86f4327e3ef32b625",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-0-counting-98.pdf",
+    "wordPdfSha256": "34e7cc708611df9b0e18cc863252c39edf773a1a80a02abc26ffea140d76c423",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u4e09END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-counting-9998",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "counting-9998",
+    "source": "fixtures/doc/regressions/list-markers/TaiwaneseMarkers/taiwanese-depth-0-counting-9998.doc",
+    "sourceSha256": "6a64536400628f1673710d85854f4a465de444486d01284c29470874192a8799",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/doc/taiwanese-depth-0-counting-9998.pdf",
+    "wordPdfSha256": "aef9da3279fa55480c85fe30ccb8944f74f3c4b1c6aadc080a39cf5714170697",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-counting-9998",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "counting-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-0-counting-9998.docx",
+    "sourceSha256": "91ed1fa697a407b3ba00c8743828684fd760ed244f9a70084daabb2b7c00da32",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-0-counting-9998.pdf",
+    "wordPdfSha256": "c5cac5cf8966cdb09bcbbbcb64bcbb869061c5a33c5ff7f6c347f855b2d7a151",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-counting-9998",
+    "kind": "source",
+    "depth": 0,
+    "mode": "counting-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-0-counting-9998.docx",
+    "sourceSha256": "22d241cfb99d9101ea35738b823a1543a0b7ebaef9b763515bb387fa3d332838",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-0-counting-9998.pdf",
+    "wordPdfSha256": "7c228f58bc390a327f3a864116815b7edf94f8ac9086fe717d975257dd56cb94",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-digital-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "digital-1",
+    "source": "fixtures/doc/regressions/list-markers/TaiwaneseMarkers/taiwanese-depth-0-digital-1.doc",
+    "sourceSha256": "9bb2f2ee73626d1a6ac72cda7ada744bc61d8751adbe61e273ab92a2d719b93e",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/doc/taiwanese-depth-0-digital-1.pdf",
+    "wordPdfSha256": "768f69d11d29667c4a22d4c7a0188697aa0103b7f2ad2e33067347d9681e9513",
+    "wordListStrings": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-digital-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "digital-1",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-0-digital-1.docx",
+    "sourceSha256": "bf3e8a4504139fa1ebf8be5b6302f746704472becee973420495abb06814cde0",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-0-digital-1.pdf",
+    "wordPdfSha256": "e4ba5e5e2bf1cdcb7eb2227dd3ced5357cc8c34f0281118d5855b415a029903b",
+    "wordListStrings": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-digital-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "digital-1",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-0-digital-1.docx",
+    "sourceSha256": "6243a09c7287a331ba920e0f3e7add0e40763a24cd7d9a8bab67ff05e0055b02",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-0-digital-1.pdf",
+    "wordPdfSha256": "a482e542de0df25c7025feb7a83666542a56752213b4feab5fef076197a2ba5f",
+    "wordListStrings": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-digital-98",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "digital-98",
+    "source": "fixtures/doc/regressions/list-markers/TaiwaneseMarkers/taiwanese-depth-0-digital-98.doc",
+    "sourceSha256": "7f8a1b6d9524760e71d8d36c008159d25a47ab9ab052e134bea7bff0dff932df",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/doc/taiwanese-depth-0-digital-98.pdf",
+    "wordPdfSha256": "e951d530954aaee2abf17af7d106a891be08ffe5d2d3924902c6ce8161b6b99b",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u4e09END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-digital-98",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "digital-98",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-0-digital-98.docx",
+    "sourceSha256": "1225187e2d7848847f622ef2411ca32e1f6ba790cff32510b0b9d2e8f421e470",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-0-digital-98.pdf",
+    "wordPdfSha256": "fc1b387ec17b458487b1f54c0d090a17c4c0299a8afda58ee9909ae4a8ec2057",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u4e09END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-digital-98",
+    "kind": "source",
+    "depth": 0,
+    "mode": "digital-98",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-0-digital-98.docx",
+    "sourceSha256": "dbb7dfede0b7e87fe90773ddc69f3e36f4658d2b276a6753ff3f4f9dfa22e95d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-0-digital-98.pdf",
+    "wordPdfSha256": "e37cb02537c16811d139173631ef12a6498a3d2fb5605d77c091e3176fd4278f",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u4e09END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-digital-9998",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "digital-9998",
+    "source": "fixtures/doc/regressions/list-markers/TaiwaneseMarkers/taiwanese-depth-0-digital-9998.doc",
+    "sourceSha256": "427a66be51423f54dd494c9681c19272c84b6b5ad7f54ad1b4147fd640762b69",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/doc/taiwanese-depth-0-digital-9998.pdf",
+    "wordPdfSha256": "1008fff659e753744ab075f54cfa12953ac80a9af2fb52cb244afb8261ccb217",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-digital-9998",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "digital-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-0-digital-9998.docx",
+    "sourceSha256": "396d4f8b28ed0da0c4e0d30e4d034f166ea9ba3a4c7348134d71f753c158bfd5",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-0-digital-9998.pdf",
+    "wordPdfSha256": "88ad6f077114d399590354e632e865fa83f72022593e9a34448d28888c63aa5b",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-digital-9998",
+    "kind": "source",
+    "depth": 0,
+    "mode": "digital-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-0-digital-9998.docx",
+    "sourceSha256": "64125da74765ab1f9f542cb9cd69535c4b2d3d9a9aa2afde7ba1fe4fa7d94367",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-0-digital-9998.pdf",
+    "wordPdfSha256": "58d3e88729f4ddcfc587184f0a59a0dca299288b221685fd69a85757c1656654",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-legal-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "legal-1",
+    "source": "fixtures/doc/regressions/list-markers/TaiwaneseMarkers/taiwanese-depth-0-legal-1.doc",
+    "sourceSha256": "7d65e11c9a32a6398a6df0a6603514ecd9be49f9b55ff00fe59232e479103c4f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/doc/taiwanese-depth-0-legal-1.pdf",
+    "wordPdfSha256": "74f0e88b71028975e3b9e31bbbafeb93da3b42d52835a8d9a56dfce5d0befbb2",
+    "wordListStrings": [
+      "BEGIN\u58f9END",
+      "BEGIN\u8cb3END",
+      "BEGIN\u53c3END",
+      "BEGIN\u8086END",
+      "BEGIN\u4f0dEND",
+      "BEGIN\u9678END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u58f9END",
+      "BEGIN\u8cb3END",
+      "BEGIN\u53c3END",
+      "BEGIN\u8086END",
+      "BEGIN\u4f0dEND",
+      "BEGIN\u9678END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-legal-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "legal-1",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-0-legal-1.docx",
+    "sourceSha256": "aac1a2cd4a4bc23fd6636da19861568ffe2721148ad511647ad10d3d92f355ef",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-0-legal-1.pdf",
+    "wordPdfSha256": "1683a754b3e3d983d1ebad75f59a18a403425de110c0d8d811222b432375825d",
+    "wordListStrings": [
+      "BEGIN\u58f9END",
+      "BEGIN\u8cb3END",
+      "BEGIN\u53c3END",
+      "BEGIN\u8086END",
+      "BEGIN\u4f0dEND",
+      "BEGIN\u9678END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u58f9END",
+      "BEGIN\u8cb3END",
+      "BEGIN\u53c3END",
+      "BEGIN\u8086END",
+      "BEGIN\u4f0dEND",
+      "BEGIN\u9678END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-legal-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "legal-1",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-0-legal-1.docx",
+    "sourceSha256": "8481dd96761c7ce3ed5f1524d25dba08f70b3564e9516a5ad1e8a73006a7ac8e",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-0-legal-1.pdf",
+    "wordPdfSha256": "0467f7ee7a2587ef65c6110a4bddcc804c5ac5708eb30d857be3d08fb03bf28c",
+    "wordListStrings": [
+      "BEGIN\u58f9END",
+      "BEGIN\u8cb3END",
+      "BEGIN\u53c3END",
+      "BEGIN\u8086END",
+      "BEGIN\u4f0dEND",
+      "BEGIN\u9678END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u58f9END",
+      "BEGIN\u8cb3END",
+      "BEGIN\u53c3END",
+      "BEGIN\u8086END",
+      "BEGIN\u4f0dEND",
+      "BEGIN\u9678END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-legal-98",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "legal-98",
+    "source": "fixtures/doc/regressions/list-markers/TaiwaneseMarkers/taiwanese-depth-0-legal-98.doc",
+    "sourceSha256": "9d807c36a7327dfe73cd8607fa7583afa3f17d48e48a5ead4514012728e5546d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/doc/taiwanese-depth-0-legal-98.pdf",
+    "wordPdfSha256": "1fa494706e0fe70275d58abf6bc9e27031621ef02fe02edae12f43d7911b856b",
+    "wordListStrings": [
+      "BEGIN\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u4f70END",
+      "BEGIN\u58f9\u4f70\u96f6\u58f9END",
+      "BEGIN\u58f9\u4f70\u96f6\u8cb3END",
+      "BEGIN\u58f9\u4f70\u96f6\u53c3END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u4f70END",
+      "BEGIN\u58f9\u4f70\u96f6\u58f9END",
+      "BEGIN\u58f9\u4f70\u96f6\u8cb3END",
+      "BEGIN\u58f9\u4f70\u96f6\u53c3END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-legal-98",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "legal-98",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-0-legal-98.docx",
+    "sourceSha256": "81195d5a3e202361840ed24bae4ee4056e4f1cebe9d523b999a4738748b4eaa8",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-0-legal-98.pdf",
+    "wordPdfSha256": "91bf0cce65d54d1e94ae269486804b56ba954291ae396804f39f8df186393a72",
+    "wordListStrings": [
+      "BEGIN\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u4f70END",
+      "BEGIN\u58f9\u4f70\u96f6\u58f9END",
+      "BEGIN\u58f9\u4f70\u96f6\u8cb3END",
+      "BEGIN\u58f9\u4f70\u96f6\u53c3END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u4f70END",
+      "BEGIN\u58f9\u4f70\u96f6\u58f9END",
+      "BEGIN\u58f9\u4f70\u96f6\u8cb3END",
+      "BEGIN\u58f9\u4f70\u96f6\u53c3END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-legal-98",
+    "kind": "source",
+    "depth": 0,
+    "mode": "legal-98",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-0-legal-98.docx",
+    "sourceSha256": "7a6335e4a59b883e41d3d1907c974bee98d5437e9579ccf704f42bd543179d20",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-0-legal-98.pdf",
+    "wordPdfSha256": "cb4f0d7a96aef056e1ea2a5e99d24d6d50349cfabec8975f16be210d6b288999",
+    "wordListStrings": [
+      "BEGIN\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u4f70END",
+      "BEGIN\u58f9\u4f70\u96f6\u58f9END",
+      "BEGIN\u58f9\u4f70\u96f6\u8cb3END",
+      "BEGIN\u58f9\u4f70\u96f6\u53c3END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u4f70END",
+      "BEGIN\u58f9\u4f70\u96f6\u58f9END",
+      "BEGIN\u58f9\u4f70\u96f6\u8cb3END",
+      "BEGIN\u58f9\u4f70\u96f6\u53c3END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-legal-9998",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "legal-9998",
+    "source": "fixtures/doc/regressions/list-markers/TaiwaneseMarkers/taiwanese-depth-0-legal-9998.doc",
+    "sourceSha256": "e9d5cbcac0e980a55a41c855a66ee5831b13db1123918e76b63c5e5984b1921d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/doc/taiwanese-depth-0-legal-9998.pdf",
+    "wordPdfSha256": "d926b06bb57621e9348d71619bde66684128c7daf7d7296a4ae5fa2511512aa3",
+    "wordListStrings": [
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u842cEND",
+      "BEGIN\u58f9\u842c\u96f6\u58f9END",
+      "BEGIN\u58f9\u842c\u96f6\u8cb3END",
+      "BEGIN\u58f9\u842c\u96f6\u53c3END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u842cEND",
+      "BEGIN\u58f9\u842c\u96f6\u58f9END",
+      "BEGIN\u58f9\u842c\u96f6\u8cb3END",
+      "BEGIN\u58f9\u842c\u96f6\u53c3END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-legal-9998",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "legal-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-0-legal-9998.docx",
+    "sourceSha256": "436d71438901c9459308605c29a908418d3a574f5808a7092e9d4b65251f00d7",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-0-legal-9998.pdf",
+    "wordPdfSha256": "6f6404bfca3ea59d1c9106d3d770de88ba86c57865812a7baa801742e167b88e",
+    "wordListStrings": [
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u842cEND",
+      "BEGIN\u58f9\u842c\u96f6\u58f9END",
+      "BEGIN\u58f9\u842c\u96f6\u8cb3END",
+      "BEGIN\u58f9\u842c\u96f6\u53c3END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u842cEND",
+      "BEGIN\u58f9\u842c\u96f6\u58f9END",
+      "BEGIN\u58f9\u842c\u96f6\u8cb3END",
+      "BEGIN\u58f9\u842c\u96f6\u53c3END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-legal-9998",
+    "kind": "source",
+    "depth": 0,
+    "mode": "legal-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-0-legal-9998.docx",
+    "sourceSha256": "35d09799e35dc1b6a4f0f252fc31bdc4cbb452a789dfbb77ba599e989074ffd5",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-0-legal-9998.pdf",
+    "wordPdfSha256": "a0347b4f95ac80641c89ddad70a145782a498b104993875120ad02bca95445ad",
+    "wordListStrings": [
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u842cEND",
+      "BEGIN\u58f9\u842c\u96f6\u58f9END",
+      "BEGIN\u58f9\u842c\u96f6\u8cb3END",
+      "BEGIN\u58f9\u842c\u96f6\u53c3END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u842cEND",
+      "BEGIN\u58f9\u842c\u96f6\u58f9END",
+      "BEGIN\u58f9\u842c\u96f6\u8cb3END",
+      "BEGIN\u58f9\u842c\u96f6\u53c3END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-thousand-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "thousand-1",
+    "source": "fixtures/doc/regressions/list-markers/TaiwaneseMarkers/taiwanese-depth-0-thousand-1.doc",
+    "sourceSha256": "1806ecf0f573f86df8e0b4119e5a8fe10d6bf2768d2d9480fd43530372b94466",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/doc/taiwanese-depth-0-thousand-1.pdf",
+    "wordPdfSha256": "4ed1f6b3af1df1147a70ec9a519b494a4a176ac389783ee233db578f69c9e47f",
+    "wordListStrings": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-thousand-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "thousand-1",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-0-thousand-1.docx",
+    "sourceSha256": "121a25580b6e7decfb5cd7fc0e7241965eeed2f58158037d8980e336d0c12c5f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-0-thousand-1.pdf",
+    "wordPdfSha256": "e03b1ae1aadbf55493e58570bc654a4e1d1d27a5aca41c3523ce54f41e810afa",
+    "wordListStrings": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-thousand-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "thousand-1",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-0-thousand-1.docx",
+    "sourceSha256": "912c0a52bf58c3543b3d8f859f3836fe5855eabc802f3793ae6d82abdb089124",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-0-thousand-1.pdf",
+    "wordPdfSha256": "3c2a029cf4b219d1fca0bac49a0e2d4253a46a6f89a8fe14e0710eafa2072edd",
+    "wordListStrings": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-thousand-98",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "thousand-98",
+    "source": "fixtures/doc/regressions/list-markers/TaiwaneseMarkers/taiwanese-depth-0-thousand-98.doc",
+    "sourceSha256": "e88220cb68e0fa2288f65d6260f00476f1f2745cfc166eed7d703956f1725f59",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/doc/taiwanese-depth-0-thousand-98.pdf",
+    "wordPdfSha256": "477b389df5a9ae5bbb1058e04915f8cdac1a47f54629baf43a54cdba7c6236b7",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u767eEND",
+      "BEGIN\u4e00\u767e\u96f6\u4e00END",
+      "BEGIN\u4e00\u767e\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u767e\u96f6\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u767eEND",
+      "BEGIN\u4e00\u767e\u96f6\u4e00END",
+      "BEGIN\u4e00\u767e\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u767e\u96f6\u4e09END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-thousand-98",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "thousand-98",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-0-thousand-98.docx",
+    "sourceSha256": "5b3b6a41a3255c7516a4d64744410bc6ab29ecbe774732102f4e967a619d4b5a",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-0-thousand-98.pdf",
+    "wordPdfSha256": "2cc8c9c487f0109d054f49c7c95ed4fcfdc70eebd6480d2d487259cd7544e2ed",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u767eEND",
+      "BEGIN\u4e00\u767e\u96f6\u4e00END",
+      "BEGIN\u4e00\u767e\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u767e\u96f6\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u767eEND",
+      "BEGIN\u4e00\u767e\u96f6\u4e00END",
+      "BEGIN\u4e00\u767e\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u767e\u96f6\u4e09END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-thousand-98",
+    "kind": "source",
+    "depth": 0,
+    "mode": "thousand-98",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-0-thousand-98.docx",
+    "sourceSha256": "46fa7c081c511d04f3ca8aa0e3f940025c97f06c25d909821950ebfa87951175",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-0-thousand-98.pdf",
+    "wordPdfSha256": "f4807a59aaf169b02a4144a42527fcd13e06808912cff8fc2fee73cbbafe091b",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u767eEND",
+      "BEGIN\u4e00\u767e\u96f6\u4e00END",
+      "BEGIN\u4e00\u767e\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u767e\u96f6\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u767eEND",
+      "BEGIN\u4e00\u767e\u96f6\u4e00END",
+      "BEGIN\u4e00\u767e\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u767e\u96f6\u4e09END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-thousand-9998",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "thousand-9998",
+    "source": "fixtures/doc/regressions/list-markers/TaiwaneseMarkers/taiwanese-depth-0-thousand-9998.doc",
+    "sourceSha256": "89a42b3fa9864202e2c02d3eb64b23fe1cd9bb3259ce64bbb81d38ca44a02e74",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/doc/taiwanese-depth-0-thousand-9998.pdf",
+    "wordPdfSha256": "e38a40e6734a0fb87f62b7567c6b31e998446502228eb95c83b97986e8c11b12",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u842cEND",
+      "BEGIN\u4e00\u842c\u96f6\u4e00END",
+      "BEGIN\u4e00\u842c\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u842c\u96f6\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u842cEND",
+      "BEGIN\u4e00\u842c\u96f6\u4e00END",
+      "BEGIN\u4e00\u842c\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u842c\u96f6\u4e09END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-thousand-9998",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "thousand-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-0-thousand-9998.docx",
+    "sourceSha256": "dc4eccaf77990f2d7b26c76ec82449b60fbffdf6e3ab3f33ec344122027b749a",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-0-thousand-9998.pdf",
+    "wordPdfSha256": "5d00416338b0bcf93fa7bf7db0e1c8166ac534d16008d8a4694524f784ddc5cf",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u842cEND",
+      "BEGIN\u4e00\u842c\u96f6\u4e00END",
+      "BEGIN\u4e00\u842c\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u842c\u96f6\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u842cEND",
+      "BEGIN\u4e00\u842c\u96f6\u4e00END",
+      "BEGIN\u4e00\u842c\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u842c\u96f6\u4e09END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-0-thousand-9998",
+    "kind": "source",
+    "depth": 0,
+    "mode": "thousand-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-0-thousand-9998.docx",
+    "sourceSha256": "b92a3d8f7b0e314467a36d53afd499fb198dea10caec713ba38444ea3617997b",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-0-thousand-9998.pdf",
+    "wordPdfSha256": "df8db19745450b147ef37ba32d93c7389c32e2d6507685f18ca72d27d56e2a8a",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u842cEND",
+      "BEGIN\u4e00\u842c\u96f6\u4e00END",
+      "BEGIN\u4e00\u842c\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u842c\u96f6\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u842cEND",
+      "BEGIN\u4e00\u842c\u96f6\u4e00END",
+      "BEGIN\u4e00\u842c\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u842c\u96f6\u4e09END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-8-counting-9998",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "counting-9998",
+    "source": "fixtures/doc/regressions/list-markers/TaiwaneseMarkers/taiwanese-depth-8-counting-9998.doc",
+    "sourceSha256": "9188ae83447f185acb64961a1de7d3c3e475603c9f06b5ab6972b251ca0fee84",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/doc/taiwanese-depth-8-counting-9998.pdf",
+    "wordPdfSha256": "6fde11bb4f7abaf28ffdce6108fc00e88227638041840bb7d1bff3c7735848df",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-8-counting-9998",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "counting-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-8-counting-9998.docx",
+    "sourceSha256": "ae6289fa76d810a2547ea73d78008898eb9b820da203404ad3c241cf727f5854",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-8-counting-9998.pdf",
+    "wordPdfSha256": "63cdb902a01cf4dee5c8d9d405dccf2a3f09ed65b5de4a4cba77fda69d7b023a",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-8-counting-9998",
+    "kind": "source",
+    "depth": 8,
+    "mode": "counting-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-8-counting-9998.docx",
+    "sourceSha256": "3e34731ffa7d3a77e8336f908d5f31cb8096d02ff0a235ac3e652a93ca3b3c39",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-8-counting-9998.pdf",
+    "wordPdfSha256": "3e0bb6ce718c99cab0970b542a9c90767e1866800ac4ca04950ce0163c47a1b5",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-8-digital-9998",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "digital-9998",
+    "source": "fixtures/doc/regressions/list-markers/TaiwaneseMarkers/taiwanese-depth-8-digital-9998.doc",
+    "sourceSha256": "a1447afb77b3f2ea6af75f6757b9ee4b7bf77c25f3c6f10dcc527ff8350eaa91",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/doc/taiwanese-depth-8-digital-9998.pdf",
+    "wordPdfSha256": "66155f62a89686d47a0ad0ec545a33fc73e8335e61ae0a4ab8d1671769abee13",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-8-digital-9998",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "digital-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-8-digital-9998.docx",
+    "sourceSha256": "4008b58d61f6d80c5a1a1cdba755a0c770947609fb4d2dc720d7a44cc076d2a2",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-8-digital-9998.pdf",
+    "wordPdfSha256": "e1d9231c125768ff8b48bee280e22f29dee44de48888ef4ca06460efc6986dc0",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-8-digital-9998",
+    "kind": "source",
+    "depth": 8,
+    "mode": "digital-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-8-digital-9998.docx",
+    "sourceSha256": "c168a799112295f4151c9ef6552a587bb6199d2768cdf2950772b526f473b7bc",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-8-digital-9998.pdf",
+    "wordPdfSha256": "5fc011e195056f695fc021908e8118ad9766b839dd061f7c35dbbe9e589d0fea",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u25cbEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e00END",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e8cEND",
+      "BEGIN\u4e00\u25cb\u25cb\u25cb\u4e09END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-8-legal-9998",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "legal-9998",
+    "source": "fixtures/doc/regressions/list-markers/TaiwaneseMarkers/taiwanese-depth-8-legal-9998.doc",
+    "sourceSha256": "58d43cc3e316da466b8d912c35598e52fc9d6620f5f817c753e3f96dc20d0cff",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/doc/taiwanese-depth-8-legal-9998.pdf",
+    "wordPdfSha256": "5d3556aebcdeac79cb543448a2f542bd5889d14465ea7fe8c5f31cd9ab1efedd",
+    "wordListStrings": [
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u842cEND",
+      "BEGIN\u58f9\u842c\u96f6\u58f9END",
+      "BEGIN\u58f9\u842c\u96f6\u8cb3END",
+      "BEGIN\u58f9\u842c\u96f6\u53c3END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u842cEND",
+      "BEGIN\u58f9\u842c\u96f6\u58f9END",
+      "BEGIN\u58f9\u842c\u96f6\u8cb3END",
+      "BEGIN\u58f9\u842c\u96f6\u53c3END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-8-legal-9998",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "legal-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-8-legal-9998.docx",
+    "sourceSha256": "e819041fed6a05a4b815571249e363982d895f8c3ac22141ab912cc1a0f4fd6f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-8-legal-9998.pdf",
+    "wordPdfSha256": "dfa23115c75b97f43e819545dec1e8cc2368b0314de3d15a9681d562eb1ba5da",
+    "wordListStrings": [
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u842cEND",
+      "BEGIN\u58f9\u842c\u96f6\u58f9END",
+      "BEGIN\u58f9\u842c\u96f6\u8cb3END",
+      "BEGIN\u58f9\u842c\u96f6\u53c3END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u842cEND",
+      "BEGIN\u58f9\u842c\u96f6\u58f9END",
+      "BEGIN\u58f9\u842c\u96f6\u8cb3END",
+      "BEGIN\u58f9\u842c\u96f6\u53c3END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-8-legal-9998",
+    "kind": "source",
+    "depth": 8,
+    "mode": "legal-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-8-legal-9998.docx",
+    "sourceSha256": "c586d47221c102a4e9c1bdad51dd60ea4fa45269be95ce15a79f243f5f78b758",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-8-legal-9998.pdf",
+    "wordPdfSha256": "82212a5dfc7c9ea3b5ddea694043aa4e8915ecf87741f12302418316e0bb25ac",
+    "wordListStrings": [
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u842cEND",
+      "BEGIN\u58f9\u842c\u96f6\u58f9END",
+      "BEGIN\u58f9\u842c\u96f6\u8cb3END",
+      "BEGIN\u58f9\u842c\u96f6\u53c3END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u634cEND",
+      "BEGIN\u7396\u4edf\u7396\u4f70\u7396\u62fe\u7396END",
+      "BEGIN\u58f9\u842cEND",
+      "BEGIN\u58f9\u842c\u96f6\u58f9END",
+      "BEGIN\u58f9\u842c\u96f6\u8cb3END",
+      "BEGIN\u58f9\u842c\u96f6\u53c3END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-8-thousand-9998",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "thousand-9998",
+    "source": "fixtures/doc/regressions/list-markers/TaiwaneseMarkers/taiwanese-depth-8-thousand-9998.doc",
+    "sourceSha256": "a1bc92f29b92d9fff7267cb6217fcd5da45bcea23df69e05d92d0536206ae4bd",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/doc/taiwanese-depth-8-thousand-9998.pdf",
+    "wordPdfSha256": "3c5f6a2d8f2435e4965d0098200c9f06ed5b651e5bde03914f98b1ecb847bfc6",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u842cEND",
+      "BEGIN\u4e00\u842c\u96f6\u4e00END",
+      "BEGIN\u4e00\u842c\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u842c\u96f6\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u842cEND",
+      "BEGIN\u4e00\u842c\u96f6\u4e00END",
+      "BEGIN\u4e00\u842c\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u842c\u96f6\u4e09END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-8-thousand-9998",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "thousand-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-8-thousand-9998.docx",
+    "sourceSha256": "ff1982c7971676a2626cccdf9ff12c2962b0f8d8a1fc0b1e86a043e04f1e075a",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/projected/taiwanese-depth-8-thousand-9998.pdf",
+    "wordPdfSha256": "c966266c7ba1065f68f13fe127eb63185963657412ebb63ec302a04e11a7e626",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u842cEND",
+      "BEGIN\u4e00\u842c\u96f6\u4e00END",
+      "BEGIN\u4e00\u842c\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u842c\u96f6\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u842cEND",
+      "BEGIN\u4e00\u842c\u96f6\u4e00END",
+      "BEGIN\u4e00\u842c\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u842c\u96f6\u4e09END"
+    ]
+  },
+  {
+    "name": "taiwanese-depth-8-thousand-9998",
+    "kind": "source",
+    "depth": 8,
+    "mode": "thousand-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-8-thousand-9998.docx",
+    "sourceSha256": "bbf1f96b45e157cfda458f6d7a4022f58d86d30e74c6eb081eec0d1bc7e933c4",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocTaiwaneseMarkers/source/taiwanese-depth-8-thousand-9998.pdf",
+    "wordPdfSha256": "272af160a66a8da186aaed0e86bcfd5ff71cae7c22c1b43168b42c57a9d55354",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u842cEND",
+      "BEGIN\u4e00\u842c\u96f6\u4e00END",
+      "BEGIN\u4e00\u842c\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u842c\u96f6\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u842cEND",
+      "BEGIN\u4e00\u842c\u96f6\u4e00END",
+      "BEGIN\u4e00\u842c\u96f6\u4e8cEND",
+      "BEGIN\u4e00\u842c\u96f6\u4e09END"
+    ]
+  }
+]
