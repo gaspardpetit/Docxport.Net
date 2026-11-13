@@ -1,0 +1,1460 @@
+[
+  {
+    "name": "higher-depth-1-both",
+    "kind": "doc",
+    "depth": 1,
+    "mode": "both",
+    "rootControl": false,
+    "source": "fixtures/doc/regressions/list-markers/RootHigher/higher-depth-1-both.doc",
+    "sourceSha256": "45fd0aa7d25fd2c8eb186b9c112d33eb6ad9e4520f9592bb9b9c507dc8f397c6",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/doc/higher-depth-1-both.pdf",
+    "wordPdfSha256": "b7cfb1eb8e3a4e8eee40266b95c6e7e81fa08728a62c0cb7e9d6b271c4af4984",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN3END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN3END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ]
+  },
+  {
+    "name": "higher-depth-1-both",
+    "kind": "projected",
+    "depth": 1,
+    "mode": "both",
+    "rootControl": false,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/projected/higher-depth-1-both.docx",
+    "sourceSha256": "7bd718ad6748719ff2a8c1e36d572f2d7db745f1f6fe2310e1f2f7e0e1854637",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/projected/higher-depth-1-both.pdf",
+    "wordPdfSha256": "e502b2d6f39b654b9bc9435b4d0017d82ba9d94f533a8bbf8b5eb8ba623b3141",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN3END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN3END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ]
+  },
+  {
+    "name": "higher-depth-1-both",
+    "kind": "source",
+    "depth": 1,
+    "mode": "both",
+    "rootControl": false,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/source/higher-depth-1-both.docx",
+    "sourceSha256": "1f6e5a4e57590ff629e014a418e8d08517ca644aa90b85edda03c5c14a95d4ec",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/source/higher-depth-1-both.pdf",
+    "wordPdfSha256": "f7a51aa83abc7448404f9ef0b686de382755d99247e45d6d37caf581a6cb6a40",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN3END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN3END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ]
+  },
+  {
+    "name": "higher-depth-1-format",
+    "kind": "doc",
+    "depth": 1,
+    "mode": "format",
+    "rootControl": false,
+    "source": "fixtures/doc/regressions/list-markers/RootHigher/higher-depth-1-format.doc",
+    "sourceSha256": "f157244816bb7664ad6275e4081652f6ea9f29912899374a08f4ec1bc948ca0b",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/doc/higher-depth-1-format.pdf",
+    "wordPdfSha256": "5521c762efe8a14f92167bf2a8439485442bfc650f017376c310dadd5d5e9c1c",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN3END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN3END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ]
+  },
+  {
+    "name": "higher-depth-1-format",
+    "kind": "projected",
+    "depth": 1,
+    "mode": "format",
+    "rootControl": false,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/projected/higher-depth-1-format.docx",
+    "sourceSha256": "5a44654ca65cee9c1d85a6efa4c4a97644a3b9b4cdaa81d884f1aa7e48f398a8",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/projected/higher-depth-1-format.pdf",
+    "wordPdfSha256": "c52d8c224a28886484a39391607ee9cab7f5caf3007f3a1013d84d02cf9673c4",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN3END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN3END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ]
+  },
+  {
+    "name": "higher-depth-1-format",
+    "kind": "source",
+    "depth": 1,
+    "mode": "format",
+    "rootControl": false,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/source/higher-depth-1-format.docx",
+    "sourceSha256": "d3b397ff02f3d25cacf1bab24d23ad65edf6a5880614b2dd16053b1f4ee703e0",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/source/higher-depth-1-format.pdf",
+    "wordPdfSha256": "019e793f5dcbee13f704f2b4af4c0a60cbdcf2e7f8cb0b5c0298f4bab7ad7186",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN3END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN3END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ]
+  },
+  {
+    "name": "higher-depth-1-none",
+    "kind": "doc",
+    "depth": 1,
+    "mode": "none",
+    "rootControl": false,
+    "source": "fixtures/doc/regressions/list-markers/RootHigher/higher-depth-1-none.doc",
+    "sourceSha256": "b46554e925fc26569a2890a5e513bbe874b231672a0bef639cdc573f2097e0c2",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/doc/higher-depth-1-none.pdf",
+    "wordPdfSha256": "0961ca30ff94ae8963f0ac5b21622ca098eeb7498a4912504c988904615c0b43",
+    "wordListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "higher-depth-1-none",
+    "kind": "projected",
+    "depth": 1,
+    "mode": "none",
+    "rootControl": false,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/projected/higher-depth-1-none.docx",
+    "sourceSha256": "7cc15c0432eba9436b745820ba4ec79b924c21e8c14d7867d19cfc80956bf945",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/projected/higher-depth-1-none.pdf",
+    "wordPdfSha256": "f2826b3447d747472e8faa6fd9d98fe7c86dffaf0d77585e40712cbfc81b1155",
+    "wordListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "higher-depth-1-none",
+    "kind": "source",
+    "depth": 1,
+    "mode": "none",
+    "rootControl": false,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/source/higher-depth-1-none.docx",
+    "sourceSha256": "e000239b7213450c645f3e62fb5a4ff633d3d385f31d096ddcbeca48819d9d9d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/source/higher-depth-1-none.pdf",
+    "wordPdfSha256": "2e4a75deca45d35f104ba596cae267ec7ec373a54e71a13b63cb539303d23855",
+    "wordListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "higher-depth-1-start",
+    "kind": "doc",
+    "depth": 1,
+    "mode": "start",
+    "rootControl": false,
+    "source": "fixtures/doc/regressions/list-markers/RootHigher/higher-depth-1-start.doc",
+    "sourceSha256": "cc6962c0e9c8c89d5f8e5c228f732d82dc0d99b06795959bd2be35a7937d5fe5",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/doc/higher-depth-1-start.pdf",
+    "wordPdfSha256": "833b78a25fae92aa851b8dcb5e9d6bcc7352d7a19c2a8b54ab01ef591ffc148b",
+    "wordListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "higher-depth-1-start",
+    "kind": "projected",
+    "depth": 1,
+    "mode": "start",
+    "rootControl": false,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/projected/higher-depth-1-start.docx",
+    "sourceSha256": "f2831ba9d7b95ccb016797fa0a2d92970cdd62f34fc426aba004abeb128d7155",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/projected/higher-depth-1-start.pdf",
+    "wordPdfSha256": "147f676427e81df017c4b72cb16c995bfcbf0b483f2d953bbb9287cbf6bd705d",
+    "wordListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "higher-depth-1-start",
+    "kind": "source",
+    "depth": 1,
+    "mode": "start",
+    "rootControl": false,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/source/higher-depth-1-start.docx",
+    "sourceSha256": "a80830192a3ef9e9247cbec0eb48ee07fc8b93b8716a79b4c8caebd1cf917244",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/source/higher-depth-1-start.pdf",
+    "wordPdfSha256": "b92a458f58a9ba185d996f915c5cbb57188656e95cd7fe545b02a27c3690f1c0",
+    "wordListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "higher-depth-8-both",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "both",
+    "rootControl": false,
+    "source": "fixtures/doc/regressions/list-markers/RootHigher/higher-depth-8-both.doc",
+    "sourceSha256": "2da35bbc53d4acfe347d204b2a11e7b08c3c278dd81af984835d8107ac73894b",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/doc/higher-depth-8-both.pdf",
+    "wordPdfSha256": "39de74ed71ae43060c564cdecdc42ceb782ed18dbd11dcf1cfc6d3a34ed6cfbf",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN3END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN3END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ]
+  },
+  {
+    "name": "higher-depth-8-both",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "both",
+    "rootControl": false,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/projected/higher-depth-8-both.docx",
+    "sourceSha256": "684ba99d9f998d5695bf7834be06a3a1ed60002874985d5e48b294cad5ce46ef",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/projected/higher-depth-8-both.pdf",
+    "wordPdfSha256": "e056308b8c1540ea679251ae4a4f87aa78ec745374cd375c97b4d0a068e2f79f",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN3END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN3END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ]
+  },
+  {
+    "name": "higher-depth-8-both",
+    "kind": "source",
+    "depth": 8,
+    "mode": "both",
+    "rootControl": false,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/source/higher-depth-8-both.docx",
+    "sourceSha256": "675f63ce958fef2b6c5dde92d500c63038fa2c04a1c30cf4c53fc3c41c4fdb62",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/source/higher-depth-8-both.pdf",
+    "wordPdfSha256": "1f2b8b42c56f53fb29042c0e913eaeec2a50c1dc95d183dd31758440f5681ffa",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN3END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN3END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ]
+  },
+  {
+    "name": "higher-depth-8-format",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "format",
+    "rootControl": false,
+    "source": "fixtures/doc/regressions/list-markers/RootHigher/higher-depth-8-format.doc",
+    "sourceSha256": "9fde22ba4c6aca3cab40f1ce3dcc59835a99c64215da95948a2cd206037cea0c",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/doc/higher-depth-8-format.pdf",
+    "wordPdfSha256": "ec9feb8474ae35cbe131fb7bb5efb273b6bce6cf182c408ecc9b706bc7bbc31f",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN3END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN3END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ]
+  },
+  {
+    "name": "higher-depth-8-format",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "format",
+    "rootControl": false,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/projected/higher-depth-8-format.docx",
+    "sourceSha256": "da7259f3f568115077190de1dcfa4c44ee16f796c9d54882826b820afa1e1f03",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/projected/higher-depth-8-format.pdf",
+    "wordPdfSha256": "0f393cda8d9166f8cc45969889404f80d7a4ce41bc54a193ed2724df6a154d17",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN3END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN3END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ]
+  },
+  {
+    "name": "higher-depth-8-format",
+    "kind": "source",
+    "depth": 8,
+    "mode": "format",
+    "rootControl": false,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/source/higher-depth-8-format.docx",
+    "sourceSha256": "fb5c7464d903a4d63a5ee78e62f92e487a4b2c86d5ab3eebbb4795d9e194579c",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/source/higher-depth-8-format.pdf",
+    "wordPdfSha256": "940fd256c525d1730178342add486ed61cee2e44a782411086507254de6ae149",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN3END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN3END",
+      "BEGIN7END",
+      "BEGIN8END"
+    ]
+  },
+  {
+    "name": "higher-depth-8-none",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "none",
+    "rootControl": false,
+    "source": "fixtures/doc/regressions/list-markers/RootHigher/higher-depth-8-none.doc",
+    "sourceSha256": "c7fb009e077a1a4d555fa485f8f6c35be531e7de2c0264072630aafc55e10b40",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/doc/higher-depth-8-none.pdf",
+    "wordPdfSha256": "d828ae1a2f28cf8d15e8f099c816c9b5be42b2f2ed1246c5a429cb46f08873bc",
+    "wordListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "higher-depth-8-none",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "none",
+    "rootControl": false,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/projected/higher-depth-8-none.docx",
+    "sourceSha256": "04e362f82f318a6b229e992129fb9b14727d3e90d38dec4b72d29cfe6360b555",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/projected/higher-depth-8-none.pdf",
+    "wordPdfSha256": "bd3f97b5e882a13fc3399ba112ca15106b80a5b2153d364552ad42555f799058",
+    "wordListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "higher-depth-8-none",
+    "kind": "source",
+    "depth": 8,
+    "mode": "none",
+    "rootControl": false,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/source/higher-depth-8-none.docx",
+    "sourceSha256": "43f6b7c17969d290e2a3f8b3c866df224c4efc19f652b3be8a40fc34a6c79085",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/source/higher-depth-8-none.pdf",
+    "wordPdfSha256": "b121de352b846c4f4b89205fbf41876ad859a1835edfa266ec85cca2c3fede5c",
+    "wordListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "higher-depth-8-start",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "start",
+    "rootControl": false,
+    "source": "fixtures/doc/regressions/list-markers/RootHigher/higher-depth-8-start.doc",
+    "sourceSha256": "4d550b4b2d339199446cd1d75deaff86948696661dcfb583b2caccfc5fb18580",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/doc/higher-depth-8-start.pdf",
+    "wordPdfSha256": "dbec7dbed8e04efbb99f01a7881d0b2babaeba627775e3aa79101f4c68f58db8",
+    "wordListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "higher-depth-8-start",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "start",
+    "rootControl": false,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/projected/higher-depth-8-start.docx",
+    "sourceSha256": "291fdc22e598a5cfb58985741ebe11479f1f206ffffbaf121d425ff3a9b3715c",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/projected/higher-depth-8-start.pdf",
+    "wordPdfSha256": "88f8bf785715edd3cba22661cedcf1327a5791a89bebdd7b3e26d1d59822cb6a",
+    "wordListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "higher-depth-8-start",
+    "kind": "source",
+    "depth": 8,
+    "mode": "start",
+    "rootControl": false,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/source/higher-depth-8-start.docx",
+    "sourceSha256": "b8e4c99b6cc8aefb88e874cb9638162aa90c2c1c1fd5f94f905d385301af3bd9",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/source/higher-depth-8-start.pdf",
+    "wordPdfSha256": "f2cdf28dab9045b57858331a58039c981fceecf830868765ab91a612bcd11ff5",
+    "wordListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "root-control-0-both",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "both",
+    "rootControl": true,
+    "source": "fixtures/doc/regressions/list-markers/RootHigher/root-control-0-both.doc",
+    "sourceSha256": "b737b0f58ceeeff30e0cd4cb4d28a4da151001b7103b0396eae5da6be386ec97",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/doc/root-control-0-both.pdf",
+    "wordPdfSha256": "eb4b55655a5d2852a07424757cfc7373faf679c6339f3834f737f1011c115e2c",
+    "wordListStrings": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END",
+      "BEGIN11END",
+      "BEGIN12END"
+    ],
+    "pdfLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END",
+      "BEGIN11END",
+      "BEGIN12END"
+    ]
+  },
+  {
+    "name": "root-control-0-both",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "both",
+    "rootControl": true,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/projected/root-control-0-both.docx",
+    "sourceSha256": "ee1f2697dcea45937924dd0058a77ce013a569005e878980c79e7012d25f5fb8",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/projected/root-control-0-both.pdf",
+    "wordPdfSha256": "e3b8b31fb5322b3c7f922563b767e01e18fa3f95dae8fff482628ae6f5c95199",
+    "wordListStrings": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END",
+      "BEGIN11END",
+      "BEGIN12END"
+    ],
+    "pdfLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END",
+      "BEGIN11END",
+      "BEGIN12END"
+    ]
+  },
+  {
+    "name": "root-control-0-both",
+    "kind": "source",
+    "depth": 0,
+    "mode": "both",
+    "rootControl": true,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/source/root-control-0-both.docx",
+    "sourceSha256": "17df6b6580137ce86f5ee8d24a8973d000458e14de7180d1cc6ce356fbee543f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/source/root-control-0-both.pdf",
+    "wordPdfSha256": "ddfd32e77782354294430994dfc8bd9862125f6dcac32bd06d5cdef57560943a",
+    "wordListStrings": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END",
+      "BEGIN11END",
+      "BEGIN12END"
+    ],
+    "pdfLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END",
+      "BEGIN11END",
+      "BEGIN12END"
+    ]
+  },
+  {
+    "name": "root-control-0-format",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "format",
+    "rootControl": true,
+    "source": "fixtures/doc/regressions/list-markers/RootHigher/root-control-0-format.doc",
+    "sourceSha256": "c2ce140fc8525dff2ba4b19ad7f1be206ce19f4574a0be356c3ac41e2975184d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/doc/root-control-0-format.pdf",
+    "wordPdfSha256": "d6ab7b325f269028d0149c26c1037a8336e319581e72cd843a0551399df340c3",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "root-control-0-format",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "format",
+    "rootControl": true,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/projected/root-control-0-format.docx",
+    "sourceSha256": "dadea30647f697c289d3b056ced1956601652e79101c744a78b5f9a70789a3ff",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/projected/root-control-0-format.pdf",
+    "wordPdfSha256": "bca1d48fe49fee3f75277f7e5efec13e9a3e6b78b386391c1bf802ed6f52892c",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "root-control-0-format",
+    "kind": "source",
+    "depth": 0,
+    "mode": "format",
+    "rootControl": true,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/source/root-control-0-format.docx",
+    "sourceSha256": "8258c1669047c1d9c99c26aaa2f5f53c5a0a40f804e5385b7610448fc35c7289",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/source/root-control-0-format.pdf",
+    "wordPdfSha256": "17cc4b8b7cf5f24541e473b0e8dac7b7b28986cc1e475c76d0f10fc15ed47019",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "root-control-0-none",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "none",
+    "rootControl": true,
+    "source": "fixtures/doc/regressions/list-markers/RootHigher/root-control-0-none.doc",
+    "sourceSha256": "bb03c864b891591b781c974b851e9c984f4cf749abaef5d4f80ec9823c07dd07",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/doc/root-control-0-none.pdf",
+    "wordPdfSha256": "f07a006c32b75cf94adb5b37e197241bb1939fdf030ead7ab55ab6b1b9358977",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "root-control-0-none",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "none",
+    "rootControl": true,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/projected/root-control-0-none.docx",
+    "sourceSha256": "9e3293f9ff212389ee0021abf9cf3049a141beb5de70ce7d86390976cb73f623",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/projected/root-control-0-none.pdf",
+    "wordPdfSha256": "c083b2c56fcaa2bb6846d6a59907416ae072d6fc380bb7c3304e78cad080285e",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "root-control-0-none",
+    "kind": "source",
+    "depth": 0,
+    "mode": "none",
+    "rootControl": true,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/source/root-control-0-none.docx",
+    "sourceSha256": "9de003d5dcc82b2e3b90947e97c2de9ff26d62d7249f22ce555c6dc5fd5359b0",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/source/root-control-0-none.pdf",
+    "wordPdfSha256": "759b7a39226a087d67f08fb74824e228e13427fad57f3c0388e5e93c3278172a",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "root-control-0-start",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "start",
+    "rootControl": true,
+    "source": "fixtures/doc/regressions/list-markers/RootHigher/root-control-0-start.doc",
+    "sourceSha256": "6921a1d332060f25982a2311c337cd6f21564fb884310297ae577863f350a34e",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/doc/root-control-0-start.pdf",
+    "wordPdfSha256": "0f5f2729fec217659c9bd7122249fa22dd8718407c856374305b32a83165df9c",
+    "wordListStrings": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END",
+      "BEGIN11END",
+      "BEGIN12END"
+    ],
+    "pdfLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END",
+      "BEGIN11END",
+      "BEGIN12END"
+    ]
+  },
+  {
+    "name": "root-control-0-start",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "start",
+    "rootControl": true,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/projected/root-control-0-start.docx",
+    "sourceSha256": "4284418f560a84421898da9034cf955261c66b9c2623cf8c1c9de0bc4f3b4b73",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/projected/root-control-0-start.pdf",
+    "wordPdfSha256": "9d34eaa0a69165ab8ebb6de3592a075eaf33be403efaa9c0a6be44199d28537d",
+    "wordListStrings": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END",
+      "BEGIN11END",
+      "BEGIN12END"
+    ],
+    "pdfLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END",
+      "BEGIN11END",
+      "BEGIN12END"
+    ]
+  },
+  {
+    "name": "root-control-0-start",
+    "kind": "source",
+    "depth": 0,
+    "mode": "start",
+    "rootControl": true,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/source/root-control-0-start.docx",
+    "sourceSha256": "a32c95f4a84da5eb0a0095be8c7fe58a063d36f710d78ada99bfcf02d98fde00",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/source/root-control-0-start.pdf",
+    "wordPdfSha256": "038d3f5683eb023ce34d888b0dc01ee3f3dd3c1e786aa9675554609cedb11882",
+    "wordListStrings": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END",
+      "BEGIN11END",
+      "BEGIN12END"
+    ],
+    "pdfLabels": [
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN9END",
+      "BEGIN10END",
+      "BEGIN11END",
+      "BEGIN12END"
+    ]
+  },
+  {
+    "name": "root-control-1-both",
+    "kind": "doc",
+    "depth": 1,
+    "mode": "both",
+    "rootControl": true,
+    "source": "fixtures/doc/regressions/list-markers/RootHigher/root-control-1-both.doc",
+    "sourceSha256": "256fbb9d0a8b5d457e4daf7f0351cf570aa2c7c6ed3e0768f46962457dc86f27",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/doc/root-control-1-both.pdf",
+    "wordPdfSha256": "47dc17928c6bf4ddc44c3c153d0f67f86f0aa70760adfdde1cf9863d480a94ad",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "root-control-1-both",
+    "kind": "projected",
+    "depth": 1,
+    "mode": "both",
+    "rootControl": true,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/projected/root-control-1-both.docx",
+    "sourceSha256": "c25d20eb39f54475ffbf70da0cdb3eed3ce1f5027501a751cf36eb1ae325284f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/projected/root-control-1-both.pdf",
+    "wordPdfSha256": "d584e222cb8059b23f57055acb56075f649f4d220b113e9442992b2b89f151cc",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "root-control-1-both",
+    "kind": "source",
+    "depth": 1,
+    "mode": "both",
+    "rootControl": true,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/source/root-control-1-both.docx",
+    "sourceSha256": "a4ad5f0fd238a20a26b6c55767a3f9da827d8e85fa5706bd69b82ea7bc850f85",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/source/root-control-1-both.pdf",
+    "wordPdfSha256": "8736c8b478d6fa645142d3208a0beed9a1d4c156f380a7bc2126a058f15df51c",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "root-control-1-format",
+    "kind": "doc",
+    "depth": 1,
+    "mode": "format",
+    "rootControl": true,
+    "source": "fixtures/doc/regressions/list-markers/RootHigher/root-control-1-format.doc",
+    "sourceSha256": "f5d809d472391ff971c2f0252d67d00263f4fc58b405c4592744c4f63e70e16f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/doc/root-control-1-format.pdf",
+    "wordPdfSha256": "6d047cc48954bebb74acc5d4d2e15ba4448fa060aa5219e46faafa79ca77b2e9",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "root-control-1-format",
+    "kind": "projected",
+    "depth": 1,
+    "mode": "format",
+    "rootControl": true,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/projected/root-control-1-format.docx",
+    "sourceSha256": "11252a3d1e0dcebb763acc528a6191c8f0e3c2756423ffae6333f882540a4431",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/projected/root-control-1-format.pdf",
+    "wordPdfSha256": "a4ecd8b7c838e1e77205b20f7930c80fa933e57be5840d88ca3deee85126a584",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "root-control-1-format",
+    "kind": "source",
+    "depth": 1,
+    "mode": "format",
+    "rootControl": true,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/source/root-control-1-format.docx",
+    "sourceSha256": "2aad0135cf80655e33da9b6000b54f9d01123256ade04aed35c18d1bd381a7ae",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/source/root-control-1-format.pdf",
+    "wordPdfSha256": "0c101c22ac1abdb43ab57c5d6e629749f52286591489118f76b3118d62307137",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "root-control-1-start",
+    "kind": "doc",
+    "depth": 1,
+    "mode": "start",
+    "rootControl": true,
+    "source": "fixtures/doc/regressions/list-markers/RootHigher/root-control-1-start.doc",
+    "sourceSha256": "57dbbd153ed0b90bbd6ef6b69706acd43108ee9533dcfd47ef9f817a22e1b9f8",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/doc/root-control-1-start.pdf",
+    "wordPdfSha256": "08d30077285463b3a950c0327dc57a81fe68817301b08985e75364bdf6b0b09b",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "root-control-1-start",
+    "kind": "projected",
+    "depth": 1,
+    "mode": "start",
+    "rootControl": true,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/projected/root-control-1-start.docx",
+    "sourceSha256": "ea98146d3f87001835c5ed6c64e3dccd5246ed4fdd3d1079d72157a9cf6969b8",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/projected/root-control-1-start.pdf",
+    "wordPdfSha256": "df387948908e5902b73609fb2428073d9ec3fea860c861f4cd33defed1901bb2",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "root-control-1-start",
+    "kind": "source",
+    "depth": 1,
+    "mode": "start",
+    "rootControl": true,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/source/root-control-1-start.docx",
+    "sourceSha256": "c12e04b18c6ba731eac3f64d06ff5b51903a16c5509890223038a062d34ca29c",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/source/root-control-1-start.pdf",
+    "wordPdfSha256": "e8c5784e1bb6c9e3aa54ec2e9f2f88362b7505fedbc5dfa7b54744c834e9b8b4",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "root-control-8-both",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "both",
+    "rootControl": true,
+    "source": "fixtures/doc/regressions/list-markers/RootHigher/root-control-8-both.doc",
+    "sourceSha256": "28c54e88464c695650ff37cd6e848e53900e07221a8c464896ca76eecb1026df",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/doc/root-control-8-both.pdf",
+    "wordPdfSha256": "fe0109c96416e25ba584622fc64caf7c3cb99642bf2b098aaad6f1e1c1158143",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "root-control-8-both",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "both",
+    "rootControl": true,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/projected/root-control-8-both.docx",
+    "sourceSha256": "b769823ae880c9e453176a43bc9fc439575f16db7e6e953d5db4f9097510cb95",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/projected/root-control-8-both.pdf",
+    "wordPdfSha256": "a6cb393db4f7ef23f03a63fa199ef51700ba71bef9437c3095126b5a5e95d927",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "root-control-8-both",
+    "kind": "source",
+    "depth": 8,
+    "mode": "both",
+    "rootControl": true,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/source/root-control-8-both.docx",
+    "sourceSha256": "bc2a3a97dd09f4722bf3c0efb4a5fa42f4e7dd461f4fb65b0fd45142c21e0349",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/source/root-control-8-both.pdf",
+    "wordPdfSha256": "46b171b5e937e44f3e113e9785bd179deb498bcc4810d219519e90a02c8badf3",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "root-control-8-format",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "format",
+    "rootControl": true,
+    "source": "fixtures/doc/regressions/list-markers/RootHigher/root-control-8-format.doc",
+    "sourceSha256": "ec73abd84c7111819d0a77873bd81ef4e58567b661157ccd73b3a344f1ea1769",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/doc/root-control-8-format.pdf",
+    "wordPdfSha256": "e60adf136171b4172f115deb16cf8a18fa635326b52f754f37bcbc0abd125bbd",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "root-control-8-format",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "format",
+    "rootControl": true,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/projected/root-control-8-format.docx",
+    "sourceSha256": "4004b544053eb874c52ffa85268f3f5fe621f9a0456873e3a94c95f4c3ee8e8d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/projected/root-control-8-format.pdf",
+    "wordPdfSha256": "98770b8edababf8953e71b4ed10dd9b21d7156e61a35b75450224b0d12b6619c",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "root-control-8-format",
+    "kind": "source",
+    "depth": 8,
+    "mode": "format",
+    "rootControl": true,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/source/root-control-8-format.docx",
+    "sourceSha256": "a12c5fe4c44d803a0c4c61180809132fc6e436a3e2f94914b263379fd5dae8de",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/source/root-control-8-format.pdf",
+    "wordPdfSha256": "c093023f1c24e00b9bbcd18983741543b01a920180595b78ccb3c9154cde8540",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "root-control-8-start",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "start",
+    "rootControl": true,
+    "source": "fixtures/doc/regressions/list-markers/RootHigher/root-control-8-start.doc",
+    "sourceSha256": "b3e57e641c05a5de10184f024fc8410a5f77e51b0a11795c0231092d485b2a5b",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/doc/root-control-8-start.pdf",
+    "wordPdfSha256": "1e1c804b527e454e0d5050d4bc33471d431e23a394725fcc9ed18c591769515b",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "root-control-8-start",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "start",
+    "rootControl": true,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/projected/root-control-8-start.docx",
+    "sourceSha256": "a4c1e204c0e723a8fcceba58fe3631dde3daa49695dcb3f86d790d81bfb976a3",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/projected/root-control-8-start.pdf",
+    "wordPdfSha256": "38bdd6902aebed1daa8537933f622df6add4d827f75b5b25a4a44d05d5fefefa",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "root-control-8-start",
+    "kind": "source",
+    "depth": 8,
+    "mode": "start",
+    "rootControl": true,
+    "source": "fixtures/docx/regressions/list-markers/DocRootHigher/source/root-control-8-start.docx",
+    "sourceSha256": "8814f709fd3c7456907b9f090d948904d3826ce60bbdf695e2270b33d24d6d71",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocRootHigher/source/root-control-8-start.pdf",
+    "wordPdfSha256": "dc8afdbe0c428b206ffd2363925ec454329f203f5ddb9d93147b78043379e0ec",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  }
+]
