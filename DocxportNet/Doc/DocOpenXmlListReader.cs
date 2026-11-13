@@ -128,11 +128,11 @@ internal static class DocOpenXmlListReader
                     // DOC stores the effective start in the nested LVL when
                     // both start and formatting overrides are present.
                     starts[levelIndex] = level.Level?.StartNumberingValue?.Val?.Value ?? start;
-                // Replacement activation has separate rules; retain its existing
-                // fallback while fixing omitted starts in abstract definitions.
+                // Non-root replacements default to zero once an ancestor
+                // activates them. Retain the existing root activation fallback.
                 if (level.Level != null)
                     formats[levelIndex] = ReadLevel(level.Level, readFormatting,
-                        readParagraphFormatting, defaultStart: 1);
+                        readParagraphFormatting, defaultStart: levelIndex == 0 ? 1 : 0);
             }
             instances.Add(new DocListInstance(overrideIndex, listId, starts, formats));
         }
