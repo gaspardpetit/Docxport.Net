@@ -1,0 +1,98 @@
+[
+  {
+    "name": "taiwanese-depth-0-counting-1",
+    "depth": 0,
+    "mode": "counting-1",
+    "error": "DOCX list format 'taiwaneseCounting' is unsupported."
+  },
+  {
+    "name": "taiwanese-depth-0-counting-98",
+    "depth": 0,
+    "mode": "counting-98",
+    "error": "DOCX list format 'taiwaneseCounting' is unsupported."
+  },
+  {
+    "name": "taiwanese-depth-0-counting-9998",
+    "depth": 0,
+    "mode": "counting-9998",
+    "error": "DOCX list format 'taiwaneseCounting' is unsupported."
+  },
+  {
+    "name": "taiwanese-depth-8-counting-9998",
+    "depth": 8,
+    "mode": "counting-9998",
+    "error": "DOCX list format 'taiwaneseCounting' is unsupported."
+  },
+  {
+    "name": "taiwanese-depth-0-legal-1",
+    "depth": 0,
+    "mode": "legal-1",
+    "error": "DOCX list format 'ideographLegalTraditional' is unsupported."
+  },
+  {
+    "name": "taiwanese-depth-0-legal-98",
+    "depth": 0,
+    "mode": "legal-98",
+    "error": "DOCX list format 'ideographLegalTraditional' is unsupported."
+  },
+  {
+    "name": "taiwanese-depth-0-legal-9998",
+    "depth": 0,
+    "mode": "legal-9998",
+    "error": "DOCX list format 'ideographLegalTraditional' is unsupported."
+  },
+  {
+    "name": "taiwanese-depth-8-legal-9998",
+    "depth": 8,
+    "mode": "legal-9998",
+    "error": "DOCX list format 'ideographLegalTraditional' is unsupported."
+  },
+  {
+    "name": "taiwanese-depth-0-thousand-1",
+    "depth": 0,
+    "mode": "thousand-1",
+    "error": "DOCX list format 'taiwaneseCountingThousand' is unsupported."
+  },
+  {
+    "name": "taiwanese-depth-0-thousand-98",
+    "depth": 0,
+    "mode": "thousand-98",
+    "error": "DOCX list format 'taiwaneseCountingThousand' is unsupported."
+  },
+  {
+    "name": "taiwanese-depth-0-thousand-9998",
+    "depth": 0,
+    "mode": "thousand-9998",
+    "error": "DOCX list format 'taiwaneseCountingThousand' is unsupported."
+  },
+  {
+    "name": "taiwanese-depth-8-thousand-9998",
+    "depth": 8,
+    "mode": "thousand-9998",
+    "error": "DOCX list format 'taiwaneseCountingThousand' is unsupported."
+  },
+  {
+    "name": "taiwanese-depth-0-digital-1",
+    "depth": 0,
+    "mode": "digital-1",
+    "error": "DOCX list format 'taiwaneseDigital' is unsupported."
+  },
+  {
+    "name": "taiwanese-depth-0-digital-98",
+    "depth": 0,
+    "mode": "digital-98",
+    "error": "DOCX list format 'taiwaneseDigital' is unsupported."
+  },
+  {
+    "name": "taiwanese-depth-0-digital-9998",
+    "depth": 0,
+    "mode": "digital-9998",
+    "error": "DOCX list format 'taiwaneseDigital' is unsupported."
+  },
+  {
+    "name": "taiwanese-depth-8-digital-9998",
+    "depth": 8,
+    "mode": "digital-9998",
+    "error": "DOCX list format 'taiwaneseDigital' is unsupported."
+  }
+]
