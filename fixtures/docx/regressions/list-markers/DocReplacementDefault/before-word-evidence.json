@@ -1,0 +1,48 @@
+[
+  {
+    "name": "replacement-depth-1-missing-parent",
+    "source": "fixtures/docx/regressions/list-markers/DocReplacementDefault/before/replacement-depth-1-missing-parent.docx",
+    "sourceSha256": "06beabba7d214cb54ac7b307af3584eb4e40fc2c59c8cbb5bd8e5759e5e79005",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocReplacementDefault/before/replacement-depth-1-missing-parent.pdf",
+    "wordPdfSha256": "078ce7cc52f339788252a5e19e46bf9cff3d1abaa667d77b7362cc9f5d1dfdc3",
+    "wordListStrings": [
+      "BEGIN3END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN4END",
+      "BEGIN1END",
+      "BEGIN2END"
+    ],
+    "expectedSourceListStrings": [
+      "BEGIN3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "BEGIN4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ]
+  },
+  {
+    "name": "replacement-depth-8-missing-parent",
+    "source": "fixtures/docx/regressions/list-markers/DocReplacementDefault/before/replacement-depth-8-missing-parent.docx",
+    "sourceSha256": "83f8a3e40a6b92976641488b4b17ac6bdebac2675e827112fa903fc097f933a5",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocReplacementDefault/before/replacement-depth-8-missing-parent.pdf",
+    "wordPdfSha256": "16e4c694f9c2079620848dc62320571a310c6e467de35a1e2d1ace33fbf68206",
+    "wordListStrings": [
+      "BEGIN3END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN4END",
+      "BEGIN1END",
+      "BEGIN2END"
+    ],
+    "expectedSourceListStrings": [
+      "BEGIN3END",
+      "BEGIN0END",
+      "BEGIN1END",
+      "BEGIN4END",
+      "BEGIN0END",
+      "BEGIN1END"
+    ]
+  }
+]
