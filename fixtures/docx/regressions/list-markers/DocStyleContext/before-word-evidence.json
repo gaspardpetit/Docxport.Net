@@ -1,0 +1,48 @@
+[
+  {
+    "name": "style-depth-1-inherited-id",
+    "source": "fixtures/doc/regressions/list-markers/StyleContext/before/style-depth-1-inherited-id.doc",
+    "sourceSha256": "b4292b58b8ce44323e4d6524808da47bd0cb06d5e22aa688f7d8a73d98b059e1",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocStyleContext/before/style-depth-1-inherited-id.pdf",
+    "wordPdfSha256": "18cf252df0a42c111aad76b44581f2e9f46671e00ad4c7331d9a3cc10b0fead0",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "expectedSourceListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "style-depth-1-inherited-level",
+    "source": "fixtures/doc/regressions/list-markers/StyleContext/before/style-depth-1-inherited-level.doc",
+    "sourceSha256": "404d364fc4b8791a6fa8cec12095f1b1a06f914811a927a49eaf95989c3af242",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocStyleContext/before/style-depth-1-inherited-level.pdf",
+    "wordPdfSha256": "7e233fd874b4ddbf4db5684a24d32e426d7423d4dcc08238aa7ecd5ba63b03ab",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "expectedSourceListStrings": [
+      "BEGIN2END",
+      "",
+      "",
+      "BEGIN3END",
+      "",
+      ""
+    ]
+  }
+]
