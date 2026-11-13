@@ -52,10 +52,10 @@ internal static class DocOpenXmlListReader
             var levels = abstractNum.Elements<Level>().Select(x => ReadLevel(x, readFormatting,
                 readParagraphFormatting, defaultStart: 0))
                 .OrderBy(x => x.Index).ToArray();
-            if (levels.Length == 0 || levels.Length > 9 ||
+            if (levels.Length > 9 ||
                 levels.Select(x => x.Index).Distinct().Count() != levels.Length)
                 throw new NotSupportedException("DOC list levels must have unique indexes from zero through eight.");
-            if (levels.Length > 1 || levels[0].Index > 0)
+            if (levels.Length != 1 || levels[0].Index > 0)
             {
                 // DOC requires positional slots. Word leaves omitted OOXML
                 // levels blank, with a zero counter available to placeholders.

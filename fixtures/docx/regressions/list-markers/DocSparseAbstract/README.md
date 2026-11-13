@@ -25,5 +25,6 @@ visitors, complete body/marker output, projected schema validity, and continued
 rejection of duplicate/out-of-range level indexes.
 
 This change covers nonempty abstract definitions with an explicit non-root
-level. Completely empty definitions, and root-only definitions used at higher
-levels through paragraph/style/replacement context, remain separate work.
+level. Completely empty definitions are covered by `DocEmptyAbstract`.
+Root-only definitions used at higher levels through paragraph/style/replacement
+context remain separate work.
