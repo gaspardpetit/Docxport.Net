@@ -15,6 +15,8 @@ internal static class DocOpenXmlListReader
             main?.NumberingDefinitionsPart?.Numbering);
         if (numbering == null)
             return (new DocListIndex([], []), new Dictionary<int, short>());
+        var resolver = new DocxportNet.Walker.DxpNumberingResolver(numbering,
+            main?.StyleDefinitionsPart?.Styles);
         var usedNumberIds = new HashSet<int>();
         var usedHigherLevels = new HashSet<int>();
         void Collect(IEnumerable<NumberingProperties> properties)
@@ -76,7 +78,10 @@ internal static class DocOpenXmlListReader
             if (listIds.ContainsKey(sourceId))
                 throw new InvalidDataException("A DOCX abstract list ID is duplicated.");
             listIds.Add(sourceId, listId);
-            var levels = abstractNum.Elements<Level>().Select(x => ReadLevel(x, readFormatting,
+            // Preserve the wrapper's counter identity, but import the levels
+            // Word resolves through a numbering style and matching reverse link.
+            var resolved = resolver.FollowAbstractNumLinks(abstractNum);
+            var levels = (resolved ?? abstractNum).Elements<Level>().Select(x => ReadLevel(x, readFormatting,
                 readParagraphFormatting, defaultStart: 0))
                 .OrderBy(x => x.Index).ToArray();
             if (levels.Length > 9 ||
