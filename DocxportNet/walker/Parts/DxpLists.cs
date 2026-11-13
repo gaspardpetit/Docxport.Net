@@ -18,8 +18,13 @@ public sealed class DxpNumberingResolver
     private readonly Dictionary<string, Style> _styleById = new(StringComparer.Ordinal);
 
     public DxpNumberingResolver(WordprocessingDocument doc)
+        : this(NormalizeImportedLevels(doc.MainDocumentPart?.NumberingDefinitionsPart?.Numbering),
+            doc.MainDocumentPart?.StyleDefinitionsPart?.Styles) { }
+
+    // DOC import supplies its own compatibility-normalized numbering view.
+    internal DxpNumberingResolver(Numbering? numbering, Styles? sourceStyles)
     {
-        _numbering = NormalizeImportedLevels(doc.MainDocumentPart?.NumberingDefinitionsPart?.Numbering);
+        _numbering = numbering;
         if (_numbering != null)
         {
             foreach (var n in _numbering.Elements<NumberingInstance>())
@@ -31,7 +36,7 @@ public sealed class DxpNumberingResolver
                     _absById[a.AbstractNumberId.Value] = a;
         }
 
-        var styles = NormalizeNumberingStyles(doc.MainDocumentPart?.StyleDefinitionsPart?.Styles, _numbering);
+        var styles = NormalizeNumberingStyles(sourceStyles, _numbering);
         if (styles != null)
         {
             foreach (var s in styles.Elements<Style>())

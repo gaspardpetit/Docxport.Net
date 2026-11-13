@@ -1,0 +1,71 @@
+[
+  {
+    "name": "link-depth-0-valid",
+    "source": "fixtures/docx/regressions/list-markers/DocNumberingLinks/before/link-depth-0-valid.docx",
+    "sourceSha256": "0fb08d247df44f2d6280cfde0ac18504dedbd0693e9685f9718100ea906ae05d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocNumberingLinks/before/link-depth-0-valid.pdf",
+    "wordPdfSha256": "a55f7cbc957bc5e96e25952a8cb7e94c72b90b40c60f4309cc322238a1bf025a",
+    "wordListStrings": [
+      "",
+      "",
+      "BEGIN1END",
+      "BEGIN2END",
+      "",
+      "BEGIN3END"
+    ],
+    "expectedSourceListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN3END"
+    ]
+  },
+  {
+    "name": "link-depth-1-inherited",
+    "source": "fixtures/docx/regressions/list-markers/DocNumberingLinks/before/link-depth-1-inherited.docx",
+    "sourceSha256": "b3214da66a53a8e50d0b99c4e179de27e4fecec3ca0eb137fecfb63609673f12",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocNumberingLinks/before/link-depth-1-inherited.pdf",
+    "wordPdfSha256": "48a4cdbfa0ecfd4f8641c6808d8a8f443bce5743d1947772b6e09f123010e9ad",
+    "wordListStrings": [
+      "",
+      "",
+      "BEGIN1END",
+      "BEGIN2END",
+      "",
+      "BEGIN3END"
+    ],
+    "expectedSourceListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN3END"
+    ]
+  },
+  {
+    "name": "link-depth-8-override",
+    "source": "fixtures/docx/regressions/list-markers/DocNumberingLinks/before/link-depth-8-override.docx",
+    "sourceSha256": "ffd61c71b0578cbbdd7e1252807d64fdc782c7a7411d5761585304326072c098",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocNumberingLinks/before/link-depth-8-override.pdf",
+    "wordPdfSha256": "a5205ca57aa5bfba0f42f0c84943c10fa6a4b276749d96584b5a60a523b57a93",
+    "wordListStrings": [
+      "",
+      "",
+      "BEGIN7END",
+      "BEGIN8END",
+      "",
+      "BEGIN9END"
+    ],
+    "expectedSourceListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN7END",
+      "BEGIN8END",
+      "BEGIN3END",
+      "BEGIN9END"
+    ]
+  }
+]
