@@ -1,0 +1,782 @@
+[
+  {
+    "name": "hebrew-depth-0-alphabetic-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "alphabetic-1",
+    "source": "fixtures/doc/regressions/list-markers/HebrewMarkers/hebrew-depth-0-alphabetic-1.doc",
+    "sourceSha256": "6a6608cdfa57113bd52c3a22410c76bb3c8cac7240c8b384a94350e37684625c",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHebrewMarkers/doc/hebrew-depth-0-alphabetic-1.pdf",
+    "wordPdfSha256": "577db341095f8db53d9613ec1ac5dcaac93104b657bce1479be07f82c3b11d71",
+    "wordListStrings": [
+      "BEGIN\u200f\u05d0END",
+      "BEGIN\u200f\u05d1END",
+      "BEGIN\u200f\u05d2END",
+      "BEGIN\u200f\u05d3END",
+      "BEGIN\u200f\u05d4END",
+      "BEGIN\u200f\u05d5END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u05d0END",
+      "BEGIN\u05d1END",
+      "BEGIN\u05d2END",
+      "BEGIN\u05d3END",
+      "BEGIN\u05d4END",
+      "BEGIN\u05d5END"
+    ]
+  },
+  {
+    "name": "hebrew-depth-0-alphabetic-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "alphabetic-1",
+    "source": "fixtures/docx/regressions/list-markers/DocHebrewMarkers/projected/hebrew-depth-0-alphabetic-1.docx",
+    "sourceSha256": "e5bd5b99a7aa12aec338a0d2aee009d53a152e51526eefd7993248d1f5c261e2",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHebrewMarkers/projected/hebrew-depth-0-alphabetic-1.pdf",
+    "wordPdfSha256": "e30c1b869ef9d2b3f087d190fc9702bd90776fe8ff4c7eecbfc8b03b038f442a",
+    "wordListStrings": [
+      "BEGIN\u200f\u05d0END",
+      "BEGIN\u200f\u05d1END",
+      "BEGIN\u200f\u05d2END",
+      "BEGIN\u200f\u05d3END",
+      "BEGIN\u200f\u05d4END",
+      "BEGIN\u200f\u05d5END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u05d0END",
+      "BEGIN\u05d1END",
+      "BEGIN\u05d2END",
+      "BEGIN\u05d3END",
+      "BEGIN\u05d4END",
+      "BEGIN\u05d5END"
+    ]
+  },
+  {
+    "name": "hebrew-depth-0-alphabetic-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "alphabetic-1",
+    "source": "fixtures/docx/regressions/list-markers/DocHebrewMarkers/source/hebrew-depth-0-alphabetic-1.docx",
+    "sourceSha256": "17b5a093b13e3d22481c3dd9afba19a2e0afb21a63e506bd911fbbb311e352ea",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHebrewMarkers/source/hebrew-depth-0-alphabetic-1.pdf",
+    "wordPdfSha256": "a8aa02810790daa853c148acb1e46ce474ac9f953f9f14bade9e0784a081f646",
+    "wordListStrings": [
+      "BEGIN\u200f\u05d0END",
+      "BEGIN\u200f\u05d1END",
+      "BEGIN\u200f\u05d2END",
+      "BEGIN\u200f\u05d3END",
+      "BEGIN\u200f\u05d4END",
+      "BEGIN\u200f\u05d5END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u05d0END",
+      "BEGIN\u05d1END",
+      "BEGIN\u05d2END",
+      "BEGIN\u05d3END",
+      "BEGIN\u05d4END",
+      "BEGIN\u05d5END"
+    ]
+  },
+  {
+    "name": "hebrew-depth-0-alphabetic-14",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "alphabetic-14",
+    "source": "fixtures/doc/regressions/list-markers/HebrewMarkers/hebrew-depth-0-alphabetic-14.doc",
+    "sourceSha256": "c0c473bc45364ed0d339a8bf288545cb7e5f8c70dc1838ea8cf9436b315648ee",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHebrewMarkers/doc/hebrew-depth-0-alphabetic-14.pdf",
+    "wordPdfSha256": "a22d00eaac0c964e92af7dc699a3472dd00267a534dba6d0a4bbc48f71b205a0",
+    "wordListStrings": [
+      "BEGIN\u200f\u05e0END",
+      "BEGIN\u200f\u05e1END",
+      "BEGIN\u200f\u05e2END",
+      "BEGIN\u200f\u05e4END",
+      "BEGIN\u200f\u05e6END",
+      "BEGIN\u200f\u05e7END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u05e0END",
+      "BEGIN\u05e1END",
+      "BEGIN\u05e2END",
+      "BEGIN\u05e4END",
+      "BEGIN\u05e6END",
+      "BEGIN\u05e7END"
+    ]
+  },
+  {
+    "name": "hebrew-depth-0-alphabetic-14",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "alphabetic-14",
+    "source": "fixtures/docx/regressions/list-markers/DocHebrewMarkers/projected/hebrew-depth-0-alphabetic-14.docx",
+    "sourceSha256": "90cb2a40db73343c704d58f80ca6d02b75250fa01faeb2dfabacb56d04b0655f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHebrewMarkers/projected/hebrew-depth-0-alphabetic-14.pdf",
+    "wordPdfSha256": "6c7219a6534b2b44941bce00fab8a63b691c4c14b87dc0e11efd9c5d4ec0ab13",
+    "wordListStrings": [
+      "BEGIN\u200f\u05e0END",
+      "BEGIN\u200f\u05e1END",
+      "BEGIN\u200f\u05e2END",
+      "BEGIN\u200f\u05e4END",
+      "BEGIN\u200f\u05e6END",
+      "BEGIN\u200f\u05e7END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u05e0END",
+      "BEGIN\u05e1END",
+      "BEGIN\u05e2END",
+      "BEGIN\u05e4END",
+      "BEGIN\u05e6END",
+      "BEGIN\u05e7END"
+    ]
+  },
+  {
+    "name": "hebrew-depth-0-alphabetic-14",
+    "kind": "source",
+    "depth": 0,
+    "mode": "alphabetic-14",
+    "source": "fixtures/docx/regressions/list-markers/DocHebrewMarkers/source/hebrew-depth-0-alphabetic-14.docx",
+    "sourceSha256": "5e0161825b25a267ddc4c1172e0c90cd913e695e78033b2f59ee5aedeb1f2fd7",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHebrewMarkers/source/hebrew-depth-0-alphabetic-14.pdf",
+    "wordPdfSha256": "d11f6978fe5b9867362a54d46a1b49b900fc4081a5050a7d059c8b8e91955259",
+    "wordListStrings": [
+      "BEGIN\u200f\u05e0END",
+      "BEGIN\u200f\u05e1END",
+      "BEGIN\u200f\u05e2END",
+      "BEGIN\u200f\u05e4END",
+      "BEGIN\u200f\u05e6END",
+      "BEGIN\u200f\u05e7END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u05e0END",
+      "BEGIN\u05e1END",
+      "BEGIN\u05e2END",
+      "BEGIN\u05e4END",
+      "BEGIN\u05e6END",
+      "BEGIN\u05e7END"
+    ]
+  },
+  {
+    "name": "hebrew-depth-0-alphabetic-21",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "alphabetic-21",
+    "source": "fixtures/doc/regressions/list-markers/HebrewMarkers/hebrew-depth-0-alphabetic-21.doc",
+    "sourceSha256": "1c4847b8ae0d82f651b7084dca7347e9566fb04a6b8667ad5aa6c14bf4f48b2d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHebrewMarkers/doc/hebrew-depth-0-alphabetic-21.pdf",
+    "wordPdfSha256": "f22cfb5367251fda57a023f22849ef1ac5019a476eaa0b168c767fa26bf13a60",
+    "wordListStrings": [
+      "BEGIN\u200f\u05e9END",
+      "BEGIN\u200f\u05eaEND",
+      "BEGIN\u200f\u05ea\u05d0END",
+      "BEGIN\u200f\u05ea\u05d1END",
+      "BEGIN\u200f\u05ea\u05d2END",
+      "BEGIN\u200f\u05ea\u05d3END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u05e9END",
+      "BEGIN\u05eaEND",
+      "BEGIN\u05ea\u05d0END",
+      "BEGIN\u05ea\u05d1END",
+      "BEGIN\u05ea\u05d2END",
+      "BEGIN\u05ea\u05d3END"
+    ]
+  },
+  {
+    "name": "hebrew-depth-0-alphabetic-21",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "alphabetic-21",
+    "source": "fixtures/docx/regressions/list-markers/DocHebrewMarkers/projected/hebrew-depth-0-alphabetic-21.docx",
+    "sourceSha256": "68318b77fe1caad069450a0569f365c783f7356ad9c4b92b1cf04282c387a07b",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHebrewMarkers/projected/hebrew-depth-0-alphabetic-21.pdf",
+    "wordPdfSha256": "d7c1573e4a7a20eb6492d66dafade0ed65b93e030cbf94b36dd065e357231901",
+    "wordListStrings": [
+      "BEGIN\u200f\u05e9END",
+      "BEGIN\u200f\u05eaEND",
+      "BEGIN\u200f\u05ea\u05d0END",
+      "BEGIN\u200f\u05ea\u05d1END",
+      "BEGIN\u200f\u05ea\u05d2END",
+      "BEGIN\u200f\u05ea\u05d3END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u05e9END",
+      "BEGIN\u05eaEND",
+      "BEGIN\u05ea\u05d0END",
+      "BEGIN\u05ea\u05d1END",
+      "BEGIN\u05ea\u05d2END",
+      "BEGIN\u05ea\u05d3END"
+    ]
+  },
+  {
+    "name": "hebrew-depth-0-alphabetic-21",
+    "kind": "source",
+    "depth": 0,
+    "mode": "alphabetic-21",
+    "source": "fixtures/docx/regressions/list-markers/DocHebrewMarkers/source/hebrew-depth-0-alphabetic-21.docx",
+    "sourceSha256": "6f2c0f659b3d3de27b79d4d071d2d848b04729eb50e8f6119078e6b729cf68ba",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHebrewMarkers/source/hebrew-depth-0-alphabetic-21.pdf",
+    "wordPdfSha256": "cdd98748d5294ad61aa5987543ced320f9fcc6b0456cca2ecd793befdbfc1007",
+    "wordListStrings": [
+      "BEGIN\u200f\u05e9END",
+      "BEGIN\u200f\u05eaEND",
+      "BEGIN\u200f\u05ea\u05d0END",
+      "BEGIN\u200f\u05ea\u05d1END",
+      "BEGIN\u200f\u05ea\u05d2END",
+      "BEGIN\u200f\u05ea\u05d3END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u05e9END",
+      "BEGIN\u05eaEND",
+      "BEGIN\u05ea\u05d0END",
+      "BEGIN\u05ea\u05d1END",
+      "BEGIN\u05ea\u05d2END",
+      "BEGIN\u05ea\u05d3END"
+    ]
+  },
+  {
+    "name": "hebrew-depth-0-alphabetic-391",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "alphabetic-391",
+    "source": "fixtures/doc/regressions/list-markers/HebrewMarkers/hebrew-depth-0-alphabetic-391.doc",
+    "sourceSha256": "10610d52d8902e1e1596abdac4c41e0809880f1a8f59f757db0d6604a9fbb6d4",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHebrewMarkers/doc/hebrew-depth-0-alphabetic-391.pdf",
+    "wordPdfSha256": "72e700be749e84d5895c890850710a32999de3e80c2956cb1452cf4cbd7cec22",
+    "wordListStrings": [
+      "BEGIN\u200f\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05e4END",
+      "BEGIN\u200f\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05e6END",
+      "BEGIN\u200f\u05d0END",
+      "BEGIN\u200f\u05d1END",
+      "BEGIN\u200f\u05d2END",
+      "BEGIN\u200f\u05d3END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05e4END",
+      "BEGIN\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05e6END",
+      "BEGIN\u05d0END",
+      "BEGIN\u05d1END",
+      "BEGIN\u05d2END",
+      "BEGIN\u05d3END"
+    ]
+  },
+  {
+    "name": "hebrew-depth-0-alphabetic-391",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "alphabetic-391",
+    "source": "fixtures/docx/regressions/list-markers/DocHebrewMarkers/projected/hebrew-depth-0-alphabetic-391.docx",
+    "sourceSha256": "5117f0992749b7bf0d937be2282bd9cb062b32fb5455e841c4078767a3389b91",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHebrewMarkers/projected/hebrew-depth-0-alphabetic-391.pdf",
+    "wordPdfSha256": "c1ad4d2d542cad5cd39f2af6bc2bbddc54024bb538ef97e4dd89519217c86ceb",
+    "wordListStrings": [
+      "BEGIN\u200f\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05e4END",
+      "BEGIN\u200f\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05e6END",
+      "BEGIN\u200f\u05d0END",
+      "BEGIN\u200f\u05d1END",
+      "BEGIN\u200f\u05d2END",
+      "BEGIN\u200f\u05d3END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05e4END",
+      "BEGIN\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05e6END",
+      "BEGIN\u05d0END",
+      "BEGIN\u05d1END",
+      "BEGIN\u05d2END",
+      "BEGIN\u05d3END"
+    ]
+  },
+  {
+    "name": "hebrew-depth-0-alphabetic-391",
+    "kind": "source",
+    "depth": 0,
+    "mode": "alphabetic-391",
+    "source": "fixtures/docx/regressions/list-markers/DocHebrewMarkers/source/hebrew-depth-0-alphabetic-391.docx",
+    "sourceSha256": "7fb6774fd0587ead36a619473621583495a62042881a58a9879ee7b6a243a073",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHebrewMarkers/source/hebrew-depth-0-alphabetic-391.pdf",
+    "wordPdfSha256": "0fdd5a79de6e872743eaec37fe777b0c75da627a23176b4d1335ac2af2c6a84f",
+    "wordListStrings": [
+      "BEGIN\u200f\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05e4END",
+      "BEGIN\u200f\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05e6END",
+      "BEGIN\u200f\u05d0END",
+      "BEGIN\u200f\u05d1END",
+      "BEGIN\u200f\u05d2END",
+      "BEGIN\u200f\u05d3END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05e4END",
+      "BEGIN\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05e6END",
+      "BEGIN\u05d0END",
+      "BEGIN\u05d1END",
+      "BEGIN\u05d2END",
+      "BEGIN\u05d3END"
+    ]
+  },
+  {
+    "name": "hebrew-depth-0-numeric-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "numeric-1",
+    "source": "fixtures/doc/regressions/list-markers/HebrewMarkers/hebrew-depth-0-numeric-1.doc",
+    "sourceSha256": "1aa2932fd41017626c7f3c9d80386f05b3d39b8ebba727e4363b8e766963bc84",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHebrewMarkers/doc/hebrew-depth-0-numeric-1.pdf",
+    "wordPdfSha256": "c9b2ae78c898cc8011109d9ae384ab9315e7cd0f81d18ccd29b5d8965f0590d7",
+    "wordListStrings": [
+      "BEGIN\u05d0END",
+      "BEGIN\u05d1END",
+      "BEGIN\u05d2END",
+      "BEGIN\u05d3END",
+      "BEGIN\u05d4END",
+      "BEGIN\u05d5END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u05d0END",
+      "BEGIN\u05d1END",
+      "BEGIN\u05d2END",
+      "BEGIN\u05d3END",
+      "BEGIN\u05d4END",
+      "BEGIN\u05d5END"
+    ]
+  },
+  {
+    "name": "hebrew-depth-0-numeric-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "numeric-1",
+    "source": "fixtures/docx/regressions/list-markers/DocHebrewMarkers/projected/hebrew-depth-0-numeric-1.docx",
+    "sourceSha256": "f4b4158403a1d4c9adcb370e13821718b10aa51de48ea6205af429638bfcc683",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHebrewMarkers/projected/hebrew-depth-0-numeric-1.pdf",
+    "wordPdfSha256": "84eafeb937892b721daf8553f6fb9dede41daad981bc85787b0af27db6240e3e",
+    "wordListStrings": [
+      "BEGIN\u05d0END",
+      "BEGIN\u05d1END",
+      "BEGIN\u05d2END",
+      "BEGIN\u05d3END",
+      "BEGIN\u05d4END",
+      "BEGIN\u05d5END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u05d0END",
+      "BEGIN\u05d1END",
+      "BEGIN\u05d2END",
+      "BEGIN\u05d3END",
+      "BEGIN\u05d4END",
+      "BEGIN\u05d5END"
+    ]
+  },
+  {
+    "name": "hebrew-depth-0-numeric-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "numeric-1",
+    "source": "fixtures/docx/regressions/list-markers/DocHebrewMarkers/source/hebrew-depth-0-numeric-1.docx",
+    "sourceSha256": "6208c45f17c27c60463e45b5206b39250fee9925b6835928bf54d1da063eed17",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHebrewMarkers/source/hebrew-depth-0-numeric-1.pdf",
+    "wordPdfSha256": "9f013b89a298eee2a209bd512169d79f489756a3d3e62898b8d30f7f0e89b122",
+    "wordListStrings": [
+      "BEGIN\u05d0END",
+      "BEGIN\u05d1END",
+      "BEGIN\u05d2END",
+      "BEGIN\u05d3END",
+      "BEGIN\u05d4END",
+      "BEGIN\u05d5END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u05d0END",
+      "BEGIN\u05d1END",
+      "BEGIN\u05d2END",
+      "BEGIN\u05d3END",
+      "BEGIN\u05d4END",
+      "BEGIN\u05d5END"
+    ]
+  },
+  {
+    "name": "hebrew-depth-0-numeric-14",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "numeric-14",
+    "source": "fixtures/doc/regressions/list-markers/HebrewMarkers/hebrew-depth-0-numeric-14.doc",
+    "sourceSha256": "dc71dd954b713b3cd5b8203215924dfb1e3e3a6b0a2d9193ffb9903d8b1e298f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHebrewMarkers/doc/hebrew-depth-0-numeric-14.pdf",
+    "wordPdfSha256": "403f475ccef3ae93825bd3edfc9f6802a534e787db93beea3cc902a811a25938",
+    "wordListStrings": [
+      "BEGIN\u05d9\u05d3END",
+      "BEGIN\u05d8\u05d5END",
+      "BEGIN\u05d8\u05d6END",
+      "BEGIN\u05d9\u05d6END",
+      "BEGIN\u05d9\u05d7END",
+      "BEGIN\u05d9\u05d8END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u05d9\u05d3END",
+      "BEGIN\u05d8\u05d5END",
+      "BEGIN\u05d8\u05d6END",
+      "BEGIN\u05d9\u05d6END",
+      "BEGIN\u05d9\u05d7END",
+      "BEGIN\u05d9\u05d8END"
+    ]
+  },
+  {
+    "name": "hebrew-depth-0-numeric-14",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "numeric-14",
+    "source": "fixtures/docx/regressions/list-markers/DocHebrewMarkers/projected/hebrew-depth-0-numeric-14.docx",
+    "sourceSha256": "32eb0945425f6a6674128f27b5c0f8c903c78e7427d6d026d91df7a98ee2ecb1",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHebrewMarkers/projected/hebrew-depth-0-numeric-14.pdf",
+    "wordPdfSha256": "06ff33c542247455d28b7a04f1a0b6fc441f09ab255e5c2b1b8c3487773247a9",
+    "wordListStrings": [
+      "BEGIN\u05d9\u05d3END",
+      "BEGIN\u05d8\u05d5END",
+      "BEGIN\u05d8\u05d6END",
+      "BEGIN\u05d9\u05d6END",
+      "BEGIN\u05d9\u05d7END",
+      "BEGIN\u05d9\u05d8END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u05d9\u05d3END",
+      "BEGIN\u05d8\u05d5END",
+      "BEGIN\u05d8\u05d6END",
+      "BEGIN\u05d9\u05d6END",
+      "BEGIN\u05d9\u05d7END",
+      "BEGIN\u05d9\u05d8END"
+    ]
+  },
+  {
+    "name": "hebrew-depth-0-numeric-14",
+    "kind": "source",
+    "depth": 0,
+    "mode": "numeric-14",
+    "source": "fixtures/docx/regressions/list-markers/DocHebrewMarkers/source/hebrew-depth-0-numeric-14.docx",
+    "sourceSha256": "5bddca01ba0aedcb83dc42fd49a602638817cb3b3b0dcad546976c052dd99b80",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHebrewMarkers/source/hebrew-depth-0-numeric-14.pdf",
+    "wordPdfSha256": "4b276ed69c73a2fc815053f1e76410fd521cbff59ab5424122f8d63980e7f19a",
+    "wordListStrings": [
+      "BEGIN\u05d9\u05d3END",
+      "BEGIN\u05d8\u05d5END",
+      "BEGIN\u05d8\u05d6END",
+      "BEGIN\u05d9\u05d6END",
+      "BEGIN\u05d9\u05d7END",
+      "BEGIN\u05d9\u05d8END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u05d9\u05d3END",
+      "BEGIN\u05d8\u05d5END",
+      "BEGIN\u05d8\u05d6END",
+      "BEGIN\u05d9\u05d6END",
+      "BEGIN\u05d9\u05d7END",
+      "BEGIN\u05d9\u05d8END"
+    ]
+  },
+  {
+    "name": "hebrew-depth-0-numeric-21",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "numeric-21",
+    "source": "fixtures/doc/regressions/list-markers/HebrewMarkers/hebrew-depth-0-numeric-21.doc",
+    "sourceSha256": "9d7fcd8eeb019b0919deedaa3ae54b5d33b69f6454cb6c8c2683490ab4bb4f90",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHebrewMarkers/doc/hebrew-depth-0-numeric-21.pdf",
+    "wordPdfSha256": "9117fbc4ac4f913455e9b6f343f74b3f87d327d91e1afd3e3cc14ddf0acd36b4",
+    "wordListStrings": [
+      "BEGIN\u05db\u05d0END",
+      "BEGIN\u05db\u05d1END",
+      "BEGIN\u05db\u05d2END",
+      "BEGIN\u05db\u05d3END",
+      "BEGIN\u05db\u05d4END",
+      "BEGIN\u05db\u05d5END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u05db\u05d0END",
+      "BEGIN\u05db\u05d1END",
+      "BEGIN\u05db\u05d2END",
+      "BEGIN\u05db\u05d3END",
+      "BEGIN\u05db\u05d4END",
+      "BEGIN\u05db\u05d5END"
+    ]
+  },
+  {
+    "name": "hebrew-depth-0-numeric-21",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "numeric-21",
+    "source": "fixtures/docx/regressions/list-markers/DocHebrewMarkers/projected/hebrew-depth-0-numeric-21.docx",
+    "sourceSha256": "fe428aec838a0080e2880977055fd4b3521d8bac9fef5a4661ba0b09b3c32480",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHebrewMarkers/projected/hebrew-depth-0-numeric-21.pdf",
+    "wordPdfSha256": "789067d5d5e9a7267ca69566d6f7a24c0d441f6819415f2b35f02e8ce48fbb62",
+    "wordListStrings": [
+      "BEGIN\u05db\u05d0END",
+      "BEGIN\u05db\u05d1END",
+      "BEGIN\u05db\u05d2END",
+      "BEGIN\u05db\u05d3END",
+      "BEGIN\u05db\u05d4END",
+      "BEGIN\u05db\u05d5END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u05db\u05d0END",
+      "BEGIN\u05db\u05d1END",
+      "BEGIN\u05db\u05d2END",
+      "BEGIN\u05db\u05d3END",
+      "BEGIN\u05db\u05d4END",
+      "BEGIN\u05db\u05d5END"
+    ]
+  },
+  {
+    "name": "hebrew-depth-0-numeric-21",
+    "kind": "source",
+    "depth": 0,
+    "mode": "numeric-21",
+    "source": "fixtures/docx/regressions/list-markers/DocHebrewMarkers/source/hebrew-depth-0-numeric-21.docx",
+    "sourceSha256": "47b797c99b8ae038b7812f750ad8b8aa3d359bec1419a8ed0a298b4df2a53b4e",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHebrewMarkers/source/hebrew-depth-0-numeric-21.pdf",
+    "wordPdfSha256": "1e0e01b0492024b455c51f40d0b47795b33b1e7b4b74f6150335da29e20f95eb",
+    "wordListStrings": [
+      "BEGIN\u05db\u05d0END",
+      "BEGIN\u05db\u05d1END",
+      "BEGIN\u05db\u05d2END",
+      "BEGIN\u05db\u05d3END",
+      "BEGIN\u05db\u05d4END",
+      "BEGIN\u05db\u05d5END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u05db\u05d0END",
+      "BEGIN\u05db\u05d1END",
+      "BEGIN\u05db\u05d2END",
+      "BEGIN\u05db\u05d3END",
+      "BEGIN\u05db\u05d4END",
+      "BEGIN\u05db\u05d5END"
+    ]
+  },
+  {
+    "name": "hebrew-depth-0-numeric-391",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "numeric-391",
+    "source": "fixtures/doc/regressions/list-markers/HebrewMarkers/hebrew-depth-0-numeric-391.doc",
+    "sourceSha256": "d78fbb00f3ee9958888b0a9b325a311d8ef1ba603fe181db62533286f56e934d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHebrewMarkers/doc/hebrew-depth-0-numeric-391.pdf",
+    "wordPdfSha256": "2474ba5dbc605862ea4dc53c073aee3c68b2a1721b4a42c0cab7c88dc2c433e5",
+    "wordListStrings": [
+      "BEGIN\u05e9\u05e6\u05d0END",
+      "BEGIN\u05e9\u05e6\u05d1END",
+      "BEGIN\u05d0END",
+      "BEGIN\u05d1END",
+      "BEGIN\u05d2END",
+      "BEGIN\u05d3END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u05e9\u05e6\u05d0END",
+      "BEGIN\u05e9\u05e6\u05d1END",
+      "BEGIN\u05d0END",
+      "BEGIN\u05d1END",
+      "BEGIN\u05d2END",
+      "BEGIN\u05d3END"
+    ]
+  },
+  {
+    "name": "hebrew-depth-0-numeric-391",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "numeric-391",
+    "source": "fixtures/docx/regressions/list-markers/DocHebrewMarkers/projected/hebrew-depth-0-numeric-391.docx",
+    "sourceSha256": "5b84ad012ba761bb9ec5830cb7bf3de52a8e02e50ed4b6112dd414e51c3befc1",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHebrewMarkers/projected/hebrew-depth-0-numeric-391.pdf",
+    "wordPdfSha256": "5c7f338f5932e4ad7b08c57ff908411e874cc8aa483d78404e4706880d15d327",
+    "wordListStrings": [
+      "BEGIN\u05e9\u05e6\u05d0END",
+      "BEGIN\u05e9\u05e6\u05d1END",
+      "BEGIN\u05d0END",
+      "BEGIN\u05d1END",
+      "BEGIN\u05d2END",
+      "BEGIN\u05d3END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u05e9\u05e6\u05d0END",
+      "BEGIN\u05e9\u05e6\u05d1END",
+      "BEGIN\u05d0END",
+      "BEGIN\u05d1END",
+      "BEGIN\u05d2END",
+      "BEGIN\u05d3END"
+    ]
+  },
+  {
+    "name": "hebrew-depth-0-numeric-391",
+    "kind": "source",
+    "depth": 0,
+    "mode": "numeric-391",
+    "source": "fixtures/docx/regressions/list-markers/DocHebrewMarkers/source/hebrew-depth-0-numeric-391.docx",
+    "sourceSha256": "e3482ee21f323bf4ab32835295c97d8aa927a1555e242ef0e530a4dba2e856fd",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHebrewMarkers/source/hebrew-depth-0-numeric-391.pdf",
+    "wordPdfSha256": "aa949f1699ab0d952d9e86df8632f38a3fdf5ad21701bd400d39d99f64ff44c4",
+    "wordListStrings": [
+      "BEGIN\u05e9\u05e6\u05d0END",
+      "BEGIN\u05e9\u05e6\u05d1END",
+      "BEGIN\u05d0END",
+      "BEGIN\u05d1END",
+      "BEGIN\u05d2END",
+      "BEGIN\u05d3END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u05e9\u05e6\u05d0END",
+      "BEGIN\u05e9\u05e6\u05d1END",
+      "BEGIN\u05d0END",
+      "BEGIN\u05d1END",
+      "BEGIN\u05d2END",
+      "BEGIN\u05d3END"
+    ]
+  },
+  {
+    "name": "hebrew-depth-8-alphabetic-391",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "alphabetic-391",
+    "source": "fixtures/doc/regressions/list-markers/HebrewMarkers/hebrew-depth-8-alphabetic-391.doc",
+    "sourceSha256": "a72c4fcabf7e7bcba2e153fa2d79232b40433711fbb537485fcb88554c5ec379",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHebrewMarkers/doc/hebrew-depth-8-alphabetic-391.pdf",
+    "wordPdfSha256": "689f76d2366667ff9807801485e06037d5450e7f077f3cc6ea60a6b3c55ac37b",
+    "wordListStrings": [
+      "BEGIN\u200f\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05e4END",
+      "BEGIN\u200f\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05e6END",
+      "BEGIN\u200f\u05d0END",
+      "BEGIN\u200f\u05d1END",
+      "BEGIN\u200f\u05d2END",
+      "BEGIN\u200f\u05d3END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05e4END",
+      "BEGIN\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05e6END",
+      "BEGIN\u05d0END",
+      "BEGIN\u05d1END",
+      "BEGIN\u05d2END",
+      "BEGIN\u05d3END"
+    ]
+  },
+  {
+    "name": "hebrew-depth-8-alphabetic-391",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "alphabetic-391",
+    "source": "fixtures/docx/regressions/list-markers/DocHebrewMarkers/projected/hebrew-depth-8-alphabetic-391.docx",
+    "sourceSha256": "eb06ad389db6713d21fcdfed5b0dca1605afb16518cda58f5b8a6979d8491e4d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHebrewMarkers/projected/hebrew-depth-8-alphabetic-391.pdf",
+    "wordPdfSha256": "8f15cf6833894750eedcce3313c59d4811ac886d4122df8c3a9bda6c1aa67605",
+    "wordListStrings": [
+      "BEGIN\u200f\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05e4END",
+      "BEGIN\u200f\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05e6END",
+      "BEGIN\u200f\u05d0END",
+      "BEGIN\u200f\u05d1END",
+      "BEGIN\u200f\u05d2END",
+      "BEGIN\u200f\u05d3END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05e4END",
+      "BEGIN\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05e6END",
+      "BEGIN\u05d0END",
+      "BEGIN\u05d1END",
+      "BEGIN\u05d2END",
+      "BEGIN\u05d3END"
+    ]
+  },
+  {
+    "name": "hebrew-depth-8-alphabetic-391",
+    "kind": "source",
+    "depth": 8,
+    "mode": "alphabetic-391",
+    "source": "fixtures/docx/regressions/list-markers/DocHebrewMarkers/source/hebrew-depth-8-alphabetic-391.docx",
+    "sourceSha256": "46dde4bfd4c3bd5b4654af913f38298f223a100a24d002765ca256f58ba9cff4",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHebrewMarkers/source/hebrew-depth-8-alphabetic-391.pdf",
+    "wordPdfSha256": "282fe84cd1f988974b349955907add21798c2f012bb1788b560caea7fa0245f9",
+    "wordListStrings": [
+      "BEGIN\u200f\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05e4END",
+      "BEGIN\u200f\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05e6END",
+      "BEGIN\u200f\u05d0END",
+      "BEGIN\u200f\u05d1END",
+      "BEGIN\u200f\u05d2END",
+      "BEGIN\u200f\u05d3END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05e4END",
+      "BEGIN\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05ea\u05e6END",
+      "BEGIN\u05d0END",
+      "BEGIN\u05d1END",
+      "BEGIN\u05d2END",
+      "BEGIN\u05d3END"
+    ]
+  },
+  {
+    "name": "hebrew-depth-8-numeric-391",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "numeric-391",
+    "source": "fixtures/doc/regressions/list-markers/HebrewMarkers/hebrew-depth-8-numeric-391.doc",
+    "sourceSha256": "8273fa518c32b93118dd6cf770294a85d9ebb3a2dd947bc91500c662f6dc90c7",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHebrewMarkers/doc/hebrew-depth-8-numeric-391.pdf",
+    "wordPdfSha256": "327630eeced47a78daa66bbb9fa3ae506176d16d2983d0ff79f1908d6fae8899",
+    "wordListStrings": [
+      "BEGIN\u05e9\u05e6\u05d0END",
+      "BEGIN\u05e9\u05e6\u05d1END",
+      "BEGIN\u05d0END",
+      "BEGIN\u05d1END",
+      "BEGIN\u05d2END",
+      "BEGIN\u05d3END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u05e9\u05e6\u05d0END",
+      "BEGIN\u05e9\u05e6\u05d1END",
+      "BEGIN\u05d0END",
+      "BEGIN\u05d1END",
+      "BEGIN\u05d2END",
+      "BEGIN\u05d3END"
+    ]
+  },
+  {
+    "name": "hebrew-depth-8-numeric-391",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "numeric-391",
+    "source": "fixtures/docx/regressions/list-markers/DocHebrewMarkers/projected/hebrew-depth-8-numeric-391.docx",
+    "sourceSha256": "8311eb6905b84e2b795bcd8a3a5e885264b1fe0ae3e68163cdc3a2a16dc674d6",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHebrewMarkers/projected/hebrew-depth-8-numeric-391.pdf",
+    "wordPdfSha256": "0dfce82449fd953e30e583d61901036d24933d97984032029430f44c729143ec",
+    "wordListStrings": [
+      "BEGIN\u05e9\u05e6\u05d0END",
+      "BEGIN\u05e9\u05e6\u05d1END",
+      "BEGIN\u05d0END",
+      "BEGIN\u05d1END",
+      "BEGIN\u05d2END",
+      "BEGIN\u05d3END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u05e9\u05e6\u05d0END",
+      "BEGIN\u05e9\u05e6\u05d1END",
+      "BEGIN\u05d0END",
+      "BEGIN\u05d1END",
+      "BEGIN\u05d2END",
+      "BEGIN\u05d3END"
+    ]
+  },
+  {
+    "name": "hebrew-depth-8-numeric-391",
+    "kind": "source",
+    "depth": 8,
+    "mode": "numeric-391",
+    "source": "fixtures/docx/regressions/list-markers/DocHebrewMarkers/source/hebrew-depth-8-numeric-391.docx",
+    "sourceSha256": "48f9d6ff1de4da7522def680375a069bf63ca833097c16d0a45ca3b31893ad1e",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHebrewMarkers/source/hebrew-depth-8-numeric-391.pdf",
+    "wordPdfSha256": "db783b8d99c2012265b208e5264760b874c82be673e6e79db71774d1f57bc974",
+    "wordListStrings": [
+      "BEGIN\u05e9\u05e6\u05d0END",
+      "BEGIN\u05e9\u05e6\u05d1END",
+      "BEGIN\u05d0END",
+      "BEGIN\u05d1END",
+      "BEGIN\u05d2END",
+      "BEGIN\u05d3END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u05e9\u05e6\u05d0END",
+      "BEGIN\u05e9\u05e6\u05d1END",
+      "BEGIN\u05d0END",
+      "BEGIN\u05d1END",
+      "BEGIN\u05d2END",
+      "BEGIN\u05d3END"
+    ]
+  }
+]

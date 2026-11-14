@@ -380,6 +380,8 @@ public sealed class DocToDocxProjector
                 0x2A => NumberFormatValues.KoreanCounting,
                 0x2B => NumberFormatValues.KoreanLegal,
                 0x2C => NumberFormatValues.KoreanDigital2,
+                0x2D => NumberFormatValues.Hebrew1,
+                0x2F => NumberFormatValues.Hebrew2,
                 0x39 => NumberFormatValues.NumberInDash,
                 0x3A => NumberFormatValues.RussianLower,
                 0x3B => NumberFormatValues.RussianUpper,

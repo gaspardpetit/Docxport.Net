@@ -185,6 +185,8 @@ internal static class DocOpenXmlListReader
             format == NumberFormatValues.KoreanCounting ? (byte)0x2A :
             format == NumberFormatValues.KoreanLegal ? (byte)0x2B :
             format == NumberFormatValues.KoreanDigital2 ? (byte)0x2C :
+            format == NumberFormatValues.Hebrew1 ? (byte)0x2D :
+            format == NumberFormatValues.Hebrew2 ? (byte)0x2F :
             format == NumberFormatValues.NumberInDash ? (byte)0x39 :
             format == NumberFormatValues.RussianLower ? (byte)0x3A :
             format == NumberFormatValues.RussianUpper ? (byte)0x3B :
