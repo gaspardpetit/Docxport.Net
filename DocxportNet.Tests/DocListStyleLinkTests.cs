@@ -16,7 +16,7 @@ public sealed class DocListStyleLinkTests
     public static IEnumerable<object[]> Cases()
     {
         foreach (var depth in new[] { 1, 8 })
-            foreach (var mode in new[] { "linked", "unlinked" })
+            foreach (var mode in new[] { "linked", "unlinked", "linked-legal", "unlinked-legal" })
                 yield return new object[] { depth, mode };
     }
 
@@ -35,7 +35,7 @@ public sealed class DocListStyleLinkTests
             var record = node.Children.Single().Children.Single(x => x.Kind == "LSTF");
             var bytesAtLevel = index.Structure.ReadRange(record.StreamName!, record.Offset!.Value + 8 + depth * 2, 2);
             var styleIndex = System.Buffers.Binary.BinaryPrimitives.ReadUInt16LittleEndian(bytesAtLevel);
-            Assert.Equal(mode == "linked" ? 15 : 0x0fff, styleIndex);
+            Assert.Equal(mode.StartsWith("linked", StringComparison.Ordinal) ? 15 : 0x0fff, styleIndex);
         }
         using var sourceStream = new MemoryStream(bytes);
         using var source = WordprocessingDocument.Open(sourceStream, false);
@@ -52,7 +52,7 @@ public sealed class DocListStyleLinkTests
         var projectedLevel = projected.MainDocumentPart!.NumberingDefinitionsPart!.Numbering!.Elements<AbstractNum>()
             .Single().Elements<Level>().Single(x => x.LevelIndex!.Value == depth);
         var linkedId = projectedLevel.ParagraphStyleIdInLevel?.Val?.Value;
-        if (mode == "linked")
+        if (mode.StartsWith("linked", StringComparison.Ordinal))
             Assert.Equal("Nested", projected.MainDocumentPart.StyleDefinitionsPart!.Styles!.Elements<Style>()
                 .Single(x => x.StyleId?.Value == linkedId).StyleName!.Val!.Value);
         else Assert.Null(linkedId);
@@ -86,7 +86,8 @@ public sealed class DocListStyleLinkTests
         {
             var level = doc.MainDocumentPart!.NumberingDefinitionsPart!.Numbering!.Elements<AbstractNum>()
                 .Single().Elements<Level>().Single(x => x.LevelIndex!.Value == depth);
-            if (mode == "linked") level.InsertAfter(new ParagraphStyleIdInLevel { Val = "Nested" }, level.NumberingFormat!);
+            if (mode.StartsWith("linked", StringComparison.Ordinal)) level.InsertAfter(new ParagraphStyleIdInLevel { Val = "Nested" }, level.NumberingFormat!);
+            if (mode.EndsWith("-legal", StringComparison.Ordinal)) level.AddChild(new IsLegalNumberingStyle(), true);
         }
         return stream.ToArray();
     }

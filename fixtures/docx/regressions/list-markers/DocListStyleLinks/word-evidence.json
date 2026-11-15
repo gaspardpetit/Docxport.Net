@@ -1,9 +1,60 @@
 [
   {
+    "name": "style-link-depth-1-linked-legal",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/ListStyleLinks/style-link-depth-1-linked-legal.doc",
+    "sourceSha256": "6f8c5ad907ec30e6773e1bd19cf2501ccf31e2222aedfe8abf0c0f60e7b31e8e",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "wordLinkedStyle": "Nested",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocListStyleLinks/doc/style-link-depth-1-linked-legal.pdf",
+    "wordPdfSha256": "ac4735e04faa9f9e58eaff4a602b1f8362331440545047a6d97b9476a209245f"
+  },
+  {
+    "name": "style-link-depth-1-linked-legal",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocListStyleLinks/projected/style-link-depth-1-linked-legal.docx",
+    "sourceSha256": "8891656383d56283a45a92924e7a5dcd20b826840637d27679a7a6b7b41d701c",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "wordLinkedStyle": "Nested",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocListStyleLinks/projected/style-link-depth-1-linked-legal.pdf",
+    "wordPdfSha256": "838f3e427d6244bdff382b33c0bde185c4fb5c3f249528dbc58a7be457fd417a"
+  },
+  {
+    "name": "style-link-depth-1-linked-legal",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocListStyleLinks/source/style-link-depth-1-linked-legal.docx",
+    "sourceSha256": "8e962d837227d0a8b7a816a0e3cf42e5ef1bbec50f7e2239e35fcad2328b54ae",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "wordLinkedStyle": "Nested",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocListStyleLinks/source/style-link-depth-1-linked-legal.pdf",
+    "wordPdfSha256": "cf63917b1e2096d123f80bac7ce6c86b272f2a0be4b355b7c88d23a9d7f70abd"
+  },
+  {
     "name": "style-link-depth-1-linked",
     "kind": "doc",
     "source": "fixtures/doc/regressions/list-markers/ListStyleLinks/style-link-depth-1-linked.doc",
-    "sourceSha256": "180292f4f116f6eae287bc3b391c1b7f17648adce6a312271c5cf1061a99235d",
+    "sourceSha256": "bbc4c89a913afad07ac821d0c37800d82060af4a49257e0ffd583a2bc00e8390",
     "wordListStrings": [
       "BEGIN2END",
       "BEGIN5END",
@@ -14,13 +65,13 @@
     ],
     "wordLinkedStyle": "Nested",
     "wordPdf": "truth/pdf-word/regressions/list-markers/DocListStyleLinks/doc/style-link-depth-1-linked.pdf",
-    "wordPdfSha256": "099d414ea9fa761fed2379202cbd812c3dff0f40bcdf0e291463dc2996c6d1f1"
+    "wordPdfSha256": "520f61ee07373c540cfc31b264eed9baabde4f7ea01ab36283253ced4adc808f"
   },
   {
     "name": "style-link-depth-1-linked",
     "kind": "projected",
     "source": "fixtures/docx/regressions/list-markers/DocListStyleLinks/projected/style-link-depth-1-linked.docx",
-    "sourceSha256": "cbc06288942a471e6c71d4b12e1bff6f8da09b0dfd7125f84f294c2c401fc257",
+    "sourceSha256": "5aa5dcd416836750c19c1336b8f02fe1efc76e07afc57e8a154e17f184511640",
     "wordListStrings": [
       "BEGIN2END",
       "BEGIN5END",
@@ -31,13 +82,13 @@
     ],
     "wordLinkedStyle": "Nested",
     "wordPdf": "truth/pdf-word/regressions/list-markers/DocListStyleLinks/projected/style-link-depth-1-linked.pdf",
-    "wordPdfSha256": "f97e249e8cbef251b7da6aa3446aec52b5ba10c89bea1ccfab79788a3c0d1e51"
+    "wordPdfSha256": "587b04fbd53610cff8e28ae077ba9aed8d9b3ca11822023b294ac0a6fe0c85a1"
   },
   {
     "name": "style-link-depth-1-linked",
     "kind": "source",
     "source": "fixtures/docx/regressions/list-markers/DocListStyleLinks/source/style-link-depth-1-linked.docx",
-    "sourceSha256": "7dc94c47d70b5e73856f063269258c369ecc539162f7179c4c0ee6c2730963d2",
+    "sourceSha256": "86b8204f5c83f95285f7f4d84bf3c0fcc8d992b4d9ee2f8b5ac51dd0b9395552",
     "wordListStrings": [
       "BEGIN2END",
       "BEGIN5END",
@@ -48,13 +99,64 @@
     ],
     "wordLinkedStyle": "Nested",
     "wordPdf": "truth/pdf-word/regressions/list-markers/DocListStyleLinks/source/style-link-depth-1-linked.pdf",
-    "wordPdfSha256": "5ef2385eb6251cee184d594addb5624b6f543d95488f07aac2ee8537e62e03c8"
+    "wordPdfSha256": "8ba1af06ea397888d9a919c90a3b760dce7a68978d82fce790cc019c33879d22"
+  },
+  {
+    "name": "style-link-depth-1-unlinked-legal",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/ListStyleLinks/style-link-depth-1-unlinked-legal.doc",
+    "sourceSha256": "b1558394949ce0f9d4f099c43ca343818f5436faab5acce48f4afe868cd48f39",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "wordLinkedStyle": "",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocListStyleLinks/doc/style-link-depth-1-unlinked-legal.pdf",
+    "wordPdfSha256": "f9e8ebc0a78296adf050fba8bb4d8af9c03b8590a6cf198b46bca159303de777"
+  },
+  {
+    "name": "style-link-depth-1-unlinked-legal",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocListStyleLinks/projected/style-link-depth-1-unlinked-legal.docx",
+    "sourceSha256": "a74a64d9b9ec6ba2eb4c4b667f069ed2457840e442c3b699cdf030df104db5ee",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "wordLinkedStyle": "Nested",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocListStyleLinks/projected/style-link-depth-1-unlinked-legal.pdf",
+    "wordPdfSha256": "9e81cef499da83877f3302e0b4994d7ca9d0a2175707fa7e960486d5751072e0"
+  },
+  {
+    "name": "style-link-depth-1-unlinked-legal",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocListStyleLinks/source/style-link-depth-1-unlinked-legal.docx",
+    "sourceSha256": "f72d91db3284de08ddddd37c9300690c9be168f32bc09d5f55391ef1fe9b6221",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "wordLinkedStyle": "Nested",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocListStyleLinks/source/style-link-depth-1-unlinked-legal.pdf",
+    "wordPdfSha256": "2b0e0d58161388d227a6f25462c00502332d2344948fdea07def290c4cd9d8b6"
   },
   {
     "name": "style-link-depth-1-unlinked",
     "kind": "doc",
     "source": "fixtures/doc/regressions/list-markers/ListStyleLinks/style-link-depth-1-unlinked.doc",
-    "sourceSha256": "9ca50b22e9cc183722ad0c34a91da44467055bf2b3a2529d4dee49c468aaba1e",
+    "sourceSha256": "0c19ee0a8ebef9595999585bfd62d51ea91744af2f56662f7efc82831490af9c",
     "wordListStrings": [
       "BEGIN2END",
       "BEGIN5END",
@@ -65,13 +167,13 @@
     ],
     "wordLinkedStyle": "",
     "wordPdf": "truth/pdf-word/regressions/list-markers/DocListStyleLinks/doc/style-link-depth-1-unlinked.pdf",
-    "wordPdfSha256": "8690f5145c2be11973b9b85126b180a9a9057c0693000f1edf5656369b3957fe"
+    "wordPdfSha256": "6c8185e0b4f966bf17bee8298dddf6c232112293c4b4514f87244a4b55858597"
   },
   {
     "name": "style-link-depth-1-unlinked",
     "kind": "projected",
     "source": "fixtures/docx/regressions/list-markers/DocListStyleLinks/projected/style-link-depth-1-unlinked.docx",
-    "sourceSha256": "44444066e303725b2214f2f2d5429e6bf3647cc2ff49154f4682731ca39dc2c8",
+    "sourceSha256": "bbdb45a4395a305fabd2d6060abc00dbf0dd7e98368d0f3c5c18912a28f38221",
     "wordListStrings": [
       "BEGIN2END",
       "BEGIN5END",
@@ -82,13 +184,13 @@
     ],
     "wordLinkedStyle": "Nested",
     "wordPdf": "truth/pdf-word/regressions/list-markers/DocListStyleLinks/projected/style-link-depth-1-unlinked.pdf",
-    "wordPdfSha256": "c6bc834e48e71df8a92e80ffc72fa72e8d078a8e9f0de2213e22c7a2c9a204f3"
+    "wordPdfSha256": "0780e0119c35fcc7379d6b929aaf12da62da428575853222f916d897345972a7"
   },
   {
     "name": "style-link-depth-1-unlinked",
     "kind": "source",
     "source": "fixtures/docx/regressions/list-markers/DocListStyleLinks/source/style-link-depth-1-unlinked.docx",
-    "sourceSha256": "b654893fde292cfcb5461c2c6d107ad6c7e2c55de2f1ed13034d4dcf10f85628",
+    "sourceSha256": "ea050e6f2fbb3016b333904edfb6d2eee30af8d063585e3d0437b37fe73bfb18",
     "wordListStrings": [
       "BEGIN2END",
       "BEGIN5END",
@@ -99,13 +201,64 @@
     ],
     "wordLinkedStyle": "Nested",
     "wordPdf": "truth/pdf-word/regressions/list-markers/DocListStyleLinks/source/style-link-depth-1-unlinked.pdf",
-    "wordPdfSha256": "5bd603e4ae4e03a6dfbf316ef16d9e5957d8af857c074765ebf00e8a7c08cccd"
+    "wordPdfSha256": "3b66905bea4cc7e7d6731eaa1fd66f34393821e38d470c0021f288eeae0b4f82"
+  },
+  {
+    "name": "style-link-depth-8-linked-legal",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/ListStyleLinks/style-link-depth-8-linked-legal.doc",
+    "sourceSha256": "521ad7031de788ab543741332677dddfa040206dbac4f7f113899fac62a557f2",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "wordLinkedStyle": "Nested",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocListStyleLinks/doc/style-link-depth-8-linked-legal.pdf",
+    "wordPdfSha256": "3dffdc2cbce32707ea33b6b86e3053669e275e7b58cd6f4dd4e0215da9d5d4b8"
+  },
+  {
+    "name": "style-link-depth-8-linked-legal",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocListStyleLinks/projected/style-link-depth-8-linked-legal.docx",
+    "sourceSha256": "5f46ca645ca135d50992cb22fda4630dc23cc94107f84d62026ad65d889f2ae2",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "wordLinkedStyle": "Nested",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocListStyleLinks/projected/style-link-depth-8-linked-legal.pdf",
+    "wordPdfSha256": "a6606ee400fef2dc2b57be7424309f3ecc1111f2ac2a40e9e757231bcecbe140"
+  },
+  {
+    "name": "style-link-depth-8-linked-legal",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocListStyleLinks/source/style-link-depth-8-linked-legal.docx",
+    "sourceSha256": "c6684ad97d988e7283a2b54cbc413ea2fc66daf76a5d9636854cd32b8a262799",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "wordLinkedStyle": "Nested",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocListStyleLinks/source/style-link-depth-8-linked-legal.pdf",
+    "wordPdfSha256": "b8b631a50a67952b1ee4c3f6badb128fce1c3af8c5ad8ae6407cf054d7cb8a89"
   },
   {
     "name": "style-link-depth-8-linked",
     "kind": "doc",
     "source": "fixtures/doc/regressions/list-markers/ListStyleLinks/style-link-depth-8-linked.doc",
-    "sourceSha256": "552349061f04418cc2258d9c96265d7d847e611dea0867b425422fede48a4de3",
+    "sourceSha256": "bd138ea25848aed99393dfea199db52e82a6c0d9a2dbb42f89b33977e9b9e436",
     "wordListStrings": [
       "BEGIN2END",
       "BEGIN5END",
@@ -116,13 +269,13 @@
     ],
     "wordLinkedStyle": "Nested",
     "wordPdf": "truth/pdf-word/regressions/list-markers/DocListStyleLinks/doc/style-link-depth-8-linked.pdf",
-    "wordPdfSha256": "8c380842ddd71a00908f3e73088b2d22d2c1305890483d8e8ef57c9d91896fef"
+    "wordPdfSha256": "5f2ef8508d76823586471d43ab101f4bf79965c4226d44ceb2f861945e68ebe6"
   },
   {
     "name": "style-link-depth-8-linked",
     "kind": "projected",
     "source": "fixtures/docx/regressions/list-markers/DocListStyleLinks/projected/style-link-depth-8-linked.docx",
-    "sourceSha256": "1324ea7c000d6259e5db03ff1f8553055c236a019907be5950a6477dbe0d99a9",
+    "sourceSha256": "94ce4d35acffcd86f1a01e193c4530185f620f13189038020e9613ffef13067f",
     "wordListStrings": [
       "BEGIN2END",
       "BEGIN5END",
@@ -133,13 +286,13 @@
     ],
     "wordLinkedStyle": "Nested",
     "wordPdf": "truth/pdf-word/regressions/list-markers/DocListStyleLinks/projected/style-link-depth-8-linked.pdf",
-    "wordPdfSha256": "da4534e1fb4467fb053788d46730f59662a3470fa5b1fd53df04a29c14937503"
+    "wordPdfSha256": "e6892fc705970a46907eff7a4ab2e5b15574329136f3d9896473b6f5218acfa2"
   },
   {
     "name": "style-link-depth-8-linked",
     "kind": "source",
     "source": "fixtures/docx/regressions/list-markers/DocListStyleLinks/source/style-link-depth-8-linked.docx",
-    "sourceSha256": "8ebd57c07b93d292d3205d988afe6f087501531539a47490caafc509b0d85480",
+    "sourceSha256": "bae4845f4595baa93537ecb1ad25cbc89db8029a69cf37bf7593ca575a07576b",
     "wordListStrings": [
       "BEGIN2END",
       "BEGIN5END",
@@ -150,13 +303,64 @@
     ],
     "wordLinkedStyle": "Nested",
     "wordPdf": "truth/pdf-word/regressions/list-markers/DocListStyleLinks/source/style-link-depth-8-linked.pdf",
-    "wordPdfSha256": "fa028c4f40c89913828fd31d773b82b441ee3bb025888949ca4dc7a609a6cf50"
+    "wordPdfSha256": "8ced1e3ee0d4a9c001f0f8a57b74e164510538004be6c01ec14411b570ab3620"
+  },
+  {
+    "name": "style-link-depth-8-unlinked-legal",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/ListStyleLinks/style-link-depth-8-unlinked-legal.doc",
+    "sourceSha256": "a3261d9f2579223de565aaf3edf9c0db9ae7feca19bfe55fc16f8bdf942527ad",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "wordLinkedStyle": "",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocListStyleLinks/doc/style-link-depth-8-unlinked-legal.pdf",
+    "wordPdfSha256": "e99286a1552e01e1d68b1359081f1665d4130b2b5177558b9505047d95da14c3"
+  },
+  {
+    "name": "style-link-depth-8-unlinked-legal",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocListStyleLinks/projected/style-link-depth-8-unlinked-legal.docx",
+    "sourceSha256": "6021d36a7c5fd40f0ac356f3a6c92566b0c102960a2bb49a22ec60528e57a130",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "wordLinkedStyle": "Nested",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocListStyleLinks/projected/style-link-depth-8-unlinked-legal.pdf",
+    "wordPdfSha256": "ebea6ec476eba0796124585a87da0752efec31728ada9aadb54139f73feaa4d1"
+  },
+  {
+    "name": "style-link-depth-8-unlinked-legal",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocListStyleLinks/source/style-link-depth-8-unlinked-legal.docx",
+    "sourceSha256": "0d038f7439e5c17a37cde808980d6afdadac2eb4a5037f247db31b097a3df324",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "wordLinkedStyle": "Nested",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocListStyleLinks/source/style-link-depth-8-unlinked-legal.pdf",
+    "wordPdfSha256": "1897d896115ef16ed3170a8999efe4da82ce1ec95277131d87c71ef02e2eb381"
   },
   {
     "name": "style-link-depth-8-unlinked",
     "kind": "doc",
     "source": "fixtures/doc/regressions/list-markers/ListStyleLinks/style-link-depth-8-unlinked.doc",
-    "sourceSha256": "a72123916d4cbfabfea6e23bf342e299c1eb0de598051f67ee842d8229048b6e",
+    "sourceSha256": "c0b85e1343c057c1f2c24dd6e089575dbd435c76121565922d38bbc930b8591a",
     "wordListStrings": [
       "BEGIN2END",
       "BEGIN5END",
@@ -167,13 +371,13 @@
     ],
     "wordLinkedStyle": "",
     "wordPdf": "truth/pdf-word/regressions/list-markers/DocListStyleLinks/doc/style-link-depth-8-unlinked.pdf",
-    "wordPdfSha256": "521dae423af5c236cc1a1cac4682e6b713a0fb2885c0d9e89a61c1659de3823d"
+    "wordPdfSha256": "f25a7cc7f9092625e9f8dceb897622a60aac1ffb9ef9fc72d568007de5995857"
   },
   {
     "name": "style-link-depth-8-unlinked",
     "kind": "projected",
     "source": "fixtures/docx/regressions/list-markers/DocListStyleLinks/projected/style-link-depth-8-unlinked.docx",
-    "sourceSha256": "49124364561f0f9e439623ab5d5f59e15f728efe8d3968b91e58214685fe1777",
+    "sourceSha256": "89eee6b1858191ba19b25050ebdbef6d6ddade2e3792cb6683ea4d27dc1a1d20",
     "wordListStrings": [
       "BEGIN2END",
       "BEGIN5END",
@@ -184,13 +388,13 @@
     ],
     "wordLinkedStyle": "Nested",
     "wordPdf": "truth/pdf-word/regressions/list-markers/DocListStyleLinks/projected/style-link-depth-8-unlinked.pdf",
-    "wordPdfSha256": "5ec3ee96241ea630937d92245973432ad6732f65bc75d895059e1da4229a22d5"
+    "wordPdfSha256": "c6a96d7cbb14f55644125acdc868812d978790435dee2fee49cdc4913ca02449"
   },
   {
     "name": "style-link-depth-8-unlinked",
     "kind": "source",
     "source": "fixtures/docx/regressions/list-markers/DocListStyleLinks/source/style-link-depth-8-unlinked.docx",
-    "sourceSha256": "56adac41016534ed6fed7e6f12b45179e4a83f98c6971b6f4580f4123e32a404",
+    "sourceSha256": "518bdad7b5299d147e4a38d59c7f5a94de89567eac84273b7afdede75570379e",
     "wordListStrings": [
       "BEGIN2END",
       "BEGIN5END",
@@ -201,6 +405,6 @@
     ],
     "wordLinkedStyle": "Nested",
     "wordPdf": "truth/pdf-word/regressions/list-markers/DocListStyleLinks/source/style-link-depth-8-unlinked.pdf",
-    "wordPdfSha256": "82986e3da30187c7c2fdaaab50abada1e32a4d37e2dd9970708e2e091d783a19"
+    "wordPdfSha256": "e64ba33d0b73b6ac873631d914e9beea17a76d38bf2b45956094ab8d395a1d5e"
   }
 ]

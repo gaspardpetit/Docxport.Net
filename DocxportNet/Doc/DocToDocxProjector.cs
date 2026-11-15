@@ -465,8 +465,7 @@ public sealed class DocToDocxProjector
                 var converted = ConvertLevel(level, index);
                 if (definition.ParagraphStyleIndexes.TryGetValue(level.Index, out var styleIndex) &&
                     styles.TryGetValue(styleIndex, out var linkedStyle) && linkedStyle.Type == 1)
-                    converted.InsertBefore(new ParagraphStyleIdInLevel { Val = linkedStyle.StyleId },
-                        converted.GetFirstChild<LevelSuffix>());
+                    converted.AddChild(new ParagraphStyleIdInLevel { Val = linkedStyle.StyleId }, true);
                 abstractNum.AppendChild(converted);
             }
             numbering.AppendChild(abstractNum);
