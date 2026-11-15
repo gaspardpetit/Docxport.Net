@@ -1,0 +1,98 @@
+[
+  {
+    "name": "thai-vietnamese-depth-0-letters-1",
+    "depth": 0,
+    "mode": "letters-1",
+    "error": "DOCX list format 'thaiLetters' is unsupported."
+  },
+  {
+    "name": "thai-vietnamese-depth-0-letters-40",
+    "depth": 0,
+    "mode": "letters-40",
+    "error": "DOCX list format 'thaiLetters' is unsupported."
+  },
+  {
+    "name": "thai-vietnamese-depth-0-letters-1229",
+    "depth": 0,
+    "mode": "letters-1229",
+    "error": "DOCX list format 'thaiLetters' is unsupported."
+  },
+  {
+    "name": "thai-vietnamese-depth-8-letters-1229",
+    "depth": 8,
+    "mode": "letters-1229",
+    "error": "DOCX list format 'thaiLetters' is unsupported."
+  },
+  {
+    "name": "thai-vietnamese-depth-0-digits-1",
+    "depth": 0,
+    "mode": "digits-1",
+    "error": "DOCX list format 'thaiNumbers' is unsupported."
+  },
+  {
+    "name": "thai-vietnamese-depth-0-digits-98",
+    "depth": 0,
+    "mode": "digits-98",
+    "error": "DOCX list format 'thaiNumbers' is unsupported."
+  },
+  {
+    "name": "thai-vietnamese-depth-0-digits-9998",
+    "depth": 0,
+    "mode": "digits-9998",
+    "error": "DOCX list format 'thaiNumbers' is unsupported."
+  },
+  {
+    "name": "thai-vietnamese-depth-8-digits-9998",
+    "depth": 8,
+    "mode": "digits-9998",
+    "error": "DOCX list format 'thaiNumbers' is unsupported."
+  },
+  {
+    "name": "thai-vietnamese-depth-0-thai-1",
+    "depth": 0,
+    "mode": "thai-1",
+    "error": "DOCX list format 'thaiCounting' is unsupported."
+  },
+  {
+    "name": "thai-vietnamese-depth-0-thai-98",
+    "depth": 0,
+    "mode": "thai-98",
+    "error": "DOCX list format 'thaiCounting' is unsupported."
+  },
+  {
+    "name": "thai-vietnamese-depth-0-thai-9998",
+    "depth": 0,
+    "mode": "thai-9998",
+    "error": "DOCX list format 'thaiCounting' is unsupported."
+  },
+  {
+    "name": "thai-vietnamese-depth-8-thai-9998",
+    "depth": 8,
+    "mode": "thai-9998",
+    "error": "DOCX list format 'thaiCounting' is unsupported."
+  },
+  {
+    "name": "thai-vietnamese-depth-0-vietnamese-1",
+    "depth": 0,
+    "mode": "vietnamese-1",
+    "error": "DOCX list format 'vietnameseCounting' is unsupported."
+  },
+  {
+    "name": "thai-vietnamese-depth-0-vietnamese-98",
+    "depth": 0,
+    "mode": "vietnamese-98",
+    "error": "DOCX list format 'vietnameseCounting' is unsupported."
+  },
+  {
+    "name": "thai-vietnamese-depth-0-vietnamese-998",
+    "depth": 0,
+    "mode": "vietnamese-998",
+    "error": "DOCX list format 'vietnameseCounting' is unsupported."
+  },
+  {
+    "name": "thai-vietnamese-depth-8-vietnamese-998",
+    "depth": 8,
+    "mode": "vietnamese-998",
+    "error": "DOCX list format 'vietnameseCounting' is unsupported."
+  }
+]
