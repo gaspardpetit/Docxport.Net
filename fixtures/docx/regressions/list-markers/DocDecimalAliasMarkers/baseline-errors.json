@@ -1,0 +1,50 @@
+[
+  {
+    "name": "decimal-alias-depth-0-definition-1",
+    "depth": 0,
+    "mode": "definition-1",
+    "error": "DOC list number format 40 is unsupported."
+  },
+  {
+    "name": "decimal-alias-depth-0-definition-98",
+    "depth": 0,
+    "mode": "definition-98",
+    "error": "DOC list number format 40 is unsupported."
+  },
+  {
+    "name": "decimal-alias-depth-0-override-1",
+    "depth": 0,
+    "mode": "override-1",
+    "error": "DOC list number format 40 is unsupported."
+  },
+  {
+    "name": "decimal-alias-depth-0-override-98",
+    "depth": 0,
+    "mode": "override-98",
+    "error": "DOC list number format 40 is unsupported."
+  },
+  {
+    "name": "decimal-alias-depth-8-definition-1",
+    "depth": 8,
+    "mode": "definition-1",
+    "error": "DOC list number format 40 is unsupported."
+  },
+  {
+    "name": "decimal-alias-depth-8-definition-98",
+    "depth": 8,
+    "mode": "definition-98",
+    "error": "DOC list number format 40 is unsupported."
+  },
+  {
+    "name": "decimal-alias-depth-8-override-1",
+    "depth": 8,
+    "mode": "override-1",
+    "error": "DOC list number format 40 is unsupported."
+  },
+  {
+    "name": "decimal-alias-depth-8-override-98",
+    "depth": 8,
+    "mode": "override-98",
+    "error": "DOC list number format 40 is unsupported."
+  }
+]
