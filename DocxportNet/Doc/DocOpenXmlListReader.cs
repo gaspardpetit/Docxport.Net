@@ -146,6 +146,8 @@ internal static class DocOpenXmlListReader
         if (level.LevelIndex?.Value is not int index || index is < 0 or > 8)
             throw new InvalidDataException("A DOCX list level has an invalid index.");
         var format = level.NumberingFormat?.Val?.Value;
+        // Do not emit hex (0x08): Word refuses to reopen these DOC files.
+        // Keep its historical input mapping in DocToDocxProjector.
         byte code = format == null || format == NumberFormatValues.Decimal ? (byte)0 :
             format == NumberFormatValues.UpperRoman ? (byte)1 :
             format == NumberFormatValues.LowerRoman ? (byte)2 :
@@ -154,7 +156,6 @@ internal static class DocOpenXmlListReader
             format == NumberFormatValues.Ordinal ? (byte)5 :
             format == NumberFormatValues.CardinalText ? (byte)6 :
             format == NumberFormatValues.OrdinalText ? (byte)7 :
-            format == NumberFormatValues.Hex ? (byte)8 :
             format == NumberFormatValues.IdeographDigital ? (byte)0x0A :
             format == NumberFormatValues.JapaneseCounting ? (byte)0x0B :
             format == NumberFormatValues.Aiueo ? (byte)0x0C :

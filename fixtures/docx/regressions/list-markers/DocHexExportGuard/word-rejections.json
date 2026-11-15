@@ -1,0 +1,30 @@
+[
+  {
+    "name": "hex-depth-0-definition",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/HexExportGuard/hex-depth-0-definition.doc",
+    "sourceSha256": "8a771c732d047cdd8ea9a756a6fd81395b0f394e9f430a63abc80d3dca7205f0",
+    "wordOpenError": "Office has detected a problem with this file. To help protect your computer this file cannot be opened."
+  },
+  {
+    "name": "hex-depth-0-override",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/HexExportGuard/hex-depth-0-override.doc",
+    "sourceSha256": "82f1074b13bad3470a9547a5b1a599d752a7a180481bd1dc0dff016681d93486",
+    "wordOpenError": "Office has detected a problem with this file. To help protect your computer this file cannot be opened."
+  },
+  {
+    "name": "hex-depth-8-definition",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/HexExportGuard/hex-depth-8-definition.doc",
+    "sourceSha256": "405efadc99b69e0856ec3cb09cce78702e37efdef0a9e604b50feac1bce0b64d",
+    "wordOpenError": "Office has detected a problem with this file. To help protect your computer this file cannot be opened."
+  },
+  {
+    "name": "hex-depth-8-override",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/HexExportGuard/hex-depth-8-override.doc",
+    "sourceSha256": "050783109eef4f3bcac917dc63e9c18e4ac9ddd8979b29d016c3ec2cc8d66bab",
+    "wordOpenError": "Office has detected a problem with this file. To help protect your computer this file cannot be opened."
+  }
+]
