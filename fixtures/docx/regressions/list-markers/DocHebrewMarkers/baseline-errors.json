@@ -1,0 +1,62 @@
+[
+  {
+    "name": "hebrew-depth-0-numeric-1",
+    "depth": 0,
+    "mode": "numeric-1",
+    "error": "DOCX list format 'hebrew1' is unsupported."
+  },
+  {
+    "name": "hebrew-depth-0-numeric-14",
+    "depth": 0,
+    "mode": "numeric-14",
+    "error": "DOCX list format 'hebrew1' is unsupported."
+  },
+  {
+    "name": "hebrew-depth-0-numeric-21",
+    "depth": 0,
+    "mode": "numeric-21",
+    "error": "DOCX list format 'hebrew1' is unsupported."
+  },
+  {
+    "name": "hebrew-depth-0-numeric-391",
+    "depth": 0,
+    "mode": "numeric-391",
+    "error": "DOCX list format 'hebrew1' is unsupported."
+  },
+  {
+    "name": "hebrew-depth-8-numeric-391",
+    "depth": 8,
+    "mode": "numeric-391",
+    "error": "DOCX list format 'hebrew1' is unsupported."
+  },
+  {
+    "name": "hebrew-depth-0-alphabetic-1",
+    "depth": 0,
+    "mode": "alphabetic-1",
+    "error": "DOCX list format 'hebrew2' is unsupported."
+  },
+  {
+    "name": "hebrew-depth-0-alphabetic-14",
+    "depth": 0,
+    "mode": "alphabetic-14",
+    "error": "DOCX list format 'hebrew2' is unsupported."
+  },
+  {
+    "name": "hebrew-depth-0-alphabetic-21",
+    "depth": 0,
+    "mode": "alphabetic-21",
+    "error": "DOCX list format 'hebrew2' is unsupported."
+  },
+  {
+    "name": "hebrew-depth-0-alphabetic-391",
+    "depth": 0,
+    "mode": "alphabetic-391",
+    "error": "DOCX list format 'hebrew2' is unsupported."
+  },
+  {
+    "name": "hebrew-depth-8-alphabetic-391",
+    "depth": 8,
+    "mode": "alphabetic-391",
+    "error": "DOCX list format 'hebrew2' is unsupported."
+  }
+]
