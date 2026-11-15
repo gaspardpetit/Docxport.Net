@@ -1,0 +1,1250 @@
+[
+  {
+    "name": "indic-depth-0-consonants-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "consonants-1",
+    "source": "fixtures/doc/regressions/list-markers/IndicMarkers/indic-depth-0-consonants-1.doc",
+    "sourceSha256": "794522f92070d0935906193a4eb1cc22e92f91e10250086bb7b733865a3d7f7c",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/doc/indic-depth-0-consonants-1.pdf",
+    "wordPdfSha256": "7ca88d5aaa3de431865711efe871a60f0c61fa8f30864209053e00858467b8ae",
+    "wordListStrings": [
+      "BEGIN\u0905END",
+      "BEGIN\u0906END",
+      "BEGIN\u0907END",
+      "BEGIN\u0908END",
+      "BEGIN\u0909END",
+      "BEGIN\u090aEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0905END",
+      "BEGIN\u0906END",
+      "BEGIN\u0907END",
+      "BEGIN\u0908END",
+      "BEGIN\u0909END",
+      "BEGIN\u090aEND"
+    ]
+  },
+  {
+    "name": "indic-depth-0-consonants-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "consonants-1",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/projected/indic-depth-0-consonants-1.docx",
+    "sourceSha256": "58dfb5917f3ebf8e956e8baf200f0bed158e23cf640251f739d2b3d117ef49a3",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/projected/indic-depth-0-consonants-1.pdf",
+    "wordPdfSha256": "3640d36ed61a032617f9610cb76faad876b05c27cdfd138da0b114d10494ee04",
+    "wordListStrings": [
+      "BEGIN\u0905END",
+      "BEGIN\u0906END",
+      "BEGIN\u0907END",
+      "BEGIN\u0908END",
+      "BEGIN\u0909END",
+      "BEGIN\u090aEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0905END",
+      "BEGIN\u0906END",
+      "BEGIN\u0907END",
+      "BEGIN\u0908END",
+      "BEGIN\u0909END",
+      "BEGIN\u090aEND"
+    ]
+  },
+  {
+    "name": "indic-depth-0-consonants-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "consonants-1",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/source/indic-depth-0-consonants-1.docx",
+    "sourceSha256": "c1ca8b5434f6d5b843cc3ea274f945d5f03daaff05a3a4bb3ebc4b2b957a4654",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/source/indic-depth-0-consonants-1.pdf",
+    "wordPdfSha256": "45129972581c45c745adcb09380e2365d370143ad4d675fdd7c83413de75e8d9",
+    "wordListStrings": [
+      "BEGIN\u0905END",
+      "BEGIN\u0906END",
+      "BEGIN\u0907END",
+      "BEGIN\u0908END",
+      "BEGIN\u0909END",
+      "BEGIN\u090aEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0905END",
+      "BEGIN\u0906END",
+      "BEGIN\u0907END",
+      "BEGIN\u0908END",
+      "BEGIN\u0909END",
+      "BEGIN\u090aEND"
+    ]
+  },
+  {
+    "name": "indic-depth-0-consonants-17",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "consonants-17",
+    "source": "fixtures/doc/regressions/list-markers/IndicMarkers/indic-depth-0-consonants-17.doc",
+    "sourceSha256": "fb3aed95b06711b6c69df08b570607107b10e7fdec9cd0b56299bb7b5fd68b1b",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/doc/indic-depth-0-consonants-17.pdf",
+    "wordPdfSha256": "d7ebe8b5374f62e7254be769e92b7a0bcfec55ee3a22a29997c4a67fb0bbe92d",
+    "wordListStrings": [
+      "BEGIN\u0905\u0902END",
+      "BEGIN\u0905\u0903END",
+      "BEGIN\u0905\u0905END",
+      "BEGIN\u0906\u0906END",
+      "BEGIN\u0907\u0907END",
+      "BEGIN\u0908\u0908END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0905\u0902END",
+      "BEGIN\u0905\u0903END",
+      "BEGIN\u0905\u0905END",
+      "BEGIN\u0906\u0906END",
+      "BEGIN\u0907\u0907END",
+      "BEGIN\u0908\u0908END"
+    ]
+  },
+  {
+    "name": "indic-depth-0-consonants-17",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "consonants-17",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/projected/indic-depth-0-consonants-17.docx",
+    "sourceSha256": "419f623dbd1f62c74d4b21c3f4e3d0ac6ec17267c341dbb02877b498a3771ca0",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/projected/indic-depth-0-consonants-17.pdf",
+    "wordPdfSha256": "e62d538be56bdab289165c5a2f84249ddb7865ea954b672d8fa5135eb08d7771",
+    "wordListStrings": [
+      "BEGIN\u0905\u0902END",
+      "BEGIN\u0905\u0903END",
+      "BEGIN\u0905\u0905END",
+      "BEGIN\u0906\u0906END",
+      "BEGIN\u0907\u0907END",
+      "BEGIN\u0908\u0908END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0905\u0902END",
+      "BEGIN\u0905\u0903END",
+      "BEGIN\u0905\u0905END",
+      "BEGIN\u0906\u0906END",
+      "BEGIN\u0907\u0907END",
+      "BEGIN\u0908\u0908END"
+    ]
+  },
+  {
+    "name": "indic-depth-0-consonants-17",
+    "kind": "source",
+    "depth": 0,
+    "mode": "consonants-17",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/source/indic-depth-0-consonants-17.docx",
+    "sourceSha256": "01c41b7dd1b85168235dc279d1b289bb3ed700680399c27921b064c5247cdb11",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/source/indic-depth-0-consonants-17.pdf",
+    "wordPdfSha256": "60a592d618366926bd88cbc3058fe2c79951aebf83a1a39bb668533f263ab5c1",
+    "wordListStrings": [
+      "BEGIN\u0905\u0902END",
+      "BEGIN\u0905\u0903END",
+      "BEGIN\u0905\u0905END",
+      "BEGIN\u0906\u0906END",
+      "BEGIN\u0907\u0907END",
+      "BEGIN\u0908\u0908END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0905\u0902END",
+      "BEGIN\u0905\u0903END",
+      "BEGIN\u0905\u0905END",
+      "BEGIN\u0906\u0906END",
+      "BEGIN\u0907\u0907END",
+      "BEGIN\u0908\u0908END"
+    ]
+  },
+  {
+    "name": "indic-depth-0-consonants-303",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "consonants-303",
+    "source": "fixtures/doc/regressions/list-markers/IndicMarkers/indic-depth-0-consonants-303.doc",
+    "sourceSha256": "8de1e0c6cd8ba56be2a1fa03ac20de9203aadf7eb955e32a829ac1986b78b079",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/doc/indic-depth-0-consonants-303.pdf",
+    "wordPdfSha256": "01950ecfd931ae25993e18623307cc189227ac1d41a97b6d1f64f18a016f6eaf",
+    "wordListStrings": [
+      "BEGIN\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913END",
+      "BEGIN\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914END",
+      "BEGIN\u0905END",
+      "BEGIN\u0906END",
+      "BEGIN\u0907END",
+      "BEGIN\u0908END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913END",
+      "BEGIN\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914END",
+      "BEGIN\u0905END",
+      "BEGIN\u0906END",
+      "BEGIN\u0907END",
+      "BEGIN\u0908END"
+    ]
+  },
+  {
+    "name": "indic-depth-0-consonants-303",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "consonants-303",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/projected/indic-depth-0-consonants-303.docx",
+    "sourceSha256": "5e85fad64a363964725ce3a95bad1d0e70e92e902b7f5ad0a129b6de46c955fe",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/projected/indic-depth-0-consonants-303.pdf",
+    "wordPdfSha256": "98027f016d1ce969c214a2a905434aaea518eee7db738e46cda900ee7b9720e2",
+    "wordListStrings": [
+      "BEGIN\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913END",
+      "BEGIN\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914END",
+      "BEGIN\u0905END",
+      "BEGIN\u0906END",
+      "BEGIN\u0907END",
+      "BEGIN\u0908END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913END",
+      "BEGIN\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914END",
+      "BEGIN\u0905END",
+      "BEGIN\u0906END",
+      "BEGIN\u0907END",
+      "BEGIN\u0908END"
+    ]
+  },
+  {
+    "name": "indic-depth-0-consonants-303",
+    "kind": "source",
+    "depth": 0,
+    "mode": "consonants-303",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/source/indic-depth-0-consonants-303.docx",
+    "sourceSha256": "d781dc6e82c8b0aedd009896c6dbcdbdf3ce0eb95b84280c8f0f0fc3194b234d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/source/indic-depth-0-consonants-303.pdf",
+    "wordPdfSha256": "09fa5ea19c2334f40360c91bb336e5d00d89f12107f170494826903269830251",
+    "wordListStrings": [
+      "BEGIN\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913END",
+      "BEGIN\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914END",
+      "BEGIN\u0905END",
+      "BEGIN\u0906END",
+      "BEGIN\u0907END",
+      "BEGIN\u0908END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913END",
+      "BEGIN\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914END",
+      "BEGIN\u0905END",
+      "BEGIN\u0906END",
+      "BEGIN\u0907END",
+      "BEGIN\u0908END"
+    ]
+  },
+  {
+    "name": "indic-depth-0-counting-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "counting-1",
+    "source": "fixtures/doc/regressions/list-markers/IndicMarkers/indic-depth-0-counting-1.doc",
+    "sourceSha256": "17b12af45bebd761d126d2011288bf63f7912e2094123f14bfaa20a55a8061f4",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/doc/indic-depth-0-counting-1.pdf",
+    "wordPdfSha256": "db321793050242f16abb76945541898ec5c30612662e4c7217aa7f85dc012323",
+    "wordListStrings": [
+      "BEGIN\u090f\u0915END",
+      "BEGIN\u0926\u094bEND",
+      "BEGIN\u0924\u0940\u0928END",
+      "BEGIN\u091a\u093e\u0930END",
+      "BEGIN\u092a\u093e\u0901\u091aEND",
+      "BEGIN\u091b\u0903END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u090f\u0915END",
+      "BEGIN\u0926\u094bEND",
+      "BEGIN\u0924\u0940\u0928END",
+      "BEGIN\u091a\u093e\u0930END",
+      "BEGIN\u092a\u093e\u0901\u091aEND",
+      "BEGIN\u091b\u0903END"
+    ]
+  },
+  {
+    "name": "indic-depth-0-counting-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "counting-1",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/projected/indic-depth-0-counting-1.docx",
+    "sourceSha256": "bbf90b909f7ca0f6ab4d65f23e27a10c50411297701c8ab289b380f9459240ce",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/projected/indic-depth-0-counting-1.pdf",
+    "wordPdfSha256": "b53d8941b62120aa6e2a3c45eaf7e11eb98db15d5812c97e745047a230ce7f81",
+    "wordListStrings": [
+      "BEGIN\u090f\u0915END",
+      "BEGIN\u0926\u094bEND",
+      "BEGIN\u0924\u0940\u0928END",
+      "BEGIN\u091a\u093e\u0930END",
+      "BEGIN\u092a\u093e\u0901\u091aEND",
+      "BEGIN\u091b\u0903END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u090f\u0915END",
+      "BEGIN\u0926\u094bEND",
+      "BEGIN\u0924\u0940\u0928END",
+      "BEGIN\u091a\u093e\u0930END",
+      "BEGIN\u092a\u093e\u0901\u091aEND",
+      "BEGIN\u091b\u0903END"
+    ]
+  },
+  {
+    "name": "indic-depth-0-counting-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "counting-1",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/source/indic-depth-0-counting-1.docx",
+    "sourceSha256": "d78f0b7a0d16ad886df4c2596d3a9fd4ffd0e206ee565d4c9a259fc9e182a2a6",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/source/indic-depth-0-counting-1.pdf",
+    "wordPdfSha256": "a90bd615b653d8fe4c10f920eac66e300641ee84f6bfb3d0e562ecfac236f897",
+    "wordListStrings": [
+      "BEGIN\u090f\u0915END",
+      "BEGIN\u0926\u094bEND",
+      "BEGIN\u0924\u0940\u0928END",
+      "BEGIN\u091a\u093e\u0930END",
+      "BEGIN\u092a\u093e\u0901\u091aEND",
+      "BEGIN\u091b\u0903END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u090f\u0915END",
+      "BEGIN\u0926\u094bEND",
+      "BEGIN\u0924\u0940\u0928END",
+      "BEGIN\u091a\u093e\u0930END",
+      "BEGIN\u092a\u093e\u0901\u091aEND",
+      "BEGIN\u091b\u0903END"
+    ]
+  },
+  {
+    "name": "indic-depth-0-counting-98",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "counting-98",
+    "source": "fixtures/doc/regressions/list-markers/IndicMarkers/indic-depth-0-counting-98.doc",
+    "sourceSha256": "f319f63cd6ffe1327783ee3d44341a87f341879a141b047628dd5c0e9ac333c8",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/doc/indic-depth-0-counting-98.pdf",
+    "wordPdfSha256": "4009f79c2422327febb142e821ac1408476126275dd6a1689aeec1d2c4346b6e",
+    "wordListStrings": [
+      "BEGIN\u0905\u0920\u094d\u0920\u093e\u0928\u0935\u0947END",
+      "BEGIN\u0928\u093f\u0928\u094d\u092f\u093e\u0928\u0935\u0947END",
+      "BEGIN\u090f\u0915 \u0938\u094cEND",
+      "BEGIN\u090f\u0915 \u0938\u094c \u090f\u0915END",
+      "BEGIN\u090f\u0915 \u0938\u094c \u0926\u094bEND",
+      "BEGIN\u090f\u0915 \u0938\u094c \u0924\u0940\u0928END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0905\u0920\u094d\u0920\u093e\u0928\u0935\u0947END",
+      "BEGIN\u0928\u093f\u0928\u094d\u092f\u093e\u0928\u0935\u0947END",
+      "BEGIN\u090f\u0915 \u0938\u094cEND",
+      "BEGIN\u090f\u0915 \u0938\u094c \u090f\u0915END",
+      "BEGIN\u090f\u0915 \u0938\u094c \u0926\u094bEND",
+      "BEGIN\u090f\u0915 \u0938\u094c \u0924\u0940\u0928END"
+    ]
+  },
+  {
+    "name": "indic-depth-0-counting-98",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "counting-98",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/projected/indic-depth-0-counting-98.docx",
+    "sourceSha256": "4a8beb0735605d343fbaa1276ed822dfd48d165f8c955e004895f2917f16f3ed",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/projected/indic-depth-0-counting-98.pdf",
+    "wordPdfSha256": "60fc9b5b8c75cbc772cf19eae5b9c9c04b4783825b05dd483457a23c259bfc8c",
+    "wordListStrings": [
+      "BEGIN\u0905\u0920\u094d\u0920\u093e\u0928\u0935\u0947END",
+      "BEGIN\u0928\u093f\u0928\u094d\u092f\u093e\u0928\u0935\u0947END",
+      "BEGIN\u090f\u0915 \u0938\u094cEND",
+      "BEGIN\u090f\u0915 \u0938\u094c \u090f\u0915END",
+      "BEGIN\u090f\u0915 \u0938\u094c \u0926\u094bEND",
+      "BEGIN\u090f\u0915 \u0938\u094c \u0924\u0940\u0928END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0905\u0920\u094d\u0920\u093e\u0928\u0935\u0947END",
+      "BEGIN\u0928\u093f\u0928\u094d\u092f\u093e\u0928\u0935\u0947END",
+      "BEGIN\u090f\u0915 \u0938\u094cEND",
+      "BEGIN\u090f\u0915 \u0938\u094c \u090f\u0915END",
+      "BEGIN\u090f\u0915 \u0938\u094c \u0926\u094bEND",
+      "BEGIN\u090f\u0915 \u0938\u094c \u0924\u0940\u0928END"
+    ]
+  },
+  {
+    "name": "indic-depth-0-counting-98",
+    "kind": "source",
+    "depth": 0,
+    "mode": "counting-98",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/source/indic-depth-0-counting-98.docx",
+    "sourceSha256": "796165ea95bd687f9c14a7290d85a2117dc88665536f324506d0a17567e01dd5",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/source/indic-depth-0-counting-98.pdf",
+    "wordPdfSha256": "febeb71acac9ad0fb0932d6053edcd6c51bd996d5e4d1e1aa39fb996db322d04",
+    "wordListStrings": [
+      "BEGIN\u0905\u0920\u094d\u0920\u093e\u0928\u0935\u0947END",
+      "BEGIN\u0928\u093f\u0928\u094d\u092f\u093e\u0928\u0935\u0947END",
+      "BEGIN\u090f\u0915 \u0938\u094cEND",
+      "BEGIN\u090f\u0915 \u0938\u094c \u090f\u0915END",
+      "BEGIN\u090f\u0915 \u0938\u094c \u0926\u094bEND",
+      "BEGIN\u090f\u0915 \u0938\u094c \u0924\u0940\u0928END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0905\u0920\u094d\u0920\u093e\u0928\u0935\u0947END",
+      "BEGIN\u0928\u093f\u0928\u094d\u092f\u093e\u0928\u0935\u0947END",
+      "BEGIN\u090f\u0915 \u0938\u094cEND",
+      "BEGIN\u090f\u0915 \u0938\u094c \u090f\u0915END",
+      "BEGIN\u090f\u0915 \u0938\u094c \u0926\u094bEND",
+      "BEGIN\u090f\u0915 \u0938\u094c \u0924\u0940\u0928END"
+    ]
+  },
+  {
+    "name": "indic-depth-0-counting-9998",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "counting-9998",
+    "source": "fixtures/doc/regressions/list-markers/IndicMarkers/indic-depth-0-counting-9998.doc",
+    "sourceSha256": "b51b13935a628378eda3c1fcd46df6c15b0a95a1063113bd27e1c82924dc1fa7",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/doc/indic-depth-0-counting-9998.pdf",
+    "wordPdfSha256": "9f60455426fe0f1b35c42b40adb5ee42e77244cc89df7fc7b4d57b1278307eea",
+    "wordListStrings": [
+      "BEGIN\u0928\u094c \u0939\u091c\u093e\u0930 \u0928\u094c \u0938\u094c \u0905\u0920\u094d\u0920\u093e\u0928\u0935\u0947END",
+      "BEGIN\u0928\u094c \u0939\u091c\u093e\u0930 \u0928\u094c \u0938\u094c \u0928\u093f\u0928\u094d\u092f\u093e\u0928\u0935\u0947END",
+      "BEGIN\u090f\u0915END",
+      "BEGIN\u0926\u094bEND",
+      "BEGIN\u0924\u0940\u0928END",
+      "BEGIN\u091a\u093e\u0930END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0928\u094c \u0939\u091c\u093e\u0930 \u0928\u094c \u0938\u094c \u0905\u0920\u094d\u0920\u093e\u0928\u0935\u0947END",
+      "BEGIN\u0928\u094c \u0939\u091c\u093e\u0930 \u0928\u094c \u0938\u094c \u0928\u093f\u0928\u094d\u092f\u093e\u0928\u0935\u0947END",
+      "BEGIN\u090f\u0915END",
+      "BEGIN\u0926\u094bEND",
+      "BEGIN\u0924\u0940\u0928END",
+      "BEGIN\u091a\u093e\u0930END"
+    ]
+  },
+  {
+    "name": "indic-depth-0-counting-9998",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "counting-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/projected/indic-depth-0-counting-9998.docx",
+    "sourceSha256": "cec96a07a0232b35a311c0fcf1bbd9a00cb9e849acddb74d0f0394fc97abec8d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/projected/indic-depth-0-counting-9998.pdf",
+    "wordPdfSha256": "b3504c0fcd1169835f2c30de0c5737dcca955d35fbda4665aca102ceb604436d",
+    "wordListStrings": [
+      "BEGIN\u0928\u094c \u0939\u091c\u093e\u0930 \u0928\u094c \u0938\u094c \u0905\u0920\u094d\u0920\u093e\u0928\u0935\u0947END",
+      "BEGIN\u0928\u094c \u0939\u091c\u093e\u0930 \u0928\u094c \u0938\u094c \u0928\u093f\u0928\u094d\u092f\u093e\u0928\u0935\u0947END",
+      "BEGIN\u090f\u0915END",
+      "BEGIN\u0926\u094bEND",
+      "BEGIN\u0924\u0940\u0928END",
+      "BEGIN\u091a\u093e\u0930END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0928\u094c \u0939\u091c\u093e\u0930 \u0928\u094c \u0938\u094c \u0905\u0920\u094d\u0920\u093e\u0928\u0935\u0947END",
+      "BEGIN\u0928\u094c \u0939\u091c\u093e\u0930 \u0928\u094c \u0938\u094c \u0928\u093f\u0928\u094d\u092f\u093e\u0928\u0935\u0947END",
+      "BEGIN\u090f\u0915END",
+      "BEGIN\u0926\u094bEND",
+      "BEGIN\u0924\u0940\u0928END",
+      "BEGIN\u091a\u093e\u0930END"
+    ]
+  },
+  {
+    "name": "indic-depth-0-counting-9998",
+    "kind": "source",
+    "depth": 0,
+    "mode": "counting-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/source/indic-depth-0-counting-9998.docx",
+    "sourceSha256": "a96c7b04942946f913165da2a223e6ba22b8137d5d022813ad2ffb3038263e57",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/source/indic-depth-0-counting-9998.pdf",
+    "wordPdfSha256": "d6aa628e14d666bdfbb851d9f0f78caccfe0fa64d5bc47888996bae6789e7123",
+    "wordListStrings": [
+      "BEGIN\u0928\u094c \u0939\u091c\u093e\u0930 \u0928\u094c \u0938\u094c \u0905\u0920\u094d\u0920\u093e\u0928\u0935\u0947END",
+      "BEGIN\u0928\u094c \u0939\u091c\u093e\u0930 \u0928\u094c \u0938\u094c \u0928\u093f\u0928\u094d\u092f\u093e\u0928\u0935\u0947END",
+      "BEGIN\u090f\u0915END",
+      "BEGIN\u0926\u094bEND",
+      "BEGIN\u0924\u0940\u0928END",
+      "BEGIN\u091a\u093e\u0930END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0928\u094c \u0939\u091c\u093e\u0930 \u0928\u094c \u0938\u094c \u0905\u0920\u094d\u0920\u093e\u0928\u0935\u0947END",
+      "BEGIN\u0928\u094c \u0939\u091c\u093e\u0930 \u0928\u094c \u0938\u094c \u0928\u093f\u0928\u094d\u092f\u093e\u0928\u0935\u0947END",
+      "BEGIN\u090f\u0915END",
+      "BEGIN\u0926\u094bEND",
+      "BEGIN\u0924\u0940\u0928END",
+      "BEGIN\u091a\u093e\u0930END"
+    ]
+  },
+  {
+    "name": "indic-depth-0-numbers-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "numbers-1",
+    "source": "fixtures/doc/regressions/list-markers/IndicMarkers/indic-depth-0-numbers-1.doc",
+    "sourceSha256": "0fc2d72a48a7505a12af93e6e4602ddd8ac4fb8ae5c230d564382f0a8683870f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/doc/indic-depth-0-numbers-1.pdf",
+    "wordPdfSha256": "7c3b6276ee3993961610896dea69611e1cbd9cf6c233c3c40420716014bbfae0",
+    "wordListStrings": [
+      "BEGIN\u0967END",
+      "BEGIN\u0968END",
+      "BEGIN\u0969END",
+      "BEGIN\u096aEND",
+      "BEGIN\u096bEND",
+      "BEGIN\u096cEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0967END",
+      "BEGIN\u0968END",
+      "BEGIN\u0969END",
+      "BEGIN\u096aEND",
+      "BEGIN\u096bEND",
+      "BEGIN\u096cEND"
+    ]
+  },
+  {
+    "name": "indic-depth-0-numbers-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "numbers-1",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/projected/indic-depth-0-numbers-1.docx",
+    "sourceSha256": "6f703efd7756bb3a55fdf6d3d190fbe26a1192e8a6d2e039d709caf2af485f8e",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/projected/indic-depth-0-numbers-1.pdf",
+    "wordPdfSha256": "ebb6c692207200f58ca13350e7afea41c1a5b78e36028bd949566f242f5f43bc",
+    "wordListStrings": [
+      "BEGIN\u0967END",
+      "BEGIN\u0968END",
+      "BEGIN\u0969END",
+      "BEGIN\u096aEND",
+      "BEGIN\u096bEND",
+      "BEGIN\u096cEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0967END",
+      "BEGIN\u0968END",
+      "BEGIN\u0969END",
+      "BEGIN\u096aEND",
+      "BEGIN\u096bEND",
+      "BEGIN\u096cEND"
+    ]
+  },
+  {
+    "name": "indic-depth-0-numbers-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "numbers-1",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/source/indic-depth-0-numbers-1.docx",
+    "sourceSha256": "3afa822474ef32aa6bb77dc9f8950a060416fac3e6e8447fc2fa669aeeeaebf2",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/source/indic-depth-0-numbers-1.pdf",
+    "wordPdfSha256": "ef381e41c82bbb76372b4d14d638d2d27ec1a32ee1f9761a30b53ea22ce5ae6b",
+    "wordListStrings": [
+      "BEGIN\u0967END",
+      "BEGIN\u0968END",
+      "BEGIN\u0969END",
+      "BEGIN\u096aEND",
+      "BEGIN\u096bEND",
+      "BEGIN\u096cEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0967END",
+      "BEGIN\u0968END",
+      "BEGIN\u0969END",
+      "BEGIN\u096aEND",
+      "BEGIN\u096bEND",
+      "BEGIN\u096cEND"
+    ]
+  },
+  {
+    "name": "indic-depth-0-numbers-98",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "numbers-98",
+    "source": "fixtures/doc/regressions/list-markers/IndicMarkers/indic-depth-0-numbers-98.doc",
+    "sourceSha256": "b54331f804b6401a09855c8a1c91fe958a6be35007601656494be224ddcd8bb3",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/doc/indic-depth-0-numbers-98.pdf",
+    "wordPdfSha256": "878b5b92c26e45143e1cf69aa1bc16754309827a7ac2821e4a6d736e9070bddd",
+    "wordListStrings": [
+      "BEGIN\u096f\u096eEND",
+      "BEGIN\u096f\u096fEND",
+      "BEGIN\u0967\u0966\u0966END",
+      "BEGIN\u0967\u0966\u0967END",
+      "BEGIN\u0967\u0966\u0968END",
+      "BEGIN\u0967\u0966\u0969END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u096f\u096eEND",
+      "BEGIN\u096f\u096fEND",
+      "BEGIN\u0967\u0966\u0966END",
+      "BEGIN\u0967\u0966\u0967END",
+      "BEGIN\u0967\u0966\u0968END",
+      "BEGIN\u0967\u0966\u0969END"
+    ]
+  },
+  {
+    "name": "indic-depth-0-numbers-98",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "numbers-98",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/projected/indic-depth-0-numbers-98.docx",
+    "sourceSha256": "6fb602d0d476620c8af039ffb016f9d6ce145ddc8b09b9802d111cae0f50f5dd",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/projected/indic-depth-0-numbers-98.pdf",
+    "wordPdfSha256": "6b2e622c7ea918ae35259cf73eff392a4c49b77c52669421defa1b69570fd5a8",
+    "wordListStrings": [
+      "BEGIN\u096f\u096eEND",
+      "BEGIN\u096f\u096fEND",
+      "BEGIN\u0967\u0966\u0966END",
+      "BEGIN\u0967\u0966\u0967END",
+      "BEGIN\u0967\u0966\u0968END",
+      "BEGIN\u0967\u0966\u0969END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u096f\u096eEND",
+      "BEGIN\u096f\u096fEND",
+      "BEGIN\u0967\u0966\u0966END",
+      "BEGIN\u0967\u0966\u0967END",
+      "BEGIN\u0967\u0966\u0968END",
+      "BEGIN\u0967\u0966\u0969END"
+    ]
+  },
+  {
+    "name": "indic-depth-0-numbers-98",
+    "kind": "source",
+    "depth": 0,
+    "mode": "numbers-98",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/source/indic-depth-0-numbers-98.docx",
+    "sourceSha256": "86c987136224c0267de806576e9cb6ebe4e51be41176a9c2092893743f55848d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/source/indic-depth-0-numbers-98.pdf",
+    "wordPdfSha256": "2cd4d8b652dda57eeb7d97ad8b72da9f59c43fe4a21624ed3d066ee262eb455d",
+    "wordListStrings": [
+      "BEGIN\u096f\u096eEND",
+      "BEGIN\u096f\u096fEND",
+      "BEGIN\u0967\u0966\u0966END",
+      "BEGIN\u0967\u0966\u0967END",
+      "BEGIN\u0967\u0966\u0968END",
+      "BEGIN\u0967\u0966\u0969END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u096f\u096eEND",
+      "BEGIN\u096f\u096fEND",
+      "BEGIN\u0967\u0966\u0966END",
+      "BEGIN\u0967\u0966\u0967END",
+      "BEGIN\u0967\u0966\u0968END",
+      "BEGIN\u0967\u0966\u0969END"
+    ]
+  },
+  {
+    "name": "indic-depth-0-numbers-9998",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "numbers-9998",
+    "source": "fixtures/doc/regressions/list-markers/IndicMarkers/indic-depth-0-numbers-9998.doc",
+    "sourceSha256": "f51b62ff3d5245a4f6b922b781f162795d76891fdd95071af44868dc1a6c71fb",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/doc/indic-depth-0-numbers-9998.pdf",
+    "wordPdfSha256": "c226471f15dd92b82134ee6e0e2e8de7f7e6e00b88ef42b71947bb2185f0889c",
+    "wordListStrings": [
+      "BEGIN\u096f\u096f\u096f\u096eEND",
+      "BEGIN\u096f\u096f\u096f\u096fEND",
+      "BEGIN\u0967\u0966\u0966\u0966\u0966END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0967END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0968END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0969END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u096f\u096f\u096f\u096eEND",
+      "BEGIN\u096f\u096f\u096f\u096fEND",
+      "BEGIN\u0967\u0966\u0966\u0966\u0966END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0967END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0968END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0969END"
+    ]
+  },
+  {
+    "name": "indic-depth-0-numbers-9998",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "numbers-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/projected/indic-depth-0-numbers-9998.docx",
+    "sourceSha256": "116943d4851d82c5aa62ce9b0578244a3462293ad8b41364ecd485d34323e6d6",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/projected/indic-depth-0-numbers-9998.pdf",
+    "wordPdfSha256": "9bf73ba495d699ca205b8987cdb460e34e6c899da8ebf4dbf52749031d30d2a0",
+    "wordListStrings": [
+      "BEGIN\u096f\u096f\u096f\u096eEND",
+      "BEGIN\u096f\u096f\u096f\u096fEND",
+      "BEGIN\u0967\u0966\u0966\u0966\u0966END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0967END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0968END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0969END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u096f\u096f\u096f\u096eEND",
+      "BEGIN\u096f\u096f\u096f\u096fEND",
+      "BEGIN\u0967\u0966\u0966\u0966\u0966END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0967END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0968END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0969END"
+    ]
+  },
+  {
+    "name": "indic-depth-0-numbers-9998",
+    "kind": "source",
+    "depth": 0,
+    "mode": "numbers-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/source/indic-depth-0-numbers-9998.docx",
+    "sourceSha256": "2776a6a8df83074e3764e64ea478662017c6dc5968300715db5c9e22059d6e59",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/source/indic-depth-0-numbers-9998.pdf",
+    "wordPdfSha256": "73098c26d35eca58e1743b24f347aa32fd9ef6207da6816740cd9375453dc686",
+    "wordListStrings": [
+      "BEGIN\u096f\u096f\u096f\u096eEND",
+      "BEGIN\u096f\u096f\u096f\u096fEND",
+      "BEGIN\u0967\u0966\u0966\u0966\u0966END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0967END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0968END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0969END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u096f\u096f\u096f\u096eEND",
+      "BEGIN\u096f\u096f\u096f\u096fEND",
+      "BEGIN\u0967\u0966\u0966\u0966\u0966END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0967END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0968END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0969END"
+    ]
+  },
+  {
+    "name": "indic-depth-0-vowels-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "vowels-1",
+    "source": "fixtures/doc/regressions/list-markers/IndicMarkers/indic-depth-0-vowels-1.doc",
+    "sourceSha256": "9e4f7c88031f8b4d07445cb8cb0a3ed3c665551d1a444fb0dd095fb58ed1ab99",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/doc/indic-depth-0-vowels-1.pdf",
+    "wordPdfSha256": "4bf0a98ba1358e98796ad3eff5c3597d1e6c41518540b311ba98806db95dc65e",
+    "wordListStrings": [
+      "BEGIN\u0915END",
+      "BEGIN\u0916END",
+      "BEGIN\u0917END",
+      "BEGIN\u0918END",
+      "BEGIN\u0919END",
+      "BEGIN\u091aEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0915END",
+      "BEGIN\u0916END",
+      "BEGIN\u0917END",
+      "BEGIN\u0918END",
+      "BEGIN\u0919END",
+      "BEGIN\u091aEND"
+    ]
+  },
+  {
+    "name": "indic-depth-0-vowels-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "vowels-1",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/projected/indic-depth-0-vowels-1.docx",
+    "sourceSha256": "c6150fa063823f83930f5c42c1a554c53355f9e108dc6b788ae44c17efabecbb",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/projected/indic-depth-0-vowels-1.pdf",
+    "wordPdfSha256": "61e6497902f66e115ffe59e46fd2811c6848e6ab518dc32398ad49b7e59b7014",
+    "wordListStrings": [
+      "BEGIN\u0915END",
+      "BEGIN\u0916END",
+      "BEGIN\u0917END",
+      "BEGIN\u0918END",
+      "BEGIN\u0919END",
+      "BEGIN\u091aEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0915END",
+      "BEGIN\u0916END",
+      "BEGIN\u0917END",
+      "BEGIN\u0918END",
+      "BEGIN\u0919END",
+      "BEGIN\u091aEND"
+    ]
+  },
+  {
+    "name": "indic-depth-0-vowels-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "vowels-1",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/source/indic-depth-0-vowels-1.docx",
+    "sourceSha256": "770c3e4749b0cfd30258fa3582cddd65c74c700cea6fd26bafed6f037860f8e5",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/source/indic-depth-0-vowels-1.pdf",
+    "wordPdfSha256": "5cc19cd230fc559d7301c2290b974d5a3febe804586a2c6f6ad4e9a99389ccfa",
+    "wordListStrings": [
+      "BEGIN\u0915END",
+      "BEGIN\u0916END",
+      "BEGIN\u0917END",
+      "BEGIN\u0918END",
+      "BEGIN\u0919END",
+      "BEGIN\u091aEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0915END",
+      "BEGIN\u0916END",
+      "BEGIN\u0917END",
+      "BEGIN\u0918END",
+      "BEGIN\u0919END",
+      "BEGIN\u091aEND"
+    ]
+  },
+  {
+    "name": "indic-depth-0-vowels-303",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "vowels-303",
+    "source": "fixtures/doc/regressions/list-markers/IndicMarkers/indic-depth-0-vowels-303.doc",
+    "sourceSha256": "fd417c9390d0dce03245569ecfefba091d150b0ac69892c10f70ec0d13f14b87",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/doc/indic-depth-0-vowels-303.pdf",
+    "wordPdfSha256": "e87b846149674fd4bfc8c657da6d9716674832e1d329799b401a9008d92c31a7",
+    "wordListStrings": [
+      "BEGIN\u091b\u091b\u091b\u091b\u091b\u091b\u091b\u091b\u091bEND",
+      "BEGIN\u091c\u091c\u091c\u091c\u091c\u091c\u091c\u091c\u091cEND",
+      "BEGIN\u0915END",
+      "BEGIN\u0916END",
+      "BEGIN\u0917END",
+      "BEGIN\u0918END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u091b\u091b\u091b\u091b\u091b\u091b\u091b\u091b\u091bEND",
+      "BEGIN\u091c\u091c\u091c\u091c\u091c\u091c\u091c\u091c\u091cEND",
+      "BEGIN\u0915END",
+      "BEGIN\u0916END",
+      "BEGIN\u0917END",
+      "BEGIN\u0918END"
+    ]
+  },
+  {
+    "name": "indic-depth-0-vowels-303",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "vowels-303",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/projected/indic-depth-0-vowels-303.docx",
+    "sourceSha256": "afe486f39ba69a4039b980add0439d92b598e1d8f9f8880beae8c32cd0ee382c",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/projected/indic-depth-0-vowels-303.pdf",
+    "wordPdfSha256": "05456beb31deb64d3e1c212b7616c4771d108548dcc7729b8b6eca69f33acbe1",
+    "wordListStrings": [
+      "BEGIN\u091b\u091b\u091b\u091b\u091b\u091b\u091b\u091b\u091bEND",
+      "BEGIN\u091c\u091c\u091c\u091c\u091c\u091c\u091c\u091c\u091cEND",
+      "BEGIN\u0915END",
+      "BEGIN\u0916END",
+      "BEGIN\u0917END",
+      "BEGIN\u0918END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u091b\u091b\u091b\u091b\u091b\u091b\u091b\u091b\u091bEND",
+      "BEGIN\u091c\u091c\u091c\u091c\u091c\u091c\u091c\u091c\u091cEND",
+      "BEGIN\u0915END",
+      "BEGIN\u0916END",
+      "BEGIN\u0917END",
+      "BEGIN\u0918END"
+    ]
+  },
+  {
+    "name": "indic-depth-0-vowels-303",
+    "kind": "source",
+    "depth": 0,
+    "mode": "vowels-303",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/source/indic-depth-0-vowels-303.docx",
+    "sourceSha256": "f04f37e87bd51733508d144f8ba22146556a90724fbd8fa808f2dc268a5cb060",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/source/indic-depth-0-vowels-303.pdf",
+    "wordPdfSha256": "dc67f2a4ad3c44ed45b7e2a8d159b50dc942abccd7a21c7d2348a4004cd18d93",
+    "wordListStrings": [
+      "BEGIN\u091b\u091b\u091b\u091b\u091b\u091b\u091b\u091b\u091bEND",
+      "BEGIN\u091c\u091c\u091c\u091c\u091c\u091c\u091c\u091c\u091cEND",
+      "BEGIN\u0915END",
+      "BEGIN\u0916END",
+      "BEGIN\u0917END",
+      "BEGIN\u0918END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u091b\u091b\u091b\u091b\u091b\u091b\u091b\u091b\u091bEND",
+      "BEGIN\u091c\u091c\u091c\u091c\u091c\u091c\u091c\u091c\u091cEND",
+      "BEGIN\u0915END",
+      "BEGIN\u0916END",
+      "BEGIN\u0917END",
+      "BEGIN\u0918END"
+    ]
+  },
+  {
+    "name": "indic-depth-0-vowels-36",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "vowels-36",
+    "source": "fixtures/doc/regressions/list-markers/IndicMarkers/indic-depth-0-vowels-36.doc",
+    "sourceSha256": "b95302baed195c2ccc9bd8470b915f6dfe3adc9421cdd7a703a7ab0bc6402024",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/doc/indic-depth-0-vowels-36.pdf",
+    "wordPdfSha256": "40e88c6d1b1b8a584d777973048f2d438753be7a399b919ae3c0b7c65d59a32f",
+    "wordListStrings": [
+      "BEGIN\u0938END",
+      "BEGIN\u0939END",
+      "BEGIN\u0915\u0915END",
+      "BEGIN\u0916\u0916END",
+      "BEGIN\u0917\u0917END",
+      "BEGIN\u0918\u0918END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0938END",
+      "BEGIN\u0939END",
+      "BEGIN\u0915\u0915END",
+      "BEGIN\u0916\u0916END",
+      "BEGIN\u0917\u0917END",
+      "BEGIN\u0918\u0918END"
+    ]
+  },
+  {
+    "name": "indic-depth-0-vowels-36",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "vowels-36",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/projected/indic-depth-0-vowels-36.docx",
+    "sourceSha256": "e0867a8345cb81eefa1555d636e90af437f21fa746927fe5a01b3e195abb88d2",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/projected/indic-depth-0-vowels-36.pdf",
+    "wordPdfSha256": "94fcd8e8ccc7e00cfab94a84ae10a7dc519cf16a782f36843c488535b60d6f6c",
+    "wordListStrings": [
+      "BEGIN\u0938END",
+      "BEGIN\u0939END",
+      "BEGIN\u0915\u0915END",
+      "BEGIN\u0916\u0916END",
+      "BEGIN\u0917\u0917END",
+      "BEGIN\u0918\u0918END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0938END",
+      "BEGIN\u0939END",
+      "BEGIN\u0915\u0915END",
+      "BEGIN\u0916\u0916END",
+      "BEGIN\u0917\u0917END",
+      "BEGIN\u0918\u0918END"
+    ]
+  },
+  {
+    "name": "indic-depth-0-vowels-36",
+    "kind": "source",
+    "depth": 0,
+    "mode": "vowels-36",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/source/indic-depth-0-vowels-36.docx",
+    "sourceSha256": "046da97f96c90874cbdde8f7a80833b3444417ca0572d03971d735fd9a96e1b7",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/source/indic-depth-0-vowels-36.pdf",
+    "wordPdfSha256": "1c676ffa50c59029252c1e0391c29d3f1b3a57ae6e6c25aa5869b6f890a59ab7",
+    "wordListStrings": [
+      "BEGIN\u0938END",
+      "BEGIN\u0939END",
+      "BEGIN\u0915\u0915END",
+      "BEGIN\u0916\u0916END",
+      "BEGIN\u0917\u0917END",
+      "BEGIN\u0918\u0918END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0938END",
+      "BEGIN\u0939END",
+      "BEGIN\u0915\u0915END",
+      "BEGIN\u0916\u0916END",
+      "BEGIN\u0917\u0917END",
+      "BEGIN\u0918\u0918END"
+    ]
+  },
+  {
+    "name": "indic-depth-8-consonants-303",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "consonants-303",
+    "source": "fixtures/doc/regressions/list-markers/IndicMarkers/indic-depth-8-consonants-303.doc",
+    "sourceSha256": "ec1a6939e619ef89ff16558b6ad9d29ce0fbdfd2976618f8fbb7c4accadb6b1a",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/doc/indic-depth-8-consonants-303.pdf",
+    "wordPdfSha256": "0f1830ae7c9d2d5731f3e233ca8b6a363a6e5c7f59b8d35d955c0772e6e40e05",
+    "wordListStrings": [
+      "BEGIN\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913END",
+      "BEGIN\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914END",
+      "BEGIN\u0905END",
+      "BEGIN\u0906END",
+      "BEGIN\u0907END",
+      "BEGIN\u0908END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913END",
+      "BEGIN\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914END",
+      "BEGIN\u0905END",
+      "BEGIN\u0906END",
+      "BEGIN\u0907END",
+      "BEGIN\u0908END"
+    ]
+  },
+  {
+    "name": "indic-depth-8-consonants-303",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "consonants-303",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/projected/indic-depth-8-consonants-303.docx",
+    "sourceSha256": "7842576336560f99f13753ddcd70e3961b85aef6345233adc7edb910f1d25640",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/projected/indic-depth-8-consonants-303.pdf",
+    "wordPdfSha256": "28e384b16cab1897dbbae6c9c2e6e792e6cc96f6eb259420fffc0cad8021dace",
+    "wordListStrings": [
+      "BEGIN\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913END",
+      "BEGIN\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914END",
+      "BEGIN\u0905END",
+      "BEGIN\u0906END",
+      "BEGIN\u0907END",
+      "BEGIN\u0908END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913END",
+      "BEGIN\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914END",
+      "BEGIN\u0905END",
+      "BEGIN\u0906END",
+      "BEGIN\u0907END",
+      "BEGIN\u0908END"
+    ]
+  },
+  {
+    "name": "indic-depth-8-consonants-303",
+    "kind": "source",
+    "depth": 8,
+    "mode": "consonants-303",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/source/indic-depth-8-consonants-303.docx",
+    "sourceSha256": "7ea0f4fde64c31ba6ea2691ee6a2a8a2ee78e836269c11a0e3fec5bebfa50a7b",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/source/indic-depth-8-consonants-303.pdf",
+    "wordPdfSha256": "38a07950359b012bd9501b158a5266a4ccdec98bd537b2798a3de8521d356b9c",
+    "wordListStrings": [
+      "BEGIN\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913END",
+      "BEGIN\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914END",
+      "BEGIN\u0905END",
+      "BEGIN\u0906END",
+      "BEGIN\u0907END",
+      "BEGIN\u0908END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913\u0913END",
+      "BEGIN\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914\u0914END",
+      "BEGIN\u0905END",
+      "BEGIN\u0906END",
+      "BEGIN\u0907END",
+      "BEGIN\u0908END"
+    ]
+  },
+  {
+    "name": "indic-depth-8-counting-9998",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "counting-9998",
+    "source": "fixtures/doc/regressions/list-markers/IndicMarkers/indic-depth-8-counting-9998.doc",
+    "sourceSha256": "5211ee120b82be56d117206deaefbc61d759c4f686910dbfa7bc0da450d222ac",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/doc/indic-depth-8-counting-9998.pdf",
+    "wordPdfSha256": "d0cf2ef7734ff3797c5115805ebaec775fa19a9e93f7046788ee78f277639907",
+    "wordListStrings": [
+      "BEGIN\u0928\u094c \u0939\u091c\u093e\u0930 \u0928\u094c \u0938\u094c \u0905\u0920\u094d\u0920\u093e\u0928\u0935\u0947END",
+      "BEGIN\u0928\u094c \u0939\u091c\u093e\u0930 \u0928\u094c \u0938\u094c \u0928\u093f\u0928\u094d\u092f\u093e\u0928\u0935\u0947END",
+      "BEGIN\u090f\u0915END",
+      "BEGIN\u0926\u094bEND",
+      "BEGIN\u0924\u0940\u0928END",
+      "BEGIN\u091a\u093e\u0930END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0928\u094c \u0939\u091c\u093e\u0930 \u0928\u094c \u0938\u094c \u0905\u0920\u094d\u0920\u093e\u0928\u0935\u0947END",
+      "BEGIN\u0928\u094c \u0939\u091c\u093e\u0930 \u0928\u094c \u0938\u094c \u0928\u093f\u0928\u094d\u092f\u093e\u0928\u0935\u0947END",
+      "BEGIN\u090f\u0915END",
+      "BEGIN\u0926\u094bEND",
+      "BEGIN\u0924\u0940\u0928END",
+      "BEGIN\u091a\u093e\u0930END"
+    ]
+  },
+  {
+    "name": "indic-depth-8-counting-9998",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "counting-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/projected/indic-depth-8-counting-9998.docx",
+    "sourceSha256": "9525c60ff6ffa0083a7c34b4ef89c6039ad67be08ab41466831dfd0640cc86d0",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/projected/indic-depth-8-counting-9998.pdf",
+    "wordPdfSha256": "10fdf8e992e7222547bfeedec7ad71cb8c75caf773961ace50e11a429ea7802e",
+    "wordListStrings": [
+      "BEGIN\u0928\u094c \u0939\u091c\u093e\u0930 \u0928\u094c \u0938\u094c \u0905\u0920\u094d\u0920\u093e\u0928\u0935\u0947END",
+      "BEGIN\u0928\u094c \u0939\u091c\u093e\u0930 \u0928\u094c \u0938\u094c \u0928\u093f\u0928\u094d\u092f\u093e\u0928\u0935\u0947END",
+      "BEGIN\u090f\u0915END",
+      "BEGIN\u0926\u094bEND",
+      "BEGIN\u0924\u0940\u0928END",
+      "BEGIN\u091a\u093e\u0930END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0928\u094c \u0939\u091c\u093e\u0930 \u0928\u094c \u0938\u094c \u0905\u0920\u094d\u0920\u093e\u0928\u0935\u0947END",
+      "BEGIN\u0928\u094c \u0939\u091c\u093e\u0930 \u0928\u094c \u0938\u094c \u0928\u093f\u0928\u094d\u092f\u093e\u0928\u0935\u0947END",
+      "BEGIN\u090f\u0915END",
+      "BEGIN\u0926\u094bEND",
+      "BEGIN\u0924\u0940\u0928END",
+      "BEGIN\u091a\u093e\u0930END"
+    ]
+  },
+  {
+    "name": "indic-depth-8-counting-9998",
+    "kind": "source",
+    "depth": 8,
+    "mode": "counting-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/source/indic-depth-8-counting-9998.docx",
+    "sourceSha256": "604d8548baa284e2adb9a4bfba27ef019b5f8a8dd0bb06dc10333c9bfe48e56f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/source/indic-depth-8-counting-9998.pdf",
+    "wordPdfSha256": "ddbf7079904e296e5f7922892644b6d87095cf6259b7f2c4c43801d53a6a3ed2",
+    "wordListStrings": [
+      "BEGIN\u0928\u094c \u0939\u091c\u093e\u0930 \u0928\u094c \u0938\u094c \u0905\u0920\u094d\u0920\u093e\u0928\u0935\u0947END",
+      "BEGIN\u0928\u094c \u0939\u091c\u093e\u0930 \u0928\u094c \u0938\u094c \u0928\u093f\u0928\u094d\u092f\u093e\u0928\u0935\u0947END",
+      "BEGIN\u090f\u0915END",
+      "BEGIN\u0926\u094bEND",
+      "BEGIN\u0924\u0940\u0928END",
+      "BEGIN\u091a\u093e\u0930END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0928\u094c \u0939\u091c\u093e\u0930 \u0928\u094c \u0938\u094c \u0905\u0920\u094d\u0920\u093e\u0928\u0935\u0947END",
+      "BEGIN\u0928\u094c \u0939\u091c\u093e\u0930 \u0928\u094c \u0938\u094c \u0928\u093f\u0928\u094d\u092f\u093e\u0928\u0935\u0947END",
+      "BEGIN\u090f\u0915END",
+      "BEGIN\u0926\u094bEND",
+      "BEGIN\u0924\u0940\u0928END",
+      "BEGIN\u091a\u093e\u0930END"
+    ]
+  },
+  {
+    "name": "indic-depth-8-numbers-9998",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "numbers-9998",
+    "source": "fixtures/doc/regressions/list-markers/IndicMarkers/indic-depth-8-numbers-9998.doc",
+    "sourceSha256": "7be96b3bf902a36b8a19c04a80ced6e430c95306696fe9e7091aed3e8d6df9f4",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/doc/indic-depth-8-numbers-9998.pdf",
+    "wordPdfSha256": "6774e28f4a1d7fa8825cc1b3b355c8d618992800ffaf61f68fcd24896246837c",
+    "wordListStrings": [
+      "BEGIN\u096f\u096f\u096f\u096eEND",
+      "BEGIN\u096f\u096f\u096f\u096fEND",
+      "BEGIN\u0967\u0966\u0966\u0966\u0966END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0967END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0968END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0969END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u096f\u096f\u096f\u096eEND",
+      "BEGIN\u096f\u096f\u096f\u096fEND",
+      "BEGIN\u0967\u0966\u0966\u0966\u0966END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0967END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0968END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0969END"
+    ]
+  },
+  {
+    "name": "indic-depth-8-numbers-9998",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "numbers-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/projected/indic-depth-8-numbers-9998.docx",
+    "sourceSha256": "5b1a182580ea22e78088882fb66c198f8c4aff9b2cee21b40d91575055850155",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/projected/indic-depth-8-numbers-9998.pdf",
+    "wordPdfSha256": "c104561fbe850ccd53878c833dfa7f801f8fe23895390f219a9a6fef3b5f7d5b",
+    "wordListStrings": [
+      "BEGIN\u096f\u096f\u096f\u096eEND",
+      "BEGIN\u096f\u096f\u096f\u096fEND",
+      "BEGIN\u0967\u0966\u0966\u0966\u0966END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0967END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0968END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0969END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u096f\u096f\u096f\u096eEND",
+      "BEGIN\u096f\u096f\u096f\u096fEND",
+      "BEGIN\u0967\u0966\u0966\u0966\u0966END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0967END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0968END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0969END"
+    ]
+  },
+  {
+    "name": "indic-depth-8-numbers-9998",
+    "kind": "source",
+    "depth": 8,
+    "mode": "numbers-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/source/indic-depth-8-numbers-9998.docx",
+    "sourceSha256": "1f4f0015898088388def8a200217ed6683595534069b2d5a5c5c3e4d146f97b3",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/source/indic-depth-8-numbers-9998.pdf",
+    "wordPdfSha256": "dba97a7bd8e8ab48f24e19c4c8e0e60b728dc29cd059446f4430622b83fe6da6",
+    "wordListStrings": [
+      "BEGIN\u096f\u096f\u096f\u096eEND",
+      "BEGIN\u096f\u096f\u096f\u096fEND",
+      "BEGIN\u0967\u0966\u0966\u0966\u0966END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0967END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0968END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0969END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u096f\u096f\u096f\u096eEND",
+      "BEGIN\u096f\u096f\u096f\u096fEND",
+      "BEGIN\u0967\u0966\u0966\u0966\u0966END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0967END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0968END",
+      "BEGIN\u0967\u0966\u0966\u0966\u0969END"
+    ]
+  },
+  {
+    "name": "indic-depth-8-vowels-303",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "vowels-303",
+    "source": "fixtures/doc/regressions/list-markers/IndicMarkers/indic-depth-8-vowels-303.doc",
+    "sourceSha256": "bfe74b41aa6bb5e796432a2c4a2f732bdc482abd610bdb7ea044a80c2edebef6",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/doc/indic-depth-8-vowels-303.pdf",
+    "wordPdfSha256": "84a412ed62434c0d5fee274d650db1eb451898284c2e57a3a49f9bde414f5e6c",
+    "wordListStrings": [
+      "BEGIN\u091b\u091b\u091b\u091b\u091b\u091b\u091b\u091b\u091bEND",
+      "BEGIN\u091c\u091c\u091c\u091c\u091c\u091c\u091c\u091c\u091cEND",
+      "BEGIN\u0915END",
+      "BEGIN\u0916END",
+      "BEGIN\u0917END",
+      "BEGIN\u0918END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u091b\u091b\u091b\u091b\u091b\u091b\u091b\u091b\u091bEND",
+      "BEGIN\u091c\u091c\u091c\u091c\u091c\u091c\u091c\u091c\u091cEND",
+      "BEGIN\u0915END",
+      "BEGIN\u0916END",
+      "BEGIN\u0917END",
+      "BEGIN\u0918END"
+    ]
+  },
+  {
+    "name": "indic-depth-8-vowels-303",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "vowels-303",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/projected/indic-depth-8-vowels-303.docx",
+    "sourceSha256": "643b847e9c6a4b0cc6928a666f3013b8464692a49b9af800dbd8e2c51bc89d43",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/projected/indic-depth-8-vowels-303.pdf",
+    "wordPdfSha256": "ebc8899c815951f70ca12bff68663ee10eda3253d2eefc83b37070c09e1f6d0b",
+    "wordListStrings": [
+      "BEGIN\u091b\u091b\u091b\u091b\u091b\u091b\u091b\u091b\u091bEND",
+      "BEGIN\u091c\u091c\u091c\u091c\u091c\u091c\u091c\u091c\u091cEND",
+      "BEGIN\u0915END",
+      "BEGIN\u0916END",
+      "BEGIN\u0917END",
+      "BEGIN\u0918END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u091b\u091b\u091b\u091b\u091b\u091b\u091b\u091b\u091bEND",
+      "BEGIN\u091c\u091c\u091c\u091c\u091c\u091c\u091c\u091c\u091cEND",
+      "BEGIN\u0915END",
+      "BEGIN\u0916END",
+      "BEGIN\u0917END",
+      "BEGIN\u0918END"
+    ]
+  },
+  {
+    "name": "indic-depth-8-vowels-303",
+    "kind": "source",
+    "depth": 8,
+    "mode": "vowels-303",
+    "source": "fixtures/docx/regressions/list-markers/DocIndicMarkers/source/indic-depth-8-vowels-303.docx",
+    "sourceSha256": "634bf74285760473505bcab76c38e9244f58f4f8f5732dc51858c86bcb671cc9",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocIndicMarkers/source/indic-depth-8-vowels-303.pdf",
+    "wordPdfSha256": "d17452910b01459936209b2e176b14537b98d051b86f0527109bc5cbc06c6178",
+    "wordListStrings": [
+      "BEGIN\u091b\u091b\u091b\u091b\u091b\u091b\u091b\u091b\u091bEND",
+      "BEGIN\u091c\u091c\u091c\u091c\u091c\u091c\u091c\u091c\u091cEND",
+      "BEGIN\u0915END",
+      "BEGIN\u0916END",
+      "BEGIN\u0917END",
+      "BEGIN\u0918END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u091b\u091b\u091b\u091b\u091b\u091b\u091b\u091b\u091bEND",
+      "BEGIN\u091c\u091c\u091c\u091c\u091c\u091c\u091c\u091c\u091cEND",
+      "BEGIN\u0915END",
+      "BEGIN\u0916END",
+      "BEGIN\u0917END",
+      "BEGIN\u0918END"
+    ]
+  }
+]

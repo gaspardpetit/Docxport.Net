@@ -1,0 +1,98 @@
+[
+  {
+    "name": "indic-depth-0-vowels-1",
+    "depth": 0,
+    "mode": "vowels-1",
+    "error": "DOCX list format 'hindiVowels' is unsupported."
+  },
+  {
+    "name": "indic-depth-0-vowels-36",
+    "depth": 0,
+    "mode": "vowels-36",
+    "error": "DOCX list format 'hindiVowels' is unsupported."
+  },
+  {
+    "name": "indic-depth-0-vowels-303",
+    "depth": 0,
+    "mode": "vowels-303",
+    "error": "DOCX list format 'hindiVowels' is unsupported."
+  },
+  {
+    "name": "indic-depth-8-vowels-303",
+    "depth": 8,
+    "mode": "vowels-303",
+    "error": "DOCX list format 'hindiVowels' is unsupported."
+  },
+  {
+    "name": "indic-depth-0-consonants-1",
+    "depth": 0,
+    "mode": "consonants-1",
+    "error": "DOCX list format 'hindiConsonants' is unsupported."
+  },
+  {
+    "name": "indic-depth-0-consonants-17",
+    "depth": 0,
+    "mode": "consonants-17",
+    "error": "DOCX list format 'hindiConsonants' is unsupported."
+  },
+  {
+    "name": "indic-depth-0-consonants-303",
+    "depth": 0,
+    "mode": "consonants-303",
+    "error": "DOCX list format 'hindiConsonants' is unsupported."
+  },
+  {
+    "name": "indic-depth-8-consonants-303",
+    "depth": 8,
+    "mode": "consonants-303",
+    "error": "DOCX list format 'hindiConsonants' is unsupported."
+  },
+  {
+    "name": "indic-depth-0-numbers-1",
+    "depth": 0,
+    "mode": "numbers-1",
+    "error": "DOCX list format 'hindiNumbers' is unsupported."
+  },
+  {
+    "name": "indic-depth-0-numbers-98",
+    "depth": 0,
+    "mode": "numbers-98",
+    "error": "DOCX list format 'hindiNumbers' is unsupported."
+  },
+  {
+    "name": "indic-depth-0-numbers-9998",
+    "depth": 0,
+    "mode": "numbers-9998",
+    "error": "DOCX list format 'hindiNumbers' is unsupported."
+  },
+  {
+    "name": "indic-depth-8-numbers-9998",
+    "depth": 8,
+    "mode": "numbers-9998",
+    "error": "DOCX list format 'hindiNumbers' is unsupported."
+  },
+  {
+    "name": "indic-depth-0-counting-1",
+    "depth": 0,
+    "mode": "counting-1",
+    "error": "DOCX list format 'hindiCounting' is unsupported."
+  },
+  {
+    "name": "indic-depth-0-counting-98",
+    "depth": 0,
+    "mode": "counting-98",
+    "error": "DOCX list format 'hindiCounting' is unsupported."
+  },
+  {
+    "name": "indic-depth-0-counting-9998",
+    "depth": 0,
+    "mode": "counting-9998",
+    "error": "DOCX list format 'hindiCounting' is unsupported."
+  },
+  {
+    "name": "indic-depth-8-counting-9998",
+    "depth": 8,
+    "mode": "counting-9998",
+    "error": "DOCX list format 'hindiCounting' is unsupported."
+  }
+]

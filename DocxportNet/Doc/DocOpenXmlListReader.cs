@@ -189,6 +189,10 @@ internal static class DocOpenXmlListReader
             format == NumberFormatValues.ArabicAlpha ? (byte)0x2E :
             format == NumberFormatValues.Hebrew2 ? (byte)0x2F :
             format == NumberFormatValues.ArabicAbjad ? (byte)0x30 :
+            format == NumberFormatValues.HindiVowels ? (byte)0x31 :
+            format == NumberFormatValues.HindiConsonants ? (byte)0x32 :
+            format == NumberFormatValues.HindiNumbers ? (byte)0x33 :
+            format == NumberFormatValues.HindiCounting ? (byte)0x34 :
             format == NumberFormatValues.NumberInDash ? (byte)0x39 :
             format == NumberFormatValues.RussianLower ? (byte)0x3A :
             format == NumberFormatValues.RussianUpper ? (byte)0x3B :
