@@ -1,0 +1,322 @@
+[
+  {
+    "name": "decimalHalfWidth-depth-0-definition",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/HexExportGuard/decimalHalfWidth-depth-0-definition.doc",
+    "sourceSha256": "d8a775e370752520be31260650e3fc1aa4da3ab95c8c1b4e3a99fea6671342ee",
+    "wordListStrings": [
+      "BEGIN14END",
+      "BEGIN15END",
+      "BEGIN16END",
+      "BEGIN17END",
+      "BEGIN18END",
+      "BEGIN19END"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHexExportGuard/doc/decimalHalfWidth-depth-0-definition.pdf",
+    "wordPdfSha256": "eac20b7289eb90efe532f1dbc65fa599b77f45786ec96480168faa4128c3804a"
+  },
+  {
+    "name": "decimalHalfWidth-depth-0-definition",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocHexExportGuard/projected/decimalHalfWidth-depth-0-definition.docx",
+    "sourceSha256": "d51e5377d63c7d53b565d41f2cf10a0344a4da1a460180a358c2506625a2349a",
+    "wordListStrings": [
+      "BEGIN14END",
+      "BEGIN15END",
+      "BEGIN16END",
+      "BEGIN17END",
+      "BEGIN18END",
+      "BEGIN19END"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHexExportGuard/projected/decimalHalfWidth-depth-0-definition.pdf",
+    "wordPdfSha256": "74583c1aecf2e29671b28420b56121bd1eeb2c5304da788c76012fa9a5acf193"
+  },
+  {
+    "name": "decimalHalfWidth-depth-0-definition",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocHexExportGuard/source/decimalHalfWidth-depth-0-definition.docx",
+    "sourceSha256": "40371fa0b9317ecc481ca070087c2256dafa3fc2f101b040b37f88063fbcf11c",
+    "wordListStrings": [
+      "BEGIN14END",
+      "BEGIN15END",
+      "BEGIN16END",
+      "BEGIN17END",
+      "BEGIN18END",
+      "BEGIN19END"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHexExportGuard/source/decimalHalfWidth-depth-0-definition.pdf",
+    "wordPdfSha256": "e616b053626c6b3dfbda52470d7b8ba60a243e1f62b4f14f6431c38c1c5ec230"
+  },
+  {
+    "name": "decimalHalfWidth-depth-0-override",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/HexExportGuard/decimalHalfWidth-depth-0-override.doc",
+    "sourceSha256": "bbe0ef58933fcff431ac31f2ac7921f53adf8e495c72e3db317745dfe2bb414c",
+    "wordListStrings": [
+      "BEGIN14END",
+      "BEGIN15END",
+      "BEGIN16END",
+      "BEGIN17END",
+      "BEGIN18END",
+      "BEGIN19END"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHexExportGuard/doc/decimalHalfWidth-depth-0-override.pdf",
+    "wordPdfSha256": "2a8372cccb20c72918a4e611c2180163062d91299fdd89c2685c35e27d75fd17"
+  },
+  {
+    "name": "decimalHalfWidth-depth-0-override",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocHexExportGuard/projected/decimalHalfWidth-depth-0-override.docx",
+    "sourceSha256": "2d7e86feb7ea62e26fb7326cb188a9d76762653f81751be3a04c9b818e3d9d84",
+    "wordListStrings": [
+      "BEGIN14END",
+      "BEGIN15END",
+      "BEGIN16END",
+      "BEGIN17END",
+      "BEGIN18END",
+      "BEGIN19END"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHexExportGuard/projected/decimalHalfWidth-depth-0-override.pdf",
+    "wordPdfSha256": "fd67cc40e5a9d3a977913647b54154fa20ab8bcc384c1191c2bdcaf07460b68f"
+  },
+  {
+    "name": "decimalHalfWidth-depth-0-override",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocHexExportGuard/source/decimalHalfWidth-depth-0-override.docx",
+    "sourceSha256": "22c7c83ef2070e4c85bbc0ee2f9b3893b4a1ec1b2867b5f5e7082b1b44285d87",
+    "wordListStrings": [
+      "BEGIN14END",
+      "BEGIN15END",
+      "BEGIN16END",
+      "BEGIN17END",
+      "BEGIN18END",
+      "BEGIN19END"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHexExportGuard/source/decimalHalfWidth-depth-0-override.pdf",
+    "wordPdfSha256": "3f4b9c13ccc8fc150ff2999d2d0b8c61cbc41aa3420590f57f7149a2a4482f36"
+  },
+  {
+    "name": "decimalHalfWidth-depth-8-definition",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/HexExportGuard/decimalHalfWidth-depth-8-definition.doc",
+    "sourceSha256": "2cf47d1ba50db59cc83c3738ca139443857577267a8ddf52a57690f223f7709e",
+    "wordListStrings": [
+      "BEGIN14END",
+      "BEGIN15END",
+      "BEGIN16END",
+      "BEGIN17END",
+      "BEGIN18END",
+      "BEGIN19END"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHexExportGuard/doc/decimalHalfWidth-depth-8-definition.pdf",
+    "wordPdfSha256": "ba2d9d1d091fbfdacca3cdbf6eaef22edba720767856181e2b952ff3179ea1d8"
+  },
+  {
+    "name": "decimalHalfWidth-depth-8-definition",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocHexExportGuard/projected/decimalHalfWidth-depth-8-definition.docx",
+    "sourceSha256": "612f4f626179a1a383e911dda12377e3e39c45699a6e8af25ed9c0caa0a58939",
+    "wordListStrings": [
+      "BEGIN14END",
+      "BEGIN15END",
+      "BEGIN16END",
+      "BEGIN17END",
+      "BEGIN18END",
+      "BEGIN19END"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHexExportGuard/projected/decimalHalfWidth-depth-8-definition.pdf",
+    "wordPdfSha256": "feafa7229e268fb144662b66fe147777f7b54fe30eef8cc6a5857e069279b4f6"
+  },
+  {
+    "name": "decimalHalfWidth-depth-8-definition",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocHexExportGuard/source/decimalHalfWidth-depth-8-definition.docx",
+    "sourceSha256": "6a92713b8994a784ef7bf6436ed8b86124a06aacd6a48a8e69f5285c048361b8",
+    "wordListStrings": [
+      "BEGIN14END",
+      "BEGIN15END",
+      "BEGIN16END",
+      "BEGIN17END",
+      "BEGIN18END",
+      "BEGIN19END"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHexExportGuard/source/decimalHalfWidth-depth-8-definition.pdf",
+    "wordPdfSha256": "339d424e9af542802f2688574d78ca7ab62f8de899aa55437c00583f9ef11098"
+  },
+  {
+    "name": "decimalHalfWidth-depth-8-override",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/HexExportGuard/decimalHalfWidth-depth-8-override.doc",
+    "sourceSha256": "d0912e0420059af39552a3636cef35b8f1fbff0e1b380d8e85fe25ddc7c5b1eb",
+    "wordListStrings": [
+      "BEGIN14END",
+      "BEGIN15END",
+      "BEGIN16END",
+      "BEGIN17END",
+      "BEGIN18END",
+      "BEGIN19END"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHexExportGuard/doc/decimalHalfWidth-depth-8-override.pdf",
+    "wordPdfSha256": "dbe472a0f401f49bd9b68fba39ec9929afd6405db07b42cf067d8d428d5bdb3e"
+  },
+  {
+    "name": "decimalHalfWidth-depth-8-override",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocHexExportGuard/projected/decimalHalfWidth-depth-8-override.docx",
+    "sourceSha256": "836877358232f670b1d56904330c008d5677116587b7a569bb02f3d547617fd3",
+    "wordListStrings": [
+      "BEGIN14END",
+      "BEGIN15END",
+      "BEGIN16END",
+      "BEGIN17END",
+      "BEGIN18END",
+      "BEGIN19END"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHexExportGuard/projected/decimalHalfWidth-depth-8-override.pdf",
+    "wordPdfSha256": "89f529520683d5bc3f328282d537b4f3924d5304553ddb14f5c2a8f6dceac047"
+  },
+  {
+    "name": "decimalHalfWidth-depth-8-override",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocHexExportGuard/source/decimalHalfWidth-depth-8-override.docx",
+    "sourceSha256": "8ebf9b527cd2259e7093ed99d5b2d8b4b4879cc06c4d3dbc4473f71d63c5b46f",
+    "wordListStrings": [
+      "BEGIN14END",
+      "BEGIN15END",
+      "BEGIN16END",
+      "BEGIN17END",
+      "BEGIN18END",
+      "BEGIN19END"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHexExportGuard/source/decimalHalfWidth-depth-8-override.pdf",
+    "wordPdfSha256": "48e67ae6812ffe5c78151fdec9e2fde104a91af56a21f6695d4a13c632974476"
+  },
+  {
+    "name": "hex-depth-0-definition",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocHexExportGuard/projected/hex-depth-0-definition.docx",
+    "sourceSha256": "990942a9cbf9a1df4a8e490d6a5dc547eb3f9b2f3f02fc5a43fd45e2433065e1",
+    "wordListStrings": [
+      "BEGINEEND",
+      "BEGINFEND",
+      "BEGIN10END",
+      "BEGIN11END",
+      "BEGIN12END",
+      "BEGIN13END"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHexExportGuard/projected/hex-depth-0-definition.pdf",
+    "wordPdfSha256": "72b3566c0fd9a7b8120ef9e4b26703db98c4af419012e611bc2e5dc666800d55"
+  },
+  {
+    "name": "hex-depth-0-definition",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocHexExportGuard/source/hex-depth-0-definition.docx",
+    "sourceSha256": "f90b08e75b0793af88fa4eacc1cf6051ea3049cc8ebc1a5a00e5751dbaf7d290",
+    "wordListStrings": [
+      "BEGINEEND",
+      "BEGINFEND",
+      "BEGIN10END",
+      "BEGIN11END",
+      "BEGIN12END",
+      "BEGIN13END"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHexExportGuard/source/hex-depth-0-definition.pdf",
+    "wordPdfSha256": "d516decbe6d97b9e09a6be4156b3c105a4e762f23d2be8d21b7b4da56dfa2626"
+  },
+  {
+    "name": "hex-depth-0-override",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocHexExportGuard/projected/hex-depth-0-override.docx",
+    "sourceSha256": "f740e71585d4b1edb3b61a16c79a8be566be5cadb972dcc0653765462d11c904",
+    "wordListStrings": [
+      "BEGINEEND",
+      "BEGINFEND",
+      "BEGIN10END",
+      "BEGIN11END",
+      "BEGIN12END",
+      "BEGIN13END"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHexExportGuard/projected/hex-depth-0-override.pdf",
+    "wordPdfSha256": "5c1ad2810c503d0ecdb149787c9c43692eff4aa4aea1bff27867027249ac3fe7"
+  },
+  {
+    "name": "hex-depth-0-override",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocHexExportGuard/source/hex-depth-0-override.docx",
+    "sourceSha256": "9b59129295fd89f68f038b6293e9f6a308e9b5ff7dc68aaae536f2f24f3f0a01",
+    "wordListStrings": [
+      "BEGINEEND",
+      "BEGINFEND",
+      "BEGIN10END",
+      "BEGIN11END",
+      "BEGIN12END",
+      "BEGIN13END"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHexExportGuard/source/hex-depth-0-override.pdf",
+    "wordPdfSha256": "df3934eda974cd5a794c8c3cc0e09e329f6f50e92980bdb8d3f275753e7c655f"
+  },
+  {
+    "name": "hex-depth-8-definition",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocHexExportGuard/projected/hex-depth-8-definition.docx",
+    "sourceSha256": "8b0f1b7c2287f8bd79482855928992a81e30df5ed24e65e3ae3a9a4006daafac",
+    "wordListStrings": [
+      "BEGINEEND",
+      "BEGINFEND",
+      "BEGIN10END",
+      "BEGIN11END",
+      "BEGIN12END",
+      "BEGIN13END"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHexExportGuard/projected/hex-depth-8-definition.pdf",
+    "wordPdfSha256": "afcbda45402fe38ecbe5ce5f5eb23c11a82e67685b689cc7f0b8e340d470193e"
+  },
+  {
+    "name": "hex-depth-8-definition",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocHexExportGuard/source/hex-depth-8-definition.docx",
+    "sourceSha256": "f331be99160a487cd9605eb4d5d0549e0c9aa13d90f23c6dcf56595dabfe7fe3",
+    "wordListStrings": [
+      "BEGINEEND",
+      "BEGINFEND",
+      "BEGIN10END",
+      "BEGIN11END",
+      "BEGIN12END",
+      "BEGIN13END"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHexExportGuard/source/hex-depth-8-definition.pdf",
+    "wordPdfSha256": "caea984221352f912cc493af3d3e987fffe68d9a4da0d934083e87d3e9669dac"
+  },
+  {
+    "name": "hex-depth-8-override",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocHexExportGuard/projected/hex-depth-8-override.docx",
+    "sourceSha256": "adbbd098da785fe14c908f629dda22fb650f024ea4144eecdd9cca8ea2ce1846",
+    "wordListStrings": [
+      "BEGINEEND",
+      "BEGINFEND",
+      "BEGIN10END",
+      "BEGIN11END",
+      "BEGIN12END",
+      "BEGIN13END"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHexExportGuard/projected/hex-depth-8-override.pdf",
+    "wordPdfSha256": "a2a0100b2cbb4d56b26152141fb561aef6d95374eda2236ff4ed7076d6989b75"
+  },
+  {
+    "name": "hex-depth-8-override",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocHexExportGuard/source/hex-depth-8-override.docx",
+    "sourceSha256": "837679c1500c3629149e07484bc9d54ea0727a573ff189e8b9f3c5a2649dc21c",
+    "wordListStrings": [
+      "BEGINEEND",
+      "BEGINFEND",
+      "BEGIN10END",
+      "BEGIN11END",
+      "BEGIN12END",
+      "BEGIN13END"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocHexExportGuard/source/hex-depth-8-override.pdf",
+    "wordPdfSha256": "72f481876d5ae564a78cbbe4e9513217276133a806e30ffe6d97d3f73859601c"
+  }
+]
