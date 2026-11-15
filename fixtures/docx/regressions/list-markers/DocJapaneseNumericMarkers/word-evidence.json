@@ -1,0 +1,938 @@
+[
+  {
+    "name": "japanese-numeric-depth-0-counting-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "counting-1",
+    "source": "fixtures/doc/regressions/list-markers/JapaneseNumericMarkers/japanese-numeric-depth-0-counting-1.doc",
+    "sourceSha256": "c6eaa770868ae5c17b7a87fb9ae0edf2aa1c9d08206918d35300c7cdbba8a893",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/doc/japanese-numeric-depth-0-counting-1.pdf",
+    "wordPdfSha256": "ea74d83a315774aa10837d00c7dfd622c903609d56e1dbf29f532614cea36804",
+    "wordListStrings": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-0-counting-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "counting-1",
+    "source": "fixtures/docx/regressions/list-markers/DocJapaneseNumericMarkers/projected/japanese-numeric-depth-0-counting-1.docx",
+    "sourceSha256": "d486c0b5ecabb769297c08eba679fa300affeda90b89a3c1560c280d2c3cf78f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/projected/japanese-numeric-depth-0-counting-1.pdf",
+    "wordPdfSha256": "78f3a1e1fc63c52b8ec2ec6afa99df84c680580a7b0a2a6ad6216fcaf8641dae",
+    "wordListStrings": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-0-counting-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "counting-1",
+    "source": "fixtures/docx/regressions/list-markers/DocJapaneseNumericMarkers/source/japanese-numeric-depth-0-counting-1.docx",
+    "sourceSha256": "ad54ba315cb66defd0ccff231b755cfe31f08fdef7389a1443d6a6e4ed1681d9",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/source/japanese-numeric-depth-0-counting-1.pdf",
+    "wordPdfSha256": "2b2971c87932097c2d10d22b489e779f13b8b5db2da9647bbfc7a569f0683bde",
+    "wordListStrings": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-0-counting-98",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "counting-98",
+    "source": "fixtures/doc/regressions/list-markers/JapaneseNumericMarkers/japanese-numeric-depth-0-counting-98.doc",
+    "sourceSha256": "57f929fdbfbdebacb1ff019f3e8c6995485229221955a75a8d4884a9bf99dee0",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/doc/japanese-numeric-depth-0-counting-98.pdf",
+    "wordPdfSha256": "2a1f740375fb67471441032f4fb7aeba02ffd3f5234b6b19f30aa4a563a7e813",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u767eEND",
+      "BEGIN\u767e\u4e00END",
+      "BEGIN\u767e\u4e8cEND",
+      "BEGIN\u767e\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u767eEND",
+      "BEGIN\u767e\u4e00END",
+      "BEGIN\u767e\u4e8cEND",
+      "BEGIN\u767e\u4e09END"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-0-counting-98",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "counting-98",
+    "source": "fixtures/docx/regressions/list-markers/DocJapaneseNumericMarkers/projected/japanese-numeric-depth-0-counting-98.docx",
+    "sourceSha256": "293de3526ee009229167cb6a37942f19a051e80d1ce8d72ccb6b27ef1ec4126e",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/projected/japanese-numeric-depth-0-counting-98.pdf",
+    "wordPdfSha256": "5cb52bdb4edb6c7a21bab539be8386c841568d4873aa8018ee9805d21592459e",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u767eEND",
+      "BEGIN\u767e\u4e00END",
+      "BEGIN\u767e\u4e8cEND",
+      "BEGIN\u767e\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u767eEND",
+      "BEGIN\u767e\u4e00END",
+      "BEGIN\u767e\u4e8cEND",
+      "BEGIN\u767e\u4e09END"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-0-counting-98",
+    "kind": "source",
+    "depth": 0,
+    "mode": "counting-98",
+    "source": "fixtures/docx/regressions/list-markers/DocJapaneseNumericMarkers/source/japanese-numeric-depth-0-counting-98.docx",
+    "sourceSha256": "2c2632c868c8be575f3bd35732dc544765ed2787895c9f5f7db28056c6a8d8f3",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/source/japanese-numeric-depth-0-counting-98.pdf",
+    "wordPdfSha256": "8ed81984002d8cf1527c739e6afaff803af82e767965ef1e1738c78aaf6f61dd",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u767eEND",
+      "BEGIN\u767e\u4e00END",
+      "BEGIN\u767e\u4e8cEND",
+      "BEGIN\u767e\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u767eEND",
+      "BEGIN\u767e\u4e00END",
+      "BEGIN\u767e\u4e8cEND",
+      "BEGIN\u767e\u4e09END"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-0-counting-9998",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "counting-9998",
+    "source": "fixtures/doc/regressions/list-markers/JapaneseNumericMarkers/japanese-numeric-depth-0-counting-9998.doc",
+    "sourceSha256": "18e3b776b199c09982b8b5bf3b37c76ea5349e3f759a594518f823e7d319a931",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/doc/japanese-numeric-depth-0-counting-9998.pdf",
+    "wordPdfSha256": "1ccc9c3614db8a7338ef2c5cb88bd23684babe655e047011faa6c91f98c7b3ed",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u4e07END",
+      "BEGIN\u4e00\u4e07\u4e00END",
+      "BEGIN\u4e00\u4e07\u4e8cEND",
+      "BEGIN\u4e00\u4e07\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u4e07END",
+      "BEGIN\u4e00\u4e07\u4e00END",
+      "BEGIN\u4e00\u4e07\u4e8cEND",
+      "BEGIN\u4e00\u4e07\u4e09END"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-0-counting-9998",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "counting-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocJapaneseNumericMarkers/projected/japanese-numeric-depth-0-counting-9998.docx",
+    "sourceSha256": "969e5853ef3467dc12e6202ee76730fe0174b624bd045d972a7f1d746b847f95",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/projected/japanese-numeric-depth-0-counting-9998.pdf",
+    "wordPdfSha256": "02ff3a18743257bfbcfacc9b79d406aacb9aa0f2fc5c46ddfeaf6432294bf768",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u4e07END",
+      "BEGIN\u4e00\u4e07\u4e00END",
+      "BEGIN\u4e00\u4e07\u4e8cEND",
+      "BEGIN\u4e00\u4e07\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u4e07END",
+      "BEGIN\u4e00\u4e07\u4e00END",
+      "BEGIN\u4e00\u4e07\u4e8cEND",
+      "BEGIN\u4e00\u4e07\u4e09END"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-0-counting-9998",
+    "kind": "source",
+    "depth": 0,
+    "mode": "counting-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocJapaneseNumericMarkers/source/japanese-numeric-depth-0-counting-9998.docx",
+    "sourceSha256": "fdd422ecc4e8d8f4e42334985f55dd657e5029f546259630aca2a6160ed1dd70",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/source/japanese-numeric-depth-0-counting-9998.pdf",
+    "wordPdfSha256": "f90c9e79f0675ff7231571e9a6942a21ac84834c958d61263b50968f928456cd",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u4e07END",
+      "BEGIN\u4e00\u4e07\u4e00END",
+      "BEGIN\u4e00\u4e07\u4e8cEND",
+      "BEGIN\u4e00\u4e07\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u4e07END",
+      "BEGIN\u4e00\u4e07\u4e00END",
+      "BEGIN\u4e00\u4e07\u4e8cEND",
+      "BEGIN\u4e00\u4e07\u4e09END"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-0-digits-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "digits-1",
+    "source": "fixtures/doc/regressions/list-markers/JapaneseNumericMarkers/japanese-numeric-depth-0-digits-1.doc",
+    "sourceSha256": "9cd7335fab2a4eac8a319ee0994c5d02779a00ac1d33e30a5a47ed743a32b7cd",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/doc/japanese-numeric-depth-0-digits-1.pdf",
+    "wordPdfSha256": "0427f16cc402e6e4497647b228c29e349e6bc7c84c090aaaf49e5e44df2fc2e7",
+    "wordListStrings": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-0-digits-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "digits-1",
+    "source": "fixtures/docx/regressions/list-markers/DocJapaneseNumericMarkers/projected/japanese-numeric-depth-0-digits-1.docx",
+    "sourceSha256": "02cb4462001bc128cf9ba8de6c313b03f250e5bd9fd160878b7840863b6cb4ef",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/projected/japanese-numeric-depth-0-digits-1.pdf",
+    "wordPdfSha256": "f632218fea3970ad728043eff3085822cd64cfb5027395ddd8b2057f8fd0e3f2",
+    "wordListStrings": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-0-digits-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "digits-1",
+    "source": "fixtures/docx/regressions/list-markers/DocJapaneseNumericMarkers/source/japanese-numeric-depth-0-digits-1.docx",
+    "sourceSha256": "b808467f952ac98a8ef2758eb7766d62910fe3e3dbadee59128b6d0232dc34c6",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/source/japanese-numeric-depth-0-digits-1.pdf",
+    "wordPdfSha256": "24f353b0eb94c1839f01d40626a56c473ad03de2290b416ebfad601563676d1d",
+    "wordListStrings": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e00END",
+      "BEGIN\u4e8cEND",
+      "BEGIN\u4e09END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4e94END",
+      "BEGIN\u516dEND"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-0-digits-98",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "digits-98",
+    "source": "fixtures/doc/regressions/list-markers/JapaneseNumericMarkers/japanese-numeric-depth-0-digits-98.doc",
+    "sourceSha256": "b71a6b65dcdb5ab7b3106f2d910bad40763d6ec5b4cb7a6c0f821c142aa0dcb0",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/doc/japanese-numeric-depth-0-digits-98.pdf",
+    "wordPdfSha256": "0b1d6b3123c0450fb679f973291db3388d58e39ab9bf90df083756fd140639b2",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u3007\u3007END",
+      "BEGIN\u4e00\u3007\u4e00END",
+      "BEGIN\u4e00\u3007\u4e8cEND",
+      "BEGIN\u4e00\u3007\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u3007\u3007END",
+      "BEGIN\u4e00\u3007\u4e00END",
+      "BEGIN\u4e00\u3007\u4e8cEND",
+      "BEGIN\u4e00\u3007\u4e09END"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-0-digits-98",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "digits-98",
+    "source": "fixtures/docx/regressions/list-markers/DocJapaneseNumericMarkers/projected/japanese-numeric-depth-0-digits-98.docx",
+    "sourceSha256": "e94d95b04ee650bbae9a7350dab9e170650fee6feaaea2e794e538633aac7432",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/projected/japanese-numeric-depth-0-digits-98.pdf",
+    "wordPdfSha256": "62495ac8baeddd56882fcc422c74fa32c5413889a130f384fbeb1c8232691faa",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u3007\u3007END",
+      "BEGIN\u4e00\u3007\u4e00END",
+      "BEGIN\u4e00\u3007\u4e8cEND",
+      "BEGIN\u4e00\u3007\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u3007\u3007END",
+      "BEGIN\u4e00\u3007\u4e00END",
+      "BEGIN\u4e00\u3007\u4e8cEND",
+      "BEGIN\u4e00\u3007\u4e09END"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-0-digits-98",
+    "kind": "source",
+    "depth": 0,
+    "mode": "digits-98",
+    "source": "fixtures/docx/regressions/list-markers/DocJapaneseNumericMarkers/source/japanese-numeric-depth-0-digits-98.docx",
+    "sourceSha256": "678a836f4e608bff2c047420eff328f0a4436773b7f2356fc8801de73d99786a",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/source/japanese-numeric-depth-0-digits-98.pdf",
+    "wordPdfSha256": "48886360a03326f9d6c907cb05a22764c3119b03a39e4d2cea2d845a4291087b",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u3007\u3007END",
+      "BEGIN\u4e00\u3007\u4e00END",
+      "BEGIN\u4e00\u3007\u4e8cEND",
+      "BEGIN\u4e00\u3007\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5dEND",
+      "BEGIN\u4e00\u3007\u3007END",
+      "BEGIN\u4e00\u3007\u4e00END",
+      "BEGIN\u4e00\u3007\u4e8cEND",
+      "BEGIN\u4e00\u3007\u4e09END"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-0-digits-9998",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "digits-9998",
+    "source": "fixtures/doc/regressions/list-markers/JapaneseNumericMarkers/japanese-numeric-depth-0-digits-9998.doc",
+    "sourceSha256": "c69a9b5737a96e5205a562c6079a47f6b569b6a6a661453dd174b229679b5eec",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/doc/japanese-numeric-depth-0-digits-9998.pdf",
+    "wordPdfSha256": "be8325ef03a31255fd2ae0eb5b1f44e0124ffac8e348093bb96ca3caab90fae1",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-0-digits-9998",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "digits-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocJapaneseNumericMarkers/projected/japanese-numeric-depth-0-digits-9998.docx",
+    "sourceSha256": "dcb06b6255db0b8642a0714f4ecb16cac9c513581863bc2e24acf698707081d8",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/projected/japanese-numeric-depth-0-digits-9998.pdf",
+    "wordPdfSha256": "a186923342a7ac6e261751e74f6447d944580b3cfa81b2fb24844e245b00f9c8",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-0-digits-9998",
+    "kind": "source",
+    "depth": 0,
+    "mode": "digits-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocJapaneseNumericMarkers/source/japanese-numeric-depth-0-digits-9998.docx",
+    "sourceSha256": "20df16466ea51540278746fcb23e2bb5ce767b733f8854d72d13f9a7bc63fb62",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/source/japanese-numeric-depth-0-digits-9998.pdf",
+    "wordPdfSha256": "b43166fdfb395f32d49856838d199c437d378c99db2d169d2d742dc6c3a327bb",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-0-legal-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "legal-1",
+    "source": "fixtures/doc/regressions/list-markers/JapaneseNumericMarkers/japanese-numeric-depth-0-legal-1.doc",
+    "sourceSha256": "e8cc16b3f573b1f0b046f84215b308afdfde0870857759a70fc155def41b0792",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/doc/japanese-numeric-depth-0-legal-1.pdf",
+    "wordPdfSha256": "eb2fc33bc01a92cb0822fa65bc6d05a4d96143ea93c5a3c82a14e34c84b9c87c",
+    "wordListStrings": [
+      "BEGIN\u58f1END",
+      "BEGIN\u5f10END",
+      "BEGIN\u53c2END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4f0dEND",
+      "BEGIN\u516dEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u58f1END",
+      "BEGIN\u5f10END",
+      "BEGIN\u53c2END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4f0dEND",
+      "BEGIN\u516dEND"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-0-legal-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "legal-1",
+    "source": "fixtures/docx/regressions/list-markers/DocJapaneseNumericMarkers/projected/japanese-numeric-depth-0-legal-1.docx",
+    "sourceSha256": "b000842a707c75438953cb5f5a35a026de0bedc7278993407e6c931916a17b77",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/projected/japanese-numeric-depth-0-legal-1.pdf",
+    "wordPdfSha256": "81ee6f6990f7982613cbcd395f1733dad63ce112769622323bb99e2ce1250fb4",
+    "wordListStrings": [
+      "BEGIN\u58f1END",
+      "BEGIN\u5f10END",
+      "BEGIN\u53c2END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4f0dEND",
+      "BEGIN\u516dEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u58f1END",
+      "BEGIN\u5f10END",
+      "BEGIN\u53c2END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4f0dEND",
+      "BEGIN\u516dEND"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-0-legal-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "legal-1",
+    "source": "fixtures/docx/regressions/list-markers/DocJapaneseNumericMarkers/source/japanese-numeric-depth-0-legal-1.docx",
+    "sourceSha256": "3032490e905c057f625f0857abf6d35a6e02a722c83df749b60a72b116994099",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/source/japanese-numeric-depth-0-legal-1.pdf",
+    "wordPdfSha256": "1a622245b39393b75352655aebcba9762d6bca29608f04a1309a22be5beb5406",
+    "wordListStrings": [
+      "BEGIN\u58f1END",
+      "BEGIN\u5f10END",
+      "BEGIN\u53c2END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4f0dEND",
+      "BEGIN\u516dEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u58f1END",
+      "BEGIN\u5f10END",
+      "BEGIN\u53c2END",
+      "BEGIN\u56dbEND",
+      "BEGIN\u4f0dEND",
+      "BEGIN\u516dEND"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-0-legal-98",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "legal-98",
+    "source": "fixtures/doc/regressions/list-markers/JapaneseNumericMarkers/japanese-numeric-depth-0-legal-98.doc",
+    "sourceSha256": "521743dc4d3ccdf005cc22a2af6c0d6e674ec3fdda696ef37f5b88296a0ce12e",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/doc/japanese-numeric-depth-0-legal-98.pdf",
+    "wordPdfSha256": "6e6e5787d6d8524e98a338aa3aaa200fb2e46fd4960eedcc2f9e7ba3c5e32e5c",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u62fe\u516bEND",
+      "BEGIN\u4e5d\u62fe\u4e5dEND",
+      "BEGIN\u58f1\u767eEND",
+      "BEGIN\u58f1\u767e\u58f1END",
+      "BEGIN\u58f1\u767e\u5f10END",
+      "BEGIN\u58f1\u767e\u53c2END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u62fe\u516bEND",
+      "BEGIN\u4e5d\u62fe\u4e5dEND",
+      "BEGIN\u58f1\u767eEND",
+      "BEGIN\u58f1\u767e\u58f1END",
+      "BEGIN\u58f1\u767e\u5f10END",
+      "BEGIN\u58f1\u767e\u53c2END"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-0-legal-98",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "legal-98",
+    "source": "fixtures/docx/regressions/list-markers/DocJapaneseNumericMarkers/projected/japanese-numeric-depth-0-legal-98.docx",
+    "sourceSha256": "e36c90bfa768cb14de5eb1a09676a8d4bd147574635c79ac2a0f3300019e083d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/projected/japanese-numeric-depth-0-legal-98.pdf",
+    "wordPdfSha256": "dba3089ab8b5966acaa360a79f5c57df207730b464c5c69ef6d1292a97a241f7",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u62fe\u516bEND",
+      "BEGIN\u4e5d\u62fe\u4e5dEND",
+      "BEGIN\u58f1\u767eEND",
+      "BEGIN\u58f1\u767e\u58f1END",
+      "BEGIN\u58f1\u767e\u5f10END",
+      "BEGIN\u58f1\u767e\u53c2END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u62fe\u516bEND",
+      "BEGIN\u4e5d\u62fe\u4e5dEND",
+      "BEGIN\u58f1\u767eEND",
+      "BEGIN\u58f1\u767e\u58f1END",
+      "BEGIN\u58f1\u767e\u5f10END",
+      "BEGIN\u58f1\u767e\u53c2END"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-0-legal-98",
+    "kind": "source",
+    "depth": 0,
+    "mode": "legal-98",
+    "source": "fixtures/docx/regressions/list-markers/DocJapaneseNumericMarkers/source/japanese-numeric-depth-0-legal-98.docx",
+    "sourceSha256": "718cf627b10b26c83af8ef1459ac60cb52180b7294c0ae0603335b20a26d9867",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/source/japanese-numeric-depth-0-legal-98.pdf",
+    "wordPdfSha256": "ae4144077aed49259b3ce56315f31f25c05698dd1a66a68d9b74bd35ff04f328",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u62fe\u516bEND",
+      "BEGIN\u4e5d\u62fe\u4e5dEND",
+      "BEGIN\u58f1\u767eEND",
+      "BEGIN\u58f1\u767e\u58f1END",
+      "BEGIN\u58f1\u767e\u5f10END",
+      "BEGIN\u58f1\u767e\u53c2END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u62fe\u516bEND",
+      "BEGIN\u4e5d\u62fe\u4e5dEND",
+      "BEGIN\u58f1\u767eEND",
+      "BEGIN\u58f1\u767e\u58f1END",
+      "BEGIN\u58f1\u767e\u5f10END",
+      "BEGIN\u58f1\u767e\u53c2END"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-0-legal-9998",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "legal-9998",
+    "source": "fixtures/doc/regressions/list-markers/JapaneseNumericMarkers/japanese-numeric-depth-0-legal-9998.doc",
+    "sourceSha256": "d1f6750b8740e5e4a673538bfd7172ab830a29189c793526ceee23d9d4a113b8",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/doc/japanese-numeric-depth-0-legal-9998.pdf",
+    "wordPdfSha256": "a8e4f1f1fdf0f00605e22d5b8eef005206b8ad4d8c407999be3ea69b4a7762e0",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u9621\u4e5d\u767e\u4e5d\u62fe\u516bEND",
+      "BEGIN\u4e5d\u9621\u4e5d\u767e\u4e5d\u62fe\u4e5dEND",
+      "BEGIN\u58f1\u842cEND",
+      "BEGIN\u58f1\u842c\u58f1END",
+      "BEGIN\u58f1\u842c\u5f10END",
+      "BEGIN\u58f1\u842c\u53c2END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u9621\u4e5d\u767e\u4e5d\u62fe\u516bEND",
+      "BEGIN\u4e5d\u9621\u4e5d\u767e\u4e5d\u62fe\u4e5dEND",
+      "BEGIN\u58f1\u842cEND",
+      "BEGIN\u58f1\u842c\u58f1END",
+      "BEGIN\u58f1\u842c\u5f10END",
+      "BEGIN\u58f1\u842c\u53c2END"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-0-legal-9998",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "legal-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocJapaneseNumericMarkers/projected/japanese-numeric-depth-0-legal-9998.docx",
+    "sourceSha256": "d12833dda920d5cca9a357ccaabd50782a167f2ec012c8a47723a8b7ad5cc8c8",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/projected/japanese-numeric-depth-0-legal-9998.pdf",
+    "wordPdfSha256": "6877dc09c7cd8027e8bc16f8a6033b80360f01a491e2677318b73aaf148122ef",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u9621\u4e5d\u767e\u4e5d\u62fe\u516bEND",
+      "BEGIN\u4e5d\u9621\u4e5d\u767e\u4e5d\u62fe\u4e5dEND",
+      "BEGIN\u58f1\u842cEND",
+      "BEGIN\u58f1\u842c\u58f1END",
+      "BEGIN\u58f1\u842c\u5f10END",
+      "BEGIN\u58f1\u842c\u53c2END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u9621\u4e5d\u767e\u4e5d\u62fe\u516bEND",
+      "BEGIN\u4e5d\u9621\u4e5d\u767e\u4e5d\u62fe\u4e5dEND",
+      "BEGIN\u58f1\u842cEND",
+      "BEGIN\u58f1\u842c\u58f1END",
+      "BEGIN\u58f1\u842c\u5f10END",
+      "BEGIN\u58f1\u842c\u53c2END"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-0-legal-9998",
+    "kind": "source",
+    "depth": 0,
+    "mode": "legal-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocJapaneseNumericMarkers/source/japanese-numeric-depth-0-legal-9998.docx",
+    "sourceSha256": "bedb5ae170f0f8bb2ed9f58e3ec3ee99e2ed5c1a6092304153a622f15e078fbd",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/source/japanese-numeric-depth-0-legal-9998.pdf",
+    "wordPdfSha256": "8b4b350f4ed0520b3533e3b2d9a7422e9dd88213b79d075d9f5f65bd4cc4a3ee",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u9621\u4e5d\u767e\u4e5d\u62fe\u516bEND",
+      "BEGIN\u4e5d\u9621\u4e5d\u767e\u4e5d\u62fe\u4e5dEND",
+      "BEGIN\u58f1\u842cEND",
+      "BEGIN\u58f1\u842c\u58f1END",
+      "BEGIN\u58f1\u842c\u5f10END",
+      "BEGIN\u58f1\u842c\u53c2END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u9621\u4e5d\u767e\u4e5d\u62fe\u516bEND",
+      "BEGIN\u4e5d\u9621\u4e5d\u767e\u4e5d\u62fe\u4e5dEND",
+      "BEGIN\u58f1\u842cEND",
+      "BEGIN\u58f1\u842c\u58f1END",
+      "BEGIN\u58f1\u842c\u5f10END",
+      "BEGIN\u58f1\u842c\u53c2END"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-8-counting-9998",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "counting-9998",
+    "source": "fixtures/doc/regressions/list-markers/JapaneseNumericMarkers/japanese-numeric-depth-8-counting-9998.doc",
+    "sourceSha256": "6be149b9d71b7ede045f7041ca90f4d13784b3da5c94981f72728773b803f61f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/doc/japanese-numeric-depth-8-counting-9998.pdf",
+    "wordPdfSha256": "18915c33fd0b4b6e213c677a9ee5c8476a78e33854d0a1517ef5a70b4de3a6c8",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u4e07END",
+      "BEGIN\u4e00\u4e07\u4e00END",
+      "BEGIN\u4e00\u4e07\u4e8cEND",
+      "BEGIN\u4e00\u4e07\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u4e07END",
+      "BEGIN\u4e00\u4e07\u4e00END",
+      "BEGIN\u4e00\u4e07\u4e8cEND",
+      "BEGIN\u4e00\u4e07\u4e09END"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-8-counting-9998",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "counting-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocJapaneseNumericMarkers/projected/japanese-numeric-depth-8-counting-9998.docx",
+    "sourceSha256": "09db21e68001b43e203eb3ae745e17479979d0138bcc827e8507988ab4bfcbd6",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/projected/japanese-numeric-depth-8-counting-9998.pdf",
+    "wordPdfSha256": "186e1d9c36c32da0980a1be4d3e9788bf9a0398366295e04fe9b198f68774afa",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u4e07END",
+      "BEGIN\u4e00\u4e07\u4e00END",
+      "BEGIN\u4e00\u4e07\u4e8cEND",
+      "BEGIN\u4e00\u4e07\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u4e07END",
+      "BEGIN\u4e00\u4e07\u4e00END",
+      "BEGIN\u4e00\u4e07\u4e8cEND",
+      "BEGIN\u4e00\u4e07\u4e09END"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-8-counting-9998",
+    "kind": "source",
+    "depth": 8,
+    "mode": "counting-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocJapaneseNumericMarkers/source/japanese-numeric-depth-8-counting-9998.docx",
+    "sourceSha256": "2911414fc203583a14487215daeb0f86e1f73b448a235a89f370f6b36f6919dc",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/source/japanese-numeric-depth-8-counting-9998.pdf",
+    "wordPdfSha256": "47fb94757f96cc7fa4def6fe66d8e769657a8cf70ebf95890eec3974b4eefc70",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u4e07END",
+      "BEGIN\u4e00\u4e07\u4e00END",
+      "BEGIN\u4e00\u4e07\u4e8cEND",
+      "BEGIN\u4e00\u4e07\u4e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u516bEND",
+      "BEGIN\u4e5d\u5343\u4e5d\u767e\u4e5d\u5341\u4e5dEND",
+      "BEGIN\u4e00\u4e07END",
+      "BEGIN\u4e00\u4e07\u4e00END",
+      "BEGIN\u4e00\u4e07\u4e8cEND",
+      "BEGIN\u4e00\u4e07\u4e09END"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-8-digits-9998",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "digits-9998",
+    "source": "fixtures/doc/regressions/list-markers/JapaneseNumericMarkers/japanese-numeric-depth-8-digits-9998.doc",
+    "sourceSha256": "90222ea23d06cd2c8390db4c1d2b67963c83b8f8e68af6e06973824e9db3ecb8",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/doc/japanese-numeric-depth-8-digits-9998.pdf",
+    "wordPdfSha256": "0d67d210860b4903ffae8c83c3d17cf4b2133721d12be31f79f4e799f28013c7",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-8-digits-9998",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "digits-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocJapaneseNumericMarkers/projected/japanese-numeric-depth-8-digits-9998.docx",
+    "sourceSha256": "fddfe31aa607da4fd481dd92d6a80774df33c99a8469d193ff817c318ce06652",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/projected/japanese-numeric-depth-8-digits-9998.pdf",
+    "wordPdfSha256": "d17a381f3b80570f02a1d82ea25642559977dc518ce328049681ff1fd164d424",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-8-digits-9998",
+    "kind": "source",
+    "depth": 8,
+    "mode": "digits-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocJapaneseNumericMarkers/source/japanese-numeric-depth-8-digits-9998.docx",
+    "sourceSha256": "6085b211a79b9444bfa6bf15ba383fca741148d8bc1705cdcc0e6ad61225da32",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/source/japanese-numeric-depth-8-digits-9998.pdf",
+    "wordPdfSha256": "42f48b0b45a3672d55e6dd581c9b7b410f48b562b6ecf06b788dc0a7a6e5657e",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u4e5d\u4e5d\u516bEND",
+      "BEGIN\u4e5d\u4e5d\u4e5d\u4e5dEND",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND",
+      "BEGINEND"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-8-legal-9998",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "legal-9998",
+    "source": "fixtures/doc/regressions/list-markers/JapaneseNumericMarkers/japanese-numeric-depth-8-legal-9998.doc",
+    "sourceSha256": "b0640619f3eae30ba4c9c933e6494b619a4c48e912b54055775d2d747f1d9f26",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/doc/japanese-numeric-depth-8-legal-9998.pdf",
+    "wordPdfSha256": "35fa0fef842ca0f6f0957c7630ca30c933469d21e83216dec22a334ad9d3f856",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u9621\u4e5d\u767e\u4e5d\u62fe\u516bEND",
+      "BEGIN\u4e5d\u9621\u4e5d\u767e\u4e5d\u62fe\u4e5dEND",
+      "BEGIN\u58f1\u842cEND",
+      "BEGIN\u58f1\u842c\u58f1END",
+      "BEGIN\u58f1\u842c\u5f10END",
+      "BEGIN\u58f1\u842c\u53c2END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u9621\u4e5d\u767e\u4e5d\u62fe\u516bEND",
+      "BEGIN\u4e5d\u9621\u4e5d\u767e\u4e5d\u62fe\u4e5dEND",
+      "BEGIN\u58f1\u842cEND",
+      "BEGIN\u58f1\u842c\u58f1END",
+      "BEGIN\u58f1\u842c\u5f10END",
+      "BEGIN\u58f1\u842c\u53c2END"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-8-legal-9998",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "legal-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocJapaneseNumericMarkers/projected/japanese-numeric-depth-8-legal-9998.docx",
+    "sourceSha256": "9bd140406b1218774ca249201cd82ae9fb17af25621c11802f507894e718d3f0",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/projected/japanese-numeric-depth-8-legal-9998.pdf",
+    "wordPdfSha256": "a739098c89cfef97c236151653c7df85026ceb65f28e44add50eac7bdd62e93d",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u9621\u4e5d\u767e\u4e5d\u62fe\u516bEND",
+      "BEGIN\u4e5d\u9621\u4e5d\u767e\u4e5d\u62fe\u4e5dEND",
+      "BEGIN\u58f1\u842cEND",
+      "BEGIN\u58f1\u842c\u58f1END",
+      "BEGIN\u58f1\u842c\u5f10END",
+      "BEGIN\u58f1\u842c\u53c2END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u9621\u4e5d\u767e\u4e5d\u62fe\u516bEND",
+      "BEGIN\u4e5d\u9621\u4e5d\u767e\u4e5d\u62fe\u4e5dEND",
+      "BEGIN\u58f1\u842cEND",
+      "BEGIN\u58f1\u842c\u58f1END",
+      "BEGIN\u58f1\u842c\u5f10END",
+      "BEGIN\u58f1\u842c\u53c2END"
+    ]
+  },
+  {
+    "name": "japanese-numeric-depth-8-legal-9998",
+    "kind": "source",
+    "depth": 8,
+    "mode": "legal-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocJapaneseNumericMarkers/source/japanese-numeric-depth-8-legal-9998.docx",
+    "sourceSha256": "55a590df2866470f0b13576010de12a85e6f143a04ba2db8b103a8e1fb8528dc",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocJapaneseNumericMarkers/source/japanese-numeric-depth-8-legal-9998.pdf",
+    "wordPdfSha256": "148975ef34203cd0675355db40bd8ac1c96013bbd23cbe7373b2dbc50778abbd",
+    "wordListStrings": [
+      "BEGIN\u4e5d\u9621\u4e5d\u767e\u4e5d\u62fe\u516bEND",
+      "BEGIN\u4e5d\u9621\u4e5d\u767e\u4e5d\u62fe\u4e5dEND",
+      "BEGIN\u58f1\u842cEND",
+      "BEGIN\u58f1\u842c\u58f1END",
+      "BEGIN\u58f1\u842c\u5f10END",
+      "BEGIN\u58f1\u842c\u53c2END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u4e5d\u9621\u4e5d\u767e\u4e5d\u62fe\u516bEND",
+      "BEGIN\u4e5d\u9621\u4e5d\u767e\u4e5d\u62fe\u4e5dEND",
+      "BEGIN\u58f1\u842cEND",
+      "BEGIN\u58f1\u842c\u58f1END",
+      "BEGIN\u58f1\u842c\u5f10END",
+      "BEGIN\u58f1\u842c\u53c2END"
+    ]
+  }
+]

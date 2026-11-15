@@ -1,0 +1,74 @@
+[
+  {
+    "name": "japanese-numeric-depth-0-counting-1",
+    "depth": 0,
+    "mode": "counting-1",
+    "error": "DOCX list format 'japaneseCounting' is unsupported."
+  },
+  {
+    "name": "japanese-numeric-depth-0-counting-98",
+    "depth": 0,
+    "mode": "counting-98",
+    "error": "DOCX list format 'japaneseCounting' is unsupported."
+  },
+  {
+    "name": "japanese-numeric-depth-0-counting-9998",
+    "depth": 0,
+    "mode": "counting-9998",
+    "error": "DOCX list format 'japaneseCounting' is unsupported."
+  },
+  {
+    "name": "japanese-numeric-depth-8-counting-9998",
+    "depth": 8,
+    "mode": "counting-9998",
+    "error": "DOCX list format 'japaneseCounting' is unsupported."
+  },
+  {
+    "name": "japanese-numeric-depth-0-legal-1",
+    "depth": 0,
+    "mode": "legal-1",
+    "error": "DOCX list format 'japaneseLegal' is unsupported."
+  },
+  {
+    "name": "japanese-numeric-depth-0-legal-98",
+    "depth": 0,
+    "mode": "legal-98",
+    "error": "DOCX list format 'japaneseLegal' is unsupported."
+  },
+  {
+    "name": "japanese-numeric-depth-0-legal-9998",
+    "depth": 0,
+    "mode": "legal-9998",
+    "error": "DOCX list format 'japaneseLegal' is unsupported."
+  },
+  {
+    "name": "japanese-numeric-depth-8-legal-9998",
+    "depth": 8,
+    "mode": "legal-9998",
+    "error": "DOCX list format 'japaneseLegal' is unsupported."
+  },
+  {
+    "name": "japanese-numeric-depth-0-digits-1",
+    "depth": 0,
+    "mode": "digits-1",
+    "error": "DOCX list format 'japaneseDigitalTenThousand' is unsupported."
+  },
+  {
+    "name": "japanese-numeric-depth-0-digits-98",
+    "depth": 0,
+    "mode": "digits-98",
+    "error": "DOCX list format 'japaneseDigitalTenThousand' is unsupported."
+  },
+  {
+    "name": "japanese-numeric-depth-0-digits-9998",
+    "depth": 0,
+    "mode": "digits-9998",
+    "error": "DOCX list format 'japaneseDigitalTenThousand' is unsupported."
+  },
+  {
+    "name": "japanese-numeric-depth-8-digits-9998",
+    "depth": 8,
+    "mode": "digits-9998",
+    "error": "DOCX list format 'japaneseDigitalTenThousand' is unsupported."
+  }
+]
