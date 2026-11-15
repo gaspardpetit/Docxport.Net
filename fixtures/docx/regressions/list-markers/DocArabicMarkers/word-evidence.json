@@ -1,0 +1,782 @@
+[
+  {
+    "name": "arabic-depth-0-abjad-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "abjad-1",
+    "source": "fixtures/doc/regressions/list-markers/ArabicMarkers/arabic-depth-0-abjad-1.doc",
+    "sourceSha256": "eb9703b16259e361dec45f62fbb50e68b5f782a46dae42ffe69f75ddd824fc18",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocArabicMarkers/doc/arabic-depth-0-abjad-1.pdf",
+    "wordPdfSha256": "11aac3abd6feff201141a67fb01b52170515c22069efb332c2f51798535c29b0",
+    "wordListStrings": [
+      "BEGIN\u200c\u0623END",
+      "BEGIN\u200c\u0628END",
+      "BEGIN\u200c\u062cEND",
+      "BEGIN\u200c\u062fEND",
+      "BEGIN\u200c\u0647END",
+      "BEGIN\u200c\u0648END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0623END",
+      "BEGIN\u0628END",
+      "BEGIN\u062cEND",
+      "BEGIN\u062fEND",
+      "BEGIN\u0647END",
+      "BEGIN\u0648END"
+    ]
+  },
+  {
+    "name": "arabic-depth-0-abjad-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "abjad-1",
+    "source": "fixtures/docx/regressions/list-markers/DocArabicMarkers/projected/arabic-depth-0-abjad-1.docx",
+    "sourceSha256": "b1ad187b8e5726dabc99e5fb5848271c36266717534027d0813c2512116ef69b",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocArabicMarkers/projected/arabic-depth-0-abjad-1.pdf",
+    "wordPdfSha256": "c60108a5063a386a8ab10704c0d063d5f535eddcc81085635317637492b75d95",
+    "wordListStrings": [
+      "BEGIN\u200c\u0623END",
+      "BEGIN\u200c\u0628END",
+      "BEGIN\u200c\u062cEND",
+      "BEGIN\u200c\u062fEND",
+      "BEGIN\u200c\u0647END",
+      "BEGIN\u200c\u0648END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0623END",
+      "BEGIN\u0628END",
+      "BEGIN\u062cEND",
+      "BEGIN\u062fEND",
+      "BEGIN\u0647END",
+      "BEGIN\u0648END"
+    ]
+  },
+  {
+    "name": "arabic-depth-0-abjad-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "abjad-1",
+    "source": "fixtures/docx/regressions/list-markers/DocArabicMarkers/source/arabic-depth-0-abjad-1.docx",
+    "sourceSha256": "b85383b5f0df14997d34d54918c64c22c9bd4993e1c788fbd4ef0da7194a4442",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocArabicMarkers/source/arabic-depth-0-abjad-1.pdf",
+    "wordPdfSha256": "93586177c3ee89d6ddd005b117955d81b3ec6cf2ad624957fac4547a8b16f9af",
+    "wordListStrings": [
+      "BEGIN\u200c\u0623END",
+      "BEGIN\u200c\u0628END",
+      "BEGIN\u200c\u062cEND",
+      "BEGIN\u200c\u062fEND",
+      "BEGIN\u200c\u0647END",
+      "BEGIN\u200c\u0648END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0623END",
+      "BEGIN\u0628END",
+      "BEGIN\u062cEND",
+      "BEGIN\u062fEND",
+      "BEGIN\u0647END",
+      "BEGIN\u0648END"
+    ]
+  },
+  {
+    "name": "arabic-depth-0-abjad-27",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "abjad-27",
+    "source": "fixtures/doc/regressions/list-markers/ArabicMarkers/arabic-depth-0-abjad-27.doc",
+    "sourceSha256": "532dd5a95ec185b1e8e7441a63ef19c957866e85b3ca1016343f17559b2914b7",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocArabicMarkers/doc/arabic-depth-0-abjad-27.pdf",
+    "wordPdfSha256": "4d5acf25d6f9cc25eefe43af2f84e80d1e54c94573530efa7af68050f3c7b2e1",
+    "wordListStrings": [
+      "BEGIN\u200c\u0638END",
+      "BEGIN\u200c\u063aEND",
+      "BEGIN\u200c\u0623\u200c\u0623END",
+      "BEGIN\u200c\u0628\u200c\u0628END",
+      "BEGIN\u200c\u062c\u200c\u062cEND",
+      "BEGIN\u200c\u062f\u200c\u062fEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0638END",
+      "BEGIN\u063aEND",
+      "BEGIN\u0623\u0623END",
+      "BEGIN\u0628\u0628END",
+      "BEGIN\u062c\u062cEND",
+      "BEGIN\u062f\u062fEND"
+    ]
+  },
+  {
+    "name": "arabic-depth-0-abjad-27",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "abjad-27",
+    "source": "fixtures/docx/regressions/list-markers/DocArabicMarkers/projected/arabic-depth-0-abjad-27.docx",
+    "sourceSha256": "32ad75a21efcc108ac9167ed6b5b9b5a3d6bdf4b2529d7950befb408a05115de",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocArabicMarkers/projected/arabic-depth-0-abjad-27.pdf",
+    "wordPdfSha256": "9c5517199bbbd2807875596ef2d706e0609778dbc1e89e59d3308b314a4722db",
+    "wordListStrings": [
+      "BEGIN\u200c\u0638END",
+      "BEGIN\u200c\u063aEND",
+      "BEGIN\u200c\u0623\u200c\u0623END",
+      "BEGIN\u200c\u0628\u200c\u0628END",
+      "BEGIN\u200c\u062c\u200c\u062cEND",
+      "BEGIN\u200c\u062f\u200c\u062fEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0638END",
+      "BEGIN\u063aEND",
+      "BEGIN\u0623\u0623END",
+      "BEGIN\u0628\u0628END",
+      "BEGIN\u062c\u062cEND",
+      "BEGIN\u062f\u062fEND"
+    ]
+  },
+  {
+    "name": "arabic-depth-0-abjad-27",
+    "kind": "source",
+    "depth": 0,
+    "mode": "abjad-27",
+    "source": "fixtures/docx/regressions/list-markers/DocArabicMarkers/source/arabic-depth-0-abjad-27.docx",
+    "sourceSha256": "804d4927d7a5237aa051f2d55d83f950123184076b337564c5fa8c7d7cc7d07d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocArabicMarkers/source/arabic-depth-0-abjad-27.pdf",
+    "wordPdfSha256": "1c7eb98a9f326534529ffa1415e4bee3fdb9c00a8b7b2d1ebbe55e79c50bf77c",
+    "wordListStrings": [
+      "BEGIN\u200c\u0638END",
+      "BEGIN\u200c\u063aEND",
+      "BEGIN\u200c\u0623\u200c\u0623END",
+      "BEGIN\u200c\u0628\u200c\u0628END",
+      "BEGIN\u200c\u062c\u200c\u062cEND",
+      "BEGIN\u200c\u062f\u200c\u062fEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0638END",
+      "BEGIN\u063aEND",
+      "BEGIN\u0623\u0623END",
+      "BEGIN\u0628\u0628END",
+      "BEGIN\u062c\u062cEND",
+      "BEGIN\u062f\u062fEND"
+    ]
+  },
+  {
+    "name": "arabic-depth-0-abjad-391",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "abjad-391",
+    "source": "fixtures/doc/regressions/list-markers/ArabicMarkers/arabic-depth-0-abjad-391.doc",
+    "sourceSha256": "11e241b6b2b02103802c5c2b8c38b1518cf51a1ccebce9a831281b3843803608",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocArabicMarkers/doc/arabic-depth-0-abjad-391.pdf",
+    "wordPdfSha256": "fc849c86d37b5a3c1b1c35bd8ed87e59495ba612b3e062c9d89428b1ea1110ab",
+    "wordListStrings": [
+      "BEGIN\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638END",
+      "BEGIN\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063aEND",
+      "BEGIN\u200c\u0623END",
+      "BEGIN\u200c\u0628END",
+      "BEGIN\u200c\u062cEND",
+      "BEGIN\u200c\u062fEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638END",
+      "BEGIN\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063aEND",
+      "BEGIN\u0623END",
+      "BEGIN\u0628END",
+      "BEGIN\u062cEND",
+      "BEGIN\u062fEND"
+    ]
+  },
+  {
+    "name": "arabic-depth-0-abjad-391",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "abjad-391",
+    "source": "fixtures/docx/regressions/list-markers/DocArabicMarkers/projected/arabic-depth-0-abjad-391.docx",
+    "sourceSha256": "2fa992a8fa91b72aca68c6c66e90263144641b321350e32c3985a8b10c25b2c8",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocArabicMarkers/projected/arabic-depth-0-abjad-391.pdf",
+    "wordPdfSha256": "0ca33e2a72564d1db054ca73c5553cdf9c58a2e64f9f68d46596ba7278f5b5f7",
+    "wordListStrings": [
+      "BEGIN\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638END",
+      "BEGIN\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063aEND",
+      "BEGIN\u200c\u0623END",
+      "BEGIN\u200c\u0628END",
+      "BEGIN\u200c\u062cEND",
+      "BEGIN\u200c\u062fEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638END",
+      "BEGIN\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063aEND",
+      "BEGIN\u0623END",
+      "BEGIN\u0628END",
+      "BEGIN\u062cEND",
+      "BEGIN\u062fEND"
+    ]
+  },
+  {
+    "name": "arabic-depth-0-abjad-391",
+    "kind": "source",
+    "depth": 0,
+    "mode": "abjad-391",
+    "source": "fixtures/docx/regressions/list-markers/DocArabicMarkers/source/arabic-depth-0-abjad-391.docx",
+    "sourceSha256": "3bdc2273f75283c4e0b712a2cd609ea8096f7f8dd10867e195053408b7e78c6f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocArabicMarkers/source/arabic-depth-0-abjad-391.pdf",
+    "wordPdfSha256": "832b5436e8a72d84d1b4bd2d371b4e0ec06c715cbeedde7947b012e44aadb443",
+    "wordListStrings": [
+      "BEGIN\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638END",
+      "BEGIN\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063aEND",
+      "BEGIN\u200c\u0623END",
+      "BEGIN\u200c\u0628END",
+      "BEGIN\u200c\u062cEND",
+      "BEGIN\u200c\u062fEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638END",
+      "BEGIN\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063aEND",
+      "BEGIN\u0623END",
+      "BEGIN\u0628END",
+      "BEGIN\u062cEND",
+      "BEGIN\u062fEND"
+    ]
+  },
+  {
+    "name": "arabic-depth-0-abjad-55",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "abjad-55",
+    "source": "fixtures/doc/regressions/list-markers/ArabicMarkers/arabic-depth-0-abjad-55.doc",
+    "sourceSha256": "c820013add589b53bd9288052fa581617edc8baaac96544da06e6845b9af5a37",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocArabicMarkers/doc/arabic-depth-0-abjad-55.pdf",
+    "wordPdfSha256": "4888a318bfc1c35086ea74e9ee2b2412c9c576f5d229a227be28ad37ee453fcf",
+    "wordListStrings": [
+      "BEGIN\u200c\u0638\u200c\u0638END",
+      "BEGIN\u200c\u063a\u200c\u063aEND",
+      "BEGIN\u200c\u0623\u200c\u0623\u200c\u0623END",
+      "BEGIN\u200c\u0628\u200c\u0628\u200c\u0628END",
+      "BEGIN\u200c\u062c\u200c\u062c\u200c\u062cEND",
+      "BEGIN\u200c\u062f\u200c\u062f\u200c\u062fEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0638\u0638END",
+      "BEGIN\u063a\u063aEND",
+      "BEGIN\u0623\u0623\u0623END",
+      "BEGIN\u0628\u0628\u0628END",
+      "BEGIN\u062c\u062c\u062cEND",
+      "BEGIN\u062f\u062f\u062fEND"
+    ]
+  },
+  {
+    "name": "arabic-depth-0-abjad-55",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "abjad-55",
+    "source": "fixtures/docx/regressions/list-markers/DocArabicMarkers/projected/arabic-depth-0-abjad-55.docx",
+    "sourceSha256": "49b5e7d52a6374b8745535e2ce720686ce0726405b297d3a0cb710208c4474bb",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocArabicMarkers/projected/arabic-depth-0-abjad-55.pdf",
+    "wordPdfSha256": "e3e951cdeafe9f11e9ebcc27c8d661d20bd84d3736bea97c6d1ddfcae8835083",
+    "wordListStrings": [
+      "BEGIN\u200c\u0638\u200c\u0638END",
+      "BEGIN\u200c\u063a\u200c\u063aEND",
+      "BEGIN\u200c\u0623\u200c\u0623\u200c\u0623END",
+      "BEGIN\u200c\u0628\u200c\u0628\u200c\u0628END",
+      "BEGIN\u200c\u062c\u200c\u062c\u200c\u062cEND",
+      "BEGIN\u200c\u062f\u200c\u062f\u200c\u062fEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0638\u0638END",
+      "BEGIN\u063a\u063aEND",
+      "BEGIN\u0623\u0623\u0623END",
+      "BEGIN\u0628\u0628\u0628END",
+      "BEGIN\u062c\u062c\u062cEND",
+      "BEGIN\u062f\u062f\u062fEND"
+    ]
+  },
+  {
+    "name": "arabic-depth-0-abjad-55",
+    "kind": "source",
+    "depth": 0,
+    "mode": "abjad-55",
+    "source": "fixtures/docx/regressions/list-markers/DocArabicMarkers/source/arabic-depth-0-abjad-55.docx",
+    "sourceSha256": "5e680609be1f1044e6dea211382559937abf36fca5b998c6b428588270ea0ab5",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocArabicMarkers/source/arabic-depth-0-abjad-55.pdf",
+    "wordPdfSha256": "b77394858e2f08bdff40bf41e442d5d7ae74b6fe76fb04a8664daf5dd873a374",
+    "wordListStrings": [
+      "BEGIN\u200c\u0638\u200c\u0638END",
+      "BEGIN\u200c\u063a\u200c\u063aEND",
+      "BEGIN\u200c\u0623\u200c\u0623\u200c\u0623END",
+      "BEGIN\u200c\u0628\u200c\u0628\u200c\u0628END",
+      "BEGIN\u200c\u062c\u200c\u062c\u200c\u062cEND",
+      "BEGIN\u200c\u062f\u200c\u062f\u200c\u062fEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0638\u0638END",
+      "BEGIN\u063a\u063aEND",
+      "BEGIN\u0623\u0623\u0623END",
+      "BEGIN\u0628\u0628\u0628END",
+      "BEGIN\u062c\u062c\u062cEND",
+      "BEGIN\u062f\u062f\u062fEND"
+    ]
+  },
+  {
+    "name": "arabic-depth-0-alpha-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "alpha-1",
+    "source": "fixtures/doc/regressions/list-markers/ArabicMarkers/arabic-depth-0-alpha-1.doc",
+    "sourceSha256": "fea2e7567fc58be17837df0f32c2480223fa9804b30b86e649f40578fd9621db",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocArabicMarkers/doc/arabic-depth-0-alpha-1.pdf",
+    "wordPdfSha256": "2b0ad71004a6dda45f2adb1eb590cee6a43a0af994f4c624101e629e16fbdc49",
+    "wordListStrings": [
+      "BEGIN\u0623\u200cEND",
+      "BEGIN\u0628\u200cEND",
+      "BEGIN\u062a\u200cEND",
+      "BEGIN\u062b\u200cEND",
+      "BEGIN\u062c\u200cEND",
+      "BEGIN\u062d\u200cEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0623END",
+      "BEGIN\u0628END",
+      "BEGIN\u062aEND",
+      "BEGIN\u062bEND",
+      "BEGIN\u062cEND",
+      "BEGIN\u062dEND"
+    ]
+  },
+  {
+    "name": "arabic-depth-0-alpha-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "alpha-1",
+    "source": "fixtures/docx/regressions/list-markers/DocArabicMarkers/projected/arabic-depth-0-alpha-1.docx",
+    "sourceSha256": "e8589fa1ed29ddc3ddade659eff12decd541a1da1295a4c85c79f024828c0647",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocArabicMarkers/projected/arabic-depth-0-alpha-1.pdf",
+    "wordPdfSha256": "e9aac344a4afc9077390da373b8452fa5607e2178d08fdc18566b567f3f8da89",
+    "wordListStrings": [
+      "BEGIN\u0623\u200cEND",
+      "BEGIN\u0628\u200cEND",
+      "BEGIN\u062a\u200cEND",
+      "BEGIN\u062b\u200cEND",
+      "BEGIN\u062c\u200cEND",
+      "BEGIN\u062d\u200cEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0623END",
+      "BEGIN\u0628END",
+      "BEGIN\u062aEND",
+      "BEGIN\u062bEND",
+      "BEGIN\u062cEND",
+      "BEGIN\u062dEND"
+    ]
+  },
+  {
+    "name": "arabic-depth-0-alpha-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "alpha-1",
+    "source": "fixtures/docx/regressions/list-markers/DocArabicMarkers/source/arabic-depth-0-alpha-1.docx",
+    "sourceSha256": "fb0330bd9634b8a3b647db988de21bfccd6234a58b5fee0e5b1ee2da373469de",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocArabicMarkers/source/arabic-depth-0-alpha-1.pdf",
+    "wordPdfSha256": "0b909dc9d5e9babb1e83a2c078cc9ce35c15fd930d65de60ff082f45de3791b8",
+    "wordListStrings": [
+      "BEGIN\u0623\u200cEND",
+      "BEGIN\u0628\u200cEND",
+      "BEGIN\u062a\u200cEND",
+      "BEGIN\u062b\u200cEND",
+      "BEGIN\u062c\u200cEND",
+      "BEGIN\u062d\u200cEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0623END",
+      "BEGIN\u0628END",
+      "BEGIN\u062aEND",
+      "BEGIN\u062bEND",
+      "BEGIN\u062cEND",
+      "BEGIN\u062dEND"
+    ]
+  },
+  {
+    "name": "arabic-depth-0-alpha-27",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "alpha-27",
+    "source": "fixtures/doc/regressions/list-markers/ArabicMarkers/arabic-depth-0-alpha-27.doc",
+    "sourceSha256": "33df27b7e5e70eff6b812575040c006989c82fe4da30cc88fad9c06ec1a4bc49",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocArabicMarkers/doc/arabic-depth-0-alpha-27.pdf",
+    "wordPdfSha256": "128023fbc9050d138ae46f4153211f4f6908227c308f756720386eec16f08f97",
+    "wordListStrings": [
+      "BEGIN\u0648\u200cEND",
+      "BEGIN\u064a\u200cEND",
+      "BEGIN\u0623\u200c\u0623\u200cEND",
+      "BEGIN\u0628\u200c\u0628\u200cEND",
+      "BEGIN\u062a\u200c\u062a\u200cEND",
+      "BEGIN\u062b\u200c\u062b\u200cEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0648END",
+      "BEGIN\u064aEND",
+      "BEGIN\u0623\u0623END",
+      "BEGIN\u0628\u0628END",
+      "BEGIN\u062a\u062aEND",
+      "BEGIN\u062b\u062bEND"
+    ]
+  },
+  {
+    "name": "arabic-depth-0-alpha-27",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "alpha-27",
+    "source": "fixtures/docx/regressions/list-markers/DocArabicMarkers/projected/arabic-depth-0-alpha-27.docx",
+    "sourceSha256": "883e005f30cf539687696df5d495c3c3ac39a515d4f80f053c90d6d5be52836d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocArabicMarkers/projected/arabic-depth-0-alpha-27.pdf",
+    "wordPdfSha256": "9756e4081b0e3298a9ac7637149cbcdcbf51972d01f776504236f9938d60f99b",
+    "wordListStrings": [
+      "BEGIN\u0648\u200cEND",
+      "BEGIN\u064a\u200cEND",
+      "BEGIN\u0623\u200c\u0623\u200cEND",
+      "BEGIN\u0628\u200c\u0628\u200cEND",
+      "BEGIN\u062a\u200c\u062a\u200cEND",
+      "BEGIN\u062b\u200c\u062b\u200cEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0648END",
+      "BEGIN\u064aEND",
+      "BEGIN\u0623\u0623END",
+      "BEGIN\u0628\u0628END",
+      "BEGIN\u062a\u062aEND",
+      "BEGIN\u062b\u062bEND"
+    ]
+  },
+  {
+    "name": "arabic-depth-0-alpha-27",
+    "kind": "source",
+    "depth": 0,
+    "mode": "alpha-27",
+    "source": "fixtures/docx/regressions/list-markers/DocArabicMarkers/source/arabic-depth-0-alpha-27.docx",
+    "sourceSha256": "eefa7f5fe441969f41eade05882f11b1264b0fa28da8e522e186d51947a240b4",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocArabicMarkers/source/arabic-depth-0-alpha-27.pdf",
+    "wordPdfSha256": "850eb40b3cb6337b97c5f4b88fe9eedde4fc8553f52ed1b3a866018182fb5a12",
+    "wordListStrings": [
+      "BEGIN\u0648\u200cEND",
+      "BEGIN\u064a\u200cEND",
+      "BEGIN\u0623\u200c\u0623\u200cEND",
+      "BEGIN\u0628\u200c\u0628\u200cEND",
+      "BEGIN\u062a\u200c\u062a\u200cEND",
+      "BEGIN\u062b\u200c\u062b\u200cEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0648END",
+      "BEGIN\u064aEND",
+      "BEGIN\u0623\u0623END",
+      "BEGIN\u0628\u0628END",
+      "BEGIN\u062a\u062aEND",
+      "BEGIN\u062b\u062bEND"
+    ]
+  },
+  {
+    "name": "arabic-depth-0-alpha-391",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "alpha-391",
+    "source": "fixtures/doc/regressions/list-markers/ArabicMarkers/arabic-depth-0-alpha-391.doc",
+    "sourceSha256": "1052ffdcbc5804db3ca71110a139486b1c388016b41c1251fc60d7443108a505",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocArabicMarkers/doc/arabic-depth-0-alpha-391.pdf",
+    "wordPdfSha256": "061994778cdb3c6bcf2d71307c4f42e38cb5e77846c78f1dc5a621fbdcedb6ab",
+    "wordListStrings": [
+      "BEGIN\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200cEND",
+      "BEGIN\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200cEND",
+      "BEGIN\u0623\u200cEND",
+      "BEGIN\u0628\u200cEND",
+      "BEGIN\u062a\u200cEND",
+      "BEGIN\u062b\u200cEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648END",
+      "BEGIN\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064aEND",
+      "BEGIN\u0623END",
+      "BEGIN\u0628END",
+      "BEGIN\u062aEND",
+      "BEGIN\u062bEND"
+    ]
+  },
+  {
+    "name": "arabic-depth-0-alpha-391",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "alpha-391",
+    "source": "fixtures/docx/regressions/list-markers/DocArabicMarkers/projected/arabic-depth-0-alpha-391.docx",
+    "sourceSha256": "077042a3cd2f0ca66392dda3f5bf72e2de7770521357e27a0d97971cb0d57cca",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocArabicMarkers/projected/arabic-depth-0-alpha-391.pdf",
+    "wordPdfSha256": "37f09e66c0b75943dd3b61030fd227397e1fbefcdd4e8d22be64c4bde8d1b0e1",
+    "wordListStrings": [
+      "BEGIN\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200cEND",
+      "BEGIN\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200cEND",
+      "BEGIN\u0623\u200cEND",
+      "BEGIN\u0628\u200cEND",
+      "BEGIN\u062a\u200cEND",
+      "BEGIN\u062b\u200cEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648END",
+      "BEGIN\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064aEND",
+      "BEGIN\u0623END",
+      "BEGIN\u0628END",
+      "BEGIN\u062aEND",
+      "BEGIN\u062bEND"
+    ]
+  },
+  {
+    "name": "arabic-depth-0-alpha-391",
+    "kind": "source",
+    "depth": 0,
+    "mode": "alpha-391",
+    "source": "fixtures/docx/regressions/list-markers/DocArabicMarkers/source/arabic-depth-0-alpha-391.docx",
+    "sourceSha256": "e53997327b1a8122f48b09188c5629542fbe9225f0e179e3b3b2d7dfc6d58f61",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocArabicMarkers/source/arabic-depth-0-alpha-391.pdf",
+    "wordPdfSha256": "4077b07ce4915c466fff14f1b776ee2128a2a40943f65439d7bbf51d1a63c73e",
+    "wordListStrings": [
+      "BEGIN\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200cEND",
+      "BEGIN\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200cEND",
+      "BEGIN\u0623\u200cEND",
+      "BEGIN\u0628\u200cEND",
+      "BEGIN\u062a\u200cEND",
+      "BEGIN\u062b\u200cEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648END",
+      "BEGIN\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064aEND",
+      "BEGIN\u0623END",
+      "BEGIN\u0628END",
+      "BEGIN\u062aEND",
+      "BEGIN\u062bEND"
+    ]
+  },
+  {
+    "name": "arabic-depth-0-alpha-55",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "alpha-55",
+    "source": "fixtures/doc/regressions/list-markers/ArabicMarkers/arabic-depth-0-alpha-55.doc",
+    "sourceSha256": "c582eba209dbd966a5ffc5bb03d5d368f101d1cca119125e058dfd34a27fed09",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocArabicMarkers/doc/arabic-depth-0-alpha-55.pdf",
+    "wordPdfSha256": "08ad762bfffdf7d24d04470787f25550ec54b40ff19f172aac02ed2fdc38333f",
+    "wordListStrings": [
+      "BEGIN\u0648\u200c\u0648\u200cEND",
+      "BEGIN\u064a\u200c\u064a\u200cEND",
+      "BEGIN\u0623\u200c\u0623\u200c\u0623\u200cEND",
+      "BEGIN\u0628\u200c\u0628\u200c\u0628\u200cEND",
+      "BEGIN\u062a\u200c\u062a\u200c\u062a\u200cEND",
+      "BEGIN\u062b\u200c\u062b\u200c\u062b\u200cEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0648\u0648END",
+      "BEGIN\u064a\u064aEND",
+      "BEGIN\u0623\u0623\u0623END",
+      "BEGIN\u0628\u0628\u0628END",
+      "BEGIN\u062a\u062a\u062aEND",
+      "BEGIN\u062b\u062b\u062bEND"
+    ]
+  },
+  {
+    "name": "arabic-depth-0-alpha-55",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "alpha-55",
+    "source": "fixtures/docx/regressions/list-markers/DocArabicMarkers/projected/arabic-depth-0-alpha-55.docx",
+    "sourceSha256": "fa71e67a0fe27e8c15ea1f9e7218a780894c100b42b8f72711ffd1c4117882c1",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocArabicMarkers/projected/arabic-depth-0-alpha-55.pdf",
+    "wordPdfSha256": "0e6393bc44cbf056192254589a5d22432ef444518bb31cf98c89faad4e4853d0",
+    "wordListStrings": [
+      "BEGIN\u0648\u200c\u0648\u200cEND",
+      "BEGIN\u064a\u200c\u064a\u200cEND",
+      "BEGIN\u0623\u200c\u0623\u200c\u0623\u200cEND",
+      "BEGIN\u0628\u200c\u0628\u200c\u0628\u200cEND",
+      "BEGIN\u062a\u200c\u062a\u200c\u062a\u200cEND",
+      "BEGIN\u062b\u200c\u062b\u200c\u062b\u200cEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0648\u0648END",
+      "BEGIN\u064a\u064aEND",
+      "BEGIN\u0623\u0623\u0623END",
+      "BEGIN\u0628\u0628\u0628END",
+      "BEGIN\u062a\u062a\u062aEND",
+      "BEGIN\u062b\u062b\u062bEND"
+    ]
+  },
+  {
+    "name": "arabic-depth-0-alpha-55",
+    "kind": "source",
+    "depth": 0,
+    "mode": "alpha-55",
+    "source": "fixtures/docx/regressions/list-markers/DocArabicMarkers/source/arabic-depth-0-alpha-55.docx",
+    "sourceSha256": "08e10c84d539e220edf2c55986828e4410b3c9226219fed559938cc928ce01de",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocArabicMarkers/source/arabic-depth-0-alpha-55.pdf",
+    "wordPdfSha256": "0464bd5c217fbddde0e20c0f7a3da4c288863968eee91793ff6dd55712f9ab28",
+    "wordListStrings": [
+      "BEGIN\u0648\u200c\u0648\u200cEND",
+      "BEGIN\u064a\u200c\u064a\u200cEND",
+      "BEGIN\u0623\u200c\u0623\u200c\u0623\u200cEND",
+      "BEGIN\u0628\u200c\u0628\u200c\u0628\u200cEND",
+      "BEGIN\u062a\u200c\u062a\u200c\u062a\u200cEND",
+      "BEGIN\u062b\u200c\u062b\u200c\u062b\u200cEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0648\u0648END",
+      "BEGIN\u064a\u064aEND",
+      "BEGIN\u0623\u0623\u0623END",
+      "BEGIN\u0628\u0628\u0628END",
+      "BEGIN\u062a\u062a\u062aEND",
+      "BEGIN\u062b\u062b\u062bEND"
+    ]
+  },
+  {
+    "name": "arabic-depth-8-abjad-391",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "abjad-391",
+    "source": "fixtures/doc/regressions/list-markers/ArabicMarkers/arabic-depth-8-abjad-391.doc",
+    "sourceSha256": "94a8e9d40276f46a08519207e4fb7de583cc5170a4a8ed98e8e3c3983d2b3038",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocArabicMarkers/doc/arabic-depth-8-abjad-391.pdf",
+    "wordPdfSha256": "c1a21b56e0415e3ffa9c214f4a20d409b493acb335e28bc376e21b16db0c4a84",
+    "wordListStrings": [
+      "BEGIN\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638END",
+      "BEGIN\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063aEND",
+      "BEGIN\u200c\u0623END",
+      "BEGIN\u200c\u0628END",
+      "BEGIN\u200c\u062cEND",
+      "BEGIN\u200c\u062fEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638END",
+      "BEGIN\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063aEND",
+      "BEGIN\u0623END",
+      "BEGIN\u0628END",
+      "BEGIN\u062cEND",
+      "BEGIN\u062fEND"
+    ]
+  },
+  {
+    "name": "arabic-depth-8-abjad-391",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "abjad-391",
+    "source": "fixtures/docx/regressions/list-markers/DocArabicMarkers/projected/arabic-depth-8-abjad-391.docx",
+    "sourceSha256": "00bd057a9a09d510f864ac075cb913210b9459aeb55d7f97eb586570e2bd7caf",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocArabicMarkers/projected/arabic-depth-8-abjad-391.pdf",
+    "wordPdfSha256": "b6b4deae50ace04d4e97266c584710dee011bda44b9f021027d23ad6fd84f781",
+    "wordListStrings": [
+      "BEGIN\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638END",
+      "BEGIN\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063aEND",
+      "BEGIN\u200c\u0623END",
+      "BEGIN\u200c\u0628END",
+      "BEGIN\u200c\u062cEND",
+      "BEGIN\u200c\u062fEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638END",
+      "BEGIN\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063aEND",
+      "BEGIN\u0623END",
+      "BEGIN\u0628END",
+      "BEGIN\u062cEND",
+      "BEGIN\u062fEND"
+    ]
+  },
+  {
+    "name": "arabic-depth-8-abjad-391",
+    "kind": "source",
+    "depth": 8,
+    "mode": "abjad-391",
+    "source": "fixtures/docx/regressions/list-markers/DocArabicMarkers/source/arabic-depth-8-abjad-391.docx",
+    "sourceSha256": "99d7263a162c6d0f12aa8e2540e3b2567ad0c88967ff41c9fe66722e7ada86e8",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocArabicMarkers/source/arabic-depth-8-abjad-391.pdf",
+    "wordPdfSha256": "09f34659ec83f6f38034e91024028f2d2abfb5167d47741e3dfffdc7de5526cf",
+    "wordListStrings": [
+      "BEGIN\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638\u200c\u0638END",
+      "BEGIN\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063a\u200c\u063aEND",
+      "BEGIN\u200c\u0623END",
+      "BEGIN\u200c\u0628END",
+      "BEGIN\u200c\u062cEND",
+      "BEGIN\u200c\u062fEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638\u0638END",
+      "BEGIN\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063a\u063aEND",
+      "BEGIN\u0623END",
+      "BEGIN\u0628END",
+      "BEGIN\u062cEND",
+      "BEGIN\u062fEND"
+    ]
+  },
+  {
+    "name": "arabic-depth-8-alpha-391",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "alpha-391",
+    "source": "fixtures/doc/regressions/list-markers/ArabicMarkers/arabic-depth-8-alpha-391.doc",
+    "sourceSha256": "7be46bbfad360b096d3fa56639ed0ee4b3b2a27778918a55cf630fbd75ce58d7",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocArabicMarkers/doc/arabic-depth-8-alpha-391.pdf",
+    "wordPdfSha256": "3cc24cee12c414c16551e2238f860305b553dbe3fe9db1550c62c49add6a9c42",
+    "wordListStrings": [
+      "BEGIN\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200cEND",
+      "BEGIN\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200cEND",
+      "BEGIN\u0623\u200cEND",
+      "BEGIN\u0628\u200cEND",
+      "BEGIN\u062a\u200cEND",
+      "BEGIN\u062b\u200cEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648END",
+      "BEGIN\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064aEND",
+      "BEGIN\u0623END",
+      "BEGIN\u0628END",
+      "BEGIN\u062aEND",
+      "BEGIN\u062bEND"
+    ]
+  },
+  {
+    "name": "arabic-depth-8-alpha-391",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "alpha-391",
+    "source": "fixtures/docx/regressions/list-markers/DocArabicMarkers/projected/arabic-depth-8-alpha-391.docx",
+    "sourceSha256": "35ba590476d8743a64d34af81eab5e57d359f48ca2b67adbef78089c0d71909d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocArabicMarkers/projected/arabic-depth-8-alpha-391.pdf",
+    "wordPdfSha256": "4244ca471b008306fb09a34762ffb1c8f252263dd838735538e6a54390a55fc1",
+    "wordListStrings": [
+      "BEGIN\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200cEND",
+      "BEGIN\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200cEND",
+      "BEGIN\u0623\u200cEND",
+      "BEGIN\u0628\u200cEND",
+      "BEGIN\u062a\u200cEND",
+      "BEGIN\u062b\u200cEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648END",
+      "BEGIN\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064aEND",
+      "BEGIN\u0623END",
+      "BEGIN\u0628END",
+      "BEGIN\u062aEND",
+      "BEGIN\u062bEND"
+    ]
+  },
+  {
+    "name": "arabic-depth-8-alpha-391",
+    "kind": "source",
+    "depth": 8,
+    "mode": "alpha-391",
+    "source": "fixtures/docx/regressions/list-markers/DocArabicMarkers/source/arabic-depth-8-alpha-391.docx",
+    "sourceSha256": "75a84cd897601040dfa17e2d8ff79c52190d418c8e3dd19a413b7fcceaf2ec97",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocArabicMarkers/source/arabic-depth-8-alpha-391.pdf",
+    "wordPdfSha256": "0b17967bccc3f381ae139ec32cc628c108324e14daec6507a72fc66290a17ea3",
+    "wordListStrings": [
+      "BEGIN\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200c\u0648\u200cEND",
+      "BEGIN\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200c\u064a\u200cEND",
+      "BEGIN\u0623\u200cEND",
+      "BEGIN\u0628\u200cEND",
+      "BEGIN\u062a\u200cEND",
+      "BEGIN\u062b\u200cEND"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648\u0648END",
+      "BEGIN\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064a\u064aEND",
+      "BEGIN\u0623END",
+      "BEGIN\u0628END",
+      "BEGIN\u062aEND",
+      "BEGIN\u062bEND"
+    ]
+  }
+]

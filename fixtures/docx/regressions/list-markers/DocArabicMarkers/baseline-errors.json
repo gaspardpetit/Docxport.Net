@@ -1,0 +1,62 @@
+[
+  {
+    "name": "arabic-depth-0-alpha-1",
+    "depth": 0,
+    "mode": "alpha-1",
+    "error": "DOCX list format 'arabicAlpha' is unsupported."
+  },
+  {
+    "name": "arabic-depth-0-alpha-27",
+    "depth": 0,
+    "mode": "alpha-27",
+    "error": "DOCX list format 'arabicAlpha' is unsupported."
+  },
+  {
+    "name": "arabic-depth-0-alpha-55",
+    "depth": 0,
+    "mode": "alpha-55",
+    "error": "DOCX list format 'arabicAlpha' is unsupported."
+  },
+  {
+    "name": "arabic-depth-0-alpha-391",
+    "depth": 0,
+    "mode": "alpha-391",
+    "error": "DOCX list format 'arabicAlpha' is unsupported."
+  },
+  {
+    "name": "arabic-depth-8-alpha-391",
+    "depth": 8,
+    "mode": "alpha-391",
+    "error": "DOCX list format 'arabicAlpha' is unsupported."
+  },
+  {
+    "name": "arabic-depth-0-abjad-1",
+    "depth": 0,
+    "mode": "abjad-1",
+    "error": "DOCX list format 'arabicAbjad' is unsupported."
+  },
+  {
+    "name": "arabic-depth-0-abjad-27",
+    "depth": 0,
+    "mode": "abjad-27",
+    "error": "DOCX list format 'arabicAbjad' is unsupported."
+  },
+  {
+    "name": "arabic-depth-0-abjad-55",
+    "depth": 0,
+    "mode": "abjad-55",
+    "error": "DOCX list format 'arabicAbjad' is unsupported."
+  },
+  {
+    "name": "arabic-depth-0-abjad-391",
+    "depth": 0,
+    "mode": "abjad-391",
+    "error": "DOCX list format 'arabicAbjad' is unsupported."
+  },
+  {
+    "name": "arabic-depth-8-abjad-391",
+    "depth": 8,
+    "mode": "abjad-391",
+    "error": "DOCX list format 'arabicAbjad' is unsupported."
+  }
+]
