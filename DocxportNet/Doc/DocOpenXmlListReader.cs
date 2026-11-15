@@ -102,7 +102,12 @@ internal static class DocOpenXmlListReader
                 levels = Enumerable.Range(0, 9).Select(index => byLevel.TryGetValue(index, out var level)
                     ? level : new DocListLevel(index, 0, 0, "", 0)).ToArray();
             }
-            definitions.Add(new DocListDefinition(listId, levels));
+            definitions.Add(new DocListDefinition(listId, levels)
+            {
+                SourceParagraphStyleIds = (resolved ?? abstractNum).Elements<Level>()
+                    .Where(level => level.LevelIndex?.Value != null && level.ParagraphStyleIdInLevel?.Val?.Value != null)
+                    .ToDictionary(level => level.LevelIndex!.Value, level => level.ParagraphStyleIdInLevel!.Val!.Value!)
+            });
         }
         var instances = new List<DocListInstance>();
         var numberIds = new Dictionary<int, short>();

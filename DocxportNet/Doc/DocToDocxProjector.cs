@@ -461,7 +461,14 @@ public sealed class DocToDocxProjector
             // Flattening replacements into the abstract level activates their
             // starts too early. Preserve the base and override separately.
             foreach (var level in definition.Levels)
-                abstractNum.AppendChild(ConvertLevel(level, index));
+            {
+                var converted = ConvertLevel(level, index);
+                if (definition.ParagraphStyleIndexes.TryGetValue(level.Index, out var styleIndex) &&
+                    styles.TryGetValue(styleIndex, out var linkedStyle) && linkedStyle.Type == 1)
+                    converted.InsertBefore(new ParagraphStyleIdInLevel { Val = linkedStyle.StyleId },
+                        converted.GetFirstChild<LevelSuffix>());
+                abstractNum.AppendChild(converted);
+            }
             numbering.AppendChild(abstractNum);
         }
         foreach (var instance in selected)

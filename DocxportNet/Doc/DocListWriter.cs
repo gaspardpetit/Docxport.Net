@@ -23,8 +23,13 @@ internal static class DocListWriter
             BinaryPrimitives.WriteInt32LittleEndian(definitions.AsSpan(position),
                 definition.ListId);
             for (var style = 0; style < 9; style++)
+            {
+                var styleIndex = definition.ParagraphStyleIndexes.TryGetValue(style, out var linked) ? linked : 0x0FFF;
+                if (styleIndex != 0x0FFF && (styleIndex < 0 || styleIndex >= 0x0FFE))
+                    throw new InvalidDataException("A DOC list level has an invalid paragraph style index.");
                 BinaryPrimitives.WriteUInt16LittleEndian(
-                    definitions.AsSpan(position + 8 + style * 2), 0x0FFF);
+                    definitions.AsSpan(position + 8 + style * 2), checked((ushort)styleIndex));
+            }
             if (definition.Levels.Count == 1)
                 definitions[position + 26] = 1;
             else if (definition.Levels.Count is < 1 or > 9)

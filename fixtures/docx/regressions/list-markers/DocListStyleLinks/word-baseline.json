@@ -1,0 +1,30 @@
+[
+  {
+    "name": "style-link-depth-1-linked",
+    "source": "fixtures/doc/regressions/list-markers/ListStyleLinks/baseline/style-link-depth-1-linked.doc",
+    "sourceSha256": "5b6403742cac821b28a81130811dacb98581c3355f342a30559bbb82d3213d46",
+    "wordLinkedStyle": "",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  {
+    "name": "style-link-depth-8-linked",
+    "source": "fixtures/doc/regressions/list-markers/ListStyleLinks/baseline/style-link-depth-8-linked.doc",
+    "sourceSha256": "7906e2fcd07ba878bfdd267d1f333b136f3a76add0bcae9377eee581a2a57f31",
+    "wordLinkedStyle": "",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN3END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  }
+]
