@@ -1,0 +1,1250 @@
+[
+  {
+    "name": "thai-vietnamese-depth-0-digits-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "digits-1",
+    "source": "fixtures/doc/regressions/list-markers/ThaiVietnameseMarkers/thai-vietnamese-depth-0-digits-1.doc",
+    "sourceSha256": "577c3da21ab877fa296fb799aebb7b687ccff93e262ace872a4eb730b0ab566b",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/doc/thai-vietnamese-depth-0-digits-1.pdf",
+    "wordPdfSha256": "e6832d102aa6a1ff076bca604561af5b35656bcd865a70dcdce5a402224348a2",
+    "wordListStrings": [
+      "BEGIN\u0e51END",
+      "BEGIN\u0e52END",
+      "BEGIN\u0e53END",
+      "BEGIN\u0e54END",
+      "BEGIN\u0e55END",
+      "BEGIN\u0e56END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e51END",
+      "BEGIN\u0e52END",
+      "BEGIN\u0e53END",
+      "BEGIN\u0e54END",
+      "BEGIN\u0e55END",
+      "BEGIN\u0e56END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-digits-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "digits-1",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-0-digits-1.docx",
+    "sourceSha256": "66fd2f392c095cee1927468866389d472732c785fda643b393f681680254520f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-0-digits-1.pdf",
+    "wordPdfSha256": "bfcab2846cf129b659144c9178af8cd49d4ad6673430e1f530a717f2181742f3",
+    "wordListStrings": [
+      "BEGIN\u0e51END",
+      "BEGIN\u0e52END",
+      "BEGIN\u0e53END",
+      "BEGIN\u0e54END",
+      "BEGIN\u0e55END",
+      "BEGIN\u0e56END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e51END",
+      "BEGIN\u0e52END",
+      "BEGIN\u0e53END",
+      "BEGIN\u0e54END",
+      "BEGIN\u0e55END",
+      "BEGIN\u0e56END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-digits-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "digits-1",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-0-digits-1.docx",
+    "sourceSha256": "ab2c18edce18450f6f2d17e3e41e93c0e2d89fa6563dc5a75c37c5057f56e865",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-0-digits-1.pdf",
+    "wordPdfSha256": "4cf7b3519cda32da02a14985aefb6d3ffa8718b242d5926e8fcb1d4deda061d5",
+    "wordListStrings": [
+      "BEGIN\u0e51END",
+      "BEGIN\u0e52END",
+      "BEGIN\u0e53END",
+      "BEGIN\u0e54END",
+      "BEGIN\u0e55END",
+      "BEGIN\u0e56END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e51END",
+      "BEGIN\u0e52END",
+      "BEGIN\u0e53END",
+      "BEGIN\u0e54END",
+      "BEGIN\u0e55END",
+      "BEGIN\u0e56END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-digits-98",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "digits-98",
+    "source": "fixtures/doc/regressions/list-markers/ThaiVietnameseMarkers/thai-vietnamese-depth-0-digits-98.doc",
+    "sourceSha256": "0c431cede0e5036c50256b3e04dcad53cbd30c22081d0eff8cacdf781fe6b1cd",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/doc/thai-vietnamese-depth-0-digits-98.pdf",
+    "wordPdfSha256": "6fa2787b9fe2d9823a1077d4db0dc5653b6ea8244452efdda8bc7fda6eb08b25",
+    "wordListStrings": [
+      "BEGIN\u0e59\u0e58END",
+      "BEGIN\u0e59\u0e59END",
+      "BEGIN\u0e51\u0e50\u0e50END",
+      "BEGIN\u0e51\u0e50\u0e51END",
+      "BEGIN\u0e51\u0e50\u0e52END",
+      "BEGIN\u0e51\u0e50\u0e53END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e59\u0e58END",
+      "BEGIN\u0e59\u0e59END",
+      "BEGIN\u0e51\u0e50\u0e50END",
+      "BEGIN\u0e51\u0e50\u0e51END",
+      "BEGIN\u0e51\u0e50\u0e52END",
+      "BEGIN\u0e51\u0e50\u0e53END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-digits-98",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "digits-98",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-0-digits-98.docx",
+    "sourceSha256": "e74d32e10b859654ae13638c1237fda7ccd8080e85b22d2725d8d80afb00b24d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-0-digits-98.pdf",
+    "wordPdfSha256": "4f51db0f9c6752dd50e1633cfbe04975b47ce259b04d75dd6c5ec1591bb6b6ec",
+    "wordListStrings": [
+      "BEGIN\u0e59\u0e58END",
+      "BEGIN\u0e59\u0e59END",
+      "BEGIN\u0e51\u0e50\u0e50END",
+      "BEGIN\u0e51\u0e50\u0e51END",
+      "BEGIN\u0e51\u0e50\u0e52END",
+      "BEGIN\u0e51\u0e50\u0e53END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e59\u0e58END",
+      "BEGIN\u0e59\u0e59END",
+      "BEGIN\u0e51\u0e50\u0e50END",
+      "BEGIN\u0e51\u0e50\u0e51END",
+      "BEGIN\u0e51\u0e50\u0e52END",
+      "BEGIN\u0e51\u0e50\u0e53END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-digits-98",
+    "kind": "source",
+    "depth": 0,
+    "mode": "digits-98",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-0-digits-98.docx",
+    "sourceSha256": "da387927819fedf33208aa0415a21889185e57660ac8debe9996100dd0b308dc",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-0-digits-98.pdf",
+    "wordPdfSha256": "fb4b55874bdfe01cb62a29b1a41245f1d6ece098d49eeb0dfcb9aac3cd557100",
+    "wordListStrings": [
+      "BEGIN\u0e59\u0e58END",
+      "BEGIN\u0e59\u0e59END",
+      "BEGIN\u0e51\u0e50\u0e50END",
+      "BEGIN\u0e51\u0e50\u0e51END",
+      "BEGIN\u0e51\u0e50\u0e52END",
+      "BEGIN\u0e51\u0e50\u0e53END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e59\u0e58END",
+      "BEGIN\u0e59\u0e59END",
+      "BEGIN\u0e51\u0e50\u0e50END",
+      "BEGIN\u0e51\u0e50\u0e51END",
+      "BEGIN\u0e51\u0e50\u0e52END",
+      "BEGIN\u0e51\u0e50\u0e53END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-digits-9998",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "digits-9998",
+    "source": "fixtures/doc/regressions/list-markers/ThaiVietnameseMarkers/thai-vietnamese-depth-0-digits-9998.doc",
+    "sourceSha256": "c097cecc738e38dee06e9c3de105668123558b7b1143d6398c30a67cb4d76d16",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/doc/thai-vietnamese-depth-0-digits-9998.pdf",
+    "wordPdfSha256": "9e0d07f4973cb4ad32f13ae563a00f9ffec9806d416bbc5164fc4e2688234dc7",
+    "wordListStrings": [
+      "BEGIN\u0e59\u0e59\u0e59\u0e58END",
+      "BEGIN\u0e59\u0e59\u0e59\u0e59END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e50END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e51END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e52END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e53END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e59\u0e59\u0e59\u0e58END",
+      "BEGIN\u0e59\u0e59\u0e59\u0e59END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e50END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e51END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e52END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e53END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-digits-9998",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "digits-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-0-digits-9998.docx",
+    "sourceSha256": "39c2081a99cdbdaabec48104a5afd4aefe117f19447b10c1a2d0096bae001b23",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-0-digits-9998.pdf",
+    "wordPdfSha256": "43b595d74d5f5137bbfeae7d390290a950faa4e6188c1ba6e6c740e00ff8cb65",
+    "wordListStrings": [
+      "BEGIN\u0e59\u0e59\u0e59\u0e58END",
+      "BEGIN\u0e59\u0e59\u0e59\u0e59END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e50END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e51END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e52END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e53END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e59\u0e59\u0e59\u0e58END",
+      "BEGIN\u0e59\u0e59\u0e59\u0e59END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e50END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e51END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e52END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e53END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-digits-9998",
+    "kind": "source",
+    "depth": 0,
+    "mode": "digits-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-0-digits-9998.docx",
+    "sourceSha256": "bf9ca22f9507eb01a4df4eeba04d7a07bc3b020924e0e4a666154f5af128eea2",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-0-digits-9998.pdf",
+    "wordPdfSha256": "4293c2a5ee9a7fbd2be18f67bc08e1d2fad7c97fcaf16fdeb8d52b3298d5ca68",
+    "wordListStrings": [
+      "BEGIN\u0e59\u0e59\u0e59\u0e58END",
+      "BEGIN\u0e59\u0e59\u0e59\u0e59END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e50END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e51END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e52END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e53END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e59\u0e59\u0e59\u0e58END",
+      "BEGIN\u0e59\u0e59\u0e59\u0e59END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e50END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e51END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e52END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e53END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-letters-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "letters-1",
+    "source": "fixtures/doc/regressions/list-markers/ThaiVietnameseMarkers/thai-vietnamese-depth-0-letters-1.doc",
+    "sourceSha256": "1541dbfb69be39a6d757fc9d52f5410a747e74947694df63c7ea663f6a1044a5",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/doc/thai-vietnamese-depth-0-letters-1.pdf",
+    "wordPdfSha256": "0823007c3359882fe8ebf91a5f855160699636c1f7a0f06100a5fa45fe653e65",
+    "wordListStrings": [
+      "BEGIN\u0e01END",
+      "BEGIN\u0e02END",
+      "BEGIN\u0e04END",
+      "BEGIN\u0e07END",
+      "BEGIN\u0e08END",
+      "BEGIN\u0e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e01END",
+      "BEGIN\u0e02END",
+      "BEGIN\u0e04END",
+      "BEGIN\u0e07END",
+      "BEGIN\u0e08END",
+      "BEGIN\u0e09END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-letters-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "letters-1",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-0-letters-1.docx",
+    "sourceSha256": "87fbfa58c280a49d8b4c2e0d6fb8eda4e3a6e3d3cbd12f8891538b9176bae641",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-0-letters-1.pdf",
+    "wordPdfSha256": "5234fa961bfb907126e992c43f381c6d53df326936ad3b49bc235e13eab3157f",
+    "wordListStrings": [
+      "BEGIN\u0e01END",
+      "BEGIN\u0e02END",
+      "BEGIN\u0e04END",
+      "BEGIN\u0e07END",
+      "BEGIN\u0e08END",
+      "BEGIN\u0e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e01END",
+      "BEGIN\u0e02END",
+      "BEGIN\u0e04END",
+      "BEGIN\u0e07END",
+      "BEGIN\u0e08END",
+      "BEGIN\u0e09END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-letters-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "letters-1",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-0-letters-1.docx",
+    "sourceSha256": "65b9390f162e55366b7fe5a72160e9d9303f9aba2d256c8a145e3aea4b89214c",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-0-letters-1.pdf",
+    "wordPdfSha256": "7a12a602befab7e3751488389cb8df26d51294a3184078960c2347dd4cb4e6ad",
+    "wordListStrings": [
+      "BEGIN\u0e01END",
+      "BEGIN\u0e02END",
+      "BEGIN\u0e04END",
+      "BEGIN\u0e07END",
+      "BEGIN\u0e08END",
+      "BEGIN\u0e09END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e01END",
+      "BEGIN\u0e02END",
+      "BEGIN\u0e04END",
+      "BEGIN\u0e07END",
+      "BEGIN\u0e08END",
+      "BEGIN\u0e09END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-letters-1229",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "letters-1229",
+    "source": "fixtures/doc/regressions/list-markers/ThaiVietnameseMarkers/thai-vietnamese-depth-0-letters-1229.doc",
+    "sourceSha256": "3fc0fc4ee302e80eef9dc8bff600105618a3a4929c9018f15dc0a5bd87da8f33",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/doc/thai-vietnamese-depth-0-letters-1229.pdf",
+    "wordPdfSha256": "05f997ab5810991837cb88bdff238e1908837940a3e1679fb99667ef3e43e6e0",
+    "wordListStrings": [
+      "BEGIN\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2dEND",
+      "BEGIN\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2eEND",
+      "BEGIN\u0e01END",
+      "BEGIN\u0e02END",
+      "BEGIN\u0e04END",
+      "BEGIN\u0e07END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2dEND",
+      "BEGIN\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2eEND",
+      "BEGIN\u0e01END",
+      "BEGIN\u0e02END",
+      "BEGIN\u0e04END",
+      "BEGIN\u0e07END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-letters-1229",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "letters-1229",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-0-letters-1229.docx",
+    "sourceSha256": "fb701619bdbf5187a4f6d885719856b9f332495f5a4bc4ea34781a01cfc4f483",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-0-letters-1229.pdf",
+    "wordPdfSha256": "838521796a3e779d75b8cafa09677e6b9db0f68172352e732a6977f240f5339b",
+    "wordListStrings": [
+      "BEGIN\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2dEND",
+      "BEGIN\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2eEND",
+      "BEGIN\u0e01END",
+      "BEGIN\u0e02END",
+      "BEGIN\u0e04END",
+      "BEGIN\u0e07END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2dEND",
+      "BEGIN\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2eEND",
+      "BEGIN\u0e01END",
+      "BEGIN\u0e02END",
+      "BEGIN\u0e04END",
+      "BEGIN\u0e07END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-letters-1229",
+    "kind": "source",
+    "depth": 0,
+    "mode": "letters-1229",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-0-letters-1229.docx",
+    "sourceSha256": "a61a0ec5109c7d7d8f02505712fdc3ba612aa1fd1ac1cea38616521f44e01b37",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-0-letters-1229.pdf",
+    "wordPdfSha256": "92f06b4e56c3fe6a1735b8acaf6652287ee521af5e3647b75bc5eb7a155089d0",
+    "wordListStrings": [
+      "BEGIN\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2dEND",
+      "BEGIN\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2eEND",
+      "BEGIN\u0e01END",
+      "BEGIN\u0e02END",
+      "BEGIN\u0e04END",
+      "BEGIN\u0e07END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2dEND",
+      "BEGIN\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2eEND",
+      "BEGIN\u0e01END",
+      "BEGIN\u0e02END",
+      "BEGIN\u0e04END",
+      "BEGIN\u0e07END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-letters-40",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "letters-40",
+    "source": "fixtures/doc/regressions/list-markers/ThaiVietnameseMarkers/thai-vietnamese-depth-0-letters-40.doc",
+    "sourceSha256": "d4a422930618a51764e36998ed37b6f6322eca41de6d18604ae66b51ff72a0bb",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/doc/thai-vietnamese-depth-0-letters-40.pdf",
+    "wordPdfSha256": "2f3b892f05dc0abd6b0144e4d390e64b0051824c1eb289cfd486b7be6ecaabfb",
+    "wordListStrings": [
+      "BEGIN\u0e2dEND",
+      "BEGIN\u0e2eEND",
+      "BEGIN\u0e01\u0e01END",
+      "BEGIN\u0e02\u0e02END",
+      "BEGIN\u0e04\u0e04END",
+      "BEGIN\u0e07\u0e07END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e2dEND",
+      "BEGIN\u0e2eEND",
+      "BEGIN\u0e01\u0e01END",
+      "BEGIN\u0e02\u0e02END",
+      "BEGIN\u0e04\u0e04END",
+      "BEGIN\u0e07\u0e07END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-letters-40",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "letters-40",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-0-letters-40.docx",
+    "sourceSha256": "d8ef5517aeb2116e494d83f4a43be06b66a477027bfcd164967751af776f3ded",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-0-letters-40.pdf",
+    "wordPdfSha256": "f733cfe28c964ae9dafce0eaffa29e368b147b4cdba689908a60e64a8c9bfddb",
+    "wordListStrings": [
+      "BEGIN\u0e2dEND",
+      "BEGIN\u0e2eEND",
+      "BEGIN\u0e01\u0e01END",
+      "BEGIN\u0e02\u0e02END",
+      "BEGIN\u0e04\u0e04END",
+      "BEGIN\u0e07\u0e07END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e2dEND",
+      "BEGIN\u0e2eEND",
+      "BEGIN\u0e01\u0e01END",
+      "BEGIN\u0e02\u0e02END",
+      "BEGIN\u0e04\u0e04END",
+      "BEGIN\u0e07\u0e07END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-letters-40",
+    "kind": "source",
+    "depth": 0,
+    "mode": "letters-40",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-0-letters-40.docx",
+    "sourceSha256": "e4e80be5e2f14df1686374a86e1557f14a3bc2809ec70ced8c0d686ede579b5d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-0-letters-40.pdf",
+    "wordPdfSha256": "fd5f61e64d93adb69b18d81e66ae655264f1a4c0fd24b9aa1ff9d9b6fca5f5b9",
+    "wordListStrings": [
+      "BEGIN\u0e2dEND",
+      "BEGIN\u0e2eEND",
+      "BEGIN\u0e01\u0e01END",
+      "BEGIN\u0e02\u0e02END",
+      "BEGIN\u0e04\u0e04END",
+      "BEGIN\u0e07\u0e07END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e2dEND",
+      "BEGIN\u0e2eEND",
+      "BEGIN\u0e01\u0e01END",
+      "BEGIN\u0e02\u0e02END",
+      "BEGIN\u0e04\u0e04END",
+      "BEGIN\u0e07\u0e07END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-thai-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "thai-1",
+    "source": "fixtures/doc/regressions/list-markers/ThaiVietnameseMarkers/thai-vietnamese-depth-0-thai-1.doc",
+    "sourceSha256": "271b6ffd8cccfd09022626ce790e90e3ec4c5b5ce248f65153e3d5e445aa7cd9",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/doc/thai-vietnamese-depth-0-thai-1.pdf",
+    "wordPdfSha256": "5b41d4343527b3e80ef8647651047fc3177d7053faf20d7b637cfacdc65fee07",
+    "wordListStrings": [
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07END",
+      "BEGIN\u0e2a\u0e2d\u0e07END",
+      "BEGIN\u0e2a\u0e32\u0e21END",
+      "BEGIN\u0e2a\u0e35\u0e48END",
+      "BEGIN\u0e2b\u0e49\u0e32END",
+      "BEGIN\u0e2b\u0e01END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07END",
+      "BEGIN\u0e2a\u0e2d\u0e07END",
+      "BEGIN\u0e2a\u0e32\u0e21END",
+      "BEGIN\u0e2a\u0e35\u0e48END",
+      "BEGIN\u0e2b\u0e49\u0e32END",
+      "BEGIN\u0e2b\u0e01END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-thai-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "thai-1",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-0-thai-1.docx",
+    "sourceSha256": "b345ec37819c7e7aa5e4837ce2e40c948edabc82248752b9e7376c9868af2330",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-0-thai-1.pdf",
+    "wordPdfSha256": "a4b2d1d0053c4e64f1b2c3e3eb2e5cd29d711cf5df0288d12991013334f4ba87",
+    "wordListStrings": [
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07END",
+      "BEGIN\u0e2a\u0e2d\u0e07END",
+      "BEGIN\u0e2a\u0e32\u0e21END",
+      "BEGIN\u0e2a\u0e35\u0e48END",
+      "BEGIN\u0e2b\u0e49\u0e32END",
+      "BEGIN\u0e2b\u0e01END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07END",
+      "BEGIN\u0e2a\u0e2d\u0e07END",
+      "BEGIN\u0e2a\u0e32\u0e21END",
+      "BEGIN\u0e2a\u0e35\u0e48END",
+      "BEGIN\u0e2b\u0e49\u0e32END",
+      "BEGIN\u0e2b\u0e01END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-thai-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "thai-1",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-0-thai-1.docx",
+    "sourceSha256": "2eeff8d84928e0aa2b4768fa818a9d99b94893186911088f54a88df08a220be7",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-0-thai-1.pdf",
+    "wordPdfSha256": "551438321cbcce4ea20091b0261521a5ba733e9c1aec8e0cb76f74f09881c486",
+    "wordListStrings": [
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07END",
+      "BEGIN\u0e2a\u0e2d\u0e07END",
+      "BEGIN\u0e2a\u0e32\u0e21END",
+      "BEGIN\u0e2a\u0e35\u0e48END",
+      "BEGIN\u0e2b\u0e49\u0e32END",
+      "BEGIN\u0e2b\u0e01END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07END",
+      "BEGIN\u0e2a\u0e2d\u0e07END",
+      "BEGIN\u0e2a\u0e32\u0e21END",
+      "BEGIN\u0e2a\u0e35\u0e48END",
+      "BEGIN\u0e2b\u0e49\u0e32END",
+      "BEGIN\u0e2b\u0e01END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-thai-98",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "thai-98",
+    "source": "fixtures/doc/regressions/list-markers/ThaiVietnameseMarkers/thai-vietnamese-depth-0-thai-98.doc",
+    "sourceSha256": "2eaeca9ba7d7df857bb6e7d50a893bdc2805bc905e4fc2db48dcac136b1ff3bc",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/doc/thai-vietnamese-depth-0-thai-98.pdf",
+    "wordPdfSha256": "f81861d12fcb1bc7b7e5a5d0c42feab331ee570d47ceb14dda0667315e12c7a1",
+    "wordListStrings": [
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e41\u0e1b\u0e14END",
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e40\u0e01\u0e49\u0e32END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e23\u0e49\u0e2d\u0e22END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e2d\u0e47\u0e14END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e23\u0e49\u0e2d\u0e22\u0e2a\u0e2d\u0e07END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e23\u0e49\u0e2d\u0e22\u0e2a\u0e32\u0e21END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e41\u0e1b\u0e14END",
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e40\u0e01\u0e49\u0e32END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e23\u0e49\u0e2d\u0e22END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e2d\u0e47\u0e14END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e23\u0e49\u0e2d\u0e22\u0e2a\u0e2d\u0e07END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e23\u0e49\u0e2d\u0e22\u0e2a\u0e32\u0e21END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-thai-98",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "thai-98",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-0-thai-98.docx",
+    "sourceSha256": "423f25ac79720a197436b85569c594054e11a2fff085e08615a233ccb5eb96ac",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-0-thai-98.pdf",
+    "wordPdfSha256": "3f599ae63ae94b46d8e571deee368e15d428dc226593559fecfa5cbe59196e0d",
+    "wordListStrings": [
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e41\u0e1b\u0e14END",
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e40\u0e01\u0e49\u0e32END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e23\u0e49\u0e2d\u0e22END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e2d\u0e47\u0e14END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e23\u0e49\u0e2d\u0e22\u0e2a\u0e2d\u0e07END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e23\u0e49\u0e2d\u0e22\u0e2a\u0e32\u0e21END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e41\u0e1b\u0e14END",
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e40\u0e01\u0e49\u0e32END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e23\u0e49\u0e2d\u0e22END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e2d\u0e47\u0e14END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e23\u0e49\u0e2d\u0e22\u0e2a\u0e2d\u0e07END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e23\u0e49\u0e2d\u0e22\u0e2a\u0e32\u0e21END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-thai-98",
+    "kind": "source",
+    "depth": 0,
+    "mode": "thai-98",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-0-thai-98.docx",
+    "sourceSha256": "afa8af169736a49eeb30f08a54d808247559fa322d1e5e5f23cc25b9a022dd89",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-0-thai-98.pdf",
+    "wordPdfSha256": "5fc46b64b163953627d087c18125b93d6c60a1fb34df509b167524d11947dad8",
+    "wordListStrings": [
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e41\u0e1b\u0e14END",
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e40\u0e01\u0e49\u0e32END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e23\u0e49\u0e2d\u0e22END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e2d\u0e47\u0e14END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e23\u0e49\u0e2d\u0e22\u0e2a\u0e2d\u0e07END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e23\u0e49\u0e2d\u0e22\u0e2a\u0e32\u0e21END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e41\u0e1b\u0e14END",
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e40\u0e01\u0e49\u0e32END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e23\u0e49\u0e2d\u0e22END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e2d\u0e47\u0e14END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e23\u0e49\u0e2d\u0e22\u0e2a\u0e2d\u0e07END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e23\u0e49\u0e2d\u0e22\u0e2a\u0e32\u0e21END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-thai-9998",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "thai-9998",
+    "source": "fixtures/doc/regressions/list-markers/ThaiVietnameseMarkers/thai-vietnamese-depth-0-thai-9998.doc",
+    "sourceSha256": "7de04c04fe49996659e16265c78e82c22be898a751cb71c167db1afe32b73e2c",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/doc/thai-vietnamese-depth-0-thai-9998.pdf",
+    "wordPdfSha256": "373dc63d4127e7322fac8b269c63317314650124e54e80babd716c8f20821df3",
+    "wordListStrings": [
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e1e\u0e31\u0e19\u0e40\u0e01\u0e49\u0e32\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e41\u0e1b\u0e14END",
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e1e\u0e31\u0e19\u0e40\u0e01\u0e49\u0e32\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e40\u0e01\u0e49\u0e32END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e40\u0e2d\u0e47\u0e14END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e2a\u0e2d\u0e07END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e2a\u0e32\u0e21END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e1e\u0e31\u0e19\u0e40\u0e01\u0e49\u0e32\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e41\u0e1b\u0e14END",
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e1e\u0e31\u0e19\u0e40\u0e01\u0e49\u0e32\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e40\u0e01\u0e49\u0e32END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e40\u0e2d\u0e47\u0e14END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e2a\u0e2d\u0e07END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e2a\u0e32\u0e21END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-thai-9998",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "thai-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-0-thai-9998.docx",
+    "sourceSha256": "f9fbf38e6d9707f441d770ed155ae1c78e651d7de271bcbae20d4e5efe2cb52a",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-0-thai-9998.pdf",
+    "wordPdfSha256": "18172fa7e0f12a00ef222cd48a44d711c9af012d7f4bd11cd5441a81d6303ef9",
+    "wordListStrings": [
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e1e\u0e31\u0e19\u0e40\u0e01\u0e49\u0e32\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e41\u0e1b\u0e14END",
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e1e\u0e31\u0e19\u0e40\u0e01\u0e49\u0e32\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e40\u0e01\u0e49\u0e32END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e40\u0e2d\u0e47\u0e14END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e2a\u0e2d\u0e07END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e2a\u0e32\u0e21END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e1e\u0e31\u0e19\u0e40\u0e01\u0e49\u0e32\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e41\u0e1b\u0e14END",
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e1e\u0e31\u0e19\u0e40\u0e01\u0e49\u0e32\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e40\u0e01\u0e49\u0e32END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e40\u0e2d\u0e47\u0e14END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e2a\u0e2d\u0e07END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e2a\u0e32\u0e21END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-thai-9998",
+    "kind": "source",
+    "depth": 0,
+    "mode": "thai-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-0-thai-9998.docx",
+    "sourceSha256": "e0dff806e4bbe7a7f9576fcb10ffef930f61a57990c23007d6fc1a1764642847",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-0-thai-9998.pdf",
+    "wordPdfSha256": "fd66f2e508e111b8959551b8c4a547ff5c3f01664c71d60724a2b580d95c3c2d",
+    "wordListStrings": [
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e1e\u0e31\u0e19\u0e40\u0e01\u0e49\u0e32\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e41\u0e1b\u0e14END",
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e1e\u0e31\u0e19\u0e40\u0e01\u0e49\u0e32\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e40\u0e01\u0e49\u0e32END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e40\u0e2d\u0e47\u0e14END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e2a\u0e2d\u0e07END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e2a\u0e32\u0e21END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e1e\u0e31\u0e19\u0e40\u0e01\u0e49\u0e32\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e41\u0e1b\u0e14END",
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e1e\u0e31\u0e19\u0e40\u0e01\u0e49\u0e32\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e40\u0e01\u0e49\u0e32END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e40\u0e2d\u0e47\u0e14END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e2a\u0e2d\u0e07END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e2a\u0e32\u0e21END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-vietnamese-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "vietnamese-1",
+    "source": "fixtures/doc/regressions/list-markers/ThaiVietnameseMarkers/thai-vietnamese-depth-0-vietnamese-1.doc",
+    "sourceSha256": "de4cd6adc67c79fa51eeea984f2ca84d9d07a0b25e8eb6aeef6d731f78a0ae35",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/doc/thai-vietnamese-depth-0-vietnamese-1.pdf",
+    "wordPdfSha256": "bcd31f4ff4a6132fc3985ec278c50d4abe32e4a69f944bbceb3fd80c54424ab4",
+    "wordListStrings": [
+      "BEGINm\u00f4\u0323tEND",
+      "BEGINhaiEND",
+      "BEGINbaEND",
+      "BEGINb\u00f4\u0301nEND",
+      "BEGINn\u0103mEND",
+      "BEGINsa\u0301uEND"
+    ],
+    "pdfLabels": [
+      "BEGINm\u00f4\u0323tEND",
+      "BEGINhaiEND",
+      "BEGINbaEND",
+      "BEGINb\u00f4\u0301nEND",
+      "BEGINn\u0103mEND",
+      "BEGINsa\u0301uEND"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-vietnamese-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "vietnamese-1",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-0-vietnamese-1.docx",
+    "sourceSha256": "0d69a2a394bdbc94dd357fb0b8fedb5d02d8abf21d9cbd78eb5ed73e145462d4",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-0-vietnamese-1.pdf",
+    "wordPdfSha256": "e9e08d0063f912732a8afa1acb90e198bb0be939158b11f0428aa37f78764e98",
+    "wordListStrings": [
+      "BEGINm\u00f4\u0323tEND",
+      "BEGINhaiEND",
+      "BEGINbaEND",
+      "BEGINb\u00f4\u0301nEND",
+      "BEGINn\u0103mEND",
+      "BEGINsa\u0301uEND"
+    ],
+    "pdfLabels": [
+      "BEGINm\u00f4\u0323tEND",
+      "BEGINhaiEND",
+      "BEGINbaEND",
+      "BEGINb\u00f4\u0301nEND",
+      "BEGINn\u0103mEND",
+      "BEGINsa\u0301uEND"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-vietnamese-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "vietnamese-1",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-0-vietnamese-1.docx",
+    "sourceSha256": "4d5c21adb635588438171d497f315542009982f65533da446268ad95f09a68fc",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-0-vietnamese-1.pdf",
+    "wordPdfSha256": "de4abeb361a679257ce61d85e7b318dad05e7028ed9b655fbd457550953e804d",
+    "wordListStrings": [
+      "BEGINm\u00f4\u0323tEND",
+      "BEGINhaiEND",
+      "BEGINbaEND",
+      "BEGINb\u00f4\u0301nEND",
+      "BEGINn\u0103mEND",
+      "BEGINsa\u0301uEND"
+    ],
+    "pdfLabels": [
+      "BEGINm\u00f4\u0323tEND",
+      "BEGINhaiEND",
+      "BEGINbaEND",
+      "BEGINb\u00f4\u0301nEND",
+      "BEGINn\u0103mEND",
+      "BEGINsa\u0301uEND"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-vietnamese-98",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "vietnamese-98",
+    "source": "fixtures/doc/regressions/list-markers/ThaiVietnameseMarkers/thai-vietnamese-depth-0-vietnamese-98.doc",
+    "sourceSha256": "334822d9df6f365cbb5af26cca1aa09f702e5ff3d9a7f6d0ae97fa9215d3a9e4",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/doc/thai-vietnamese-depth-0-vietnamese-98.pdf",
+    "wordPdfSha256": "43bd7288cdf2e598878dfce87a9375a6f5ba178f15e909e308f89859995e5287",
+    "wordListStrings": [
+      "BEGINchi\u0301n m\u01b0\u01a1i ta\u0301mEND",
+      "BEGINchi\u0301n m\u01b0\u01a1i chi\u0301nEND",
+      "BEGINm\u00f4\u0323t tr\u0103mEND",
+      "BEGINm\u00f4\u0323t tr\u0103m le\u0309 m\u00f4\u0323tEND",
+      "BEGINm\u00f4\u0323t tr\u0103m le\u0309 haiEND",
+      "BEGINm\u00f4\u0323t tr\u0103m le\u0309 baEND"
+    ],
+    "pdfLabels": [
+      "BEGINchi\u0301n m\u01b0\u01a1i ta\u0301mEND",
+      "BEGINchi\u0301n m\u01b0\u01a1i chi\u0301nEND",
+      "BEGINm\u00f4\u0323t tr\u0103mEND",
+      "BEGINm\u00f4\u0323t tr\u0103m le\u0309 m\u00f4\u0323tEND",
+      "BEGINm\u00f4\u0323t tr\u0103m le\u0309 haiEND",
+      "BEGINm\u00f4\u0323t tr\u0103m le\u0309 baEND"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-vietnamese-98",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "vietnamese-98",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-0-vietnamese-98.docx",
+    "sourceSha256": "1285d8c07b3b618158ac2bf9f039ebf19ef3ab4167cf7ee9b9d684e393281dab",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-0-vietnamese-98.pdf",
+    "wordPdfSha256": "2a47859fc6d6dda8556b2853a1f178afb012538078e848b1ad6883f2b7b8e27f",
+    "wordListStrings": [
+      "BEGINchi\u0301n m\u01b0\u01a1i ta\u0301mEND",
+      "BEGINchi\u0301n m\u01b0\u01a1i chi\u0301nEND",
+      "BEGINm\u00f4\u0323t tr\u0103mEND",
+      "BEGINm\u00f4\u0323t tr\u0103m le\u0309 m\u00f4\u0323tEND",
+      "BEGINm\u00f4\u0323t tr\u0103m le\u0309 haiEND",
+      "BEGINm\u00f4\u0323t tr\u0103m le\u0309 baEND"
+    ],
+    "pdfLabels": [
+      "BEGINchi\u0301n m\u01b0\u01a1i ta\u0301mEND",
+      "BEGINchi\u0301n m\u01b0\u01a1i chi\u0301nEND",
+      "BEGINm\u00f4\u0323t tr\u0103mEND",
+      "BEGINm\u00f4\u0323t tr\u0103m le\u0309 m\u00f4\u0323tEND",
+      "BEGINm\u00f4\u0323t tr\u0103m le\u0309 haiEND",
+      "BEGINm\u00f4\u0323t tr\u0103m le\u0309 baEND"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-vietnamese-98",
+    "kind": "source",
+    "depth": 0,
+    "mode": "vietnamese-98",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-0-vietnamese-98.docx",
+    "sourceSha256": "245351b8fe1f60096d7698628695936c53aa4e70cb678042a358991a03c1c752",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-0-vietnamese-98.pdf",
+    "wordPdfSha256": "2aae64b3b4894f7cf100be754fde0c926c647a9d89332f5cb19c6789e19b397f",
+    "wordListStrings": [
+      "BEGINchi\u0301n m\u01b0\u01a1i ta\u0301mEND",
+      "BEGINchi\u0301n m\u01b0\u01a1i chi\u0301nEND",
+      "BEGINm\u00f4\u0323t tr\u0103mEND",
+      "BEGINm\u00f4\u0323t tr\u0103m le\u0309 m\u00f4\u0323tEND",
+      "BEGINm\u00f4\u0323t tr\u0103m le\u0309 haiEND",
+      "BEGINm\u00f4\u0323t tr\u0103m le\u0309 baEND"
+    ],
+    "pdfLabels": [
+      "BEGINchi\u0301n m\u01b0\u01a1i ta\u0301mEND",
+      "BEGINchi\u0301n m\u01b0\u01a1i chi\u0301nEND",
+      "BEGINm\u00f4\u0323t tr\u0103mEND",
+      "BEGINm\u00f4\u0323t tr\u0103m le\u0309 m\u00f4\u0323tEND",
+      "BEGINm\u00f4\u0323t tr\u0103m le\u0309 haiEND",
+      "BEGINm\u00f4\u0323t tr\u0103m le\u0309 baEND"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-vietnamese-998",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "vietnamese-998",
+    "source": "fixtures/doc/regressions/list-markers/ThaiVietnameseMarkers/thai-vietnamese-depth-0-vietnamese-998.doc",
+    "sourceSha256": "9da22c38867a76a09b7f6d541927122aa0fe03333b75850b46ff7587f3372ea6",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/doc/thai-vietnamese-depth-0-vietnamese-998.pdf",
+    "wordPdfSha256": "20ba1d44faa57ecbde83439e2923ac3f222a309d5ef603bef30a8fc85a9fd9a9",
+    "wordListStrings": [
+      "BEGINchi\u0301n tr\u0103m chi\u0301n m\u01b0\u01a1i ta\u0301mEND",
+      "BEGINchi\u0301n tr\u0103m chi\u0301n m\u01b0\u01a1i chi\u0301nEND",
+      "BEGINm\u00f4\u0323t nga\u0300nEND",
+      "BEGINm\u00f4\u0323tEND",
+      "BEGINhaiEND",
+      "BEGINbaEND"
+    ],
+    "pdfLabels": [
+      "BEGINchi\u0301n tr\u0103m chi\u0301n m\u01b0\u01a1i ta\u0301mEND",
+      "BEGINchi\u0301n tr\u0103m chi\u0301n m\u01b0\u01a1i chi\u0301nEND",
+      "BEGINm\u00f4\u0323t nga\u0300nEND",
+      "BEGINm\u00f4\u0323tEND",
+      "BEGINhaiEND",
+      "BEGINbaEND"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-vietnamese-998",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "vietnamese-998",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-0-vietnamese-998.docx",
+    "sourceSha256": "b1f68bae29c306ce6340ed44294c2071aea2950db39fc3ca7699dbc484ea2575",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-0-vietnamese-998.pdf",
+    "wordPdfSha256": "01b44710bfa2416e009cb2049b14c1619a8340a653933fb3a6a1dda50e797788",
+    "wordListStrings": [
+      "BEGINchi\u0301n tr\u0103m chi\u0301n m\u01b0\u01a1i ta\u0301mEND",
+      "BEGINchi\u0301n tr\u0103m chi\u0301n m\u01b0\u01a1i chi\u0301nEND",
+      "BEGINm\u00f4\u0323t nga\u0300nEND",
+      "BEGINm\u00f4\u0323tEND",
+      "BEGINhaiEND",
+      "BEGINbaEND"
+    ],
+    "pdfLabels": [
+      "BEGINchi\u0301n tr\u0103m chi\u0301n m\u01b0\u01a1i ta\u0301mEND",
+      "BEGINchi\u0301n tr\u0103m chi\u0301n m\u01b0\u01a1i chi\u0301nEND",
+      "BEGINm\u00f4\u0323t nga\u0300nEND",
+      "BEGINm\u00f4\u0323tEND",
+      "BEGINhaiEND",
+      "BEGINbaEND"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-0-vietnamese-998",
+    "kind": "source",
+    "depth": 0,
+    "mode": "vietnamese-998",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-0-vietnamese-998.docx",
+    "sourceSha256": "677931c32b231ca0ea05a609ffd0c2dd08551c5ed63d013abc5d317d102676cc",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-0-vietnamese-998.pdf",
+    "wordPdfSha256": "f0f22189513f229d22db75cea2bf478d187957c407997aac53de6ff1d33bd699",
+    "wordListStrings": [
+      "BEGINchi\u0301n tr\u0103m chi\u0301n m\u01b0\u01a1i ta\u0301mEND",
+      "BEGINchi\u0301n tr\u0103m chi\u0301n m\u01b0\u01a1i chi\u0301nEND",
+      "BEGINm\u00f4\u0323t nga\u0300nEND",
+      "BEGINm\u00f4\u0323tEND",
+      "BEGINhaiEND",
+      "BEGINbaEND"
+    ],
+    "pdfLabels": [
+      "BEGINchi\u0301n tr\u0103m chi\u0301n m\u01b0\u01a1i ta\u0301mEND",
+      "BEGINchi\u0301n tr\u0103m chi\u0301n m\u01b0\u01a1i chi\u0301nEND",
+      "BEGINm\u00f4\u0323t nga\u0300nEND",
+      "BEGINm\u00f4\u0323tEND",
+      "BEGINhaiEND",
+      "BEGINbaEND"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-8-digits-9998",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "digits-9998",
+    "source": "fixtures/doc/regressions/list-markers/ThaiVietnameseMarkers/thai-vietnamese-depth-8-digits-9998.doc",
+    "sourceSha256": "00d7bd7b8fa751fef8f32dfb5eb1090821ea80371f586ee536ee6da51d22797f",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/doc/thai-vietnamese-depth-8-digits-9998.pdf",
+    "wordPdfSha256": "8850e328502c610e4f7a7539318a39e750739180495148583b7866bdfc43ee12",
+    "wordListStrings": [
+      "BEGIN\u0e59\u0e59\u0e59\u0e58END",
+      "BEGIN\u0e59\u0e59\u0e59\u0e59END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e50END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e51END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e52END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e53END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e59\u0e59\u0e59\u0e58END",
+      "BEGIN\u0e59\u0e59\u0e59\u0e59END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e50END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e51END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e52END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e53END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-8-digits-9998",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "digits-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-8-digits-9998.docx",
+    "sourceSha256": "220d3cdcebb28aa866f666e9dca56785444ede3f09fd0a8651c2b42005035bfd",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-8-digits-9998.pdf",
+    "wordPdfSha256": "8b26a29b1f874a5ac914950a42b7f3f30a5bb64fc66c559262495f557ede43d6",
+    "wordListStrings": [
+      "BEGIN\u0e59\u0e59\u0e59\u0e58END",
+      "BEGIN\u0e59\u0e59\u0e59\u0e59END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e50END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e51END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e52END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e53END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e59\u0e59\u0e59\u0e58END",
+      "BEGIN\u0e59\u0e59\u0e59\u0e59END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e50END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e51END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e52END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e53END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-8-digits-9998",
+    "kind": "source",
+    "depth": 8,
+    "mode": "digits-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-8-digits-9998.docx",
+    "sourceSha256": "4e341a76e5198c3d6fb5ee64c2676529d5811c19eb4d1f572a06b9f102f642e9",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-8-digits-9998.pdf",
+    "wordPdfSha256": "5a707513ac87ece860dbf1e91157a6c1d0824f53beced8e63eaa8ffccf473d67",
+    "wordListStrings": [
+      "BEGIN\u0e59\u0e59\u0e59\u0e58END",
+      "BEGIN\u0e59\u0e59\u0e59\u0e59END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e50END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e51END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e52END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e53END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e59\u0e59\u0e59\u0e58END",
+      "BEGIN\u0e59\u0e59\u0e59\u0e59END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e50END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e51END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e52END",
+      "BEGIN\u0e51\u0e50\u0e50\u0e50\u0e53END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-8-letters-1229",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "letters-1229",
+    "source": "fixtures/doc/regressions/list-markers/ThaiVietnameseMarkers/thai-vietnamese-depth-8-letters-1229.doc",
+    "sourceSha256": "4e673d26bc0284318df2ea9ca3a302cd746ae1f8116759edabc8da6c877d9b84",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/doc/thai-vietnamese-depth-8-letters-1229.pdf",
+    "wordPdfSha256": "06cb5a6e56bfae6c24eda2f67bd7c6a552e44d651523cee7714f1a48cd91f841",
+    "wordListStrings": [
+      "BEGIN\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2dEND",
+      "BEGIN\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2eEND",
+      "BEGIN\u0e01END",
+      "BEGIN\u0e02END",
+      "BEGIN\u0e04END",
+      "BEGIN\u0e07END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2dEND",
+      "BEGIN\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2eEND",
+      "BEGIN\u0e01END",
+      "BEGIN\u0e02END",
+      "BEGIN\u0e04END",
+      "BEGIN\u0e07END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-8-letters-1229",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "letters-1229",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-8-letters-1229.docx",
+    "sourceSha256": "2a925cd2f487d383e5dfead26cec64041ac732fe68fafd13afe461e2a0abf383",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-8-letters-1229.pdf",
+    "wordPdfSha256": "622a44e397aca9a7ef76a59487d7c705d186b9e5cff968f7891a95edd3a40044",
+    "wordListStrings": [
+      "BEGIN\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2dEND",
+      "BEGIN\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2eEND",
+      "BEGIN\u0e01END",
+      "BEGIN\u0e02END",
+      "BEGIN\u0e04END",
+      "BEGIN\u0e07END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2dEND",
+      "BEGIN\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2eEND",
+      "BEGIN\u0e01END",
+      "BEGIN\u0e02END",
+      "BEGIN\u0e04END",
+      "BEGIN\u0e07END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-8-letters-1229",
+    "kind": "source",
+    "depth": 8,
+    "mode": "letters-1229",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-8-letters-1229.docx",
+    "sourceSha256": "4f8a4b5f1b3e78779617459f8dd95938522407839800f428520ebae3e2473694",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-8-letters-1229.pdf",
+    "wordPdfSha256": "b37892017ed93c7c684ec0f72c3229ea294a8f8fe78d525f22ccc819192ce5b6",
+    "wordListStrings": [
+      "BEGIN\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2dEND",
+      "BEGIN\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2eEND",
+      "BEGIN\u0e01END",
+      "BEGIN\u0e02END",
+      "BEGIN\u0e04END",
+      "BEGIN\u0e07END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2d\u0e2dEND",
+      "BEGIN\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2e\u0e2eEND",
+      "BEGIN\u0e01END",
+      "BEGIN\u0e02END",
+      "BEGIN\u0e04END",
+      "BEGIN\u0e07END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-8-thai-9998",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "thai-9998",
+    "source": "fixtures/doc/regressions/list-markers/ThaiVietnameseMarkers/thai-vietnamese-depth-8-thai-9998.doc",
+    "sourceSha256": "c5c082d861316605e1eedd2796ec9ab281981b9d4e5f35a23f6865dc37fbd5ce",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/doc/thai-vietnamese-depth-8-thai-9998.pdf",
+    "wordPdfSha256": "6572363d56679f0d00573ecc230ed266efbb757464d34e033c8b74a59591e41c",
+    "wordListStrings": [
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e1e\u0e31\u0e19\u0e40\u0e01\u0e49\u0e32\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e41\u0e1b\u0e14END",
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e1e\u0e31\u0e19\u0e40\u0e01\u0e49\u0e32\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e40\u0e01\u0e49\u0e32END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e40\u0e2d\u0e47\u0e14END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e2a\u0e2d\u0e07END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e2a\u0e32\u0e21END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e1e\u0e31\u0e19\u0e40\u0e01\u0e49\u0e32\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e41\u0e1b\u0e14END",
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e1e\u0e31\u0e19\u0e40\u0e01\u0e49\u0e32\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e40\u0e01\u0e49\u0e32END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e40\u0e2d\u0e47\u0e14END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e2a\u0e2d\u0e07END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e2a\u0e32\u0e21END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-8-thai-9998",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "thai-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-8-thai-9998.docx",
+    "sourceSha256": "f7779282429c3b8d92e03058c31c5c4c226885e1e9d15396982fb3a989ef7df8",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-8-thai-9998.pdf",
+    "wordPdfSha256": "3b825d4bf4976118794d775ad11dbd0dafb1c1114e04b27d302d431a5727218a",
+    "wordListStrings": [
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e1e\u0e31\u0e19\u0e40\u0e01\u0e49\u0e32\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e41\u0e1b\u0e14END",
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e1e\u0e31\u0e19\u0e40\u0e01\u0e49\u0e32\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e40\u0e01\u0e49\u0e32END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e40\u0e2d\u0e47\u0e14END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e2a\u0e2d\u0e07END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e2a\u0e32\u0e21END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e1e\u0e31\u0e19\u0e40\u0e01\u0e49\u0e32\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e41\u0e1b\u0e14END",
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e1e\u0e31\u0e19\u0e40\u0e01\u0e49\u0e32\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e40\u0e01\u0e49\u0e32END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e40\u0e2d\u0e47\u0e14END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e2a\u0e2d\u0e07END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e2a\u0e32\u0e21END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-8-thai-9998",
+    "kind": "source",
+    "depth": 8,
+    "mode": "thai-9998",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-8-thai-9998.docx",
+    "sourceSha256": "d745d5e761056cd6f485c101709eb4c8f8cb20e4c1a43bc7eb520c18a84ae313",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-8-thai-9998.pdf",
+    "wordPdfSha256": "ab437fa45462578d03e5b920182b0d52c3a8376a34b22e496300b3ccd2837df5",
+    "wordListStrings": [
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e1e\u0e31\u0e19\u0e40\u0e01\u0e49\u0e32\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e41\u0e1b\u0e14END",
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e1e\u0e31\u0e19\u0e40\u0e01\u0e49\u0e32\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e40\u0e01\u0e49\u0e32END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e40\u0e2d\u0e47\u0e14END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e2a\u0e2d\u0e07END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e2a\u0e32\u0e21END"
+    ],
+    "pdfLabels": [
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e1e\u0e31\u0e19\u0e40\u0e01\u0e49\u0e32\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e41\u0e1b\u0e14END",
+      "BEGIN\u0e40\u0e01\u0e49\u0e32\u0e1e\u0e31\u0e19\u0e40\u0e01\u0e49\u0e32\u0e23\u0e49\u0e2d\u0e22\u0e40\u0e01\u0e49\u0e32\u0e2a\u0e34\u0e1a\u0e40\u0e01\u0e49\u0e32END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e40\u0e2d\u0e47\u0e14END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e2a\u0e2d\u0e07END",
+      "BEGIN\u0e2b\u0e19\u0e36\u0e48\u0e07\u0e2b\u0e21\u0e37\u0e48\u0e19\u0e2a\u0e32\u0e21END"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-8-vietnamese-998",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "vietnamese-998",
+    "source": "fixtures/doc/regressions/list-markers/ThaiVietnameseMarkers/thai-vietnamese-depth-8-vietnamese-998.doc",
+    "sourceSha256": "14156294e93f1b92fece479cf1be23b7c2eda24587eb8eb295c645c229fd0eec",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/doc/thai-vietnamese-depth-8-vietnamese-998.pdf",
+    "wordPdfSha256": "8c8a0c14ec5541bf75a0f05c15661acc7c8cd3d801a10900d3395d29cef56783",
+    "wordListStrings": [
+      "BEGINchi\u0301n tr\u0103m chi\u0301n m\u01b0\u01a1i ta\u0301mEND",
+      "BEGINchi\u0301n tr\u0103m chi\u0301n m\u01b0\u01a1i chi\u0301nEND",
+      "BEGINm\u00f4\u0323t nga\u0300nEND",
+      "BEGINm\u00f4\u0323tEND",
+      "BEGINhaiEND",
+      "BEGINbaEND"
+    ],
+    "pdfLabels": [
+      "BEGINchi\u0301n tr\u0103m chi\u0301n m\u01b0\u01a1i ta\u0301mEND",
+      "BEGINchi\u0301n tr\u0103m chi\u0301n m\u01b0\u01a1i chi\u0301nEND",
+      "BEGINm\u00f4\u0323t nga\u0300nEND",
+      "BEGINm\u00f4\u0323tEND",
+      "BEGINhaiEND",
+      "BEGINbaEND"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-8-vietnamese-998",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "vietnamese-998",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-8-vietnamese-998.docx",
+    "sourceSha256": "7c62fe7447b7ccf525c6edb7b86886f2cb93012da78e9a356692bb87ef42969d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/projected/thai-vietnamese-depth-8-vietnamese-998.pdf",
+    "wordPdfSha256": "9f8a447aeddbc93e6eeecaa7874b39a4fac29cfafda8444323966a521c5d6cae",
+    "wordListStrings": [
+      "BEGINchi\u0301n tr\u0103m chi\u0301n m\u01b0\u01a1i ta\u0301mEND",
+      "BEGINchi\u0301n tr\u0103m chi\u0301n m\u01b0\u01a1i chi\u0301nEND",
+      "BEGINm\u00f4\u0323t nga\u0300nEND",
+      "BEGINm\u00f4\u0323tEND",
+      "BEGINhaiEND",
+      "BEGINbaEND"
+    ],
+    "pdfLabels": [
+      "BEGINchi\u0301n tr\u0103m chi\u0301n m\u01b0\u01a1i ta\u0301mEND",
+      "BEGINchi\u0301n tr\u0103m chi\u0301n m\u01b0\u01a1i chi\u0301nEND",
+      "BEGINm\u00f4\u0323t nga\u0300nEND",
+      "BEGINm\u00f4\u0323tEND",
+      "BEGINhaiEND",
+      "BEGINbaEND"
+    ]
+  },
+  {
+    "name": "thai-vietnamese-depth-8-vietnamese-998",
+    "kind": "source",
+    "depth": 8,
+    "mode": "vietnamese-998",
+    "source": "fixtures/docx/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-8-vietnamese-998.docx",
+    "sourceSha256": "82e60635b5c024582fcec4532f7b84b451bf31af0bc55d81dca1bc53b78f2d71",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocThaiVietnameseMarkers/source/thai-vietnamese-depth-8-vietnamese-998.pdf",
+    "wordPdfSha256": "afd97323a635695a61ac58263968f3fd34655d030e165abfa116c732dad2e7b7",
+    "wordListStrings": [
+      "BEGINchi\u0301n tr\u0103m chi\u0301n m\u01b0\u01a1i ta\u0301mEND",
+      "BEGINchi\u0301n tr\u0103m chi\u0301n m\u01b0\u01a1i chi\u0301nEND",
+      "BEGINm\u00f4\u0323t nga\u0300nEND",
+      "BEGINm\u00f4\u0323tEND",
+      "BEGINhaiEND",
+      "BEGINbaEND"
+    ],
+    "pdfLabels": [
+      "BEGINchi\u0301n tr\u0103m chi\u0301n m\u01b0\u01a1i ta\u0301mEND",
+      "BEGINchi\u0301n tr\u0103m chi\u0301n m\u01b0\u01a1i chi\u0301nEND",
+      "BEGINm\u00f4\u0323t nga\u0300nEND",
+      "BEGINm\u00f4\u0323tEND",
+      "BEGINhaiEND",
+      "BEGINbaEND"
+    ]
+  }
+]

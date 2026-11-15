@@ -193,6 +193,10 @@ internal static class DocOpenXmlListReader
             format == NumberFormatValues.HindiConsonants ? (byte)0x32 :
             format == NumberFormatValues.HindiNumbers ? (byte)0x33 :
             format == NumberFormatValues.HindiCounting ? (byte)0x34 :
+            format == NumberFormatValues.ThaiLetters ? (byte)0x35 :
+            format == NumberFormatValues.ThaiNumbers ? (byte)0x36 :
+            format == NumberFormatValues.ThaiCounting ? (byte)0x37 :
+            format == NumberFormatValues.VietnameseCounting ? (byte)0x38 :
             format == NumberFormatValues.NumberInDash ? (byte)0x39 :
             format == NumberFormatValues.RussianLower ? (byte)0x3A :
             format == NumberFormatValues.RussianUpper ? (byte)0x3B :
