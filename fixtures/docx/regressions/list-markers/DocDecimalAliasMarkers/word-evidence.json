@@ -1,0 +1,626 @@
+[
+  {
+    "name": "decimal-alias-depth-0-definition-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "definition-1",
+    "source": "fixtures/doc/regressions/list-markers/DecimalAliasMarkers/decimal-alias-depth-0-definition-1.doc",
+    "sourceSha256": "434868c9642d7e7a72dcdcd88ad1823e12b34174ded2c6c1ca5870055240f364",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocDecimalAliasMarkers/doc/decimal-alias-depth-0-definition-1.pdf",
+    "wordPdfSha256": "972d16b062618b781462c8ed6fcaddca7a7cdfcf774f67c8ada06338fb4cc8c4",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  {
+    "name": "decimal-alias-depth-0-definition-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "definition-1",
+    "source": "fixtures/docx/regressions/list-markers/DocDecimalAliasMarkers/projected/decimal-alias-depth-0-definition-1.docx",
+    "sourceSha256": "2e4cec6feba7015853da7dfab58100c279bfed8085eb6d9b762d136177b4f084",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocDecimalAliasMarkers/projected/decimal-alias-depth-0-definition-1.pdf",
+    "wordPdfSha256": "bc6f170008bc4d1eebe74bb9cee336692046401db4de78b28b68030720a75c1d",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  {
+    "name": "decimal-alias-depth-0-definition-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "definition-1",
+    "source": "fixtures/docx/regressions/list-markers/DocDecimalAliasMarkers/source/decimal-alias-depth-0-definition-1.docx",
+    "sourceSha256": "6ce41235465a0a698bf8d8e5b4f977e78a16a61d7604cb3d54f04854bec83396",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocDecimalAliasMarkers/source/decimal-alias-depth-0-definition-1.pdf",
+    "wordPdfSha256": "35e582cc048d98c0040360435a8d2d992c3fb4f2408f008014389c3cd1a9cde4",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  {
+    "name": "decimal-alias-depth-0-definition-98",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "definition-98",
+    "source": "fixtures/doc/regressions/list-markers/DecimalAliasMarkers/decimal-alias-depth-0-definition-98.doc",
+    "sourceSha256": "f2020dc751bb0f296cb3fe269117af6af0480af15e1b4e1cb7d48308a8d3d0ac",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocDecimalAliasMarkers/doc/decimal-alias-depth-0-definition-98.pdf",
+    "wordPdfSha256": "8f0277d8c91751b5113f6cf920b847e287380e0bcbd41decbe99cd5f3f17cd3f",
+    "wordListStrings": [
+      "BEGIN98END",
+      "BEGIN99END",
+      "BEGIN100END",
+      "BEGIN101END",
+      "BEGIN102END",
+      "BEGIN103END"
+    ],
+    "pdfLabels": [
+      "BEGIN98END",
+      "BEGIN99END",
+      "BEGIN100END",
+      "BEGIN101END",
+      "BEGIN102END",
+      "BEGIN103END"
+    ]
+  },
+  {
+    "name": "decimal-alias-depth-0-definition-98",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "definition-98",
+    "source": "fixtures/docx/regressions/list-markers/DocDecimalAliasMarkers/projected/decimal-alias-depth-0-definition-98.docx",
+    "sourceSha256": "721f55fc07d9dfcfcc44ea99a253edf53df1ebe0c45d2da64ea8ce53a8435406",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocDecimalAliasMarkers/projected/decimal-alias-depth-0-definition-98.pdf",
+    "wordPdfSha256": "9ef17adb53170b750319500724bae6f1d0127173516eae28bd22cb54af3cff1e",
+    "wordListStrings": [
+      "BEGIN98END",
+      "BEGIN99END",
+      "BEGIN100END",
+      "BEGIN101END",
+      "BEGIN102END",
+      "BEGIN103END"
+    ],
+    "pdfLabels": [
+      "BEGIN98END",
+      "BEGIN99END",
+      "BEGIN100END",
+      "BEGIN101END",
+      "BEGIN102END",
+      "BEGIN103END"
+    ]
+  },
+  {
+    "name": "decimal-alias-depth-0-definition-98",
+    "kind": "source",
+    "depth": 0,
+    "mode": "definition-98",
+    "source": "fixtures/docx/regressions/list-markers/DocDecimalAliasMarkers/source/decimal-alias-depth-0-definition-98.docx",
+    "sourceSha256": "8c42e3194d2a683a76bc7b82bf3f814ad3b62e0a6da676ece09f3480735ae585",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocDecimalAliasMarkers/source/decimal-alias-depth-0-definition-98.pdf",
+    "wordPdfSha256": "5bd99c500179718ad404c9aab9a725018a9131eaa0ede1d59f82324c4f1c5d1e",
+    "wordListStrings": [
+      "BEGIN98END",
+      "BEGIN99END",
+      "BEGIN100END",
+      "BEGIN101END",
+      "BEGIN102END",
+      "BEGIN103END"
+    ],
+    "pdfLabels": [
+      "BEGIN98END",
+      "BEGIN99END",
+      "BEGIN100END",
+      "BEGIN101END",
+      "BEGIN102END",
+      "BEGIN103END"
+    ]
+  },
+  {
+    "name": "decimal-alias-depth-0-override-1",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "override-1",
+    "source": "fixtures/doc/regressions/list-markers/DecimalAliasMarkers/decimal-alias-depth-0-override-1.doc",
+    "sourceSha256": "963ed245beae0db356ec8015e1ef75f144d1cafa88d77eada776dbd29bacef03",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocDecimalAliasMarkers/doc/decimal-alias-depth-0-override-1.pdf",
+    "wordPdfSha256": "9f8070e66b54a06c8d1b8a7d297e1bdfd3b19e6a6d60ac4cd39d6007a6fc7ded",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "decimal-alias-depth-0-override-1",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "override-1",
+    "source": "fixtures/docx/regressions/list-markers/DocDecimalAliasMarkers/projected/decimal-alias-depth-0-override-1.docx",
+    "sourceSha256": "025b3223eab1afce9086e00acb2d27b3b2077eac269b2c06e3c5f7d9a230d966",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocDecimalAliasMarkers/projected/decimal-alias-depth-0-override-1.pdf",
+    "wordPdfSha256": "0ef26bbc0080983fa82e8994025adc408fdead2c45b26ce5750c97ef6f79b6d7",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "decimal-alias-depth-0-override-1",
+    "kind": "source",
+    "depth": 0,
+    "mode": "override-1",
+    "source": "fixtures/docx/regressions/list-markers/DocDecimalAliasMarkers/source/decimal-alias-depth-0-override-1.docx",
+    "sourceSha256": "b51dc50e80fb1c3060f4419bf439a09bb17547cec1a4ba6d13207fa799c748e3",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocDecimalAliasMarkers/source/decimal-alias-depth-0-override-1.pdf",
+    "wordPdfSha256": "4b262be26bbc934f539bb58df77eefa57559a8d8e622c9fae3fb6446a7b0344e",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "decimal-alias-depth-0-override-98",
+    "kind": "doc",
+    "depth": 0,
+    "mode": "override-98",
+    "source": "fixtures/doc/regressions/list-markers/DecimalAliasMarkers/decimal-alias-depth-0-override-98.doc",
+    "sourceSha256": "0a2c97a4d0c09ac958f3ccd186c299ccdb900dfc72039f37bf25ccb85f96fe93",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocDecimalAliasMarkers/doc/decimal-alias-depth-0-override-98.pdf",
+    "wordPdfSha256": "5dc53faf13864ed914ff436a8e3ecfcb6493787062d56e7caf030e538301c364",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "decimal-alias-depth-0-override-98",
+    "kind": "projected",
+    "depth": 0,
+    "mode": "override-98",
+    "source": "fixtures/docx/regressions/list-markers/DocDecimalAliasMarkers/projected/decimal-alias-depth-0-override-98.docx",
+    "sourceSha256": "ace72bf0e80097e5215766924d8b2777e2e237765ee9e242faef1285e82d49fe",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocDecimalAliasMarkers/projected/decimal-alias-depth-0-override-98.pdf",
+    "wordPdfSha256": "b08c3065a8a9577b3fecd7f36661a21d6916076942302d307caba59c36373b0a",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "decimal-alias-depth-0-override-98",
+    "kind": "source",
+    "depth": 0,
+    "mode": "override-98",
+    "source": "fixtures/docx/regressions/list-markers/DocDecimalAliasMarkers/source/decimal-alias-depth-0-override-98.docx",
+    "sourceSha256": "0d054277b3da071ee4be405df168d732d998fc564f9898a1648edfcc4d648c89",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocDecimalAliasMarkers/source/decimal-alias-depth-0-override-98.pdf",
+    "wordPdfSha256": "6d82391a759c2366ab436c514a73ed40cf9d9a42dd48115521361427da124e61",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "decimal-alias-depth-8-definition-1",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "definition-1",
+    "source": "fixtures/doc/regressions/list-markers/DecimalAliasMarkers/decimal-alias-depth-8-definition-1.doc",
+    "sourceSha256": "1c75649f81f68c51b53b514ebcc720d8abf0f3b39448e46fa8f59b3697ca55af",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocDecimalAliasMarkers/doc/decimal-alias-depth-8-definition-1.pdf",
+    "wordPdfSha256": "4c8345728d85b31f44ab6ce8b3a3e4225b1d3fcafa80e38228d4c8b0ebae85bc",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  {
+    "name": "decimal-alias-depth-8-definition-1",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "definition-1",
+    "source": "fixtures/docx/regressions/list-markers/DocDecimalAliasMarkers/projected/decimal-alias-depth-8-definition-1.docx",
+    "sourceSha256": "57e9b9030e0fa43704fc0d96ed0c10fb5de2ac4e44eb3f7c39d4a212f8af2e3b",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocDecimalAliasMarkers/projected/decimal-alias-depth-8-definition-1.pdf",
+    "wordPdfSha256": "c226c0fa79d11fe417c972ef316bfb597958afbd58265f5f53cd10f43ab6a3a5",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  {
+    "name": "decimal-alias-depth-8-definition-1",
+    "kind": "source",
+    "depth": 8,
+    "mode": "definition-1",
+    "source": "fixtures/docx/regressions/list-markers/DocDecimalAliasMarkers/source/decimal-alias-depth-8-definition-1.docx",
+    "sourceSha256": "da2c60a711cc643504fada5e4aa5b293ac1ff64e1fa0527b18da5501ec223b37",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocDecimalAliasMarkers/source/decimal-alias-depth-8-definition-1.pdf",
+    "wordPdfSha256": "c7072f4f397917cf13cbe41f35000999d85950bffbd8de726790402767be6b65",
+    "wordListStrings": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ],
+    "pdfLabels": [
+      "BEGIN1END",
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END"
+    ]
+  },
+  {
+    "name": "decimal-alias-depth-8-definition-98",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "definition-98",
+    "source": "fixtures/doc/regressions/list-markers/DecimalAliasMarkers/decimal-alias-depth-8-definition-98.doc",
+    "sourceSha256": "fffd3f829acab605b3802e5b8688d30331af2728b280b6c34df46836530a3348",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocDecimalAliasMarkers/doc/decimal-alias-depth-8-definition-98.pdf",
+    "wordPdfSha256": "1b5e817edcb2459fd23bc828d447f647be68cdd4315442a0a7f1e5001930f08f",
+    "wordListStrings": [
+      "BEGIN98END",
+      "BEGIN99END",
+      "BEGIN100END",
+      "BEGIN101END",
+      "BEGIN102END",
+      "BEGIN103END"
+    ],
+    "pdfLabels": [
+      "BEGIN98END",
+      "BEGIN99END",
+      "BEGIN100END",
+      "BEGIN101END",
+      "BEGIN102END",
+      "BEGIN103END"
+    ]
+  },
+  {
+    "name": "decimal-alias-depth-8-definition-98",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "definition-98",
+    "source": "fixtures/docx/regressions/list-markers/DocDecimalAliasMarkers/projected/decimal-alias-depth-8-definition-98.docx",
+    "sourceSha256": "32cda922d3c9c89ce5cf9bc210a5d953549b7d1f298db901e5c0f765c282f73d",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocDecimalAliasMarkers/projected/decimal-alias-depth-8-definition-98.pdf",
+    "wordPdfSha256": "4e6e58fda98f09dbb02d8f57b5271d8e640ef695a213063c42c2462a6dbbc08b",
+    "wordListStrings": [
+      "BEGIN98END",
+      "BEGIN99END",
+      "BEGIN100END",
+      "BEGIN101END",
+      "BEGIN102END",
+      "BEGIN103END"
+    ],
+    "pdfLabels": [
+      "BEGIN98END",
+      "BEGIN99END",
+      "BEGIN100END",
+      "BEGIN101END",
+      "BEGIN102END",
+      "BEGIN103END"
+    ]
+  },
+  {
+    "name": "decimal-alias-depth-8-definition-98",
+    "kind": "source",
+    "depth": 8,
+    "mode": "definition-98",
+    "source": "fixtures/docx/regressions/list-markers/DocDecimalAliasMarkers/source/decimal-alias-depth-8-definition-98.docx",
+    "sourceSha256": "a32fb556e3c96d5f3dc54835525395afa49b708f93c84c45308482b32c77a60b",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocDecimalAliasMarkers/source/decimal-alias-depth-8-definition-98.pdf",
+    "wordPdfSha256": "9c993a4b2858c80f529391c9ce87995fcb4e785856ced4b004b98b909c8ad6f0",
+    "wordListStrings": [
+      "BEGIN98END",
+      "BEGIN99END",
+      "BEGIN100END",
+      "BEGIN101END",
+      "BEGIN102END",
+      "BEGIN103END"
+    ],
+    "pdfLabels": [
+      "BEGIN98END",
+      "BEGIN99END",
+      "BEGIN100END",
+      "BEGIN101END",
+      "BEGIN102END",
+      "BEGIN103END"
+    ]
+  },
+  {
+    "name": "decimal-alias-depth-8-override-1",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "override-1",
+    "source": "fixtures/doc/regressions/list-markers/DecimalAliasMarkers/decimal-alias-depth-8-override-1.doc",
+    "sourceSha256": "3ea48216f00046e6cd9e89f38a36d568feb5586c70f8adeda78c66af856d0faf",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocDecimalAliasMarkers/doc/decimal-alias-depth-8-override-1.pdf",
+    "wordPdfSha256": "782be7a450a87111f515b9fa36883aa8b6194de14fa8c9d6fd57aab71e91d491",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "decimal-alias-depth-8-override-1",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "override-1",
+    "source": "fixtures/docx/regressions/list-markers/DocDecimalAliasMarkers/projected/decimal-alias-depth-8-override-1.docx",
+    "sourceSha256": "e2056fe8a2992aaeb58691ebd520cacccc8ba99b1bdba5bc924f8f3abcf5c865",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocDecimalAliasMarkers/projected/decimal-alias-depth-8-override-1.pdf",
+    "wordPdfSha256": "f11bd9b984aa6e13f42275d8efc69832700750994e7792ed21f71ef2bef0f5e7",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "decimal-alias-depth-8-override-1",
+    "kind": "source",
+    "depth": 8,
+    "mode": "override-1",
+    "source": "fixtures/docx/regressions/list-markers/DocDecimalAliasMarkers/source/decimal-alias-depth-8-override-1.docx",
+    "sourceSha256": "1d038f4ddacd96c43043db6a748eaa8ab6ae91683adf1fa120427fd267ddff08",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocDecimalAliasMarkers/source/decimal-alias-depth-8-override-1.pdf",
+    "wordPdfSha256": "9661c0deb3d7526ff6230076d67cebfd95303e86f1ce819e04ae55f9a0412af1",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "decimal-alias-depth-8-override-98",
+    "kind": "doc",
+    "depth": 8,
+    "mode": "override-98",
+    "source": "fixtures/doc/regressions/list-markers/DecimalAliasMarkers/decimal-alias-depth-8-override-98.doc",
+    "sourceSha256": "489ff457e15dddf170d3290607b5c592b93f2c8e9983ee21f5a0cf59a12537f0",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocDecimalAliasMarkers/doc/decimal-alias-depth-8-override-98.pdf",
+    "wordPdfSha256": "c40b8642c6a4b0a84808f1b97a7ee4b760c7ef164ce1918415d2c6ad2eb3d38a",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "decimal-alias-depth-8-override-98",
+    "kind": "projected",
+    "depth": 8,
+    "mode": "override-98",
+    "source": "fixtures/docx/regressions/list-markers/DocDecimalAliasMarkers/projected/decimal-alias-depth-8-override-98.docx",
+    "sourceSha256": "a5d761ce7ebfa6cc2e61e5bf2c5aa7d99294369dc164dc9b6c6d9a76d5eaa2c3",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocDecimalAliasMarkers/projected/decimal-alias-depth-8-override-98.pdf",
+    "wordPdfSha256": "67b2199fc5fc00985e8beb69d97c42ffaa0cd2fee5093ecae4aa8bd42d0228ac",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  },
+  {
+    "name": "decimal-alias-depth-8-override-98",
+    "kind": "source",
+    "depth": 8,
+    "mode": "override-98",
+    "source": "fixtures/docx/regressions/list-markers/DocDecimalAliasMarkers/source/decimal-alias-depth-8-override-98.docx",
+    "sourceSha256": "3cd94f394b931a199031f7105774cf3d6f4e793ba459681df38d7604aa4abfc6",
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocDecimalAliasMarkers/source/decimal-alias-depth-8-override-98.pdf",
+    "wordPdfSha256": "d21ea5dd1dab77c0d0247c13f6b3b716ff1419e13204939d42f6b686bfdb8170",
+    "wordListStrings": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ],
+    "pdfLabels": [
+      "BEGIN2END",
+      "BEGIN3END",
+      "BEGIN4END",
+      "BEGIN5END",
+      "BEGIN6END",
+      "BEGIN7END"
+    ]
+  }
+]

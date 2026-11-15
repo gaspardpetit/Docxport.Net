@@ -376,6 +376,7 @@ public sealed class DocToDocxProjector
                 0x25 => NumberFormatValues.ChineseCounting,
                 0x26 => NumberFormatValues.ChineseLegalSimplified,
                 0x27 => NumberFormatValues.ChineseCountingThousand,
+                0x28 => NumberFormatValues.Decimal,
                 0x29 => NumberFormatValues.KoreanDigital,
                 0x2A => NumberFormatValues.KoreanCounting,
                 0x2B => NumberFormatValues.KoreanLegal,
