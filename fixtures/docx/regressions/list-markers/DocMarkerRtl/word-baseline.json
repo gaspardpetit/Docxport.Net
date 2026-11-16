@@ -1,0 +1,208 @@
+[
+  {
+    "name": "rtl-00-both-on",
+    "kind": "baseline",
+    "source": "fixtures/doc/regressions/list-markers/MarkerRtl/baseline/rtl-00-both-on.doc",
+    "sourceSha256": "81b49abbfabb9b94310b55e0a5d6080eedd55fa0d823cab3e8b6337a953cf8fb",
+    "wordListStrings": [
+      "ab",
+      "ab",
+      "ab"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerRtl/baseline/rtl-00-both-on.pdf",
+    "wordPdfSha256": "62168c9139d59c8beab54c2d9a01effd68a5dce8ae9a9cd1fb2014d5e2654421",
+    "pdfMarkerFonts": [
+      "CourierNewPSMT"
+    ],
+    "pdfMarkerSizes": [
+      15.0
+    ],
+    "glyphSignatureSha256": "f6d9d6b4386781a5606a88cf64284f0e505641e687012c2481f1145c1663bee8"
+  },
+  {
+    "name": "rtl-02-cs-off-rtl-on",
+    "kind": "baseline",
+    "source": "fixtures/doc/regressions/list-markers/MarkerRtl/baseline/rtl-02-cs-off-rtl-on.doc",
+    "sourceSha256": "d63b76d2ec4de81082fdacae6d50a4ca0971dd0ae1bd92b09c9d7b52f096318e",
+    "wordListStrings": [
+      "ab",
+      "ab",
+      "ab"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerRtl/baseline/rtl-02-cs-off-rtl-on.pdf",
+    "wordPdfSha256": "95884dca3283dae79fded9ceaea45fcf8fda7254155beed1d91ff131cfe93076",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      15.0
+    ],
+    "glyphSignatureSha256": "6f769636f91e1800206c574501762da44c6bc88e58fdad0f063678fe03291752"
+  },
+  {
+    "name": "rtl-04-both-on",
+    "kind": "baseline",
+    "source": "fixtures/doc/regressions/list-markers/MarkerRtl/baseline/rtl-04-both-on.doc",
+    "sourceSha256": "941215d930cf04a766e8cce6b2e4c75bfd13560a4fd670a742d18f3670da013b",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerRtl/baseline/rtl-04-both-on.pdf",
+    "wordPdfSha256": "9a46629745942b8d78ec38337d47d98d67737355f900f14130aa69959cac582e",
+    "pdfMarkerFonts": [
+      "CourierNewPSMT"
+    ],
+    "pdfMarkerSizes": [
+      15.0
+    ],
+    "glyphSignatureSha256": "15a141da99d409ccf28589cdefadb111cb0935b500b233147e9346e24a416865"
+  },
+  {
+    "name": "rtl-06-cs-off-rtl-on",
+    "kind": "baseline",
+    "source": "fixtures/doc/regressions/list-markers/MarkerRtl/baseline/rtl-06-cs-off-rtl-on.doc",
+    "sourceSha256": "fa8cd5752db57bcd8d90a1d1e77e2fb4f5ae33e9aef18c3da6ad96ccdbc106da",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerRtl/baseline/rtl-06-cs-off-rtl-on.pdf",
+    "wordPdfSha256": "7e35b0e45da30c14dc513302c3f2de75ce99723e10f00a63d6ff670254366589",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      15.0
+    ],
+    "glyphSignatureSha256": "2ed13fb97dff1db8ae009cc7c7f1b13935821d8ea9b1e8594282016ae54fd59a"
+  },
+  {
+    "name": "rtl-19-rtl-only",
+    "kind": "baseline",
+    "source": "fixtures/doc/regressions/list-markers/MarkerRtl/baseline/rtl-19-rtl-only.doc",
+    "sourceSha256": "247265f05f1e868db5d74479a003e58563126b4be1669d7a633096872565accc",
+    "wordListStrings": [
+      "A\u00e9\u03b1\u0411",
+      "A\u00e9\u03b1\u0411",
+      "A\u00e9\u03b1\u0411"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerRtl/baseline/rtl-19-rtl-only.pdf",
+    "wordPdfSha256": "c7178abbae37608d5430595b8e8498fec519f874c1c6b3e809a885789a12108e",
+    "pdfMarkerFonts": [
+      "ArialMT",
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      15.0
+    ],
+    "glyphSignatureSha256": "756daeb5c4438f0e86415ab7617ce6a9364cba6d5192fb5fe666ea2f8e925b63"
+  },
+  {
+    "name": "rtl-23-rtl-only",
+    "kind": "baseline",
+    "source": "fixtures/doc/regressions/list-markers/MarkerRtl/baseline/rtl-23-rtl-only.doc",
+    "sourceSha256": "bc751e80ec1b77beba2c87cacc0f014012a7256df0c92533aaad7e930c3d5826",
+    "wordListStrings": [
+      "A\u05d0\u05d1Z",
+      "A\u05d0\u05d1Z",
+      "A\u05d0\u05d1Z"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerRtl/baseline/rtl-23-rtl-only.pdf",
+    "wordPdfSha256": "5b6fab548b2ffa4130125148208907d87a71613a865ae1f9cfc3e09ffefcb80e",
+    "pdfMarkerFonts": [
+      "ArialMT",
+      "CourierNewPSMT"
+    ],
+    "pdfMarkerSizes": [
+      15.0
+    ],
+    "glyphSignatureSha256": "675e8c0b4de1aaf25f317e88eb59a70fd28adde536ebaddda603311c50b3b3d9"
+  },
+  {
+    "name": "rtl-27-rtl-only",
+    "kind": "baseline",
+    "source": "fixtures/doc/regressions/list-markers/MarkerRtl/baseline/rtl-27-rtl-only.doc",
+    "sourceSha256": "45bc63128f8de13f3c212ac917cb8230628adf6c155f7134db09ce2665743360",
+    "wordListStrings": [
+      "A\u0628\u062aZ",
+      "A\u0628\u062aZ",
+      "A\u0628\u062aZ"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerRtl/baseline/rtl-27-rtl-only.pdf",
+    "wordPdfSha256": "1917e1fe3e0c455f0efb11a675a0eda9a86df6c15422b37863d68b2a0e07df99",
+    "pdfMarkerFonts": [
+      "ArialMT",
+      "CourierNewPSMT"
+    ],
+    "pdfMarkerSizes": [
+      15.0
+    ],
+    "glyphSignatureSha256": "d6c82684d531771e53fac692cc237e9364a7a16a60b5d97e7f7d20c0cfee1f1d"
+  },
+  {
+    "name": "rtl-31-rtl-only",
+    "kind": "baseline",
+    "source": "fixtures/doc/regressions/list-markers/MarkerRtl/baseline/rtl-31-rtl-only.doc",
+    "sourceSha256": "5db6a1a4b741022f90bded9146dbd3590e90f4eb65c4272d0224933235423f5b",
+    "wordListStrings": [
+      "\u05d0\u05d1 12",
+      "\u05d0\u05d1 12",
+      "\u05d0\u05d1 12"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerRtl/baseline/rtl-31-rtl-only.pdf",
+    "wordPdfSha256": "7dc862f20317ec7f0d76103546a04dd9cf27bf055534cf52bebfe9ba06d92c8a",
+    "pdfMarkerFonts": [
+      "ArialMT",
+      "CourierNewPSMT"
+    ],
+    "pdfMarkerSizes": [
+      15.0
+    ],
+    "glyphSignatureSha256": "81ba2810fb24d1f3d00348545ac73720954f626d4bcf9aaf3eea88383aeb2bd5"
+  },
+  {
+    "name": "rtl-35-rtl-only",
+    "kind": "baseline",
+    "source": "fixtures/doc/regressions/list-markers/MarkerRtl/baseline/rtl-35-rtl-only.doc",
+    "sourceSha256": "f383fd28bec497b66bc10b10838ce9307ab74c02c32f48bd131906891f4f58d4",
+    "wordListStrings": [
+      "(\u05d0\u05d1).",
+      "(\u05d0\u05d1).",
+      "(\u05d0\u05d1)."
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerRtl/baseline/rtl-35-rtl-only.pdf",
+    "wordPdfSha256": "c12eed7604d2f350cdb537a28ea6b17d2c59e3ef3ee0f4e116cfba03bbd25bd3",
+    "pdfMarkerFonts": [
+      "ArialMT",
+      "CourierNewPSMT"
+    ],
+    "pdfMarkerSizes": [
+      15.0
+    ],
+    "glyphSignatureSha256": "71daf6d7092514ae1bc5389c9d69810803ed0baeee110c95920a468d98e03586"
+  },
+  {
+    "name": "rtl-39-rtl-only",
+    "kind": "baseline",
+    "source": "fixtures/doc/regressions/list-markers/MarkerRtl/baseline/rtl-39-rtl-only.doc",
+    "sourceSha256": "ccf42da3f999ad71fb4b6d2a6d8557cfbd07458f6d27264b0bf87f686cb672c2",
+    "wordListStrings": [
+      "A\u6f22\u3042Z",
+      "A\u6f22\u3042Z",
+      "A\u6f22\u3042Z"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerRtl/baseline/rtl-39-rtl-only.pdf",
+    "wordPdfSha256": "34520168f8a999b3a6c6b86ed1533c3dc90f1beb776a1e60bad051504ed4700e",
+    "pdfMarkerFonts": [
+      "ArialMT",
+      "MS-Mincho"
+    ],
+    "pdfMarkerSizes": [
+      15.0
+    ],
+    "glyphSignatureSha256": "c6c6d288a2308e9ad7d7046f6850ddd29d408871bff00a7deddba4669d51e72c"
+  }
+]
