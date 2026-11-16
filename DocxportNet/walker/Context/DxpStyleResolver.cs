@@ -612,6 +612,38 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
     }
 
 
+    // Numeric labels in RTL paragraphs use the complex-script size even though
+    // Word retains the ASCII face. Keep this marker rule out of body-run layout.
+    internal int? ResolveNumericRtlListMarkerFontSize(ParagraphProperties? paragraph,
+        NumberingSymbolRunProperties? level, string text)
+    {
+        if (text.Length == 0 || !text.All(character => character is >= '0' and <= '9'))
+            return null;
+        var styleId = paragraph?.ParagraphStyleId?.Val?.Value;
+        if (string.IsNullOrEmpty(styleId))
+            styleId = _styles?.Elements<Style>().FirstOrDefault(style =>
+                style.Type?.Value == StyleValues.Paragraph && style.Default?.Value == true)?.StyleId?.Value;
+        var chain = EnumerateStyleChain(styleId, StyleValues.Paragraph).ToArray();
+        var direction = paragraph?.GetFirstChild<BiDi>();
+        foreach (var style in chain)
+            direction ??= style.StyleParagraphProperties?.GetFirstChild<BiDi>();
+        direction ??= _docDefaultParaProps?.GetFirstChild<BiDi>();
+        if (direction == null || direction.Val?.Value == false) return null;
+
+        string? Size(OpenXmlElement? properties) => properties?.ChildElements.FirstOrDefault(child =>
+            child.LocalName == "szCs" && child.NamespaceUri ==
+                "http://schemas.openxmlformats.org/wordprocessingml/2006/main")?
+            .GetAttribute("val", "http://schemas.openxmlformats.org/wordprocessingml/2006/main").Value;
+        var size = Size(level) ?? Size(paragraph?.ParagraphMarkRunProperties);
+        foreach (var style in chain)
+            size ??= Size(style.StyleParagraphProperties?.ChildElements.FirstOrDefault(child =>
+                child.LocalName == "rPr" && child.NamespaceUri ==
+                    "http://schemas.openxmlformats.org/wordprocessingml/2006/main")) ?? Size(style.StyleRunProperties);
+        size ??= Size(_docDefaultRunProps);
+        return int.TryParse(size, NumberStyles.Integer, CultureInfo.InvariantCulture, out var halfPoints) && halfPoints > 0
+            ? halfPoints : null;
+    }
+
     public DxpStyleEffectiveRunStyle ResolveRunStyle(Paragraph p, Run r)
     {
         // 1) Start with doc defaults
