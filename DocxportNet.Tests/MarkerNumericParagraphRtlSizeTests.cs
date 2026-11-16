@@ -21,7 +21,7 @@ public sealed class MarkerNumericParagraphRtlSizeTests
             using var document = WordprocessingDocument.Open(path, false);
             var main = document.MainDocumentPart!;
             var reset = new[] { "direct-off", "style-reset", "paragraph-reset", "defaults-reset" }.Any(name.StartsWith);
-            yield return new object[] { name, main.StyleDefinitionsPart!.Styles!.OuterXml, main.Document.OuterXml,
+            yield return new object[] { name, main.StyleDefinitionsPart!.Styles!.OuterXml, main.Document!.OuterXml,
                 main.NumberingDefinitionsPart!.Numbering!.OuterXml, reset ? 24 : 30, name.EndsWith("literal") ? "12" : "1" };
         }
     }
@@ -38,12 +38,12 @@ public sealed class MarkerNumericParagraphRtlSizeTests
         main.AddNewPart<NumberingDefinitionsPart>().Numbering = new Numbering(numberingXml);
         Assert.Empty(new DocumentFormat.OpenXml.Validation.OpenXmlValidator(FileFormatVersions.Office2013).Validate(document));
         _ = main.Document.Descendants().ToArray();
-        _ = main.StyleDefinitionsPart.Styles.Descendants().ToArray();
-        _ = main.NumberingDefinitionsPart.Numbering.Descendants().ToArray();
-        var before = new[] { main.Document.OuterXml, main.StyleDefinitionsPart.Styles.OuterXml, main.NumberingDefinitionsPart.Numbering.OuterXml };
+        _ = main.StyleDefinitionsPart!.Styles!.Descendants().ToArray();
+        _ = main.NumberingDefinitionsPart!.Numbering!.Descendants().ToArray();
+        var before = new[] { main.Document!.OuterXml, main.StyleDefinitionsPart!.Styles!.OuterXml, main.NumberingDefinitionsPart!.Numbering!.OuterXml };
         var html = DxpExport.ExportToString(document, new DxpHtmlVisitor(DxpHtmlVisitorConfig.CreateRichConfig()));
         var markers = new HtmlParser().ParseDocument(html).QuerySelectorAll(".dxp-marker");
-        Assert.Equal(3, markers.Length);
+        Assert.True(markers.Length == 3, name);
         Assert.Equal(label == "12" ? new[] { "12", "12", "12" } : new[] { "1", "2", "3" }, markers.Select(marker => marker.TextContent.Trim()));
         foreach (var marker in markers)
         {
@@ -54,6 +54,6 @@ public sealed class MarkerNumericParagraphRtlSizeTests
         var plain = DxpExport.ExportToString(document, new DxpHtmlVisitor(DxpHtmlVisitorConfig.CreatePlainConfig()));
         Assert.All(new HtmlParser().ParseDocument(plain).QuerySelectorAll(".dxp-marker"),
             marker => Assert.DoesNotContain("font-size:15pt", marker.OuterHtml));
-        Assert.Equal(before, new[] { main.Document.OuterXml, main.StyleDefinitionsPart.Styles.OuterXml, main.NumberingDefinitionsPart.Numbering.OuterXml });
+        Assert.Equal(before, new[] { main.Document!.OuterXml, main.StyleDefinitionsPart!.Styles!.OuterXml, main.NumberingDefinitionsPart!.Numbering!.OuterXml });
     }
 }

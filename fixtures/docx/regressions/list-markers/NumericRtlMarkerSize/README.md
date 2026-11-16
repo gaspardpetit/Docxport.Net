@@ -19,10 +19,9 @@ to that main commit. Word PDFs are grouped under
 `truth/pdf-word/regressions/list-markers/NumericRtlMarkerSize/source/`.
 
 `word-evidence.json` records input/output hashes, Word's editable `ListString`
-values, and independently extracted PDF marker fonts and point sizes. All 19
-HTML hashes use LF line endings so they also match Git's stored blobs.
-All 19
-sequences match Word. Eleven cases require a 15 pt HTML marker override; the
+values, and independently extracted PDF marker fonts and point sizes. HTML
+hashes use LF line endings so they also match Git's stored blobs. All 19 sequences
+match Word. Eleven cases require a 15 pt HTML marker override; the
 eight LTR/reset controls do not. Plain HTML and plain Markdown from the actual
 CLI are byte-identical to the baseline for all 19 inputs.
 
