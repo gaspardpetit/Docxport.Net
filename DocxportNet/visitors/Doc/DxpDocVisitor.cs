@@ -357,7 +357,7 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
                 StringComparer.OrdinalIgnoreCase) ??
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         (_lists, _listNumberIds) = DocOpenXmlListReader.Read(_mainPart,
-            properties => ReadCharacterFormatting(properties),
+            properties => ReadListMarkerFormatting(properties),
             properties => ReadParagraphFormatting(properties));
         var evenOddSetting = _mainPart?.DocumentSettingsPart?.Settings?
             .GetFirstChild<EvenAndOddHeaders>();
@@ -3205,6 +3205,23 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
             if (cursor < end && !formatting.IsEmpty)
                 runs.Add(new DocPlainTextFormatRun(cursor, end, formatting));
         });
+    }
+
+    private DocCharacterFormatting ReadListMarkerFormatting(OpenXmlCompositeElement? properties)
+    {
+        var formatting = ReadCharacterFormatting(properties);
+        var family = formatting.ComplexScriptFontName;
+        if (formatting.ForceComplexScript != true ||
+            string.IsNullOrEmpty(family) || DxpFontSymbols.GetSymbolConverter(family) != null)
+            return formatting;
+        // Word's DOC list labels do not honor the forced complex-script face
+        // for Latin marker text as DOCX labels do. Select that face in every
+        // DOC slot. Legacy symbol faces retain their original encoding slots.
+        return formatting with
+        {
+            AsciiFontName = family, HighAnsiFontName = family, EastAsiaFontName = family,
+            AsciiFontIndex = null, HighAnsiFontIndex = null, EastAsiaFontIndex = null
+        };
     }
 
     private DocCharacterFormatting ReadCharacterFormatting(
