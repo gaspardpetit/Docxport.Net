@@ -1,0 +1,66 @@
+[
+  {
+    "name": "default-style-depth-0-custom-implicit",
+    "kind": "baseline",
+    "source": "fixtures/doc/regressions/list-markers/DefaultStyle/baseline/default-style-depth-0-custom-implicit.doc",
+    "sourceSha256": "90492ddea836597ed79efcec7a81093be435800c75f1deee95706f22e354d07e",
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocDefaultStyle/baseline/default-style-depth-0-custom-implicit.pdf",
+    "wordPdfSha256": "232425c958a6e64ce12efbea0844451180a9efe262576c5adc5a134bf6fbc11a",
+    "pdfMarkerFonts": [],
+    "pdfMarkerSizes": [],
+    "glyphSignatureSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+  },
+  {
+    "name": "default-style-depth-0-decoy-implicit",
+    "kind": "baseline",
+    "source": "fixtures/doc/regressions/list-markers/DefaultStyle/baseline/default-style-depth-0-decoy-implicit.doc",
+    "sourceSha256": "65a354097096770bf09af92b100b693f4c43616c307415cd5115df64f1c00443",
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocDefaultStyle/baseline/default-style-depth-0-decoy-implicit.pdf",
+    "wordPdfSha256": "aea6b4c4f7394fc7e99deb32f79089d43b8e4e03fb721c734cd96511f159d18f",
+    "pdfMarkerFonts": [],
+    "pdfMarkerSizes": [],
+    "glyphSignatureSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+  },
+  {
+    "name": "default-style-depth-8-custom-implicit",
+    "kind": "baseline",
+    "source": "fixtures/doc/regressions/list-markers/DefaultStyle/baseline/default-style-depth-8-custom-implicit.doc",
+    "sourceSha256": "8b64264140ae70cbe64c66adc13c2449df540c53789cc85b8e06741281bc5dbd",
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocDefaultStyle/baseline/default-style-depth-8-custom-implicit.pdf",
+    "wordPdfSha256": "3aefc0395764808433e0bbd5bf2c3049e483e58ffd9d5e2b2465c76d6b20900c",
+    "pdfMarkerFonts": [],
+    "pdfMarkerSizes": [],
+    "glyphSignatureSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+  },
+  {
+    "name": "default-style-depth-8-decoy-implicit",
+    "kind": "baseline",
+    "source": "fixtures/doc/regressions/list-markers/DefaultStyle/baseline/default-style-depth-8-decoy-implicit.doc",
+    "sourceSha256": "ee2db8088f011edadfdca22543b0f786f04f135b20f8a551e9ac9767e350b67f",
+    "wordListStrings": [
+      "",
+      "",
+      ""
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocDefaultStyle/baseline/default-style-depth-8-decoy-implicit.pdf",
+    "wordPdfSha256": "a7ae371f8986f8db7ca363af941879f9631ea049de7faff42f550e95e00626e3",
+    "pdfMarkerFonts": [],
+    "pdfMarkerSizes": [],
+    "glyphSignatureSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+  }
+]
