@@ -1,0 +1,434 @@
+[
+  {
+    "name": "story-body-depth-0-direct",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-body-depth-0-direct",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-body-depth-0-direct",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-body-depth-0-fallback",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-body-depth-0-fallback",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-body-depth-0-fallback",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-body-depth-0-nested",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-body-depth-0-nested",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-body-depth-0-nested",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-header-depth-0-direct",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-header-depth-0-direct",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-header-depth-0-direct",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-header-depth-0-fallback",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-header-depth-0-fallback",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-header-depth-0-fallback",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-header-depth-0-nested",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-header-depth-0-nested",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-header-depth-0-nested",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-footer-depth-0-direct",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-footer-depth-0-direct",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-footer-depth-0-direct",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-footer-depth-0-fallback",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-footer-depth-0-fallback",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-footer-depth-0-fallback",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-footer-depth-0-nested",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-footer-depth-0-nested",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-footer-depth-0-nested",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-body-depth-8-direct",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-body-depth-8-direct",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-body-depth-8-direct",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-body-depth-8-fallback",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-body-depth-8-fallback",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-body-depth-8-fallback",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-body-depth-8-nested",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-body-depth-8-nested",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-body-depth-8-nested",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-header-depth-8-direct",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-header-depth-8-direct",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-header-depth-8-direct",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-header-depth-8-fallback",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-header-depth-8-fallback",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-header-depth-8-fallback",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-header-depth-8-nested",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-header-depth-8-nested",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-header-depth-8-nested",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-footer-depth-8-direct",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-footer-depth-8-direct",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-footer-depth-8-direct",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-footer-depth-8-fallback",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-footer-depth-8-fallback",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-footer-depth-8-fallback",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-footer-depth-8-nested",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-footer-depth-8-nested",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "story-footer-depth-8-nested",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  }
+]
