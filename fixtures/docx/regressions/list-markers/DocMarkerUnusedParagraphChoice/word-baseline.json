@@ -1,0 +1,314 @@
+[
+  {
+    "name": "unused-paragraph-body-depth-0-properties-choice",
+    "baseCommit": "b4a2206a",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-0-properties-choice.docx",
+    "sourceSha256": "549a0a8b9189dfc7a705b080b106e4d290fce1718459ae88419ba9e01ecbbdb9",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-paragraph-body-depth-0-properties-fallback",
+    "baseCommit": "b4a2206a",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-0-properties-fallback.docx",
+    "sourceSha256": "3f71f4a665992b49be417ddbe9b863c4b7047af0a4a4311988245b21d1f1e32c",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-properties-choice",
+    "baseCommit": "b4a2206a",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-0-properties-choice.docx",
+    "sourceSha256": "cf462e3924b45c6be7945d741fc909c424c7fc689e688f0e8db61c583905f8a7",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-properties-fallback",
+    "baseCommit": "b4a2206a",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-0-properties-fallback.docx",
+    "sourceSha256": "4b51046de10f5d914ea5edcd5299df974798f9a39fc91c07989d19ab3b871462",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-properties-choice",
+    "baseCommit": "b4a2206a",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-0-properties-choice.docx",
+    "sourceSha256": "1b6c25da18c8dcd42455673992206aaf4040416ecfc02d97372ba50aa9d8d593",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-properties-fallback",
+    "baseCommit": "b4a2206a",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-0-properties-fallback.docx",
+    "sourceSha256": "acc55e1927690d728139e640dd498e30da67c20e2e2c32cbbcd439c3b715c967",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-paragraph-body-depth-0-numbering-choice",
+    "baseCommit": "b4a2206a",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-0-numbering-choice.docx",
+    "sourceSha256": "961dfc6e08decb97bde91b6187cd86508489b857896e6ec597f4b8220cd0d3ce",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-paragraph-body-depth-0-numbering-fallback",
+    "baseCommit": "b4a2206a",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-0-numbering-fallback.docx",
+    "sourceSha256": "10035ffa268f0d93bf099089b55c38c093a56952f004fcc05fd91d6dbd4ad76e",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-numbering-choice",
+    "baseCommit": "b4a2206a",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-0-numbering-choice.docx",
+    "sourceSha256": "7ac348c1a4f9c38f5aac0334b045bbaeb8362ed620a7aaccf88075529e857485",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-numbering-fallback",
+    "baseCommit": "b4a2206a",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-0-numbering-fallback.docx",
+    "sourceSha256": "5b9cc804861dbec645cd0f14f80154273699bf8ce02d6120afa0ee54f1bf1499",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-numbering-choice",
+    "baseCommit": "b4a2206a",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-0-numbering-choice.docx",
+    "sourceSha256": "816415219dae8be365eba1928d344d898ddede820e4132406ef50db33638dc37",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-numbering-fallback",
+    "baseCommit": "b4a2206a",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-0-numbering-fallback.docx",
+    "sourceSha256": "f54f50e35ec9ebecb6e5825392f785be9bf3cc92329fa2e966ec2fe9fe73ce40",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-properties-choice",
+    "baseCommit": "b4a2206a",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-8-properties-choice.docx",
+    "sourceSha256": "47cb188b6e0a244137984e4e67ed42682e75533c206df77a72faeee811edb22a",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-properties-fallback",
+    "baseCommit": "b4a2206a",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-8-properties-fallback.docx",
+    "sourceSha256": "450b718afda4d0abef5a1dfe7a447679cc25595fd8328cb3ed268229b6da1117",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-properties-choice",
+    "baseCommit": "b4a2206a",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-8-properties-choice.docx",
+    "sourceSha256": "6290ed87d8328f6bef19e59642f87e6e23b95527ed980cab3e2f9456d7657b02",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-properties-fallback",
+    "baseCommit": "b4a2206a",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-8-properties-fallback.docx",
+    "sourceSha256": "e6e1c2626c593149b3f7597e79548b8a531be053d80022939353348f81040930",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-properties-choice",
+    "baseCommit": "b4a2206a",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-8-properties-choice.docx",
+    "sourceSha256": "b63fdab61bd8a00c3e74a6a3cf942f01bbe056128ef1e23f8b768a4cffe02be4",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-properties-fallback",
+    "baseCommit": "b4a2206a",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-8-properties-fallback.docx",
+    "sourceSha256": "95731b0dd5f128d6811daf7a1d24908b65c395dc263d88341af4aa898eef1b55",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-numbering-choice",
+    "baseCommit": "b4a2206a",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-8-numbering-choice.docx",
+    "sourceSha256": "f0e2d507a7b663989ee737f8c9fb070c2dd13dbf7607b5f5e569147e61d90267",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-numbering-fallback",
+    "baseCommit": "b4a2206a",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-8-numbering-fallback.docx",
+    "sourceSha256": "c149e0bc4c0ccb64c1cd11c8c4519d46e6fe78759dd503e094070048deff656c",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-numbering-choice",
+    "baseCommit": "b4a2206a",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-8-numbering-choice.docx",
+    "sourceSha256": "57748820d01ad45b45bd391ac203accc407666cc3610493dac78ef9d7976233d",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-numbering-fallback",
+    "baseCommit": "b4a2206a",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-8-numbering-fallback.docx",
+    "sourceSha256": "6ec9e975a951ed276cf5a1b88847fc78c5344a52295cf2a0aa68a6d88c99a5d8",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-numbering-choice",
+    "baseCommit": "b4a2206a",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-8-numbering-choice.docx",
+    "sourceSha256": "0d93053fbe7f515f746bbd1e903ffc28e66d24cfae24d2090d8e99ba5c07a353",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-numbering-fallback",
+    "baseCommit": "b4a2206a",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-8-numbering-fallback.docx",
+    "sourceSha256": "a0b75d9dce8892020d369ac179c1154831eacd63dea87ad849996852fdc70e41",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  }
+]

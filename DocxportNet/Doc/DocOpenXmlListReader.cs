@@ -29,20 +29,12 @@ internal static class DocOpenXmlListReader
                         usedHigherLevels.Add(id);
                 }
         }
-        if (main?.Document != null)
-            Collect(main.Document.Descendants<NumberingProperties>());
         // Import the styles the DOC writer actually emits, not list references
         // in rejected compatibility branches. Retain ordinary unused styles.
         var styles = DocxportNet.Walker.DxpNumberingResolver.NormalizeNumberingStyles(
             main?.StyleDefinitionsPart?.Styles, main?.NumberingDefinitionsPart?.Numbering);
         if (styles != null)
             Collect(styles.Descendants<NumberingProperties>());
-        foreach (var header in main?.HeaderParts ?? [])
-            if (header.Header != null)
-                Collect(header.Header.Descendants<NumberingProperties>());
-        foreach (var footer in main?.FooterParts ?? [])
-            if (footer.Footer != null)
-                Collect(footer.Footer.Descendants<NumberingProperties>());
         // Direct formatting can supply only numId or ilvl; styles supply the
         // other property. Choose slots from the effective pair as well.
         var styleResolver = main?.OpenXmlPackage is WordprocessingDocument document
@@ -50,12 +42,20 @@ internal static class DocOpenXmlListReader
         void CollectParagraphs(IEnumerable<Paragraph> paragraphs)
         {
             foreach (var paragraph in paragraphs)
+            {
+                // Match the writer's selected paragraph properties. A raw
+                // descendant scan also imports rejected compatibility branches.
+                var properties = DocxportNet.Walker.DxpNumberingResolver
+                    .NormalizeParagraphNumberingProperties(paragraph)?.NumberingProperties;
+                if (properties != null)
+                    Collect([properties]);
                 if (styleResolver?.ResolveEffectiveNumPr(paragraph) is { } effective)
                 {
                     usedNumberIds.Add(effective.NumId);
                     if (effective.Ilvl > 0)
                         usedHigherLevels.Add(effective.NumId);
                 }
+            }
         }
         if (main?.Document != null)
             CollectParagraphs(main.Document.Descendants<Paragraph>());
