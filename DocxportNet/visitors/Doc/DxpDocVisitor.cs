@@ -46,6 +46,7 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
     private int _positionalLineStart;
     private int? _positionalCellContentWidth;
     private int _currentParagraphStyleIndex;
+    private string? _defaultParagraphStyleId;
     private bool _suppressHorizontalContinuation;
     private DocCharacterFormatting _defaultCharacterFormatting = DocCharacterFormatting.Empty;
     private bool _deletedRevisionRun;
@@ -331,6 +332,7 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
         _storyText = null;
         _paragraphText = null;
         _currentParagraphStyleIndex = 0;
+        _defaultParagraphStyleId = null;
         _suppressHorizontalContinuation = false;
         _activeTable = null;
         _tableStack.Clear();
@@ -443,6 +445,8 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
                 x.Type?.Value == StyleValues.Character ||
                 x.Type?.Value == StyleValues.Table)
             .ToArray() ?? [];
+        _defaultParagraphStyleId = sourceStyles.FirstOrDefault(style =>
+            style.Type?.Value == StyleValues.Paragraph && style.Default?.Value == true)?.StyleId?.Value;
         if (!hasDefinedRunDefaults && _defaultCharacterFormatting.EastAsiaFontName == null)
         {
             // Word promotes a sole authored East Asian paragraph font to the
@@ -1011,6 +1015,9 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
         var previousStyleIndex = _currentParagraphStyleIndex;
         var start = target.Length;
         var styleId = paragraph.ParagraphProperties?.ParagraphStyleId?.Val?.Value;
+        // An omitted pStyle inherits the declared default, whose ID need not
+        // be Normal. Its numbering must survive the DOC paragraph style link.
+        if (string.IsNullOrEmpty(styleId)) styleId = _defaultParagraphStyleId;
         _currentParagraphStyleIndex = styleId != null &&
             _styleById.TryGetValue(styleId, out var paragraphStyleIndex)
             ? paragraphStyleIndex : _styleById.TryGetValue("Normal", out var normalIndex)
