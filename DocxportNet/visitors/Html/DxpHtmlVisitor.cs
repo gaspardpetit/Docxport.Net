@@ -1087,7 +1087,7 @@ body.dxp-root {
         if (marker?.marker != null)
         {
             var normalizedMarker = NormalizeMarker(marker.marker);
-            var markerCss = TryBuildMarkerCss(marker, d);
+            var markerCss = TryBuildMarkerCss(marker, d, _config.EmitStyleFont);
             Write(d, BuildMarkerHtml(normalizedMarker, markerCss, marker.TextSeparator));
         }
 
@@ -1829,7 +1829,7 @@ body.dxp-root {
         return null;
     }
 
-    private static string? TryBuildMarkerCss(DxpMarker marker, DxpIDocumentContext d)
+    private static string? TryBuildMarkerCss(DxpMarker marker, DxpIDocumentContext d, bool emitFont)
     {
         if (marker.numId == null || marker.iLvl == null)
             return null;
@@ -1848,6 +1848,11 @@ body.dxp-root {
 
         var decorations = new List<string>();
         var parts = new List<string>();
+
+        var markerText = WebUtility.HtmlDecode(StripTags(marker.marker ?? ""));
+        if (emitFont && d.Styles is DxpStyleResolver styles &&
+            styles.ResolveNumericRtlListMarkerFontSize(d.CurrentParagraph.Properties, rpr, markerText) is int halfPoints)
+            parts.Add("font-size:" + (halfPoints / 2.0).ToString("0.###", CultureInfo.InvariantCulture) + "pt");
 
         if (rpr.Bold != null && IsOn(rpr.Bold.Val))
             parts.Add("font-weight:bold");
