@@ -3210,6 +3210,24 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
     private DocCharacterFormatting ReadListMarkerFormatting(OpenXmlCompositeElement? properties)
     {
         var formatting = ReadCharacterFormatting(properties);
+        if (formatting.RightToLeftText == true &&
+            (!string.IsNullOrEmpty(formatting.AsciiFontName) || formatting.AsciiFontIndex != null) &&
+            new[] { formatting.AsciiFontName, formatting.HighAnsiFontName,
+                formatting.EastAsiaFontName, formatting.ComplexScriptFontName }
+                .All(name => DxpFontSymbols.GetSymbolConverter(name) == null))
+        {
+            // Word's DOC RTL marker path forces CS formatting onto the whole
+            // label; its DOCX path retains natural script fonts and sizes.
+            // Keep those slots and let Unicode determine marker direction.
+            // Symbol faces require the RTL encoding flag and are left intact.
+            return formatting with
+            {
+                RightToLeftText = false,
+                ForceComplexScript = formatting.ForceComplexScript.HasValue ? false : null,
+                HighAnsiFontName = formatting.AsciiFontName,
+                HighAnsiFontIndex = formatting.AsciiFontIndex
+            };
+        }
         var family = formatting.ComplexScriptFontName;
         if (formatting.ForceComplexScript != true ||
             string.IsNullOrEmpty(family) || DxpFontSymbols.GetSymbolConverter(family) != null)
