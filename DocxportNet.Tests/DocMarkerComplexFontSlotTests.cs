@@ -26,7 +26,12 @@ public sealed class DocMarkerComplexFontSlotTests
     {
         var bytes = CreateSource(depth, mode);
         var binary = DxpDocExport.Export(bytes);
-        using (var input = new MemoryStream(binary))
+        // Keep exercising the original CS-only binary slots: new exports materialize
+        // a forced CS face into all ordinary slots for Word's DOC marker path.
+        var originalBinary = File.ReadAllBytes(FixturePath.Combine(AppContext.BaseDirectory,
+            "..", "..", "..", "..", "fixtures", "doc", "regressions", "list-markers",
+            "MarkerComplexFontSlot", $"cs-font-depth-{depth}-{mode}.doc"));
+        using (var input = new MemoryStream(originalBinary))
         using (var index = new DocTextIndexWalker().Index(input))
         {
             var level = mode.StartsWith("override", StringComparison.Ordinal)

@@ -1,0 +1,154 @@
+[
+  {
+    "name": "forced-cs-depth-0-definition-mixed",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerForcedComplexFont/baseline/forced-cs-depth-0-definition-mixed.doc",
+    "sourceSha256": "73b4f7e8e1f7e123b28c87cccb329ba0e70f6782767f4bf3670709a6927e199c",
+    "wordListStrings": [
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerForcedComplexFont/baseline/forced-cs-depth-0-definition-mixed.pdf",
+    "wordPdfSha256": "273dfdcf9385697484647006363e5871b3987d3ba523024728168c6e1feda78a",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ]
+  },
+  {
+    "name": "forced-cs-depth-0-definition-only",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerForcedComplexFont/baseline/forced-cs-depth-0-definition-only.doc",
+    "sourceSha256": "69294cfb40ad3c4c85c8705fdc3a2e9669ddbbdd84dc34c63067f95d46a69088",
+    "wordListStrings": [
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerForcedComplexFont/baseline/forced-cs-depth-0-definition-only.pdf",
+    "wordPdfSha256": "8283423401bf3d06f2261670056b3f876b18b7f7140082274ed073b32250c9c8",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ]
+  },
+  {
+    "name": "forced-cs-depth-0-override-mixed",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerForcedComplexFont/baseline/forced-cs-depth-0-override-mixed.doc",
+    "sourceSha256": "c02ce272432172d6f1f8231cc0064f1535a0f64a9af3c162302ec0c571c0bb1d",
+    "wordListStrings": [
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerForcedComplexFont/baseline/forced-cs-depth-0-override-mixed.pdf",
+    "wordPdfSha256": "17676263445669ef746c9b34b51f7ced01a6e1d1ab1c2906e6ffe0605bc26a82",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ]
+  },
+  {
+    "name": "forced-cs-depth-0-override-only",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerForcedComplexFont/baseline/forced-cs-depth-0-override-only.doc",
+    "sourceSha256": "38ab5f0ef83b731199a90e34a85cea0f5816d523a2400c7bb57ad561b133f9b1",
+    "wordListStrings": [
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerForcedComplexFont/baseline/forced-cs-depth-0-override-only.pdf",
+    "wordPdfSha256": "eda9fad2f574c6857d5c8f5f31044616a9bb11cf01f057818d7bd316ce96c2ce",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ]
+  },
+  {
+    "name": "forced-cs-depth-8-definition-mixed",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerForcedComplexFont/baseline/forced-cs-depth-8-definition-mixed.doc",
+    "sourceSha256": "ba7dc18f870c1f08661c5430893a56ca1080cb352742392628a4dc62d54e8349",
+    "wordListStrings": [
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerForcedComplexFont/baseline/forced-cs-depth-8-definition-mixed.pdf",
+    "wordPdfSha256": "e9aa30a0ad55c1ae470d497a73bd0e411e7fbac885ddc0d3687bd424da94c5ba",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ]
+  },
+  {
+    "name": "forced-cs-depth-8-definition-only",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerForcedComplexFont/baseline/forced-cs-depth-8-definition-only.doc",
+    "sourceSha256": "2ec439629f9bcb4ab4034b5c099ac8e06204b2f8063f0c5b2b3d3268fd83c615",
+    "wordListStrings": [
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerForcedComplexFont/baseline/forced-cs-depth-8-definition-only.pdf",
+    "wordPdfSha256": "65b0af97ffa9c56a13dc478ac9a13e286e374b0e05c8758acb94ec57bdbe993e",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ]
+  },
+  {
+    "name": "forced-cs-depth-8-override-mixed",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerForcedComplexFont/baseline/forced-cs-depth-8-override-mixed.doc",
+    "sourceSha256": "58654b1dc7ed3424288c0bf47db8d9a34e9fbabac45f1357e5e287fc91866323",
+    "wordListStrings": [
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerForcedComplexFont/baseline/forced-cs-depth-8-override-mixed.pdf",
+    "wordPdfSha256": "1b816208fd0a8751add45dede60047c25aaf7937dd91519418eea33680631aa7",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ]
+  },
+  {
+    "name": "forced-cs-depth-8-override-only",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerForcedComplexFont/baseline/forced-cs-depth-8-override-only.doc",
+    "sourceSha256": "23feabd76841d4bead33649fb9a35e9b3b4c07bc09c51ec52ec52cf3a191a85c",
+    "wordListStrings": [
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND",
+      "BEGINabEND"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerForcedComplexFont/baseline/forced-cs-depth-8-override-only.pdf",
+    "wordPdfSha256": "2b497271662ce54bce0ffcc17e2491c1e20d5486ec144a94e7cc7964124c3a3e",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ]
+  }
+]
