@@ -1842,9 +1842,8 @@ body.dxp-root {
         if (resolved == null)
             return null;
 
-        var rpr = resolved.Value.lvl.NumberingSymbolRunProperties;
-        if (rpr == null)
-            return null;
+        // Marker size can inherit even when the level has no run properties.
+        var rpr = resolved.Value.lvl.NumberingSymbolRunProperties ?? new NumberingSymbolRunProperties();
 
         var decorations = new List<string>();
         var parts = new List<string>();
