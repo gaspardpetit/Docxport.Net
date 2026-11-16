@@ -1,0 +1,210 @@
+[
+  {
+    "name": "unused-style-depth-0-style-choice",
+    "baseCommit": "a4ef32d2",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedStyleChoice/source/unused-style-depth-0-style-choice.docx",
+    "sourceSha256": "3eccd8292f262d578612727a2fe4a4af9361fb943c1160c7546a8b215b8286b4",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-style-depth-0-style-fallback",
+    "baseCommit": "a4ef32d2",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedStyleChoice/source/unused-style-depth-0-style-fallback.docx",
+    "sourceSha256": "989295d3555f33daa49865047e6e2b739803eb634a24b4e356b336437456d8f7",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-style-depth-0-properties-choice",
+    "baseCommit": "a4ef32d2",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedStyleChoice/source/unused-style-depth-0-properties-choice.docx",
+    "sourceSha256": "dae33cd45a4fae11406e218a9ca39f57e0413c9c3b0904295e6f0f3cfe7e1b30",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-style-depth-0-properties-fallback",
+    "baseCommit": "a4ef32d2",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedStyleChoice/source/unused-style-depth-0-properties-fallback.docx",
+    "sourceSha256": "d5afdb1d54c6f9e1c7a4721bc5ab5090802e022a30a1edd11f530974ffb25cf1",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-style-depth-0-numbering-choice",
+    "baseCommit": "a4ef32d2",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedStyleChoice/source/unused-style-depth-0-numbering-choice.docx",
+    "sourceSha256": "162618ce8c4b2a64ad452bc0b80e48029b6a5e6f342911287821b3c96dc64a98",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-style-depth-0-numbering-fallback",
+    "baseCommit": "a4ef32d2",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedStyleChoice/source/unused-style-depth-0-numbering-fallback.docx",
+    "sourceSha256": "a16737f52f72ff7195a952834536cc7ba636d837f4e075036fb8d50475b66447",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-style-depth-0-default-choice",
+    "baseCommit": "a4ef32d2",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedStyleChoice/source/unused-style-depth-0-default-choice.docx",
+    "sourceSha256": "e2dc2549365910942d77812bc9cb35ceb2672f9ef827f2b6a90d23d7afbaf615",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-style-depth-0-default-fallback",
+    "baseCommit": "a4ef32d2",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedStyleChoice/source/unused-style-depth-0-default-fallback.docx",
+    "sourceSha256": "19028b2e490ec8fe0af1bd5062052d72da91d874ab7c7e14d9e9ca8e530a7072",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-style-depth-8-style-choice",
+    "baseCommit": "a4ef32d2",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedStyleChoice/source/unused-style-depth-8-style-choice.docx",
+    "sourceSha256": "17378c184fffa07ad7bc16d216fb6d237d543575af41db61e1ef276d8d7af7eb",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-style-depth-8-style-fallback",
+    "baseCommit": "a4ef32d2",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedStyleChoice/source/unused-style-depth-8-style-fallback.docx",
+    "sourceSha256": "f5bbac3b9e70082f19aaab23e718344af5d49844fcdfb9393ce11f2b5dc6d055",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-style-depth-8-properties-choice",
+    "baseCommit": "a4ef32d2",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedStyleChoice/source/unused-style-depth-8-properties-choice.docx",
+    "sourceSha256": "9fc3b1a535d4b820d7a110106fc2637addc5d44c3b54aa44cad18daf72f99402",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-style-depth-8-properties-fallback",
+    "baseCommit": "a4ef32d2",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedStyleChoice/source/unused-style-depth-8-properties-fallback.docx",
+    "sourceSha256": "d00470c550b5f498d939dc3042591cf27599af2f571bbc98920bfff78eb768d9",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-style-depth-8-numbering-choice",
+    "baseCommit": "a4ef32d2",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedStyleChoice/source/unused-style-depth-8-numbering-choice.docx",
+    "sourceSha256": "f6507c942e3bcad57bec857fef2b680c2a7594455c69311bac6f9657b3e1968a",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-style-depth-8-numbering-fallback",
+    "baseCommit": "a4ef32d2",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedStyleChoice/source/unused-style-depth-8-numbering-fallback.docx",
+    "sourceSha256": "7f23472c979f3c4b71abbcee2d0ae0ebe50d3da34ba8c711dca391b6b14a709d",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-style-depth-8-default-choice",
+    "baseCommit": "a4ef32d2",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedStyleChoice/source/unused-style-depth-8-default-choice.docx",
+    "sourceSha256": "418c1efcb03a2349003baba75dc0e8874122b61bc2686438e36da9e786b2c8dc",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  },
+  {
+    "name": "unused-style-depth-8-default-fallback",
+    "baseCommit": "a4ef32d2",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedStyleChoice/source/unused-style-depth-8-default-fallback.docx",
+    "sourceSha256": "7dafbadb02528d3bd45d0cdd6782d21ff60bf092fdba75c62eec980b2f0e2263",
+    "exportException": "NotSupportedException",
+    "message": "DOCX list format 'hex' is unsupported.",
+    "sourceWordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ]
+  }
+]
