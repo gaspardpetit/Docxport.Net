@@ -1,0 +1,1922 @@
+[
+  {
+    "name": "hint-depth-0-definition-default-only",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-definition-default-only.docx",
+    "sourceSha256": "9f0c3e6e5df2aff5cfc0f43f85b1495a1d074e9f3717ee44964caae9dd517fea",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-definition-default-only.pdf",
+    "wordPdfSha256": "ab5f503bba91fc7ad918806237ac5cef752882240aeb4b591446d08fa52c4e91",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-definition-default-only",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-0-definition-default-only.doc",
+    "sourceSha256": "de6ec2cd3daf6c0e1f13cebcde99bdbf9cdb1d88837dbb9734cbae9d6cf3447f",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-0-definition-default-only.pdf",
+    "wordPdfSha256": "16e8c9ae9a02cf07b633bda6da4275274c175dbcaf71c2e71bca7c0a4ab2195d",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-definition-default-only",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-definition-default-only.docx",
+    "sourceSha256": "7cd228092302dd1292e2c54b06e934cc692472866c13f819ab1f20e02638875b",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-definition-default-only.pdf",
+    "wordPdfSha256": "3a6eec97487dac876061bb0a25e8feee57016f3421fc35d59ed10f5bdc654de3",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-definition-default-fonts",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-definition-default-fonts.docx",
+    "sourceSha256": "12e1097546d7ca00fae223f4aa800c499e12508c593f63cc887a49283f2e7280",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-definition-default-fonts.pdf",
+    "wordPdfSha256": "d7ce9574f8e51953aa23006606dbb64adbc39dc5553371628ed9cc8bf0a28907",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-definition-default-fonts",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-0-definition-default-fonts.doc",
+    "sourceSha256": "bb836ce39f4f109f2fc4f22e3fa9c7557d96d13e81a3d2bf3dd3c45fb772eed9",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-0-definition-default-fonts.pdf",
+    "wordPdfSha256": "003b33fa44882f7952b63f1beb1de88215b50371d8302ff300db30c241cd0745",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-definition-default-fonts",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-definition-default-fonts.docx",
+    "sourceSha256": "4788b79118951e7e6ecb5d80899825b740be2dbf6f196ff9e0ee55622b0ef5d3",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-definition-default-fonts.pdf",
+    "wordPdfSha256": "9ffa3e634be695f44d1942b478022e0f55c67b8b92532c093b19e5aaf974202b",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-definition-eastAsia-only",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-definition-eastAsia-only.docx",
+    "sourceSha256": "4b5cc2d5b2c3aa8eea69d3c78edc3bacee5d9cdb80f8bbf826f4127e1c7ffa5b",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-definition-eastAsia-only.pdf",
+    "wordPdfSha256": "f731e326fe96157c14c6b20ba3ae2a2efaa1ae115c7195d0038bcd2437bb0b30",
+    "pdfMarkerFonts": [
+      "MS-Mincho"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "f6396b3bd8bd2bcb21e62da33deb03f88cb55702e28b9a5d18e3309880891878"
+  },
+  {
+    "name": "hint-depth-0-definition-eastAsia-only",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-0-definition-eastAsia-only.doc",
+    "sourceSha256": "1f661a1b3370a44a2c73d8245b06eaa85d73c17628f83a2d12ada3fe1a2665f7",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-0-definition-eastAsia-only.pdf",
+    "wordPdfSha256": "02ddda1940eeb2b22076272b3d540a5fc69136668ce6926491c84d0dc2e61497",
+    "pdfMarkerFonts": [
+      "MS-Mincho"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "f6396b3bd8bd2bcb21e62da33deb03f88cb55702e28b9a5d18e3309880891878"
+  },
+  {
+    "name": "hint-depth-0-definition-eastAsia-only",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-definition-eastAsia-only.docx",
+    "sourceSha256": "810ab352aba4c5d19e33bf1d98f43011cfdbcd91b90b2567246ed2f405a66eb1",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-definition-eastAsia-only.pdf",
+    "wordPdfSha256": "b61479f575475414b25225967b9f7097ed5e30261a67a2025b1534f5ebb523e3",
+    "pdfMarkerFonts": [
+      "MS-Mincho"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "f6396b3bd8bd2bcb21e62da33deb03f88cb55702e28b9a5d18e3309880891878"
+  },
+  {
+    "name": "hint-depth-0-definition-eastAsia-fonts",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-definition-eastAsia-fonts.docx",
+    "sourceSha256": "c95ea3505ced7d8c3481bd734fd718f0013f161a1d370a9f693496f074333f45",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-definition-eastAsia-fonts.pdf",
+    "wordPdfSha256": "63f8437511352a5ff0a79e3dd73cb1a7e573c87626ed879d6c7bce1551cf7ab7",
+    "pdfMarkerFonts": [
+      "MS-Mincho"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "f6396b3bd8bd2bcb21e62da33deb03f88cb55702e28b9a5d18e3309880891878"
+  },
+  {
+    "name": "hint-depth-0-definition-eastAsia-fonts",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-0-definition-eastAsia-fonts.doc",
+    "sourceSha256": "60a6fa42161a6a7e9de8546c5260410ee454282203e62503336d6e67d72593f2",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-0-definition-eastAsia-fonts.pdf",
+    "wordPdfSha256": "61735cccb5b2c2b1947c1c41eba8aecae8a7acc27bb8032086aa928c1871313f",
+    "pdfMarkerFonts": [
+      "MS-Mincho"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "f6396b3bd8bd2bcb21e62da33deb03f88cb55702e28b9a5d18e3309880891878"
+  },
+  {
+    "name": "hint-depth-0-definition-eastAsia-fonts",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-definition-eastAsia-fonts.docx",
+    "sourceSha256": "b0a150884a3a7421ea9aad9e8f7d652c5907b1afb8da59b66698fbfd99e10896",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-definition-eastAsia-fonts.pdf",
+    "wordPdfSha256": "e0bcae97d4c45be9c748eb079dbe7f20f245beb9029e11a3fb85ce83dcb08399",
+    "pdfMarkerFonts": [
+      "MS-Mincho"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "f6396b3bd8bd2bcb21e62da33deb03f88cb55702e28b9a5d18e3309880891878"
+  },
+  {
+    "name": "hint-depth-0-definition-cs-only",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-definition-cs-only.docx",
+    "sourceSha256": "7029647a1acba42989bc39230879fd824286e21fc8981ba83521f00b2fa184fe",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-definition-cs-only.pdf",
+    "wordPdfSha256": "a5c223751a322177e02dc77b7fdc95e21e997d052bcb868fbe449af400a69772",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-definition-cs-only",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-0-definition-cs-only.doc",
+    "sourceSha256": "17000ff78d49a3ed0c3651a821e301699fda90471d9968b5f53f224fdcc02101",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-0-definition-cs-only.pdf",
+    "wordPdfSha256": "dd3ed969ba5600aef0699ac854a854e774c513178a50ad68355ae7f8780082b4",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-definition-cs-only",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-definition-cs-only.docx",
+    "sourceSha256": "5357e099275491e448dbc3fdb7d81f1f871738f70864b71716351838601acf48",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-definition-cs-only.pdf",
+    "wordPdfSha256": "72c55af89b69b6b4641314ff58dc305df6ce2ff7662ad8fb746d4ea21b38675f",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-definition-cs-fonts",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-definition-cs-fonts.docx",
+    "sourceSha256": "67d9a91f3c8b961f8c46ab1595b86421fa088d46dd4495c4f40c16bfd27131dd",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-definition-cs-fonts.pdf",
+    "wordPdfSha256": "0ed85ca7a6bf8f9e07b15837c14427e7506c052d9c038e1a5bec907757a955a9",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-definition-cs-fonts",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-0-definition-cs-fonts.doc",
+    "sourceSha256": "782e88dabe36b118b717454559d7ce803b6348fb3c31f0df30513696bb89b74b",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-0-definition-cs-fonts.pdf",
+    "wordPdfSha256": "53362066162ba3b32e8975079c22bcc05767373c603b37f7af6dd12fbaa45451",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-definition-cs-fonts",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-definition-cs-fonts.docx",
+    "sourceSha256": "600891a1a230809d37d641eec2266b738364fb098df7c7587704f9afc4168d33",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-definition-cs-fonts.pdf",
+    "wordPdfSha256": "ad7b76d02b77fa714dba2b9c2150328bcf9b454740beac03000a6040eca4da41",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-definition-absent-only",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-definition-absent-only.docx",
+    "sourceSha256": "dd4b064bf4b8115afcb326eb97b1196798408478fc4834dc815ab1466cd6f731",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-definition-absent-only.pdf",
+    "wordPdfSha256": "8bef4474d5b46186d7767690117009701e8d350d03617ff5af74cd9e49097070",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-definition-absent-only",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-0-definition-absent-only.doc",
+    "sourceSha256": "2ec2a5e376b6ce9e9d35a058f9217090c2ef4ce2d38f478c437e573c5a988621",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-0-definition-absent-only.pdf",
+    "wordPdfSha256": "1df23e2772130a165637f5d4658df97c320cf23e1c290c88bfb5d9777026b4d3",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-definition-absent-only",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-definition-absent-only.docx",
+    "sourceSha256": "e47bbd6e70a80d60ce671a99ced1a441c4f73111a46e245084f9457f45dea279",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-definition-absent-only.pdf",
+    "wordPdfSha256": "2e6b553a80955a9e68975695710fdbec4b4b109090625a10dd8ee1372ae2bc3b",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-definition-absent-fonts",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-definition-absent-fonts.docx",
+    "sourceSha256": "5ca97ab40910430bf4d3d9ce9e55df2aa4e112c2a6821ef27e04fb59abd753ea",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-definition-absent-fonts.pdf",
+    "wordPdfSha256": "da49fcf58ab1f890e60be1db53be1521419f5f60e8870f6ba59a23599c934597",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-definition-absent-fonts",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-0-definition-absent-fonts.doc",
+    "sourceSha256": "13686b6cab29d91279fbe8732c637bf8bba42f0153369649c34c91bfa31ae1fe",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-0-definition-absent-fonts.pdf",
+    "wordPdfSha256": "43b4ebf415af0c7880a5c4948336e7039cb33c058218db835d4066bebf21e2d6",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-definition-absent-fonts",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-definition-absent-fonts.docx",
+    "sourceSha256": "671c1a30fb2f75d870920c0943b9a1794fb0fcaed96a17d344e55c25f091f966",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-definition-absent-fonts.pdf",
+    "wordPdfSha256": "8ba1c6c241c331538d1329cfbf09f13d81aa6be254c2b95b74cbf35e0310042a",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-override-default-only",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-override-default-only.docx",
+    "sourceSha256": "df8312f5994bd0b9e375699912aab0e23e8cb3ab7a4342120c22062fca94c177",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-override-default-only.pdf",
+    "wordPdfSha256": "3b530e06e66d8f09867d8821e2459081ed58c58057f32d450a58096c1696e4cb",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-override-default-only",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-0-override-default-only.doc",
+    "sourceSha256": "b9745161031e3ad72d0c147ab70966de4ad7c2694f0f6567b34208c457e3857b",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-0-override-default-only.pdf",
+    "wordPdfSha256": "f4c3c71071931298a0a5aa412993bc008070ef44130605d362032be576fa2735",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-override-default-only",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-override-default-only.docx",
+    "sourceSha256": "3f682b415329ff7cfe59a1859fab5777b38184add72606d5aaa8f68b56b0fd76",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-override-default-only.pdf",
+    "wordPdfSha256": "53928b3ba17ba4e4b425adb64ba0cf24e9d3f6e0d2a97e2fbbc6be9dccd030b3",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-override-default-fonts",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-override-default-fonts.docx",
+    "sourceSha256": "5c63211070f226bbd85a4650dca7c11c53e7f2c9612198e270e9d3ceca95edde",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-override-default-fonts.pdf",
+    "wordPdfSha256": "380b87ebb0ee801c8091cd74d540b6737b5cf735043cd2e5d831ac14ae988a64",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-override-default-fonts",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-0-override-default-fonts.doc",
+    "sourceSha256": "cb0a311ce6ec30c3ab1ea94d4b018ff4a96dde46e84ce41ff39d4a85e70633b4",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-0-override-default-fonts.pdf",
+    "wordPdfSha256": "46c17556325f58b9ed22691e3987a9798446f07471fdc7f1ab1f2e9873f85fc6",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-override-default-fonts",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-override-default-fonts.docx",
+    "sourceSha256": "8ac904d79eecd30ce5ed5132d64a1f5ab9953840e5ee15b348385f1214d4d17e",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-override-default-fonts.pdf",
+    "wordPdfSha256": "9131791c95b678c61d370ef461a8072be455580a65ec357b190ab85efba428ce",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-override-eastAsia-only",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-override-eastAsia-only.docx",
+    "sourceSha256": "8e059c7866000cd1e102b6a11e9c4a6daaea5ec2f883d27729d8b2d60ddf4ef3",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-override-eastAsia-only.pdf",
+    "wordPdfSha256": "4afbc1b4f1cdf05635f0b1e5056ada366b8eb376828808649e1a87321b026a34",
+    "pdfMarkerFonts": [
+      "MS-Mincho"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "f6396b3bd8bd2bcb21e62da33deb03f88cb55702e28b9a5d18e3309880891878"
+  },
+  {
+    "name": "hint-depth-0-override-eastAsia-only",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-0-override-eastAsia-only.doc",
+    "sourceSha256": "c6a4be864d809b6d29585de9bcc68eceebcaa6b39c9614333d96873d57a8467c",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-0-override-eastAsia-only.pdf",
+    "wordPdfSha256": "78fd157aebc6ac2296f109c80921965bbcb2248261e3b839eec7be145a8236de",
+    "pdfMarkerFonts": [
+      "MS-Mincho"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "f6396b3bd8bd2bcb21e62da33deb03f88cb55702e28b9a5d18e3309880891878"
+  },
+  {
+    "name": "hint-depth-0-override-eastAsia-only",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-override-eastAsia-only.docx",
+    "sourceSha256": "cd9c1ec81bee29d5c513b9ccde0478c59276e763b631554e034a8d67d7971560",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-override-eastAsia-only.pdf",
+    "wordPdfSha256": "0d3e6735b366e03162bf9051b9776fea2db5a233dca99cf534b67b99a617ceeb",
+    "pdfMarkerFonts": [
+      "MS-Mincho"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "f6396b3bd8bd2bcb21e62da33deb03f88cb55702e28b9a5d18e3309880891878"
+  },
+  {
+    "name": "hint-depth-0-override-eastAsia-fonts",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-override-eastAsia-fonts.docx",
+    "sourceSha256": "4c84fd3019d567abe45a4620bc3a3d5e81e3132d4d96e8f15d712e13a36d145a",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-override-eastAsia-fonts.pdf",
+    "wordPdfSha256": "16770cced9d4bf0966d213a6be0206ced3f7ed6499368dd01f784b38261f0739",
+    "pdfMarkerFonts": [
+      "MS-Mincho"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "f6396b3bd8bd2bcb21e62da33deb03f88cb55702e28b9a5d18e3309880891878"
+  },
+  {
+    "name": "hint-depth-0-override-eastAsia-fonts",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-0-override-eastAsia-fonts.doc",
+    "sourceSha256": "5705c764b9d5fa944556cc4c5b91bb3382874cc3337e9531fbe2d312e8b443b9",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-0-override-eastAsia-fonts.pdf",
+    "wordPdfSha256": "0e63b0ee4c8ab29be9337e0c22764ffc8b0d17d501cc065638420a568581de60",
+    "pdfMarkerFonts": [
+      "MS-Mincho"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "f6396b3bd8bd2bcb21e62da33deb03f88cb55702e28b9a5d18e3309880891878"
+  },
+  {
+    "name": "hint-depth-0-override-eastAsia-fonts",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-override-eastAsia-fonts.docx",
+    "sourceSha256": "e032562c301dce01ac0afef1a680bda9a1064456f64436ea4068cf09c210b705",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-override-eastAsia-fonts.pdf",
+    "wordPdfSha256": "7ac1e2b20633716b2aea5cf5d26641c86a94a8e77b0144f185aa373b0422d20c",
+    "pdfMarkerFonts": [
+      "MS-Mincho"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "f6396b3bd8bd2bcb21e62da33deb03f88cb55702e28b9a5d18e3309880891878"
+  },
+  {
+    "name": "hint-depth-0-override-cs-only",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-override-cs-only.docx",
+    "sourceSha256": "d5369864d2f291e2602d9b361aaa4279d1fe8aa7263d76976438b8fd26f54629",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-override-cs-only.pdf",
+    "wordPdfSha256": "10f766a789a121e3215194e3bc2184a1b1a14526ec0db7c5f3d3b1ec34b19f59",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-override-cs-only",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-0-override-cs-only.doc",
+    "sourceSha256": "6f1b907c7da3d49a8b0dfc565bbd214d8424157ef0bd55ac7e957882c83c00ce",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-0-override-cs-only.pdf",
+    "wordPdfSha256": "b9b7997ef4810e281a02d2f5b6e8e7e2e92cfe450abd2177d6c94a6229640791",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-override-cs-only",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-override-cs-only.docx",
+    "sourceSha256": "6c9c303dc418f42d7a6421fe08464b655b4d37a9cd257e13eca82b657498e251",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-override-cs-only.pdf",
+    "wordPdfSha256": "0d01a7c21959e5f91ce3157d753053c09b701bc2e75c81f772d5c12bc2eb61d5",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-override-cs-fonts",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-override-cs-fonts.docx",
+    "sourceSha256": "3d9797ff9f597ae5acfcd42f3acf7e2d1c91f52b5e3e467dc9ae15eb0ecc87fb",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-override-cs-fonts.pdf",
+    "wordPdfSha256": "75926f16ccc205bb2ceab71aff13ff5ea28e613ce601d75a7f65c414dff79189",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-override-cs-fonts",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-0-override-cs-fonts.doc",
+    "sourceSha256": "d984b1b5092948137296351b6b2a101a555423e566ce91fa2b0272a92daef72c",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-0-override-cs-fonts.pdf",
+    "wordPdfSha256": "b30188e1075683c8ff5af72f23e4c441da6cbabd58b5edddba8fb021cbff3048",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-override-cs-fonts",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-override-cs-fonts.docx",
+    "sourceSha256": "6f7546f632a4fe7ee386c4b304a0d9ebbd3d30ea315d780850ce376f7361032a",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-override-cs-fonts.pdf",
+    "wordPdfSha256": "138b38fdb6473c21031dbc3076ff1c69683e62976a5c13e4a2ccd7d116e6bf8d",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-override-absent-only",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-override-absent-only.docx",
+    "sourceSha256": "7538819027596a198c3ebbaf6be57ca5f9c59ee6ff89e13861ee858382388205",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-override-absent-only.pdf",
+    "wordPdfSha256": "ce3e4f512391ca4639eb3ef1a39ae4f5f830b3c544c120ee7c9a26473a11f22a",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-override-absent-only",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-0-override-absent-only.doc",
+    "sourceSha256": "f12ebd4d6ee5a5e1f5efb568a0a746562feb54a03b406925b11f67d00d31ea0d",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-0-override-absent-only.pdf",
+    "wordPdfSha256": "ea6254a6c721a7ee0010b07953d41c86db1fdd2876f97cbfd15cd8431efa40dd",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-override-absent-only",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-override-absent-only.docx",
+    "sourceSha256": "34d3be772b38521fd851b44055ef56f2128be34675acbb1aaacaba25f88b3e9c",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-override-absent-only.pdf",
+    "wordPdfSha256": "86ffa246ddd4b523603925f6f616c3e8487dddc6629db9bdd2755b3c64439182",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-override-absent-fonts",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-override-absent-fonts.docx",
+    "sourceSha256": "edb0ad618eb0f3ed5b83e65be8e9ab35a816a95f0208a307e6b72afb5162c8a2",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-0-override-absent-fonts.pdf",
+    "wordPdfSha256": "aa9a7c67f9e9a81e2749f5d75fd57cc2aa6c4028e5e3b583b7dbc2ec5c303dca",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-override-absent-fonts",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-0-override-absent-fonts.doc",
+    "sourceSha256": "9c49039d0ac4f022f4cb36538b65200f63837b7ce0a0fba7c085ac2aff458ae7",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-0-override-absent-fonts.pdf",
+    "wordPdfSha256": "f52e9167ed4257dbbb295e1c1506eb1db858b09547ef14b55e1f7514f031dafe",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-override-absent-fonts",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-override-absent-fonts.docx",
+    "sourceSha256": "13d9d2a31a0500f4efe3e689d18c880cde5abb67dbfc7994cfa67e9516ee1cfe",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-0-override-absent-fonts.pdf",
+    "wordPdfSha256": "563a2e1a3fd5669efe1c33f1ddf872492b1886b91b873571b01ecb30d04930c3",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-definition-default-only",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-definition-default-only.docx",
+    "sourceSha256": "383bb25f3b2d25c138403d43d694a2d9ea7ff2911593f0fb1af5009faa7ab469",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-definition-default-only.pdf",
+    "wordPdfSha256": "dcd04f64ac40df52e467a96c8d304155b25ddd8aa0d775560f3462ffc8dd3995",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-definition-default-only",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-8-definition-default-only.doc",
+    "sourceSha256": "8798e75bec24853a7f669e7693427e16be83179d0cfd79d755d8f8c2fb98bc0d",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-8-definition-default-only.pdf",
+    "wordPdfSha256": "f3d3bed3ee4062765f8b5dc3ad51bc9e21325fc4ccda92df592b3c3c9b248d2e",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-definition-default-only",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-definition-default-only.docx",
+    "sourceSha256": "7f91613be94e55c3240c86fce448e5e86bb3738a8177aae92dfa7431bafa2c22",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-definition-default-only.pdf",
+    "wordPdfSha256": "29452882fc8979ff3bc67a6df9a67f8101819e705495327ca9f2ac4331b84c57",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-definition-default-fonts",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-definition-default-fonts.docx",
+    "sourceSha256": "cdaebc2b4d5b905bf02d3bef672f6211459e6e8b47b6eeba8ae2ce24597caebb",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-definition-default-fonts.pdf",
+    "wordPdfSha256": "1291a8844dfedb675973ce869e43f04dd7d72b2415ae750e86358c58cf9612a4",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-definition-default-fonts",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-8-definition-default-fonts.doc",
+    "sourceSha256": "322935b65d94046b67307a324d8c616e487f01eff29787e2ffb75da3a4581586",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-8-definition-default-fonts.pdf",
+    "wordPdfSha256": "926e4b36434961d4099367148a6ec641bbe48f2251b1669401ce7e2f80569d1a",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-definition-default-fonts",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-definition-default-fonts.docx",
+    "sourceSha256": "6062035cd6ef9fb8ce3f5cb5689c22215bb99ece5a88c167f934f72d48c60e38",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-definition-default-fonts.pdf",
+    "wordPdfSha256": "901908af7b5e9b64b6d4d71bcc6628b7328ac910d1de1456d801d097e63318b5",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-definition-eastAsia-only",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-definition-eastAsia-only.docx",
+    "sourceSha256": "b6b13d84809b47d4eca5e6b7be5cc8b080fbb86876696847fcef1fe1b1d2b883",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-definition-eastAsia-only.pdf",
+    "wordPdfSha256": "4b8faff8b4aa365ba164da5d671ae049e47b4d815f2d08905d3bd532aee7da64",
+    "pdfMarkerFonts": [
+      "MS-Mincho"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "f6396b3bd8bd2bcb21e62da33deb03f88cb55702e28b9a5d18e3309880891878"
+  },
+  {
+    "name": "hint-depth-8-definition-eastAsia-only",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-8-definition-eastAsia-only.doc",
+    "sourceSha256": "62c0078d4009a494180c10b8038ce6b8dcaed4d621fc904e7ed4b2d6c0c7c3be",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-8-definition-eastAsia-only.pdf",
+    "wordPdfSha256": "fcf05e90ad809f5571f9d6a84c4096da8548db44b63f58ec4d5785d68ed3ca2d",
+    "pdfMarkerFonts": [
+      "MS-Mincho"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "f6396b3bd8bd2bcb21e62da33deb03f88cb55702e28b9a5d18e3309880891878"
+  },
+  {
+    "name": "hint-depth-8-definition-eastAsia-only",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-definition-eastAsia-only.docx",
+    "sourceSha256": "09b196330ddc954c54b1457f88b3da9e9e960fe5e7c626f09fda020449ff1fd3",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-definition-eastAsia-only.pdf",
+    "wordPdfSha256": "8896f5807f49b70326efd52e135d9c4519d5034df83f483e31649bf602db5501",
+    "pdfMarkerFonts": [
+      "MS-Mincho"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "f6396b3bd8bd2bcb21e62da33deb03f88cb55702e28b9a5d18e3309880891878"
+  },
+  {
+    "name": "hint-depth-8-definition-eastAsia-fonts",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-definition-eastAsia-fonts.docx",
+    "sourceSha256": "61b8cbd878dbe305a6297dfb7cbd516080a24aceb8d8879a31292122fa1d116b",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-definition-eastAsia-fonts.pdf",
+    "wordPdfSha256": "f088169097704ca812995ac407acc68c0932dfe0ee6cea349c3784926d61fb01",
+    "pdfMarkerFonts": [
+      "MS-Mincho"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "f6396b3bd8bd2bcb21e62da33deb03f88cb55702e28b9a5d18e3309880891878"
+  },
+  {
+    "name": "hint-depth-8-definition-eastAsia-fonts",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-8-definition-eastAsia-fonts.doc",
+    "sourceSha256": "0078a161547e1356169317071a99e545955fd16fd98c2d2ee6881f2b7d15f04b",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-8-definition-eastAsia-fonts.pdf",
+    "wordPdfSha256": "1827a1736ea1515de280b347e066c466c4576d2c7ef74a439c72ba6e431571be",
+    "pdfMarkerFonts": [
+      "MS-Mincho"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "f6396b3bd8bd2bcb21e62da33deb03f88cb55702e28b9a5d18e3309880891878"
+  },
+  {
+    "name": "hint-depth-8-definition-eastAsia-fonts",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-definition-eastAsia-fonts.docx",
+    "sourceSha256": "51f1b97d73d26d93c61bb12716c832d710a542b8ca0c6b72afd6e79b7b6f2fdb",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-definition-eastAsia-fonts.pdf",
+    "wordPdfSha256": "2f8cf113ac3e9c56e1f206c375cf3b5b13d864be065929f0d2dc38479f621355",
+    "pdfMarkerFonts": [
+      "MS-Mincho"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "f6396b3bd8bd2bcb21e62da33deb03f88cb55702e28b9a5d18e3309880891878"
+  },
+  {
+    "name": "hint-depth-8-definition-cs-only",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-definition-cs-only.docx",
+    "sourceSha256": "41353c22c0443a7d776a89dd57cdee21edd283080f872c72902504df14a5cf19",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-definition-cs-only.pdf",
+    "wordPdfSha256": "d4748b2aa4765372f65fe2fe601f439b07e0c5b9645d0033203d4587464bd185",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-definition-cs-only",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-8-definition-cs-only.doc",
+    "sourceSha256": "2d656f6dd9db019e2b3e4a55d1dcf0a15982d0b373f6fa06d34a68e261156a04",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-8-definition-cs-only.pdf",
+    "wordPdfSha256": "6b09dee72be4747e8d6fb4f14ba14abc905a24323b06e6e9d314bf856dc68856",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-definition-cs-only",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-definition-cs-only.docx",
+    "sourceSha256": "33df1813e417757ef6a37fed67e6a3feb4024644d7f89aaae02f4dbfc0a2757f",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-definition-cs-only.pdf",
+    "wordPdfSha256": "7c44f5a5623ad2598670fbcc219ab5e4a388539e61ba644c4356a2787938d7c1",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-definition-cs-fonts",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-definition-cs-fonts.docx",
+    "sourceSha256": "ca8b8939d855e58a526fd068eb576c3f001e7f9790809101c4ae712df53897a7",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-definition-cs-fonts.pdf",
+    "wordPdfSha256": "1d7368ecdfac2b9a591f144d3b491eb543bbaa17817e61992e3e23fa23a5c3fc",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-definition-cs-fonts",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-8-definition-cs-fonts.doc",
+    "sourceSha256": "e8c334ced9adf2a22bde407d664f10a3baa455698c5525450477076f37c59eb3",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-8-definition-cs-fonts.pdf",
+    "wordPdfSha256": "101579ae27646a00403bd5232377212882eaa077f4dcebb97403616e046c6755",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-definition-cs-fonts",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-definition-cs-fonts.docx",
+    "sourceSha256": "a174498e2947e9491152d56e1026b9629fd2d58fc59e5b28a0548968cbee7e14",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-definition-cs-fonts.pdf",
+    "wordPdfSha256": "525bce52a7526743a301439be7417589d04b78a5c9ba4351b2e173a2a808d8f4",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-definition-absent-only",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-definition-absent-only.docx",
+    "sourceSha256": "4c10bae54a8bf402a1471be6ba0d15b6672865c1a81ade55a73e1451d9a56da7",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-definition-absent-only.pdf",
+    "wordPdfSha256": "4e0d5a8bf5121fda0daed187daebbf3a26d26090217fdb14d8382b87e104dacb",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-definition-absent-only",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-8-definition-absent-only.doc",
+    "sourceSha256": "25d5c481ead0c224ca2e8c4ea12ae45b84a5628a84f48b6f15fee75662bce622",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-8-definition-absent-only.pdf",
+    "wordPdfSha256": "f349fd7a6e65b139070978c328c9844571f371e4bc34650608aec8f66639de34",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-definition-absent-only",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-definition-absent-only.docx",
+    "sourceSha256": "6cec76de921c2ca0c3050119f2c40f300e66d5c77ac52e96bcf331d20459aa2d",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-definition-absent-only.pdf",
+    "wordPdfSha256": "044a15c246f958554b68947bf2277965a948c588f9f59a2ff1dc188e11b03b45",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-definition-absent-fonts",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-definition-absent-fonts.docx",
+    "sourceSha256": "4057dd3706be04117038e17da40d1312cc1a1eb07affe6a85439340284581590",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-definition-absent-fonts.pdf",
+    "wordPdfSha256": "988a4219df26e6ef2f2bfe6af2d91441fc0da873cfe80655a4267f9d6dd22d30",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-definition-absent-fonts",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-8-definition-absent-fonts.doc",
+    "sourceSha256": "a0eebc89dbabb576736528897525d3da4764385f26991eb5e2bfb93d58ab8f4c",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-8-definition-absent-fonts.pdf",
+    "wordPdfSha256": "9bf6807917e425b7081adf47485fba1e8fddbb1d8d26b5f9e43b3d2387ba63da",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-definition-absent-fonts",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-definition-absent-fonts.docx",
+    "sourceSha256": "783ccbda454c23f370f4fef10290ee0838e25aedcc6f6a4ef18712f20b70acd9",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-definition-absent-fonts.pdf",
+    "wordPdfSha256": "bc8da5ed760149dd949e4d737e65673f2b2c45e329e22c37f70fe57bee6e4d5b",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-override-default-only",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-override-default-only.docx",
+    "sourceSha256": "9050636e360974cdbe92be6c103f5cd18ef94e984cc0c24007f20fcf503691e6",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-override-default-only.pdf",
+    "wordPdfSha256": "e3a302ff339f56c03f5db7303f25a139616a27cc7d6adf4dd18c71b26c6fdcea",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-override-default-only",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-8-override-default-only.doc",
+    "sourceSha256": "b885666bd3eb6a1aa051a4d09f4ec4d32099716ec72dfe6394c820db69671c62",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-8-override-default-only.pdf",
+    "wordPdfSha256": "eea1548bba630cc2cc744afe187c3a1290e9908a28f130900867d71944681096",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-override-default-only",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-override-default-only.docx",
+    "sourceSha256": "8954f434c56661cee44136d06a7bde29e9b128726cb466778ef1b009bde16b62",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-override-default-only.pdf",
+    "wordPdfSha256": "875e020e9ff8854d8184fd893178f76453a7ea7fd4f7a19344306a0d51463347",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-override-default-fonts",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-override-default-fonts.docx",
+    "sourceSha256": "1301e0b2ead9327f7607a3488e2af8b9be62af76a7446388aed875a8fece4e7b",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-override-default-fonts.pdf",
+    "wordPdfSha256": "66c3ceb4fda11a3eada6dd890da92796d99a254c57a21ce3f0f3a6ebef562886",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-override-default-fonts",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-8-override-default-fonts.doc",
+    "sourceSha256": "9cfe40a483edf601c482ec7415812f93ab1e7e3045557ef3472dd0c56915d2e2",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-8-override-default-fonts.pdf",
+    "wordPdfSha256": "bf641d86412d79b0efb1426d9298fa1bc19d6f7bb366309aaddf2be531ef2f44",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-override-default-fonts",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-override-default-fonts.docx",
+    "sourceSha256": "2d8f81f81533b96e616bcc8c68a5e276ee2d380fb92d8b225ccef40dd396044e",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-override-default-fonts.pdf",
+    "wordPdfSha256": "0181d1a7ce223ab8c00a22739a911e4946994e6afd4ee2361e5af54f77e09407",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-override-eastAsia-only",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-override-eastAsia-only.docx",
+    "sourceSha256": "402ad34453fba55c110d945a8b6cb9b6878599701fa10c2a2ed1d5d3d1b113a3",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-override-eastAsia-only.pdf",
+    "wordPdfSha256": "4950a63887f14e7faf60d3913d7ce2c629ca69a465465248e147a43acd480666",
+    "pdfMarkerFonts": [
+      "MS-Mincho"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "f6396b3bd8bd2bcb21e62da33deb03f88cb55702e28b9a5d18e3309880891878"
+  },
+  {
+    "name": "hint-depth-8-override-eastAsia-only",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-8-override-eastAsia-only.doc",
+    "sourceSha256": "159350513fbe33dd99d8306bc814ea70f1a0aed3d77de88f6de1a7add450615a",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-8-override-eastAsia-only.pdf",
+    "wordPdfSha256": "90381ec5783b8973c3c5c5be24a85fb709e81b97220ae7577f6a60e55fd7daf7",
+    "pdfMarkerFonts": [
+      "MS-Mincho"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "f6396b3bd8bd2bcb21e62da33deb03f88cb55702e28b9a5d18e3309880891878"
+  },
+  {
+    "name": "hint-depth-8-override-eastAsia-only",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-override-eastAsia-only.docx",
+    "sourceSha256": "9e6a7066da34541e26cf6d5f95d4b63f782bc0ea2e78158f7fe164637d4bd245",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-override-eastAsia-only.pdf",
+    "wordPdfSha256": "777ff22c5041980c6653b0b058f80e9e9ca4354cd8159da2bdd1e7f4225227fe",
+    "pdfMarkerFonts": [
+      "MS-Mincho"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "f6396b3bd8bd2bcb21e62da33deb03f88cb55702e28b9a5d18e3309880891878"
+  },
+  {
+    "name": "hint-depth-8-override-eastAsia-fonts",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-override-eastAsia-fonts.docx",
+    "sourceSha256": "0027d29d7e0142d6255182212f564105f1f2c3be8b4beff78c1b8dca26dd24ed",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-override-eastAsia-fonts.pdf",
+    "wordPdfSha256": "330baf29411562268d6806af2f1cf7b1df53777473d0070cf7c82afdf52947f6",
+    "pdfMarkerFonts": [
+      "MS-Mincho"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "f6396b3bd8bd2bcb21e62da33deb03f88cb55702e28b9a5d18e3309880891878"
+  },
+  {
+    "name": "hint-depth-8-override-eastAsia-fonts",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-8-override-eastAsia-fonts.doc",
+    "sourceSha256": "56fcdcbb5933669bb1ef9549325ec409a890c447b19d119a27c01f94c4a6a100",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-8-override-eastAsia-fonts.pdf",
+    "wordPdfSha256": "b439a51fa356c788f0b8778c5be555d1e36105c67c5626ed40811c7836ed1376",
+    "pdfMarkerFonts": [
+      "MS-Mincho"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "f6396b3bd8bd2bcb21e62da33deb03f88cb55702e28b9a5d18e3309880891878"
+  },
+  {
+    "name": "hint-depth-8-override-eastAsia-fonts",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-override-eastAsia-fonts.docx",
+    "sourceSha256": "d54027a6b20714bb82c700117f5305bdc224f44e08e27d0a638d4dd1dfa10f10",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-override-eastAsia-fonts.pdf",
+    "wordPdfSha256": "378ba7bf0b09462e3492c8ae173d6d34c9a7ce6b1ca9e34e4ed7912cc4c636b7",
+    "pdfMarkerFonts": [
+      "MS-Mincho"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "f6396b3bd8bd2bcb21e62da33deb03f88cb55702e28b9a5d18e3309880891878"
+  },
+  {
+    "name": "hint-depth-8-override-cs-only",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-override-cs-only.docx",
+    "sourceSha256": "a00561062c1275f4fb0e0c78fdc918868c762ae063c6466570771c46e33f2a5c",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-override-cs-only.pdf",
+    "wordPdfSha256": "48eb814f50c4bc3f2b7a330ffed6a9899357e42728a8d4137e195fafd3b35696",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-override-cs-only",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-8-override-cs-only.doc",
+    "sourceSha256": "907dda6e6a19f5a878ed4fb7bda9f4a047a81653df92856b1928af3ec4963b7f",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-8-override-cs-only.pdf",
+    "wordPdfSha256": "cb91b722e99cd360d9e03dfed144420f498015bf6bbcde18e00bf4079107c220",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-override-cs-only",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-override-cs-only.docx",
+    "sourceSha256": "2236739132c6bf2b58be0015c1685de0a2410efcdfb87858f6d0353e98847eb2",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-override-cs-only.pdf",
+    "wordPdfSha256": "0edd691ebd72679393c7c0b2aa62e50d46dce072b0c7d8fd7b7dbb1af293e90f",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-override-cs-fonts",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-override-cs-fonts.docx",
+    "sourceSha256": "6a6ecd975292ada0fa5a6be3d23e61bdcb41b9ddf50994cd2acaef0348c3fc48",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-override-cs-fonts.pdf",
+    "wordPdfSha256": "307b739837eac42c9df592f52fc24ea9236682776f55464fd1b65ca8346d2254",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-override-cs-fonts",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-8-override-cs-fonts.doc",
+    "sourceSha256": "d1e803dbfedfc992d59e117ee1f92a97ddd9a32a2ec2e06717d4b66faaa4f315",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-8-override-cs-fonts.pdf",
+    "wordPdfSha256": "432c7aa96ee8867d193cb339b98e6bf5679b573ec53e13ba56ea78ee6d2b83d8",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-override-cs-fonts",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-override-cs-fonts.docx",
+    "sourceSha256": "85bbb8ea50a49ecdaca5ae0227e68f11b524f213daa2ccee79134ce696d149c6",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-override-cs-fonts.pdf",
+    "wordPdfSha256": "387e5cb96751d427cdf9fb5348f5282ec212373b1fef42c22d69488a52de081b",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-override-absent-only",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-override-absent-only.docx",
+    "sourceSha256": "55d1c5c9975352465f85f9dfd58a19f9797e47bddabd208f8b5384eca6c5f044",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-override-absent-only.pdf",
+    "wordPdfSha256": "95624b4a5894a68e0d0dfd4cc371047465bdabecabcd416ad338cd052106fb20",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-override-absent-only",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-8-override-absent-only.doc",
+    "sourceSha256": "06453faf8c33cba4058b32deedbd06cebe28331bc9de9d30db6cb621a9da8259",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-8-override-absent-only.pdf",
+    "wordPdfSha256": "a3d763a3fd584c5b2902103d6b7c9eb8442a47e34cb1608391711717bc631bf9",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-override-absent-only",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-override-absent-only.docx",
+    "sourceSha256": "32825f3e08dde3d76db466ed07526a5e0d83e6a1c0a28b834d3dc16e17c931b9",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-override-absent-only.pdf",
+    "wordPdfSha256": "7586d9aa05aa2584c2e0e8e39621d47ebeeadc3663e81f4dc0966ebd0fe7f263",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-override-absent-fonts",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-override-absent-fonts.docx",
+    "sourceSha256": "817fc5959c1226aa671d4bab3ec080cf07f4d1696c242f96428b369c8d93456d",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/source/hint-depth-8-override-absent-fonts.pdf",
+    "wordPdfSha256": "4b540f9ac3b5857395a0c7c517ac4bf3ed75aa7b66539e9c77f7d58749551d5a",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-override-absent-fonts",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/hint-depth-8-override-absent-fonts.doc",
+    "sourceSha256": "28cf78883c1cd7de1a954c82858e7cd6be89f7250f46d3e4aec9705fac0571b3",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/doc/hint-depth-8-override-absent-fonts.pdf",
+    "wordPdfSha256": "8956639c3f7cd046ee683306a6df49c52166518868401eabe1000b0fd3082eaa",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-override-absent-fonts",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-override-absent-fonts.docx",
+    "sourceSha256": "74ac38b7ee40bc483afbcbec4e3e98063fba0754f856378bbc71f021534f4f30",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/projected/hint-depth-8-override-absent-fonts.pdf",
+    "wordPdfSha256": "c9f81d587d50fd2cbbe265046661457a0af9d4a1a20828c56e0dffe21b9232cc",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  }
+]

@@ -46,6 +46,9 @@ public sealed record DocCharacterFormatting(bool? Bold, bool? Italic, ushort? Si
     bool? SnapToGridStyleToggle = null, byte? EmphasisMarkCode = null,
     DocFitText? FitText = null)
 {
+    /// <summary>DOC script hint: 0 default, 1 East Asian, 2 complex script, FF no guidance.</summary>
+    public byte? FontHint { get; init; }
+
     public static DocCharacterFormatting Empty { get; } = new(null, null, null);
     public bool IsEmpty => Bold == null && Italic == null && SizeHalfPoints == null &&
         CharacterStyleIndex == null && Strike == null && Caps == null &&
@@ -79,7 +82,7 @@ public sealed record DocCharacterFormatting(bool? Bold, bool? Italic, ushort? Si
         BaselineOffsetHalfPoints == null && Border == null &&
         SymbolFontIndex == null && SymbolFontName == null && SymbolCharacter == null &&
         SnapToGrid == null && SnapToGridStyleToggle == null &&
-        EmphasisMarkCode == null && FitText == null;
+        EmphasisMarkCode == null && FitText == null && FontHint == null;
 
     internal bool HasStyleToggles => BoldStyleToggle != null || ItalicStyleToggle != null ||
         StrikeStyleToggle != null || DoubleStrikeStyleToggle != null ||
@@ -298,7 +301,7 @@ internal static class DocCharacterFormattingReader
         byte? underlineCode = null;
         uint? colorRef = null;
         var modernColorSeen = false;
-        byte? highlightCode = null, scriptCode = null, emphasisMarkCode = null;
+        byte? highlightCode = null, scriptCode = null, emphasisMarkCode = null, fontHint = null;
         uint? underlineColorRef = null;
         DocCellShading? shading = null;
         var modernShadingSeen = false;
@@ -365,6 +368,11 @@ internal static class DocCharacterFormattingReader
                         throw new InvalidDataException("A DOC emphasis mark is invalid.");
                     emphasisMarkCode = sprms[offset];
                     break;
+                case 0x286F:
+                    if (sprms[offset] is not (0 or 1 or 2 or 0xFF))
+                        throw new InvalidDataException("A DOC font hint is invalid.");
+                    fontHint = sprms[offset];
+                    break;
                 case 0x2A33:
                     if (sprms[offset] != 0)
                         throw new InvalidDataException("A character plain-reset operand is invalid.");
@@ -378,7 +386,7 @@ internal static class DocCharacterFormattingReader
                     capsStyleToggle = smallCapsStyleToggle = hiddenStyleToggle = null;
                     complexBoldStyleToggle = complexItalicStyleToggle = null;
                     size = complexSize = kerningThreshold = characterScale = null;
-                    emphasisMarkCode = null;
+                    emphasisMarkCode = fontHint = null;
                     fitText = null;
                     baselineOffset = null;
                     underlineCode = scriptCode = null;
@@ -548,7 +556,7 @@ internal static class DocCharacterFormattingReader
             KerningThresholdHalfPoints: kerningThreshold, Border: border,
             SymbolFontIndex: symbolFontIndex, SymbolCharacter: symbolCharacter,
             SnapToGrid: snapToGrid, SnapToGridStyleToggle: snapToGridStyleToggle,
-            EmphasisMarkCode: emphasisMarkCode, FitText: fitText);
+            EmphasisMarkCode: emphasisMarkCode, FitText: fitText) { FontHint = fontHint };
     }
 
     private static uint IndexedColor(byte index) => index switch

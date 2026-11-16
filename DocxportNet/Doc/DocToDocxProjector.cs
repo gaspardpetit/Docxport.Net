@@ -2748,13 +2748,22 @@ public sealed class DocToDocxProjector
     {
         if (formatting.AsciiFontName == null && formatting.EastAsiaFontName == null &&
             formatting.HighAnsiFontName == null &&
-            formatting.ComplexScriptFontName == null) return;
+            formatting.ComplexScriptFontName == null && formatting.FontHint is not (0 or 1 or 2)) return;
         var fonts = new RunFonts();
         if (formatting.AsciiFontName != null) fonts.Ascii = formatting.AsciiFontName;
         if (formatting.EastAsiaFontName != null) fonts.EastAsia = formatting.EastAsiaFontName;
         if (formatting.HighAnsiFontName != null) fonts.HighAnsi = formatting.HighAnsiFontName;
         if (formatting.ComplexScriptFontName != null)
             fonts.ComplexScript = formatting.ComplexScriptFontName;
+        if (formatting.FontHint is byte hint)
+            fonts.Hint = hint switch
+            {
+                0 => FontTypeHintValues.Default,
+                1 => FontTypeHintValues.EastAsia,
+                2 => FontTypeHintValues.ComplexScript,
+                // FF provides no guidance and has no OOXML ST_Hint equivalent.
+                _ => null
+            };
         properties.AppendChild(fonts);
     }
 
