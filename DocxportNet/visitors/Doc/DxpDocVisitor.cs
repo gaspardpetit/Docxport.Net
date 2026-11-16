@@ -1014,7 +1014,8 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
         _positionalExistingTabPositions = new List<short>();
         var previousStyleIndex = _currentParagraphStyleIndex;
         var start = target.Length;
-        var styleId = paragraph.ParagraphProperties?.ParagraphStyleId?.Val?.Value;
+        var markerProperties = DocxportNet.Walker.DxpNumberingResolver.NormalizeParagraphNumberingProperties(paragraph);
+        var styleId = markerProperties?.ParagraphStyleId?.Val?.Value;
         // An omitted pStyle inherits the declared default, whose ID need not
         // be Normal. Its numbering must survive the DOC paragraph style link.
         if (string.IsNullOrEmpty(styleId)) styleId = _defaultParagraphStyleId;
@@ -1023,9 +1024,20 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
             ? paragraphStyleIndex : _styleById.TryGetValue("Normal", out var normalIndex)
                 ? normalIndex : 0;
         var formatting = ReadParagraphFormatting(paragraph.ParagraphProperties);
+        if (!ReferenceEquals(markerProperties, paragraph.ParagraphProperties))
+        {
+            // Use the selected compatibility branch for list membership while
+            // retaining the existing handling of other paragraph formatting.
+            var markerFormatting = ReadParagraphFormatting(markerProperties);
+            formatting = formatting with
+            {
+                ListOverrideIndex = markerFormatting.ListOverrideIndex,
+                ListLevel = markerFormatting.ListLevel
+            };
+        }
         // DOC paragraph formatting must retain the effective pair: a direct
         // numId or ilvl can inherit its other half from a paragraph style.
-        var directNumbering = paragraph.ParagraphProperties?.NumberingProperties;
+        var directNumbering = markerProperties?.NumberingProperties;
         var hasNumberId = directNumbering?.NumberingId?.Val?.Value != null;
         var hasLevel = directNumbering?.NumberingLevelReference?.Val?.Value != null;
         if (hasNumberId != hasLevel &&
