@@ -1,0 +1,9 @@
+# Ignore rejected style list references during DOC export
+
+Thirty generic documents contain Item0-Item2 paragraphs inheriting [7], [8], [9] from a paragraph style. Cases cover levels zero/eight, compatibility choices around a whole style, paragraph properties, numbering properties or numId, and a custom default paragraph style. Each scope has a supported Choice, an unsupported Choice selecting Fallback, and a direct-property control. A rejected branch references a separate hexadecimal list, intentionally unsupported by the binary DOC exporter.
+
+On main a4ef32d2, sixteen cases throw NotSupportedException while importing that rejected list. The other fourteen controls export successfully. DOC list discovery now collects style references from the same existing compatibility-normalized style view used by the DOC writer. It continues importing ordinary unused styles; separate guards retain unsupported-format failures for a selected list and an ordinary unused authored style.
+
+Microsoft Word opened all sources, exported DOCs and projected DOCXs read-only. word-evidence.json records 90 exact ListString sequences and input/PDF hashes. Complete PDF text and embedded marker glyph outlines/sizes match across each triple. word-shape-evidence.json records relative glyph-origin comparisons within 0.02 pt; these checks do not assert whole-page layout equivalence.
+
+word-baseline.json records the sixteen pre-fix export exceptions against the same source inputs; these cases produced no baseline DOC. Binary fixtures are grouped under fixtures/doc/regressions/list-markers/MarkerUnusedStyleChoice, Word PDFs under truth/pdf-word/regressions/list-markers/DocMarkerUnusedStyleChoice, and source/projected DOCX here. All fixtures are synthetic. No PDF visitor or layout implementation changes are included.

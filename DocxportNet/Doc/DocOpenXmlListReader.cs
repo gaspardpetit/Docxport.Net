@@ -31,8 +31,12 @@ internal static class DocOpenXmlListReader
         }
         if (main?.Document != null)
             Collect(main.Document.Descendants<NumberingProperties>());
-        if (main?.StyleDefinitionsPart?.Styles != null)
-            Collect(main.StyleDefinitionsPart.Styles.Descendants<NumberingProperties>());
+        // Import the styles the DOC writer actually emits, not list references
+        // in rejected compatibility branches. Retain ordinary unused styles.
+        var styles = DocxportNet.Walker.DxpNumberingResolver.NormalizeNumberingStyles(
+            main?.StyleDefinitionsPart?.Styles, main?.NumberingDefinitionsPart?.Numbering);
+        if (styles != null)
+            Collect(styles.Descendants<NumberingProperties>());
         foreach (var header in main?.HeaderParts ?? [])
             if (header.Header != null)
                 Collect(header.Header.Descendants<NumberingProperties>());
