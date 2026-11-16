@@ -1,0 +1,2162 @@
+[
+  {
+    "name": "style-depth-0-style-choice",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-style-choice.docx",
+    "sourceSha256": "a2e59fd0c2c2dd147cdac195d83215505d9e7fcdee8b4479ee174373e8e653ca",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-style-choice.pdf",
+    "wordPdfSha256": "58c179e40bf9a1727faebee0a9384ae0cf042bf20e7a7c4404ba6a3bcf7e226a",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-style-choice",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-0-style-choice.doc",
+    "sourceSha256": "344da6df9091eb86ccc97175155f2ee12d3e15125124f92fd92da618a7430647",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-0-style-choice.pdf",
+    "wordPdfSha256": "75dbb7ef3e6d59fc5664c47c23c40d08df806b8ac1bd310992a4d609139bad9f",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-style-choice",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-style-choice.docx",
+    "sourceSha256": "23a0c964bebaf9e4744d86cf9a9deecbaeba42fc32b98a8924f8f593d8f01a04",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-style-choice.pdf",
+    "wordPdfSha256": "ffff2ec339c54b94aa0bd67e444424891a06f0703b5131021f0b66632f51b925",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-style-fallback",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-style-fallback.docx",
+    "sourceSha256": "68069faf06cd27a1e05307b56fc3b4a1eb23d61776e52cf291504419e33877f5",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-style-fallback.pdf",
+    "wordPdfSha256": "834255605b7d7b1791b85e2f4a64385f7aac34c5c86bbe0c6e89f6f345f2cb85",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-style-fallback",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-0-style-fallback.doc",
+    "sourceSha256": "393626f26e2e77bde91a3ca49ff3616d9b242bcfcd83c1cdababd299ff880501",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-0-style-fallback.pdf",
+    "wordPdfSha256": "647aa0d6be2a0a7162094f4f284c24d2c2d8200b75f0369ec3cf0750a31e7588",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-style-fallback",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-style-fallback.docx",
+    "sourceSha256": "2bdf0f1156507374cfd95f73ccb26d813dc9014d235adc1fc6b1e3b0a6613a30",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-style-fallback.pdf",
+    "wordPdfSha256": "8a54d66ac6b71e49385eb5bf1dc3318782f6031848cac58b0c0e084bd3c7f85f",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-style-direct",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-style-direct.docx",
+    "sourceSha256": "f8821747adb3c60280a4bb8438da16a98cfb717d07bcea8c98360f35a28d3554",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-style-direct.pdf",
+    "wordPdfSha256": "bd05e39be4e4c285919b13c57f76a54921c183cb3d860eb9b273ee47cca817be",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-style-direct",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-0-style-direct.doc",
+    "sourceSha256": "6283743ff4731769313ad74e09354f1fc87e725cc366a77135514c0a9018a61e",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-0-style-direct.pdf",
+    "wordPdfSha256": "36008ba7f1f766b19451ff46c02c403bffcd68c5608c4a25146c20a2118ae7ab",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-style-direct",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-style-direct.docx",
+    "sourceSha256": "1ac9d938b4fe5232daca3d7c1913ea3c553f7b1a540f100d34ed1aa01357a90e",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-style-direct.pdf",
+    "wordPdfSha256": "a8bc5fe66af282cc26a2fc3beb1923cd0f9d9cfae7d2de15bcee7e890afbf917",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-properties-choice",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-properties-choice.docx",
+    "sourceSha256": "9f7d5fda169922ac82602f68e0b5ca40bdfc4a3d9042656d6b606b1b333cc8de",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-properties-choice.pdf",
+    "wordPdfSha256": "2249b5d9ff7924362ee58f9526f8113564a89a72954f5a69efa91ae784cb0a1b",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-properties-choice",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-0-properties-choice.doc",
+    "sourceSha256": "13089dfa9cb0d48bee4dfb0af31559768da3444d15b90da56ec4578cd50f26be",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-0-properties-choice.pdf",
+    "wordPdfSha256": "0f1067f0a658dde720f9d99ffa5d72523037b5ec2af64fc33731527434ee71af",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-properties-choice",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-properties-choice.docx",
+    "sourceSha256": "3bf3dd68c865ca8df8e3aca625bdc650a125b403c3a1b112e44da8799cda2a4e",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-properties-choice.pdf",
+    "wordPdfSha256": "b570dc271fa178b209519fe0ac8a1f1ed285da9e0afdbf92df04f4a1d9b78e59",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-properties-fallback",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-properties-fallback.docx",
+    "sourceSha256": "ad1e5db75107d35f6d30555d686e80bc08415cbd9fc0f4b337d04726c29a36b0",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-properties-fallback.pdf",
+    "wordPdfSha256": "6c4e1c5f26ec4b22e1981c90644ab51e7f5b6e82226b4f20d345814257cb194e",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-properties-fallback",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-0-properties-fallback.doc",
+    "sourceSha256": "6fc3176daf07ebaa8501dd85f6f537db497c6de6d3f34ad1451a7603fd140808",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-0-properties-fallback.pdf",
+    "wordPdfSha256": "fe2ed3c746193a76fefff4c44db8b658b9f826b86888e6a68ea565b35ba4405e",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-properties-fallback",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-properties-fallback.docx",
+    "sourceSha256": "421d5f1745cd832c5d5337dca220e8d9c1ec264650ff1fff431c5540301fa08b",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-properties-fallback.pdf",
+    "wordPdfSha256": "adf9c85379fbd70cd4df5aeb60070fe61acc971f2059957df72e61c2e2f66285",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-properties-direct",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-properties-direct.docx",
+    "sourceSha256": "796b950de8c5fb5378dda9b45128d6898c67c037c78fe0e43822ae2cec082769",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-properties-direct.pdf",
+    "wordPdfSha256": "e797b26d323abaa41bd2708a1ca99654bf001f05dc7345df6325c82a7c337084",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-properties-direct",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-0-properties-direct.doc",
+    "sourceSha256": "c0321da8bb84540ea7d48f7626ddc99e812af9b1cfa3f3e2ff7d26f45dc47cbc",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-0-properties-direct.pdf",
+    "wordPdfSha256": "df4db00b62aeb746a0d35f0d8a0490097bd176980373075ccd960200308d65e0",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-properties-direct",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-properties-direct.docx",
+    "sourceSha256": "2fe19046bd15f1ffcdc075e55474ebf3a145d32b83779a2aa2896471343f765a",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-properties-direct.pdf",
+    "wordPdfSha256": "95e2199dda43f76c6ec4a27081a35f2b7508abb6b2df6da9dd9896758fffefba",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-numbering-choice",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-numbering-choice.docx",
+    "sourceSha256": "d77eb0ec5df7fa67250c138c136e781f67546e7fe76fe857980eac5ded5717dc",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-numbering-choice.pdf",
+    "wordPdfSha256": "2066b42c77d01721854e1d094209cb29e164bd25c0a99606091d4f5d0b81df10",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-numbering-choice",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-0-numbering-choice.doc",
+    "sourceSha256": "1e62a9392ae30505f59553433318bb568335048930b76e92ae713bac078f98d7",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-0-numbering-choice.pdf",
+    "wordPdfSha256": "035fd400c221b478991d19486ff2bbf2dc35c3c9b83ad0c2c77fb166b0ec87f6",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-numbering-choice",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-numbering-choice.docx",
+    "sourceSha256": "e21afffd503a87d3559af20dbd8e015e482ee45b151f91f76ee2d6f36592eb11",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-numbering-choice.pdf",
+    "wordPdfSha256": "7f165650162e60b04d5591898940b41a6b6dbf87c284fed11c68405f85b6f0e6",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-numbering-fallback",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-numbering-fallback.docx",
+    "sourceSha256": "8c89ab5b7eb700a3740792a4c995c1e60c873e7047fb3004f504e9a869b76c1a",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-numbering-fallback.pdf",
+    "wordPdfSha256": "37aa9cfab850f2f3c7a88f254d23b148fcd61ba4f7eb6b3272fd9d33266419c1",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-numbering-fallback",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-0-numbering-fallback.doc",
+    "sourceSha256": "2a06a480108e165408af35b8d9b3fa9b56f6bed807bcf7345464a65195887529",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-0-numbering-fallback.pdf",
+    "wordPdfSha256": "a59d46ef4d23bc11f4b6c689f328af95b7646c0722eedd9b68838fa183c77fa3",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-numbering-fallback",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-numbering-fallback.docx",
+    "sourceSha256": "4a9f0a165d64eb700eb235d6fe620f867aa851b01d90999634e4b0d5818f587b",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-numbering-fallback.pdf",
+    "wordPdfSha256": "c2651cf02fbdd9c47e2853355a964a1b653a88bff9bf59ce8699c4eb0fa8a97d",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-numbering-direct",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-numbering-direct.docx",
+    "sourceSha256": "daec579a0dc71e0143265742ca1003b826e97df34710e13eaf6fac4de3efd6e2",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-numbering-direct.pdf",
+    "wordPdfSha256": "22889f3605d9929d532fe9a65da9fca34483033a1c1dd7127b629786997b5e1b",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-numbering-direct",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-0-numbering-direct.doc",
+    "sourceSha256": "6fbe17fe215a2d765d6cac5b0a7c3b644ba394253c54565f6909ac8da7b8588d",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-0-numbering-direct.pdf",
+    "wordPdfSha256": "9c8bfb9dd5cc2e74c68d2c23ffa6e15e46236853d2444e38bc8fd203c35e03ca",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-numbering-direct",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-numbering-direct.docx",
+    "sourceSha256": "d4493b704933e12250db221d96c9efcbb64d3ed08e33342927202c0805f48b80",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-numbering-direct.pdf",
+    "wordPdfSha256": "23e9f501f436573d32c260cb862e8335bb8271371c27da28fbc3d2e8402d2a02",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-id-choice",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-id-choice.docx",
+    "sourceSha256": "d86915df0cf88958bceb9aa4dafb81d57e61518fd96b9a4b2b7f50764308b98a",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-id-choice.pdf",
+    "wordPdfSha256": "c7664aba097c12095d1fb7a580256983fe81530ffb995d3689aaa6a8fb9b2098",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-id-choice",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-0-id-choice.doc",
+    "sourceSha256": "40b397c889081d6f6d32000449df6318a077e66bca861f1290212653b02c9536",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-0-id-choice.pdf",
+    "wordPdfSha256": "3bd2b7de26fca6283ec7638ff9cdc01b837741d4e9f256b0274c2a2ab41fbc9c",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-id-choice",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-id-choice.docx",
+    "sourceSha256": "ae9fa8429b7aadcefc099294ed358b6a3c3b1b765daa843bd0318dd68eb18b19",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-id-choice.pdf",
+    "wordPdfSha256": "508cb45656be578c29803ad0b4b0ab7ce682f8226e34a59a0c8e8a834c1d9889",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-id-fallback",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-id-fallback.docx",
+    "sourceSha256": "6ac0d5542e1400098b420eb8488b5490ed4dea312bf0c81ed1cd09361a090958",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-id-fallback.pdf",
+    "wordPdfSha256": "decb1b2ac5486aa95d7544e1ea96461f089cf6c2f54d52848da6bd0381331cdf",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-id-fallback",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-0-id-fallback.doc",
+    "sourceSha256": "a8bbe1a6ff07d39b6f20e35d63c1d6e32561e4a4ba1b28efa1c011a72d2eb015",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-0-id-fallback.pdf",
+    "wordPdfSha256": "aca8783e6a139f26946d0f6a919e3fa1a047afeb26bd86af085641291fb5681b",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-id-fallback",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-id-fallback.docx",
+    "sourceSha256": "edf7d1b6fdd9cdb88c7fc452bca283dd6be00429426fc31a5e3a4062b9c56e1d",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-id-fallback.pdf",
+    "wordPdfSha256": "7dd30bc11f59eb86ed8bcd5cd4916561ac87c7e8b0abb8ebec4331ffc8f7a19b",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-id-direct",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-id-direct.docx",
+    "sourceSha256": "063ac12aea2b7374c1bf29f63258a91b3fe4ba42f0e18d192e85578611c908b2",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-id-direct.pdf",
+    "wordPdfSha256": "b1ccaede6af650742d9784955cf337c2433f89d8610a6ceb48f4d9978faf5c25",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-id-direct",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-0-id-direct.doc",
+    "sourceSha256": "fd57647781b4bf1af97cea66d51116f20f300785c403a998fda2ecd13e485544",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-0-id-direct.pdf",
+    "wordPdfSha256": "6d215ae176734bfc4b8776c0afe3ea00470b0571fa1c7485dc484be4eb8ed63a",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-id-direct",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-id-direct.docx",
+    "sourceSha256": "0a7c405ecfa54d73229ed99dac799cb353f506fec76b6a448bb2e246cc8a7cf1",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-id-direct.pdf",
+    "wordPdfSha256": "bb402342144e2d7328c63d6fc7f66d07a7b37846821f48b5a86946227ece49a0",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-level-choice",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-level-choice.docx",
+    "sourceSha256": "57ad9efa61de412a56e4f8c25ff942fb89583087b85941ef2811efff446d534f",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-level-choice.pdf",
+    "wordPdfSha256": "51addf0641a96bc33c025781593bf17cf8e3b2539d36f28bc5fd71f6a97265b0",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-level-choice",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-0-level-choice.doc",
+    "sourceSha256": "e461c76ff80e28cc1e71f495d57dbee7c457070ec8bcad523f872a4a88843116",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-0-level-choice.pdf",
+    "wordPdfSha256": "246bf10a1eef0d8cec6521179d39d6da1360cf7e9032597d0172ac8b68d3b3ad",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-level-choice",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-level-choice.docx",
+    "sourceSha256": "c9ec6094dd9bddd4e5bfd3aced1234831c5420c8ed95d8a8f0dd5826b5ad7009",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-level-choice.pdf",
+    "wordPdfSha256": "f5e9142b0549c8c68ea654243032e6389bae398459d1fac5437705d6129d97ae",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-level-fallback",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-level-fallback.docx",
+    "sourceSha256": "3e263f4ad3e88deddb92f16a97c31995ad20c43e5522cec85c0e87e97757a62a",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-level-fallback.pdf",
+    "wordPdfSha256": "f0ae6019b17d58dc543e28846fc4c969cf7750fe703f6947585d0000430743ed",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-level-fallback",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-0-level-fallback.doc",
+    "sourceSha256": "af41473d3f83e446b3e8374f4b1fd3502ddae8054d77be589fbc584585344d23",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-0-level-fallback.pdf",
+    "wordPdfSha256": "7d7a3b5586dd44ccc91625c918f318628b59a58c5cedcdcd34694e3027b59d1c",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-level-fallback",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-level-fallback.docx",
+    "sourceSha256": "30d5a0bac757da4dcbcdb770230413721e7eb48728182d630e54c5c36ffc101c",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-level-fallback.pdf",
+    "wordPdfSha256": "90e337288d50f9c4165a760321e8b4c86af4804639c0f7dfe239d4fea1989033",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-level-direct",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-level-direct.docx",
+    "sourceSha256": "3db0e38b9461442ffbc161f9bf672655b896a61b02d309e95d79f174bb0efd8a",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-level-direct.pdf",
+    "wordPdfSha256": "8fb76fbd3cab97cbcf2a6b9bf3633042119c616b89620c46e4866824b421c4c1",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-level-direct",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-0-level-direct.doc",
+    "sourceSha256": "f366260729a902de1697a0b0cc1797db544ecbc74ea455bb630058b8a9eed3ff",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-0-level-direct.pdf",
+    "wordPdfSha256": "c54925119739951123bd0cb8f06f69948bc07c96adfddc1f1447523e32ce24c2",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-level-direct",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-level-direct.docx",
+    "sourceSha256": "bf0ea0f036050ad5ddf07f6fac7c568a264a83da06f1982f62a32fa774030ead",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-level-direct.pdf",
+    "wordPdfSha256": "d2fcbb5f0f21db20367fbbe1e1bdaa91e5923964c5105cff83340050838b3bd1",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-default-choice",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-default-choice.docx",
+    "sourceSha256": "d416d770a82dd77b3f2c69def25f48f79cbe644fa82b754c5d7018416dc92d43",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-default-choice.pdf",
+    "wordPdfSha256": "d5aab5296f26f551f3c8de7d35e584100defa2f48fde40e84c6595d5099d1f5e",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-default-choice",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-0-default-choice.doc",
+    "sourceSha256": "ce79aac101fa226b7c77187f95692faaf7c4de8f2d6686407dbd61d05281f80d",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-0-default-choice.pdf",
+    "wordPdfSha256": "8321cab38492dab2796823c4ccb548c9f29a1048f68eb41e2b9b468910a12989",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-default-choice",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-default-choice.docx",
+    "sourceSha256": "72c8a84ea8334b889b8af6e65c836d7d78965691249d6167b87810d77b3e8f3e",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-default-choice.pdf",
+    "wordPdfSha256": "b7060bda25d06b6c2d0c1e53933ae772f6e6cc8101abe8eb923e544db386de54",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-default-fallback",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-default-fallback.docx",
+    "sourceSha256": "b97579864869d0e7405978f8016ec1aede58bc6b6280620fd17b47e8ea7a58fe",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-default-fallback.pdf",
+    "wordPdfSha256": "2f7d2bd07b70fd41aa38a2573b0e53ed1725236a20333bca2c21924353fbeb41",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-default-fallback",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-0-default-fallback.doc",
+    "sourceSha256": "08bd733b126fbda75130a66470edd8a15952c87e2dc80adb70cdc5d9f29894a7",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-0-default-fallback.pdf",
+    "wordPdfSha256": "9c7220ab562faed763fd45a4cbec798fab8f9d9a562f6194412a3e39b61e04bc",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-default-fallback",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-default-fallback.docx",
+    "sourceSha256": "18532e755797b833e0408865ec64d21d11e786ad9413ded6f4f826cfae15efc2",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-default-fallback.pdf",
+    "wordPdfSha256": "79c1c1eff2e08bcdec51101b669635923cb7a9e7507251e1482cef5fefbd1fe0",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-default-direct",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-default-direct.docx",
+    "sourceSha256": "e235ab6bde97f79db8dc7d062263f6c50b6b33ece94ae715d2f8d941c00b18d6",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-0-default-direct.pdf",
+    "wordPdfSha256": "54e29c86295b305d2d485fa192853b02b6bc6b0b8c5a7f32d45645a289b2017d",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-default-direct",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-0-default-direct.doc",
+    "sourceSha256": "0277bb98248d6a421924707e488990793632d83a05186545ad52bf2252e9d641",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-0-default-direct.pdf",
+    "wordPdfSha256": "928bbd42c5e5a5c53f0d9e130ee2ee80e67c8b8bfb960f783f20fa4432dd2c72",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-0-default-direct",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-default-direct.docx",
+    "sourceSha256": "1b4964277c370c9680412a8b20051d2eeb54f76e116918b483498bd9b1ea5f38",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-0-default-direct.pdf",
+    "wordPdfSha256": "7907985245a8833fe8b1f56c23d892222b4c4a233c1448575b8cacb0329017e8",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-style-choice",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-style-choice.docx",
+    "sourceSha256": "1278ef5f339322f251d294f88bc026b179b8d94df5aa72b2e76d546007381dc0",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-style-choice.pdf",
+    "wordPdfSha256": "ee92e4d6018981d1e21f33aa0a5ab5d61dd3dd407a39fc5434ce09c1501aaf12",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-style-choice",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-8-style-choice.doc",
+    "sourceSha256": "450e36616ecc7a166d4b346ed7c0928000e126fccb093009877de061992df196",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-8-style-choice.pdf",
+    "wordPdfSha256": "42a6bd7bb9cd8c29d5394c12bf8d66fcdece6ffc8bb6845a044c9fa8b0cafbe6",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-style-choice",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-style-choice.docx",
+    "sourceSha256": "5b559f52c1607ed3c392838b8abd24113e35aaa3f46288440f3b9d280b4e86a4",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-style-choice.pdf",
+    "wordPdfSha256": "e6255d510aedbc742c3d11c71c708d2866ee7f932d0577e41227306a5ef4429e",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-style-fallback",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-style-fallback.docx",
+    "sourceSha256": "af65994324eeb942c3eaf3916534d64286aed0152fb7bf4c54c9bba09d0228ca",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-style-fallback.pdf",
+    "wordPdfSha256": "4cc1abfc02b7e1ae6a93e7b44ffb812d4918be28c0db2f7e5df22a1a521884e0",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-style-fallback",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-8-style-fallback.doc",
+    "sourceSha256": "bad3aaec127b22d5aad33221e9b1eec192fa55879a66667e61fbbf8cdfb26c19",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-8-style-fallback.pdf",
+    "wordPdfSha256": "ff94b802eba7c930c39f8c6b89a031640cf136b7152c33ba409419e6781f0518",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-style-fallback",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-style-fallback.docx",
+    "sourceSha256": "d88a621f91104a7213911b27c722063cedb89190dc81ace9aa6ffd5faa262b2f",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-style-fallback.pdf",
+    "wordPdfSha256": "3383c7e665730f9a74dc1d2d315310d6bf794d0ea0c8fc4ba3dda8b30155e3bb",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-style-direct",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-style-direct.docx",
+    "sourceSha256": "0abb510839ebc048523fe9d297a99880e3cc809eec20777c7eda821e8315b3e0",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-style-direct.pdf",
+    "wordPdfSha256": "6b0182420dc3b1a9aaddf3b3b67d2506c9ebc1c251da5159c8a2943b4c8cc17b",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-style-direct",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-8-style-direct.doc",
+    "sourceSha256": "a732c0d0bab2febeaa1679c47788aa9d710697293587cbdc752a37cb9b2b25e4",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-8-style-direct.pdf",
+    "wordPdfSha256": "d8cb87f93a777f25c309223241f24a9ba00cfcd9b9d30e9f4b345cba4cb93e1a",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-style-direct",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-style-direct.docx",
+    "sourceSha256": "eb392febdc767bc8ca2524ded46a2630149aee096c00449c1dc833efedc0cbb7",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-style-direct.pdf",
+    "wordPdfSha256": "7cbce3f711113060536ddb5964227e63b8bdf0c71ed960c04d4463a3279bc36d",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-properties-choice",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-properties-choice.docx",
+    "sourceSha256": "5dc57e34f05b73a33a8724ad66fb573b83f6b16ade86d39c18d84f5c25f7611b",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-properties-choice.pdf",
+    "wordPdfSha256": "2270745e91c90a2fcfff2621b0cacd49c4c7939f76f370c0a01505f8c59312b1",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-properties-choice",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-8-properties-choice.doc",
+    "sourceSha256": "1d426f4d4d443869a7235fff57fdfe6f9cf8427a62ef2107780a8ddf9f2c960e",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-8-properties-choice.pdf",
+    "wordPdfSha256": "986f04664bafaa9f9a356f7d8c5cee3a98bc0ece37937076c7325334ba846c1d",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-properties-choice",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-properties-choice.docx",
+    "sourceSha256": "e8963b201b51eccaf52a89e9de69c1c5464a147820f4d9a14475e427bdd9ab46",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-properties-choice.pdf",
+    "wordPdfSha256": "982b75b19f9455d1f26c804881fb2d298b1396a5838f04f1d6a39ab37be2edb3",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-properties-fallback",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-properties-fallback.docx",
+    "sourceSha256": "68d118870c5570cb92fb0b32d3264c994b78067a8bab07d1dbe5e2d7f91119fc",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-properties-fallback.pdf",
+    "wordPdfSha256": "fd8aef6719a7214c81c835d5def5d4de60265912ab7c48a2c91983f6821f0b3a",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-properties-fallback",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-8-properties-fallback.doc",
+    "sourceSha256": "e93f46a9c5b8524da90e74ab8c96d5ae4a0c4d90d5e7c1a50bee2b20c66b987c",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-8-properties-fallback.pdf",
+    "wordPdfSha256": "0874fe18566422b0096bdb3492700b8bff40c42de4b629c4cf6b252027d8d8f6",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-properties-fallback",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-properties-fallback.docx",
+    "sourceSha256": "34dc55fef55478f06ad9f457917682051b9d42f864220f8372e066772a5dd280",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-properties-fallback.pdf",
+    "wordPdfSha256": "920eeafce889441f950b2d54c564466e16b856625a141e85bd19aea1659fe445",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-properties-direct",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-properties-direct.docx",
+    "sourceSha256": "4b58de9775b435472d4a83bae5c0c8bf433625a84a3a59420fefa4499390f252",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-properties-direct.pdf",
+    "wordPdfSha256": "b966c75c47c5c3ae628bc192ee35b0290584109a336ebbdb9b23ff2ce773d11f",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-properties-direct",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-8-properties-direct.doc",
+    "sourceSha256": "2c90bb7d4d0c7452c857ce21b3286f59ac026bb8c14b4e448c9c8a4eb78e5cef",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-8-properties-direct.pdf",
+    "wordPdfSha256": "e2efdb7ffb7bd0a0f85a8c105e3de093010cc2c061ef280337ecb8ba01eaf76d",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-properties-direct",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-properties-direct.docx",
+    "sourceSha256": "e30acba2f11c6d60c28e10845266bf7ebd734f185a3359a42e846eed79cd314f",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-properties-direct.pdf",
+    "wordPdfSha256": "6edf9e1edccd26a497768be142f27b4510dad84b3750deea5b346bc708678ea2",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-numbering-choice",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-numbering-choice.docx",
+    "sourceSha256": "079da7336737a8e295268e605dfd710bfd97b5983ac34862f0f5417ce1bc6dec",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-numbering-choice.pdf",
+    "wordPdfSha256": "dc25cfc2f434006ae3932ee7717b65d39b2ce3ae188fbc0b24479d7566eae1a8",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-numbering-choice",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-8-numbering-choice.doc",
+    "sourceSha256": "36c8025204c048078e0ed7f8efc300bd54b6f1538da8e05a7e4b5884c80f5bfa",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-8-numbering-choice.pdf",
+    "wordPdfSha256": "fa3060b1ec883dfbdf1ffb011f8ea206a86049c0de19615b4ffdf458cbd2e7df",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-numbering-choice",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-numbering-choice.docx",
+    "sourceSha256": "2e344a906ba0d42f065c7933c04dca9df4603c8880df93db59b750561cc18bda",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-numbering-choice.pdf",
+    "wordPdfSha256": "ef39a0f0a911058726186e07cbf1b04a8433cef5d936fbb89e61448484b6ffd9",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-numbering-fallback",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-numbering-fallback.docx",
+    "sourceSha256": "72ce66aaaa99751c5018eb34ea54e1a261b2ee8d3728f002e6a2f7e0372bf591",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-numbering-fallback.pdf",
+    "wordPdfSha256": "36f00b6a6b8147f31a8e97e61b20890ddafa02441306c0939645aab7913cbef5",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-numbering-fallback",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-8-numbering-fallback.doc",
+    "sourceSha256": "9d3cb93ed96375ecb563f6c5511e09be5289a1a87f0f60dbe6f3cc15a43245a0",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-8-numbering-fallback.pdf",
+    "wordPdfSha256": "05178a41fc082faa6ddbc9213a29698fbcc28764992b20f2a13d46e49e25a43c",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-numbering-fallback",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-numbering-fallback.docx",
+    "sourceSha256": "96a7c85ec82fbe032bad16ee304f19ae37a07af36f4037501a286c2e6cb5f47d",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-numbering-fallback.pdf",
+    "wordPdfSha256": "1b96fff0213edad6fed1b0bda25ab455661c2f5ee780c14d35d40b610dcc2a14",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-numbering-direct",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-numbering-direct.docx",
+    "sourceSha256": "b9030890bf1418121b872f71ff66a63960f3ac302a04ad65e9ef3381dd6476f7",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-numbering-direct.pdf",
+    "wordPdfSha256": "9775a5ebca467a6ba6e5bf9326514614e4d0ecd696ccb752affc98a38a7ac455",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-numbering-direct",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-8-numbering-direct.doc",
+    "sourceSha256": "a266933ef864417ffeedff57a4232c0cdc173a1c7a889aad27f92caf32759ffe",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-8-numbering-direct.pdf",
+    "wordPdfSha256": "1d681ae27ed67cc84b089b46d94dbc98819cfb072e494d360fe28286c8628c7c",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-numbering-direct",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-numbering-direct.docx",
+    "sourceSha256": "53deb8fe0cda8cbc3879ec9b07a32edc52959d48663e05bf3fc57cff91c26120",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-numbering-direct.pdf",
+    "wordPdfSha256": "0a680e12adcadb1a62f9536391e72de62f009babd351621ea12b19f1e6893ce9",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-id-choice",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-id-choice.docx",
+    "sourceSha256": "4ebc6a49885bc456ba696690e2520d1869f34df9a78fd9f956da2e6cbb8493ca",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-id-choice.pdf",
+    "wordPdfSha256": "adb45cc75a20b659f8189dda2b25caf1818ce8c58422ef0f9de1eb0589180d4a",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-id-choice",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-8-id-choice.doc",
+    "sourceSha256": "047609cbac19047184015d139e41e48f9e0e97e4f72b014c40f5b7abeb3461b4",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-8-id-choice.pdf",
+    "wordPdfSha256": "80ffcc5986458ab068d8de6d4c6f39043b127ace7a7478cee1c6e91c72ec47b8",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-id-choice",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-id-choice.docx",
+    "sourceSha256": "6bd28ff7ca60cac7bec263d97386d78002c2b1c5e38ff1368114b7db1872bb3c",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-id-choice.pdf",
+    "wordPdfSha256": "286a93b3b873cbb2622cfc299bd37e925dd15644bb48a832d1df133bdd511a38",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-id-fallback",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-id-fallback.docx",
+    "sourceSha256": "1d7ce8931340296838233a12ec019c6ef97ddc6cea94553cceea6e27f964bb6c",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-id-fallback.pdf",
+    "wordPdfSha256": "ff3c11baf682e554a5c9347502363843d06571029c507b075946bd4eeebfc69f",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-id-fallback",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-8-id-fallback.doc",
+    "sourceSha256": "d6c35ae1d9a82b6e97085661aea38362d627f3d321970cbd92d94216955cf27f",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-8-id-fallback.pdf",
+    "wordPdfSha256": "302994e98e7e63a98e0ed8fac28c92e8a995a0ca7b982248306bfed36432c245",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-id-fallback",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-id-fallback.docx",
+    "sourceSha256": "c46e4ebf8f0838e0aafa5724e8df236b4b0d377d8014cc21d4d5b539158a19c6",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-id-fallback.pdf",
+    "wordPdfSha256": "133724a901684cf1de37409713cbb05483a2010ac3e300e86d3af3a774fe5040",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-id-direct",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-id-direct.docx",
+    "sourceSha256": "37350b7165561f0845eea5a6186a98fce37f26c6062746f0f2b890a7b4d6349b",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-id-direct.pdf",
+    "wordPdfSha256": "92476d217938e773a5a1595930d34f99a3129049caef917671b50a626f315d72",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-id-direct",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-8-id-direct.doc",
+    "sourceSha256": "4b95ce4201bbc35fcde1edc035089d0d1a382bda1e323fbb450ec4f6370997b5",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-8-id-direct.pdf",
+    "wordPdfSha256": "830a9dfd1c16afd279c0aea2e710f54311df8f0072e93705b4dde64bc1f248d9",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-id-direct",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-id-direct.docx",
+    "sourceSha256": "344be5669d6bde554d7f414368abebe66d32ac0b6339d5e607b63b359672ac38",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-id-direct.pdf",
+    "wordPdfSha256": "d3fc01d4a9d22c9206e70909da376c3300d61989d3d4e4727f32410a5666a784",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-level-choice",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-level-choice.docx",
+    "sourceSha256": "cd1c87d4c73249c6059fef7d1d6ac91decc5b0b03c573eee78ed3a8aeaa00a51",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-level-choice.pdf",
+    "wordPdfSha256": "cc044f4ab482c66b76300bc11aef4c975006f0e40ffafb3f708b80946c634cab",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-level-choice",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-8-level-choice.doc",
+    "sourceSha256": "21d30542e4ca5b05d729383d7b8fddd66399548e1335b6a16d2999911c0115dc",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-8-level-choice.pdf",
+    "wordPdfSha256": "5ed3bc5ac819dde684c08c1a790f711341831ee15674399daf03edc6c11575a4",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-level-choice",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-level-choice.docx",
+    "sourceSha256": "26707a7f0966cbcaa959701f435ec5027bda69246494b7afe3dbf30fe16ff972",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-level-choice.pdf",
+    "wordPdfSha256": "e9b207af9164fc013556058f3fdb2b2dcbd59256445a187f342c7440f4a08a35",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-level-fallback",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-level-fallback.docx",
+    "sourceSha256": "5344572aa82ada91404978edc2fcc51ed1fdbe40188065066e3e33aa939a6c29",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-level-fallback.pdf",
+    "wordPdfSha256": "835d8f5276b0ff70f65517ead4d63a5b1d185540c2a3997fa12f24688d061056",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-level-fallback",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-8-level-fallback.doc",
+    "sourceSha256": "a6c393f845f203b3af08b4a0489cef8123cbac96c290a630f2118a5f5852d1f1",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-8-level-fallback.pdf",
+    "wordPdfSha256": "6f3d408f3f71927ec767d1d07a5abd72ae1d431b43ca6934215b05fd9b0fdb78",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-level-fallback",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-level-fallback.docx",
+    "sourceSha256": "bbde3be8b15aaacd2a7dc49a41c21e1fc8948532fb8c561bd3e880003d418f4a",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-level-fallback.pdf",
+    "wordPdfSha256": "387b9a071d9f854bcc7b7cb6c42d6d524f84004edf5e5430e5e8fb1a61a419dc",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-level-direct",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-level-direct.docx",
+    "sourceSha256": "5d6de4cba3277d5d48ae41bc9859fb6897d7b3df4069dbdf8c87ac7a43327c78",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-level-direct.pdf",
+    "wordPdfSha256": "25573ad00ae19557eedace3934a282de59c9e46c2a0363c8bdb4b57b98038133",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-level-direct",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-8-level-direct.doc",
+    "sourceSha256": "d82c5a5a815b53f5c95d4022d0e03ddd624cfbf5c32379c36e26fb98819f54e3",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-8-level-direct.pdf",
+    "wordPdfSha256": "fe6c9d68651ddbd1ba0cdf22fef492a9a741e48fa5a136e3d15bbea6ca9c725e",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-level-direct",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-level-direct.docx",
+    "sourceSha256": "b23935978b04cd8a9c5c2e21cddd14262a72341a73a5d451ff509c1c14265e98",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-level-direct.pdf",
+    "wordPdfSha256": "f3364d157b305e029c134eddfdb2d21c4f41825f8c2840e04abc3c504bddf0e5",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-default-choice",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-default-choice.docx",
+    "sourceSha256": "bbc258d2d527424f351fe9e8bf52ad404d1c6e5ac52e515f83c44e87b6b6dd44",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-default-choice.pdf",
+    "wordPdfSha256": "12cf810e44338775cec47efb120818370fd589627e51d4e860729361e8f66477",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-default-choice",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-8-default-choice.doc",
+    "sourceSha256": "bf1b876b13b0bc3d5cc7497ddf6517f355d28af9539371df14671beb0480c245",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-8-default-choice.pdf",
+    "wordPdfSha256": "e9bdef1be91068ae31fbd9a2ef5f4f34621de2cc4ae5c5d98d2e5bc9935c25b7",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-default-choice",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-default-choice.docx",
+    "sourceSha256": "8af3232d22c0ecc0a09b872a22eb67b62e8a7a178fd3e45b0c9766b986df0de5",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-default-choice.pdf",
+    "wordPdfSha256": "fa2697bea42db8bf28a45a2b4bb697a5093c6d2e8e1fd9126413710fa6347105",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-default-fallback",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-default-fallback.docx",
+    "sourceSha256": "28e180899b6817e152c3a8e606c93a0f77bf9adee75b1055bbf6d52a8ac5ed84",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-default-fallback.pdf",
+    "wordPdfSha256": "97afdf8e98df2cd4f645d2162d34e83cf06bce2d03b47844daf967589fc2f417",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-default-fallback",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-8-default-fallback.doc",
+    "sourceSha256": "a6eeaecb6fdb902f98e92b0a5e9876c3dc11ec8e275d2828a64d236d8df0d04c",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-8-default-fallback.pdf",
+    "wordPdfSha256": "63e8b66be79c600730f5f2ec439582b8f456cc3680c11a757501eae6d61b3837",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-default-fallback",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-default-fallback.docx",
+    "sourceSha256": "79a46b6c56f06c8dabffb505443cae08bf94f79f5e78856bb86b06890942a17c",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-default-fallback.pdf",
+    "wordPdfSha256": "7477c181f2ccfdc5c0003026965d0e96401516e618b444fabd4c559a4f150802",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-default-direct",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-default-direct.docx",
+    "sourceSha256": "a97dcdef8ec8d49abddaf53d5e0857781d7cc0d6b66db4c8a1723c4ac4d8644d",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/source/style-depth-8-default-direct.pdf",
+    "wordPdfSha256": "10cb15881fc21134455d588b2e8efa887f9b48288c1e1c70b4cdbc4f9787975a",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-default-direct",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerStyleChoice/style-depth-8-default-direct.doc",
+    "sourceSha256": "62de5f5dce212e3be236faafb42f5cff56d8a1ba1948d1bd682f034adf5a01ff",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/doc/style-depth-8-default-direct.pdf",
+    "wordPdfSha256": "38433b8b7aeb5d2b44c475c35380b63d38c0b81b63a20cd39a72f8b8f09a4865",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "style-depth-8-default-direct",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-default-direct.docx",
+    "sourceSha256": "17f9d1d02c90d6c6fc8542585cb58536cb1f34da34861847b303b1a9050f9517",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerStyleChoice/projected/style-depth-8-default-direct.pdf",
+    "wordPdfSha256": "140625aa83e646af50ddd365fefe2a0a5535c8effdf3c8c5919ab6bf24e0b17e",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  }
+]
