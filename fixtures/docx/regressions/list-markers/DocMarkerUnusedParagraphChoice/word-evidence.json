@@ -1,0 +1,3242 @@
+[
+  {
+    "name": "unused-paragraph-body-depth-0-properties-choice",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-0-properties-choice.docx",
+    "sourceSha256": "549a0a8b9189dfc7a705b080b106e4d290fce1718459ae88419ba9e01ecbbdb9",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-0-properties-choice.pdf",
+    "wordPdfSha256": "553c942b4cbe227609013ee752055e0cbf77faf907bd868bba5525d64875fb6f",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-0-properties-choice",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-body-depth-0-properties-choice.doc",
+    "sourceSha256": "c9b97d482af4e571ff7fc7d79816cf739b7ebe5d5e62917115c96d4448c845d3",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-body-depth-0-properties-choice.pdf",
+    "wordPdfSha256": "3caf76bda26ab48cc4f636d8f6ff8e52ef2f0e1157889d9102248a2bf04c82b0",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-0-properties-choice",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-0-properties-choice.docx",
+    "sourceSha256": "7c757851ca5ad17760ba3a5915dce163313d7ab5667da90dd0e6566b931286e1",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-0-properties-choice.pdf",
+    "wordPdfSha256": "4667ee2ab3450df9b403da93ee36bbe37356b1ae85ed5ebe809f4f1e351f8aa5",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-0-properties-fallback",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-0-properties-fallback.docx",
+    "sourceSha256": "3f71f4a665992b49be417ddbe9b863c4b7047af0a4a4311988245b21d1f1e32c",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-0-properties-fallback.pdf",
+    "wordPdfSha256": "39bc35ea759fbce3f59d0a5e717075ec153f6c77a879a402e3544f7d74c58a78",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-0-properties-fallback",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-body-depth-0-properties-fallback.doc",
+    "sourceSha256": "f2f32a9773b632c372f1fcda0dd6f8e4254751aa20f023cc546a1135c74f1778",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-body-depth-0-properties-fallback.pdf",
+    "wordPdfSha256": "f99d5df0d68e1c7401a95a67403db097468f3e202b8cf6dcaaa791be4a59d2e8",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-0-properties-fallback",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-0-properties-fallback.docx",
+    "sourceSha256": "816095e1edb6288afa48dfacb2f7c2306d1ece4a76b4b794522c8baf9a5d1dde",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-0-properties-fallback.pdf",
+    "wordPdfSha256": "4717ecc863281a35b546804a5f0a40cf9af2f044aab4d0e7447f75db26132a1d",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-0-properties-direct",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-0-properties-direct.docx",
+    "sourceSha256": "565e16f1565bc7de9d171a482e8b66b9eba47c35cd3be2d71216f6d2fe6d806f",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-0-properties-direct.pdf",
+    "wordPdfSha256": "81c1ae06bfbcb635a106185cb0c5840fc6fed605bd55494cbfe349b0ad840394",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-0-properties-direct",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-body-depth-0-properties-direct.doc",
+    "sourceSha256": "f1a9aa4d51dce6c1d11ce4271b21b4d43448a713fb2eeea4a21d7c259253137e",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-body-depth-0-properties-direct.pdf",
+    "wordPdfSha256": "e28ea3efa57daf42c8133bd1f46fdbd07904fdd463ad81f36d623c6e394e0eb5",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-0-properties-direct",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-0-properties-direct.docx",
+    "sourceSha256": "be613195acbdeca8ff8bf497aa03e369758b0a7f709e0730aa0f3b76ed788691",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-0-properties-direct.pdf",
+    "wordPdfSha256": "d698cf82b96026c644ee8892cebdfdb8ece167ee74d8826310181d43928aafe5",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-properties-choice",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-0-properties-choice.docx",
+    "sourceSha256": "cf462e3924b45c6be7945d741fc909c424c7fc689e688f0e8db61c583905f8a7",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-0-properties-choice.pdf",
+    "wordPdfSha256": "7ac93c8eb16b6e4bd8ed81ef1cde2f0ec5de6e709f7d8127d9999c4fd4c7a562",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-properties-choice",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-header-depth-0-properties-choice.doc",
+    "sourceSha256": "666ac4b9493827df0ad90f804151051ba4431c4b494ae1a70b1435d84067beaa",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-header-depth-0-properties-choice.pdf",
+    "wordPdfSha256": "0c62b02f376896f0e0cc29498b724ffb12399660e18761792b0965e7df7f4a1e",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-properties-choice",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-0-properties-choice.docx",
+    "sourceSha256": "87bf79114be5d797ee737e572fe63a5b0077320fde3b7b5f8653ccf0845e2b49",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-0-properties-choice.pdf",
+    "wordPdfSha256": "3936757e08c56f7b1bd8262bc7747bd12dadc72a0defa314b2fceab4423f86dc",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-properties-fallback",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-0-properties-fallback.docx",
+    "sourceSha256": "4b51046de10f5d914ea5edcd5299df974798f9a39fc91c07989d19ab3b871462",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-0-properties-fallback.pdf",
+    "wordPdfSha256": "ece44752592111c57744813a169ac5971042bbdc77ddf288caa218f9584f389f",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-properties-fallback",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-header-depth-0-properties-fallback.doc",
+    "sourceSha256": "871e2fb7c11f3464f3dfcbd8b72ca56da7a48958dd24ac9f931687b81504388b",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-header-depth-0-properties-fallback.pdf",
+    "wordPdfSha256": "7e070877bae0f1fc667826cd830160d3fb299aa5b61f1e75524f7203edf45e66",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-properties-fallback",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-0-properties-fallback.docx",
+    "sourceSha256": "0eb286005895d2271c77a930aecd74b96ca113a66d76df230920e6954c506cdb",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-0-properties-fallback.pdf",
+    "wordPdfSha256": "2207069351a18e8719a5bccd50db5ca3662b111756ca9f51f66453104e2814e8",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-properties-direct",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-0-properties-direct.docx",
+    "sourceSha256": "92a7dbced0ea8297c80879890639b428d36b0d1bc1145949f2eaa0eb45f2afa3",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-0-properties-direct.pdf",
+    "wordPdfSha256": "9c09988be7d04c0d15c4a5ab7413e96c7664338c113b3100d3ab611c66952963",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-properties-direct",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-header-depth-0-properties-direct.doc",
+    "sourceSha256": "ca139aa2dd840bd179e83a6d89c92fac448490146c533dd0e082942c476255a1",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-header-depth-0-properties-direct.pdf",
+    "wordPdfSha256": "56e85185d522957a32b98effe0548084cb449dc68d4e714162dcb750065b3025",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-properties-direct",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-0-properties-direct.docx",
+    "sourceSha256": "3e0425c9ef6b1b08d4323069b4056639f4cec307b200d2b7baf0598bc7dfce31",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-0-properties-direct.pdf",
+    "wordPdfSha256": "3b1190e8e00f79f1a48dfecaec5582a9f51cb13fc5ec239b6d4cf1e9c0f00c4b",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-properties-choice",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-0-properties-choice.docx",
+    "sourceSha256": "1b6c25da18c8dcd42455673992206aaf4040416ecfc02d97372ba50aa9d8d593",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-0-properties-choice.pdf",
+    "wordPdfSha256": "c27b45482b6f757cf4e66034d573f20f6f7454ebcff6ce669516322a61928353",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-properties-choice",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-footer-depth-0-properties-choice.doc",
+    "sourceSha256": "d8b0cdf5cdabee4efa1beb0e2e94a93501716e864524fba76205b1b5dbba77ce",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-footer-depth-0-properties-choice.pdf",
+    "wordPdfSha256": "4a9c1dcea2e5ba1ca69aaf8329c28afcbd39387983a96ee8a3bee672dbc14846",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-properties-choice",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-0-properties-choice.docx",
+    "sourceSha256": "5812e58cc2b1123a2afcb1f528bc1c1387d0033985f22b2cd5e5e6b5383439c7",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-0-properties-choice.pdf",
+    "wordPdfSha256": "3b422ffaf6544a2f8feddcdbe2bfb94d0d3d4d39c4679325a8ad6b0cd29ba783",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-properties-fallback",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-0-properties-fallback.docx",
+    "sourceSha256": "acc55e1927690d728139e640dd498e30da67c20e2e2c32cbbcd439c3b715c967",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-0-properties-fallback.pdf",
+    "wordPdfSha256": "758a57b342f36edfb66d34917c8d82d18a52f207d5e2438ffa853e235c16be71",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-properties-fallback",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-footer-depth-0-properties-fallback.doc",
+    "sourceSha256": "025b350f074b48c1954204cf849c141b8a470a8280283b416a3959c15111db6c",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-footer-depth-0-properties-fallback.pdf",
+    "wordPdfSha256": "f3ec4cc0a071eb180099189a779865d893df751899fcdafa86c2a1d7d6b76412",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-properties-fallback",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-0-properties-fallback.docx",
+    "sourceSha256": "7ecb178823ccbebf5299efe267419db18d4c9b969f69adaa3d2170e47cd929f5",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-0-properties-fallback.pdf",
+    "wordPdfSha256": "8988dda8032ea95a46c653b8602880a658dafe256ff16095197ab5ebb7bcbdbb",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-properties-direct",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-0-properties-direct.docx",
+    "sourceSha256": "fbd6bf1d65b31c062f336382cde48fec215df29d5237a514e0412558945f4ece",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-0-properties-direct.pdf",
+    "wordPdfSha256": "39e9aad084aff49ef7e77e70d3b3ed4a0cba05c7e65d283cab3917185f7ea3bc",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-properties-direct",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-footer-depth-0-properties-direct.doc",
+    "sourceSha256": "23be4cf5abf98e11d18f6e18130cc90d9608b5ee0e4d97fc541743841f3113f8",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-footer-depth-0-properties-direct.pdf",
+    "wordPdfSha256": "441728d3154db459b812415187b1f8fb4d36c8450ed433adea39ed9f62ea0809",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-properties-direct",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-0-properties-direct.docx",
+    "sourceSha256": "ffce69cc5825f8844a0b014eb0d0f6270eff5e2bf0fd44560b4b23bb00cc174a",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-0-properties-direct.pdf",
+    "wordPdfSha256": "fb0844a45ea47d71e0e205f4df525a00d861fedd5ae6577a0709a11b63d8ed5d",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-0-numbering-choice",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-0-numbering-choice.docx",
+    "sourceSha256": "961dfc6e08decb97bde91b6187cd86508489b857896e6ec597f4b8220cd0d3ce",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-0-numbering-choice.pdf",
+    "wordPdfSha256": "1d0fbf526573dc29f1d3cb1196a6158c05f403d446a7284bf4487a6bc6584ef4",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-0-numbering-choice",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-body-depth-0-numbering-choice.doc",
+    "sourceSha256": "9696e6b37b45b846ec320f8af448c847bd4bd1df69e1116a886a2a8a32b575b8",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-body-depth-0-numbering-choice.pdf",
+    "wordPdfSha256": "042bca4991c861ff7b2b50e1118f6b03c7c1ce4911b2b11f199205d8ecf7c9b9",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-0-numbering-choice",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-0-numbering-choice.docx",
+    "sourceSha256": "096d495706da8ec14533d87c8123f369778f13b399940bfd2988a2434d48e7d1",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-0-numbering-choice.pdf",
+    "wordPdfSha256": "367b97ef17e8636c0e4537b078433b3c96fad0ab97a5888a9392d4880765e786",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-0-numbering-fallback",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-0-numbering-fallback.docx",
+    "sourceSha256": "10035ffa268f0d93bf099089b55c38c093a56952f004fcc05fd91d6dbd4ad76e",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-0-numbering-fallback.pdf",
+    "wordPdfSha256": "ec809f4820bce5c6c87422ef69d58481b9cbede55a5df7f9f0a66c40268b6a32",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-0-numbering-fallback",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-body-depth-0-numbering-fallback.doc",
+    "sourceSha256": "f396317d52a531b04dab4f92b4d640d3b3f142ecb1b7d0ae1ad25d76806dd654",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-body-depth-0-numbering-fallback.pdf",
+    "wordPdfSha256": "b0cc1516aea1e7b185d8b77e7f2452a427b3e6aa498682170d962f3021a3f748",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-0-numbering-fallback",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-0-numbering-fallback.docx",
+    "sourceSha256": "8a95f117fb676f77158a9e331de6fc1c6764b779d0414760cecb3e026b262068",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-0-numbering-fallback.pdf",
+    "wordPdfSha256": "a166ffd2a64e60ce600d5e1c8f5643c0c77600fb1c3826ad9506b49b91eab4b8",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-0-numbering-direct",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-0-numbering-direct.docx",
+    "sourceSha256": "0d95b102dd5257496588e66f5a32c7caf7bbb99cdd0dfd11e1e4557fb730f565",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-0-numbering-direct.pdf",
+    "wordPdfSha256": "50c2678b7c4d48fd30467dcaf95e9f243ddd46b322cb43216b865084f5bba135",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-0-numbering-direct",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-body-depth-0-numbering-direct.doc",
+    "sourceSha256": "94ed9e09f640142f34980c3ca24d7dcaeb2e7f354da59b90a81eb875d7c28554",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-body-depth-0-numbering-direct.pdf",
+    "wordPdfSha256": "ce6c58bb715fa6a4647b02239e8f6cd55111af9de4ba8b7f55dfab4128b79f87",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-0-numbering-direct",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-0-numbering-direct.docx",
+    "sourceSha256": "7c4a58bce9a5df405ac4f1279450af64bfacc5abde7a41aacfac1dd744dc33c1",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-0-numbering-direct.pdf",
+    "wordPdfSha256": "a15f3f75c9b21c3736666a70dd2338f331368d757c1e700b671b28004c99d897",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-numbering-choice",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-0-numbering-choice.docx",
+    "sourceSha256": "7ac348c1a4f9c38f5aac0334b045bbaeb8362ed620a7aaccf88075529e857485",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-0-numbering-choice.pdf",
+    "wordPdfSha256": "c477b63bd78f0669e9fc8edf6cbc315dc1f56dffa060c8c1207750d7f834762f",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-numbering-choice",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-header-depth-0-numbering-choice.doc",
+    "sourceSha256": "f2e0eefbd31c9fe77cffc51a7aaa3d2eb47defc06e99bd2df4628c63bb029b89",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-header-depth-0-numbering-choice.pdf",
+    "wordPdfSha256": "022dba9d52d951e291e75bf37f42511d1340b5042917290092cf143dcef7e81d",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-numbering-choice",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-0-numbering-choice.docx",
+    "sourceSha256": "06babd09d418d9fb86eb11f1c57e554be21c73ed0ebe0d738c3f72f7c58aca3a",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-0-numbering-choice.pdf",
+    "wordPdfSha256": "8ab83aad6936f5d7f62888453614e42e25a3e6c2ab33b5f4d3bf26207ee4dc3f",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-numbering-fallback",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-0-numbering-fallback.docx",
+    "sourceSha256": "5b9cc804861dbec645cd0f14f80154273699bf8ce02d6120afa0ee54f1bf1499",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-0-numbering-fallback.pdf",
+    "wordPdfSha256": "0c5f3c6128a133ef728f47cf87486d5108f2f2f8f66662131dd2d8c4bef98c8d",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-numbering-fallback",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-header-depth-0-numbering-fallback.doc",
+    "sourceSha256": "99f89cd876c0ef3a52dae5705f986a5e913a715d18de508979b2eb8e575778c9",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-header-depth-0-numbering-fallback.pdf",
+    "wordPdfSha256": "e7f7bdf91c70f64a7cb00ef9212876f4ea42569d20a55fb56a06f16b832ff2ec",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-numbering-fallback",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-0-numbering-fallback.docx",
+    "sourceSha256": "3c393a0e561fbfd7f0b34a8c191032f20fba37048945a98d058dd30fc1b37450",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-0-numbering-fallback.pdf",
+    "wordPdfSha256": "54caadae3073d42b0890393a76f29a59895d592a49ce948892fa50aa353d03ae",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-numbering-direct",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-0-numbering-direct.docx",
+    "sourceSha256": "6359b8aba1d34809bb31e6d02f90cb35e0f683c093f9655358a09eeda48a03c0",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-0-numbering-direct.pdf",
+    "wordPdfSha256": "40b0f7a9d1de1699750df4c98d8842b1753202ace7280d5eda000d93337b6719",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-numbering-direct",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-header-depth-0-numbering-direct.doc",
+    "sourceSha256": "e3320d118af25db558e9584008adcaf60d26ca5b6078049f7b27869d29a79221",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-header-depth-0-numbering-direct.pdf",
+    "wordPdfSha256": "53274e5101025cfc004d1096ee34e51397b15583bc5d4f1e3ee2a7ead6e0fb50",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-numbering-direct",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-0-numbering-direct.docx",
+    "sourceSha256": "87cd5d55d41b0a96e3184884d1630456d4a7470ad622b5070047f7dd9dfe2ad3",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-0-numbering-direct.pdf",
+    "wordPdfSha256": "f2ea6c0973980a5edb9e9e54c89c65aa1b08fec6c35563a509539c354724a878",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-numbering-choice",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-0-numbering-choice.docx",
+    "sourceSha256": "816415219dae8be365eba1928d344d898ddede820e4132406ef50db33638dc37",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-0-numbering-choice.pdf",
+    "wordPdfSha256": "ae9a815db35cc0e1cc87f7bab7a886b60f4bbce3377512b8fc76645cde04f02d",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-numbering-choice",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-footer-depth-0-numbering-choice.doc",
+    "sourceSha256": "4014827d54577f229ab541fd7e959b670411218f97d0bb2c946add8d34f02898",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-footer-depth-0-numbering-choice.pdf",
+    "wordPdfSha256": "04906ec2361bedb8a934382dae9903d737d4d1ed277ed5659a98ce43a7e757cc",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-numbering-choice",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-0-numbering-choice.docx",
+    "sourceSha256": "7907ecce2a99c51c4bf9a37b31eb33b56b952f514f762dd8081ac96416f4b2f2",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-0-numbering-choice.pdf",
+    "wordPdfSha256": "4f2c72cd690ea89044eb522c5b8d1db6dbbf51ef2bd968556ae87fce0ae37975",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-numbering-fallback",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-0-numbering-fallback.docx",
+    "sourceSha256": "f54f50e35ec9ebecb6e5825392f785be9bf3cc92329fa2e966ec2fe9fe73ce40",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-0-numbering-fallback.pdf",
+    "wordPdfSha256": "4cd5fc8c0f2fe60660c39d56b8780e58138b3542b45cdb1ecf37b3e787b46c82",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-numbering-fallback",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-footer-depth-0-numbering-fallback.doc",
+    "sourceSha256": "2b394fe806c7a4f90e6d1a3805b4401f01c730c7eb577cd91f7d5a2ca98adc1f",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-footer-depth-0-numbering-fallback.pdf",
+    "wordPdfSha256": "585834ba2a061b237093ff5726625bb5f16c226b64b4bc967adc0dff1609c08e",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-numbering-fallback",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-0-numbering-fallback.docx",
+    "sourceSha256": "f3987159db2482b207e17a15915085e1329be10d1abc63497a2b8db34419521e",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-0-numbering-fallback.pdf",
+    "wordPdfSha256": "712897c0faab0e3b00b6de6186fc61c5830c4cb198d8b9ee20355ae5ae894e1b",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-numbering-direct",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-0-numbering-direct.docx",
+    "sourceSha256": "830af0a9de880a20c53ce6a419121a56640922a63ac71fb6a81e9130fc52f32b",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-0-numbering-direct.pdf",
+    "wordPdfSha256": "65fbfbdabe57fa49321779fa2d2f2b0a0d0eab25773e7183b8a27574d5377492",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-numbering-direct",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-footer-depth-0-numbering-direct.doc",
+    "sourceSha256": "80c9f089bf9d752c6f7e56498c388be465269aa01eb8b90a7ec7fb8647638915",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-footer-depth-0-numbering-direct.pdf",
+    "wordPdfSha256": "a702bf81b039c14f738862c1a2e470c183a44bf2ddd73e8ebfd139b1542b2d66",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-numbering-direct",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-0-numbering-direct.docx",
+    "sourceSha256": "2a971abb7e71b64d82a1d132b1295d0d82b44d3debe8b5314cf9c2ea60e6ccba",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-0-numbering-direct.pdf",
+    "wordPdfSha256": "d56a0c12a6a86bdfff290a07f923121d76dd53acf78dcfe5001c92a498b77f80",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-0-id-choice",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-0-id-choice.docx",
+    "sourceSha256": "fc0660a7ba3415122ea578589b692e6c507ac510e2433d6dac9ea25b42952dbf",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-0-id-choice.pdf",
+    "wordPdfSha256": "87fa2fea29bcd33438005d38b91b72c51306bc6417a82922dc8ac5d9ae2fb9b6",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-0-id-choice",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-body-depth-0-id-choice.doc",
+    "sourceSha256": "a770d8283ec8bf07629da82a1e0239e43f7fcc4a0fcf17153e4866f001b827c9",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-body-depth-0-id-choice.pdf",
+    "wordPdfSha256": "14a1dae1f6d63b4ff19a96badb7fc03b643597a4397dd2e7431b718f80b96106",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-0-id-choice",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-0-id-choice.docx",
+    "sourceSha256": "02d0e13bebbc8b6f94710152beccbb27344ce19bdf5195ea7b682d583d43afc1",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-0-id-choice.pdf",
+    "wordPdfSha256": "04e6a868a6d2ff92078bad2ab660a6fe87c87be08798dfe2873763bcb200e9a0",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-0-id-fallback",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-0-id-fallback.docx",
+    "sourceSha256": "1e6e010c1a94308eb19261719cacd07d75178ce81594c8fc45c68a9e1c014152",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-0-id-fallback.pdf",
+    "wordPdfSha256": "69b104f236fc4c93c331569c86e2b2eec577177ec4e71ad7f242a9cf0d00bce1",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-0-id-fallback",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-body-depth-0-id-fallback.doc",
+    "sourceSha256": "50f2b34cccd27bb48cacbbaad15a35b6a5e4fe6e3676ba1814f2e2a8eea909fa",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-body-depth-0-id-fallback.pdf",
+    "wordPdfSha256": "28f9cc4e73109a2389c53ca29bd41dc470932f6bad341b7f9ab45e778a09750c",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-0-id-fallback",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-0-id-fallback.docx",
+    "sourceSha256": "7dfd78d43122461df63d67ea9b5a8f89cb0486727b90c1508596a748f5569507",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-0-id-fallback.pdf",
+    "wordPdfSha256": "656ddd6a816b7e661441b7dc646d3313421fc4cfff9fb52b1dea362520a234f6",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-0-id-direct",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-0-id-direct.docx",
+    "sourceSha256": "15658b46ec33fc03efe11419b8deea492f775f321cf666f9b726698ded8e16f4",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-0-id-direct.pdf",
+    "wordPdfSha256": "c278f22f563725dc0cd2749a66bb4ad27790f12483c3d49359ed66650716298c",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-0-id-direct",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-body-depth-0-id-direct.doc",
+    "sourceSha256": "690a0e6045fbd88346a20e1a9802f251f514836d73627606247a34ab2db22d4c",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-body-depth-0-id-direct.pdf",
+    "wordPdfSha256": "b494f766abd0f9866c2127581b82d39f09050235141f6f29b9f264fd596e8445",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-0-id-direct",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-0-id-direct.docx",
+    "sourceSha256": "01ebf877a60c2025bb7655bb27a561ae76f286b1021466c800768822ffea0819",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-0-id-direct.pdf",
+    "wordPdfSha256": "88c28b2da53007df506eec2370189734bf474ae336c6906cddc3ef214c8a7a57",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-id-choice",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-0-id-choice.docx",
+    "sourceSha256": "3aabe269c3cbe2af0351aa678f1511294b5d7135a13f5c1569c2d46f4624ef36",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-0-id-choice.pdf",
+    "wordPdfSha256": "444b9743e4132ddb1d68ffa26f9d2dc96a815a7e898b1bd619ce95180c1718f5",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-id-choice",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-header-depth-0-id-choice.doc",
+    "sourceSha256": "8a2a712d7eaee414f328709772dde18dc9f9e3b16c72bc0c98423b3e954f5e3b",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-header-depth-0-id-choice.pdf",
+    "wordPdfSha256": "320753ee28df7c8f053a3606e0feba08d9ea463779f3085d100fd6af26b25284",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-id-choice",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-0-id-choice.docx",
+    "sourceSha256": "dd51d9cca146c7fb123684d34f44d9ca75f270ede9c10f198097948b1c57b895",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-0-id-choice.pdf",
+    "wordPdfSha256": "6f9eff1c92dc7b873391ab30e256dc6a9b1ab03ad5a1fa3ebe440e97f4331f49",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-id-fallback",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-0-id-fallback.docx",
+    "sourceSha256": "1bd78f73a4af7f6f9262ee6fb5f4b8f3ac69a29b22b6913755a63dadb97cff64",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-0-id-fallback.pdf",
+    "wordPdfSha256": "d1213d8b71744863cd4a1e2183963d1473bb07f7b68d033bb6a8a14c83724649",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-id-fallback",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-header-depth-0-id-fallback.doc",
+    "sourceSha256": "7f62a16e44a1b3b7cad90ffa68ba98c2bd2917894e2e7a2b38e7e06fab2aa636",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-header-depth-0-id-fallback.pdf",
+    "wordPdfSha256": "cbb7ec0b1dfaf90f6301d26c0d4e5866beffc5a9e26aed583b232f06c37f12ea",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-id-fallback",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-0-id-fallback.docx",
+    "sourceSha256": "1e145396e868b048895cc49799b6d72bbadc5f41f2a2f5d0bffdd4744f91e1d3",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-0-id-fallback.pdf",
+    "wordPdfSha256": "f3597b88eeec03d8da322561f0bae6d377abb6d9407794c18fca42d1232a430a",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-id-direct",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-0-id-direct.docx",
+    "sourceSha256": "5e7d4eb9adbfef6202330cf0006af46b0a6e2a2ddf93d95e0d9a80c53ad3f4ae",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-0-id-direct.pdf",
+    "wordPdfSha256": "c536dea3257e1a7d64a33d89158da001ab146b9549f1e579453c4fdd825c9e61",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-id-direct",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-header-depth-0-id-direct.doc",
+    "sourceSha256": "1f76b75fbb73f224c7042336c4fc210c86799a597de8233b942d94a3a7f52d36",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-header-depth-0-id-direct.pdf",
+    "wordPdfSha256": "bece5d0b80d48aafbf2a292a7d89515eb617bc614d735132c3ac2595f9373faa",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-0-id-direct",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-0-id-direct.docx",
+    "sourceSha256": "234dd8ba188e09ae2e21128d9df168328cfb5812403e9209ac85f657b1191375",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-0-id-direct.pdf",
+    "wordPdfSha256": "21753cecdf239680cf7f2b8a2785ee1f81d0cee41bd1567a384e1ec0b8e881a2",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-id-choice",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-0-id-choice.docx",
+    "sourceSha256": "cc307149eb842b3e35235c7de925d2fc1efe308c4a708eeaab8095f5f3d10672",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-0-id-choice.pdf",
+    "wordPdfSha256": "df3693e30483ebae701b5283641d964e2c4fe7e38a2655b7ab165e0a121ce714",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-id-choice",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-footer-depth-0-id-choice.doc",
+    "sourceSha256": "898905d7a61529a2caf257a7acbd6c28c9560131b050c6b5229f6a09c006f1a9",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-footer-depth-0-id-choice.pdf",
+    "wordPdfSha256": "2a28f83a958e66507e5af320730fefd769aaa48d88c0871b47065a8799065897",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-id-choice",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-0-id-choice.docx",
+    "sourceSha256": "bcd501f4b309f62a5fd1b0941a578a7d931cb994846b2aee4572bd5edef522d0",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-0-id-choice.pdf",
+    "wordPdfSha256": "afa7ce0a20791c67471df40f64f87dca8c7ba2a40ed06586cf9c3eb66412cf0c",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-id-fallback",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-0-id-fallback.docx",
+    "sourceSha256": "1f581905ed0174e7ceee009af100cae307deab9023dafec3ba01ca97f5a2160c",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-0-id-fallback.pdf",
+    "wordPdfSha256": "0a3006395f66dc296e7ec034c92c5d206aeda369a8fb31f67102accd840b7e20",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-id-fallback",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-footer-depth-0-id-fallback.doc",
+    "sourceSha256": "ca2584c4592a5c6beb3e96128752651865ac8811aac913f4dfb88180c49c79db",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-footer-depth-0-id-fallback.pdf",
+    "wordPdfSha256": "0bf1d004301931cf33a35d576c2588c09a6bed18ab05030bc016810f2a7f9150",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-id-fallback",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-0-id-fallback.docx",
+    "sourceSha256": "252b5ff39b257d3f7723f95ceb70dbf77b2485981ba593110fd4f0694c59e69a",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-0-id-fallback.pdf",
+    "wordPdfSha256": "e456afca5b8ca2015476c74e006547dacb08e333225348e2706d4a6d849d0043",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-id-direct",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-0-id-direct.docx",
+    "sourceSha256": "74a43b51b76863bd9e271a1b09d8edbca021e7263f7141f1ffd87bea9934dc32",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-0-id-direct.pdf",
+    "wordPdfSha256": "efda54168cfa4bf248bbc3bc346a11a2c7b18f94b01c6b515f39acf11cdcf3bc",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-id-direct",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-footer-depth-0-id-direct.doc",
+    "sourceSha256": "0766c9be2663ed3343e427af905266e841520f40dff207df746f0e75857aa48a",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-footer-depth-0-id-direct.pdf",
+    "wordPdfSha256": "f74254cb6e10ed5728c83ef3807cd207ebcd845283d9690b42fb5fa12be718f4",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-0-id-direct",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-0-id-direct.docx",
+    "sourceSha256": "020cb251045e1dbfcefb5dd167caa6592b2dd25c3c5ebfc8ad838b6190fde212",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-0-id-direct.pdf",
+    "wordPdfSha256": "188852db8f87d58caae5206383fbd88ca355f97750dedfb747b5c8e130b58ac1",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-properties-choice",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-8-properties-choice.docx",
+    "sourceSha256": "47cb188b6e0a244137984e4e67ed42682e75533c206df77a72faeee811edb22a",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-8-properties-choice.pdf",
+    "wordPdfSha256": "92144c4342f99b8b0732fc87475c0b7f106cc8b88c4b3aa0364cfbbd55a8940b",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-properties-choice",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-body-depth-8-properties-choice.doc",
+    "sourceSha256": "88059a2bf3fc8db889b23ca6d8c13612357a56d6719efa32334ac939bf5a753a",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-body-depth-8-properties-choice.pdf",
+    "wordPdfSha256": "efd970f694a5b5192baa757382aa2bbcf8495af6e680922168a4f087e860d3db",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-properties-choice",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-8-properties-choice.docx",
+    "sourceSha256": "282e1a435080658e0bb240523b2bcb261a873acab21449aedc60ec389641b0bb",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-8-properties-choice.pdf",
+    "wordPdfSha256": "50029665b89de610402d020def9ffb663f3722df47b9191bd42c5784c0fc328f",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-properties-fallback",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-8-properties-fallback.docx",
+    "sourceSha256": "450b718afda4d0abef5a1dfe7a447679cc25595fd8328cb3ed268229b6da1117",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-8-properties-fallback.pdf",
+    "wordPdfSha256": "1debe72f7ceca3ee27b8ee09276f60cb1e4846199ce85c4fc45c608355ef3a28",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-properties-fallback",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-body-depth-8-properties-fallback.doc",
+    "sourceSha256": "8e8dd44cf18570da051be7452e6f7ea009ac34cdf0e06b57371eee5f2acda9d2",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-body-depth-8-properties-fallback.pdf",
+    "wordPdfSha256": "2039ec50bc19e4614de1ace9003cab4082d8f52e07509ff0536a0759fd239cbb",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-properties-fallback",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-8-properties-fallback.docx",
+    "sourceSha256": "395907497cad806ca678fba97bc4c81afd73fd9258b11cb46587fa1da8b6523f",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-8-properties-fallback.pdf",
+    "wordPdfSha256": "755690ab4ef5aec2ee29f3c16270f9a947004333d445e7b43b891f73973a89b5",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-properties-direct",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-8-properties-direct.docx",
+    "sourceSha256": "de290533e19cfc10f02109340e1422ccc2225dcb5db4c93ddc7a168e852014d1",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-8-properties-direct.pdf",
+    "wordPdfSha256": "063d27f104f8bb3b48ec9017d9a1a1335c621c25996a60d461aa349ad47d33db",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-properties-direct",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-body-depth-8-properties-direct.doc",
+    "sourceSha256": "da3514478f4c83dcb828a566a759c0e99a9fc233e18279a6f9fdc0be2e8388f8",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-body-depth-8-properties-direct.pdf",
+    "wordPdfSha256": "5e4f86dbf3d028c4ee82b9a81c7e6651859db840b5a2c9519f07aa7bceaa13a2",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-properties-direct",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-8-properties-direct.docx",
+    "sourceSha256": "db20f622cf48b419006dddd45cd94926514600e1bf6572d4823a6ca783023de8",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-8-properties-direct.pdf",
+    "wordPdfSha256": "782aa8f37d1aef518d79796b2857c199ff72e9f9a4615721eaa152145a8e897b",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-properties-choice",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-8-properties-choice.docx",
+    "sourceSha256": "6290ed87d8328f6bef19e59642f87e6e23b95527ed980cab3e2f9456d7657b02",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-8-properties-choice.pdf",
+    "wordPdfSha256": "5e8592ce429a56adada7d996d0fe922e36d0f33f800fcd575dbe48ac1c0df666",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-properties-choice",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-header-depth-8-properties-choice.doc",
+    "sourceSha256": "e7ecaa6c67d293a3eb0d3c902843850c71433a3b9c54b701c9fd05598bec3e6f",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-header-depth-8-properties-choice.pdf",
+    "wordPdfSha256": "64a90df9f41b62f66d3fffbc8bab088b520edd9863faae9f5e16ade6e5022ae8",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-properties-choice",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-8-properties-choice.docx",
+    "sourceSha256": "78ea714fe03e2d87c5be38426d1d4cc323beaef1357f59c143b6c106bfcda704",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-8-properties-choice.pdf",
+    "wordPdfSha256": "612599588448f8d0c2adb7d7625735c189307f10562f3d38e40b64cc3285c75e",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-properties-fallback",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-8-properties-fallback.docx",
+    "sourceSha256": "e6e1c2626c593149b3f7597e79548b8a531be053d80022939353348f81040930",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-8-properties-fallback.pdf",
+    "wordPdfSha256": "fd67c1ed7a5a8c203b2a1ed64862747c9ddda3c3fddc4f835be03fb6c1783b8e",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-properties-fallback",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-header-depth-8-properties-fallback.doc",
+    "sourceSha256": "60271eb7a47d18b447b6e7a569422e17e98058e498b5c2999cf07930b2524880",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-header-depth-8-properties-fallback.pdf",
+    "wordPdfSha256": "83bf2cb6fac849aaad18e658021cc59b2f30653794e3e37b96d6ef279e20c5d5",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-properties-fallback",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-8-properties-fallback.docx",
+    "sourceSha256": "3ef53242c9f0e9b704887261e0a10624a8515c997b032001fbfad12a201d2cd8",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-8-properties-fallback.pdf",
+    "wordPdfSha256": "0ac38ffaf8b4d82345f5d52d9c2d891188c6a1ad7404be865abfb49728d4a627",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-properties-direct",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-8-properties-direct.docx",
+    "sourceSha256": "aaef9184255550fed5dbae8c352cf541cdab096957ab7248c78b7da8713957e0",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-8-properties-direct.pdf",
+    "wordPdfSha256": "1bf569b3863386c69992c018522dfbb44b40377f5ea505ba3238eb8ea2a28c2d",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-properties-direct",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-header-depth-8-properties-direct.doc",
+    "sourceSha256": "68edd54bd5d295531142a7d5a4aa11a01be6236d5dd6b2e437d7106ba71d4bf8",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-header-depth-8-properties-direct.pdf",
+    "wordPdfSha256": "c9137fa2dc1a795811b113263a3186416993d8fbac8b99758edab1edad963db2",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-properties-direct",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-8-properties-direct.docx",
+    "sourceSha256": "dfa070b017f54742bf8addf30395cead51c078701f8f839cb2cb2052d98d91fb",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-8-properties-direct.pdf",
+    "wordPdfSha256": "dce90606d35675437dd58859ebc108a8f794bd83ef5c63873e2bbac00219534a",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-properties-choice",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-8-properties-choice.docx",
+    "sourceSha256": "b63fdab61bd8a00c3e74a6a3cf942f01bbe056128ef1e23f8b768a4cffe02be4",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-8-properties-choice.pdf",
+    "wordPdfSha256": "7a5442902ff76c8045e5ec377ebcb7b4c69068f8787596a375d91a8798949240",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-properties-choice",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-footer-depth-8-properties-choice.doc",
+    "sourceSha256": "f0b864e3ef8cb57dbef37741483e7f6badcac253d854729847e90756fcb98eb4",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-footer-depth-8-properties-choice.pdf",
+    "wordPdfSha256": "09c18bdfb6f80c2121c8534178cad56bc459424af89bdd9a64ebd3c09b1271df",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-properties-choice",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-8-properties-choice.docx",
+    "sourceSha256": "0083c58ff598de03b0e26ad8d0cb820834eb79e610001695f4565a58182a0606",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-8-properties-choice.pdf",
+    "wordPdfSha256": "2655aba93257ba0e0d5e3a22ebb9a3952bef10a90dbd3ee9f6036d6950ed29a8",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-properties-fallback",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-8-properties-fallback.docx",
+    "sourceSha256": "95731b0dd5f128d6811daf7a1d24908b65c395dc263d88341af4aa898eef1b55",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-8-properties-fallback.pdf",
+    "wordPdfSha256": "34a91e60043d0a5d251d43894128c41bcbee29f1b52ad6d3ea155395a9e218fb",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-properties-fallback",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-footer-depth-8-properties-fallback.doc",
+    "sourceSha256": "cb3ee6959555b0059efcb04ed08b4039da9971526655506c333792809a931e62",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-footer-depth-8-properties-fallback.pdf",
+    "wordPdfSha256": "29deb3858f5159d30c74215b7caf8cb54c3c254a72b0bb1a35eaddbd11f84abd",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-properties-fallback",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-8-properties-fallback.docx",
+    "sourceSha256": "aa1726b6531921117395b2bbf03abb6aaf212679d8f12f0b4e357d41c62a6ade",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-8-properties-fallback.pdf",
+    "wordPdfSha256": "d3978e92e050dad3c582c21c596b1fd3434ecc8556bffa91760fc4eb1b38ba03",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-properties-direct",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-8-properties-direct.docx",
+    "sourceSha256": "06003c076a19d4289cb71c301a9fc44775dcef621632d2d3b99a7f28b5915e89",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-8-properties-direct.pdf",
+    "wordPdfSha256": "c0e307da1e7539b7ae719b7c881e652130a650872613a191cdaf7a56179effa8",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-properties-direct",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-footer-depth-8-properties-direct.doc",
+    "sourceSha256": "d26c8d2215bf1adca37204fb3a6a2bc36adf5a6d9cb4b9769251e4125b59ac9f",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-footer-depth-8-properties-direct.pdf",
+    "wordPdfSha256": "d58a9d18193dd3f9da7c8c5999e70f13a7c46c3210c2f305752225855bf3a957",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-properties-direct",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-8-properties-direct.docx",
+    "sourceSha256": "9651dd400b9b45cfe7ad00749159d6c52cbf3426f7195f57847935623c3a1f9b",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-8-properties-direct.pdf",
+    "wordPdfSha256": "0b1be3f82767721443f42d93a92aa988d3ec758a639303c64bc86757613b7235",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-numbering-choice",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-8-numbering-choice.docx",
+    "sourceSha256": "f0e2d507a7b663989ee737f8c9fb070c2dd13dbf7607b5f5e569147e61d90267",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-8-numbering-choice.pdf",
+    "wordPdfSha256": "89bcce78caa095c7b6946a553d0f2f1b108d17d929b1eea6237b534435a2694f",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-numbering-choice",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-body-depth-8-numbering-choice.doc",
+    "sourceSha256": "fd8c70771a432950f6372bfcf36850056de73fd49c17fbd23b01c60139fcc3e9",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-body-depth-8-numbering-choice.pdf",
+    "wordPdfSha256": "e6dd3dafcb9903356fb025aa8dbc4e3be57a4d6ed8cbd278d47293013f7ed5da",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-numbering-choice",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-8-numbering-choice.docx",
+    "sourceSha256": "0dd2726dba9ecaf7086fb8a706bcdecfbbb688f3ce1763e361fa5940c2457302",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-8-numbering-choice.pdf",
+    "wordPdfSha256": "5c963abff533940f51b2b50521ea972bf022aec82383a7d18a85fa9cab692eaf",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-numbering-fallback",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-8-numbering-fallback.docx",
+    "sourceSha256": "c149e0bc4c0ccb64c1cd11c8c4519d46e6fe78759dd503e094070048deff656c",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-8-numbering-fallback.pdf",
+    "wordPdfSha256": "179e6dc64903faa7ea4866c5ba94ed1a203993eee2d44970d9f92d8ea7502616",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-numbering-fallback",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-body-depth-8-numbering-fallback.doc",
+    "sourceSha256": "65c0bf5345f6458bf4664abac63d3c642b6344986a317f3ef5d4aa301516c840",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-body-depth-8-numbering-fallback.pdf",
+    "wordPdfSha256": "ba171e7843fb2ff3796fde938c66d1e14b5fdcfb20c65dfc0789abefe72f31f4",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-numbering-fallback",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-8-numbering-fallback.docx",
+    "sourceSha256": "092431abb51c527f83320cdd38f27c7dd7aeee72dd709680f3eb56f3ba89d39e",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-8-numbering-fallback.pdf",
+    "wordPdfSha256": "d1439501d317eee9c98dcaf3751e622edc1cb44307c21288f6eba828f7fef090",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-numbering-direct",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-8-numbering-direct.docx",
+    "sourceSha256": "c805ce7e207efcc13b243afc879748683f1586055dd1c3fdbda0658c0c41a981",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-8-numbering-direct.pdf",
+    "wordPdfSha256": "e31154bfe7d6ea29a7e6d3ac344a6e79eeb61901e658f2f6a2f45d3a4d90924c",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-numbering-direct",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-body-depth-8-numbering-direct.doc",
+    "sourceSha256": "9fb5a485f4d770cc9065295074d9f8fdec36d28e1bb07665e733ad1e731c3ac8",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-body-depth-8-numbering-direct.pdf",
+    "wordPdfSha256": "21021095b43efba68c59838a68cb269e16c4826b611458a5863798a3774ed15d",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-numbering-direct",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-8-numbering-direct.docx",
+    "sourceSha256": "318434bd673108ee83ec7c5d01057aab1eb19fb09a02d639c78984cb49852896",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-8-numbering-direct.pdf",
+    "wordPdfSha256": "d12caae5445dca456a6523b518de8e77a95b3d5cd8b686661bc6f0a2fae72eb9",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-numbering-choice",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-8-numbering-choice.docx",
+    "sourceSha256": "57748820d01ad45b45bd391ac203accc407666cc3610493dac78ef9d7976233d",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-8-numbering-choice.pdf",
+    "wordPdfSha256": "9b8e5b6071b66404bfb87228bb0c2d3e8b1dadf4d13a8db12a3c533a4b8b08eb",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-numbering-choice",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-header-depth-8-numbering-choice.doc",
+    "sourceSha256": "9553b12ffddfd9abfbc47f9319f3c0986e2a84055dc20b27461e0173017e6774",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-header-depth-8-numbering-choice.pdf",
+    "wordPdfSha256": "0e711fe8c1bb9c6915da88fa901cc374e9a7488208c18feb56781b2b4843b88c",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-numbering-choice",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-8-numbering-choice.docx",
+    "sourceSha256": "e3db75b9bedafe526ee46b5dc85f3de1e323c75428b110b1f49921ca32dc6dcb",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-8-numbering-choice.pdf",
+    "wordPdfSha256": "7d003a509123046dd21fedde7dc0597686e7757a70e2bbb87514901530e88336",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-numbering-fallback",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-8-numbering-fallback.docx",
+    "sourceSha256": "6ec9e975a951ed276cf5a1b88847fc78c5344a52295cf2a0aa68a6d88c99a5d8",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-8-numbering-fallback.pdf",
+    "wordPdfSha256": "505b5f92b38e41f15efc24c4d66430fbc8cc24b8ade11e51b83d6154b2994584",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-numbering-fallback",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-header-depth-8-numbering-fallback.doc",
+    "sourceSha256": "753da41197b80b5cf7ae64ec278e212940549fb047e0935db89da1804446ae1d",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-header-depth-8-numbering-fallback.pdf",
+    "wordPdfSha256": "96bc2d53919b8b8f0422d3168435f98b763f0bb3f1b68658c22cfc086e37cff6",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-numbering-fallback",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-8-numbering-fallback.docx",
+    "sourceSha256": "a43d8b4b0c628d06457aa39cc97422be1f1fc4947942f1ea4a0c008ee74550fa",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-8-numbering-fallback.pdf",
+    "wordPdfSha256": "d49ae8feb1b688fdf30c258fe108690f263a2018949454ec82a83b1bbc11707e",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-numbering-direct",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-8-numbering-direct.docx",
+    "sourceSha256": "96cc8f2b9103c8ff21da98f88ca5f12745d8ab1a9ff69ee4acd356b7f9f7c855",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-8-numbering-direct.pdf",
+    "wordPdfSha256": "dd3a13045c50ec050555da172aae246348e847be63f7eca0dcd63762372c71c8",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-numbering-direct",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-header-depth-8-numbering-direct.doc",
+    "sourceSha256": "b2526b03efa4b885e743feb1b9ae8ce0c41f785150ef7ba55bb4381bf2229565",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-header-depth-8-numbering-direct.pdf",
+    "wordPdfSha256": "0da82af70a2ff5d2f98ffd49d3a4ba4ed35be20036ff7e96c5fb94e8f4e3e71d",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-numbering-direct",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-8-numbering-direct.docx",
+    "sourceSha256": "43fac3111e3fa12360c6af84fafa0712384138b4a06b0ed9ce7d828f46dcc6a4",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-8-numbering-direct.pdf",
+    "wordPdfSha256": "ef33b3fe2bbcfd5843b6db56088465fed9a199d323dbf62a4d30612861ede11e",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-numbering-choice",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-8-numbering-choice.docx",
+    "sourceSha256": "0d93053fbe7f515f746bbd1e903ffc28e66d24cfae24d2090d8e99ba5c07a353",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-8-numbering-choice.pdf",
+    "wordPdfSha256": "d8fbee35faf5f6d8d73bbada068d4f2f1a281dcc73f1f158ee76b50ba25455fe",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-numbering-choice",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-footer-depth-8-numbering-choice.doc",
+    "sourceSha256": "0921d6669479428d5d5ea03a9d609e84bf3dac9bf0a4183cdf7e8282d131730e",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-footer-depth-8-numbering-choice.pdf",
+    "wordPdfSha256": "bf1dae1a9d5c4c163941ae925312cebd8484112d53e9e827b13e8fdb2dc4349a",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-numbering-choice",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-8-numbering-choice.docx",
+    "sourceSha256": "987902ed216ed23b89c9fdb018f3676cd56b2e619c15b31c9c39707853fff82d",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-8-numbering-choice.pdf",
+    "wordPdfSha256": "b599f1fdefeae75c824e5b057b101fe07819c4a65176797a3f532f0767573a76",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-numbering-fallback",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-8-numbering-fallback.docx",
+    "sourceSha256": "a0b75d9dce8892020d369ac179c1154831eacd63dea87ad849996852fdc70e41",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-8-numbering-fallback.pdf",
+    "wordPdfSha256": "d983deccfe349668085ec11580438c67c47b739219fcf4dfadba38ff784d7cf6",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-numbering-fallback",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-footer-depth-8-numbering-fallback.doc",
+    "sourceSha256": "e39323cc91a457e6c81d6ae4250b18c138444239518235a370bf26dcfa7ea680",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-footer-depth-8-numbering-fallback.pdf",
+    "wordPdfSha256": "33f6fce255c235b3169b15c3e4112f03ba3d742b1dab436b005118aeae0f6faa",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-numbering-fallback",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-8-numbering-fallback.docx",
+    "sourceSha256": "15876de3ed0432a462667240f5facb0a3b80513a5206b426a12d756e8f1660db",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-8-numbering-fallback.pdf",
+    "wordPdfSha256": "27df8a59f7840900b21dc727965e27bc5299e4fd2f5fc86689674ac7e1cc6a2b",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-numbering-direct",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-8-numbering-direct.docx",
+    "sourceSha256": "6529dc57685db8efd4f78225d89cfe867c8bb5d61cb851d2fae2ecc58590097f",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-8-numbering-direct.pdf",
+    "wordPdfSha256": "7e46c1426cb010c5b33d0124f5d3f25cd8ffa521a0e584eca534e5365ae65968",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-numbering-direct",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-footer-depth-8-numbering-direct.doc",
+    "sourceSha256": "f875d7438b0b2bb1979002c43f2e0c500b7dbc0a93c85ab3d88bce1c32a506d1",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-footer-depth-8-numbering-direct.pdf",
+    "wordPdfSha256": "cda6313bcb3a37259c19b1d7b3e2127b13953bc74fa666f446283ec63ba5db58",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-numbering-direct",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-8-numbering-direct.docx",
+    "sourceSha256": "60e2bff618904248d01fac38dd836b0f9d7cf9057323d965f17ebbb61c5733bb",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-8-numbering-direct.pdf",
+    "wordPdfSha256": "2859e82b2d0b3649508a7dc72411c92146786c821808408cec84ea9ce366e6ce",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-id-choice",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-8-id-choice.docx",
+    "sourceSha256": "29d074c51b7b32d89de763e382ae47c447f41d5bb27f9698382ecf2590989149",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-8-id-choice.pdf",
+    "wordPdfSha256": "f5775daba9800dc713b6c18d52cf1f5d4429480c5da8df81fb0f81d92a5ceea7",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-id-choice",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-body-depth-8-id-choice.doc",
+    "sourceSha256": "74fced5f060e97ee34c7521046afe183d3cd40bbed3202499ac941f2fb476c7e",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-body-depth-8-id-choice.pdf",
+    "wordPdfSha256": "10108d033c4c81157bc40526f8f4feebc198916ecedba7e94c69b8ffddd95a17",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-id-choice",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-8-id-choice.docx",
+    "sourceSha256": "c17b98daaffa7801a9fe1d48437c3c0cb98c5f74461ff8a2aeaed0b4b3b87293",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-8-id-choice.pdf",
+    "wordPdfSha256": "f37b45948d3218248c6668ca16ccded07b78f8a6038b22a613e8aa90b9d87363",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-id-fallback",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-8-id-fallback.docx",
+    "sourceSha256": "65cb33a45737f4abb6562c93a00c34093e1564f096ea84215ad2d9141a5784ef",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-8-id-fallback.pdf",
+    "wordPdfSha256": "c5383597cca7bc862e18f49d6f98f1eea67ccf17973b5800de74b0a227309651",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-id-fallback",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-body-depth-8-id-fallback.doc",
+    "sourceSha256": "c4cb5afb7c5b57d944beede1d064ce084f084172d9ae296ac5caf16ec0a4cb20",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-body-depth-8-id-fallback.pdf",
+    "wordPdfSha256": "001983d0b9286807a81b63f4f95c6e6ed1d500594d831a3bfc46858dc354d385",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-id-fallback",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-8-id-fallback.docx",
+    "sourceSha256": "443fa37d22cfe12879077257f7d914bc6f9013af6ca7729d15af5de57421600f",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-8-id-fallback.pdf",
+    "wordPdfSha256": "01a1947b895f249b74f536d89c2ce940da72c6cb316b21a793278e1f304f38b5",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-id-direct",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-8-id-direct.docx",
+    "sourceSha256": "18ae96838f2ad9c14b39e630a9b241dc37df4d9109ac0b1267485a8c7960f0e7",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-body-depth-8-id-direct.pdf",
+    "wordPdfSha256": "8e94ae2e072d438a5f71731fa7fad131727e836f7b812e6572bf1caa7f4c0e34",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-id-direct",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-body-depth-8-id-direct.doc",
+    "sourceSha256": "9d5d5e2cd86e7717696f31d567cd0bafec61e0d3c6ed96d4c1315037096cad20",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-body-depth-8-id-direct.pdf",
+    "wordPdfSha256": "df02382e6ea8afe0376c336edcc91971bfe4d94cfff8280e16a16c47d730c3ca",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-body-depth-8-id-direct",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-8-id-direct.docx",
+    "sourceSha256": "b9f789012f83b71141b8b27b96a8cf989ff8705014bb83a97bd7894190af01e6",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-body-depth-8-id-direct.pdf",
+    "wordPdfSha256": "afea2b11ded60f5317cb08dc620d5c8340fa66690493e66cf0643575ec69767c",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-id-choice",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-8-id-choice.docx",
+    "sourceSha256": "c6db4bf035a0ffa5609fcbe7a82a2c7e07a93232a8766301f1ba1d5b10aeea36",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-8-id-choice.pdf",
+    "wordPdfSha256": "59b0b967eee6a873a33bc506bc479ce68cd29dedcea52c841fa7e28bb39acec3",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-id-choice",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-header-depth-8-id-choice.doc",
+    "sourceSha256": "e4f3b9501d179f399ccd716da17c73873362ff2d5ad7f500aae4250f2f9b5228",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-header-depth-8-id-choice.pdf",
+    "wordPdfSha256": "b38f61f35c6007ecfb88114e89198b54cb2541637068d88ab65cb6e79d159af4",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-id-choice",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-8-id-choice.docx",
+    "sourceSha256": "23c7ae5c9f7f18323ae04386c2f8ee654d57d57b3b3692d1797d7248eae7bdd2",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-8-id-choice.pdf",
+    "wordPdfSha256": "484d817cd827c9c0336feb8b921eab6d26ff5d2c0b603e09bdca7f11589a853a",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-id-fallback",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-8-id-fallback.docx",
+    "sourceSha256": "83f816c7949cfbb3045e5b46654a8ca9f1f892d64624ff7dc06c29233b4f406b",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-8-id-fallback.pdf",
+    "wordPdfSha256": "d263f77a91a4595e7e893fd91ecc8da9c4a2d605d7491b42607854ab9bd3ed9a",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-id-fallback",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-header-depth-8-id-fallback.doc",
+    "sourceSha256": "191a2fc7a2f76d8515e3b773e21617501aa96f2e1c6d14f58f3c167eed77fb2f",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-header-depth-8-id-fallback.pdf",
+    "wordPdfSha256": "f576d0ab2d2d6c976ce17baaa08546755085b3848115836dd5edf25242de9d3d",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-id-fallback",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-8-id-fallback.docx",
+    "sourceSha256": "dfac699009f2533d7815348b9d3093cd600c0edbb95238121e826b4d5db9dbd7",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-8-id-fallback.pdf",
+    "wordPdfSha256": "a5b2305f8211ca275e9e767b75f0c45512442eb9209a32698917fe07ab43a0e7",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-id-direct",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-8-id-direct.docx",
+    "sourceSha256": "9f6869966539de11582d345cb62b726b7a88eaf3e5780b60cef6a665459e6a03",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-header-depth-8-id-direct.pdf",
+    "wordPdfSha256": "ea9cc8f9a5b7a2f569f0e1ac4d9065f8f0efbde44360349468e9a55238418a7b",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-id-direct",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-header-depth-8-id-direct.doc",
+    "sourceSha256": "666d1083c1689cd69fb0a313a8780729091dfdf337e70a65b8ea677918b9bea8",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-header-depth-8-id-direct.pdf",
+    "wordPdfSha256": "b4e5ee46903e8a83207a95804e742635d85f390fcbeb1fd9966e76e99792bf4f",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-header-depth-8-id-direct",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-8-id-direct.docx",
+    "sourceSha256": "14a936ba975f5c4c675bef663038d505a9782434eab67dc2d5d3ac80a26e5c75",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-header-depth-8-id-direct.pdf",
+    "wordPdfSha256": "e1477fd71c482262b8673a885c18d578814683a9f0c90a7e857ea0c0fbf387cf",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-id-choice",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-8-id-choice.docx",
+    "sourceSha256": "e26339ba05265c2e4ada4011e95e99147bdb8ce1d987e9fe85a3d2a04ba35fb6",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-8-id-choice.pdf",
+    "wordPdfSha256": "cc931dff6cbb895c7d8f769fa213795960f10c0778524ee96b8294caa6b29ff1",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-id-choice",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-footer-depth-8-id-choice.doc",
+    "sourceSha256": "f1dd5b76ffa229dee29b632c4001ad27ee8887f723aeaf5896e2a6756f26cf7f",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-footer-depth-8-id-choice.pdf",
+    "wordPdfSha256": "66e0989b39b4d96a80c20f0d5f9f617af0e4482b8362181565ea8f169529693d",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-id-choice",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-8-id-choice.docx",
+    "sourceSha256": "07d56acf2973aa48bbaab9add98e5c121262a09f7c8883c484daf3b3b09a30c9",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-8-id-choice.pdf",
+    "wordPdfSha256": "45b937b154a329fd10fa2758d66895475000022a8d5835bdbcfc247e5f4bb482",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-id-fallback",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-8-id-fallback.docx",
+    "sourceSha256": "16d248eb5ac83c9c90cb58c06ed8fc63a62e004324f5f0f75490cdb816ac536a",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-8-id-fallback.pdf",
+    "wordPdfSha256": "59a67c1bccc4485ef5a3d8854eb1791adc2f325680c2c1c781842193f9365ef4",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-id-fallback",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-footer-depth-8-id-fallback.doc",
+    "sourceSha256": "0436c597b7107990730d9f4886d5a80cc54e8867afe6a3ac7b9675435219fd26",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-footer-depth-8-id-fallback.pdf",
+    "wordPdfSha256": "ffe937cf520d3f47216f8a6b9bf2f6443ab2f6dfd1c26ed2a3773a402eb2975c",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-id-fallback",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-8-id-fallback.docx",
+    "sourceSha256": "3529deb3648817337c8b5d03799d8c862710723cab242a5863a0639007ca7b11",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-8-id-fallback.pdf",
+    "wordPdfSha256": "eca38651a88ddcc26a92530b0387d1693bfbd84734ca891e44ab88317ff1e64b",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-id-direct",
+    "kind": "source",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-8-id-direct.docx",
+    "sourceSha256": "25d6a964966a5846c2a7b2bcc1fcd27133ab62ea53618cbe52ba3d16c4cdc2df",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/source/unused-paragraph-footer-depth-8-id-direct.pdf",
+    "wordPdfSha256": "1a55fef413d2d6669f402780917d0aa7fdb570e6983734a044391de2c8102db4",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-id-direct",
+    "kind": "doc",
+    "source": "fixtures/doc/regressions/list-markers/MarkerUnusedParagraphChoice/unused-paragraph-footer-depth-8-id-direct.doc",
+    "sourceSha256": "3e7236cd7e789165affa0a454c21007cb201b203b43a6f4d5f5c3488748505e2",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/doc/unused-paragraph-footer-depth-8-id-direct.pdf",
+    "wordPdfSha256": "31c9132e555c6e18f7430010a96f4170066ea67d954e82397dbf36a9589a99f5",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  },
+  {
+    "name": "unused-paragraph-footer-depth-8-id-direct",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-8-id-direct.docx",
+    "sourceSha256": "e9e7486c99834c0b38cd2a5304dc79e5aa915dfaf6ee95d72f2d52b681bb6ad4",
+    "wordListStrings": [
+      "[7]",
+      "[8]",
+      "[9]"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerUnusedParagraphChoice/projected/unused-paragraph-footer-depth-8-id-direct.pdf",
+    "wordPdfSha256": "8af979283acdfca97493fcb63363e0a921f4c2159a11f34d0008c27e07eb8b4f",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "8ae6cc9ca10f86eaf4f306efc55289afa5e6b5ba8dbce0670e9014b91bb3fea4"
+  }
+]
