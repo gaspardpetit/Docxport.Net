@@ -1,0 +1,162 @@
+[
+  {
+    "name": "hint-depth-0-definition-eastAsia-only",
+    "kind": "baseline",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/baseline/hint-depth-0-definition-eastAsia-only.doc",
+    "sourceSha256": "5a9d6d4416b97190e1acf64c93aab378dd37a1f37b2d8c96b4051e19e3a4d283",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/baseline/hint-depth-0-definition-eastAsia-only.pdf",
+    "wordPdfSha256": "19c29ee622cde2c81ec9db2db23457799b64044e45421536dc0db094e8825b1e",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-definition-eastAsia-fonts",
+    "kind": "baseline",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/baseline/hint-depth-0-definition-eastAsia-fonts.doc",
+    "sourceSha256": "cc8aeea0e8fdc9ac329a9c843814c18fdb96a921cedabeb6e4568ef1455bd77d",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/baseline/hint-depth-0-definition-eastAsia-fonts.pdf",
+    "wordPdfSha256": "b705d47ed1df3c5b4cb429d0e1ddb297e9819af112808c14b46ca3338b8eecb5",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-override-eastAsia-only",
+    "kind": "baseline",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/baseline/hint-depth-0-override-eastAsia-only.doc",
+    "sourceSha256": "a0bf63f53e7c5e41970010c2b7c0fa281cc86888881fc9c496bd4d6283d1c0a0",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/baseline/hint-depth-0-override-eastAsia-only.pdf",
+    "wordPdfSha256": "90d55acc9c58c1448182e7e3508bbe3df23a20d1c0331b6322f13f736d8a651e",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-0-override-eastAsia-fonts",
+    "kind": "baseline",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/baseline/hint-depth-0-override-eastAsia-fonts.doc",
+    "sourceSha256": "f88d6e4cbf5aeed59603b0c58bb3f8163d2d5376c7f3f4012f33414c45ca8fd0",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/baseline/hint-depth-0-override-eastAsia-fonts.pdf",
+    "wordPdfSha256": "cdbc75f58dd33630f0d438f70506e833b01ef31bed552a24b7a9146be60308c2",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-definition-eastAsia-only",
+    "kind": "baseline",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/baseline/hint-depth-8-definition-eastAsia-only.doc",
+    "sourceSha256": "831fce3b0c0fd55cfdf2648b482acfb07765b6de1617ebcc1dcd36a04372a8ad",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/baseline/hint-depth-8-definition-eastAsia-only.pdf",
+    "wordPdfSha256": "320ac8ec488c521f898ceb041ed5cd965b40ff00e786a8ab2b5f55478e415f90",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-definition-eastAsia-fonts",
+    "kind": "baseline",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/baseline/hint-depth-8-definition-eastAsia-fonts.doc",
+    "sourceSha256": "752c74da7b52f165b30d3f84db49720a480100f035739133b46c97be9dcc08d6",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/baseline/hint-depth-8-definition-eastAsia-fonts.pdf",
+    "wordPdfSha256": "6369a42759d01847796ac0690335b165dc45b1b0fa64ff2b90f3b17072b6cb4e",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-override-eastAsia-only",
+    "kind": "baseline",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/baseline/hint-depth-8-override-eastAsia-only.doc",
+    "sourceSha256": "ecfc6229a09d8e0d34416b5240b546209bd1ab06f55d962eec8c9b6cb0f9a4f5",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/baseline/hint-depth-8-override-eastAsia-only.pdf",
+    "wordPdfSha256": "0ea1c99888a14659ffaf7ab8321e4104bcce1f28bc98c9b3e950dacf970adab8",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  },
+  {
+    "name": "hint-depth-8-override-eastAsia-fonts",
+    "kind": "baseline",
+    "source": "fixtures/doc/regressions/list-markers/MarkerFontHint/baseline/hint-depth-8-override-eastAsia-fonts.doc",
+    "sourceSha256": "611825c08bfb0bf7dc01b3ea6cabc84475bbf1a21865b81d101236a52958b32b",
+    "wordListStrings": [
+      "\u03b1\u03b2",
+      "\u03b1\u03b2",
+      "\u03b1\u03b2"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerFontHint/baseline/hint-depth-8-override-eastAsia-fonts.pdf",
+    "wordPdfSha256": "b9c2b54b73d919d909eb8d141e82b3554c9d48efc3891e2c44e5a5d30e372d43",
+    "pdfMarkerFonts": [
+      "TimesNewRomanPSMT"
+    ],
+    "pdfMarkerSizes": [
+      12.0
+    ],
+    "glyphSignatureSha256": "cecf7d9bcaeb59719cf0ebe46c2e7f00bc592d6bd702dc317774067b3d31c30e"
+  }
+]

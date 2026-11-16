@@ -955,6 +955,12 @@ internal static class DocPlainTextWriter
         WriteFont(formatting.EastAsiaFontName, 0x50);
         WriteFont(formatting.HighAnsiFontName, 0x51);
         WriteFont(formatting.ComplexScriptFontName, 0x5E);
+        if (formatting.FontHint is byte fontHint)
+        {
+            if (fontHint is not (0 or 1 or 2 or 0xFF))
+                throw new InvalidDataException("A DOC font hint is invalid.");
+            bytes.AddRange([0x6F, 0x28, fontHint]);
+        }
         if (formatting.HighlightCode is byte highlight)
             bytes.AddRange([0x0C, 0x2A, highlight]);
         if (formatting.ColorRef is uint color)

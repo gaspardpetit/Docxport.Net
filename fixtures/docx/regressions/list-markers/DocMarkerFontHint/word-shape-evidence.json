@@ -1,0 +1,770 @@
+[
+  {
+    "name": "hint-depth-0-definition-default-only",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-definition-default-only",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-definition-default-only",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-definition-default-fonts",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-definition-default-fonts",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-definition-default-fonts",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-definition-eastAsia-only",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-definition-eastAsia-only",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-definition-eastAsia-only",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-definition-eastAsia-fonts",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-definition-eastAsia-fonts",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-definition-eastAsia-fonts",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-definition-cs-only",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-definition-cs-only",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-definition-cs-only",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-definition-cs-fonts",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-definition-cs-fonts",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-definition-cs-fonts",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-definition-absent-only",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-definition-absent-only",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-definition-absent-only",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-definition-absent-fonts",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-definition-absent-fonts",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-definition-absent-fonts",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-override-default-only",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-override-default-only",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-override-default-only",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-override-default-fonts",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-override-default-fonts",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-override-default-fonts",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-override-eastAsia-only",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-override-eastAsia-only",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-override-eastAsia-only",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-override-eastAsia-fonts",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-override-eastAsia-fonts",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-override-eastAsia-fonts",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-override-cs-only",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-override-cs-only",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-override-cs-only",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-override-cs-fonts",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-override-cs-fonts",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-override-cs-fonts",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-override-absent-only",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-override-absent-only",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-override-absent-only",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-override-absent-fonts",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-override-absent-fonts",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-0-override-absent-fonts",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-definition-default-only",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-definition-default-only",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-definition-default-only",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-definition-default-fonts",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-definition-default-fonts",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-definition-default-fonts",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-definition-eastAsia-only",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-definition-eastAsia-only",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-definition-eastAsia-only",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-definition-eastAsia-fonts",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-definition-eastAsia-fonts",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-definition-eastAsia-fonts",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-definition-cs-only",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-definition-cs-only",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-definition-cs-only",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-definition-cs-fonts",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-definition-cs-fonts",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-definition-cs-fonts",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-definition-absent-only",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-definition-absent-only",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-definition-absent-only",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-definition-absent-fonts",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-definition-absent-fonts",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-definition-absent-fonts",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-override-default-only",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-override-default-only",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-override-default-only",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-override-default-fonts",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-override-default-fonts",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-override-default-fonts",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-override-eastAsia-only",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-override-eastAsia-only",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-override-eastAsia-only",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-override-eastAsia-fonts",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-override-eastAsia-fonts",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-override-eastAsia-fonts",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-override-cs-only",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-override-cs-only",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-override-cs-only",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-override-cs-fonts",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-override-cs-fonts",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-override-cs-fonts",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-override-absent-only",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-override-absent-only",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-override-absent-only",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-override-absent-fonts",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-override-absent-fonts",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "hint-depth-8-override-absent-fonts",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  }
+]

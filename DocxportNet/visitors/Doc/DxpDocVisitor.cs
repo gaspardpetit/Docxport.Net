@@ -3414,7 +3414,17 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
             Shadow: ReadOnOff<Shadow>(), Outline: ReadOnOff<Outline>(),
             Emboss: ReadOnOff<Emboss>(), Imprint: ReadOnOff<Imprint>(),
             SnapToGrid: ReadOnOff<SnapToGrid>(),
-            EmphasisMarkCode: emphasisMarkCode, FitText: fitText);
+            EmphasisMarkCode: emphasisMarkCode, FitText: fitText)
+        {
+            FontHint = fonts?.Hint?.Value switch
+            {
+                var hint when hint == FontTypeHintValues.Default => (byte)0,
+                var hint when hint == FontTypeHintValues.EastAsia => (byte)1,
+                var hint when hint == FontTypeHintValues.ComplexScript => (byte)2,
+                null => null,
+                _ => throw new NotSupportedException("Unsupported DOC font hint.")
+            }
+        };
     }
 
     private string? ResolveThemeLatinFont(ThemeFontValues? theme)
