@@ -440,7 +440,8 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
                     ? _defaultCharacterFormatting.ComplexScriptSizeHalfPoints
                     : _defaultCharacterFormatting.ComplexScriptSizeHalfPoints ?? 30
             };
-        var sourceStyles = _mainPart?.StyleDefinitionsPart?.Styles?.Elements<Style>()
+        var sourceStyles = DocxportNet.Walker.DxpNumberingResolver.NormalizeNumberingStyles(
+            _mainPart?.StyleDefinitionsPart?.Styles, _mainPart?.NumberingDefinitionsPart?.Numbering)?.Elements<Style>()
             .Where(x => x.Type?.Value == StyleValues.Paragraph ||
                 x.Type?.Value == StyleValues.Character ||
                 x.Type?.Value == StyleValues.Table)

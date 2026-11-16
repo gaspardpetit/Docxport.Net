@@ -1,0 +1,866 @@
+[
+  {
+    "name": "style-depth-0-style-choice",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-style-choice",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-style-choice",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-style-fallback",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-style-fallback",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-style-fallback",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-style-direct",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-style-direct",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-style-direct",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-properties-choice",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-properties-choice",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-properties-choice",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-properties-fallback",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-properties-fallback",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-properties-fallback",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-properties-direct",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-properties-direct",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-properties-direct",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-numbering-choice",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-numbering-choice",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-numbering-choice",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-numbering-fallback",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-numbering-fallback",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-numbering-fallback",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-numbering-direct",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-numbering-direct",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-numbering-direct",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-id-choice",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-id-choice",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-id-choice",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-id-fallback",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-id-fallback",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-id-fallback",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-id-direct",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-id-direct",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-id-direct",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-level-choice",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-level-choice",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-level-choice",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-level-fallback",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-level-fallback",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-level-fallback",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-level-direct",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-level-direct",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-level-direct",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-default-choice",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-default-choice",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-default-choice",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-default-fallback",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-default-fallback",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-default-fallback",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-default-direct",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-default-direct",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-0-default-direct",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-style-choice",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-style-choice",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-style-choice",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-style-fallback",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-style-fallback",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-style-fallback",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-style-direct",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-style-direct",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-style-direct",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-properties-choice",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-properties-choice",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-properties-choice",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-properties-fallback",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-properties-fallback",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-properties-fallback",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-properties-direct",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-properties-direct",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-properties-direct",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-numbering-choice",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-numbering-choice",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-numbering-choice",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-numbering-fallback",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-numbering-fallback",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-numbering-fallback",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-numbering-direct",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-numbering-direct",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-numbering-direct",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-id-choice",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-id-choice",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-id-choice",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-id-fallback",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-id-fallback",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-id-fallback",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-id-direct",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-id-direct",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-id-direct",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-level-choice",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-level-choice",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-level-choice",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-level-fallback",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-level-fallback",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-level-fallback",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-level-direct",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-level-direct",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-level-direct",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-default-choice",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-default-choice",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-default-choice",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-default-fallback",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-default-fallback",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-default-fallback",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-default-direct",
+    "kind": "source",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-default-direct",
+    "kind": "doc",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  },
+  {
+    "name": "style-depth-8-default-direct",
+    "kind": "projected",
+    "glyphShapesAndSizesMatch": true,
+    "relativeGlyphOriginsMatch": true,
+    "maxRelativeOriginDeltaPoints": 0.0,
+    "originTolerancePoints": 0.02
+  }
+]
