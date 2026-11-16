@@ -9,7 +9,8 @@ internal static class DocOpenXmlListReader
     public static (DocListIndex Lists, IReadOnlyDictionary<int, short> NumberIds)
         Read(MainDocumentPart? main,
             Func<OpenXmlCompositeElement?, DocCharacterFormatting> readFormatting,
-            Func<OpenXmlCompositeElement?, DocParagraphFormatting> readParagraphFormatting)
+            Func<OpenXmlCompositeElement?, DocParagraphFormatting> readParagraphFormatting,
+            Func<AlternateContentChoice, bool>? acceptChoice = null)
     {
         var numbering = DocxportNet.Walker.DxpNumberingResolver.NormalizeDocNumbering(
             main?.NumberingDefinitionsPart?.Numbering);
@@ -19,6 +20,23 @@ internal static class DocOpenXmlListReader
             main?.StyleDefinitionsPart?.Styles);
         var usedNumberIds = new HashSet<int>();
         var usedHigherLevels = new HashSet<int>();
+        var selectedBranches = new Dictionary<AlternateContent, OpenXmlElement?>();
+        bool IsSelected(Paragraph paragraph)
+        {
+            foreach (var branch in paragraph.Ancestors().Reverse().Where(item => item.Parent is AlternateContent))
+            {
+                var alternate = (AlternateContent)branch.Parent!;
+                if (!selectedBranches.TryGetValue(alternate, out var selected))
+                {
+                    selected = alternate.Elements<AlternateContentChoice>()
+                        .FirstOrDefault(choice => acceptChoice?.Invoke(choice) == true);
+                    selected ??= alternate.GetFirstChild<AlternateContentFallback>();
+                    selectedBranches.Add(alternate, selected);
+                }
+                if (!ReferenceEquals(branch, selected)) return false;
+            }
+            return true;
+        }
         void Collect(IEnumerable<NumberingProperties> properties)
         {
             foreach (var item in properties)
@@ -43,6 +61,8 @@ internal static class DocOpenXmlListReader
         {
             foreach (var paragraph in paragraphs)
             {
+                // Story choices can wrap entire paragraphs, outside their pPr.
+                if (!IsSelected(paragraph)) continue;
                 // Match the writer's selected paragraph properties. A raw
                 // descendant scan also imports rejected compatibility branches.
                 var properties = DocxportNet.Walker.DxpNumberingResolver

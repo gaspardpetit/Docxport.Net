@@ -599,6 +599,10 @@ public class DxpWalker
                     WalkTable(t, d, v);
                     break;
 
+                case AlternateContent alternate:
+                    WalkAlternateContent(alternate, d, v);
+                    break;
+
                 case BookmarkStart bs:
                 {
                     var name = bs.Name?.Value;

@@ -360,7 +360,9 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         (_lists, _listNumberIds) = DocOpenXmlListReader.Read(_mainPart,
             properties => ReadListMarkerFormatting(properties),
-            properties => ReadParagraphFormatting(properties));
+            properties => ReadParagraphFormatting(properties),
+            choice => AcceptAlternateContentChoice(choice,
+                DocxportNet.Walker.Parts.DxpAlternateContents.GetRequiredPrefixes(choice), context));
         var evenOddSetting = _mainPart?.DocumentSettingsPart?.Settings?
             .GetFirstChild<EvenAndOddHeaders>();
         _evenAndOddHeaders = evenOddSetting != null &&
