@@ -118,7 +118,8 @@ internal static class DocListReader
                 bytes.AsSpan(characterStart, bytes[24]));
             if (labelFormatting.AsciiFontIndex != null ||
                 labelFormatting.EastAsiaFontIndex != null ||
-                labelFormatting.HighAnsiFontIndex != null)
+                labelFormatting.HighAnsiFontIndex != null ||
+                labelFormatting.ComplexScriptFontIndex != null)
                 labelFormatting = DocCharacterFormattingReader.ResolveFonts(
                     labelFormatting, index.Fonts);
         }

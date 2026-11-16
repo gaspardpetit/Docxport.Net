@@ -1,0 +1,78 @@
+[
+  {
+    "name": "cs-font-depth-0-definition-only",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerComplexFontSlot/baseline/cs-font-depth-0-definition-only.docx",
+    "sourceSha256": "d8a3936445cc7b2baf93d95f84f1e456d3f8b83aa92a00d7b3fcc1d943ce46d8",
+    "wordListStrings": [
+      "\u05d0",
+      "\u05d0",
+      "\u05d0",
+      "\u05d0",
+      "\u05d0",
+      "\u05d0"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerComplexFontSlot/baseline/cs-font-depth-0-definition-only.pdf",
+    "wordPdfSha256": "9a8fdfd624ba0c9b5652d43c3ae53dd063cacde5bc24db60eb10686f100f4df1",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ]
+  },
+  {
+    "name": "cs-font-depth-0-override-only",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerComplexFontSlot/baseline/cs-font-depth-0-override-only.docx",
+    "sourceSha256": "460b2e26ea901cd980dbe00f6a20dbea87b6ef64b15008ab902919bc3b47fcc8",
+    "wordListStrings": [
+      "\u05d0",
+      "\u05d0",
+      "\u05d0",
+      "\u05d0",
+      "\u05d0",
+      "\u05d0"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerComplexFontSlot/baseline/cs-font-depth-0-override-only.pdf",
+    "wordPdfSha256": "657a7fd24d586d92336d8eff08e317d1c6f149ae5e1fc465ef1bc53242c1a7f3",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ]
+  },
+  {
+    "name": "cs-font-depth-8-definition-only",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerComplexFontSlot/baseline/cs-font-depth-8-definition-only.docx",
+    "sourceSha256": "8fab01fc6cc2d22fb6b164d88a418360fb8a0d9fda3179f4b9cb70f5f9206fe3",
+    "wordListStrings": [
+      "\u05d0",
+      "\u05d0",
+      "\u05d0",
+      "\u05d0",
+      "\u05d0",
+      "\u05d0"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerComplexFontSlot/baseline/cs-font-depth-8-definition-only.pdf",
+    "wordPdfSha256": "14abd68a6997d2a4a304549433949cfaec01b48ab98175c5533683df59db0de3",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ]
+  },
+  {
+    "name": "cs-font-depth-8-override-only",
+    "kind": "projected",
+    "source": "fixtures/docx/regressions/list-markers/DocMarkerComplexFontSlot/baseline/cs-font-depth-8-override-only.docx",
+    "sourceSha256": "23f83ff0d19a36837f75796d89c2267307850577009785c9d97614663dcab696",
+    "wordListStrings": [
+      "\u05d0",
+      "\u05d0",
+      "\u05d0",
+      "\u05d0",
+      "\u05d0",
+      "\u05d0"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/DocMarkerComplexFontSlot/baseline/cs-font-depth-8-override-only.pdf",
+    "wordPdfSha256": "a13c13888983e573085933d4156c024657a6b9b95b3c840b053560ee6e465718",
+    "pdfMarkerFonts": [
+      "ArialMT"
+    ]
+  }
+]
