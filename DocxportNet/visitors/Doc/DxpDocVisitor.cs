@@ -540,6 +540,15 @@ public sealed class DxpDocVisitor : DxpVisitor, IDxpAllHeaderFooterVisitor,
         for (var i = 0; i < sourceStyles.Length; i++)
             if (sourceStyles[i].StyleId?.Value is string id)
                 _styleById[id] = useBuiltInNormalSlot && id == "Normal" ? 0 : 15 + i;
+        _lists = _lists with
+        {
+            Definitions = _lists.Definitions.Select(definition => definition with
+            {
+                ParagraphStyleIndexes = definition.SourceParagraphStyleIds
+                    .Where(pair => _styleById.ContainsKey(pair.Value))
+                    .ToDictionary(pair => pair.Key, pair => _styleById[pair.Value])
+            }).ToArray()
+        };
         for (var i = 0; i < sourceStyles.Length; i++)
         {
             var source = sourceStyles[i];

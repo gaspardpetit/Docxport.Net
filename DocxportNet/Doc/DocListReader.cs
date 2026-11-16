@@ -14,7 +14,11 @@ public sealed record DocListLevel(int Index, int StartAt, byte NumberFormat,
     public bool IsLegal { get; init; }
 }
 
-public sealed record DocListDefinition(int ListId, IReadOnlyList<DocListLevel> Levels);
+public sealed record DocListDefinition(int ListId, IReadOnlyList<DocListLevel> Levels)
+{
+    public IReadOnlyDictionary<int, int> ParagraphStyleIndexes { get; init; } = new Dictionary<int, int>();
+    internal IReadOnlyDictionary<int, string> SourceParagraphStyleIds { get; init; } = new Dictionary<int, string>();
+}
 
 public sealed record DocListInstance(short OverrideIndex, int ListId,
     IReadOnlyDictionary<int, int> StartOverrides,
@@ -45,8 +49,16 @@ internal static class DocListReader
             var levels = new DocListLevel[count];
             for (var i = 0; i < count; i++)
                 levels[i] = ReadLevel(index, levelRecords[levelCursor++], i);
+            var fixedBytes = index.Structure.ReadRange(record.StreamName!, record.Offset!.Value, 28);
+            var linkedStyles = new Dictionary<int, int>();
+            for (var level = 0; level < 9; level++)
+            {
+                var style = BinaryPrimitives.ReadUInt16LittleEndian(fixedBytes.AsSpan(8 + level * 2));
+                if (style != 0x0FFF) linkedStyles[level] = style;
+            }
             parsedDefinitions.Add(new DocListDefinition(
-                int.Parse(record.Attributes["lsid"], CultureInfo.InvariantCulture), levels));
+                int.Parse(record.Attributes["lsid"], CultureInfo.InvariantCulture), levels)
+                { ParagraphStyleIndexes = linkedStyles });
         }
         var instanceRecords = overrides.Children.Where(x => x.Kind == "LFO").ToArray();
         var dataRecords = overrides.Children.Where(x => x.Kind == "LFOData").ToArray();
