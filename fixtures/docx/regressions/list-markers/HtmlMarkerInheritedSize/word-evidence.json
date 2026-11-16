@@ -1,0 +1,1028 @@
+[
+  {
+    "name": "mark-absent-decimal-ltr",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/mark-absent-decimal-ltr.docx",
+    "sourceSha256": "0ada2f360c5cfb524ab72ad2ada666c633ed2c2f4a261896a9c323eda194684f",
+    "wordListStrings": [
+      "1",
+      "2",
+      "3"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/mark-absent-decimal-ltr.pdf",
+    "wordPdfSha256": "cdab3aef5e5863629966b36d49a6099eb79e26384cd729692d4e85ac682a1a23",
+    "wordMarkerSizesPoints": [
+      12.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": false,
+    "baselineHtmlSha256Lf": "64a5817d9e82666cc7ac45cf8dd2d2010a9475f298a97d0dd1ebe80a2d64f115",
+    "htmlSha256Lf": "64a5817d9e82666cc7ac45cf8dd2d2010a9475f298a97d0dd1ebe80a2d64f115",
+    "retainedHtml": {},
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+      "html": "aa6c5d4921a046c733b8176ea18862eac93df78f3e50ff6286bd10b01b57743f"
+    }
+  },
+  {
+    "name": "mark-absent-decimal-rtl",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/mark-absent-decimal-rtl.docx",
+    "sourceSha256": "3fad74ec20602b69eafe66d42f418ba147a386069ae091153266eaa8e6a4511b",
+    "wordListStrings": [
+      "1",
+      "2",
+      "3"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/mark-absent-decimal-rtl.pdf",
+    "wordPdfSha256": "da308bf3be4ee4e5d1398fde949763dcecfec622994a77bd2c6b1d1e0e8f136c",
+    "wordMarkerSizesPoints": [
+      15.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": true,
+    "baselineHtmlSha256Lf": "64a5817d9e82666cc7ac45cf8dd2d2010a9475f298a97d0dd1ebe80a2d64f115",
+    "htmlSha256Lf": "da4488e8ee7ef57522c2540c1963b7feec9065f85222e9279d8b33d39afcf1ad",
+    "retainedHtml": {
+      "baseline": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/baseline/mark-absent-decimal-rtl.html",
+      "html": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/html/mark-absent-decimal-rtl.html"
+    },
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+      "html": "aa6c5d4921a046c733b8176ea18862eac93df78f3e50ff6286bd10b01b57743f"
+    }
+  },
+  {
+    "name": "mark-absent-literal-ltr",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/mark-absent-literal-ltr.docx",
+    "sourceSha256": "24d2c67daebfdd3c32d3e3a3958714e58f3a995e1ad5b73b156640a2d360c23c",
+    "wordListStrings": [
+      "12",
+      "12",
+      "12"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/mark-absent-literal-ltr.pdf",
+    "wordPdfSha256": "5f900fa5920f242b14f7ad0586be73ddf41b5ef867c0c826f4e431c6500bb47b",
+    "wordMarkerSizesPoints": [
+      12.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": false,
+    "baselineHtmlSha256Lf": "308051a7562b4c444f5f5320ace94766f63ad8a15ce9927e03ddda007973143f",
+    "htmlSha256Lf": "308051a7562b4c444f5f5320ace94766f63ad8a15ce9927e03ddda007973143f",
+    "retainedHtml": {},
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "1633ba0457bd177e267b885f2ed778db724c9ff9f2682f5f2a48a17a56b4105d",
+      "html": "237db2bc5d06d855d0bbcf48300736d69d553c70bf49423832c1d0b938f943b1"
+    }
+  },
+  {
+    "name": "mark-absent-literal-rtl",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/mark-absent-literal-rtl.docx",
+    "sourceSha256": "52851f06121950b85aab727844b41ba1b054c43331c536049a060f6327e3330a",
+    "wordListStrings": [
+      "12",
+      "12",
+      "12"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/mark-absent-literal-rtl.pdf",
+    "wordPdfSha256": "73e91e6ff364b973fda6732aa29b94c1cae53099e23c46a0bb0fb4d9b566e1ab",
+    "wordMarkerSizesPoints": [
+      15.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": true,
+    "baselineHtmlSha256Lf": "308051a7562b4c444f5f5320ace94766f63ad8a15ce9927e03ddda007973143f",
+    "htmlSha256Lf": "ccd3106b63808dc92583bfe0aa7bf5e90f3a47d19fb087305dedb38e31cf1904",
+    "retainedHtml": {
+      "baseline": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/baseline/mark-absent-literal-rtl.html",
+      "html": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/html/mark-absent-literal-rtl.html"
+    },
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "1633ba0457bd177e267b885f2ed778db724c9ff9f2682f5f2a48a17a56b4105d",
+      "html": "237db2bc5d06d855d0bbcf48300736d69d553c70bf49423832c1d0b938f943b1"
+    }
+  },
+  {
+    "name": "mark-empty-decimal-ltr",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/mark-empty-decimal-ltr.docx",
+    "sourceSha256": "60f7839fa60208463da5ddeece77cdd08743629c4e1a73c496ba60163ccffe8a",
+    "wordListStrings": [
+      "1",
+      "2",
+      "3"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/mark-empty-decimal-ltr.pdf",
+    "wordPdfSha256": "4d8f0b70401647f2ea75fe2e07ee991d864b27df2734dfa6f19ebc66892c8eb3",
+    "wordMarkerSizesPoints": [
+      12.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": false,
+    "baselineHtmlSha256Lf": "64a5817d9e82666cc7ac45cf8dd2d2010a9475f298a97d0dd1ebe80a2d64f115",
+    "htmlSha256Lf": "64a5817d9e82666cc7ac45cf8dd2d2010a9475f298a97d0dd1ebe80a2d64f115",
+    "retainedHtml": {},
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+      "html": "aa6c5d4921a046c733b8176ea18862eac93df78f3e50ff6286bd10b01b57743f"
+    }
+  },
+  {
+    "name": "mark-empty-decimal-rtl",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/mark-empty-decimal-rtl.docx",
+    "sourceSha256": "e38675395653a21b00d059531f480cd1824bddf5076512ff5fb40d55c1b1f408",
+    "wordListStrings": [
+      "1",
+      "2",
+      "3"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/mark-empty-decimal-rtl.pdf",
+    "wordPdfSha256": "926b318299be7693898637d3567f62dd1140658ec0506b26cdb6fda9c20622ed",
+    "wordMarkerSizesPoints": [
+      15.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": false,
+    "baselineHtmlSha256Lf": "da4488e8ee7ef57522c2540c1963b7feec9065f85222e9279d8b33d39afcf1ad",
+    "htmlSha256Lf": "da4488e8ee7ef57522c2540c1963b7feec9065f85222e9279d8b33d39afcf1ad",
+    "retainedHtml": {},
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+      "html": "aa6c5d4921a046c733b8176ea18862eac93df78f3e50ff6286bd10b01b57743f"
+    }
+  },
+  {
+    "name": "mark-empty-literal-ltr",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/mark-empty-literal-ltr.docx",
+    "sourceSha256": "54cdfcf36ff6df5212ace73a814ae53e06094f6f3eb432a79815f20456c7f451",
+    "wordListStrings": [
+      "12",
+      "12",
+      "12"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/mark-empty-literal-ltr.pdf",
+    "wordPdfSha256": "f68547ad07d885ca67f5a1237bb6d4606d7c7f11bde1b663847b29ad11791741",
+    "wordMarkerSizesPoints": [
+      12.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": false,
+    "baselineHtmlSha256Lf": "308051a7562b4c444f5f5320ace94766f63ad8a15ce9927e03ddda007973143f",
+    "htmlSha256Lf": "308051a7562b4c444f5f5320ace94766f63ad8a15ce9927e03ddda007973143f",
+    "retainedHtml": {},
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "1633ba0457bd177e267b885f2ed778db724c9ff9f2682f5f2a48a17a56b4105d",
+      "html": "237db2bc5d06d855d0bbcf48300736d69d553c70bf49423832c1d0b938f943b1"
+    }
+  },
+  {
+    "name": "mark-empty-literal-rtl",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/mark-empty-literal-rtl.docx",
+    "sourceSha256": "b58df251d1466c0b75a1e302172ea2ad8be985a34a5ca04452382da9baf5ec60",
+    "wordListStrings": [
+      "12",
+      "12",
+      "12"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/mark-empty-literal-rtl.pdf",
+    "wordPdfSha256": "a2ad58fa2fb7d54c34a5ada5421f60910f18899d5aae234894f58c04f2ddd322",
+    "wordMarkerSizesPoints": [
+      15.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": false,
+    "baselineHtmlSha256Lf": "ccd3106b63808dc92583bfe0aa7bf5e90f3a47d19fb087305dedb38e31cf1904",
+    "htmlSha256Lf": "ccd3106b63808dc92583bfe0aa7bf5e90f3a47d19fb087305dedb38e31cf1904",
+    "retainedHtml": {},
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "1633ba0457bd177e267b885f2ed778db724c9ff9f2682f5f2a48a17a56b4105d",
+      "html": "237db2bc5d06d855d0bbcf48300736d69d553c70bf49423832c1d0b938f943b1"
+    }
+  },
+  {
+    "name": "mark-fonts-decimal-ltr",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/mark-fonts-decimal-ltr.docx",
+    "sourceSha256": "ac69fc36243656798af456e6a6a4149ed2d836c441faeaccab1e1f0baefba28b",
+    "wordListStrings": [
+      "1",
+      "2",
+      "3"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/mark-fonts-decimal-ltr.pdf",
+    "wordPdfSha256": "0100671cc92c71c24650e54ec7b4077509759ce63bd06f5a1c5da18830fcc832",
+    "wordMarkerSizesPoints": [
+      12.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": false,
+    "baselineHtmlSha256Lf": "64a5817d9e82666cc7ac45cf8dd2d2010a9475f298a97d0dd1ebe80a2d64f115",
+    "htmlSha256Lf": "64a5817d9e82666cc7ac45cf8dd2d2010a9475f298a97d0dd1ebe80a2d64f115",
+    "retainedHtml": {},
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+      "html": "aa6c5d4921a046c733b8176ea18862eac93df78f3e50ff6286bd10b01b57743f"
+    }
+  },
+  {
+    "name": "mark-fonts-decimal-rtl",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/mark-fonts-decimal-rtl.docx",
+    "sourceSha256": "cd00f0137df65ab6532ed13928d89d0b95e34b28ecc1bc2db68f22648877e932",
+    "wordListStrings": [
+      "1",
+      "2",
+      "3"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/mark-fonts-decimal-rtl.pdf",
+    "wordPdfSha256": "d38de288f07d368e07a391bfd7c0e1a3d7c4271732d7e60552c9cffd2bd0e282",
+    "wordMarkerSizesPoints": [
+      15.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": false,
+    "baselineHtmlSha256Lf": "da4488e8ee7ef57522c2540c1963b7feec9065f85222e9279d8b33d39afcf1ad",
+    "htmlSha256Lf": "da4488e8ee7ef57522c2540c1963b7feec9065f85222e9279d8b33d39afcf1ad",
+    "retainedHtml": {},
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+      "html": "aa6c5d4921a046c733b8176ea18862eac93df78f3e50ff6286bd10b01b57743f"
+    }
+  },
+  {
+    "name": "mark-fonts-literal-ltr",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/mark-fonts-literal-ltr.docx",
+    "sourceSha256": "2a7dfb1018a7cd14b7e2046645c7e8a7595bf4f957a167ad0797aef89c7d8d9f",
+    "wordListStrings": [
+      "12",
+      "12",
+      "12"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/mark-fonts-literal-ltr.pdf",
+    "wordPdfSha256": "5c9eff3ed144c53829bdd75b5af73049e434e7caa7535c11276e0b3ce82c49f6",
+    "wordMarkerSizesPoints": [
+      12.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": false,
+    "baselineHtmlSha256Lf": "a0427455774e5cf6ee5fe9fb0ef98145047700aeab937748cafb69e3116a5250",
+    "htmlSha256Lf": "a0427455774e5cf6ee5fe9fb0ef98145047700aeab937748cafb69e3116a5250",
+    "retainedHtml": {},
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "1633ba0457bd177e267b885f2ed778db724c9ff9f2682f5f2a48a17a56b4105d",
+      "html": "237db2bc5d06d855d0bbcf48300736d69d553c70bf49423832c1d0b938f943b1"
+    }
+  },
+  {
+    "name": "mark-fonts-literal-rtl",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/mark-fonts-literal-rtl.docx",
+    "sourceSha256": "60500b431eb02a2e32185c8e38f88a5c1a3d6b564eadcc4798aca501fcb9f0c4",
+    "wordListStrings": [
+      "12",
+      "12",
+      "12"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/mark-fonts-literal-rtl.pdf",
+    "wordPdfSha256": "bf31509092e7591ca0b3c9c266c54cbe60bfdfa8644c262586de88360d7f474a",
+    "wordMarkerSizesPoints": [
+      15.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": false,
+    "baselineHtmlSha256Lf": "8356cf58e1c68428308a674551da162996fe9ca2b50ba110fcbe47687648ee39",
+    "htmlSha256Lf": "8356cf58e1c68428308a674551da162996fe9ca2b50ba110fcbe47687648ee39",
+    "retainedHtml": {},
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "1633ba0457bd177e267b885f2ed778db724c9ff9f2682f5f2a48a17a56b4105d",
+      "html": "237db2bc5d06d855d0bbcf48300736d69d553c70bf49423832c1d0b938f943b1"
+    }
+  },
+  {
+    "name": "style-absent-decimal-ltr",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/style-absent-decimal-ltr.docx",
+    "sourceSha256": "264b3bfe15f774fa0c19d1e067fccc972b207b172e7345bdfb0217cb46260241",
+    "wordListStrings": [
+      "1",
+      "2",
+      "3"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/style-absent-decimal-ltr.pdf",
+    "wordPdfSha256": "9f7cfc1b1c2ad50840b05197daabe84b6be7920b8565c6de5135e251d630264d",
+    "wordMarkerSizesPoints": [
+      12.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": false,
+    "baselineHtmlSha256Lf": "64a5817d9e82666cc7ac45cf8dd2d2010a9475f298a97d0dd1ebe80a2d64f115",
+    "htmlSha256Lf": "64a5817d9e82666cc7ac45cf8dd2d2010a9475f298a97d0dd1ebe80a2d64f115",
+    "retainedHtml": {},
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+      "html": "aa6c5d4921a046c733b8176ea18862eac93df78f3e50ff6286bd10b01b57743f"
+    }
+  },
+  {
+    "name": "style-absent-decimal-rtl",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/style-absent-decimal-rtl.docx",
+    "sourceSha256": "592727774d7a390428c15a0408977f5ae94005e9d3e27cd803afb79a200cf16c",
+    "wordListStrings": [
+      "1",
+      "2",
+      "3"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/style-absent-decimal-rtl.pdf",
+    "wordPdfSha256": "aed71054af47d2991b67a8672a325df643da2702f06a335e47b68fdd170ae0d4",
+    "wordMarkerSizesPoints": [
+      15.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": true,
+    "baselineHtmlSha256Lf": "64a5817d9e82666cc7ac45cf8dd2d2010a9475f298a97d0dd1ebe80a2d64f115",
+    "htmlSha256Lf": "da4488e8ee7ef57522c2540c1963b7feec9065f85222e9279d8b33d39afcf1ad",
+    "retainedHtml": {
+      "baseline": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/baseline/style-absent-decimal-rtl.html",
+      "html": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/html/style-absent-decimal-rtl.html"
+    },
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+      "html": "aa6c5d4921a046c733b8176ea18862eac93df78f3e50ff6286bd10b01b57743f"
+    }
+  },
+  {
+    "name": "style-absent-literal-ltr",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/style-absent-literal-ltr.docx",
+    "sourceSha256": "f5f7a2a1ccbbd5e49c92c4f242cf44299a495d5668b63ee24b268b8f9a76a584",
+    "wordListStrings": [
+      "12",
+      "12",
+      "12"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/style-absent-literal-ltr.pdf",
+    "wordPdfSha256": "c0f3f08c83dd9584458e618a7ff29c2d1ce83a5153b81da0134355ad0402dd51",
+    "wordMarkerSizesPoints": [
+      12.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": false,
+    "baselineHtmlSha256Lf": "308051a7562b4c444f5f5320ace94766f63ad8a15ce9927e03ddda007973143f",
+    "htmlSha256Lf": "308051a7562b4c444f5f5320ace94766f63ad8a15ce9927e03ddda007973143f",
+    "retainedHtml": {},
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "1633ba0457bd177e267b885f2ed778db724c9ff9f2682f5f2a48a17a56b4105d",
+      "html": "237db2bc5d06d855d0bbcf48300736d69d553c70bf49423832c1d0b938f943b1"
+    }
+  },
+  {
+    "name": "style-absent-literal-rtl",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/style-absent-literal-rtl.docx",
+    "sourceSha256": "bcaf363dbba45fad4db8c63bed3123e6109265c776051a4b0401834b83e80851",
+    "wordListStrings": [
+      "12",
+      "12",
+      "12"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/style-absent-literal-rtl.pdf",
+    "wordPdfSha256": "135ac4227a2db18e598e75457f3ff9066d6074d3f2c82334ddf71e7d22ea6c65",
+    "wordMarkerSizesPoints": [
+      15.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": true,
+    "baselineHtmlSha256Lf": "308051a7562b4c444f5f5320ace94766f63ad8a15ce9927e03ddda007973143f",
+    "htmlSha256Lf": "ccd3106b63808dc92583bfe0aa7bf5e90f3a47d19fb087305dedb38e31cf1904",
+    "retainedHtml": {
+      "baseline": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/baseline/style-absent-literal-rtl.html",
+      "html": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/html/style-absent-literal-rtl.html"
+    },
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "1633ba0457bd177e267b885f2ed778db724c9ff9f2682f5f2a48a17a56b4105d",
+      "html": "237db2bc5d06d855d0bbcf48300736d69d553c70bf49423832c1d0b938f943b1"
+    }
+  },
+  {
+    "name": "style-empty-decimal-ltr",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/style-empty-decimal-ltr.docx",
+    "sourceSha256": "cfd2b7353eb7fb2a11069fe174a4ce226c4ce8c24c351e5d4a0d6a84c1eb4c44",
+    "wordListStrings": [
+      "1",
+      "2",
+      "3"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/style-empty-decimal-ltr.pdf",
+    "wordPdfSha256": "d72effc738fd38cf3f8f3563ba3be4532fa13d30cce18536f6451bae18f79706",
+    "wordMarkerSizesPoints": [
+      12.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": false,
+    "baselineHtmlSha256Lf": "64a5817d9e82666cc7ac45cf8dd2d2010a9475f298a97d0dd1ebe80a2d64f115",
+    "htmlSha256Lf": "64a5817d9e82666cc7ac45cf8dd2d2010a9475f298a97d0dd1ebe80a2d64f115",
+    "retainedHtml": {},
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+      "html": "aa6c5d4921a046c733b8176ea18862eac93df78f3e50ff6286bd10b01b57743f"
+    }
+  },
+  {
+    "name": "style-empty-decimal-rtl",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/style-empty-decimal-rtl.docx",
+    "sourceSha256": "e247e2dab9251ec31021eeeb07a92a7cab39aa7e83adf8af6ce7aa18a71b463a",
+    "wordListStrings": [
+      "1",
+      "2",
+      "3"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/style-empty-decimal-rtl.pdf",
+    "wordPdfSha256": "316ee967a4df89e1fd02ec47f1e1adcc99bd6cbf52c02911781332b5356a0540",
+    "wordMarkerSizesPoints": [
+      15.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": false,
+    "baselineHtmlSha256Lf": "da4488e8ee7ef57522c2540c1963b7feec9065f85222e9279d8b33d39afcf1ad",
+    "htmlSha256Lf": "da4488e8ee7ef57522c2540c1963b7feec9065f85222e9279d8b33d39afcf1ad",
+    "retainedHtml": {},
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+      "html": "aa6c5d4921a046c733b8176ea18862eac93df78f3e50ff6286bd10b01b57743f"
+    }
+  },
+  {
+    "name": "style-empty-literal-ltr",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/style-empty-literal-ltr.docx",
+    "sourceSha256": "4f74995f24eba034522a0fdbcba468ac9b018d8f190d68b427b5033b9c11c4bd",
+    "wordListStrings": [
+      "12",
+      "12",
+      "12"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/style-empty-literal-ltr.pdf",
+    "wordPdfSha256": "3737d2ea09168e81ecbf3b4268ae2cb904a79978b18f1617d136d4f6212caf56",
+    "wordMarkerSizesPoints": [
+      12.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": false,
+    "baselineHtmlSha256Lf": "308051a7562b4c444f5f5320ace94766f63ad8a15ce9927e03ddda007973143f",
+    "htmlSha256Lf": "308051a7562b4c444f5f5320ace94766f63ad8a15ce9927e03ddda007973143f",
+    "retainedHtml": {},
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "1633ba0457bd177e267b885f2ed778db724c9ff9f2682f5f2a48a17a56b4105d",
+      "html": "237db2bc5d06d855d0bbcf48300736d69d553c70bf49423832c1d0b938f943b1"
+    }
+  },
+  {
+    "name": "style-empty-literal-rtl",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/style-empty-literal-rtl.docx",
+    "sourceSha256": "e5c81e427a1ecb5dba80b98fe2b98c7f9334ea635a2cc647afee2f5e473eb5ed",
+    "wordListStrings": [
+      "12",
+      "12",
+      "12"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/style-empty-literal-rtl.pdf",
+    "wordPdfSha256": "5bc18d3a5c51e70ae1ae99ac3256d9ed62e584e1807a6524e12f1e2318b1c51f",
+    "wordMarkerSizesPoints": [
+      15.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": false,
+    "baselineHtmlSha256Lf": "ccd3106b63808dc92583bfe0aa7bf5e90f3a47d19fb087305dedb38e31cf1904",
+    "htmlSha256Lf": "ccd3106b63808dc92583bfe0aa7bf5e90f3a47d19fb087305dedb38e31cf1904",
+    "retainedHtml": {},
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "1633ba0457bd177e267b885f2ed778db724c9ff9f2682f5f2a48a17a56b4105d",
+      "html": "237db2bc5d06d855d0bbcf48300736d69d553c70bf49423832c1d0b938f943b1"
+    }
+  },
+  {
+    "name": "style-fonts-decimal-ltr",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/style-fonts-decimal-ltr.docx",
+    "sourceSha256": "7639f36247d328c500900710e3a800b20e77cc953a560157a1256cb3bffc470f",
+    "wordListStrings": [
+      "1",
+      "2",
+      "3"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/style-fonts-decimal-ltr.pdf",
+    "wordPdfSha256": "cc337257b560f800d5f9916c77c17f38f8f9b5488ac06e5968dc6236b18b0abd",
+    "wordMarkerSizesPoints": [
+      12.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": false,
+    "baselineHtmlSha256Lf": "64a5817d9e82666cc7ac45cf8dd2d2010a9475f298a97d0dd1ebe80a2d64f115",
+    "htmlSha256Lf": "64a5817d9e82666cc7ac45cf8dd2d2010a9475f298a97d0dd1ebe80a2d64f115",
+    "retainedHtml": {},
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+      "html": "aa6c5d4921a046c733b8176ea18862eac93df78f3e50ff6286bd10b01b57743f"
+    }
+  },
+  {
+    "name": "style-fonts-decimal-rtl",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/style-fonts-decimal-rtl.docx",
+    "sourceSha256": "66e154c431e3838d09ccf41ec7f55299f2cf6af8d63ab25bb669b12caaaa8f26",
+    "wordListStrings": [
+      "1",
+      "2",
+      "3"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/style-fonts-decimal-rtl.pdf",
+    "wordPdfSha256": "86e38baa79acef9269d1ed965496c8a8c0fceca35b2c6d787233fc5af6780528",
+    "wordMarkerSizesPoints": [
+      15.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": false,
+    "baselineHtmlSha256Lf": "da4488e8ee7ef57522c2540c1963b7feec9065f85222e9279d8b33d39afcf1ad",
+    "htmlSha256Lf": "da4488e8ee7ef57522c2540c1963b7feec9065f85222e9279d8b33d39afcf1ad",
+    "retainedHtml": {},
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+      "html": "aa6c5d4921a046c733b8176ea18862eac93df78f3e50ff6286bd10b01b57743f"
+    }
+  },
+  {
+    "name": "style-fonts-literal-ltr",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/style-fonts-literal-ltr.docx",
+    "sourceSha256": "5770ac1743cd3f9596352e66534263466800783c3f4d4c40cf636c8c27a17e05",
+    "wordListStrings": [
+      "12",
+      "12",
+      "12"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/style-fonts-literal-ltr.pdf",
+    "wordPdfSha256": "596addfde4df0f5327a3dc97af6a870f5a6f6c67e033e09d9fa502da84a01bb2",
+    "wordMarkerSizesPoints": [
+      12.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": false,
+    "baselineHtmlSha256Lf": "a0427455774e5cf6ee5fe9fb0ef98145047700aeab937748cafb69e3116a5250",
+    "htmlSha256Lf": "a0427455774e5cf6ee5fe9fb0ef98145047700aeab937748cafb69e3116a5250",
+    "retainedHtml": {},
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "1633ba0457bd177e267b885f2ed778db724c9ff9f2682f5f2a48a17a56b4105d",
+      "html": "237db2bc5d06d855d0bbcf48300736d69d553c70bf49423832c1d0b938f943b1"
+    }
+  },
+  {
+    "name": "style-fonts-literal-rtl",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/style-fonts-literal-rtl.docx",
+    "sourceSha256": "d57e8beb739adcff38ad4c53f04015223b11ab85cec1fe8062d58f03ed7b4e98",
+    "wordListStrings": [
+      "12",
+      "12",
+      "12"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/style-fonts-literal-rtl.pdf",
+    "wordPdfSha256": "6495bafeee00a8434ebfb35f08464fc8ab37d42ffacce2e1d8ec7df906ba8a2c",
+    "wordMarkerSizesPoints": [
+      15.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": false,
+    "baselineHtmlSha256Lf": "8356cf58e1c68428308a674551da162996fe9ca2b50ba110fcbe47687648ee39",
+    "htmlSha256Lf": "8356cf58e1c68428308a674551da162996fe9ca2b50ba110fcbe47687648ee39",
+    "retainedHtml": {},
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "1633ba0457bd177e267b885f2ed778db724c9ff9f2682f5f2a48a17a56b4105d",
+      "html": "237db2bc5d06d855d0bbcf48300736d69d553c70bf49423832c1d0b938f943b1"
+    }
+  },
+  {
+    "name": "defaults-absent-decimal-ltr",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/defaults-absent-decimal-ltr.docx",
+    "sourceSha256": "b748f2cb355fce510b33386c7f7540e65ef8d5889f74eab9b59b683ca4b97570",
+    "wordListStrings": [
+      "1",
+      "2",
+      "3"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/defaults-absent-decimal-ltr.pdf",
+    "wordPdfSha256": "5c386a9fa38a4bef90a595c0feb81f6c40706e0ad30f273e9c1111694cb2e956",
+    "wordMarkerSizesPoints": [
+      12.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": false,
+    "baselineHtmlSha256Lf": "64a5817d9e82666cc7ac45cf8dd2d2010a9475f298a97d0dd1ebe80a2d64f115",
+    "htmlSha256Lf": "64a5817d9e82666cc7ac45cf8dd2d2010a9475f298a97d0dd1ebe80a2d64f115",
+    "retainedHtml": {},
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+      "html": "aa6c5d4921a046c733b8176ea18862eac93df78f3e50ff6286bd10b01b57743f"
+    }
+  },
+  {
+    "name": "defaults-absent-decimal-rtl",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/defaults-absent-decimal-rtl.docx",
+    "sourceSha256": "1bda31aa8edc633467134676ed860f476d9c53b61458ca509a6c0c97b51d19c9",
+    "wordListStrings": [
+      "1",
+      "2",
+      "3"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/defaults-absent-decimal-rtl.pdf",
+    "wordPdfSha256": "fd5bdb56cfe4372f9033237a083bed2905539d1dd7b74cfd635091b4af592d92",
+    "wordMarkerSizesPoints": [
+      15.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": true,
+    "baselineHtmlSha256Lf": "64a5817d9e82666cc7ac45cf8dd2d2010a9475f298a97d0dd1ebe80a2d64f115",
+    "htmlSha256Lf": "da4488e8ee7ef57522c2540c1963b7feec9065f85222e9279d8b33d39afcf1ad",
+    "retainedHtml": {
+      "baseline": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/baseline/defaults-absent-decimal-rtl.html",
+      "html": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/html/defaults-absent-decimal-rtl.html"
+    },
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+      "html": "aa6c5d4921a046c733b8176ea18862eac93df78f3e50ff6286bd10b01b57743f"
+    }
+  },
+  {
+    "name": "defaults-absent-literal-ltr",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/defaults-absent-literal-ltr.docx",
+    "sourceSha256": "dc2aeac55ed199c587d0b00e0d4eb59a48fb49dba6c72f9703fd2099074f0942",
+    "wordListStrings": [
+      "12",
+      "12",
+      "12"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/defaults-absent-literal-ltr.pdf",
+    "wordPdfSha256": "b4e0da7339dc2dae24f96da59e09723e3e1a8c1d9018c14564e23521de4e4519",
+    "wordMarkerSizesPoints": [
+      12.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": false,
+    "baselineHtmlSha256Lf": "308051a7562b4c444f5f5320ace94766f63ad8a15ce9927e03ddda007973143f",
+    "htmlSha256Lf": "308051a7562b4c444f5f5320ace94766f63ad8a15ce9927e03ddda007973143f",
+    "retainedHtml": {},
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "1633ba0457bd177e267b885f2ed778db724c9ff9f2682f5f2a48a17a56b4105d",
+      "html": "237db2bc5d06d855d0bbcf48300736d69d553c70bf49423832c1d0b938f943b1"
+    }
+  },
+  {
+    "name": "defaults-absent-literal-rtl",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/defaults-absent-literal-rtl.docx",
+    "sourceSha256": "3483d695a675b6b32017662401e24fa7c07e9aea2077370a5c39961b60ab045a",
+    "wordListStrings": [
+      "12",
+      "12",
+      "12"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/defaults-absent-literal-rtl.pdf",
+    "wordPdfSha256": "c5d1aeda4d4b8987dbba8b304b81cd54310e04040435f5c7c442beb21bbd20e4",
+    "wordMarkerSizesPoints": [
+      15.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": true,
+    "baselineHtmlSha256Lf": "308051a7562b4c444f5f5320ace94766f63ad8a15ce9927e03ddda007973143f",
+    "htmlSha256Lf": "ccd3106b63808dc92583bfe0aa7bf5e90f3a47d19fb087305dedb38e31cf1904",
+    "retainedHtml": {
+      "baseline": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/baseline/defaults-absent-literal-rtl.html",
+      "html": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/html/defaults-absent-literal-rtl.html"
+    },
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "1633ba0457bd177e267b885f2ed778db724c9ff9f2682f5f2a48a17a56b4105d",
+      "html": "237db2bc5d06d855d0bbcf48300736d69d553c70bf49423832c1d0b938f943b1"
+    }
+  },
+  {
+    "name": "defaults-empty-decimal-ltr",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/defaults-empty-decimal-ltr.docx",
+    "sourceSha256": "2660fe1a0683aa5695797890dffa9f69fcf4c50c4a23cd10b5b12d3fdd035b9f",
+    "wordListStrings": [
+      "1",
+      "2",
+      "3"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/defaults-empty-decimal-ltr.pdf",
+    "wordPdfSha256": "00cc7cc9455a9d50bc378e9b315caa29b09f8856390507fec4a853ce2e149be2",
+    "wordMarkerSizesPoints": [
+      12.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": false,
+    "baselineHtmlSha256Lf": "64a5817d9e82666cc7ac45cf8dd2d2010a9475f298a97d0dd1ebe80a2d64f115",
+    "htmlSha256Lf": "64a5817d9e82666cc7ac45cf8dd2d2010a9475f298a97d0dd1ebe80a2d64f115",
+    "retainedHtml": {},
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+      "html": "aa6c5d4921a046c733b8176ea18862eac93df78f3e50ff6286bd10b01b57743f"
+    }
+  },
+  {
+    "name": "defaults-empty-decimal-rtl",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/defaults-empty-decimal-rtl.docx",
+    "sourceSha256": "cc262973d014d33ec7ca2f6bf6cf17a415d0d65ab9ab93ad6176105873b5d714",
+    "wordListStrings": [
+      "1",
+      "2",
+      "3"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/defaults-empty-decimal-rtl.pdf",
+    "wordPdfSha256": "53d327807aafef238499bfeb2eb626fa81fc084efbd978d03c61c83b2d50ad5e",
+    "wordMarkerSizesPoints": [
+      15.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": false,
+    "baselineHtmlSha256Lf": "da4488e8ee7ef57522c2540c1963b7feec9065f85222e9279d8b33d39afcf1ad",
+    "htmlSha256Lf": "da4488e8ee7ef57522c2540c1963b7feec9065f85222e9279d8b33d39afcf1ad",
+    "retainedHtml": {},
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+      "html": "aa6c5d4921a046c733b8176ea18862eac93df78f3e50ff6286bd10b01b57743f"
+    }
+  },
+  {
+    "name": "defaults-empty-literal-ltr",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/defaults-empty-literal-ltr.docx",
+    "sourceSha256": "f778b4a1c6b4b5e94813e8ea91cbfc4570ee07a1e3e639638aa62fd82b629369",
+    "wordListStrings": [
+      "12",
+      "12",
+      "12"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/defaults-empty-literal-ltr.pdf",
+    "wordPdfSha256": "00ce152dbc9ee78da29a71ff4e142d514a94a63db2fd64b5e161c447b69c4f85",
+    "wordMarkerSizesPoints": [
+      12.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": false,
+    "baselineHtmlSha256Lf": "308051a7562b4c444f5f5320ace94766f63ad8a15ce9927e03ddda007973143f",
+    "htmlSha256Lf": "308051a7562b4c444f5f5320ace94766f63ad8a15ce9927e03ddda007973143f",
+    "retainedHtml": {},
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "1633ba0457bd177e267b885f2ed778db724c9ff9f2682f5f2a48a17a56b4105d",
+      "html": "237db2bc5d06d855d0bbcf48300736d69d553c70bf49423832c1d0b938f943b1"
+    }
+  },
+  {
+    "name": "defaults-empty-literal-rtl",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/defaults-empty-literal-rtl.docx",
+    "sourceSha256": "260c77fa491c3bf0814b441f7dc5d6e0ef2f9e381f1507014e52707cc3fdb683",
+    "wordListStrings": [
+      "12",
+      "12",
+      "12"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/defaults-empty-literal-rtl.pdf",
+    "wordPdfSha256": "c3842e377cec770bdcae2d9a95787b4e0eb9adb24beaf601981d11d7087641e7",
+    "wordMarkerSizesPoints": [
+      15.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": false,
+    "baselineHtmlSha256Lf": "ccd3106b63808dc92583bfe0aa7bf5e90f3a47d19fb087305dedb38e31cf1904",
+    "htmlSha256Lf": "ccd3106b63808dc92583bfe0aa7bf5e90f3a47d19fb087305dedb38e31cf1904",
+    "retainedHtml": {},
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "1633ba0457bd177e267b885f2ed778db724c9ff9f2682f5f2a48a17a56b4105d",
+      "html": "237db2bc5d06d855d0bbcf48300736d69d553c70bf49423832c1d0b938f943b1"
+    }
+  },
+  {
+    "name": "defaults-fonts-decimal-ltr",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/defaults-fonts-decimal-ltr.docx",
+    "sourceSha256": "f2161b368a80054033004d52bd2d1371b080f70875f766b5d02f83880c97617b",
+    "wordListStrings": [
+      "1",
+      "2",
+      "3"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/defaults-fonts-decimal-ltr.pdf",
+    "wordPdfSha256": "32cb1b6ee0e0a97e0f95bd1ffcb05ae2cd3bd47afd36b242f4838c3298f3cd28",
+    "wordMarkerSizesPoints": [
+      12.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": false,
+    "baselineHtmlSha256Lf": "64a5817d9e82666cc7ac45cf8dd2d2010a9475f298a97d0dd1ebe80a2d64f115",
+    "htmlSha256Lf": "64a5817d9e82666cc7ac45cf8dd2d2010a9475f298a97d0dd1ebe80a2d64f115",
+    "retainedHtml": {},
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+      "html": "aa6c5d4921a046c733b8176ea18862eac93df78f3e50ff6286bd10b01b57743f"
+    }
+  },
+  {
+    "name": "defaults-fonts-decimal-rtl",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/defaults-fonts-decimal-rtl.docx",
+    "sourceSha256": "bec120bede1adf15b88ec684348db998fca3027dbc635a7f65c9e39012f17e39",
+    "wordListStrings": [
+      "1",
+      "2",
+      "3"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/defaults-fonts-decimal-rtl.pdf",
+    "wordPdfSha256": "1ac8acd1247387a2a9753420bdaa01de590ed057cdb5bb452d5965384504cfea",
+    "wordMarkerSizesPoints": [
+      15.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": false,
+    "baselineHtmlSha256Lf": "da4488e8ee7ef57522c2540c1963b7feec9065f85222e9279d8b33d39afcf1ad",
+    "htmlSha256Lf": "da4488e8ee7ef57522c2540c1963b7feec9065f85222e9279d8b33d39afcf1ad",
+    "retainedHtml": {},
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+      "html": "aa6c5d4921a046c733b8176ea18862eac93df78f3e50ff6286bd10b01b57743f"
+    }
+  },
+  {
+    "name": "defaults-fonts-literal-ltr",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/defaults-fonts-literal-ltr.docx",
+    "sourceSha256": "480337b363a6baf413decd2131d4bf3e99aa75b350d576385a35e634306e0bb0",
+    "wordListStrings": [
+      "12",
+      "12",
+      "12"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/defaults-fonts-literal-ltr.pdf",
+    "wordPdfSha256": "abad0d7e1006590d391b5040a66ca609d6a394bf772b37e7eb28e578eaf960b9",
+    "wordMarkerSizesPoints": [
+      12.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": false,
+    "baselineHtmlSha256Lf": "a0427455774e5cf6ee5fe9fb0ef98145047700aeab937748cafb69e3116a5250",
+    "htmlSha256Lf": "a0427455774e5cf6ee5fe9fb0ef98145047700aeab937748cafb69e3116a5250",
+    "retainedHtml": {},
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "1633ba0457bd177e267b885f2ed778db724c9ff9f2682f5f2a48a17a56b4105d",
+      "html": "237db2bc5d06d855d0bbcf48300736d69d553c70bf49423832c1d0b938f943b1"
+    }
+  },
+  {
+    "name": "defaults-fonts-literal-rtl",
+    "source": "fixtures/docx/regressions/list-markers/HtmlMarkerInheritedSize/source/defaults-fonts-literal-rtl.docx",
+    "sourceSha256": "1b1923102b17ec0bd78a8a2c125b74c41d44be6d257f91542926961f9a7cbbc8",
+    "wordListStrings": [
+      "12",
+      "12",
+      "12"
+    ],
+    "wordPdf": "truth/pdf-word/regressions/list-markers/HtmlMarkerInheritedSize/source/defaults-fonts-literal-rtl.pdf",
+    "wordPdfSha256": "b4c19600177a1769425b00a846bb487d70bb2dbc2fc499f9b84f4236f79a4371",
+    "wordMarkerSizesPoints": [
+      15.0
+    ],
+    "wordMarkerFonts": [
+      "ArialMT"
+    ],
+    "baselineMainCommit": "d62d4286",
+    "richHtmlChanged": false,
+    "baselineHtmlSha256Lf": "8356cf58e1c68428308a674551da162996fe9ca2b50ba110fcbe47687648ee39",
+    "htmlSha256Lf": "8356cf58e1c68428308a674551da162996fe9ca2b50ba110fcbe47687648ee39",
+    "retainedHtml": {},
+    "plainOutputByteIdentical": true,
+    "plainOutputSha256": {
+      "markdown": "1633ba0457bd177e267b885f2ed778db724c9ff9f2682f5f2a48a17a56b4105d",
+      "html": "237db2bc5d06d855d0bbcf48300736d69d553c70bf49423832c1d0b938f943b1"
+    }
+  }
+]
