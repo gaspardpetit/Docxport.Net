@@ -553,6 +553,14 @@ public static class DxpListMarkerFormatter
         DxpNumberingResolver nr,
         DxpListTracker tracker,
         CultureInfo? culture = null)
+        => TryBuildMarkerText(numPr, nr, tracker, culture, null);
+
+    internal static string? TryBuildMarkerText(
+        DxpStyleEffectiveNumPr numPr,
+        DxpNumberingResolver nr,
+        DxpListTracker tracker,
+        CultureInfo? culture,
+        bool? paragraphMarkCaps)
     {
         var resolved = nr.ResolveLevel(numPr.NumId, numPr.Ilvl);
         if (resolved == null)
@@ -678,9 +686,10 @@ public static class DxpListMarkerFormatter
         var referenceIndex = 0;
         var expandedText = System.Text.RegularExpressions.Regex.Replace(lvlText, "%[1-9]", match =>
             referenceIndex++ < 9 && substitutions.TryGetValue(match.Value, out var value) ? value : match.Value);
-        // Word applies explicit numbering-level caps to the visible marker,
-        // after expansion and before adding generated font markup.
-        if (lvl.NumberingSymbolRunProperties?.Caps is { } caps && caps.Val?.Value != false)
+        // Numbering-level caps override paragraph-mark caps, including explicit off.
+        // Apply casing after expansion and before adding generated font markup.
+        var caps = lvl.NumberingSymbolRunProperties?.Caps;
+        if (caps != null ? caps.Val?.Value != false : paragraphMarkCaps == true)
             expandedText = expandedText.ToUpperInvariant();
         // A bullet label can contain numeric ancestor references. Expand those
         // before applying its existing font wrapper, preserving literal bullets.
@@ -1253,7 +1262,9 @@ public class DxpLists
                     if (!_listsByStory.TryGetValue(story, out lists))
                         _listsByStory[story] = lists = new DxpListTracker();
                 }
-                marker = DxpListMarkerFormatter.TryBuildMarkerText(numPr, _num, lists, culture);
+                var caps = p.ParagraphProperties?.ParagraphMarkRunProperties?.GetFirstChild<Caps>();
+                marker = DxpListMarkerFormatter.TryBuildMarkerText(numPr, _num, lists, culture,
+                    caps == null ? null : caps.Val?.Value != false);
                 numId = numPr.NumId;
                 iLvl = numPr.Ilvl;
                 if (_num.ResolveLevel(numPr.NumId, numPr.Ilvl)?.lvl.LevelSuffix?.Val?.Value == LevelSuffixValues.Nothing)
