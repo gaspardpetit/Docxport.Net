@@ -1,0 +1,15 @@
+# Style and default capitalization of list labels
+
+These 112 synthetic documents contain three `Item0`–`Item2` paragraphs and either a Latin `ab` or Greek `αβ` label. The first 32 cases cover 16 settings per script: document defaults on/off, default paragraph style on/off, named style on/off, base style on with child absent/off/on, defaults/style precedence in both directions, style/paragraph-mark precedence in both directions, style/numbering-level precedence in both directions, and an unused style with caps enabled.
+
+Word uses the nearest style run-properties declaration for marker capitalization; in particular, enabling caps in both a base and child style leaves the label uppercase. Document run defaults are the fallback. Explicit paragraph-mark and numbering-level declarations retain precedence, including off. Each body run explicitly disables caps so the marker rule can be checked independently of body text.
+
+The sources validate against the Office 2013 schema after standard SDK markup-compatibility preprocessing; exports and source-immutability checks use the original unprocessed packages. Word PDF captures are under `truth/pdf-word/regressions/list-markers/StyleMarkerCaps/source/`. `word-evidence.json` records source/PDF hashes, visible expected labels, Word ListString values, PDF text, and CLI comparison hashes. ListString exposes unformatted labels; expectations follow the visible PDF text, whose complete character multiset was independently verified against labels and body text.
+
+A further 40 cases cover selected choices and fallbacks, enabled and disabled declarations, for whole style run properties, individual style caps, basedOn links, whole default run properties, and individual default caps. Marker capitalization uses the same compatibility-normalized style view as numbering resolution, including these run-property descendants.
+
+Main at `df9213c4` fails 12 of the original 32 cases and passes 20 controls. A further 40 paragraph cases cover selected choices/fallbacks and process-content wrappers around style IDs, whole paragraph properties, paragraph-mark run properties and individual mark caps. Marker construction uses the same normalized paragraph properties as list membership.
+
+Actual CLI comparisons of the complete 112-case corpus identify 52 corrections and 60 controls. The initial patch without compatibility normalization fails 20 of the expanded 72 cases. `baseline/` and `html/` retain seven representative rich HTML before/after pairs, identified in the evidence manifest. Hashes for every CLI comparison remain recorded. Across actual CLI rich HTML, plain HTML, and plain Markdown exports, 156 outputs change only label capitalization and all 180 controls are byte-identical. Output hashes normalize CRLF to LF for portable Git blob verification.
+
+`MarkerStyleCapsTests` checks four visitors (rich HTML, plain HTML, plain Markdown and plain text), schema validity, expected labels and unchanged document/styles/numbering XML. Word-compatible paragraph-mark properties nested inside style paragraph properties are outside this increment.
