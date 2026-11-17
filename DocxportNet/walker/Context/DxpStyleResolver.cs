@@ -614,6 +614,8 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
 
     internal bool ResolveListMarkerStyleCaps(ParagraphProperties? paragraph)
     {
+        if (_numberingStyleResolver != null)
+            return _numberingStyleResolver.ResolveListMarkerStyleCaps(paragraph);
         var styleId = paragraph?.ParagraphStyleId?.Val?.Value;
         if (string.IsNullOrEmpty(styleId))
             styleId = _styles?.Elements<Style>().FirstOrDefault(style =>
