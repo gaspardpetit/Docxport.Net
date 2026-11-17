@@ -560,7 +560,7 @@ public static class DxpListMarkerFormatter
         DxpNumberingResolver nr,
         DxpListTracker tracker,
         CultureInfo? culture,
-        bool? paragraphMarkCaps)
+        bool? inheritedCaps)
     {
         var resolved = nr.ResolveLevel(numPr.NumId, numPr.Ilvl);
         if (resolved == null)
@@ -686,10 +686,10 @@ public static class DxpListMarkerFormatter
         var referenceIndex = 0;
         var expandedText = System.Text.RegularExpressions.Regex.Replace(lvlText, "%[1-9]", match =>
             referenceIndex++ < 9 && substitutions.TryGetValue(match.Value, out var value) ? value : match.Value);
-        // Numbering-level caps override paragraph-mark caps, including explicit off.
+        // Numbering-level caps override inherited caps, including explicit off.
         // Apply casing after expansion and before adding generated font markup.
         var caps = lvl.NumberingSymbolRunProperties?.Caps;
-        if (caps != null ? caps.Val?.Value != false : paragraphMarkCaps == true)
+        if (caps != null ? caps.Val?.Value != false : inheritedCaps == true)
             expandedText = expandedText.ToUpperInvariant();
         // A bullet label can contain numeric ancestor references. Expand those
         // before applying its existing font wrapper, preserving literal bullets.
@@ -1264,7 +1264,8 @@ public class DxpLists
                 }
                 var caps = p.ParagraphProperties?.ParagraphMarkRunProperties?.GetFirstChild<Caps>();
                 marker = DxpListMarkerFormatter.TryBuildMarkerText(numPr, _num, lists, culture,
-                    caps == null ? null : caps.Val?.Value != false);
+                    caps == null ? (s as DxpStyleResolver)?.ResolveListMarkerStyleCaps(p.ParagraphProperties)
+                        : caps.Val?.Value != false);
                 numId = numPr.NumId;
                 iLvl = numPr.Ilvl;
                 if (_num.ResolveLevel(numPr.NumId, numPr.Ilvl)?.lvl.LevelSuffix?.Val?.Value == LevelSuffixValues.Nothing)
