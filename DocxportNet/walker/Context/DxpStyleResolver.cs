@@ -620,13 +620,28 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
         if (string.IsNullOrEmpty(styleId))
             styleId = _styles?.Elements<Style>().FirstOrDefault(style =>
                 style.Type?.Value == StyleValues.Paragraph && style.Default?.Value == true)?.StyleId?.Value;
-        // Word uses the nearest declaration for marker caps, rather than the
-        // cumulative toggle rules used for ordinary text runs.
+        bool? ReadCaps(OpenXmlElement? properties)
+        {
+            // Word also accepts style/pPr/rPr even though the schema does not.
+            var caps = properties?.ChildElements.FirstOrDefault(child =>
+                child.LocalName == "caps" && child.NamespaceUri == "http://schemas.openxmlformats.org/wordprocessingml/2006/main");
+            if (caps == null) return null;
+            var value = caps.GetAttribute("val", caps.NamespaceUri).Value;
+            return value != "0" && value != "false" && value != "off";
+        }
+        bool? styleCaps = null, styleMarkCaps = null;
         foreach (var style in EnumerateStyleChain(styleId, StyleValues.Paragraph))
-            if (style.StyleRunProperties?.GetFirstChild<Caps>() is { } caps)
-                return caps.Val?.Value != false;
-        var defaults = _docDefaultRunProps?.GetFirstChild<Caps>();
-        return defaults != null && defaults.Val?.Value != false;
+        {
+            var ownCaps = ReadCaps(style.StyleRunProperties);
+            var ownMarkCaps = ReadCaps(style.StyleParagraphProperties?.ChildElements.FirstOrDefault(child =>
+                child.LocalName == "rPr" && child.NamespaceUri == "http://schemas.openxmlformats.org/wordprocessingml/2006/main"));
+            // A mark-only declaration supplies the style value. When both
+            // locations exist, Word inherits the mark value as a separate toggle.
+            styleCaps ??= ownCaps ?? ownMarkCaps;
+            if (ownCaps != null) styleMarkCaps ??= ownMarkCaps;
+        }
+        var inherited = styleCaps ?? ReadCaps(_docDefaultRunProps) ?? false;
+        return styleMarkCaps == true ? !inherited : inherited;
     }
 
     // Numeric labels in RTL paragraphs use the complex-script size even though
