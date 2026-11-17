@@ -1,0 +1,600 @@
+{
+  "baselineCommit": "76b9f830",
+  "note": "Word ListString reports unformatted labels; PDF text confirms visible caps.",
+  "cases": [
+    {
+      "case": "greek-mark-absent-level-absent",
+      "expectedVisibleLabels": [
+        "\u03b1\u03b2",
+        "\u03b1\u03b2",
+        "\u03b1\u03b2"
+      ],
+      "wordListStrings": [
+        "\u03b1\u03b2",
+        "\u03b1\u03b2",
+        "\u03b1\u03b2"
+      ],
+      "sourceSha256": "0c9b6c3f2e5d3176038d1c1664cc82b157e9335288509af7e9c3f72abf1d4f8d",
+      "wordPdfSha256": "e9bd40fe23e441c449565d8e9482dfd998a20c0bc0ff350b71accd812daa2b1e",
+      "wordPdfText": "\u03b1\u03b2Item0\u03b1\u03b2Item1\u03b1\u03b2Item2",
+      "cliOutputs": {
+        "rich": {
+          "baselineSha256Lf": "5fedd6ae95b0e8edbde8cd8fde8d3fe1343b0a4c707c68d7d5f8e489ec6c467c",
+          "afterSha256Lf": "5fedd6ae95b0e8edbde8cd8fde8d3fe1343b0a4c707c68d7d5f8e489ec6c467c",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "06ced5a1f54009892293206ccc3c69fd2759bb575107d9dd417d91b09365622c",
+          "afterSha256Lf": "06ced5a1f54009892293206ccc3c69fd2759bb575107d9dd417d91b09365622c",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "ccffa67ee2a9a9591aefd3657761a487a5b70945ad90a742356e761fd9823efd",
+          "afterSha256Lf": "ccffa67ee2a9a9591aefd3657761a487a5b70945ad90a742356e761fd9823efd",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "greek-mark-absent-level-off",
+      "expectedVisibleLabels": [
+        "\u03b1\u03b2",
+        "\u03b1\u03b2",
+        "\u03b1\u03b2"
+      ],
+      "wordListStrings": [
+        "\u03b1\u03b2",
+        "\u03b1\u03b2",
+        "\u03b1\u03b2"
+      ],
+      "sourceSha256": "8288d2985cff796721785374461419567a94eed31c202b6db25cb677a9a480cb",
+      "wordPdfSha256": "2ff02971c45fa0afe2b7ba8195b257234d651033ec863ed9822319170fb65236",
+      "wordPdfText": "\u03b1\u03b2Item0\u03b1\u03b2Item1\u03b1\u03b2Item2",
+      "cliOutputs": {
+        "rich": {
+          "baselineSha256Lf": "5fedd6ae95b0e8edbde8cd8fde8d3fe1343b0a4c707c68d7d5f8e489ec6c467c",
+          "afterSha256Lf": "5fedd6ae95b0e8edbde8cd8fde8d3fe1343b0a4c707c68d7d5f8e489ec6c467c",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "06ced5a1f54009892293206ccc3c69fd2759bb575107d9dd417d91b09365622c",
+          "afterSha256Lf": "06ced5a1f54009892293206ccc3c69fd2759bb575107d9dd417d91b09365622c",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "ccffa67ee2a9a9591aefd3657761a487a5b70945ad90a742356e761fd9823efd",
+          "afterSha256Lf": "ccffa67ee2a9a9591aefd3657761a487a5b70945ad90a742356e761fd9823efd",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "greek-mark-absent-level-on",
+      "expectedVisibleLabels": [
+        "\u0391\u0392",
+        "\u0391\u0392",
+        "\u0391\u0392"
+      ],
+      "wordListStrings": [
+        "\u03b1\u03b2",
+        "\u03b1\u03b2",
+        "\u03b1\u03b2"
+      ],
+      "sourceSha256": "15b9266a13c7f78bed506707df0e8382a66a1ff9f62102e340d6bd3202730053",
+      "wordPdfSha256": "aa40e09fc3f2ed018565133632f17c161cfe18e18085beec3a3dc96c3b11f8c8",
+      "wordPdfText": "\u0391\u0392Item0\u0391\u0392Item1\u0391\u0392Item2",
+      "cliOutputs": {
+        "rich": {
+          "baselineSha256Lf": "5fe7cf02e87406e4cb188e4755ef515a28d569b679ade679201e915c92792328",
+          "afterSha256Lf": "5fe7cf02e87406e4cb188e4755ef515a28d569b679ade679201e915c92792328",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "7f6b87b5eef39ae1a75cb677c63585ba1c638d4c751d2b35fb4e7a3da5d780ae",
+          "afterSha256Lf": "7f6b87b5eef39ae1a75cb677c63585ba1c638d4c751d2b35fb4e7a3da5d780ae",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "3466da53f7b2420e405554ae61eecdc2ffc68bd26c2a3d46162b82ed888af9ce",
+          "afterSha256Lf": "3466da53f7b2420e405554ae61eecdc2ffc68bd26c2a3d46162b82ed888af9ce",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "greek-mark-off-level-absent",
+      "expectedVisibleLabels": [
+        "\u03b1\u03b2",
+        "\u03b1\u03b2",
+        "\u03b1\u03b2"
+      ],
+      "wordListStrings": [
+        "\u03b1\u03b2",
+        "\u03b1\u03b2",
+        "\u03b1\u03b2"
+      ],
+      "sourceSha256": "e9504c5797ef926cb422f737a43782c2f1eeacd7c3977a7e86823cc87df183c7",
+      "wordPdfSha256": "3b2b2da97fd3ad1f3133281b3d905a5040b879bff84a86cbfbb4c7fe8384981f",
+      "wordPdfText": "\u03b1\u03b2Item0\u03b1\u03b2Item1\u03b1\u03b2Item2",
+      "cliOutputs": {
+        "rich": {
+          "baselineSha256Lf": "5fedd6ae95b0e8edbde8cd8fde8d3fe1343b0a4c707c68d7d5f8e489ec6c467c",
+          "afterSha256Lf": "5fedd6ae95b0e8edbde8cd8fde8d3fe1343b0a4c707c68d7d5f8e489ec6c467c",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "06ced5a1f54009892293206ccc3c69fd2759bb575107d9dd417d91b09365622c",
+          "afterSha256Lf": "06ced5a1f54009892293206ccc3c69fd2759bb575107d9dd417d91b09365622c",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "ccffa67ee2a9a9591aefd3657761a487a5b70945ad90a742356e761fd9823efd",
+          "afterSha256Lf": "ccffa67ee2a9a9591aefd3657761a487a5b70945ad90a742356e761fd9823efd",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "greek-mark-off-level-off",
+      "expectedVisibleLabels": [
+        "\u03b1\u03b2",
+        "\u03b1\u03b2",
+        "\u03b1\u03b2"
+      ],
+      "wordListStrings": [
+        "\u03b1\u03b2",
+        "\u03b1\u03b2",
+        "\u03b1\u03b2"
+      ],
+      "sourceSha256": "6b6f01a08ad44876089bb90681c082d2fc02ab18559d4d1489c5f073c8050d7b",
+      "wordPdfSha256": "85dea114aa2cb75ba66e95656034597126f87e423fe1318d6d8f53b05f14ba3b",
+      "wordPdfText": "\u03b1\u03b2Item0\u03b1\u03b2Item1\u03b1\u03b2Item2",
+      "cliOutputs": {
+        "rich": {
+          "baselineSha256Lf": "5fedd6ae95b0e8edbde8cd8fde8d3fe1343b0a4c707c68d7d5f8e489ec6c467c",
+          "afterSha256Lf": "5fedd6ae95b0e8edbde8cd8fde8d3fe1343b0a4c707c68d7d5f8e489ec6c467c",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "06ced5a1f54009892293206ccc3c69fd2759bb575107d9dd417d91b09365622c",
+          "afterSha256Lf": "06ced5a1f54009892293206ccc3c69fd2759bb575107d9dd417d91b09365622c",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "ccffa67ee2a9a9591aefd3657761a487a5b70945ad90a742356e761fd9823efd",
+          "afterSha256Lf": "ccffa67ee2a9a9591aefd3657761a487a5b70945ad90a742356e761fd9823efd",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "greek-mark-off-level-on",
+      "expectedVisibleLabels": [
+        "\u0391\u0392",
+        "\u0391\u0392",
+        "\u0391\u0392"
+      ],
+      "wordListStrings": [
+        "\u03b1\u03b2",
+        "\u03b1\u03b2",
+        "\u03b1\u03b2"
+      ],
+      "sourceSha256": "483b76869b9cb48d2e2942f851c75e6b78b4d21a4e9498820ea6b72c5695de62",
+      "wordPdfSha256": "0199be6afad2acd2b27bd4845d0cf7365c54b15c9bb44d894b6628023f5a0256",
+      "wordPdfText": "\u0391\u0392Item0\u0391\u0392Item1\u0391\u0392Item2",
+      "cliOutputs": {
+        "rich": {
+          "baselineSha256Lf": "5fe7cf02e87406e4cb188e4755ef515a28d569b679ade679201e915c92792328",
+          "afterSha256Lf": "5fe7cf02e87406e4cb188e4755ef515a28d569b679ade679201e915c92792328",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "7f6b87b5eef39ae1a75cb677c63585ba1c638d4c751d2b35fb4e7a3da5d780ae",
+          "afterSha256Lf": "7f6b87b5eef39ae1a75cb677c63585ba1c638d4c751d2b35fb4e7a3da5d780ae",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "3466da53f7b2420e405554ae61eecdc2ffc68bd26c2a3d46162b82ed888af9ce",
+          "afterSha256Lf": "3466da53f7b2420e405554ae61eecdc2ffc68bd26c2a3d46162b82ed888af9ce",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "greek-mark-on-level-absent",
+      "expectedVisibleLabels": [
+        "\u0391\u0392",
+        "\u0391\u0392",
+        "\u0391\u0392"
+      ],
+      "wordListStrings": [
+        "\u03b1\u03b2",
+        "\u03b1\u03b2",
+        "\u03b1\u03b2"
+      ],
+      "sourceSha256": "3d4d7d42884181aeb4e46000df1618589ca677bd31db954aefb1a4ca4a5853b6",
+      "wordPdfSha256": "84fa1dadf789fa8e1c42b9ddb5746f63ba2c31577209bc9e1c5f132cb3da5e03",
+      "wordPdfText": "\u0391\u0392Item0\u0391\u0392Item1\u0391\u0392Item2",
+      "cliOutputs": {
+        "rich": {
+          "baselineSha256Lf": "5fedd6ae95b0e8edbde8cd8fde8d3fe1343b0a4c707c68d7d5f8e489ec6c467c",
+          "afterSha256Lf": "5fe7cf02e87406e4cb188e4755ef515a28d569b679ade679201e915c92792328",
+          "changed": true
+        },
+        "plain-html": {
+          "baselineSha256Lf": "06ced5a1f54009892293206ccc3c69fd2759bb575107d9dd417d91b09365622c",
+          "afterSha256Lf": "7f6b87b5eef39ae1a75cb677c63585ba1c638d4c751d2b35fb4e7a3da5d780ae",
+          "changed": true
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "ccffa67ee2a9a9591aefd3657761a487a5b70945ad90a742356e761fd9823efd",
+          "afterSha256Lf": "3466da53f7b2420e405554ae61eecdc2ffc68bd26c2a3d46162b82ed888af9ce",
+          "changed": true
+        }
+      }
+    },
+    {
+      "case": "greek-mark-on-level-off",
+      "expectedVisibleLabels": [
+        "\u03b1\u03b2",
+        "\u03b1\u03b2",
+        "\u03b1\u03b2"
+      ],
+      "wordListStrings": [
+        "\u03b1\u03b2",
+        "\u03b1\u03b2",
+        "\u03b1\u03b2"
+      ],
+      "sourceSha256": "9116b71c8bf5c5336d8e95418dbbf5831907f3bccce2026346376ab56ece8a42",
+      "wordPdfSha256": "9f4bd4512f8f8cf2160eae32ef872a88af968684db62f947c84c2fdf1487b7f5",
+      "wordPdfText": "\u03b1\u03b2Item0\u03b1\u03b2Item1\u03b1\u03b2Item2",
+      "cliOutputs": {
+        "rich": {
+          "baselineSha256Lf": "5fedd6ae95b0e8edbde8cd8fde8d3fe1343b0a4c707c68d7d5f8e489ec6c467c",
+          "afterSha256Lf": "5fedd6ae95b0e8edbde8cd8fde8d3fe1343b0a4c707c68d7d5f8e489ec6c467c",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "06ced5a1f54009892293206ccc3c69fd2759bb575107d9dd417d91b09365622c",
+          "afterSha256Lf": "06ced5a1f54009892293206ccc3c69fd2759bb575107d9dd417d91b09365622c",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "ccffa67ee2a9a9591aefd3657761a487a5b70945ad90a742356e761fd9823efd",
+          "afterSha256Lf": "ccffa67ee2a9a9591aefd3657761a487a5b70945ad90a742356e761fd9823efd",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "greek-mark-on-level-on",
+      "expectedVisibleLabels": [
+        "\u0391\u0392",
+        "\u0391\u0392",
+        "\u0391\u0392"
+      ],
+      "wordListStrings": [
+        "\u03b1\u03b2",
+        "\u03b1\u03b2",
+        "\u03b1\u03b2"
+      ],
+      "sourceSha256": "7e41f61bb24ff58b37669cb19ade90b730aee5c59685c02a5154e4b1345dd1da",
+      "wordPdfSha256": "3cbaf3cd5b3375c02e29b03b2314d479e8c7f0a654a09b2f8b03ec94395a91c8",
+      "wordPdfText": "\u0391\u0392Item0\u0391\u0392Item1\u0391\u0392Item2",
+      "cliOutputs": {
+        "rich": {
+          "baselineSha256Lf": "5fe7cf02e87406e4cb188e4755ef515a28d569b679ade679201e915c92792328",
+          "afterSha256Lf": "5fe7cf02e87406e4cb188e4755ef515a28d569b679ade679201e915c92792328",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "7f6b87b5eef39ae1a75cb677c63585ba1c638d4c751d2b35fb4e7a3da5d780ae",
+          "afterSha256Lf": "7f6b87b5eef39ae1a75cb677c63585ba1c638d4c751d2b35fb4e7a3da5d780ae",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "3466da53f7b2420e405554ae61eecdc2ffc68bd26c2a3d46162b82ed888af9ce",
+          "afterSha256Lf": "3466da53f7b2420e405554ae61eecdc2ffc68bd26c2a3d46162b82ed888af9ce",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "latin-mark-absent-level-absent",
+      "expectedVisibleLabels": [
+        "ab",
+        "ab",
+        "ab"
+      ],
+      "wordListStrings": [
+        "ab",
+        "ab",
+        "ab"
+      ],
+      "sourceSha256": "cf29196ca7fcf15a22ec498b6035a971fae4a346a998f2fb2de389cb8bf547fe",
+      "wordPdfSha256": "2dd030605171d16e1a7e08f9be98191e96b600f24fbcb0b515a68ec781b630de",
+      "wordPdfText": "abItem0abItem1abItem2",
+      "cliOutputs": {
+        "rich": {
+          "baselineSha256Lf": "da67ab0585b3cdd2fe78f41c429b5fde3824993de02a48419c6194ae91c4c70d",
+          "afterSha256Lf": "da67ab0585b3cdd2fe78f41c429b5fde3824993de02a48419c6194ae91c4c70d",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "eaf360adb9ad426271917b876cf89febfb0650b8898aa375ad36d33543ffd1dd",
+          "afterSha256Lf": "eaf360adb9ad426271917b876cf89febfb0650b8898aa375ad36d33543ffd1dd",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "04bde192e804b556d50d4c8f11a8782bb18c153c16d6ebe38751fb1bda8f574b",
+          "afterSha256Lf": "04bde192e804b556d50d4c8f11a8782bb18c153c16d6ebe38751fb1bda8f574b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "latin-mark-absent-level-off",
+      "expectedVisibleLabels": [
+        "ab",
+        "ab",
+        "ab"
+      ],
+      "wordListStrings": [
+        "ab",
+        "ab",
+        "ab"
+      ],
+      "sourceSha256": "a352e22307e3bced4ec0114545eb3a7f5ea20fee8b11a5222c7bf312e46e7ebd",
+      "wordPdfSha256": "b17e1743be9c14402342b30f5f2389d677c81ecd1ff34e115bf3233566a39bb2",
+      "wordPdfText": "abItem0abItem1abItem2",
+      "cliOutputs": {
+        "rich": {
+          "baselineSha256Lf": "da67ab0585b3cdd2fe78f41c429b5fde3824993de02a48419c6194ae91c4c70d",
+          "afterSha256Lf": "da67ab0585b3cdd2fe78f41c429b5fde3824993de02a48419c6194ae91c4c70d",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "eaf360adb9ad426271917b876cf89febfb0650b8898aa375ad36d33543ffd1dd",
+          "afterSha256Lf": "eaf360adb9ad426271917b876cf89febfb0650b8898aa375ad36d33543ffd1dd",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "04bde192e804b556d50d4c8f11a8782bb18c153c16d6ebe38751fb1bda8f574b",
+          "afterSha256Lf": "04bde192e804b556d50d4c8f11a8782bb18c153c16d6ebe38751fb1bda8f574b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "latin-mark-absent-level-on",
+      "expectedVisibleLabels": [
+        "AB",
+        "AB",
+        "AB"
+      ],
+      "wordListStrings": [
+        "ab",
+        "ab",
+        "ab"
+      ],
+      "sourceSha256": "b3f72156c6e7e892c8f2f681a3cbb1e2f8811c6a3a0afbfdff58e08071efa3a6",
+      "wordPdfSha256": "6d867740e9b271b9666b83dc27df7a74d639066afd7df53b4a14b2014c01d8a5",
+      "wordPdfText": "ABItem0ABItem1ABItem2",
+      "cliOutputs": {
+        "rich": {
+          "baselineSha256Lf": "65723e3a269154592196dd1d0a952a20348ca7cccdbb7a9f75a597c2166c1494",
+          "afterSha256Lf": "65723e3a269154592196dd1d0a952a20348ca7cccdbb7a9f75a597c2166c1494",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "e91092e4babf587173c454d7dbb8f051ec98c7939aa399c7fe6a6c53ec389ec0",
+          "afterSha256Lf": "e91092e4babf587173c454d7dbb8f051ec98c7939aa399c7fe6a6c53ec389ec0",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "5fa53b44bce5ec70a85b57137c7789488889d611122f52dc4f545496d8cf8060",
+          "afterSha256Lf": "5fa53b44bce5ec70a85b57137c7789488889d611122f52dc4f545496d8cf8060",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "latin-mark-off-level-absent",
+      "expectedVisibleLabels": [
+        "ab",
+        "ab",
+        "ab"
+      ],
+      "wordListStrings": [
+        "ab",
+        "ab",
+        "ab"
+      ],
+      "sourceSha256": "33a5e58027153ef5248482a463c897e7ccd29ad647e4776c809e35a2c89bdbcf",
+      "wordPdfSha256": "e81dab9a0098d308bb0e4e421e97a1e22059b118bc494c7e77cc4a691c11b01d",
+      "wordPdfText": "abItem0abItem1abItem2",
+      "cliOutputs": {
+        "rich": {
+          "baselineSha256Lf": "da67ab0585b3cdd2fe78f41c429b5fde3824993de02a48419c6194ae91c4c70d",
+          "afterSha256Lf": "da67ab0585b3cdd2fe78f41c429b5fde3824993de02a48419c6194ae91c4c70d",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "eaf360adb9ad426271917b876cf89febfb0650b8898aa375ad36d33543ffd1dd",
+          "afterSha256Lf": "eaf360adb9ad426271917b876cf89febfb0650b8898aa375ad36d33543ffd1dd",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "04bde192e804b556d50d4c8f11a8782bb18c153c16d6ebe38751fb1bda8f574b",
+          "afterSha256Lf": "04bde192e804b556d50d4c8f11a8782bb18c153c16d6ebe38751fb1bda8f574b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "latin-mark-off-level-off",
+      "expectedVisibleLabels": [
+        "ab",
+        "ab",
+        "ab"
+      ],
+      "wordListStrings": [
+        "ab",
+        "ab",
+        "ab"
+      ],
+      "sourceSha256": "bbe0f54c2f739de665fa75283ba84cdf903b61d07320000807a0fdd7dad34e13",
+      "wordPdfSha256": "7f785b15f0a70196fe6fad029bc7264a13e171d0d07b63ff4b529aa4e5917d0b",
+      "wordPdfText": "abItem0abItem1abItem2",
+      "cliOutputs": {
+        "rich": {
+          "baselineSha256Lf": "da67ab0585b3cdd2fe78f41c429b5fde3824993de02a48419c6194ae91c4c70d",
+          "afterSha256Lf": "da67ab0585b3cdd2fe78f41c429b5fde3824993de02a48419c6194ae91c4c70d",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "eaf360adb9ad426271917b876cf89febfb0650b8898aa375ad36d33543ffd1dd",
+          "afterSha256Lf": "eaf360adb9ad426271917b876cf89febfb0650b8898aa375ad36d33543ffd1dd",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "04bde192e804b556d50d4c8f11a8782bb18c153c16d6ebe38751fb1bda8f574b",
+          "afterSha256Lf": "04bde192e804b556d50d4c8f11a8782bb18c153c16d6ebe38751fb1bda8f574b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "latin-mark-off-level-on",
+      "expectedVisibleLabels": [
+        "AB",
+        "AB",
+        "AB"
+      ],
+      "wordListStrings": [
+        "ab",
+        "ab",
+        "ab"
+      ],
+      "sourceSha256": "1a99ad9a31adcdbe69294c78315906a0b6e3cbe6769d3eeba2156b1b9e8f3796",
+      "wordPdfSha256": "ddeccc63253c9469d5fc04d394c2a56d2dd9f7687fb443be6c20d79905c7bf00",
+      "wordPdfText": "ABItem0ABItem1ABItem2",
+      "cliOutputs": {
+        "rich": {
+          "baselineSha256Lf": "65723e3a269154592196dd1d0a952a20348ca7cccdbb7a9f75a597c2166c1494",
+          "afterSha256Lf": "65723e3a269154592196dd1d0a952a20348ca7cccdbb7a9f75a597c2166c1494",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "e91092e4babf587173c454d7dbb8f051ec98c7939aa399c7fe6a6c53ec389ec0",
+          "afterSha256Lf": "e91092e4babf587173c454d7dbb8f051ec98c7939aa399c7fe6a6c53ec389ec0",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "5fa53b44bce5ec70a85b57137c7789488889d611122f52dc4f545496d8cf8060",
+          "afterSha256Lf": "5fa53b44bce5ec70a85b57137c7789488889d611122f52dc4f545496d8cf8060",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "latin-mark-on-level-absent",
+      "expectedVisibleLabels": [
+        "AB",
+        "AB",
+        "AB"
+      ],
+      "wordListStrings": [
+        "ab",
+        "ab",
+        "ab"
+      ],
+      "sourceSha256": "53ccf93335b9a126d6857dab9b6d6ca6bc5350a7bc8c79c9fc581d4b551e7a53",
+      "wordPdfSha256": "5f617372e10a55fd2bce3846fe0b0095a9e606982dba0a1dc3625aa674cccea6",
+      "wordPdfText": "ABItem0ABItem1ABItem2",
+      "cliOutputs": {
+        "rich": {
+          "baselineSha256Lf": "da67ab0585b3cdd2fe78f41c429b5fde3824993de02a48419c6194ae91c4c70d",
+          "afterSha256Lf": "65723e3a269154592196dd1d0a952a20348ca7cccdbb7a9f75a597c2166c1494",
+          "changed": true
+        },
+        "plain-html": {
+          "baselineSha256Lf": "eaf360adb9ad426271917b876cf89febfb0650b8898aa375ad36d33543ffd1dd",
+          "afterSha256Lf": "e91092e4babf587173c454d7dbb8f051ec98c7939aa399c7fe6a6c53ec389ec0",
+          "changed": true
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "04bde192e804b556d50d4c8f11a8782bb18c153c16d6ebe38751fb1bda8f574b",
+          "afterSha256Lf": "5fa53b44bce5ec70a85b57137c7789488889d611122f52dc4f545496d8cf8060",
+          "changed": true
+        }
+      }
+    },
+    {
+      "case": "latin-mark-on-level-off",
+      "expectedVisibleLabels": [
+        "ab",
+        "ab",
+        "ab"
+      ],
+      "wordListStrings": [
+        "ab",
+        "ab",
+        "ab"
+      ],
+      "sourceSha256": "6eb1ff3500e9c8586b2667f27d82647adb47f960f50c870cc9d1ab35acae5a34",
+      "wordPdfSha256": "fa86e0de8dfc6a1d7c74970715f7c1994ea8468c99634f696438eb1d1e54c2d7",
+      "wordPdfText": "abItem0abItem1abItem2",
+      "cliOutputs": {
+        "rich": {
+          "baselineSha256Lf": "da67ab0585b3cdd2fe78f41c429b5fde3824993de02a48419c6194ae91c4c70d",
+          "afterSha256Lf": "da67ab0585b3cdd2fe78f41c429b5fde3824993de02a48419c6194ae91c4c70d",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "eaf360adb9ad426271917b876cf89febfb0650b8898aa375ad36d33543ffd1dd",
+          "afterSha256Lf": "eaf360adb9ad426271917b876cf89febfb0650b8898aa375ad36d33543ffd1dd",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "04bde192e804b556d50d4c8f11a8782bb18c153c16d6ebe38751fb1bda8f574b",
+          "afterSha256Lf": "04bde192e804b556d50d4c8f11a8782bb18c153c16d6ebe38751fb1bda8f574b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "latin-mark-on-level-on",
+      "expectedVisibleLabels": [
+        "AB",
+        "AB",
+        "AB"
+      ],
+      "wordListStrings": [
+        "ab",
+        "ab",
+        "ab"
+      ],
+      "sourceSha256": "0cebab6a6d07b54c1ab0faace7fef7684416f45eb147f8cd62ebd8700b0384d0",
+      "wordPdfSha256": "303d2279c365ca994f17f6cea9322de16d5d89ea2a482bb28d13560c36191cd1",
+      "wordPdfText": "ABItem0ABItem1ABItem2",
+      "cliOutputs": {
+        "rich": {
+          "baselineSha256Lf": "65723e3a269154592196dd1d0a952a20348ca7cccdbb7a9f75a597c2166c1494",
+          "afterSha256Lf": "65723e3a269154592196dd1d0a952a20348ca7cccdbb7a9f75a597c2166c1494",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "e91092e4babf587173c454d7dbb8f051ec98c7939aa399c7fe6a6c53ec389ec0",
+          "afterSha256Lf": "e91092e4babf587173c454d7dbb8f051ec98c7939aa399c7fe6a6c53ec389ec0",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "5fa53b44bce5ec70a85b57137c7789488889d611122f52dc4f545496d8cf8060",
+          "afterSha256Lf": "5fa53b44bce5ec70a85b57137c7789488889d611122f52dc4f545496d8cf8060",
+          "changed": false
+        }
+      }
+    }
+  ]
+}
