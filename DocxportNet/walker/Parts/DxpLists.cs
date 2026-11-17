@@ -164,7 +164,7 @@ public sealed class DxpNumberingResolver
         foreach (var child in parent.ChildElements.OfType<OpenXmlCompositeElement>().ToArray())
             if (child is AbstractNum or NumberingInstance or LevelOverride or Level or
                 ParagraphProperties or NumberingProperties or NumberingSymbolRunProperties or Style or StyleParagraphProperties or
-                StyleRunProperties or DocDefaults or RunPropertiesDefault or RunPropertiesBaseStyle)
+                StyleRunProperties or DocDefaults or RunPropertiesDefault or RunPropertiesBaseStyle or ParagraphMarkRunProperties)
                 NormalizeNumberingChoices(child, understood);
     }
 
@@ -1263,9 +1263,10 @@ public class DxpLists
                     if (!_listsByStory.TryGetValue(story, out lists))
                         _listsByStory[story] = lists = new DxpListTracker();
                 }
-                var caps = p.ParagraphProperties?.ParagraphMarkRunProperties?.GetFirstChild<Caps>();
+                var markerProperties = DxpNumberingResolver.NormalizeParagraphNumberingProperties(p);
+                var caps = markerProperties?.ParagraphMarkRunProperties?.GetFirstChild<Caps>();
                 marker = DxpListMarkerFormatter.TryBuildMarkerText(numPr, _num, lists, culture,
-                    caps == null ? (s as DxpStyleResolver)?.ResolveListMarkerStyleCaps(p.ParagraphProperties)
+                    caps == null ? (s as DxpStyleResolver)?.ResolveListMarkerStyleCaps(markerProperties)
                         : caps.Val?.Value != false);
                 numId = numPr.NumId;
                 iLvl = numPr.Ilvl;

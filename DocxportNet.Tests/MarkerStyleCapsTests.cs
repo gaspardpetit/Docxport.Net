@@ -30,7 +30,9 @@ public sealed class MarkerStyleCapsTests
     public void InheritsStyleCapsWithoutChangingSource(string name, string expected)
     {
         using var document = WordprocessingDocument.Open(Path.Combine(FixtureRoot(), "source", name + ".docx"), false);
-        Assert.Empty(new OpenXmlValidator(FileFormatVersions.Office2013).Validate(document));
+        using (var validationDocument = WordprocessingDocument.Open(Path.Combine(FixtureRoot(), "source", name + ".docx"), false,
+            new OpenSettings { MarkupCompatibilityProcessSettings = new(MarkupCompatibilityProcessMode.ProcessAllParts, FileFormatVersions.Office2013) }))
+            Assert.Empty(new OpenXmlValidator(FileFormatVersions.Office2013).Validate(validationDocument));
         var main = document.MainDocumentPart!;
         _ = main.Document!.Descendants().ToArray();
         _ = main.StyleDefinitionsPart!.Styles!.Descendants().ToArray();
