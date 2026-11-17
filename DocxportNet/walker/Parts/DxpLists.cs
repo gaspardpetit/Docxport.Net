@@ -162,10 +162,16 @@ public sealed class DxpNumberingResolver
             alternate.Remove();
         }
         foreach (var child in parent.ChildElements.OfType<OpenXmlCompositeElement>().ToArray())
-            if (child is AbstractNum or NumberingInstance or LevelOverride or Level or
+        {
+            // Word accepts this schema-invalid run-properties location. The SDK
+            // represents it as an unknown element, so typed traversal misses it.
+            var styleMark = parent is StyleParagraphProperties && child.LocalName == "rPr" &&
+                child.NamespaceUri == "http://schemas.openxmlformats.org/wordprocessingml/2006/main";
+            if (styleMark || child is AbstractNum or NumberingInstance or LevelOverride or Level or
                 ParagraphProperties or NumberingProperties or NumberingSymbolRunProperties or Style or StyleParagraphProperties or
                 StyleRunProperties or DocDefaults or RunPropertiesDefault or RunPropertiesBaseStyle or ParagraphMarkRunProperties)
                 NormalizeNumberingChoices(child, understood);
+        }
     }
 
     private static bool IsSupportedNumberingNamespace(string ns) => ns is
