@@ -644,6 +644,39 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
         return styleMarkCaps == true ? !inherited : inherited;
     }
 
+    internal bool ResolveListMarkerStrike(ParagraphProperties? paragraph, NumberingSymbolRunProperties? level)
+    {
+        if (_numberingStyleResolver != null)
+            return _numberingStyleResolver.ResolveListMarkerStrike(paragraph, level);
+        bool? Read(OpenXmlElement? properties)
+        {
+            var strike = properties?.ChildElements.FirstOrDefault(child => child.LocalName == "strike" &&
+                child.NamespaceUri == "http://schemas.openxmlformats.org/wordprocessingml/2006/main");
+            if (strike == null) return null;
+            var value = strike.GetAttributes().FirstOrDefault(attribute => attribute.LocalName == "val" &&
+                attribute.NamespaceUri == strike.NamespaceUri).Value;
+            return value is not ("0" or "false" or "off");
+        }
+        var styleId = paragraph?.ParagraphStyleId?.Val?.Value;
+        if (string.IsNullOrEmpty(styleId))
+            styleId = _styles?.Elements<Style>().FirstOrDefault(style =>
+                style.Type?.Value == StyleValues.Paragraph && style.Default?.Value == true)?.StyleId?.Value;
+        bool? styleStrike = null, styleMarkStrike = null;
+        foreach (var style in EnumerateStyleChain(styleId, StyleValues.Paragraph))
+        {
+            var own = Read(style.StyleRunProperties);
+            var mark = Read(style.StyleParagraphProperties?.ChildElements.FirstOrDefault(child =>
+                child.LocalName == "rPr" && child.NamespaceUri == "http://schemas.openxmlformats.org/wordprocessingml/2006/main"));
+            // Word folds a mark-only declaration into the style value. With both
+            // locations present, the mark supplies a separately inherited toggle.
+            styleStrike ??= own ?? mark;
+            if (own != null) styleMarkStrike ??= mark;
+        }
+        var inherited = styleStrike ?? Read(_docDefaultRunProps) ?? false;
+        if (styleMarkStrike == true) inherited = !inherited;
+        return Read(level) ?? Read(paragraph?.ParagraphMarkRunProperties) ?? inherited;
+    }
+
     // ASCII marker sizes, including ordinary LTR and numeric RTL inheritance.
     // Keep these marker rules out of body-run layout.
     internal int? ResolveAsciiListMarkerFontSize(ParagraphProperties? paragraph,
