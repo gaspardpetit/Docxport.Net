@@ -1,0 +1,3375 @@
+{
+  "cases": [
+    {
+      "case": "mark-absent-latin",
+      "expectedHalfPoints": 44,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "8467e18187a313684057631fb58b8ad9193ab6668f0a621ab7a0569d8776d6cc",
+      "wordPdfSha256": "78d8dd572ac7e8cc5df69919cd679ecd6900e451d40987735a2fcdb771ef669d",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b \nItem0 \na2b \nItem1 \na3b \nItem2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 21.959999084472656
+        },
+        {
+          "text": "a2b",
+          "sizePt": 21.959999084472656
+        },
+        {
+          "text": "a3b",
+          "sizePt": 21.959999084472656
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "afterSha256Lf": "a8f34618696e5ba435f534ffd6d4bf010b82074c381f988f59e3b564dbe7d35f",
+          "changed": true,
+          "baselineMatchesWordSize": false,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            22.0,
+            22.0,
+            22.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "afterSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "mark-absent-numeric",
+      "expectedHalfPoints": 44,
+      "expectedVisibleLabels": [
+        "1",
+        "2",
+        "3"
+      ],
+      "sourceSha256": "3a40933af7d36fc31bfdfa51ed0e6d981615406504c4974641af8006bf865258",
+      "wordPdfSha256": "121dd0f245fd94357244592404ed580c0ee1c41226dbf1077374427a994254f0",
+      "wordListStrings": [
+        "1",
+        "2",
+        "3"
+      ],
+      "wordPdfText": "1 Item0 \n2 Item1 \n3 Item2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "1",
+          "sizePt": 21.959999084472656
+        },
+        {
+          "text": "2",
+          "sizePt": 21.959999084472656
+        },
+        {
+          "text": "3",
+          "sizePt": 21.959999084472656
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "9027e83d0a284d6c4e63c389f938ebcf8a2b314edce8e5f6299509885a7027dc",
+          "afterSha256Lf": "4041c680bc864176bc151b6fd24955930e8ab01443d57c29a98984236163cc60",
+          "changed": true,
+          "baselineMatchesWordSize": false,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            22.0,
+            22.0,
+            22.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "f2c3a3847d332fcf2912e858651443c726a6c46296c24ac49d7707d984900cca",
+          "afterSha256Lf": "f2c3a3847d332fcf2912e858651443c726a6c46296c24ac49d7707d984900cca",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "81d9bf19741fd63b4292b79863098b09a987ea2959c75f87189c5842c0389c03",
+          "afterSha256Lf": "81d9bf19741fd63b4292b79863098b09a987ea2959c75f87189c5842c0389c03",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "mark-empty-latin",
+      "expectedHalfPoints": 44,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "fbbbb115b9dd1fc6ca26cf8aace55bf6913a890256d71ec22f722a9580c8811b",
+      "wordPdfSha256": "1cd6125f517fa37d3cbbeb1d9756a5aa9ca32dbc1d49802b3414eeafe7ae34d3",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b \nItem0 \na2b \nItem1 \na3b \nItem2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 21.959999084472656
+        },
+        {
+          "text": "a2b",
+          "sizePt": 21.959999084472656
+        },
+        {
+          "text": "a3b",
+          "sizePt": 21.959999084472656
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "afterSha256Lf": "a8f34618696e5ba435f534ffd6d4bf010b82074c381f988f59e3b564dbe7d35f",
+          "changed": true,
+          "baselineMatchesWordSize": false,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            22.0,
+            22.0,
+            22.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "afterSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "mark-empty-numeric",
+      "expectedHalfPoints": 44,
+      "expectedVisibleLabels": [
+        "1",
+        "2",
+        "3"
+      ],
+      "sourceSha256": "55e2075140981c745e5d29c89ef40abd9d66f0ea9801f821ba45aa8606b42f53",
+      "wordPdfSha256": "e25f821ee439c90ef85c2b8bd7b732e9230f083a84a7a0390cff5e13f07d2024",
+      "wordListStrings": [
+        "1",
+        "2",
+        "3"
+      ],
+      "wordPdfText": "1 Item0 \n2 Item1 \n3 Item2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "1",
+          "sizePt": 21.959999084472656
+        },
+        {
+          "text": "2",
+          "sizePt": 21.959999084472656
+        },
+        {
+          "text": "3",
+          "sizePt": 21.959999084472656
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "9027e83d0a284d6c4e63c389f938ebcf8a2b314edce8e5f6299509885a7027dc",
+          "afterSha256Lf": "4041c680bc864176bc151b6fd24955930e8ab01443d57c29a98984236163cc60",
+          "changed": true,
+          "baselineMatchesWordSize": false,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            22.0,
+            22.0,
+            22.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "f2c3a3847d332fcf2912e858651443c726a6c46296c24ac49d7707d984900cca",
+          "afterSha256Lf": "f2c3a3847d332fcf2912e858651443c726a6c46296c24ac49d7707d984900cca",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "81d9bf19741fd63b4292b79863098b09a987ea2959c75f87189c5842c0389c03",
+          "afterSha256Lf": "81d9bf19741fd63b4292b79863098b09a987ea2959c75f87189c5842c0389c03",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "mark-fonts-latin",
+      "expectedHalfPoints": 44,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "fa6c722e615b9366ee90e6ca20958f70421eb2ff070baed1d52bf8f22369d160",
+      "wordPdfSha256": "abaf1b9ee31680c980b288fd291598271703378d6aa20f645e6a3f44f1d44bc4",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b \nItem0 \na2b \nItem1 \na3b \nItem2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 21.959999084472656
+        },
+        {
+          "text": "a2b",
+          "sizePt": 21.959999084472656
+        },
+        {
+          "text": "a3b",
+          "sizePt": 21.959999084472656
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "afterSha256Lf": "a8f34618696e5ba435f534ffd6d4bf010b82074c381f988f59e3b564dbe7d35f",
+          "changed": true,
+          "baselineMatchesWordSize": false,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            22.0,
+            22.0,
+            22.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "afterSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "mark-fonts-numeric",
+      "expectedHalfPoints": 44,
+      "expectedVisibleLabels": [
+        "1",
+        "2",
+        "3"
+      ],
+      "sourceSha256": "b2175765ad87ee0240589468cd6a9b54e0c659e525d6275980923f0dc492bc81",
+      "wordPdfSha256": "da45cb1ceb855867b51d0e66e3821fc61894ca1a56f4531b4935650ddda21080",
+      "wordListStrings": [
+        "1",
+        "2",
+        "3"
+      ],
+      "wordPdfText": "1 Item0 \n2 Item1 \n3 Item2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "1",
+          "sizePt": 21.959999084472656
+        },
+        {
+          "text": "2",
+          "sizePt": 21.959999084472656
+        },
+        {
+          "text": "3",
+          "sizePt": 21.959999084472656
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "9027e83d0a284d6c4e63c389f938ebcf8a2b314edce8e5f6299509885a7027dc",
+          "afterSha256Lf": "4041c680bc864176bc151b6fd24955930e8ab01443d57c29a98984236163cc60",
+          "changed": true,
+          "baselineMatchesWordSize": false,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            22.0,
+            22.0,
+            22.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "f2c3a3847d332fcf2912e858651443c726a6c46296c24ac49d7707d984900cca",
+          "afterSha256Lf": "f2c3a3847d332fcf2912e858651443c726a6c46296c24ac49d7707d984900cca",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "81d9bf19741fd63b4292b79863098b09a987ea2959c75f87189c5842c0389c03",
+          "afterSha256Lf": "81d9bf19741fd63b4292b79863098b09a987ea2959c75f87189c5842c0389c03",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "style-absent-latin",
+      "expectedHalfPoints": 56,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "b31b196de1a597cf544e23028e2d125b6f234af522be0e730e1183484d490209",
+      "wordPdfSha256": "beb517e6b438d4a8a01cac0ff7c4ea36ff8851342a8f79ed229da791cbe5fc09",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b Item0 \na2b Item1 \na3b Item2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 27.959999084472656
+        },
+        {
+          "text": "a2b",
+          "sizePt": 27.959999084472656
+        },
+        {
+          "text": "a3b",
+          "sizePt": 27.959999084472656
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "afterSha256Lf": "e551c03fee0810b79d3ef42276b74febe1c96aa19d0e26722298e5aa955a4fa3",
+          "changed": true,
+          "baselineMatchesWordSize": false,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            28.0,
+            28.0,
+            28.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "afterSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "style-absent-numeric",
+      "expectedHalfPoints": 56,
+      "expectedVisibleLabels": [
+        "1",
+        "2",
+        "3"
+      ],
+      "sourceSha256": "ed5ceb920a63cbe5825b9cedba4c42bd047802993d5f90ab69ac8e41ec6a5ea0",
+      "wordPdfSha256": "00149d3e208bd3a34b6db7a309930f32f7d91ce4faf500d1b1b45e93e0ec58af",
+      "wordListStrings": [
+        "1",
+        "2",
+        "3"
+      ],
+      "wordPdfText": "1 Item0 \n2 Item1 \n3 Item2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "1",
+          "sizePt": 27.959999084472656
+        },
+        {
+          "text": "2",
+          "sizePt": 27.959999084472656
+        },
+        {
+          "text": "3",
+          "sizePt": 27.959999084472656
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "9027e83d0a284d6c4e63c389f938ebcf8a2b314edce8e5f6299509885a7027dc",
+          "afterSha256Lf": "9981b4df001b8e82c5844ba4f424daf1a8dde162c281c66d83ac760e767a5cab",
+          "changed": true,
+          "baselineMatchesWordSize": false,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            28.0,
+            28.0,
+            28.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "f2c3a3847d332fcf2912e858651443c726a6c46296c24ac49d7707d984900cca",
+          "afterSha256Lf": "f2c3a3847d332fcf2912e858651443c726a6c46296c24ac49d7707d984900cca",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "81d9bf19741fd63b4292b79863098b09a987ea2959c75f87189c5842c0389c03",
+          "afterSha256Lf": "81d9bf19741fd63b4292b79863098b09a987ea2959c75f87189c5842c0389c03",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "style-empty-latin",
+      "expectedHalfPoints": 56,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "174f068e52c046665196134c9ba2567b1a10a8edaa0647cc56b5c13770759e37",
+      "wordPdfSha256": "336987d5743aa68fd91a5334ad4a370bb3a9dfc199a8534c39e0fbab13cd8f0f",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b Item0 \na2b Item1 \na3b Item2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 27.959999084472656
+        },
+        {
+          "text": "a2b",
+          "sizePt": 27.959999084472656
+        },
+        {
+          "text": "a3b",
+          "sizePt": 27.959999084472656
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "afterSha256Lf": "e551c03fee0810b79d3ef42276b74febe1c96aa19d0e26722298e5aa955a4fa3",
+          "changed": true,
+          "baselineMatchesWordSize": false,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            28.0,
+            28.0,
+            28.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "afterSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "style-empty-numeric",
+      "expectedHalfPoints": 56,
+      "expectedVisibleLabels": [
+        "1",
+        "2",
+        "3"
+      ],
+      "sourceSha256": "459b337a83fc59c67fb088a0b62a9d15214c01d51fe0b729dc5dab146f3a4f29",
+      "wordPdfSha256": "12fcf9b8ba685f914fcb34ed9a4ccbcdcb489350f7334424587273a5cd8b18d1",
+      "wordListStrings": [
+        "1",
+        "2",
+        "3"
+      ],
+      "wordPdfText": "1 Item0 \n2 Item1 \n3 Item2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "1",
+          "sizePt": 27.959999084472656
+        },
+        {
+          "text": "2",
+          "sizePt": 27.959999084472656
+        },
+        {
+          "text": "3",
+          "sizePt": 27.959999084472656
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "9027e83d0a284d6c4e63c389f938ebcf8a2b314edce8e5f6299509885a7027dc",
+          "afterSha256Lf": "9981b4df001b8e82c5844ba4f424daf1a8dde162c281c66d83ac760e767a5cab",
+          "changed": true,
+          "baselineMatchesWordSize": false,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            28.0,
+            28.0,
+            28.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "f2c3a3847d332fcf2912e858651443c726a6c46296c24ac49d7707d984900cca",
+          "afterSha256Lf": "f2c3a3847d332fcf2912e858651443c726a6c46296c24ac49d7707d984900cca",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "81d9bf19741fd63b4292b79863098b09a987ea2959c75f87189c5842c0389c03",
+          "afterSha256Lf": "81d9bf19741fd63b4292b79863098b09a987ea2959c75f87189c5842c0389c03",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "style-fonts-latin",
+      "expectedHalfPoints": 56,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "80c9a85c26b1b4a325c040901e9f44946a8e2b40a20900ccf3bbe6f220d68a5b",
+      "wordPdfSha256": "2a0648a82c8c7a2f0a7c4164d13f3e2f71bdfd430245f08b12a4362d421f9042",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b Item0 \na2b Item1 \na3b Item2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 27.959999084472656
+        },
+        {
+          "text": "a2b",
+          "sizePt": 27.959999084472656
+        },
+        {
+          "text": "a3b",
+          "sizePt": 27.959999084472656
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "afterSha256Lf": "e551c03fee0810b79d3ef42276b74febe1c96aa19d0e26722298e5aa955a4fa3",
+          "changed": true,
+          "baselineMatchesWordSize": false,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            28.0,
+            28.0,
+            28.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "afterSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "style-fonts-numeric",
+      "expectedHalfPoints": 56,
+      "expectedVisibleLabels": [
+        "1",
+        "2",
+        "3"
+      ],
+      "sourceSha256": "6159e39f89ee6c224719228b83cee79958c71cd8b17684450c37c10413aeafc0",
+      "wordPdfSha256": "8f67a3e82b242003b4c5d7272e59d8188545ad88bd91990ccbbfd59068b68b4e",
+      "wordListStrings": [
+        "1",
+        "2",
+        "3"
+      ],
+      "wordPdfText": "1 Item0 \n2 Item1 \n3 Item2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "1",
+          "sizePt": 27.959999084472656
+        },
+        {
+          "text": "2",
+          "sizePt": 27.959999084472656
+        },
+        {
+          "text": "3",
+          "sizePt": 27.959999084472656
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "9027e83d0a284d6c4e63c389f938ebcf8a2b314edce8e5f6299509885a7027dc",
+          "afterSha256Lf": "9981b4df001b8e82c5844ba4f424daf1a8dde162c281c66d83ac760e767a5cab",
+          "changed": true,
+          "baselineMatchesWordSize": false,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            28.0,
+            28.0,
+            28.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "f2c3a3847d332fcf2912e858651443c726a6c46296c24ac49d7707d984900cca",
+          "afterSha256Lf": "f2c3a3847d332fcf2912e858651443c726a6c46296c24ac49d7707d984900cca",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "81d9bf19741fd63b4292b79863098b09a987ea2959c75f87189c5842c0389c03",
+          "afterSha256Lf": "81d9bf19741fd63b4292b79863098b09a987ea2959c75f87189c5842c0389c03",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "defaults-absent-latin",
+      "expectedHalfPoints": 32,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "2cb50d101527af43bfcd2c7efac88996c2936410a691fc95be6a13ca47a63452",
+      "wordPdfSha256": "bf51c6b2c4107a38ff73ea2a9a3ecdb8cb199cf5cae9e273624ca03073eea5bb",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b Item0 \na2b Item1 \na3b Item2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 15.960000038146973
+        },
+        {
+          "text": "a2b",
+          "sizePt": 15.960000038146973
+        },
+        {
+          "text": "a3b",
+          "sizePt": 15.960000038146973
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "afterSha256Lf": "1b619f7511d8fa7401b6e2f6d519d257e756539a18444476451dbc499cd23456",
+          "changed": true,
+          "baselineMatchesWordSize": true,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "afterSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "defaults-absent-numeric",
+      "expectedHalfPoints": 32,
+      "expectedVisibleLabels": [
+        "1",
+        "2",
+        "3"
+      ],
+      "sourceSha256": "e657d96e1bb50a70a6d213c2bd3fd5e929aa9cd512f455392108dcad71f695be",
+      "wordPdfSha256": "4c583b59a16c4f15f2363643d8064d21619904e121b764fd8ee04c30773944f6",
+      "wordListStrings": [
+        "1",
+        "2",
+        "3"
+      ],
+      "wordPdfText": "1 Item0 \n2 Item1 \n3 Item2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "1",
+          "sizePt": 15.960000038146973
+        },
+        {
+          "text": "2",
+          "sizePt": 15.960000038146973
+        },
+        {
+          "text": "3",
+          "sizePt": 15.960000038146973
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "9027e83d0a284d6c4e63c389f938ebcf8a2b314edce8e5f6299509885a7027dc",
+          "afterSha256Lf": "141888df21317a3b2e1c375246b09ee61201e33d636f09f2d0e078d9f5abb996",
+          "changed": true,
+          "baselineMatchesWordSize": true,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "f2c3a3847d332fcf2912e858651443c726a6c46296c24ac49d7707d984900cca",
+          "afterSha256Lf": "f2c3a3847d332fcf2912e858651443c726a6c46296c24ac49d7707d984900cca",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "81d9bf19741fd63b4292b79863098b09a987ea2959c75f87189c5842c0389c03",
+          "afterSha256Lf": "81d9bf19741fd63b4292b79863098b09a987ea2959c75f87189c5842c0389c03",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "defaults-empty-latin",
+      "expectedHalfPoints": 32,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "34c2bb52ad6f6a5bccf899eadd45d80470658b2be403fbd0c3c3c08bf073cc83",
+      "wordPdfSha256": "49a310a31d040ad2a4c221c4f975b99b38defba4a4c53e84461e6d9c131926d5",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b Item0 \na2b Item1 \na3b Item2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 15.960000038146973
+        },
+        {
+          "text": "a2b",
+          "sizePt": 15.960000038146973
+        },
+        {
+          "text": "a3b",
+          "sizePt": 15.960000038146973
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "afterSha256Lf": "1b619f7511d8fa7401b6e2f6d519d257e756539a18444476451dbc499cd23456",
+          "changed": true,
+          "baselineMatchesWordSize": true,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "afterSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "defaults-empty-numeric",
+      "expectedHalfPoints": 32,
+      "expectedVisibleLabels": [
+        "1",
+        "2",
+        "3"
+      ],
+      "sourceSha256": "8ce3baef340bc952e18334436c7607b8b0cf6f86fc44cea8f1ab80f66be95344",
+      "wordPdfSha256": "5c6ab50634fb8304b82548a544af3e8aa0d3cdd06861bb6d9ea5a6d4cec69d00",
+      "wordListStrings": [
+        "1",
+        "2",
+        "3"
+      ],
+      "wordPdfText": "1 Item0 \n2 Item1 \n3 Item2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "1",
+          "sizePt": 15.960000038146973
+        },
+        {
+          "text": "2",
+          "sizePt": 15.960000038146973
+        },
+        {
+          "text": "3",
+          "sizePt": 15.960000038146973
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "9027e83d0a284d6c4e63c389f938ebcf8a2b314edce8e5f6299509885a7027dc",
+          "afterSha256Lf": "141888df21317a3b2e1c375246b09ee61201e33d636f09f2d0e078d9f5abb996",
+          "changed": true,
+          "baselineMatchesWordSize": true,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "f2c3a3847d332fcf2912e858651443c726a6c46296c24ac49d7707d984900cca",
+          "afterSha256Lf": "f2c3a3847d332fcf2912e858651443c726a6c46296c24ac49d7707d984900cca",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "81d9bf19741fd63b4292b79863098b09a987ea2959c75f87189c5842c0389c03",
+          "afterSha256Lf": "81d9bf19741fd63b4292b79863098b09a987ea2959c75f87189c5842c0389c03",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "defaults-fonts-latin",
+      "expectedHalfPoints": 32,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "175333ea977ba99bd1971564b835b2bda5582c1910a3afbd265b28be3f1327c7",
+      "wordPdfSha256": "adc55c9f7e4a7d559789d8a930a7d7a6848110ec98bff4d95f98d4eb9a4eaac6",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b Item0 \na2b Item1 \na3b Item2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 15.960000038146973
+        },
+        {
+          "text": "a2b",
+          "sizePt": 15.960000038146973
+        },
+        {
+          "text": "a3b",
+          "sizePt": 15.960000038146973
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "afterSha256Lf": "1b619f7511d8fa7401b6e2f6d519d257e756539a18444476451dbc499cd23456",
+          "changed": true,
+          "baselineMatchesWordSize": true,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "afterSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "defaults-fonts-numeric",
+      "expectedHalfPoints": 32,
+      "expectedVisibleLabels": [
+        "1",
+        "2",
+        "3"
+      ],
+      "sourceSha256": "021a2c3ae4067b218246c318f8f1618734b89a9c6e4cb773f781310d1a3f5c75",
+      "wordPdfSha256": "043c9b10908515efbe2fd251ea0bef848865bf0f73f146a48abe297e91e9d398",
+      "wordListStrings": [
+        "1",
+        "2",
+        "3"
+      ],
+      "wordPdfText": "1 Item0 \n2 Item1 \n3 Item2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "1",
+          "sizePt": 15.960000038146973
+        },
+        {
+          "text": "2",
+          "sizePt": 15.960000038146973
+        },
+        {
+          "text": "3",
+          "sizePt": 15.960000038146973
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "9027e83d0a284d6c4e63c389f938ebcf8a2b314edce8e5f6299509885a7027dc",
+          "afterSha256Lf": "141888df21317a3b2e1c375246b09ee61201e33d636f09f2d0e078d9f5abb996",
+          "changed": true,
+          "baselineMatchesWordSize": true,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "f2c3a3847d332fcf2912e858651443c726a6c46296c24ac49d7707d984900cca",
+          "afterSha256Lf": "f2c3a3847d332fcf2912e858651443c726a6c46296c24ac49d7707d984900cca",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "81d9bf19741fd63b4292b79863098b09a987ea2959c75f87189c5842c0389c03",
+          "afterSha256Lf": "81d9bf19741fd63b4292b79863098b09a987ea2959c75f87189c5842c0389c03",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "default-paragraph-style",
+      "expectedHalfPoints": 60,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "aaa27c5d5caac08de89d6bb7eb19323dbec33efe936776446cce0c2a4b6fd87d",
+      "wordPdfSha256": "d0a315002f0038a66438e17d02e8a537d1023b6c2d5cd89b4069c8fba18d5afc",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b Item0 \na2b Item1 \na3b Item2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 30.0
+        },
+        {
+          "text": "a2b",
+          "sizePt": 30.0
+        },
+        {
+          "text": "a3b",
+          "sizePt": 30.0
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "f053b1e0e114ae6a7a9576896d58ed1f6d028097f9f9b54294d78cc4d86dee4b",
+          "afterSha256Lf": "f18617833ea84ab87b936aefd5567bae6ae5008a7ebf2fb13c150c93611d9879",
+          "changed": true,
+          "baselineMatchesWordSize": true,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            30.0,
+            30.0,
+            30.0
+          ],
+          "afterComputedSizesPt": [
+            30.0,
+            30.0,
+            30.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "0efd24d4bde3f3a0440f83926e38726efa5c328ab3af63f91414dd3c8cb1185d",
+          "afterSha256Lf": "0efd24d4bde3f3a0440f83926e38726efa5c328ab3af63f91414dd3c8cb1185d",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "base-style-size",
+      "expectedHalfPoints": 60,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "185642dca9aa7f0179980fa742ae3c3fa80070f0f7f1e66549446cf160fd58d0",
+      "wordPdfSha256": "d99050d89f5548ade86529cf7010efc66c4963301f16b581e4c37f3d3e7a3fc4",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b Item0 \na2b Item1 \na3b Item2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 30.0
+        },
+        {
+          "text": "a2b",
+          "sizePt": 30.0
+        },
+        {
+          "text": "a3b",
+          "sizePt": 30.0
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "f053b1e0e114ae6a7a9576896d58ed1f6d028097f9f9b54294d78cc4d86dee4b",
+          "afterSha256Lf": "f18617833ea84ab87b936aefd5567bae6ae5008a7ebf2fb13c150c93611d9879",
+          "changed": true,
+          "baselineMatchesWordSize": true,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            30.0,
+            30.0,
+            30.0
+          ],
+          "afterComputedSizesPt": [
+            30.0,
+            30.0,
+            30.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "0efd24d4bde3f3a0440f83926e38726efa5c328ab3af63f91414dd3c8cb1185d",
+          "afterSha256Lf": "0efd24d4bde3f3a0440f83926e38726efa5c328ab3af63f91414dd3c8cb1185d",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "child-style-size",
+      "expectedHalfPoints": 56,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "0ddb5fd8e0c2b6421e832819013dcd6d476cf64f94ac42d39d2facbfa8306943",
+      "wordPdfSha256": "35e57d7dab8a92ec1bec116536fd994b28fb4a1e273a800a21934b233d469a98",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b Item0 \na2b Item1 \na3b Item2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 27.959999084472656
+        },
+        {
+          "text": "a2b",
+          "sizePt": 27.959999084472656
+        },
+        {
+          "text": "a3b",
+          "sizePt": 27.959999084472656
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "f053b1e0e114ae6a7a9576896d58ed1f6d028097f9f9b54294d78cc4d86dee4b",
+          "afterSha256Lf": "ef77d0b996f2bde0bfe5fd4c57dd99bf26e034fd7d154c766a7429d7416ba775",
+          "changed": true,
+          "baselineMatchesWordSize": false,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            30.0,
+            30.0,
+            30.0
+          ],
+          "afterComputedSizesPt": [
+            28.0,
+            28.0,
+            28.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "0efd24d4bde3f3a0440f83926e38726efa5c328ab3af63f91414dd3c8cb1185d",
+          "afterSha256Lf": "0efd24d4bde3f3a0440f83926e38726efa5c328ab3af63f91414dd3c8cb1185d",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "explicit-level-wins",
+      "expectedHalfPoints": 36,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "23374ef12c3e257b17a5ec63b6873aba3d566ee9b16a8abfeb58fbe6da700c00",
+      "wordPdfSha256": "2a4c8492936586a80ad558b714732946f20c30ed26b1bff41b3f2022ee7dd6c5",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b Item0 \na2b Item1 \na3b Item2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 18.0
+        },
+        {
+          "text": "a2b",
+          "sizePt": 18.0
+        },
+        {
+          "text": "a3b",
+          "sizePt": 18.0
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "d4aeb6f2891a7e2267140dc9105e18cf09e2793389083da184114e5ca1275cff",
+          "afterSha256Lf": "d4aeb6f2891a7e2267140dc9105e18cf09e2793389083da184114e5ca1275cff",
+          "changed": false,
+          "baselineMatchesWordSize": true,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            18.0,
+            18.0,
+            18.0
+          ],
+          "afterComputedSizesPt": [
+            18.0,
+            18.0,
+            18.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "afterSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "body-complex-ignored",
+      "expectedHalfPoints": 44,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "a036f7d7b9a680215328af61e6ec15a10eeb7a8feccc4a307d664677b0b8b107",
+      "wordPdfSha256": "13d116c9989e5fa9102f040ce16e9f18289199c080eeb4288bbce43dc0ea6605",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b \nItem0 \na2b \nItem1 \na3b \nItem2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 21.959999084472656
+        },
+        {
+          "text": "a2b",
+          "sizePt": 21.959999084472656
+        },
+        {
+          "text": "a3b",
+          "sizePt": 21.959999084472656
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "afterSha256Lf": "a8f34618696e5ba435f534ffd6d4bf010b82074c381f988f59e3b564dbe7d35f",
+          "changed": true,
+          "baselineMatchesWordSize": false,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            22.0,
+            22.0,
+            22.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "afterSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "explicit-off-flags",
+      "expectedHalfPoints": 44,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "5a9e6417f2721cd65ce531967fa292ce5028f4caf6b5ab06cfa7d574f0a85647",
+      "wordPdfSha256": "0849c81de9d2e3198ba851e57cca41bac7decc37364a00d6cdbdf215ed8ab7a3",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b \nItem0 \na2b \nItem1 \na3b \nItem2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 21.959999084472656
+        },
+        {
+          "text": "a2b",
+          "sizePt": 21.959999084472656
+        },
+        {
+          "text": "a3b",
+          "sizePt": 21.959999084472656
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "afterSha256Lf": "a8f34618696e5ba435f534ffd6d4bf010b82074c381f988f59e3b564dbe7d35f",
+          "changed": true,
+          "baselineMatchesWordSize": false,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            22.0,
+            22.0,
+            22.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "afterSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "numeric-rtl-control",
+      "expectedHalfPoints": 48,
+      "expectedVisibleLabels": [
+        "1",
+        "2",
+        "3"
+      ],
+      "sourceSha256": "57de54107e36817db6294e8299e3ab63e08cca8bcd2c0ecfe554b107e2f296a0",
+      "wordPdfSha256": "7ecb9e3ca5111a4c2f58f1626d4462b205be9cf3526be14709372b29fcf2e18f",
+      "wordListStrings": [
+        "1",
+        "2",
+        "3"
+      ],
+      "wordPdfText": "1\n \nItem0\n \n2\n \nItem1\n \n3\n \nItem2\n \n",
+      "wordMarkerTraces": [
+        {
+          "text": "1",
+          "sizePt": 24.0
+        },
+        {
+          "text": "2",
+          "sizePt": 24.0
+        },
+        {
+          "text": "3",
+          "sizePt": 24.0
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "2792bd14e037b5870c93ce358733a878b65d3f0647b4deee3bee4df17853bf4c",
+          "afterSha256Lf": "2792bd14e037b5870c93ce358733a878b65d3f0647b4deee3bee4df17853bf4c",
+          "changed": false,
+          "baselineMatchesWordSize": true,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            24.0,
+            24.0,
+            24.0
+          ],
+          "afterComputedSizesPt": [
+            24.0,
+            24.0,
+            24.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "f2c3a3847d332fcf2912e858651443c726a6c46296c24ac49d7707d984900cca",
+          "afterSha256Lf": "f2c3a3847d332fcf2912e858651443c726a6c46296c24ac49d7707d984900cca",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "81d9bf19741fd63b4292b79863098b09a987ea2959c75f87189c5842c0389c03",
+          "afterSha256Lf": "81d9bf19741fd63b4292b79863098b09a987ea2959c75f87189c5842c0389c03",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "guard-mark-cs",
+      "expectedHalfPoints": null,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "425172488fc7c50de34b72192b40629be86dbb742649acef62fd65bb4e2a85d2",
+      "wordPdfSha256": "cc106a37f61e0e333f907a330709103b7fba588ea1ca7d718428a5f89d47c6b2",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b Item0 \na2b Item1 \na3b Item2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 24.0
+        },
+        {
+          "text": "a2b",
+          "sizePt": 24.0
+        },
+        {
+          "text": "a3b",
+          "sizePt": 24.0
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "afterSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "changed": false,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "afterSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "guard-level-cs",
+      "expectedHalfPoints": null,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "2f1bebebd37454ff6f9b27289921442fad43f0ecdf36e974fd9a224ec3621998",
+      "wordPdfSha256": "2f144c6fb776386fc9f2e9422f6e062db1d2d2994debf6076a50ed5811af5336",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b Item0 \na2b Item1 \na3b Item2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 24.0
+        },
+        {
+          "text": "a2b",
+          "sizePt": 24.0
+        },
+        {
+          "text": "a3b",
+          "sizePt": 24.0
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "afterSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "changed": false,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "afterSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "guard-mark-rtl",
+      "expectedHalfPoints": null,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "c8736f286d53f1bd9fd3e5653f9f17b768b6563e18352b010b1d99eb751558ab",
+      "wordPdfSha256": "69c3bfab193049c67e34ee4b956c559279b35c966497d99ea0a9e4d761e89d00",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b Item0 \na2b Item1 \na3b Item2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 24.0
+        },
+        {
+          "text": "a2b",
+          "sizePt": 24.0
+        },
+        {
+          "text": "a3b",
+          "sizePt": 24.0
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "afterSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "changed": false,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "afterSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "guard-hint",
+      "expectedHalfPoints": null,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "b3174fcf4cd22b939a6d29963b18d00fd39716645d520b4fd4719edd72e03a65",
+      "wordPdfSha256": "639ef755949f0e19bc6769b9c7ac938a395aa000141fa83db2d3b34643a286a4",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b \nItem0 \na2b \nItem1 \na3b \nItem2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 21.959999084472656
+        },
+        {
+          "text": "a2b",
+          "sizePt": 21.959999084472656
+        },
+        {
+          "text": "a3b",
+          "sizePt": 21.959999084472656
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "afterSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "changed": false,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "afterSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "guard-superscript",
+      "expectedHalfPoints": null,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "6bcbff4338629e07864189e291e68b3ae2dd61087c480b0c7dd91f81c341589b",
+      "wordPdfSha256": "96331728a40a463a17bf1a27ee7f88a5797aa40f3666c9b612084cd64f0fcec9",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b Item0 \na2b Item1 \na3b Item2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 14.520000457763672
+        },
+        {
+          "text": "a2b",
+          "sizePt": 14.520000457763672
+        },
+        {
+          "text": "a3b",
+          "sizePt": 14.520000457763672
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "afterSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "changed": false,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "afterSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "guard-style-cs",
+      "expectedHalfPoints": null,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "56f61fa249c0fc79df292a5ab353ee9b7b2f7ef9becc101a155640a17c52f634",
+      "wordPdfSha256": "50f3cd0cc482313cf929de0d2acc116ab8f7c20d7a77d0f86062309cd15ca4e0",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b \nItem0 \na2b \nItem1 \na3b \nItem2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 24.0
+        },
+        {
+          "text": "a2b",
+          "sizePt": 24.0
+        },
+        {
+          "text": "a3b",
+          "sizePt": 24.0
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "afterSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "changed": false,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "afterSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "guard-defaults-cs",
+      "expectedHalfPoints": null,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "e56ce34641c9c2f725ae80c4942306781ddfcad0f5f1260ec7615ad7e5d2c649",
+      "wordPdfSha256": "4228193244a8858139cd7bb2935f41f8d56f93bc7f5c6e617e5da7f0986e3389",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b \nItem0 \na2b \nItem1 \na3b \nItem2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 24.0
+        },
+        {
+          "text": "a2b",
+          "sizePt": 24.0
+        },
+        {
+          "text": "a3b",
+          "sizePt": 24.0
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "afterSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "changed": false,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "afterSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "guard-paragraph-rtl",
+      "expectedHalfPoints": null,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "09c96fc7ae7a148ab6db324a8d580d1655438e10bafb377441580aeb1f658f42",
+      "wordPdfSha256": "aac008d0701f85d730b5572459f5f6b5e4a4fd158bb74b4ae6fcc563cc8154a8",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b\n \nItem0\n \na2b\n \nItem1\n \na3b\n \nItem2\n \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 21.959999084472656
+        },
+        {
+          "text": "a2b",
+          "sizePt": 21.959999084472656
+        },
+        {
+          "text": "a3b",
+          "sizePt": 21.959999084472656
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "afterSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "changed": false,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "afterSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "mc-style-choice",
+      "expectedHalfPoints": 56,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "c1874500bc31fddc45667dbebc23456fd9629c5c7a747391c38bcb20aea2c674",
+      "wordPdfSha256": "772963542f4a0bff7201b14dab763e5e2849a7955f343247ca74b3c9bc0abfae",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b Item0 \na2b Item1 \na3b Item2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 27.959999084472656
+        },
+        {
+          "text": "a2b",
+          "sizePt": 27.959999084472656
+        },
+        {
+          "text": "a3b",
+          "sizePt": 27.959999084472656
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "afterSha256Lf": "e551c03fee0810b79d3ef42276b74febe1c96aa19d0e26722298e5aa955a4fa3",
+          "changed": true,
+          "baselineMatchesWordSize": false,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            28.0,
+            28.0,
+            28.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "afterSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "mc-style-fallback",
+      "expectedHalfPoints": 56,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "17de1a654c849b8e04bfbc162c7dcc833fd34cf1a8838e97e441906c0102df49",
+      "wordPdfSha256": "02af7348e1a91c8bc36dc6efd5cc49ce298612ab2318d94c96220e8c92bab80c",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b Item0 \na2b Item1 \na3b Item2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 27.959999084472656
+        },
+        {
+          "text": "a2b",
+          "sizePt": 27.959999084472656
+        },
+        {
+          "text": "a3b",
+          "sizePt": 27.959999084472656
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "afterSha256Lf": "e551c03fee0810b79d3ef42276b74febe1c96aa19d0e26722298e5aa955a4fa3",
+          "changed": true,
+          "baselineMatchesWordSize": false,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            28.0,
+            28.0,
+            28.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "afterSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "mc-mark-choice",
+      "expectedHalfPoints": 44,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "3c9bfb65d99ed9aab34e014823cb39d7e799f8f576b175a66b2f0d01183c6a7b",
+      "wordPdfSha256": "6ddf3f1967cf261797589375c96344a08adfef0bcf8057a3a0639c32b844f604",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b \nItem0 \na2b \nItem1 \na3b \nItem2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 21.959999084472656
+        },
+        {
+          "text": "a2b",
+          "sizePt": 21.959999084472656
+        },
+        {
+          "text": "a3b",
+          "sizePt": 21.959999084472656
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "afterSha256Lf": "a8f34618696e5ba435f534ffd6d4bf010b82074c381f988f59e3b564dbe7d35f",
+          "changed": true,
+          "baselineMatchesWordSize": false,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            22.0,
+            22.0,
+            22.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "afterSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "mc-mark-fallback",
+      "expectedHalfPoints": 44,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "8c912de58bfc43ce019da0def42efac253314d310423e764522550a9bcbffae7",
+      "wordPdfSha256": "272a369352edd6afd472dd8a7b60d9399b197f357575cd93ad3fe639bf7468e1",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b \nItem0 \na2b \nItem1 \na3b \nItem2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 21.959999084472656
+        },
+        {
+          "text": "a2b",
+          "sizePt": 21.959999084472656
+        },
+        {
+          "text": "a3b",
+          "sizePt": 21.959999084472656
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "afterSha256Lf": "a8f34618696e5ba435f534ffd6d4bf010b82074c381f988f59e3b564dbe7d35f",
+          "changed": true,
+          "baselineMatchesWordSize": false,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            22.0,
+            22.0,
+            22.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "afterSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "table-mark",
+      "expectedHalfPoints": 44,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "1c3790e32255304f3296f78537d3350581aa27f84497ba72226ada51537453f1",
+      "wordPdfSha256": "b977a8e0ffb982c527ca73af25f08d6f817576eb1bad096e4cfb72c6c96a9f92",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b \nItem0 \na2b \nItem1 \na3b \nItem2 \n \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 21.959999084472656
+        },
+        {
+          "text": "a2b",
+          "sizePt": 21.959999084472656
+        },
+        {
+          "text": "a3b",
+          "sizePt": 21.959999084472656
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "c4ae53426803153d1044594d9ad2c008d40a66300863ba9f66463e10d7c593c3",
+          "afterSha256Lf": "07a397ea6ca5db3ab3f58504d785ed71ab9dd777cb02e92701ae5dba214a6437",
+          "changed": true,
+          "baselineMatchesWordSize": false,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            36.0,
+            36.0,
+            36.0
+          ],
+          "afterComputedSizesPt": [
+            22.0,
+            22.0,
+            22.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "d1492d5f3ea87dffc0458e27dae88ec864121b772e46f62f019f00880811be3d",
+          "afterSha256Lf": "d1492d5f3ea87dffc0458e27dae88ec864121b772e46f62f019f00880811be3d",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "0f3259835e06c5bc879afd46a1cf6763095972801b826df31a828e75ba74dd2d",
+          "afterSha256Lf": "0f3259835e06c5bc879afd46a1cf6763095972801b826df31a828e75ba74dd2d",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "18daad598d57e1b586d090399b7f292df3ba78797b86b341b15c2ea620e461d7",
+          "afterSha256Lf": "18daad598d57e1b586d090399b7f292df3ba78797b86b341b15c2ea620e461d7",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "db774d0a0e31f54a8d329d7ed0cccdd09e63bfb15f286aa947e6173553d6b968",
+          "afterSha256Lf": "db774d0a0e31f54a8d329d7ed0cccdd09e63bfb15f286aa947e6173553d6b968",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "db774d0a0e31f54a8d329d7ed0cccdd09e63bfb15f286aa947e6173553d6b968",
+          "afterSha256Lf": "db774d0a0e31f54a8d329d7ed0cccdd09e63bfb15f286aa947e6173553d6b968",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "table-style",
+      "expectedHalfPoints": 56,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "f0f08549861fb973d580e7fc7859a7ab92eea3aa9e0981c306b776951f68b1af",
+      "wordPdfSha256": "d54c2b950da11230fcf5462064f9dcce894165da745171687fa8dedfc62911d1",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b Item0 \na2b Item1 \na3b Item2 \n \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 27.959999084472656
+        },
+        {
+          "text": "a2b",
+          "sizePt": 27.959999084472656
+        },
+        {
+          "text": "a3b",
+          "sizePt": 27.959999084472656
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "c4ae53426803153d1044594d9ad2c008d40a66300863ba9f66463e10d7c593c3",
+          "afterSha256Lf": "3842535ba5825b6fa9f4617a6cba91d76edf31a13927c279d43d3584448698c9",
+          "changed": true,
+          "baselineMatchesWordSize": false,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            36.0,
+            36.0,
+            36.0
+          ],
+          "afterComputedSizesPt": [
+            28.0,
+            28.0,
+            28.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "d1492d5f3ea87dffc0458e27dae88ec864121b772e46f62f019f00880811be3d",
+          "afterSha256Lf": "d1492d5f3ea87dffc0458e27dae88ec864121b772e46f62f019f00880811be3d",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "0f3259835e06c5bc879afd46a1cf6763095972801b826df31a828e75ba74dd2d",
+          "afterSha256Lf": "0f3259835e06c5bc879afd46a1cf6763095972801b826df31a828e75ba74dd2d",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "18daad598d57e1b586d090399b7f292df3ba78797b86b341b15c2ea620e461d7",
+          "afterSha256Lf": "18daad598d57e1b586d090399b7f292df3ba78797b86b341b15c2ea620e461d7",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "db774d0a0e31f54a8d329d7ed0cccdd09e63bfb15f286aa947e6173553d6b968",
+          "afterSha256Lf": "db774d0a0e31f54a8d329d7ed0cccdd09e63bfb15f286aa947e6173553d6b968",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "db774d0a0e31f54a8d329d7ed0cccdd09e63bfb15f286aa947e6173553d6b968",
+          "afterSha256Lf": "db774d0a0e31f54a8d329d7ed0cccdd09e63bfb15f286aa947e6173553d6b968",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "table-defaults",
+      "expectedHalfPoints": 32,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "31e567a27025c0f090bfacbb2a4c68190f92f79ba2235be0facd6e8ae1d22b9d",
+      "wordPdfSha256": "961d19dff004d49571adc6226e5b8f7e933ba50d28dd127aa19011413568ba92",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b Item0 \na2b Item1 \na3b Item2 \n \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 15.960000038146973
+        },
+        {
+          "text": "a2b",
+          "sizePt": 15.960000038146973
+        },
+        {
+          "text": "a3b",
+          "sizePt": 15.960000038146973
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "c4ae53426803153d1044594d9ad2c008d40a66300863ba9f66463e10d7c593c3",
+          "afterSha256Lf": "41d0c70864c53abe52f550d277a96f0d34eca6560ecc1f219591bcddb0d6a888",
+          "changed": true,
+          "baselineMatchesWordSize": false,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            36.0,
+            36.0,
+            36.0
+          ],
+          "afterComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "d1492d5f3ea87dffc0458e27dae88ec864121b772e46f62f019f00880811be3d",
+          "afterSha256Lf": "d1492d5f3ea87dffc0458e27dae88ec864121b772e46f62f019f00880811be3d",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "0f3259835e06c5bc879afd46a1cf6763095972801b826df31a828e75ba74dd2d",
+          "afterSha256Lf": "0f3259835e06c5bc879afd46a1cf6763095972801b826df31a828e75ba74dd2d",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "18daad598d57e1b586d090399b7f292df3ba78797b86b341b15c2ea620e461d7",
+          "afterSha256Lf": "18daad598d57e1b586d090399b7f292df3ba78797b86b341b15c2ea620e461d7",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "db774d0a0e31f54a8d329d7ed0cccdd09e63bfb15f286aa947e6173553d6b968",
+          "afterSha256Lf": "db774d0a0e31f54a8d329d7ed0cccdd09e63bfb15f286aa947e6173553d6b968",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "db774d0a0e31f54a8d329d7ed0cccdd09e63bfb15f286aa947e6173553d6b968",
+          "afterSha256Lf": "db774d0a0e31f54a8d329d7ed0cccdd09e63bfb15f286aa947e6173553d6b968",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "style-mark-both",
+      "expectedHalfPoints": 56,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "2b266aeacfe7fa8ea9010a705bd0235f3238023c57e0849305ebf4feeebb6516",
+      "wordPdfSha256": "ac65ed8a53bed68cfba2941c1c5acc369b94f6c2f190f9760ce764b73c85bc9b",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b Item0 \na2b Item1 \na3b Item2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 27.959999084472656
+        },
+        {
+          "text": "a2b",
+          "sizePt": 27.959999084472656
+        },
+        {
+          "text": "a3b",
+          "sizePt": 27.959999084472656
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "afterSha256Lf": "e551c03fee0810b79d3ef42276b74febe1c96aa19d0e26722298e5aa955a4fa3",
+          "changed": true,
+          "baselineMatchesWordSize": false,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            28.0,
+            28.0,
+            28.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "afterSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "style-mark-mark-only",
+      "expectedHalfPoints": 60,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "b217cae71b13ef460506e38c0a75c52ba48702a6008fb72655c7c19be94c543a",
+      "wordPdfSha256": "6da9bd6b385942aab203046677ca48b36de8b3ca85b7f901fc9a1bb0612067f4",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b Item0 \na2b Item1 \na3b Item2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 30.0
+        },
+        {
+          "text": "a2b",
+          "sizePt": 30.0
+        },
+        {
+          "text": "a3b",
+          "sizePt": 30.0
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "afterSha256Lf": "2831b7184c8b08b432f1d677008de21037c3fb2cd7f7e8003ba9c6dd3e6893df",
+          "changed": true,
+          "baselineMatchesWordSize": false,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            30.0,
+            30.0,
+            30.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "afterSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "style-mark-base-run-child-mark",
+      "expectedHalfPoints": 60,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "500f33a3d04da06c5007277748d86ecfda91c3129cec33108a964d78bf853bce",
+      "wordPdfSha256": "79cdaa005d69f167623202d00c7635da28c88c9ab8a029c62d39cdd6fe5aea2f",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b Item0 \na2b Item1 \na3b Item2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 30.0
+        },
+        {
+          "text": "a2b",
+          "sizePt": 30.0
+        },
+        {
+          "text": "a3b",
+          "sizePt": 30.0
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "c31e47e9d7c0b66898ffec0ee9dccea4d4e70f89cf8094692738209442a4ff41",
+          "afterSha256Lf": "a1ba4ba43b99064682f8b406fd499a1c366d646c859e3478884d7d979e2f86a6",
+          "changed": true,
+          "baselineMatchesWordSize": false,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            28.0,
+            28.0,
+            28.0
+          ],
+          "afterComputedSizesPt": [
+            30.0,
+            30.0,
+            30.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "aeca24edd2e06edb414a93c1fb3a9e54f257279fb79ab35e2436cadc57ed7891",
+          "afterSha256Lf": "aeca24edd2e06edb414a93c1fb3a9e54f257279fb79ab35e2436cadc57ed7891",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "style-mark-base-both-child-mark",
+      "expectedHalfPoints": 60,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "fb6111c04f18bf6c1be8c613f7c625ed56bc9b064896a68fa80e79aad190c3d8",
+      "wordPdfSha256": "d606882e45d0a131eb06e625fdd9eb48407b5a1a483294e0466fed7bed25836a",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b Item0 \na2b Item1 \na3b Item2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 30.0
+        },
+        {
+          "text": "a2b",
+          "sizePt": 30.0
+        },
+        {
+          "text": "a3b",
+          "sizePt": 30.0
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "c31e47e9d7c0b66898ffec0ee9dccea4d4e70f89cf8094692738209442a4ff41",
+          "afterSha256Lf": "a1ba4ba43b99064682f8b406fd499a1c366d646c859e3478884d7d979e2f86a6",
+          "changed": true,
+          "baselineMatchesWordSize": false,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            28.0,
+            28.0,
+            28.0
+          ],
+          "afterComputedSizesPt": [
+            30.0,
+            30.0,
+            30.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "aeca24edd2e06edb414a93c1fb3a9e54f257279fb79ab35e2436cadc57ed7891",
+          "afterSha256Lf": "aeca24edd2e06edb414a93c1fb3a9e54f257279fb79ab35e2436cadc57ed7891",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "style-mark-base-mark-child-run",
+      "expectedHalfPoints": 56,
+      "expectedVisibleLabels": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "sourceSha256": "f3e89b0a92cc46f74e00d2e0a2ea61b88b5461861a214e4951d481d7c780729a",
+      "wordPdfSha256": "7423bd473f3b48317c52bda48f5203940ba0df46c7a2fe3b325f6c411f9713fb",
+      "wordListStrings": [
+        "a1b",
+        "a2b",
+        "a3b"
+      ],
+      "wordPdfText": "a1b Item0 \na2b Item1 \na3b Item2 \n",
+      "wordMarkerTraces": [
+        {
+          "text": "a1b",
+          "sizePt": 27.959999084472656
+        },
+        {
+          "text": "a2b",
+          "sizePt": 27.959999084472656
+        },
+        {
+          "text": "a3b",
+          "sizePt": 27.959999084472656
+        }
+      ],
+      "cliOutputs": {
+        "rich-html": {
+          "baselineSha256Lf": "074426f11f1bafc5e1a4af3ca53e0cc2a03d47b2a986cb1566434492986d5b32",
+          "afterSha256Lf": "e551c03fee0810b79d3ef42276b74febe1c96aa19d0e26722298e5aa955a4fa3",
+          "changed": true,
+          "baselineMatchesWordSize": false,
+          "afterMatchesWordSize": true,
+          "baselineComputedSizesPt": [
+            16.0,
+            16.0,
+            16.0
+          ],
+          "afterComputedSizesPt": [
+            28.0,
+            28.0,
+            28.0
+          ]
+        },
+        "plain-html": {
+          "baselineSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "afterSha256Lf": "bb77bee68d40be1daa6b6286acbf423dec4d103ab6f70575a8ecfca84f976627",
+          "changed": false
+        },
+        "rich-markdown": {
+          "baselineSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "afterSha256Lf": "282dbca7fbcb4b7b8e8a54433427eba0cb84b57bb3100b0fafdcb725013a5a38",
+          "changed": false
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "afterSha256Lf": "d9426162e6fd03ae29b13b7666ca2ca3a7ca25b6fbab1270ac8c79c88d3eed5b",
+          "changed": false
+        }
+      }
+    }
+  ],
+  "adjacentLevelSizeCases": [
+    {
+      "case": "missing-normal",
+      "baselineSha256Lf": "e866099883921aa0a598e6b0489a055a56fd18eb5dc380f6588b0d1ae77fb220",
+      "afterSha256Lf": "90eae4a027ae5d8eb1af94eea26a4c1bd4feca49aa85bbdce80bf50536e99b8c"
+    },
+    {
+      "case": "missing-both",
+      "baselineSha256Lf": "e866099883921aa0a598e6b0489a055a56fd18eb5dc380f6588b0d1ae77fb220",
+      "afterSha256Lf": "90eae4a027ae5d8eb1af94eea26a4c1bd4feca49aa85bbdce80bf50536e99b8c"
+    }
+  ]
+}

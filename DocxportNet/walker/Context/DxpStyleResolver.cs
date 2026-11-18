@@ -644,8 +644,8 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
         return styleMarkCaps == true ? !inherited : inherited;
     }
 
-    // Explicit level sizes for ASCII labels, plus the existing numeric RTL
-    // inheritance rule. Keep this marker rule out of body-run layout.
+    // ASCII marker sizes, including ordinary LTR and numeric RTL inheritance.
+    // Keep these marker rules out of body-run layout.
     internal int? ResolveAsciiListMarkerFontSize(ParagraphProperties? paragraph,
         NumberingSymbolRunProperties? level, string text)
     {
@@ -684,14 +684,36 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
             child.LocalName == (complex ? "szCs" : "sz") && child.NamespaceUri ==
                 "http://schemas.openxmlformats.org/wordprocessingml/2006/main")?
             .GetAttribute("val", "http://schemas.openxmlformats.org/wordprocessingml/2006/main").Value;
+        OpenXmlElement? StyleMark(Style style) => style.StyleParagraphProperties?.ChildElements.FirstOrDefault(child =>
+            child.LocalName == "rPr" && child.NamespaceUri == "http://schemas.openxmlformats.org/wordprocessingml/2006/main");
+        bool NeedsScriptOrScalingResolution(OpenXmlElement? properties) => properties?.ChildElements.Any(child =>
+        {
+            if (child.NamespaceUri != "http://schemas.openxmlformats.org/wordprocessingml/2006/main") return false;
+            var value = child.GetAttributes().FirstOrDefault(attribute => attribute.LocalName == "val" &&
+                attribute.NamespaceUri == child.NamespaceUri).Value;
+            if (child.LocalName is "cs" or "rtl" or "smallCaps") return value is not ("0" or "false" or "off");
+            if (child.LocalName == "vertAlign") return value != "baseline";
+            var hint = child.LocalName == "rFonts" ? child.GetAttributes().FirstOrDefault(attribute =>
+                attribute.LocalName == "hint" && attribute.NamespaceUri == child.NamespaceUri).Value : null;
+            return !string.IsNullOrEmpty(hint) && hint != "default";
+        }) == true;
         var size = Size(level);
-        if (numericRtl)
+        // Inherit normal sizes only in unambiguous LTR contexts. Keep inherited
+        // complex flags, font hints and scaled-glyph cases on their existing path.
+        var inheritNormal = size == null && !complex && !rtl &&
+            !NeedsScriptOrScalingResolution(level) &&
+            !NeedsScriptOrScalingResolution(paragraph?.ParagraphMarkRunProperties) &&
+            !NeedsScriptOrScalingResolution(_docDefaultRunProps) &&
+            chain.All(style => !NeedsScriptOrScalingResolution(StyleMark(style)) &&
+                !NeedsScriptOrScalingResolution(style.StyleRunProperties));
+        if (numericRtl || inheritNormal)
         {
             size ??= Size(paragraph?.ParagraphMarkRunProperties);
             foreach (var style in chain)
-                size ??= Size(style.StyleParagraphProperties?.ChildElements.FirstOrDefault(child =>
-                    child.LocalName == "rPr" && child.NamespaceUri ==
-                        "http://schemas.openxmlformats.org/wordprocessingml/2006/main")) ?? Size(style.StyleRunProperties);
+                // Word folds normal-size style-mark values into that style,
+                // with its own run size taking precedence. Keep RTL rules intact.
+                size ??= numericRtl ? Size(StyleMark(style)) ?? Size(style.StyleRunProperties)
+                    : Size(style.StyleRunProperties) ?? Size(StyleMark(style));
             size ??= Size(_docDefaultRunProps);
         }
         return int.TryParse(size, NumberStyles.Integer, CultureInfo.InvariantCulture, out var halfPoints) && halfPoints > 0
