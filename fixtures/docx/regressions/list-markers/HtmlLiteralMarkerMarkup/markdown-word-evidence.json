@@ -1,0 +1,156 @@
+{
+  "cases": [
+    {
+      "case": "standalone-angle-font-bullet",
+      "baseCase": "angle-font-bullet",
+      "context": "standalone",
+      "expectedVisibleLabels": [
+        "a<z>&b",
+        "a<z>&b",
+        "a<z>&b"
+      ],
+      "generatedFontWrapper": true,
+      "sourceSha256": "b5b74c8ee5d827b4a14fa77f95fe32f2b37377af650bf8cf2325d252b919b8bc",
+      "wordPdfSha256": "f1664d5ea233f1c5d15f9534e0f099038429b540b7ea67c6aaf42de51b8906e5",
+      "wordListStrings": [
+        "a<z>&b",
+        "a<z>&b",
+        "a<z>&b"
+      ],
+      "wordPdfText": "a<z>&b  \na<z>&b  \na<z>&b  \n"
+    },
+    {
+      "case": "wrapped-angle-font-bullet",
+      "baseCase": "angle-font-bullet",
+      "context": "wrapped",
+      "expectedVisibleLabels": [
+        "a<z>&b",
+        "a<z>&b",
+        "a<z>&b"
+      ],
+      "generatedFontWrapper": true,
+      "sourceSha256": "70df44ef461d3fe078df6480f0388722de9b5d5113619666fe6b4b1834ab8108",
+      "wordPdfSha256": "7ead8647ad6219789f592b3d5aa10467928dfe936792d2b510c6fff93bd775b0",
+      "wordListStrings": [
+        "a<z>&b",
+        "a<z>&b",
+        "a<z>&b"
+      ],
+      "wordPdfText": "a<z>&b Item0 \na<z>&b Item1 \na<z>&b Item2 \n"
+    },
+    {
+      "case": "standalone-span-numbered",
+      "baseCase": "span-numbered",
+      "context": "standalone",
+      "expectedVisibleLabels": [
+        "<span>x</span>",
+        "<span>x</span>",
+        "<span>x</span>"
+      ],
+      "generatedFontWrapper": false,
+      "sourceSha256": "78c1c5502f232c00db6a3e505945d75b9f5254fea16d00fb614be08e9c66f491",
+      "wordPdfSha256": "65d54368b4ce2586bfe77b11023bf13553b44fb5ba79fe341b42eefd0748d5dc",
+      "wordListStrings": [
+        "<span>x</span>",
+        "<span>x</span>",
+        "<span>x</span>"
+      ],
+      "wordPdfText": "<span>x</span>  \n<span>x</span>  \n<span>x</span>  \n"
+    },
+    {
+      "case": "wrapped-span-numbered",
+      "baseCase": "span-numbered",
+      "context": "wrapped",
+      "expectedVisibleLabels": [
+        "<span>x</span>",
+        "<span>x</span>",
+        "<span>x</span>"
+      ],
+      "generatedFontWrapper": false,
+      "sourceSha256": "6acd954c829ef18af00237c80375fa49ad5dff0deb9ca046fc9fc8c5ff8e60db",
+      "wordPdfSha256": "067a0cf62f9243fde463e8e23701d383a72ec0811bff5ba9c09f97eb4ece953d",
+      "wordListStrings": [
+        "<span>x</span>",
+        "<span>x</span>",
+        "<span>x</span>"
+      ],
+      "wordPdfText": "<span>x</span> Item0 \n<span>x</span> Item1 \n<span>x</span> Item2 \n"
+    },
+    {
+      "case": "standalone-entity-font-bullet",
+      "baseCase": "entity-font-bullet",
+      "context": "standalone",
+      "expectedVisibleLabels": [
+        "&lt;x&gt;",
+        "&lt;x&gt;",
+        "&lt;x&gt;"
+      ],
+      "generatedFontWrapper": true,
+      "sourceSha256": "83afa754c02d949f0d67b8a9aecc0ef4252f0e6a67c0f082f580788977654fae",
+      "wordPdfSha256": "6120eb17d1f912a9286cf4a18fa9947a4bc13f10d39cae8d2653777820d82a23",
+      "wordListStrings": [
+        "&lt;x&gt;",
+        "&lt;x&gt;",
+        "&lt;x&gt;"
+      ],
+      "wordPdfText": "&lt;x&gt;  \n&lt;x&gt;  \n&lt;x&gt;  \n"
+    },
+    {
+      "case": "wrapped-entity-font-bullet",
+      "baseCase": "entity-font-bullet",
+      "context": "wrapped",
+      "expectedVisibleLabels": [
+        "&lt;x&gt;",
+        "&lt;x&gt;",
+        "&lt;x&gt;"
+      ],
+      "generatedFontWrapper": true,
+      "sourceSha256": "ef8b0ddaab72a6bb604e4aff8a99543ba1d28a673c0ea2f28d1bb819db6285d2",
+      "wordPdfSha256": "94388ca574ca02e74d25e2bbf7dcc523d7b20f6893ea96c14ac62a0bb57187da",
+      "wordListStrings": [
+        "&lt;x&gt;",
+        "&lt;x&gt;",
+        "&lt;x&gt;"
+      ],
+      "wordPdfText": "&lt;x&gt; Item0 \n&lt;x&gt; Item1 \n&lt;x&gt; Item2 \n"
+    },
+    {
+      "case": "standalone-counter-angle",
+      "baseCase": "counter-angle",
+      "context": "standalone",
+      "expectedVisibleLabels": [
+        "a<z>1",
+        "a<z>2",
+        "a<z>3"
+      ],
+      "generatedFontWrapper": false,
+      "sourceSha256": "8cadc8cbd444d46d210dd8b3f3e4ba60a78048e74b5528e4ea753e9389751c1f",
+      "wordPdfSha256": "4483da5ae437628431571f6487c7f292e6baf2dc38fddc1b8abc98db73f2a2dc",
+      "wordListStrings": [
+        "a<z>1",
+        "a<z>2",
+        "a<z>3"
+      ],
+      "wordPdfText": "a<z>1 \n \na<z>2 \n \na<z>3 \n \n"
+    },
+    {
+      "case": "wrapped-counter-angle",
+      "baseCase": "counter-angle",
+      "context": "wrapped",
+      "expectedVisibleLabels": [
+        "a<z>1",
+        "a<z>2",
+        "a<z>3"
+      ],
+      "generatedFontWrapper": false,
+      "sourceSha256": "0322fce770c4933b3723bb5c114c254954b7072871e476593cf88519d0ae6511",
+      "wordPdfSha256": "625f67fbec52f94c5b9277a0182ed396d393a49e764ffe58a53e016b239621c4",
+      "wordListStrings": [
+        "a<z>1",
+        "a<z>2",
+        "a<z>3"
+      ],
+      "wordPdfText": "a<z>1 \nItem0 \na<z>2 \nItem1 \na<z>3 \nItem2 \n"
+    }
+  ]
+}
