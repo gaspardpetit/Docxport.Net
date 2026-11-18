@@ -1946,7 +1946,7 @@
     },
     {
       "case": "missing-normal",
-      "expectedHalfPoints": null,
+      "expectedHalfPoints": 24,
       "expectedVisibleLabels": [
         "a1b",
         "a2b",
@@ -2108,7 +2108,7 @@
     },
     {
       "case": "missing-both",
-      "expectedHalfPoints": null,
+      "expectedHalfPoints": 24,
       "expectedVisibleLabels": [
         "a1b",
         "a2b",
@@ -3966,5 +3966,6 @@
         }
       }
     }
-  ]
+  ],
+  "cliEvidencePullRequest": 307
 }
