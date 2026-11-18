@@ -1,4 +1,4 @@
-# Literal marker text and HTML font wrappers
+# Literal marker text and generated font wrappers
 
 These 29 generic documents cover rich/plain HTML labels containing angle brackets, tag-like text, entity-like text, ampersands and Unicode, plus numeric substitutions and caps. Each pattern is exercised as a numbered label, a bullet without a font wrapper, and an Arial bullet with the formatter's generated wrapper. Ordinary labels and genuine generated wrappers provide controls.
 
@@ -6,4 +6,9 @@ Word displays the label characters literally. Previously, HTML guessed that any 
 
 All visible expectations were confirmed using fresh Word PDFs, grouped under `truth/pdf-word/regressions/list-markers/HtmlLiteralMarkerMarkup/source/`. Source/PDF hashes, Word strings/text, exact expected labels and actual CLI before/after hashes are in `word-evidence.json`. Four representative rich HTML pairs are retained in `baseline/` and `html/`.
 
-Tests assert exact rich/plain HTML marker text, preservation of the intended generated font span, absence of unintended label elements, OOXML validation and source document/styles/numbering immutability. CLI checks compare changes inside marker payloads, preserve marker CSS and the surrounding document, and check existing generic sample exports. This change is scoped to HTML rendering; formatter output and other visitors retain their existing contracts.
+HTML tests assert exact rich/plain HTML marker text, preservation of the intended generated font span, absence of unintended label elements, OOXML validation and source document/styles/numbering immutability. CLI checks compare changes inside marker payloads, preserve marker CSS and the surrounding document, and check existing generic sample exports. The HTML fix preserves the formatter output contract.
+
+
+Plain-text coverage reuses these same 29 source documents and matching Word PDFs. `PlainTextLiteralMarkerTests` checks accept/reject exports, exact labels and source XML preservation, plus established Symbol and Wingdings translation controls. The plain-text visitor removes only the metadata-confirmed generated wrapper; it preserves tag-like characters in its literal payload.
+
+`plain-text-evidence.json` binds its CLI results to the unchanged Word evidence manifest and records before/after hashes for accept/reject text, rich/plain HTML and rich/plain Markdown. Four representative text pairs are retained under `plain-text/baseline/` and `plain-text/after/`. Source documents and PDFs are shared rather than duplicated for this follow-up.
