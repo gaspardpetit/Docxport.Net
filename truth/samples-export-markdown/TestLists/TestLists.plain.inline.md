@@ -83,9 +83,9 @@ i. roman i
 
 ii. roman ii
 
-1\. numbered 1.
+1&#46; numbered 1.
 
-2\. numbered 2.
+2&#46; numbered 2.
 
 I. Roman I.
 
@@ -99,7 +99,7 @@ a. letter a.
 
 i. roman i.
 
-1\. numbered 1.
+1&#46; numbered 1.
 
 1st. Item 1st.
 
@@ -165,7 +165,7 @@ Dix mille. Comic dix mille.
 
 1.1.1.1.1.1.1.1.1 Heading 1.1.1.1.1.1.1.1.1
 
-1\) Multi level 1
+1&#41; Multi level 1
 
 a) Multi level (a)
 
@@ -177,7 +177,7 @@ i) Multi level (i)
 
 (i) Multi level (i)
 
-1\. Multi level 1.
+1&#46; Multi level 1.
 
 a.  Multi level a.
 

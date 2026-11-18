@@ -10,11 +10,11 @@
 
 [0003]
 
-1\. Item 1
+1&#46; Item 1
 
 no marker
 
-2\. Item 2
+2&#46; Item 2
 
 – Dash level 1
 
@@ -26,6 +26,6 @@ no marker level 2
 
 – Dash level 3
 
-3\. Item 3
+3&#46; Item 3
 
-4\. Item 4
+4&#46; Item 4

@@ -1,0 +1,815 @@
+{
+  "renderer": {
+    "name": "markdown-it-py",
+    "version": "4.2.0",
+    "preset": "commonmark",
+    "htmlEnabled": true,
+    "plainHtmlDisabledContexts": [
+      "body",
+      "wrapped",
+      "standalone"
+    ]
+  },
+  "wordEvidenceSha256Lf": "6dfd55a3db270deb2a45a2bfa9597062db17c2a250d2f58838aaa9e1396e36e4",
+  "cases": [
+    {
+      "case": "body-period",
+      "cliOutputs": {
+        "rich-markdown": {
+          "baselineSha256Lf": "ffc8aa7b64d397b2d393ade5bb9563c0a39dbe3e37d8b9e3556fc5d04263ce41",
+          "afterSha256Lf": "0312cddc414c908d0b54ce6152abef87a1af665fad49e5dd28684595f5048c90",
+          "changed": true,
+          "baselineMatchesWord": false,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "\n\n1\\. Item0\n2. Item1\n3. Item2\n\n\n",
+          "afterRenderedText": "\n\n1. Item0\n2. Item1\n3. Item2\n\n\n",
+          "baselineRenderedSha256Lf": "03a142921bc8f3b9018bebd64f939a30e88ae8243813fc9adc7d22e4dd342560",
+          "afterRenderedSha256Lf": "92680018307d3c1c5ffb6591af8826d5a4c461bdc732d545a53eeac658b91ec3"
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "e7131bf66af77a6f0046805bc61da2133c7f8f9a46e5d84ee5e15db61050f4f1",
+          "afterSha256Lf": "b5a59a197d48041fe8d58c23c3b6e93773dc0bd8be13cdebcc50bdbbb27e35f4",
+          "changed": true,
+          "baselineMatchesWord": true,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "1. Item0\n2. Item1\n3. Item2\n",
+          "afterRenderedText": "1. Item0\n2. Item1\n3. Item2\n",
+          "baselineRenderedSha256Lf": "a994ce0fa409b4a0bc25ab40996e0b440fa20860f031d1f63cebd39b703b7a5d",
+          "afterRenderedSha256Lf": "a994ce0fa409b4a0bc25ab40996e0b440fa20860f031d1f63cebd39b703b7a5d"
+        },
+        "rich-html": {
+          "baselineSha256Lf": "3a3a5e0ba4c9b158f879b60137915f5e164d1c903c009600ce08d4384cec358d",
+          "afterSha256Lf": "3a3a5e0ba4c9b158f879b60137915f5e164d1c903c009600ce08d4384cec358d",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "27cc293fe38438df997bfb4060bf96bf2cf9eb6cc6b805dc853d6666718ff339",
+          "afterSha256Lf": "27cc293fe38438df997bfb4060bf96bf2cf9eb6cc6b805dc853d6666718ff339",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "1ebf755b2b86e3418cf76312f7617ca7649640a387df5e4161e8db5076a16abb",
+          "afterSha256Lf": "1ebf755b2b86e3418cf76312f7617ca7649640a387df5e4161e8db5076a16abb",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "1ebf755b2b86e3418cf76312f7617ca7649640a387df5e4161e8db5076a16abb",
+          "afterSha256Lf": "1ebf755b2b86e3418cf76312f7617ca7649640a387df5e4161e8db5076a16abb",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "body-parenthesis",
+      "cliOutputs": {
+        "rich-markdown": {
+          "baselineSha256Lf": "0c6d6d0c135ebd5b6f4bc75d7589411e4707708edaa2bd3a8ebefb6591fd95d5",
+          "afterSha256Lf": "53fb9bdc5010605291a1d445c11144e70ef319f920cd59c67dccfc006fe474b9",
+          "changed": true,
+          "baselineMatchesWord": false,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "\n\n1\\) Item0\n2) Item1\n3) Item2\n\n\n",
+          "afterRenderedText": "\n\n1) Item0\n2) Item1\n3) Item2\n\n\n",
+          "baselineRenderedSha256Lf": "c3f0d44d4f37d0a1e4bc95d9b6908d8724f358f313c495e496ef89bab86b6988",
+          "afterRenderedSha256Lf": "f23a0f55b7f473bfd25cffc2c85087aa587a8f223c607b2a77623cd8f662c588"
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "df62896dd1d12edc1ee3aaa07fbaff2f5d9883150c40bad5ffb050b307a08d8d",
+          "afterSha256Lf": "755834682f310135163b6514e65b85da8c7d35bae319d3942a19fe15a17c0f2f",
+          "changed": true,
+          "baselineMatchesWord": true,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "1) Item0\n2) Item1\n3) Item2\n",
+          "afterRenderedText": "1) Item0\n2) Item1\n3) Item2\n",
+          "baselineRenderedSha256Lf": "bd59211f86f6ad856e7cda1d90ce9c97cef650223fb68e68ccd8a558db6c6986",
+          "afterRenderedSha256Lf": "bd59211f86f6ad856e7cda1d90ce9c97cef650223fb68e68ccd8a558db6c6986"
+        },
+        "rich-html": {
+          "baselineSha256Lf": "c89f1b8141cb89d0db2ed1b62947ec3852f1a8a49eaf8c5b280ac966794cfd47",
+          "afterSha256Lf": "c89f1b8141cb89d0db2ed1b62947ec3852f1a8a49eaf8c5b280ac966794cfd47",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "795dacb10474b2e760e5c3b8fc0c2e7fc66e8575f5ac6577a3a3809c2e82f460",
+          "afterSha256Lf": "795dacb10474b2e760e5c3b8fc0c2e7fc66e8575f5ac6577a3a3809c2e82f460",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "2efa7e7bc802de760ce067b8117fa953fcd0d31fceffe8684df8920975341dab",
+          "afterSha256Lf": "2efa7e7bc802de760ce067b8117fa953fcd0d31fceffe8684df8920975341dab",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "2efa7e7bc802de760ce067b8117fa953fcd0d31fceffe8684df8920975341dab",
+          "afterSha256Lf": "2efa7e7bc802de760ce067b8117fa953fcd0d31fceffe8684df8920975341dab",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "standalone-period",
+      "cliOutputs": {
+        "rich-markdown": {
+          "baselineSha256Lf": "f71616936bb16146914701de383d7393d4745b5ea1a1b5fe7e971f57d9f5148e",
+          "afterSha256Lf": "d6da38fe4484cc494c1ed762e6589adf90027f0d6d78c0af9d568da94a251e81",
+          "changed": true,
+          "baselineMatchesWord": false,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "\n\n1\\.\n2.\n3.\n\n\n",
+          "afterRenderedText": "\n\n1.\n2.\n3.\n\n\n",
+          "baselineRenderedSha256Lf": "74072741a392d845584f08a2301dfb47a867d751d3d02e773eab9b29bd8719f5",
+          "afterRenderedSha256Lf": "bad17b2ee0f83a27c721862b4662a551f013806b18af2cc0ace84a862c9eeaf6"
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "fa18e7930460acbe6fc57e55f374c006aaf1fc08f3ce1f419e797c86071a635b",
+          "afterSha256Lf": "24fcc43137889bd8ad6f6c0b13d7fc66c125583b66879cfd790ff68f80eb7ee4",
+          "changed": true,
+          "baselineMatchesWord": true,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "1.\n2.\n3.\n",
+          "afterRenderedText": "1.\n2.\n3.\n",
+          "baselineRenderedSha256Lf": "8b73306617fbef9c4184ba968a06732c6ffec8db36a41706fb691c3491da050a",
+          "afterRenderedSha256Lf": "8b73306617fbef9c4184ba968a06732c6ffec8db36a41706fb691c3491da050a"
+        },
+        "rich-html": {
+          "baselineSha256Lf": "012ebcb40388194ef300ff2c8b054a932893d9b6f3513f8e8d25d25d0b8cb72b",
+          "afterSha256Lf": "012ebcb40388194ef300ff2c8b054a932893d9b6f3513f8e8d25d25d0b8cb72b",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "3a1e0f3d911a89915ac36e9cc8e3ed34896aac2ba32fbb47ef25208ca5237a8f",
+          "afterSha256Lf": "3a1e0f3d911a89915ac36e9cc8e3ed34896aac2ba32fbb47ef25208ca5237a8f",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "7378d19ae833b4b14efc8244ef41f2818504423add9b4d6ed604e9ddc6909ccd",
+          "afterSha256Lf": "7378d19ae833b4b14efc8244ef41f2818504423add9b4d6ed604e9ddc6909ccd",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "7378d19ae833b4b14efc8244ef41f2818504423add9b4d6ed604e9ddc6909ccd",
+          "afterSha256Lf": "7378d19ae833b4b14efc8244ef41f2818504423add9b4d6ed604e9ddc6909ccd",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "standalone-parenthesis",
+      "cliOutputs": {
+        "rich-markdown": {
+          "baselineSha256Lf": "1c047d3f9631cce5791de5d3c19dd3f852cea374ed8bfc22a41bfaccea0ba03b",
+          "afterSha256Lf": "78946dd02d346b94364f6db63006de24d65da0a5dc0864fc2527fb5bbe68da93",
+          "changed": true,
+          "baselineMatchesWord": false,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "\n\n1\\)\n2)\n3)\n\n\n",
+          "afterRenderedText": "\n\n1)\n2)\n3)\n\n\n",
+          "baselineRenderedSha256Lf": "7888aac7b1f76322f790941f586c17c72cd1c658679fb60a29fe166a938c2199",
+          "afterRenderedSha256Lf": "bca29a7f60912ef9f0018c3520cac1c05747dda8d078b1a476b896d8b02c615b"
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "b1a5fe50ddea69688437c4b9d0ba5fc23e068134170bd0001bf67ff29c3c809a",
+          "afterSha256Lf": "1b70d765292eabc3ecbe8f09ac99d4e82bf3c118ab1e5263376081f5676d51fc",
+          "changed": true,
+          "baselineMatchesWord": true,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "1)\n2)\n3)\n",
+          "afterRenderedText": "1)\n2)\n3)\n",
+          "baselineRenderedSha256Lf": "98970e97e58ebe7ca74867baabc4ede02e96e2d798c6b43b1d1f7de822c13262",
+          "afterRenderedSha256Lf": "98970e97e58ebe7ca74867baabc4ede02e96e2d798c6b43b1d1f7de822c13262"
+        },
+        "rich-html": {
+          "baselineSha256Lf": "1cb2e5a89585fa7a2a9e17f0b5271344346446bafcd298857c12316c05dd6df8",
+          "afterSha256Lf": "1cb2e5a89585fa7a2a9e17f0b5271344346446bafcd298857c12316c05dd6df8",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "b664fe1377f3f31b461fb3e1abaff234a81cf95d30101b9df8fed4dbee980be1",
+          "afterSha256Lf": "b664fe1377f3f31b461fb3e1abaff234a81cf95d30101b9df8fed4dbee980be1",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "fe906ca9928eea8345d29ab17566f582e476b170ed6d9ea583f32c6959d30924",
+          "afterSha256Lf": "fe906ca9928eea8345d29ab17566f582e476b170ed6d9ea583f32c6959d30924",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "fe906ca9928eea8345d29ab17566f582e476b170ed6d9ea583f32c6959d30924",
+          "afterSha256Lf": "fe906ca9928eea8345d29ab17566f582e476b170ed6d9ea583f32c6959d30924",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "wrapped-period",
+      "cliOutputs": {
+        "rich-markdown": {
+          "baselineSha256Lf": "7571a07880d140db59d005490f2ebc4ab4c2077bd603a61818dd47b8d5111662",
+          "afterSha256Lf": "7571a07880d140db59d005490f2ebc4ab4c2077bd603a61818dd47b8d5111662",
+          "changed": false,
+          "baselineMatchesWord": true,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "\n\n1. Item0\n2. Item1\n3. Item2\n\n\n",
+          "afterRenderedText": "\n\n1. Item0\n2. Item1\n3. Item2\n\n\n",
+          "baselineRenderedSha256Lf": "c656e97a3c29273d1b1c2de49a3a72e0fe8e7350b080473f321b969b6df38aba",
+          "afterRenderedSha256Lf": "c656e97a3c29273d1b1c2de49a3a72e0fe8e7350b080473f321b969b6df38aba"
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "e7131bf66af77a6f0046805bc61da2133c7f8f9a46e5d84ee5e15db61050f4f1",
+          "afterSha256Lf": "b5a59a197d48041fe8d58c23c3b6e93773dc0bd8be13cdebcc50bdbbb27e35f4",
+          "changed": true,
+          "baselineMatchesWord": true,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "1. Item0\n2. Item1\n3. Item2\n",
+          "afterRenderedText": "1. Item0\n2. Item1\n3. Item2\n",
+          "baselineRenderedSha256Lf": "a994ce0fa409b4a0bc25ab40996e0b440fa20860f031d1f63cebd39b703b7a5d",
+          "afterRenderedSha256Lf": "a994ce0fa409b4a0bc25ab40996e0b440fa20860f031d1f63cebd39b703b7a5d"
+        },
+        "rich-html": {
+          "baselineSha256Lf": "17b67f70fc100d76efdf34bbbcfea9caa9cc5110fabf4be2ef8b361af423bb85",
+          "afterSha256Lf": "17b67f70fc100d76efdf34bbbcfea9caa9cc5110fabf4be2ef8b361af423bb85",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "e789784cca8a13433c42e4166835780e7295b8c3050231d6df9c0887a7d65831",
+          "afterSha256Lf": "e789784cca8a13433c42e4166835780e7295b8c3050231d6df9c0887a7d65831",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "1ebf755b2b86e3418cf76312f7617ca7649640a387df5e4161e8db5076a16abb",
+          "afterSha256Lf": "1ebf755b2b86e3418cf76312f7617ca7649640a387df5e4161e8db5076a16abb",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "1ebf755b2b86e3418cf76312f7617ca7649640a387df5e4161e8db5076a16abb",
+          "afterSha256Lf": "1ebf755b2b86e3418cf76312f7617ca7649640a387df5e4161e8db5076a16abb",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "wrapped-parenthesis",
+      "cliOutputs": {
+        "rich-markdown": {
+          "baselineSha256Lf": "9211535724bddd47f7e42342369422b51dbd71f885ca6df6b4b01ee553005fee",
+          "afterSha256Lf": "9211535724bddd47f7e42342369422b51dbd71f885ca6df6b4b01ee553005fee",
+          "changed": false,
+          "baselineMatchesWord": true,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "\n\n1) Item0\n2) Item1\n3) Item2\n\n\n",
+          "afterRenderedText": "\n\n1) Item0\n2) Item1\n3) Item2\n\n\n",
+          "baselineRenderedSha256Lf": "b44e628cf802f80d275639104c3a3b580844e314f87017be3704915c066ec3b4",
+          "afterRenderedSha256Lf": "b44e628cf802f80d275639104c3a3b580844e314f87017be3704915c066ec3b4"
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "df62896dd1d12edc1ee3aaa07fbaff2f5d9883150c40bad5ffb050b307a08d8d",
+          "afterSha256Lf": "755834682f310135163b6514e65b85da8c7d35bae319d3942a19fe15a17c0f2f",
+          "changed": true,
+          "baselineMatchesWord": true,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "1) Item0\n2) Item1\n3) Item2\n",
+          "afterRenderedText": "1) Item0\n2) Item1\n3) Item2\n",
+          "baselineRenderedSha256Lf": "bd59211f86f6ad856e7cda1d90ce9c97cef650223fb68e68ccd8a558db6c6986",
+          "afterRenderedSha256Lf": "bd59211f86f6ad856e7cda1d90ce9c97cef650223fb68e68ccd8a558db6c6986"
+        },
+        "rich-html": {
+          "baselineSha256Lf": "278e5877eae1a782c1e6c2896b10e4e7210c5812ccbe36bdb9892b867229fded",
+          "afterSha256Lf": "278e5877eae1a782c1e6c2896b10e4e7210c5812ccbe36bdb9892b867229fded",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "e4ef0b7bf2af618f161e0e70d1ccfe93cda51ebbea68421d24fa3ce6e0ceefd6",
+          "afterSha256Lf": "e4ef0b7bf2af618f161e0e70d1ccfe93cda51ebbea68421d24fa3ce6e0ceefd6",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "2efa7e7bc802de760ce067b8117fa953fcd0d31fceffe8684df8920975341dab",
+          "afterSha256Lf": "2efa7e7bc802de760ce067b8117fa953fcd0d31fceffe8684df8920975341dab",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "2efa7e7bc802de760ce067b8117fa953fcd0d31fceffe8684df8920975341dab",
+          "afterSha256Lf": "2efa7e7bc802de760ce067b8117fa953fcd0d31fceffe8684df8920975341dab",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "table-period",
+      "cliOutputs": {
+        "rich-markdown": {
+          "baselineSha256Lf": "40d9cb06e33336a25cb03702b41c0c30ee6bd19f1ac2d4e85dd059bcf0a9d47b",
+          "afterSha256Lf": "c1adcbda1f50950e4d18a92c3e3a8f165215126bcfc173f57e6e2a7d64f4c7bd",
+          "changed": true,
+          "baselineMatchesWord": false,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "\n\n\n  \n    1\\. Item0\n2. Item1\n3. Item2\n\n  \n\nBody\n\n\n",
+          "afterRenderedText": "\n\n\n  \n    1. Item0\n2. Item1\n3. Item2\n\n  \n\nBody\n\n\n",
+          "baselineRenderedSha256Lf": "9dde029157121191cde6cdc5f09fa758ff06036fa41affa7f38947eba99cc15f",
+          "afterRenderedSha256Lf": "20306bf08ab06cad5acc6e595b9a390d9587523e771adbcb3f3aa4bfac7f2711"
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "9e68721154e2138e4489e5e5d6af489b9a683b30e316c8ed09fdf3a9dd2f6695",
+          "afterSha256Lf": "56c1bf0f68d94f25bdfe5724693a0ebb39c2b21233918201735d44cb77001180",
+          "changed": true,
+          "baselineMatchesWord": false,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "\n  \n    1\\. Item0\n2. Item1\n3. Item2\n\n  \n\nBody\n",
+          "afterRenderedText": "\n  \n    1. Item0\n2. Item1\n3. Item2\n\n  \n\nBody\n",
+          "baselineRenderedSha256Lf": "aab56143aea9ae1d517f1d399326e1ac6e6f2075adf35b22e4ffd93e2defd5b9",
+          "afterRenderedSha256Lf": "9c19aa4160c794bbaf0d57fa01ad0c43bf52f6634f8ecb7b7004fa8185cd32e9"
+        },
+        "rich-html": {
+          "baselineSha256Lf": "b455a16b64ecd59c58e99bb78df162d50f289221bbe565ea1c2b15a201234ca1",
+          "afterSha256Lf": "b455a16b64ecd59c58e99bb78df162d50f289221bbe565ea1c2b15a201234ca1",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "e52bc8c18a0216720f771d3cc316a447a26a884b2f931babdb3738c767f5d75b",
+          "afterSha256Lf": "e52bc8c18a0216720f771d3cc316a447a26a884b2f931babdb3738c767f5d75b",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "50932928c97209a0bf9c148580fe6b918f50a5689a89f8c072d8f8e301db3ce8",
+          "afterSha256Lf": "50932928c97209a0bf9c148580fe6b918f50a5689a89f8c072d8f8e301db3ce8",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "50932928c97209a0bf9c148580fe6b918f50a5689a89f8c072d8f8e301db3ce8",
+          "afterSha256Lf": "50932928c97209a0bf9c148580fe6b918f50a5689a89f8c072d8f8e301db3ce8",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "table-parenthesis",
+      "cliOutputs": {
+        "rich-markdown": {
+          "baselineSha256Lf": "837f7cbe950e52cef183d27005d50f6bda08285a7db2b19314b9232b5fae22ce",
+          "afterSha256Lf": "687bfc52db4a6a865e2d4e325f4d24fc347e1dbe9c3809327a73a0bbea1f23e1",
+          "changed": true,
+          "baselineMatchesWord": false,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "\n\n\n  \n    1\\) Item0\n2) Item1\n3) Item2\n\n  \n\nBody\n\n\n",
+          "afterRenderedText": "\n\n\n  \n    1) Item0\n2) Item1\n3) Item2\n\n  \n\nBody\n\n\n",
+          "baselineRenderedSha256Lf": "a91729461a9a6304bc53d8813d2fc0bb43c02daf7c05d4e646f7fce257f40e7c",
+          "afterRenderedSha256Lf": "9af8306a49ff5dfd4fdbecbfaa679a5b436738c23985920b0f4dc0ba459725c9"
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "c17ddcfe1ce39036a3ad877ed39c95ef8cca454f82dfaf668bd69556c115aced",
+          "afterSha256Lf": "457164e1c363f968c87d312fb174b199a843c3e78c24035efeed8ca472d880e1",
+          "changed": true,
+          "baselineMatchesWord": false,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "\n  \n    1\\) Item0\n2) Item1\n3) Item2\n\n  \n\nBody\n",
+          "afterRenderedText": "\n  \n    1) Item0\n2) Item1\n3) Item2\n\n  \n\nBody\n",
+          "baselineRenderedSha256Lf": "a8fefbc93fc95059d2e7c32635697016373620800dad8ccffc7a03ab938f33a1",
+          "afterRenderedSha256Lf": "eeb3f3b7105ed968c3ce1ebd27899cf7899574db88d542f74c98d0cfc3a5f921"
+        },
+        "rich-html": {
+          "baselineSha256Lf": "2f87f846a71f2529e9ce52a73952b922499564b27cf47640dba41c44287592e5",
+          "afterSha256Lf": "2f87f846a71f2529e9ce52a73952b922499564b27cf47640dba41c44287592e5",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "92e9b77ce934b8ab9d64790da5328f97b28aa87abcbbd4638c09691d55088bea",
+          "afterSha256Lf": "92e9b77ce934b8ab9d64790da5328f97b28aa87abcbbd4638c09691d55088bea",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "deb0a9407f6ff9e6600d7e9269222410dea452d10e0dc906909d7fc2a8d1dade",
+          "afterSha256Lf": "deb0a9407f6ff9e6600d7e9269222410dea452d10e0dc906909d7fc2a8d1dade",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "deb0a9407f6ff9e6600d7e9269222410dea452d10e0dc906909d7fc2a8d1dade",
+          "afterSha256Lf": "deb0a9407f6ff9e6600d7e9269222410dea452d10e0dc906909d7fc2a8d1dade",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "header-period",
+      "cliOutputs": {
+        "rich-markdown": {
+          "baselineSha256Lf": "30d533099cb62ae16b75922b30256f0892d5dce2d672bca54fd56e3e28a27ca6",
+          "afterSha256Lf": "931b5b344780f3e59832d591188b79a0ebe0bb35b44c398cd0868ed8ca5f8a1e",
+          "changed": true,
+          "baselineMatchesWord": false,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "\n\n1\\. Item0\n2. Item1\n3. Item2\n\n\nBody\n\n\n",
+          "afterRenderedText": "\n\n1. Item0\n2. Item1\n3. Item2\n\n\nBody\n\n\n",
+          "baselineRenderedSha256Lf": "3b966c026e71bce268af3d99e8343598cbe910a3601f3154670504475040af80",
+          "afterRenderedSha256Lf": "d1e98779e218b66fd319cc85ae8cf68b7d0137dfb8259e10623a29ecc095597d"
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "2f5ae8e12d17756a4e508f0ab142e752203b3a5ca6c9957c476bb11e76117cd2",
+          "afterSha256Lf": "d7a48d005b8bc79b3c807f37d651d023ca8f5993ee33d9ab5291fa040282e89f",
+          "changed": true,
+          "baselineMatchesWord": false,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "\n1\\. Item0\n2. Item1\n3. Item2\n\nBody\n",
+          "afterRenderedText": "\n1. Item0\n2. Item1\n3. Item2\n\nBody\n",
+          "baselineRenderedSha256Lf": "71ae546d2c0463fbd6889c687e49ca005c7c8e7bc68b8b371bd3446fff423762",
+          "afterRenderedSha256Lf": "66f8c9db175fe59499c4a06a36ed1c6e37a08ed7492908483ca56e475dd00896"
+        },
+        "rich-html": {
+          "baselineSha256Lf": "519980112ac3865a6b80976242f6d8ddd57680641ea0101a6d8017f413cfd171",
+          "afterSha256Lf": "519980112ac3865a6b80976242f6d8ddd57680641ea0101a6d8017f413cfd171",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "05ebe49df2e8656cb26cdbe5f0172ec1294b58722db013c6f560d76d3bff81e3",
+          "afterSha256Lf": "05ebe49df2e8656cb26cdbe5f0172ec1294b58722db013c6f560d76d3bff81e3",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "c91a39aafc4d5a438c875847f458f103a133cb42d510bdca02f9e9209b645b76",
+          "afterSha256Lf": "c91a39aafc4d5a438c875847f458f103a133cb42d510bdca02f9e9209b645b76",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "c91a39aafc4d5a438c875847f458f103a133cb42d510bdca02f9e9209b645b76",
+          "afterSha256Lf": "c91a39aafc4d5a438c875847f458f103a133cb42d510bdca02f9e9209b645b76",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "header-parenthesis",
+      "cliOutputs": {
+        "rich-markdown": {
+          "baselineSha256Lf": "1bd3d39edb294cb08d1f5381ab3566a6f41739481ec285de267e53fcd863a37f",
+          "afterSha256Lf": "7a18ba6f68229739fbf04f83a467368bd24d6183fa2d237bb19b9702150f220d",
+          "changed": true,
+          "baselineMatchesWord": false,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "\n\n1\\) Item0\n2) Item1\n3) Item2\n\n\nBody\n\n\n",
+          "afterRenderedText": "\n\n1) Item0\n2) Item1\n3) Item2\n\n\nBody\n\n\n",
+          "baselineRenderedSha256Lf": "dfc1a8e582e4cfad2b7860d9decb6882466c2e8ea745976781c47a521746fee1",
+          "afterRenderedSha256Lf": "65bf37d3830195d83e01d993c513cd2945b90b478fb5f7c2b579e1a2363b0ec4"
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "453fe2793ab1cd4e3058eef5a9f576a0241924f6b4c65bd11b6570b2fd2b17b8",
+          "afterSha256Lf": "ac4b13cfcf15a58f285dd488212e82706e9e523885682cec76856b897a709443",
+          "changed": true,
+          "baselineMatchesWord": false,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "\n1\\) Item0\n2) Item1\n3) Item2\n\nBody\n",
+          "afterRenderedText": "\n1) Item0\n2) Item1\n3) Item2\n\nBody\n",
+          "baselineRenderedSha256Lf": "92bc02ed37c72a8fd05c6b29cdd256136eef7625c43f8707f3548cf9c777f3b5",
+          "afterRenderedSha256Lf": "8a9fcb326d3024109afc6a4ed15465a8350dd4ebd78d0a7ec89e48fca5215866"
+        },
+        "rich-html": {
+          "baselineSha256Lf": "475e30deaea115fd634d5930dc0851f85c4506431b007787f94f1f5e1b838e58",
+          "afterSha256Lf": "475e30deaea115fd634d5930dc0851f85c4506431b007787f94f1f5e1b838e58",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "95a0818a9a511cedf5b20449cec4d1584d4035716699474a9e7283deac3b54fb",
+          "afterSha256Lf": "95a0818a9a511cedf5b20449cec4d1584d4035716699474a9e7283deac3b54fb",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "c91a39aafc4d5a438c875847f458f103a133cb42d510bdca02f9e9209b645b76",
+          "afterSha256Lf": "c91a39aafc4d5a438c875847f458f103a133cb42d510bdca02f9e9209b645b76",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "c91a39aafc4d5a438c875847f458f103a133cb42d510bdca02f9e9209b645b76",
+          "afterSha256Lf": "c91a39aafc4d5a438c875847f458f103a133cb42d510bdca02f9e9209b645b76",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "footer-period",
+      "cliOutputs": {
+        "rich-markdown": {
+          "baselineSha256Lf": "4295724d1b15ade95404d95d5067ad6f445cc282d5c5f992ade286fb4a8e7072",
+          "afterSha256Lf": "f6530fb3acf4a323ffe6f1de20d6f83ab3e7c1a08fbaa6499fe4a5aae8ef79df",
+          "changed": true,
+          "baselineMatchesWord": false,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "\n\nBody\n\n\n1\\. Item0\n2. Item1\n3. Item2\n\n\n",
+          "afterRenderedText": "\n\nBody\n\n\n1. Item0\n2. Item1\n3. Item2\n\n\n",
+          "baselineRenderedSha256Lf": "297cbb2b4a302955f6fb90a38ac6131dc90b4e7d9a79f233f3d82fc7288a99ce",
+          "afterRenderedSha256Lf": "9bfd78b852e00ee32e24bde350557a18122519e744fd55b22d493a58457dfdd0"
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "71504b79813972c5f153e69933abda0e7c4ed9dd013509df42aaad84dbd2e1a1",
+          "afterSha256Lf": "13ed6dc5483851db8ede222d5dd110c88b097a18366601d74ba5f423d3fff3f3",
+          "changed": true,
+          "baselineMatchesWord": false,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "Body\n\n1\\. Item0\n2. Item1\n3. Item2\n\n",
+          "afterRenderedText": "Body\n\n1. Item0\n2. Item1\n3. Item2\n\n",
+          "baselineRenderedSha256Lf": "69450c9450a9f95d090803cd68bf4710443e475f52fe9ca0ac05c41bddabc1c6",
+          "afterRenderedSha256Lf": "511bee7edb8f6f3bd0d56b52adaa594a7618fd41e464b7833d03c22668d39a9c"
+        },
+        "rich-html": {
+          "baselineSha256Lf": "56f65af13468cd608c4d299044ac4f7a1e2ddf258601109735ec6ac2d7c19964",
+          "afterSha256Lf": "56f65af13468cd608c4d299044ac4f7a1e2ddf258601109735ec6ac2d7c19964",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "5ebd68c3bd63e4dc708d8337886a320858e24005d7d31553341834814bfb3a35",
+          "afterSha256Lf": "5ebd68c3bd63e4dc708d8337886a320858e24005d7d31553341834814bfb3a35",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "c91a39aafc4d5a438c875847f458f103a133cb42d510bdca02f9e9209b645b76",
+          "afterSha256Lf": "c91a39aafc4d5a438c875847f458f103a133cb42d510bdca02f9e9209b645b76",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "c91a39aafc4d5a438c875847f458f103a133cb42d510bdca02f9e9209b645b76",
+          "afterSha256Lf": "c91a39aafc4d5a438c875847f458f103a133cb42d510bdca02f9e9209b645b76",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "footer-parenthesis",
+      "cliOutputs": {
+        "rich-markdown": {
+          "baselineSha256Lf": "73a0288c03791de75a1cc8cf1b659a95a311938de3d3ecd02e3d8f2c1464e5c5",
+          "afterSha256Lf": "3331fe0dafe2adb0410752101f70c4d7117100d328c0a15e86feb965ef362f51",
+          "changed": true,
+          "baselineMatchesWord": false,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "\n\nBody\n\n\n1\\) Item0\n2) Item1\n3) Item2\n\n\n",
+          "afterRenderedText": "\n\nBody\n\n\n1) Item0\n2) Item1\n3) Item2\n\n\n",
+          "baselineRenderedSha256Lf": "297a2ea092446b4049e16f7ecd15dd6933173368c16b9cbf8b2fc88dd22a1cb2",
+          "afterRenderedSha256Lf": "e7216cc240e11cebf53a05373a67df267635d2a2de6766ee14450bdbd60ebf6b"
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "2f97e1fc6ec03557d0890ed38c2d7e2856d8e3bcc73582f0e853a132e9f5cd6e",
+          "afterSha256Lf": "7a8ba71dfc8995ad7514371f59e02923304b2f782b47838d20683db5b93513c0",
+          "changed": true,
+          "baselineMatchesWord": false,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "Body\n\n1\\) Item0\n2) Item1\n3) Item2\n\n",
+          "afterRenderedText": "Body\n\n1) Item0\n2) Item1\n3) Item2\n\n",
+          "baselineRenderedSha256Lf": "98f735f51a3f0083566577abaa0e2eaa892a3dcca3562a13f03f39014a74bbc2",
+          "afterRenderedSha256Lf": "e78972c236c20bee1e9fff2aa38aa3dd22bd9c82689a794ecb62f10664445ba6"
+        },
+        "rich-html": {
+          "baselineSha256Lf": "f19622428223f89be05a4f9a771d4433fa35a2b31692037b84dc75f91a030e46",
+          "afterSha256Lf": "f19622428223f89be05a4f9a771d4433fa35a2b31692037b84dc75f91a030e46",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "b211d13f6f9a98c886fdf98022f4f9f682baad4ee21f00a844cab864eae09fa3",
+          "afterSha256Lf": "b211d13f6f9a98c886fdf98022f4f9f682baad4ee21f00a844cab864eae09fa3",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "c91a39aafc4d5a438c875847f458f103a133cb42d510bdca02f9e9209b645b76",
+          "afterSha256Lf": "c91a39aafc4d5a438c875847f458f103a133cb42d510bdca02f9e9209b645b76",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "c91a39aafc4d5a438c875847f458f103a133cb42d510bdca02f9e9209b645b76",
+          "afterSha256Lf": "c91a39aafc4d5a438c875847f458f103a133cb42d510bdca02f9e9209b645b76",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "footnote-period",
+      "cliOutputs": {
+        "rich-markdown": {
+          "baselineSha256Lf": "fd68476b941bb963cae4ba86dd3ffac42ea4e653ec5f42d3b58368a9c4bc80ff",
+          "afterSha256Lf": "a48e4161e32022c6049ecf3bb9741a64aac8d53a1d604c8a7c98b8dec30d3a1a",
+          "changed": true,
+          "baselineMatchesWord": false,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "\n\nBody[1]\n\n\n1\\. Item0\n2. Item1\n3. Item2\n\n\n",
+          "afterRenderedText": "\n\nBody[1]\n\n\n1. Item0\n2. Item1\n3. Item2\n\n\n",
+          "baselineRenderedSha256Lf": "df922b9d9dcc9d4e0f9972bb5913b463745f949fee766f1e1f1edb3d206c4942",
+          "afterRenderedSha256Lf": "5578814e328f308690813e960a8cc3446497229610bdfe9ee1546ed96d9044ce"
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "a829521e9f4f1c50f7bc58470fe09ba7a68fa23624b8b320238811d925ea736f",
+          "afterSha256Lf": "27975fb16505c539cafbc31c76425a310f7529b7a7cc5fc456fd0fd4cdede2ee",
+          "changed": true,
+          "baselineMatchesWord": false,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "Body[1]\n\n1\\. Item0\n2. Item1\n3. Item2\n\n",
+          "afterRenderedText": "Body[1]\n\n1. Item0\n2. Item1\n3. Item2\n\n",
+          "baselineRenderedSha256Lf": "08e9ffbbac7121483880c3d7c072bab9e631d1f3512fd3cde79f50dc1feeb52a",
+          "afterRenderedSha256Lf": "d28336d0eaf62203ed7a0a18f1e3b043e7897c7222dd218c03569c1530c31ee6"
+        },
+        "rich-html": {
+          "baselineSha256Lf": "0385e43324978c19471bf97df91ee3864ce0465008823ad7dc3b04351a8da17b",
+          "afterSha256Lf": "0385e43324978c19471bf97df91ee3864ce0465008823ad7dc3b04351a8da17b",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "eb29b7958ca0fc9cbbea28b340b4668aab885ff348cac0e081dbf21157f091d4",
+          "afterSha256Lf": "eb29b7958ca0fc9cbbea28b340b4668aab885ff348cac0e081dbf21157f091d4",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "fd846a959bb8d6d629bf047bc93522f55d71bcb6a1120333ff88bf5b1f6f98ef",
+          "afterSha256Lf": "fd846a959bb8d6d629bf047bc93522f55d71bcb6a1120333ff88bf5b1f6f98ef",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "fd846a959bb8d6d629bf047bc93522f55d71bcb6a1120333ff88bf5b1f6f98ef",
+          "afterSha256Lf": "fd846a959bb8d6d629bf047bc93522f55d71bcb6a1120333ff88bf5b1f6f98ef",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "footnote-parenthesis",
+      "cliOutputs": {
+        "rich-markdown": {
+          "baselineSha256Lf": "ed9257f9759c0ec0799bcb6af088932fef2b60da111d25e6cc6284c6805460b1",
+          "afterSha256Lf": "0b70a34f8bc9e09a86ef98f264a2d3fc9afca6a57f48ec861abc4fb015665bd9",
+          "changed": true,
+          "baselineMatchesWord": false,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "\n\nBody[1]\n\n\n1\\) Item0\n2) Item1\n3) Item2\n\n\n",
+          "afterRenderedText": "\n\nBody[1]\n\n\n1) Item0\n2) Item1\n3) Item2\n\n\n",
+          "baselineRenderedSha256Lf": "8078b35297a54db44b2a64547a16f117230768e2854d8f5664ba0f18f172cf5f",
+          "afterRenderedSha256Lf": "1fb3363d6061fdc19150477ea0a4407c15105184d549fb49c7428c529701bcbc"
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "37b66243a2bf629720a66d04bc20a59faddc027e60e441ed1e4009d06f3502f4",
+          "afterSha256Lf": "45d061b70f2dc507189326bf820624cbe068f4a210d96e03183543d8322c25e8",
+          "changed": true,
+          "baselineMatchesWord": false,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "Body[1]\n\n1\\) Item0\n2) Item1\n3) Item2\n\n",
+          "afterRenderedText": "Body[1]\n\n1) Item0\n2) Item1\n3) Item2\n\n",
+          "baselineRenderedSha256Lf": "5a15b00285882c002d96aed9ffd2269550a10d8f02e77191eef2a2c2dfb17da5",
+          "afterRenderedSha256Lf": "772e0855f52409994ad11d2cb61106f9789ce9b4e576c23cb8af3fa218c69eb1"
+        },
+        "rich-html": {
+          "baselineSha256Lf": "49dfedac5b667b902f77572a55cd87ec9de96319d72162599f8b25dd43521f87",
+          "afterSha256Lf": "49dfedac5b667b902f77572a55cd87ec9de96319d72162599f8b25dd43521f87",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "30e51f014b26b37054ba7e945fc62a4edf01ee226c2b4feabaf6a2c2ac9893ac",
+          "afterSha256Lf": "30e51f014b26b37054ba7e945fc62a4edf01ee226c2b4feabaf6a2c2ac9893ac",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "a9e76c639f4252c00133ffac5c90254742a2e95d3d83234bde3cd82366a6dfe2",
+          "afterSha256Lf": "a9e76c639f4252c00133ffac5c90254742a2e95d3d83234bde3cd82366a6dfe2",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "a9e76c639f4252c00133ffac5c90254742a2e95d3d83234bde3cd82366a6dfe2",
+          "afterSha256Lf": "a9e76c639f4252c00133ffac5c90254742a2e95d3d83234bde3cd82366a6dfe2",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "literal-entity-control",
+      "cliOutputs": {
+        "rich-markdown": {
+          "baselineSha256Lf": "21b95da6fdc9b4d23933f7874c9f7fcaddd426c84e17dcc79632a9b03b8b2169",
+          "afterSha256Lf": "21b95da6fdc9b4d23933f7874c9f7fcaddd426c84e17dcc79632a9b03b8b2169",
+          "changed": false,
+          "baselineMatchesWord": true,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "\n\n1&#46; Item0\n2&#46; Item1\n3&#46; Item2\n\n\n",
+          "afterRenderedText": "\n\n1&#46; Item0\n2&#46; Item1\n3&#46; Item2\n\n\n",
+          "baselineRenderedSha256Lf": "322e249d0dc9e7610d2fc73ab3d8f2c95a9061bae4f15b2f796af4c30b84b26a",
+          "afterRenderedSha256Lf": "322e249d0dc9e7610d2fc73ab3d8f2c95a9061bae4f15b2f796af4c30b84b26a"
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "e8739dbe6e4c8ca1ddaee8ff45ce2095384a740fcea695ce6c7efd4d41d90e2e",
+          "afterSha256Lf": "e8739dbe6e4c8ca1ddaee8ff45ce2095384a740fcea695ce6c7efd4d41d90e2e",
+          "changed": false,
+          "baselineMatchesWord": true,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "1&#46; Item0\n2&#46; Item1\n3&#46; Item2\n",
+          "afterRenderedText": "1&#46; Item0\n2&#46; Item1\n3&#46; Item2\n",
+          "baselineRenderedSha256Lf": "ac9a2ced7dbe77a9b420d0ee1b4af928636338a6300eaf9966798064867a291d",
+          "afterRenderedSha256Lf": "ac9a2ced7dbe77a9b420d0ee1b4af928636338a6300eaf9966798064867a291d"
+        },
+        "rich-html": {
+          "baselineSha256Lf": "e19128c7f2e2b454157b76904eb92ef90b9ce5e4b5ed3607e58b42099fed895a",
+          "afterSha256Lf": "e19128c7f2e2b454157b76904eb92ef90b9ce5e4b5ed3607e58b42099fed895a",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "26e7b604aed9c575cf3004ef37821972a0f40c11ea57151d399dd6539390cf81",
+          "afterSha256Lf": "26e7b604aed9c575cf3004ef37821972a0f40c11ea57151d399dd6539390cf81",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "b5a59a197d48041fe8d58c23c3b6e93773dc0bd8be13cdebcc50bdbbb27e35f4",
+          "afterSha256Lf": "b5a59a197d48041fe8d58c23c3b6e93773dc0bd8be13cdebcc50bdbbb27e35f4",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "b5a59a197d48041fe8d58c23c3b6e93773dc0bd8be13cdebcc50bdbbb27e35f4",
+          "afterSha256Lf": "b5a59a197d48041fe8d58c23c3b6e93773dc0bd8be13cdebcc50bdbbb27e35f4",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "font-bullet-control",
+      "cliOutputs": {
+        "rich-markdown": {
+          "baselineSha256Lf": "a0b7ab4423459cd15f2737c0520aa7e458004159f62c60feb5edc7648f7000bc",
+          "afterSha256Lf": "a0b7ab4423459cd15f2737c0520aa7e458004159f62c60feb5edc7648f7000bc",
+          "changed": false,
+          "baselineMatchesWord": true,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "\n\n1. Item0\n1. Item1\n1. Item2\n\n\n",
+          "afterRenderedText": "\n\n1. Item0\n1. Item1\n1. Item2\n\n\n",
+          "baselineRenderedSha256Lf": "7227695da969868584190251f11e88244f9db8c5503c2b5ac70e495c8af3bf94",
+          "afterRenderedSha256Lf": "7227695da969868584190251f11e88244f9db8c5503c2b5ac70e495c8af3bf94"
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "a27493b0cbd8cba9fca7807ac2c69ee528f8e247cbc190bb736b944349bc43af",
+          "afterSha256Lf": "5f5deeb08e6355ad88bde5aa33bb6c462db92335dc85f4c88b2a56bf4e0f033d",
+          "changed": true,
+          "baselineMatchesWord": true,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "1. Item0\n1. Item1\n1. Item2\n",
+          "afterRenderedText": "1. Item0\n1. Item1\n1. Item2\n",
+          "baselineRenderedSha256Lf": "02e27e04e3fe93183c7c1e3c2bc7a1a2a2f24df03da0281cbe01b2141a236877",
+          "afterRenderedSha256Lf": "02e27e04e3fe93183c7c1e3c2bc7a1a2a2f24df03da0281cbe01b2141a236877"
+        },
+        "rich-html": {
+          "baselineSha256Lf": "de896e867ac360bd2f642947fab41829a9230b6d4ef6a7556fba9b1f73e81a64",
+          "afterSha256Lf": "de896e867ac360bd2f642947fab41829a9230b6d4ef6a7556fba9b1f73e81a64",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "3131bd04d02d86ef922fd397795551515174ab60d3daa6962fbd6f18961898fe",
+          "afterSha256Lf": "3131bd04d02d86ef922fd397795551515174ab60d3daa6962fbd6f18961898fe",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "ee3d3b84ce3abd45a356a55028f965ddd15cfc522215a7dd8b5c5d121d0947f5",
+          "afterSha256Lf": "ee3d3b84ce3abd45a356a55028f965ddd15cfc522215a7dd8b5c5d121d0947f5",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "ee3d3b84ce3abd45a356a55028f965ddd15cfc522215a7dd8b5c5d121d0947f5",
+          "afterSha256Lf": "ee3d3b84ce3abd45a356a55028f965ddd15cfc522215a7dd8b5c5d121d0947f5",
+          "changed": false
+        }
+      }
+    },
+    {
+      "case": "digits-control",
+      "cliOutputs": {
+        "rich-markdown": {
+          "baselineSha256Lf": "227b0594e45ed80ba61a723e9ac76fab095d6d4fcc605127f08ee13b45839e50",
+          "afterSha256Lf": "227b0594e45ed80ba61a723e9ac76fab095d6d4fcc605127f08ee13b45839e50",
+          "changed": false,
+          "baselineMatchesWord": true,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "\n\n1 Item0\n2 Item1\n3 Item2\n\n\n",
+          "afterRenderedText": "\n\n1 Item0\n2 Item1\n3 Item2\n\n\n",
+          "baselineRenderedSha256Lf": "74800fe99427ae394b8feab777ef65778000540519d0b1b66d1394ddf019cba7",
+          "afterRenderedSha256Lf": "74800fe99427ae394b8feab777ef65778000540519d0b1b66d1394ddf019cba7"
+        },
+        "plain-markdown": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false,
+          "baselineMatchesWord": true,
+          "afterMatchesWord": true,
+          "baselineRenderedText": "1 Item0\n2 Item1\n3 Item2\n",
+          "afterRenderedText": "1 Item0\n2 Item1\n3 Item2\n",
+          "baselineRenderedSha256Lf": "a8296280bc1ee16fc9306614ab2c3456b272566633ee06d5b39197967091cb8c",
+          "afterRenderedSha256Lf": "a8296280bc1ee16fc9306614ab2c3456b272566633ee06d5b39197967091cb8c"
+        },
+        "rich-html": {
+          "baselineSha256Lf": "6895e83c09bdaa3a8774ddf6d7a00e9a51a2d20faf3d132ac5976722633c9493",
+          "afterSha256Lf": "6895e83c09bdaa3a8774ddf6d7a00e9a51a2d20faf3d132ac5976722633c9493",
+          "changed": false
+        },
+        "plain-html": {
+          "baselineSha256Lf": "f2c3a3847d332fcf2912e858651443c726a6c46296c24ac49d7707d984900cca",
+          "afterSha256Lf": "f2c3a3847d332fcf2912e858651443c726a6c46296c24ac49d7707d984900cca",
+          "changed": false
+        },
+        "accept-text": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        },
+        "reject-text": {
+          "baselineSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "afterSha256Lf": "8c1a2090927a530fccd7395f9f7b2ad5ff67ea2e1c2cdbc780f59400c2ee2a6c",
+          "changed": false
+        }
+      }
+    }
+  ]
+}

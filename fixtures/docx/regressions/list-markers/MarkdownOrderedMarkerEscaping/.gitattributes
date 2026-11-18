@@ -1,0 +1,2 @@
+# Keep exact paragraph separators in captured Markdown output evidence.
+*.markdown whitespace=-blank-at-eof

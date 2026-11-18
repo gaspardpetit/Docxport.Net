@@ -46,7 +46,7 @@ public sealed class EmptyNumberedParagraphMarkdownTests
             Assert.Contains(inserted ? "<u>" : "<del>", markdown);
             Assert.Equal(Count(markdown, "<u>"), Count(markdown, "</u>"));
             Assert.Equal(Count(markdown, "<del>"), Count(markdown, "</del>"));
-            Assert.Contains(@"1\.", markdown);
+            Assert.Contains("1&#46;", markdown);
         }
         finally
         {
@@ -82,7 +82,7 @@ public sealed class EmptyNumberedParagraphMarkdownTests
             var config = DxpMarkdownVisitorConfig.CreatePlainConfig();
             config.TrackedChangeMode = DxpTrackedChangeMode.SplitChanges;
             var markdown = DxpExport.ExportToString(path, new DxpMarkdownVisitor(config));
-            Assert.Contains(@"1\.", markdown);
+            Assert.Contains("1&#46;", markdown);
         }
         finally
         {
@@ -124,7 +124,7 @@ public sealed class EmptyNumberedParagraphMarkdownTests
 
             var markdown = DxpExport.ExportToString(path,
                 new DxpMarkdownVisitor(DxpMarkdownVisitorConfig.CreatePlainConfig()));
-            Assert.Contains(@"1\. [IMAGE]", markdown);
+            Assert.Contains("1&#46; [IMAGE]", markdown);
         }
         finally
         {
@@ -162,7 +162,7 @@ public sealed class EmptyNumberedParagraphMarkdownTests
 
             var markdown = DxpExport.ExportToString(path,
                 new DxpMarkdownVisitor(DxpMarkdownVisitorConfig.CreatePlainConfig()));
-            Assert.Equal(2, System.Text.RegularExpressions.Regex.Matches(markdown, @"(?m)^1\\\.(?:$| <br/>)").Count);
+            Assert.Equal(2, System.Text.RegularExpressions.Regex.Matches(markdown, @"(?m)^1&#46;(?:$| <br/>)").Count);
             Assert.DoesNotContain("1.\n", markdown);
         }
         finally
