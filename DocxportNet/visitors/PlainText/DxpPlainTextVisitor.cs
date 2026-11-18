@@ -7,10 +7,10 @@ using DocxportNet.Word;
 using Microsoft.Extensions.Logging;
 using System.Globalization;
 using System.Text;
-using System.Text.RegularExpressions;
 using DocxportNet.Fields;
 using DocxportNet.Omml;
 using DocxportNet.Walker;
+using DocxportNet.Walker.Context;
 
 namespace DocxportNet.Visitors.PlainText;
 
@@ -280,7 +280,7 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor, IDisposab
         var indent = paragraph.Indent;
 
         string markerText = marker?.marker != null
-            ? NormalizeMarker(marker.marker)
+            ? NormalizeMarker(marker.marker, ResolveMarkerLevel(marker, d))
             : string.Empty;
 
         if (!string.IsNullOrEmpty(markerText))
@@ -594,16 +594,17 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor, IDisposab
         return adjusted;
     }
 
-    private string NormalizeMarker(string marker)
+    private string NormalizeMarker(string marker, Level? level)
     {
         if (string.IsNullOrEmpty(marker))
             return marker;
 
-        if (marker.IndexOf("<span", StringComparison.OrdinalIgnoreCase) >= 0)
+        if (level != null && DxpListMarkerFormatter.TryUnwrapBulletFont(level, marker, out var text, out var font))
         {
-            string inner = StripTags(marker).Trim();
-            var font = ExtractFontFamily(marker);
-            var translatedSpan = TryTranslateSymbolFont(inner, font);
+            // Only the metadata-confirmed outer wrapper is generated markup.
+            // Tag-like characters inside it belong to the literal label.
+            string inner = text.Trim();
+            var translatedSpan = TryTranslateSymbolFont(inner, font!.Trim().Trim('"', '\''));
             if (!string.IsNullOrEmpty(translatedSpan))
                 return translatedSpan!;
             return inner;
@@ -624,19 +625,9 @@ public sealed class DxpPlainTextVisitor : DxpVisitor, DxpITextVisitor, IDisposab
         return trimmed;
     }
 
-    private static string StripTags(string input)
-    {
-        return Regex.Replace(input, "<.*?>", string.Empty);
-    }
-
-    private static string? ExtractFontFamily(string marker)
-    {
-        var m = Regex.Match(marker, "font-family\\s*:\\s*([^;\">]+)", RegexOptions.IgnoreCase);
-        if (!m.Success)
-            return null;
-        var font = m.Groups[1].Value.Trim();
-        return font.Trim('"', '\'');
-    }
+    private static Level? ResolveMarkerLevel(DxpMarker marker, DxpIDocumentContext d) =>
+        marker.numId is int numId && marker.iLvl is int level && d is DxpDocumentContext document
+            ? document.NumberingResolver.ResolveLevel(numId, level)?.lvl : null;
 
     private static string? TryTranslateSymbolFont(string marker, string? fontFamily = null)
     {
