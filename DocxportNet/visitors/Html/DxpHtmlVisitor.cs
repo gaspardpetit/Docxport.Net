@@ -1086,9 +1086,9 @@ body.dxp-root {
 
         if (marker?.marker != null)
         {
-            var normalizedMarker = NormalizeMarker(marker.marker);
+            var normalizedMarker = NormalizeMarker(marker.marker, ResolveMarkerLevel(marker, d), out var markerIsHtml);
             var markerCss = TryBuildMarkerCss(marker, d, _config.EmitStyleFont, p);
-            Write(d, BuildMarkerHtml(normalizedMarker, markerCss, marker.TextSeparator));
+            Write(d, BuildMarkerHtml(normalizedMarker, markerCss, marker.TextSeparator, markerIsHtml));
         }
 
         if (isCode)
@@ -1756,16 +1756,21 @@ body.dxp-root {
         return color;
     }
 
-    private string NormalizeMarker(string marker)
+    private string NormalizeMarker(string marker, Level? level, out bool markerIsHtml)
     {
-        if (marker.IndexOf("<span", StringComparison.OrdinalIgnoreCase) >= 0)
+        markerIsHtml = false;
+        if (level != null && DxpListMarkerFormatter.TryUnwrapBulletFont(level, marker, out var text, out var font))
         {
             if (_config.PreserveListSymbols)
-                return marker;
+            {
+                markerIsHtml = true;
+                // Preserve Unicode glyphs while escaping literal label content.
+                var escaped = text.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
+                return $"""<span style="font-family:{HtmlAttr(font!)}">{escaped}</span>""";
+            }
 
-            string inner = StripTags(marker).Trim();
-            var font = ExtractFontFamily(marker);
-            var translatedSpan = TryTranslateSymbolFont(inner, font);
+            string inner = text.Trim();
+            var translatedSpan = TryTranslateSymbolFont(inner, font!.Trim().Trim('"', '\''));
             if (!string.IsNullOrEmpty(translatedSpan))
                 return translatedSpan!;
             return inner;
@@ -1789,27 +1794,19 @@ body.dxp-root {
         return trimmed;
     }
 
-    private static string BuildMarkerHtml(string marker, string? markerCss, string separator)
+    private static string BuildMarkerHtml(string marker, string? markerCss, string separator, bool markerIsHtml)
     {
         if (string.IsNullOrEmpty(marker))
             return string.Empty;
 
-        bool markerIsHtml = marker.IndexOf('<') >= 0 && marker.IndexOf('>') > marker.IndexOf('<');
         var inner = markerIsHtml ? marker : WebUtility.HtmlEncode(marker);
         var cssAttr = !string.IsNullOrEmpty(markerCss) ? " style=\"" + HtmlAttr(markerCss!) + "\"" : "";
         return $"""<span class="dxp-marker"{cssAttr}>{inner}</span>""" + WebUtility.HtmlEncode(separator);
     }
 
-    private static string StripTags(string input) => Regex.Replace(input, "<.*?>", string.Empty);
-
-    private static string? ExtractFontFamily(string marker)
-    {
-        var m = Regex.Match(marker, "font-family\\s*:\\s*([^;\">]+)", RegexOptions.IgnoreCase);
-        if (!m.Success)
-            return null;
-        var font = m.Groups[1].Value.Trim();
-        return font.Trim('"', '\'');
-    }
+    private static Level? ResolveMarkerLevel(DxpMarker marker, DxpIDocumentContext d) =>
+        marker.numId is int numId && marker.iLvl is int level && d is DxpDocumentContext document
+            ? document.NumberingResolver.ResolveLevel(numId, level)?.lvl : null;
 
     private static string? TryTranslateSymbolFont(string marker, string? fontFamily = null)
     {
@@ -1848,7 +1845,9 @@ body.dxp-root {
         var decorations = new List<string>();
         var parts = new List<string>();
 
-        var markerText = WebUtility.HtmlDecode(StripTags(marker.marker ?? ""));
+        var markerText = marker.marker ?? "";
+        if (DxpListMarkerFormatter.TryUnwrapBulletFont(resolved.Value.lvl, markerText, out var text, out _))
+            markerText = text;
         if (emitFont && d.Styles is DxpStyleResolver styles &&
             styles.ResolveAsciiListMarkerFontSize(DxpNumberingResolver.NormalizeParagraphNumberingProperties(paragraph), rpr, markerText) is int halfPoints)
             parts.Add("font-size:" + (halfPoints / 2.0).ToString("0.###", CultureInfo.InvariantCulture) + "pt");

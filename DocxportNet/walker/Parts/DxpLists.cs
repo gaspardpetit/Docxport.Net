@@ -1208,6 +1208,22 @@ public static class DxpListMarkerFormatter
         return result;
     }
 
+    internal static bool TryUnwrapBulletFont(Level level, string marker, out string text, out string? font)
+    {
+        text = marker;
+        font = level.NumberingFormat?.Val?.Value == NumberFormatValues.Bullet ? GetBulletFont(level) : null;
+        if (string.IsNullOrEmpty(font)) return false;
+        var prefix = $"""<span style="font-family:{font}">""";
+        const string suffix = "</span>";
+        // Recognize only the wrapper generated above, using numbering metadata.
+        // Its contents are still literal label text, even if they resemble HTML.
+        if (!marker.StartsWith(prefix, StringComparison.Ordinal) ||
+            !marker.EndsWith(suffix, StringComparison.Ordinal) || marker.Length <= prefix.Length + suffix.Length)
+            return false;
+        text = marker.Substring(prefix.Length, marker.Length - prefix.Length - suffix.Length);
+        return true;
+    }
+
     private static string? GetBulletFont(Level lvl)
     {
         var fonts = lvl.NumberingSymbolRunProperties?.RunFonts;
