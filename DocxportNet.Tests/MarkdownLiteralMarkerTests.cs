@@ -78,7 +78,8 @@ public sealed class MarkdownLiteralMarkerTests
             else if (context == "wrapped") paragraph.ParagraphProperties!.SpacingBetweenLines = new() { Before = "120", After = "120" };
         var output = Export(document, rich).Replace("\r\n", "\n");
         if (context == "wrapped" && rich) Assert.Contains(">1" + delimiter + " Item0", output);
-        else Assert.Contains("1\\" + delimiter + (context == "standalone" ? "\n" : " Item0"), output);
+        else Assert.Contains("1" + (delimiter == "." ? "&#46;" : "&#41;") +
+            (context == "standalone" ? "\n" : " Item0"), output);
     }
 
     [Theory]

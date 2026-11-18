@@ -1445,11 +1445,12 @@ public partial class DxpMarkdownVisitor : DxpVisitor, DxpITextVisitor, IDisposab
 
     private static string EscapeOrderedListMarker(string marker)
     {
-        // Escape the delimiter so Markdown doesn't start a list.
+        // Character references prevent a Markdown list and also decode inside
+        // the HTML wrappers used by rich output, where a backslash is literal.
         if (marker.EndsWith("."))
-            return marker.Insert(marker.Length - 1, "\\");
+            return marker.Substring(0, marker.Length - 1) + "&#46;";
         if (marker.EndsWith(")"))
-            return marker.Insert(marker.Length - 1, "\\");
+            return marker.Substring(0, marker.Length - 1) + "&#41;";
         return marker;
     }
 

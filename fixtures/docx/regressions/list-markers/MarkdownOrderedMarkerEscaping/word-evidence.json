@@ -1,0 +1,293 @@
+{
+  "cases": [
+    {
+      "case": "body-period",
+      "context": "body",
+      "expectedVisibleLabels": [
+        "1.",
+        "2.",
+        "3."
+      ],
+      "sourceSha256": "f0a8ef57b7a1371c06945ba3e45ef6c70777d5d235808fad4b90e3e3f4486d9e",
+      "wordPdfSha256": "91fdc5713cc65d52d6bddd3da66b5ebae501dec09aafaa79373d4a339a380efc",
+      "wordListStrings": [
+        "1.",
+        "2.",
+        "3."
+      ],
+      "wordPdfText": "1. \nItem0 \n2. \nItem1 \n3. \nItem2 \n"
+    },
+    {
+      "case": "body-parenthesis",
+      "context": "body",
+      "expectedVisibleLabels": [
+        "1)",
+        "2)",
+        "3)"
+      ],
+      "sourceSha256": "87c8d66e6bcddbc03d146f61e480be91f8b885cb215783bec1e3575114dc9a01",
+      "wordPdfSha256": "3c1f2764eefbf57fda2e3728d8b4516e23e4cf67b459647614e78fae9a83a967",
+      "wordListStrings": [
+        "1)",
+        "2)",
+        "3)"
+      ],
+      "wordPdfText": "1) \nItem0 \n2) \nItem1 \n3) \nItem2 \n"
+    },
+    {
+      "case": "standalone-period",
+      "context": "standalone",
+      "expectedVisibleLabels": [
+        "1.",
+        "2.",
+        "3."
+      ],
+      "sourceSha256": "4b94a39450f4be42163169b58d553e71f4ae93bc8a57f9f329d9bc35c65d6499",
+      "wordPdfSha256": "d3084e9a3b1cdec56e67ee30165f30fde587735a1ebc1988fe109aeb78d64868",
+      "wordListStrings": [
+        "1.",
+        "2.",
+        "3."
+      ],
+      "wordPdfText": "1. \n \n2. \n \n3. \n \n"
+    },
+    {
+      "case": "standalone-parenthesis",
+      "context": "standalone",
+      "expectedVisibleLabels": [
+        "1)",
+        "2)",
+        "3)"
+      ],
+      "sourceSha256": "fa3e8565486b3faaa4e5a40e0890f589790622a1918357b2a2f7e5be0202ec23",
+      "wordPdfSha256": "f08e4af68c02471c1109d93be75fc939c6df8ac24b57030f3b7c919e87e75388",
+      "wordListStrings": [
+        "1)",
+        "2)",
+        "3)"
+      ],
+      "wordPdfText": "1) \n \n2) \n \n3) \n \n"
+    },
+    {
+      "case": "wrapped-period",
+      "context": "wrapped",
+      "expectedVisibleLabels": [
+        "1.",
+        "2.",
+        "3."
+      ],
+      "sourceSha256": "dbeffe3f5f869c7a27ec66f7d52853337a0fc5b06880ace168afe2287f37574b",
+      "wordPdfSha256": "81d90ce269d1b2707424212b1fac9f998ac68af7a8b985399fd10bab2ee3d7f9",
+      "wordListStrings": [
+        "1.",
+        "2.",
+        "3."
+      ],
+      "wordPdfText": "1. \nItem0 \n2. \nItem1 \n3. \nItem2 \n"
+    },
+    {
+      "case": "wrapped-parenthesis",
+      "context": "wrapped",
+      "expectedVisibleLabels": [
+        "1)",
+        "2)",
+        "3)"
+      ],
+      "sourceSha256": "eef79f201bb608e62700016f5b0c3fdfcf8462759e3ad346190cc00a4216469f",
+      "wordPdfSha256": "fd7be138e2ab91720c226aa2d3d66bb2d94fb37914f5395e0a959bbe3e479a5f",
+      "wordListStrings": [
+        "1)",
+        "2)",
+        "3)"
+      ],
+      "wordPdfText": "1) \nItem0 \n2) \nItem1 \n3) \nItem2 \n"
+    },
+    {
+      "case": "table-period",
+      "context": "table",
+      "expectedVisibleLabels": [
+        "1.",
+        "2.",
+        "3."
+      ],
+      "sourceSha256": "698517c495418cdf905fa56d63b5dff1aabe8d34bdd6e5e7c8d0da5ee8f8dfcf",
+      "wordPdfSha256": "91aa267e9ab03649a3886eee74bfc2a64a0efc54268d89ce1b45d306503a49cb",
+      "wordListStrings": [
+        "1.",
+        "2.",
+        "3."
+      ],
+      "wordPdfText": "1. \nItem0 \n2. \nItem1 \n3. \nItem2 \nBody \n"
+    },
+    {
+      "case": "table-parenthesis",
+      "context": "table",
+      "expectedVisibleLabels": [
+        "1)",
+        "2)",
+        "3)"
+      ],
+      "sourceSha256": "67a6a6aff6008c2ce871edf803d3b5a447a24ab0acf99fea76dc79d11ae29617",
+      "wordPdfSha256": "871f5b5b6b64eeda551a3f822fd3e327ff0d3d71592c0dac921c6f7e22b460fe",
+      "wordListStrings": [
+        "1)",
+        "2)",
+        "3)"
+      ],
+      "wordPdfText": "1) \nItem0 \n2) \nItem1 \n3) \nItem2 \nBody \n"
+    },
+    {
+      "case": "header-period",
+      "context": "header",
+      "expectedVisibleLabels": [
+        "1.",
+        "2.",
+        "3."
+      ],
+      "sourceSha256": "8882932248e8f5fd140d8ebd6e00d42c7950761dd966f63c439d0fcb4d3a476a",
+      "wordPdfSha256": "c9e96940481e063f19bea7c8b1c255e211d5c03881793f817b170de0cfc75830",
+      "wordListStrings": [
+        "1.",
+        "2.",
+        "3."
+      ],
+      "wordPdfText": "1. \nItem0 \n2. \nItem1 \n3. \nItem2 \n \nBody \n"
+    },
+    {
+      "case": "header-parenthesis",
+      "context": "header",
+      "expectedVisibleLabels": [
+        "1)",
+        "2)",
+        "3)"
+      ],
+      "sourceSha256": "8cfb84f0b4ac27b63611a1e07a0bcfd4f5ce467124f1d84320835c9ff5d6592a",
+      "wordPdfSha256": "33d3d8fe6288f1bba545ab16c1632d44ae8e003edcb3adcfd3a03001abbc21e2",
+      "wordListStrings": [
+        "1)",
+        "2)",
+        "3)"
+      ],
+      "wordPdfText": "1) \nItem0 \n2) \nItem1 \n3) \nItem2 \n \nBody \n"
+    },
+    {
+      "case": "footer-period",
+      "context": "footer",
+      "expectedVisibleLabels": [
+        "1.",
+        "2.",
+        "3."
+      ],
+      "sourceSha256": "f891a74ae3f15ce2982a0f88d49e6242b8e2f721336ce22ecf5e61b6d03e3b15",
+      "wordPdfSha256": "f18fb087a69735b6a2b263a92b9312be264f220eda1906b49c52995088bcf915",
+      "wordListStrings": [
+        "1.",
+        "2.",
+        "3."
+      ],
+      "wordPdfText": " \n1. \nItem0 \n2. \nItem1 \n3. \nItem2 \nBody \n"
+    },
+    {
+      "case": "footer-parenthesis",
+      "context": "footer",
+      "expectedVisibleLabels": [
+        "1)",
+        "2)",
+        "3)"
+      ],
+      "sourceSha256": "140cfe781fdbece61af6e21fb503cb413ce244cda5fcc37dfba98e6ffe5566b0",
+      "wordPdfSha256": "948d3bc06622520dea62aa66330d0c9ae22abad54c10b2b50b600887a82cae36",
+      "wordListStrings": [
+        "1)",
+        "2)",
+        "3)"
+      ],
+      "wordPdfText": " \n1) \nItem0 \n2) \nItem1 \n3) \nItem2 \nBody \n"
+    },
+    {
+      "case": "footnote-period",
+      "context": "footnote",
+      "expectedVisibleLabels": [
+        "1.",
+        "2.",
+        "3."
+      ],
+      "sourceSha256": "96d46ec6d048f848101a55e19d1c549ec0ca074423aded2e19e3aceeeccc907c",
+      "wordPdfSha256": "3e8c85881569f9f5d488574e8387760dec09050412f7bbbc68314f4e2f9ba7ec",
+      "wordListStrings": [
+        "1.",
+        "2.",
+        "3."
+      ],
+      "wordPdfText": "Body1 \n \n1. \nItem0 \n2. \nItem1 \n3. \nItem2 \n"
+    },
+    {
+      "case": "footnote-parenthesis",
+      "context": "footnote",
+      "expectedVisibleLabels": [
+        "1)",
+        "2)",
+        "3)"
+      ],
+      "sourceSha256": "18459dce26005f74f1070ab10260bb47586d651a8b70ea8deaaa24e24dfc6ac9",
+      "wordPdfSha256": "0f0fa8c1d46966cdf8ad9dc846a30adf13484dee73447f36c977bec25eaa9869",
+      "wordListStrings": [
+        "1)",
+        "2)",
+        "3)"
+      ],
+      "wordPdfText": "Body1 \n \n1) \nItem0 \n2) \nItem1 \n3) \nItem2 \n"
+    },
+    {
+      "case": "literal-entity-control",
+      "context": "body",
+      "expectedVisibleLabels": [
+        "1&#46;",
+        "2&#46;",
+        "3&#46;"
+      ],
+      "sourceSha256": "31d378696cc7718c7aa83d426be0f4af299caf9690d266a1976a5c4edc81be01",
+      "wordPdfSha256": "d5d92cc99ba7738afc2bdf28bb8e9fafb7342af307fcccad9e1c7c9ae1285c76",
+      "wordListStrings": [
+        "1&#46;",
+        "2&#46;",
+        "3&#46;"
+      ],
+      "wordPdfText": "1&#46; \nItem0 \n2&#46; \nItem1 \n3&#46; \nItem2 \n"
+    },
+    {
+      "case": "font-bullet-control",
+      "context": "body",
+      "expectedVisibleLabels": [
+        "1.",
+        "1.",
+        "1."
+      ],
+      "sourceSha256": "4f52afa99acfdb946a0fe888b013999330642d460d7ba91c65a2fdd030273438",
+      "wordPdfSha256": "8479eca6f929390027e5ff0b6c8e135b60643df04554b5813915b8e67529f396",
+      "wordListStrings": [
+        "1.",
+        "1.",
+        "1."
+      ],
+      "wordPdfText": "1. \nItem0 \n1. \nItem1 \n1. \nItem2 \n"
+    },
+    {
+      "case": "digits-control",
+      "context": "body",
+      "expectedVisibleLabels": [
+        "1",
+        "2",
+        "3"
+      ],
+      "sourceSha256": "2eedc0d51399d0a69544fc40a88189a4ec8ba76eb06000a91e68521db439b51d",
+      "wordPdfSha256": "befcd743126fa19d444d75d50a3336ff49ff9512b93bf8fc46279357ab9db7ba",
+      "wordListStrings": [
+        "1",
+        "2",
+        "3"
+      ],
+      "wordPdfText": "1 \nItem0 \n2 \nItem1 \n3 \nItem2 \n"
+    }
+  ]
+}
