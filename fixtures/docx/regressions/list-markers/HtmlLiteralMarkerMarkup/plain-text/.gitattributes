@@ -1,0 +1,2 @@
+# Preserve the paragraph-ending blank lines in exact CLI output evidence.
+*.text whitespace=-blank-at-eof
