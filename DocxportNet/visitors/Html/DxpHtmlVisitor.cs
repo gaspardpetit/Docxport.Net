@@ -1087,7 +1087,7 @@ body.dxp-root {
         if (marker?.marker != null)
         {
             var normalizedMarker = NormalizeMarker(marker.marker);
-            var markerCss = TryBuildMarkerCss(marker, d, _config.EmitStyleFont);
+            var markerCss = TryBuildMarkerCss(marker, d, _config.EmitStyleFont, p);
             Write(d, BuildMarkerHtml(normalizedMarker, markerCss, marker.TextSeparator));
         }
 
@@ -1829,7 +1829,7 @@ body.dxp-root {
         return null;
     }
 
-    private static string? TryBuildMarkerCss(DxpMarker marker, DxpIDocumentContext d, bool emitFont)
+    private static string? TryBuildMarkerCss(DxpMarker marker, DxpIDocumentContext d, bool emitFont, Paragraph paragraph)
     {
         if (marker.numId == null || marker.iLvl == null)
             return null;
@@ -1850,7 +1850,7 @@ body.dxp-root {
 
         var markerText = WebUtility.HtmlDecode(StripTags(marker.marker ?? ""));
         if (emitFont && d.Styles is DxpStyleResolver styles &&
-            styles.ResolveNumericRtlListMarkerFontSize(d.CurrentParagraph.Properties, rpr, markerText) is int halfPoints)
+            styles.ResolveAsciiListMarkerFontSize(DxpNumberingResolver.NormalizeParagraphNumberingProperties(paragraph), rpr, markerText) is int halfPoints)
             parts.Add("font-size:" + (halfPoints / 2.0).ToString("0.###", CultureInfo.InvariantCulture) + "pt");
 
         if (rpr.Bold != null && IsOn(rpr.Bold.Val))

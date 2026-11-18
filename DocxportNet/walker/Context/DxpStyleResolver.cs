@@ -644,12 +644,14 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
         return styleMarkCaps == true ? !inherited : inherited;
     }
 
-    // Numeric labels in RTL paragraphs use the complex-script size even though
-    // Word retains the ASCII face. Keep this marker rule out of body-run layout.
-    internal int? ResolveNumericRtlListMarkerFontSize(ParagraphProperties? paragraph,
+    // Explicit level sizes for ASCII labels, plus the existing numeric RTL
+    // inheritance rule. Keep this marker rule out of body-run layout.
+    internal int? ResolveAsciiListMarkerFontSize(ParagraphProperties? paragraph,
         NumberingSymbolRunProperties? level, string text)
     {
-        if (text.Length == 0 || !text.All(character => character is >= '0' and <= '9'))
+        if (_numberingStyleResolver != null)
+            return _numberingStyleResolver.ResolveAsciiListMarkerFontSize(paragraph, level, text);
+        if (text.Length == 0 || !text.All(character => character is >= ' ' and <= '~'))
             return null;
         var styleId = paragraph?.ParagraphStyleId?.Val?.Value;
         if (string.IsNullOrEmpty(styleId))
@@ -660,18 +662,38 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
         foreach (var style in chain)
             direction ??= style.StyleParagraphProperties?.GetFirstChild<BiDi>();
         direction ??= _docDefaultParaProps?.GetFirstChild<BiDi>();
-        if (direction == null || direction.Val?.Value == false) return null;
+        var rtl = direction != null && direction.Val?.Value != false;
+        var numericRtl = rtl && text.Any(character => character is >= '0' and <= '9') &&
+            text.All(character => character is >= '0' and <= '9' or '(' or ')' or '[' or ']' or '.' or '-' or ' ');
+        // Other neutral RTL labels need their own script-context verification.
+        if (rtl && !numericRtl && !text.Any(character => character is >= 'a' and <= 'z' or >= 'A' and <= 'Z'))
+            return null;
+        bool On(string name)
+        {
+            var property = level?.ChildElements.FirstOrDefault(child => child.LocalName == name &&
+                child.NamespaceUri == "http://schemas.openxmlformats.org/wordprocessingml/2006/main");
+            if (property == null) return false;
+            var value = property.GetAttribute("val", property.NamespaceUri).Value;
+            return value is not ("0" or "false" or "off");
+        }
+        // Word uses sz for explicit level sizing unless cs is on and rtl is
+        // off. Numeric RTL labels (including common delimiters) use szCs.
+        var complex = numericRtl || (On("cs") && !On("rtl"));
 
         string? Size(OpenXmlElement? properties) => properties?.ChildElements.FirstOrDefault(child =>
-            child.LocalName == "szCs" && child.NamespaceUri ==
+            child.LocalName == (complex ? "szCs" : "sz") && child.NamespaceUri ==
                 "http://schemas.openxmlformats.org/wordprocessingml/2006/main")?
             .GetAttribute("val", "http://schemas.openxmlformats.org/wordprocessingml/2006/main").Value;
-        var size = Size(level) ?? Size(paragraph?.ParagraphMarkRunProperties);
-        foreach (var style in chain)
-            size ??= Size(style.StyleParagraphProperties?.ChildElements.FirstOrDefault(child =>
-                child.LocalName == "rPr" && child.NamespaceUri ==
-                    "http://schemas.openxmlformats.org/wordprocessingml/2006/main")) ?? Size(style.StyleRunProperties);
-        size ??= Size(_docDefaultRunProps);
+        var size = Size(level);
+        if (numericRtl)
+        {
+            size ??= Size(paragraph?.ParagraphMarkRunProperties);
+            foreach (var style in chain)
+                size ??= Size(style.StyleParagraphProperties?.ChildElements.FirstOrDefault(child =>
+                    child.LocalName == "rPr" && child.NamespaceUri ==
+                        "http://schemas.openxmlformats.org/wordprocessingml/2006/main")) ?? Size(style.StyleRunProperties);
+            size ??= Size(_docDefaultRunProps);
+        }
         return int.TryParse(size, NumberStyles.Integer, CultureInfo.InvariantCulture, out var halfPoints) && halfPoints > 0
             ? halfPoints : null;
     }
