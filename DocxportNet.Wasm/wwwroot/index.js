@@ -106,6 +106,10 @@ export async function createDocxport(options = {}) {
     async resolveDocx(input, request = {}) {
       const result = api.ResolveDocx(requireBytes(input), JSON.stringify(request));
       return result instanceof Uint8Array ? result : new Uint8Array(result);
+    },
+    async reviewDocx(input, request = {}) {
+      const result = api.ReviewDocx(requireBytes(input), JSON.stringify(request));
+      return result instanceof Uint8Array ? result : new Uint8Array(result);
     }
   });
 }
