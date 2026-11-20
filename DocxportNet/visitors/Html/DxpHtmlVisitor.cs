@@ -1091,8 +1091,8 @@ body.dxp-root {
             var doubleStrike = d.Styles is DxpStyleResolver markerStyles
                 ? markerStyles.ResolveListMarkerDoubleStrike(DxpNumberingResolver.NormalizeParagraphNumberingProperties(p), markerLevel?.NumberingSymbolRunProperties)
                 : markerLevel?.NumberingSymbolRunProperties?.DoubleStrike is { } strike && IsOn(strike.Val);
-            var markerCss = TryBuildMarkerCss(marker, d, _config.EmitStyleFont, p, doubleStrike);
-            Write(d, BuildMarkerHtml(normalizedMarker, markerCss, marker.TextSeparator, markerIsHtml, doubleStrike));
+            var markerCss = TryBuildMarkerCss(marker, d, _config.EmitStyleFont, p, doubleStrike, out var separateSingleStrike);
+            Write(d, BuildMarkerHtml(normalizedMarker, markerCss, marker.TextSeparator, markerIsHtml, doubleStrike, separateSingleStrike));
         }
 
         if (isCode)
@@ -1798,15 +1798,19 @@ body.dxp-root {
         return trimmed;
     }
 
-    private static string BuildMarkerHtml(string marker, string? markerCss, string separator, bool markerIsHtml, bool doubleStrike)
+    private static string BuildMarkerHtml(string marker, string? markerCss, string separator, bool markerIsHtml, bool doubleStrike, bool separateSingleStrike)
     {
         if (string.IsNullOrEmpty(marker))
             return string.Empty;
 
         var inner = markerIsHtml ? marker : WebUtility.HtmlEncode(marker);
-        // Give double strike its own decoration so an outer underline stays single.
-        if (doubleStrike)
-            inner = "<span class=\"dxp-marker-double-strike\" style=\"text-decoration:line-through;text-decoration-style:double\">" + inner + "</span>";
+        // Separate strike when it needs a different line style from the underline.
+        if (doubleStrike || separateSingleStrike)
+        {
+            var kind = doubleStrike ? "double" : "single";
+            var style = doubleStrike ? "double" : "solid";
+            inner = "<span class=\"dxp-marker-" + kind + "-strike\" style=\"text-decoration:line-through;text-decoration-style:" + style + "\">" + inner + "</span>";
+        }
         var cssAttr = !string.IsNullOrEmpty(markerCss) ? " style=\"" + HtmlAttr(markerCss!) + "\"" : "";
         return $"""<span class="dxp-marker"{cssAttr}>{inner}</span>""" + WebUtility.HtmlEncode(separator);
     }
@@ -1833,8 +1837,9 @@ body.dxp-root {
         return null;
     }
 
-    private static string? TryBuildMarkerCss(DxpMarker marker, DxpIDocumentContext d, bool emitFont, Paragraph paragraph, bool doubleStrike)
+    private static string? TryBuildMarkerCss(DxpMarker marker, DxpIDocumentContext d, bool emitFont, Paragraph paragraph, bool doubleStrike, out bool separateSingleStrike)
     {
+        separateSingleStrike = false;
         if (marker.numId == null || marker.iLvl == null)
             return null;
 
@@ -1865,13 +1870,18 @@ body.dxp-root {
             parts.Add("font-style:italic");
         if (rpr.Underline?.Val != null && rpr.Underline.Val.Value != UnderlineValues.None)
             decorations.Add("underline");
-        if (!doubleStrike && (d.Styles is DxpStyleResolver markerStyles
+        var doubleUnderline = rpr.Underline?.Val?.Value == UnderlineValues.Double;
+        var singleStrike = !doubleStrike && (d.Styles is DxpStyleResolver markerStyles
             ? markerStyles.ResolveListMarkerStrike(DxpNumberingResolver.NormalizeParagraphNumberingProperties(paragraph), rpr)
-            : rpr.Strike != null && IsOn(rpr.Strike.Val)))
+            : rpr.Strike != null && IsOn(rpr.Strike.Val));
+        separateSingleStrike = doubleUnderline && singleStrike;
+        if (singleStrike && !separateSingleStrike)
             decorations.Add("line-through");
 
         if (decorations.Count > 0)
             parts.Add("text-decoration:" + string.Join(" ", decorations.Distinct(StringComparer.Ordinal)));
+        if (doubleUnderline)
+            parts.Add("text-decoration-style:double");
 
         return parts.Count == 0 ? null : string.Join(";", parts);
     }
