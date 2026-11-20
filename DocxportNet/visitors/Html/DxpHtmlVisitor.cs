@@ -1086,9 +1086,11 @@ body.dxp-root {
 
         if (marker?.marker != null)
         {
-            var normalizedMarker = NormalizeMarker(marker.marker, ResolveMarkerLevel(marker, d), out var markerIsHtml);
+            var markerLevel = ResolveMarkerLevel(marker, d);
+            var normalizedMarker = NormalizeMarker(marker.marker, markerLevel, out var markerIsHtml);
             var markerCss = TryBuildMarkerCss(marker, d, _config.EmitStyleFont, p);
-            Write(d, BuildMarkerHtml(normalizedMarker, markerCss, marker.TextSeparator, markerIsHtml));
+            var doubleStrike = markerLevel?.NumberingSymbolRunProperties?.DoubleStrike is { } strike && IsOn(strike.Val);
+            Write(d, BuildMarkerHtml(normalizedMarker, markerCss, marker.TextSeparator, markerIsHtml, doubleStrike));
         }
 
         if (isCode)
@@ -1794,12 +1796,15 @@ body.dxp-root {
         return trimmed;
     }
 
-    private static string BuildMarkerHtml(string marker, string? markerCss, string separator, bool markerIsHtml)
+    private static string BuildMarkerHtml(string marker, string? markerCss, string separator, bool markerIsHtml, bool doubleStrike)
     {
         if (string.IsNullOrEmpty(marker))
             return string.Empty;
 
         var inner = markerIsHtml ? marker : WebUtility.HtmlEncode(marker);
+        // Give double strike its own decoration so an outer underline stays single.
+        if (doubleStrike)
+            inner = "<span class=\"dxp-marker-double-strike\" style=\"text-decoration:line-through;text-decoration-style:double\">" + inner + "</span>";
         var cssAttr = !string.IsNullOrEmpty(markerCss) ? " style=\"" + HtmlAttr(markerCss!) + "\"" : "";
         return $"""<span class="dxp-marker"{cssAttr}>{inner}</span>""" + WebUtility.HtmlEncode(separator);
     }
@@ -1858,11 +1863,10 @@ body.dxp-root {
             parts.Add("font-style:italic");
         if (rpr.Underline?.Val != null && rpr.Underline.Val.Value != UnderlineValues.None)
             decorations.Add("underline");
-        if (d.Styles is DxpStyleResolver markerStyles
+        var doubleStrike = rpr.DoubleStrike != null && IsOn(rpr.DoubleStrike.Val);
+        if (!doubleStrike && (d.Styles is DxpStyleResolver markerStyles
             ? markerStyles.ResolveListMarkerStrike(DxpNumberingResolver.NormalizeParagraphNumberingProperties(paragraph), rpr)
-            : rpr.Strike != null && IsOn(rpr.Strike.Val))
-            decorations.Add("line-through");
-        if (rpr.DoubleStrike != null && IsOn(rpr.DoubleStrike.Val))
+            : rpr.Strike != null && IsOn(rpr.Strike.Val)))
             decorations.Add("line-through");
 
         if (decorations.Count > 0)
