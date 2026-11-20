@@ -1858,7 +1858,9 @@ body.dxp-root {
             parts.Add("font-style:italic");
         if (rpr.Underline?.Val != null && rpr.Underline.Val.Value != UnderlineValues.None)
             decorations.Add("underline");
-        if (rpr.Strike != null && IsOn(rpr.Strike.Val))
+        if (d.Styles is DxpStyleResolver markerStyles
+            ? markerStyles.ResolveListMarkerStrike(DxpNumberingResolver.NormalizeParagraphNumberingProperties(paragraph), rpr)
+            : rpr.Strike != null && IsOn(rpr.Strike.Val))
             decorations.Add("line-through");
         if (rpr.DoubleStrike != null && IsOn(rpr.DoubleStrike.Val))
             decorations.Add("line-through");
