@@ -677,6 +677,35 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
         return Read(level) ?? Read(paragraph?.ParagraphMarkRunProperties) ?? inherited;
     }
 
+    internal bool ResolveListMarkerDoubleStrike(ParagraphProperties? paragraph, NumberingSymbolRunProperties? level)
+    {
+        if (_numberingStyleResolver != null)
+            return _numberingStyleResolver.ResolveListMarkerDoubleStrike(paragraph, level);
+        bool? Read(OpenXmlElement? properties)
+        {
+            var value = properties?.ChildElements.FirstOrDefault(child => child.LocalName == "dstrike" &&
+                child.NamespaceUri == "http://schemas.openxmlformats.org/wordprocessingml/2006/main");
+            if (value == null) return null;
+            var flag = value.GetAttributes().FirstOrDefault(attribute => attribute.LocalName == "val" &&
+                attribute.NamespaceUri == value.NamespaceUri).Value;
+            return flag is not ("0" or "false" or "off");
+        }
+        if ((Read(level) ?? Read(paragraph?.ParagraphMarkRunProperties)) is bool direct) return direct;
+        var styleId = paragraph?.ParagraphStyleId?.Val?.Value;
+        if (string.IsNullOrEmpty(styleId))
+            styleId = _styles?.Elements<Style>().FirstOrDefault(style =>
+                style.Type?.Value == StyleValues.Paragraph && style.Default?.Value == true)?.StyleId?.Value;
+        foreach (var style in EnumerateStyleChain(styleId, StyleValues.Paragraph))
+        {
+            // Unlike single strike, Word does not apply a separate style-mark
+            // toggle for double strike: the style's own run declaration wins.
+            var mark = style.StyleParagraphProperties?.ChildElements.FirstOrDefault(child =>
+                child.LocalName == "rPr" && child.NamespaceUri == "http://schemas.openxmlformats.org/wordprocessingml/2006/main");
+            if ((Read(style.StyleRunProperties) ?? Read(mark)) is bool inherited) return inherited;
+        }
+        return Read(_docDefaultRunProps) ?? false;
+    }
+
     // ASCII marker sizes, including ordinary LTR and numeric RTL inheritance.
     // Keep these marker rules out of body-run layout.
     internal int? ResolveAsciiListMarkerFontSize(ParagraphProperties? paragraph,

@@ -1088,8 +1088,10 @@ body.dxp-root {
         {
             var markerLevel = ResolveMarkerLevel(marker, d);
             var normalizedMarker = NormalizeMarker(marker.marker, markerLevel, out var markerIsHtml);
-            var markerCss = TryBuildMarkerCss(marker, d, _config.EmitStyleFont, p);
-            var doubleStrike = markerLevel?.NumberingSymbolRunProperties?.DoubleStrike is { } strike && IsOn(strike.Val);
+            var doubleStrike = d.Styles is DxpStyleResolver markerStyles
+                ? markerStyles.ResolveListMarkerDoubleStrike(DxpNumberingResolver.NormalizeParagraphNumberingProperties(p), markerLevel?.NumberingSymbolRunProperties)
+                : markerLevel?.NumberingSymbolRunProperties?.DoubleStrike is { } strike && IsOn(strike.Val);
+            var markerCss = TryBuildMarkerCss(marker, d, _config.EmitStyleFont, p, doubleStrike);
             Write(d, BuildMarkerHtml(normalizedMarker, markerCss, marker.TextSeparator, markerIsHtml, doubleStrike));
         }
 
@@ -1831,7 +1833,7 @@ body.dxp-root {
         return null;
     }
 
-    private static string? TryBuildMarkerCss(DxpMarker marker, DxpIDocumentContext d, bool emitFont, Paragraph paragraph)
+    private static string? TryBuildMarkerCss(DxpMarker marker, DxpIDocumentContext d, bool emitFont, Paragraph paragraph, bool doubleStrike)
     {
         if (marker.numId == null || marker.iLvl == null)
             return null;
@@ -1863,7 +1865,6 @@ body.dxp-root {
             parts.Add("font-style:italic");
         if (rpr.Underline?.Val != null && rpr.Underline.Val.Value != UnderlineValues.None)
             decorations.Add("underline");
-        var doubleStrike = rpr.DoubleStrike != null && IsOn(rpr.DoubleStrike.Val);
         if (!doubleStrike && (d.Styles is DxpStyleResolver markerStyles
             ? markerStyles.ResolveListMarkerStrike(DxpNumberingResolver.NormalizeParagraphNumberingProperties(paragraph), rpr)
             : rpr.Strike != null && IsOn(rpr.Strike.Val)))
