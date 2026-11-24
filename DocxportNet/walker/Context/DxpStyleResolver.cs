@@ -418,13 +418,21 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
         return colors;
     }
 
-    internal string? ResolveBaseMarkerUnderlineColor(Underline? underline)
+    internal string? ResolveMarkerUnderlineThemeColor(Underline? underline)
     {
-        if (underline?.ThemeColor == null || underline.ThemeTint != null || underline.ThemeShade != null)
-            return null;
+        if (underline?.ThemeColor == null) return null;
+        // Word treats FF tint as inactive, allowing a shade to take effect.
+        var tint = underline.ThemeTint?.Value;
+        var useTint = tint != null && !string.Equals(tint, "FF", StringComparison.OrdinalIgnoreCase);
+        var modifier = useTint ? tint : underline.ThemeShade?.Value;
+        // Intermediate modifier calculations remain on their existing path.
+        if (modifier != null && modifier != "00" &&
+            !string.Equals(modifier, "FF", StringComparison.OrdinalIgnoreCase)) return null;
         // Word ignores the underline's RGB cache, including near matches.
         // A presentation-only view leaves the source and body-run policy intact.
-        return ResolveThemeRunColor(new Color { ThemeColor = underline.ThemeColor.Value }, mapOnce: true);
+        var color = ResolveThemeRunColor(new Color { ThemeColor = underline.ThemeColor.Value }, mapOnce: true);
+        if (color == null || modifier != "00") return color;
+        return useTint ? "#FFFFFF" : "#000000";
     }
 
     private string? ResolveThemeRunColor(Color? color, bool mapOnce = false)
