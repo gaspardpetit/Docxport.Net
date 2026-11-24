@@ -1832,7 +1832,7 @@ body.dxp-root {
         if (underline == null || underline.Val == null || underline.Val.Value == UnderlineValues.None)
             return null;
         if (underline.ThemeColor != null)
-            return context.Styles is DxpStyleResolver styles ? styles.ResolveBaseMarkerUnderlineColor(underline) : null;
+            return context.Styles is DxpStyleResolver styles ? styles.ResolveMarkerUnderlineThemeColor(underline) : null;
         var color = underline.Color?.Value;
         return color is { Length: 6 } && uint.TryParse(color, NumberStyles.AllowHexSpecifier,
             CultureInfo.InvariantCulture, out _) ? "#" + color : null;
