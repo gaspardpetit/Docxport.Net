@@ -25161,7 +25161,7 @@
       "case": "decimal-single-theme-guard",
       "underlineStyle": "single",
       "themeGuard": true,
-      "expectedCssColor": null,
+      "expectedCssColor": "#00FF00",
       "expectedWordColor": "00FF00",
       "expectedStrikeLines": 1,
       "expectedVisibleLabels": [
@@ -26659,7 +26659,7 @@
       "case": "decimal-double-theme-guard",
       "underlineStyle": "double",
       "themeGuard": true,
-      "expectedCssColor": null,
+      "expectedCssColor": "#00FF00",
       "expectedWordColor": "00FF00",
       "expectedStrikeLines": 1,
       "expectedVisibleLabels": [
@@ -28184,7 +28184,7 @@
       "case": "decimal-words-theme-guard",
       "underlineStyle": "words",
       "themeGuard": true,
-      "expectedCssColor": null,
+      "expectedCssColor": "#00FF00",
       "expectedWordColor": "00FF00",
       "expectedStrikeLines": 1,
       "expectedVisibleLabels": [
@@ -33104,5 +33104,6 @@
         }
       }
     }
-  ]
+  ],
+  "cliEvidencePullRequest": 319
 }
