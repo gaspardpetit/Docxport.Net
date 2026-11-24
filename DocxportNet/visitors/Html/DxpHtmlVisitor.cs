@@ -1870,18 +1870,22 @@ body.dxp-root {
             parts.Add("font-style:italic");
         if (rpr.Underline?.Val != null && rpr.Underline.Val.Value != UnderlineValues.None)
             decorations.Add("underline");
-        var doubleUnderline = rpr.Underline?.Val?.Value == UnderlineValues.Double;
+        var underline = rpr.Underline?.Val?.Value;
+        var underlineStyle = underline == UnderlineValues.Double ? "double"
+            : underline == UnderlineValues.Dotted ? "dotted"
+            : underline == UnderlineValues.Dash ? "dashed"
+            : underline == UnderlineValues.Wave ? "wavy" : null;
         var singleStrike = !doubleStrike && (d.Styles is DxpStyleResolver markerStyles
             ? markerStyles.ResolveListMarkerStrike(DxpNumberingResolver.NormalizeParagraphNumberingProperties(paragraph), rpr)
             : rpr.Strike != null && IsOn(rpr.Strike.Val));
-        separateSingleStrike = doubleUnderline && singleStrike;
+        separateSingleStrike = underlineStyle != null && singleStrike;
         if (singleStrike && !separateSingleStrike)
             decorations.Add("line-through");
 
         if (decorations.Count > 0)
             parts.Add("text-decoration:" + string.Join(" ", decorations.Distinct(StringComparer.Ordinal)));
-        if (doubleUnderline)
-            parts.Add("text-decoration-style:double");
+        if (underlineStyle != null)
+            parts.Add("text-decoration-style:" + underlineStyle);
 
         return parts.Count == 0 ? null : string.Join(";", parts);
     }
