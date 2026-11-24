@@ -1091,9 +1091,10 @@ body.dxp-root {
             var doubleStrike = d.Styles is DxpStyleResolver markerStyles
                 ? markerStyles.ResolveListMarkerDoubleStrike(DxpNumberingResolver.NormalizeParagraphNumberingProperties(p), markerLevel?.NumberingSymbolRunProperties)
                 : markerLevel?.NumberingSymbolRunProperties?.DoubleStrike is { } strike && IsOn(strike.Val);
-            var markerCss = TryBuildMarkerCss(marker, d, _config.EmitStyleFont, p, doubleStrike, out var separateSingleStrike);
+            var underlineColor = _config.EmitRunColor ? ExplicitMarkerUnderlineColor(markerLevel?.NumberingSymbolRunProperties?.Underline) : null;
+            var markerCss = TryBuildMarkerCss(marker, d, _config.EmitStyleFont, p, doubleStrike, underlineColor, out var separateSingleStrike);
             var underlineWords = markerLevel?.NumberingSymbolRunProperties?.Underline?.Val?.Value == UnderlineValues.Words;
-            Write(d, BuildMarkerHtml(normalizedMarker, markerCss, marker.TextSeparator, markerIsHtml, doubleStrike, separateSingleStrike, underlineWords));
+            Write(d, BuildMarkerHtml(normalizedMarker, markerCss, marker.TextSeparator, markerIsHtml, doubleStrike, separateSingleStrike, underlineWords, underlineColor));
         }
 
         if (isCode)
@@ -1799,7 +1800,7 @@ body.dxp-root {
         return trimmed;
     }
 
-    private static string BuildMarkerHtml(string marker, string? markerCss, string separator, bool markerIsHtml, bool doubleStrike, bool separateSingleStrike, bool underlineWords)
+    private static string BuildMarkerHtml(string marker, string? markerCss, string separator, bool markerIsHtml, bool doubleStrike, bool separateSingleStrike, bool underlineWords, string? underlineColor)
     {
         if (string.IsNullOrEmpty(marker))
             return string.Empty;
@@ -1809,8 +1810,8 @@ body.dxp-root {
             // The HTML flag comes only from NormalizeMarker's generated font span.
             // Decorate its escaped text nodes; never interpret literal labels as tags.
             inner = markerIsHtml
-                ? Regex.Replace(inner, @">([^<]+)<", match => ">" + UnderlineEncodedMarkerWords(match.Groups[1].Value) + "<")
-                : UnderlineEncodedMarkerWords(inner);
+                ? Regex.Replace(inner, @">([^<]+)<", match => ">" + UnderlineEncodedMarkerWords(match.Groups[1].Value, underlineColor) + "<")
+                : UnderlineEncodedMarkerWords(inner, underlineColor);
         // Separate strike when it needs a different line style from the underline.
         if (doubleStrike || separateSingleStrike)
         {
@@ -1826,7 +1827,18 @@ body.dxp-root {
         marker.numId is int numId && marker.iLvl is int level && d is DxpDocumentContext document
             ? document.NumberingResolver.ResolveLevel(numId, level)?.lvl : null;
 
-    private static string UnderlineEncodedMarkerWords(string encoded)
+    private static string? ExplicitMarkerUnderlineColor(Underline? underline)
+    {
+        // A theme reference takes precedence over its RGB cache. Leave theme
+        // resolution on its existing path while handling direct RGB here.
+        if (underline == null || underline.Val == null || underline.Val.Value == UnderlineValues.None || underline.ThemeColor != null)
+            return null;
+        var color = underline.Color?.Value;
+        return color is { Length: 6 } && uint.TryParse(color, NumberStyles.AllowHexSpecifier,
+            CultureInfo.InvariantCulture, out _) ? "#" + color : null;
+    }
+
+    private static string UnderlineEncodedMarkerWords(string encoded, string? underlineColor)
     {
         var result = new StringBuilder();
         var inWord = false;
@@ -1840,7 +1852,9 @@ body.dxp-root {
             if (gap && inWord) { result.Append("</span>"); inWord = false; }
             if (!gap && !inWord)
             {
-                result.Append("<span class=\"dxp-marker-word-underline\" style=\"text-decoration:underline\">");
+                result.Append("<span class=\"dxp-marker-word-underline\" style=\"text-decoration:underline");
+                if (underlineColor != null) result.Append(";text-decoration-color:").Append(underlineColor);
+                result.Append("\">");
                 inWord = true;
             }
             result.Append(token.Value);
@@ -1867,7 +1881,7 @@ body.dxp-root {
         return null;
     }
 
-    private static string? TryBuildMarkerCss(DxpMarker marker, DxpIDocumentContext d, bool emitFont, Paragraph paragraph, bool doubleStrike, out bool separateSingleStrike)
+    private static string? TryBuildMarkerCss(DxpMarker marker, DxpIDocumentContext d, bool emitFont, Paragraph paragraph, bool doubleStrike, string? underlineColor, out bool separateSingleStrike)
     {
         separateSingleStrike = false;
         if (marker.numId == null || marker.iLvl == null)
@@ -1908,7 +1922,8 @@ body.dxp-root {
         var singleStrike = !doubleStrike && (d.Styles is DxpStyleResolver markerStyles
             ? markerStyles.ResolveListMarkerStrike(DxpNumberingResolver.NormalizeParagraphNumberingProperties(paragraph), rpr)
             : rpr.Strike != null && IsOn(rpr.Strike.Val));
-        separateSingleStrike = underlineStyle != null && singleStrike;
+        var outerUnderlineColor = underline == UnderlineValues.Words ? null : underlineColor;
+        separateSingleStrike = singleStrike && (underlineStyle != null || outerUnderlineColor != null);
         if (singleStrike && !separateSingleStrike)
             decorations.Add("line-through");
 
@@ -1916,6 +1931,8 @@ body.dxp-root {
             parts.Add("text-decoration:" + string.Join(" ", decorations.Distinct(StringComparer.Ordinal)));
         if (underlineStyle != null)
             parts.Add("text-decoration-style:" + underlineStyle);
+        if (outerUnderlineColor != null)
+            parts.Add("text-decoration-color:" + outerUnderlineColor);
 
         return parts.Count == 0 ? null : string.Join(";", parts);
     }
