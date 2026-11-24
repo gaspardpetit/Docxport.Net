@@ -1091,7 +1091,7 @@ body.dxp-root {
             var doubleStrike = d.Styles is DxpStyleResolver markerStyles
                 ? markerStyles.ResolveListMarkerDoubleStrike(DxpNumberingResolver.NormalizeParagraphNumberingProperties(p), markerLevel?.NumberingSymbolRunProperties)
                 : markerLevel?.NumberingSymbolRunProperties?.DoubleStrike is { } strike && IsOn(strike.Val);
-            var underlineColor = _config.EmitRunColor ? ExplicitMarkerUnderlineColor(markerLevel?.NumberingSymbolRunProperties?.Underline) : null;
+            var underlineColor = _config.EmitRunColor ? MarkerUnderlineColor(markerLevel?.NumberingSymbolRunProperties?.Underline, d) : null;
             var markerCss = TryBuildMarkerCss(marker, d, _config.EmitStyleFont, p, doubleStrike, underlineColor, out var separateSingleStrike);
             var underlineWords = markerLevel?.NumberingSymbolRunProperties?.Underline?.Val?.Value == UnderlineValues.Words;
             Write(d, BuildMarkerHtml(normalizedMarker, markerCss, marker.TextSeparator, markerIsHtml, doubleStrike, separateSingleStrike, underlineWords, underlineColor));
@@ -1827,12 +1827,12 @@ body.dxp-root {
         marker.numId is int numId && marker.iLvl is int level && d is DxpDocumentContext document
             ? document.NumberingResolver.ResolveLevel(numId, level)?.lvl : null;
 
-    private static string? ExplicitMarkerUnderlineColor(Underline? underline)
+    private static string? MarkerUnderlineColor(Underline? underline, DxpIDocumentContext context)
     {
-        // A theme reference takes precedence over its RGB cache. Leave theme
-        // resolution on its existing path while handling direct RGB here.
-        if (underline == null || underline.Val == null || underline.Val.Value == UnderlineValues.None || underline.ThemeColor != null)
+        if (underline == null || underline.Val == null || underline.Val.Value == UnderlineValues.None)
             return null;
+        if (underline.ThemeColor != null)
+            return context.Styles is DxpStyleResolver styles ? styles.ResolveBaseMarkerUnderlineColor(underline) : null;
         var color = underline.Color?.Value;
         return color is { Length: 6 } && uint.TryParse(color, NumberStyles.AllowHexSpecifier,
             CultureInfo.InvariantCulture, out _) ? "#" + color : null;

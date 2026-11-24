@@ -18,18 +18,18 @@ independently of font emission. Rich/plain presets and both option overrides are
 tested.
 
 Theme references take precedence over cached RGB. The three guards have a green
-theme and a conflicting red cache: Word paints green. This RGB-only change keeps
-the prior HTML behavior, ignoring that cache. Those guard outputs are intentionally
-not claimed to match Word's theme color; theme resolution is separate work.
+theme and a conflicting red cache: Word paints green. The historical CLI/browser captures in this manifest are from PR #319 and retain
+its black guard output. The current assertions now require Word's green theme color;
+fresh theme-resolution captures are in the adjacent HtmlMarkerUnderlineThemeBase group.
 
-CLI checks require only rich HTML underline-color changes for direct RGB targets.
+The historical PR #319 CLI checks required only rich HTML underline-color changes for direct RGB targets.
 Plain HTML, disabled/auto/theme guards, and other exporters must stay byte-identical.
 Controls reuse the prior double-underline, patterned-underline, and word-underline
 groups, without duplicating their sources/PDFs. Four representative rich HTML
 baseline/current pairs are retained under `baseline/` and `html/`, with LF hashes.
 
 Browser component captures check visible underline hue, black glyphs, and continuous
-black strike strokes, including raster-painted wavy lines. The 87 supported target/
-control cases are compared with Word; the three theme guards preserve their baseline.
+black strike strokes, including raster-painted wavy lines. The historical 87 supported target/
+control cases matched Word; the three theme guards preserved their baseline in #319.
 Exact geometry and whole-page layout are not claimed. Underline inheritance, theme
 resolution, glyph color, body formatting, and PDF layout remain separate work.

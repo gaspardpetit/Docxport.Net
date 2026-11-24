@@ -418,7 +418,16 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
         return colors;
     }
 
-    private string? ResolveThemeRunColor(Color? color)
+    internal string? ResolveBaseMarkerUnderlineColor(Underline? underline)
+    {
+        if (underline?.ThemeColor == null || underline.ThemeTint != null || underline.ThemeShade != null)
+            return null;
+        // Word ignores the underline's RGB cache, including near matches.
+        // A presentation-only view leaves the source and body-run policy intact.
+        return ResolveThemeRunColor(new Color { ThemeColor = underline.ThemeColor.Value }, mapOnce: true);
+    }
+
+    private string? ResolveThemeRunColor(Color? color, bool mapOnce = false)
     {
         if (color?.ThemeColor?.Value is not { } theme) return null;
         var mappedKey = theme switch
@@ -451,6 +460,9 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
                 string.Equals(next, mappedKey, StringComparison.OrdinalIgnoreCase))
                 break;
             mappedKey = next;
+            // Marker mappings are one-step aliases in Word, even for chains or
+            // cycles. Existing body callers retain their default traversal.
+            if (mapOnce) break;
         }
         var schemeKey = mappedKey switch
         {
