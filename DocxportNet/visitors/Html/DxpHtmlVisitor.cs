@@ -1092,7 +1092,8 @@ body.dxp-root {
                 ? markerStyles.ResolveListMarkerDoubleStrike(DxpNumberingResolver.NormalizeParagraphNumberingProperties(p), markerLevel?.NumberingSymbolRunProperties)
                 : markerLevel?.NumberingSymbolRunProperties?.DoubleStrike is { } strike && IsOn(strike.Val);
             var markerCss = TryBuildMarkerCss(marker, d, _config.EmitStyleFont, p, doubleStrike, out var separateSingleStrike);
-            Write(d, BuildMarkerHtml(normalizedMarker, markerCss, marker.TextSeparator, markerIsHtml, doubleStrike, separateSingleStrike));
+            var underlineWords = markerLevel?.NumberingSymbolRunProperties?.Underline?.Val?.Value == UnderlineValues.Words;
+            Write(d, BuildMarkerHtml(normalizedMarker, markerCss, marker.TextSeparator, markerIsHtml, doubleStrike, separateSingleStrike, underlineWords));
         }
 
         if (isCode)
@@ -1798,12 +1799,18 @@ body.dxp-root {
         return trimmed;
     }
 
-    private static string BuildMarkerHtml(string marker, string? markerCss, string separator, bool markerIsHtml, bool doubleStrike, bool separateSingleStrike)
+    private static string BuildMarkerHtml(string marker, string? markerCss, string separator, bool markerIsHtml, bool doubleStrike, bool separateSingleStrike, bool underlineWords)
     {
         if (string.IsNullOrEmpty(marker))
             return string.Empty;
 
         var inner = markerIsHtml ? marker : WebUtility.HtmlEncode(marker);
+        if (underlineWords)
+            // The HTML flag comes only from NormalizeMarker's generated font span.
+            // Decorate its escaped text nodes; never interpret literal labels as tags.
+            inner = markerIsHtml
+                ? Regex.Replace(inner, @">([^<]+)<", match => ">" + UnderlineEncodedMarkerWords(match.Groups[1].Value) + "<")
+                : UnderlineEncodedMarkerWords(inner);
         // Separate strike when it needs a different line style from the underline.
         if (doubleStrike || separateSingleStrike)
         {
@@ -1818,6 +1825,29 @@ body.dxp-root {
     private static Level? ResolveMarkerLevel(DxpMarker marker, DxpIDocumentContext d) =>
         marker.numId is int numId && marker.iLvl is int level && d is DxpDocumentContext document
             ? document.NumberingResolver.ResolveLevel(numId, level)?.lvl : null;
+
+    private static string UnderlineEncodedMarkerWords(string encoded)
+    {
+        var result = new StringBuilder();
+        var inWord = false;
+        foreach (Match token in Regex.Matches(encoded, @"&[^;\s]+;|[\s\S]"))
+        {
+            // Word leaves these gaps unlined, but retains underlining over e.g.
+            // em and narrow nonbreaking spaces. Decoding only classifies a token;
+            // append its original encoding so literal text stays literal.
+            var decoded = WebUtility.HtmlDecode(token.Value);
+            var gap = decoded.Length == 1 && decoded[0] is ' ' or '\t' or '\u00a0' or '\u3000';
+            if (gap && inWord) { result.Append("</span>"); inWord = false; }
+            if (!gap && !inWord)
+            {
+                result.Append("<span class=\"dxp-marker-word-underline\" style=\"text-decoration:underline\">");
+                inWord = true;
+            }
+            result.Append(token.Value);
+        }
+        if (inWord) result.Append("</span>");
+        return result.ToString();
+    }
 
     private static string? TryTranslateSymbolFont(string marker, string? fontFamily = null)
     {
@@ -1868,7 +1898,7 @@ body.dxp-root {
             parts.Add("font-weight:bold");
         if (rpr.Italic != null && IsOn(rpr.Italic.Val))
             parts.Add("font-style:italic");
-        if (rpr.Underline?.Val != null && rpr.Underline.Val.Value != UnderlineValues.None)
+        if (rpr.Underline?.Val != null && rpr.Underline.Val.Value != UnderlineValues.None && rpr.Underline.Val.Value != UnderlineValues.Words)
             decorations.Add("underline");
         var underline = rpr.Underline?.Val?.Value;
         var underlineStyle = underline == UnderlineValues.Double ? "double"
