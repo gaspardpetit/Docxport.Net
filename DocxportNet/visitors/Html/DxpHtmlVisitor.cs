@@ -1092,7 +1092,7 @@ body.dxp-root {
                 ? markerStyles.ResolveListMarkerDoubleStrike(DxpNumberingResolver.NormalizeParagraphNumberingProperties(p), markerLevel?.NumberingSymbolRunProperties)
                 : markerLevel?.NumberingSymbolRunProperties?.DoubleStrike is { } strike && IsOn(strike.Val);
             var underlineColor = _config.EmitRunColor ? MarkerUnderlineColor(markerLevel?.NumberingSymbolRunProperties?.Underline, d) : null;
-            var markerCss = TryBuildMarkerCss(marker, d, _config.EmitStyleFont, p, doubleStrike, underlineColor, out var separateSingleStrike);
+            var markerCss = TryBuildMarkerCss(marker, d, _config.EmitStyleFont, _config.EmitRunColor, p, doubleStrike, underlineColor, out var separateSingleStrike);
             var underlineWords = markerLevel?.NumberingSymbolRunProperties?.Underline?.Val?.Value == UnderlineValues.Words;
             Write(d, BuildMarkerHtml(normalizedMarker, markerCss, marker.TextSeparator, markerIsHtml, doubleStrike, separateSingleStrike, underlineWords, underlineColor));
         }
@@ -1833,10 +1833,11 @@ body.dxp-root {
             return null;
         if (underline.ThemeColor != null)
             return context.Styles is DxpStyleResolver styles ? styles.ResolveMarkerUnderlineThemeColor(underline) : null;
-        var color = underline.Color?.Value;
-        return color is { Length: 6 } && uint.TryParse(color, NumberStyles.AllowHexSpecifier,
-            CultureInfo.InvariantCulture, out _) ? "#" + color : null;
+        return ExplicitRgbColor(underline.Color?.Value);
     }
+
+    private static string? ExplicitRgbColor(string? color) => color is { Length: 6 } && uint.TryParse(color, NumberStyles.AllowHexSpecifier,
+            CultureInfo.InvariantCulture, out _) ? "#" + color : null;
 
     private static string UnderlineEncodedMarkerWords(string encoded, string? underlineColor)
     {
@@ -1881,7 +1882,7 @@ body.dxp-root {
         return null;
     }
 
-    private static string? TryBuildMarkerCss(DxpMarker marker, DxpIDocumentContext d, bool emitFont, Paragraph paragraph, bool doubleStrike, string? underlineColor, out bool separateSingleStrike)
+    private static string? TryBuildMarkerCss(DxpMarker marker, DxpIDocumentContext d, bool emitFont, bool emitColor, Paragraph paragraph, bool doubleStrike, string? underlineColor, out bool separateSingleStrike)
     {
         separateSingleStrike = false;
         if (marker.numId == null || marker.iLvl == null)
@@ -1908,6 +1909,10 @@ body.dxp-root {
             styles.ResolveAsciiListMarkerFontSize(DxpNumberingResolver.NormalizeParagraphNumberingProperties(paragraph), rpr, markerText) is int halfPoints)
             parts.Add("font-size:" + (halfPoints / 2.0).ToString("0.###", CultureInfo.InvariantCulture) + "pt");
 
+        // A theme reference overrides its RGB cache; keep theme glyph colors
+        // on their existing path while honoring explicit RGB independently of fonts.
+        if (emitColor && rpr.Color?.ThemeColor == null && ExplicitRgbColor(rpr.Color?.Val?.Value) is { } glyphColor)
+            parts.Add("color:" + glyphColor);
         if (rpr.Bold != null && IsOn(rpr.Bold.Val))
             parts.Add("font-weight:bold");
         if (rpr.Italic != null && IsOn(rpr.Italic.Val))
