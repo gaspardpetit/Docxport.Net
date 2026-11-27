@@ -1827,6 +1827,12 @@ body.dxp-root {
         marker.numId is int numId && marker.iLvl is int level && d is DxpDocumentContext document
             ? document.NumberingResolver.ResolveLevel(numId, level)?.lvl : null;
 
+    private static string? MarkerGlyphColor(Color? color, DxpIDocumentContext context)
+    {
+        if (color?.ThemeColor == null) return ExplicitRgbColor(color?.Val?.Value);
+        return context.Styles is DxpStyleResolver styles ? styles.ResolveBaseMarkerGlyphColor(color) : null;
+    }
+
     private static string? MarkerUnderlineColor(Underline? underline, DxpIDocumentContext context)
     {
         if (underline == null || underline.Val == null || underline.Val.Value == UnderlineValues.None)
@@ -1909,9 +1915,7 @@ body.dxp-root {
             styles.ResolveAsciiListMarkerFontSize(DxpNumberingResolver.NormalizeParagraphNumberingProperties(paragraph), rpr, markerText) is int halfPoints)
             parts.Add("font-size:" + (halfPoints / 2.0).ToString("0.###", CultureInfo.InvariantCulture) + "pt");
 
-        // A theme reference overrides its RGB cache; keep theme glyph colors
-        // on their existing path while honoring explicit RGB independently of fonts.
-        if (emitColor && rpr.Color?.ThemeColor == null && ExplicitRgbColor(rpr.Color?.Val?.Value) is { } glyphColor)
+        if (emitColor && MarkerGlyphColor(rpr.Color, d) is { } glyphColor)
             parts.Add("color:" + glyphColor);
         if (rpr.Bold != null && IsOn(rpr.Bold.Val))
             parts.Add("font-weight:bold");

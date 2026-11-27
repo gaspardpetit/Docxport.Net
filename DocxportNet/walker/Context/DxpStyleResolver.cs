@@ -418,6 +418,15 @@ public sealed class DxpStyleResolver : DxpIStyleResolver
         return colors;
     }
 
+    internal string? ResolveBaseMarkerGlyphColor(Color? color)
+    {
+        if (color?.ThemeColor == null || color.ThemeTint != null || color.ThemeShade != null)
+            return null;
+        // Word ignores even near-matching glyph caches and maps marker colors once.
+        // Keep the default body-run cache and mapping policy intact.
+        return ResolveThemeRunColor(new Color { ThemeColor = color.ThemeColor.Value }, mapOnce: true);
+    }
+
     internal string? ResolveMarkerUnderlineThemeColor(Underline? underline)
     {
         if (underline?.ThemeColor == null) return null;
