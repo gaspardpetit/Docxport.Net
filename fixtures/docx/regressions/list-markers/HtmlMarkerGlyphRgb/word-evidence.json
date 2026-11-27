@@ -7169,7 +7169,7 @@
       "case": "decimal-glyph-theme-guard",
       "underlineStyle": "single",
       "themeGuard": true,
-      "expectedCssColor": null,
+      "expectedCssColor": "#00FF00",
       "expectedWordGlyphColor": "00FF00",
       "expectedWordUnderlineColor": "FF0000",
       "expectedStrikeLines": 1,
@@ -15182,7 +15182,7 @@
       "case": "bullet-glyph-theme-guard",
       "underlineStyle": "single",
       "themeGuard": true,
-      "expectedCssColor": null,
+      "expectedCssColor": "#00FF00",
       "expectedWordGlyphColor": "00FF00",
       "expectedWordUnderlineColor": "FF0000",
       "expectedStrikeLines": 1,
@@ -23195,7 +23195,7 @@
       "case": "none-glyph-theme-guard",
       "underlineStyle": "single",
       "themeGuard": true,
-      "expectedCssColor": null,
+      "expectedCssColor": "#00FF00",
       "expectedWordGlyphColor": "00FF00",
       "expectedWordUnderlineColor": "FF0000",
       "expectedStrikeLines": 1,
@@ -36239,5 +36239,6 @@
         }
       }
     }
-  ]
+  ],
+  "cliEvidencePullRequest": 322
 }
